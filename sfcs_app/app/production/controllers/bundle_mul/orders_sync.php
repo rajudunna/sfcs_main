@@ -433,7 +433,7 @@ bai_orders_db_confirm.bts_status
 			else
 			{
 				$select_index="select product_style from `$brandix_bts`.`tbl_orders_style_ref` where product_style='$style_code'";
-				$link_select_index = mysql_query($select_index,$link) or ("Sql error".mysql_error());
+				$link_select_index = mysqli_query($select_index,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$numrows_check=mysqli_num_rows($link_select_index);
 				if($numrows_check==0)
@@ -485,7 +485,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$xs_id,'".$title_size_xs."',".$r['order_s_xs'].",".$r['old_order_s_xs'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_xs."', '".$color_code."', '".$r['order_s_xs']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo "XS\t".$insertSizesQuery."</br>";
 				}
 				if($r['order_s_s']>0)
@@ -495,7 +495,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s_id,'".$title_size_s."',".$r['order_s_s'].",".$r['old_order_s_s'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s."', '".$color_code."', '".$r['order_s_s']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_m']>0)
@@ -505,7 +505,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$m_id,'".$title_size_m."',".$r['order_s_m'].",".$r['old_order_s_m'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_m."', '".$color_code."', '".$r['order_s_m']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_l']>0)
@@ -515,7 +515,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$l_id,'".$title_size_l."',".$r['order_s_l'].",".$r['old_order_s_l'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_l."', '".$color_code."', '".$r['order_s_l']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_xl']>0)
@@ -525,7 +525,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$xl_id,'".$title_size_xl."',".$r['order_s_xl'].",".$r['old_order_s_xl'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_xl."', '".$color_code."', '".$r['order_s_xl']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_xxl']>0)
@@ -535,7 +535,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$xxl_id,'".$title_size_xxl."',".$r['order_s_xxl'].",".$r['old_order_s_xxl'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_xxl."', '".$color_code."', '".$r['order_s_xxl']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_xxxl']>0)
@@ -545,7 +545,7 @@ bai_orders_db_confirm.bts_status
 					$insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$xxl_id,'".$title_size_xxxl."',".$r['order_s_xxxl'].",".$r['old_order_s_xxxl'].",'".$color_code."')";
 					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_xxxl."', '".$color_code."', '".$r['order_s_xxxl']."', '0', '".$c_block."', '".$r['order_date']."')";
-					//$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+					//$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 					//echo $insertSizesQuery."</br>";
 				}
 				if($r['order_s_s01']>0)
@@ -554,7 +554,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s01_id,'".$title_size_s01."',".$r['order_s_s01'].",".$r['old_order_s_s01'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s01."','".$color_code."', '".$r['order_s_s01']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s02']>0)
 				{
@@ -562,7 +562,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s02_id,'".$title_size_s02."',".$r['order_s_s02'].",".$r['old_order_s_s02'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s02."','".$color_code."', '".$r['order_s_s02']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s03']>0)
 				{
@@ -570,7 +570,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s03_id,'".$title_size_s03."',".$r['order_s_s03'].",".$r['old_order_s_s03'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s03."','".$color_code."', '".$r['order_s_s03']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s04']>0)
 				{
@@ -578,7 +578,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s04_id,'".$title_size_s04."',".$r['order_s_s04'].",".$r['old_order_s_s04'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s04."','".$color_code."', '".$r['order_s_s04']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s05']>0)
 				{
@@ -586,7 +586,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s05_id,'".$title_size_s05."',".$r['order_s_s05'].",".$r['old_order_s_s05'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s05."','".$color_code."', '".$r['order_s_s05']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s06']>0)
 				{
@@ -594,7 +594,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s06_id,'".$title_size_s06."',".$r['order_s_s06'].",".$r['old_order_s_s06'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s06."','".$color_code."', '".$r['order_s_s06']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s07']>0)
 				{
@@ -602,7 +602,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s07_id,'".$title_size_s07."',".$r['order_s_s07'].",".$r['old_order_s_s07'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s07."','".$color_code."', '".$r['order_s_s07']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s08']>0)
 				{
@@ -610,7 +610,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s08_id,'".$title_size_s08."',".$r['order_s_s08'].",".$r['old_order_s_s08'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s08."','".$color_code."', '".$r['order_s_s08']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s09']>0)
 				{
@@ -618,7 +618,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s09_id,'".$title_size_s09."',".$r['order_s_s09'].",".$r['old_order_s_s09'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s09."','".$color_code."', '".$r['order_s_s09']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s10']>0)
 				{
@@ -626,7 +626,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s10_id,'".$title_size_s10."',".$r['order_s_s10'].",".$r['old_order_s_s10'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s10."','".$color_code."', '".$r['order_s_s10']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s11']>0)
 				{
@@ -634,7 +634,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s11_id,'".$title_size_s11."',".$r['order_s_s11'].",".$r['old_order_s_s11'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s11."','".$color_code."', '".$r['order_s_s11']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s12']>0)
 				{
@@ -642,7 +642,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s12_id,'".$title_size_s12."',".$r['order_s_s12'].",".$r['old_order_s_s12'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s12."','".$color_code."', '".$r['order_s_s12']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s13']>0)
 				{
@@ -650,7 +650,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s13_id,'".$title_size_s13."',".$r['order_s_s13'].",".$r['old_order_s_s13'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s13."','".$color_code."', '".$r['order_s_s13']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s14']>0)
 				{
@@ -658,7 +658,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s14_id,'".$title_size_s14."',".$r['order_s_s14'].",".$r['old_order_s_s14'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s14."','".$color_code."', '".$r['order_s_s14']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s15']>0)
 				{
@@ -666,7 +666,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s15_id,'".$title_size_s15."',".$r['order_s_s15'].",".$r['old_order_s_s15'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s15."','".$color_code."', '".$r['order_s_s15']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s16']>0)
 				{
@@ -674,7 +674,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s16_id,'".$title_size_s16."',".$r['order_s_s16'].",".$r['old_order_s_s16'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s16."','".$color_code."', '".$r['order_s_s16']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s17']>0)
 				{
@@ -682,7 +682,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s17_id,'".$title_size_s17."',".$r['order_s_s17'].",".$r['old_order_s_s17'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s17."','".$color_code."', '".$r['order_s_s17']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s18']>0)
 				{
@@ -690,7 +690,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s18_id,'".$title_size_s18."',".$r['order_s_s18'].",".$r['old_order_s_s18'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s18."','".$color_code."', '".$r['order_s_s18']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s19']>0)
 				{
@@ -698,7 +698,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s19_id,'".$title_size_s19."',".$r['order_s_s19'].",".$r['old_order_s_s19'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s19."','".$color_code."', '".$r['order_s_s19']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s20']>0)
 				{
@@ -706,7 +706,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s20_id,'".$title_size_s20."',".$r['order_s_s20'].",".$r['old_order_s_s20'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s20."','".$color_code."', '".$r['order_s_s20']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s21']>0)
 				{
@@ -714,7 +714,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s21_id,'".$title_size_s21."',".$r['order_s_s21'].",".$r['old_order_s_s21'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s21."','".$color_code."', '".$r['order_s_s21']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s22']>0)
 				{
@@ -722,7 +722,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s22_id,'".$title_size_s22."',".$r['order_s_s22'].",".$r['old_order_s_s22'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s22."','".$color_code."', '".$r['order_s_s22']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s23']>0)
 				{
@@ -730,7 +730,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s23_id,'".$title_size_s23."',".$r['order_s_s23'].",".$r['old_order_s_s23'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s23."','".$color_code."', '".$r['order_s_s23']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s24']>0)
 				{
@@ -738,7 +738,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s24_id,'".$title_size_s24."',".$r['order_s_s24'].",".$r['old_order_s_s24'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s24."','".$color_code."', '".$r['order_s_s24']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s25']>0)
 				{
@@ -746,7 +746,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s25_id,'".$title_size_s25."',".$r['order_s_s25'].",".$r['old_order_s_s25'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s25."','".$color_code."', '".$r['order_s_s25']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s26']>0)
 				{
@@ -754,7 +754,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s26_id,'".$title_size_s26."',".$r['order_s_s26'].",".$r['old_order_s_s26'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s26."','".$color_code."', '".$r['order_s_s26']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s27']>0)
 				{
@@ -762,7 +762,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s27_id,'".$title_size_s27."',".$r['order_s_s27'].",".$r['old_order_s_s27'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s27."','".$color_code."', '".$r['order_s_s27']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s28']>0)
 				{
@@ -770,7 +770,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s28_id,'".$title_size_s28."',".$r['order_s_s28'].",".$r['old_order_s_s28'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s28."','".$color_code."', '".$r['order_s_s28']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s29']>0)
 				{
@@ -778,7 +778,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s29_id,'".$title_size_s29."',".$r['order_s_s29'].",".$r['old_order_s_s29'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s29."','".$color_code."', '".$r['order_s_s29']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s30']>0)
 				{
@@ -786,7 +786,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s30_id,'".$title_size_s30."',".$r['order_s_s30'].",".$r['old_order_s_s30'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s30."','".$color_code."', '".$r['order_s_s30']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s31']>0)
 				{
@@ -794,7 +794,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s31_id,'".$title_size_s31."',".$r['order_s_s31'].",".$r['old_order_s_s31'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s31."','".$color_code."', '".$r['order_s_s31']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s32']>0)
 				{
@@ -802,7 +802,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s32_id,'".$title_size_s32."',".$r['order_s_s32'].",".$r['old_order_s_s32'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s32."','".$color_code."', '".$r['order_s_s32']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s33']>0)
 				{
@@ -810,7 +810,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s33_id,'".$title_size_s33."',".$r['order_s_s33'].",".$r['old_order_s_s33'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s33."','".$color_code."', '".$r['order_s_s33']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s34']>0)
 				{
@@ -818,7 +818,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s34_id,'".$title_size_s34."',".$r['order_s_s34'].",".$r['old_order_s_s34'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s34."','".$color_code."', '".$r['order_s_s34']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s35']>0)
 				{
@@ -826,7 +826,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s35_id,'".$title_size_s35."',".$r['order_s_s35'].",".$r['old_order_s_s35'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s35."','".$color_code."', '".$r['order_s_s35']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s36']>0)
 				{
@@ -834,7 +834,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s36_id,'".$title_size_s36."',".$r['order_s_s36'].",".$r['old_order_s_s36'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s36."','".$color_code."', '".$r['order_s_s36']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s37']>0)
 				{
@@ -842,7 +842,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s37_id,'".$title_size_s37."',".$r['order_s_s37'].",".$r['old_order_s_s37'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s37."','".$color_code."', '".$r['order_s_s37']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s38']>0)
 				{
@@ -850,7 +850,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s38_id,'".$title_size_s38."',".$r['order_s_s38'].",".$r['old_order_s_s38'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s38."','".$color_code."', '".$r['order_s_s38']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s39']>0)
 				{
@@ -858,7 +858,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s39_id,'".$title_size_s39."',".$r['order_s_s39'].",".$r['old_order_s_s39'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s39."','".$color_code."', '".$r['order_s_s39']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s40']>0)
 				{
@@ -866,7 +866,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s40_id,'".$title_size_s40."',".$r['order_s_s40'].",".$r['old_order_s_s40'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s40."','".$color_code."', '".$r['order_s_s40']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s41']>0)
 				{
@@ -874,7 +874,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s41_id,'".$title_size_s41."',".$r['order_s_s41'].",".$r['old_order_s_s41'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s41."','".$color_code."', '".$r['order_s_s41']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s42']>0)
 				{
@@ -882,7 +882,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s42_id,'".$title_size_s42."',".$r['order_s_s42'].",".$r['old_order_s_s42'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s42."','".$color_code."', '".$r['order_s_s42']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s43']>0)
 				{
@@ -890,7 +890,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s43_id,'".$title_size_s43."',".$r['order_s_s43'].",".$r['old_order_s_s43'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s43."','".$color_code."', '".$r['order_s_s43']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s44']>0)
 				{
@@ -898,7 +898,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s44_id,'".$title_size_s44."',".$r['order_s_s44'].",".$r['old_order_s_s44'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s44."','".$color_code."', '".$r['order_s_s44']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s45']>0)
 				{
@@ -906,7 +906,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s45_id,'".$title_size_s45."',".$r['order_s_s45'].",".$r['old_order_s_s45'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s45."','".$color_code."', '".$r['order_s_s45']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s46']>0)
 				{
@@ -914,7 +914,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s46_id,'".$title_size_s46."',".$r['order_s_s46'].",".$r['old_order_s_s46'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s46."','".$color_code."', '".$r['order_s_s46']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s47']>0)
 				{
@@ -922,7 +922,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s47_id,'".$title_size_s47."',".$r['order_s_s47'].",".$r['old_order_s_s47'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s47."','".$color_code."', '".$r['order_s_s47']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s48']>0)
 				{
@@ -930,7 +930,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s48_id,'".$title_size_s48."',".$r['order_s_s48'].",".$r['old_order_s_s48'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s48."','".$color_code."', '".$r['order_s_s48']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s49']>0)
 				{
@@ -938,7 +938,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s49_id,'".$title_size_s49."',".$r['order_s_s49'].",".$r['old_order_s_s49'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s49."','".$color_code."', '".$r['order_s_s49']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			if($r['order_s_s50']>0)
 				{
@@ -946,7 +946,7 @@ bai_orders_db_confirm.bts_status
 				 $insertSizesQuery="INSERT INTO `$brandix_bts`.`tbl_orders_sizes_master`(`parent_id`, `ref_size_name`, `size_title`, `order_quantity`, `order_act_quantity`,order_col_des) VALUES ($order_id,$s50_id,'".$title_size_s50."',".$r['order_s_s50'].",".$r['old_order_s_s50'].",'".$color_code."')";
 				 $result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 $sql11="insert ignore into `bai3_finishing`.`order_db` (`style_no`, `schedule_no`, `size_code`, `color`, `order_qty`, `output`, `c_block`, `ex_date`) values ('".$style_code."', '".$product_schedule."', '".$title_size_s50."','".$color_code."', '".$r['order_s_s50']."', '0', '".$c_block."', '".$r['order_date']."')";
-				 //$result11=mysql_query($sql11,$link) or ("Sql error".mysql_error());
+				 //$result11=mysqli_query($sql11,$link) or ("Sql error".mysqli_error());
 				}
 			}
 			//get Lay plan data from plandoc_stat_log table and insert it into tbl_cut_master and tbl_cut_size_master

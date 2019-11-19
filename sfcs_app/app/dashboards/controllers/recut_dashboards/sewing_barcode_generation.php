@@ -56,7 +56,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
         if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
         {   
             $select_check_three="select input_job_no_random_ref from $bai_pro3.`plan_dashboard_input` where input_job_no_random_ref='$input_job_no_random_ref'";
-            $result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+            $result_insert_three=mysqli_query($select_check_three,$link) or ("Sql error".mysqli_error());
             $check_result_three=mysqli_num_rows($result_insert_three);
             if($check_result_three==0)
             {
