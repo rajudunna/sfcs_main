@@ -11,7 +11,7 @@ $sql_res=mysqli_query($link, $sql) or exit("Sql Errora $sql11".mysqli_error($GLO
 $count=mysqli_num_rows($sql_res);
 if($count == 0){
 	$select_check_ignore="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift' and start_time='$shift_start_time' and end_time='$shift_end_time'";
-		$result_insert_check=mysql_query($select_check_ignore,$link) or ("Sql error".mysql_error());
+		$result_insert_check=mysqli_query($select_check_ignore,$link) or exit("Sql Errora $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		$check_result=mysqli_num_rows($result_insert_check);
 		if($check_result==0)

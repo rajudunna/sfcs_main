@@ -436,8 +436,7 @@ return false;
 									{
 
 										$select_check_one="select product_style from $brandix_bts.`tbl_orders_style_ref` where product_style='$style_code'";
-										$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
-
+										$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$check_result_one=mysqli_num_rows($result_insert_one);
 										if($check_result_one==0)
 										{
@@ -508,7 +507,7 @@ return false;
 											$cuttable_ref=$l['cuttable_ref'];
 											//Insert data into layplan(tbl_cut_master) table
 											$select_check_sec="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-											$result_insert_sec=mysql_query($select_check_sec,$link) or ("Sql error".mysql_error());
+											$result_insert_sec=mysqli_query($select_check_sec,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 											$check_result_sec=mysqli_num_rows($result_insert_sec);
 											if($check_result_sec==0)

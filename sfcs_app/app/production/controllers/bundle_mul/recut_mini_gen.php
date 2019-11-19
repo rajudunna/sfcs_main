@@ -353,7 +353,7 @@ if($status == '')
 
 		
 		$select_check_ignore="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
-		$result_insert_check=mysql_query($select_check_ignore,$link) or ("Sql error".mysql_error());
+		$result_insert_check=mysqli_query($select_check_ignore,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		$check_result=mysqli_num_rows($result_insert_check);
 		if($check_result==0)

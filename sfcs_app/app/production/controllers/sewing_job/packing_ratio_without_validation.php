@@ -707,7 +707,7 @@
 					}
 				}
 				$select_check_one="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
-				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+				$result_insert_one=mysqli_query($select_check_one,$link) or  exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$check_result_one=mysqli_num_rows($result_insert_one);
 				if($check_result_one==0)
@@ -740,7 +740,7 @@
 							}
 
 							$select_check_second="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart[$j] and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
-							$result_insert_second=mysql_query($select_check_second,$link) or ("Sql error".mysql_error());
+							$result_insert_second=mysqli_query($select_check_second,$link) or  exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 							$check_result_second=mysqli_num_rows($result_insert_second);
 							if($check_result_second==0)
@@ -783,7 +783,7 @@
 				// echo $tot;
 
 				$select_check_four="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
-				$result_insert_four=mysql_query($select_check_four,$link) or ("Sql error".mysql_error());
+				$result_insert_four=mysqli_query($select_check_four,$link) or  exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$check_result_four=mysqli_num_rows($result_insert_four);
 				if($check_result_four==0)
@@ -816,7 +816,7 @@
 							}
 
 							$select_check_fifth="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
-							$result_insert_fifth=mysql_query($select_check_fifth,$link) or ("Sql error".mysql_error());
+							$result_insert_fifth=mysqli_query($select_check_fifth,$link) or  exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 							$check_result_fifth=mysqli_num_rows($result_insert_fifth);
 							if($check_result_fifth==0)

@@ -428,7 +428,7 @@ bai_pro3.bai_orders_db_confirm.bts_status
 			{
 
 				$select_check_one="select product_style from $brandix_bts.tbl_orders_style_ref where product_style='$style_code'";
-				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+				$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$check_result_one=mysqli_num_rows($result_insert_one);
 				if($check_result_one==0)
