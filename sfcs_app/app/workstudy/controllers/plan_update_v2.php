@@ -274,7 +274,7 @@ function auto_cal_clh(){
 							if($date_sub==date('Y-m-d'))
 							{			
 								$select_check_two="select plan_tag from $bai_pro.`pro_plan_today` where plan_tag='$plan_tag'";
-								$result_insert_two=mysql_query($select_check_two,$link) or ("Sql error".mysql_error());
+								$result_insert_two=mysqli_query($select_check_two,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$check_result_two=mysqli_num_rows($result_insert_two);
 								if($check_result_two==0)
 								{
@@ -299,7 +299,7 @@ function auto_cal_clh(){
 								// var_dump($eff);
 								// echo $module[$i].$shifts_array[$x]."<br/>";
 								$select_check_three="select plan_tag from $bai_pro.`pro_plan` where plan_tag='$plan_tag'";
-								$result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+								$result_insert_three=mysqli_query($select_check_three,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$check_result_three=mysqli_num_rows($result_insert_three);
 								if($check_result_three==0)
 								{

@@ -404,7 +404,7 @@ if(isset($_POST['Update']))
 		if($samp_input[$i]>0)
 		{
 			$select_check_one="select order_tid from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' and size='$sizes[$i]'";
-			$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+			$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error198".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 			$check_result_one=mysqli_num_rows($result_insert_one);
 			if($check_result_one==0)
