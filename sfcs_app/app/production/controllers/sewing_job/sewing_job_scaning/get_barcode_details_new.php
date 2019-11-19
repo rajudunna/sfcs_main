@@ -2,13 +2,49 @@
     error_reporting(0);
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     include 'functions_scanning_ij.php';
+
     $barcode = $_POST['barcode'];
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
 	$user_permission = $_POST['auth'];
-    $b_shift = $shift;	
+	$has_permission = $_POST['has_permission'];
+    $b_shift = $shift;
+    
+   
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
+    $op_no = explode('-', $barcode)[1];
+
+    //auth
+    $good_report = 0;
+
+    if($op_no != '') {
+        $access_report = $op_no.'-G';
+
+        $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
+        $result = $link->query($access_qry);
+        
+	    if($result->num_rows > 0){
+            if (in_array($$access_report,$has_permission))
+            {
+                $good_report = 0;
+            }
+            else
+            {
+                // good cant be report as it opcode-Good is assigned in user permission for this screen
+                $good_report = 1;
+            }
+           
+        } else {
+            $good_report = 0;
+        }
+    } else {
+        $good_report = 0;
+    }
+
+
+   
+    
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
     WHERE barcode_number = $barcode_number";
@@ -57,7 +93,6 @@
     }
     
     //ends on #978
-    $op_no = explode('-', $barcode)[1];
     $emb_cut_check_flag = 0;
     $msg = 'Scanned Successfully';
 
@@ -81,7 +116,12 @@
         $stri = "0,$bundle_no,$op_no,wout_keystroke,0";
         $ret = validating_with_module($stri);
         // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
-        if($short_ship_status==1){
+        if($good_report == 1) {
+            $result_array['status'] = 'You are Not Authorized to report Bundle';
+            echo json_encode($result_array);
+            die();
+        }
+        else if($short_ship_status==1){
              $result_array['status'] = 'Short Shipment Done Temporarly';
             echo json_encode($result_array);
             die();
