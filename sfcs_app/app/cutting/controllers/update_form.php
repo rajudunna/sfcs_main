@@ -317,7 +317,7 @@ if($_GET["lots"] > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ($lots_no) order by shrinkage_group*1,ref3*1,ref4*1";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ($lots_no) order by shrinkage_group*1,ref3*1,ref4*1,lot_no*1";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
