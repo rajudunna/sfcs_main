@@ -82,11 +82,10 @@ $whoops->register();
         echo "<div class='col-sm-12'>
                     <h1 class='text-primary text-center'>Welcome to SFCS</h1>
                     <h1 class='text-center text-danger bg-info'><img src='images/favicon.ico' alt='Logo' height='40' width='40'> Brandix </h1>
-                    <img style='width:60%;margin:5px 240px' src='images/brandix sew.jpg'/>
+                    <img style='width:80%;margin:5px 10%' src='images/brandix sew.jpg'/>
                     <h1 class='text-center bg-primary'><img src='images/logo-schemax.png' alt='Schemax'> 
                     </h1>
                     
-                
             </div>";
     }
 ?>
@@ -127,17 +126,3 @@ $('[data-toggle="datepicker"]').datepicker(
     
 });*/
 </script>
-
-
-
-<style>
-.nav-sm .container.body .col-md-3.left_col {
-    min-height: 100%;
-    width: 230px;
-    padding: 0;
-    position: absolute;
-    display: flex !imporatnt;
-    z-index: 1;
-}
-    </style>
-
