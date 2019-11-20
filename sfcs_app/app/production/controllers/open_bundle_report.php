@@ -207,7 +207,7 @@ function check_val()
                                                 $bundle_nums=implode(',',$operation_bundles);
 												if(sizeof($operation_bundles)>0)
                                                 {
-                                                    if(sizeof($bundle_qty_stats_bundle_nums)>0)
+                                                    if(sizeof($bundle_qty_stats_bundles)>0)
 													{
                                                         $selectSQL = "SELECT input_job_no,original_qty,bundle_number,size_title,color,recut_in,rejected_qty,recevied_qty,operation_id FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' AND operation_id IN ($opcodes) AND bundle_number IN ($bundle_qty_stats_bundle_nums) order by input_job_no*1,bundle_number";
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
