@@ -3,8 +3,9 @@
 <?php
 
 $html = '';
+$request = '';
 $tabledata = '';
-
+$serial_no = '';
 $sizes_reference="";
 $cuttable_sum=0;
 $style=$_GET['style'];
@@ -19,15 +20,120 @@ while($row_row_row = $res_qry_order_tid->fetch_assoc())
 {
     $order_tid = $row_row_row['order_tid'];
 }
+$sql_cat="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories)";
+$sql_result_cat=mysqli_query($link, $sql_cat) or exit("Sql Error555".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
+{
+    $cat_ref_id=$sql_row_cat['tid'];
+}
 $sql111="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$order_tid\"";	
 // echo $sql111;
 $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result111)>0){
+    $html1 .= "<div class='panel panel-primary'>
+    <div class='panel-heading'>Recut Layplan Request</div>
+    <div class='panel-body'>";
+  
 
-$html .= "<div class='panel panel-primary'>
+    $sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($sql_result)>0)
+    {
+        $sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";	
+        $ord_tbl_name="$bai_pro3.bai_orders_db_confirm";
+    }
+    else
+    {
+        $sql="select * from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";	
+        $ord_tbl_name="$bai_pro3.bai_orders_db";
+    }
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Error-0".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num_check=mysqli_num_rows($sql_result);
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        $tran_order_tid=$sql_row['order_tid'];
+        for($s=0;$s<sizeof($sizes_code);$s++)
+        {
+            if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+            {
+                $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
+            }	
+        }
+    }
+    // $sql="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where order_tid IN (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_del_no ='$schedule') and category in ($in_categories)";
+    // // echo $sql;
+    // $cats_ids=array();
+    // $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($sql_row=mysqli_fetch_array($sql_result))
+    // {
+    //     $cats_ids[]=$sql_row['tid'];
+    // }
+    // var_dump($cats_ids);
+    // foreach($cats_ids as $key=>$value)
+    // {
+        $sql="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$tran_order_tid\" and cat_id=$cat_ref_id order by tid";
+        $sql_result44=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $html1 .= "<table class=\"table table-bordered\">";
+        $html1 .= "<thead><tr><th class=\"column-title\" style='width:190px;'>Sizes</th>";
+        for($s=0;$s<sizeof($s_tit);$s++)
+        {
+            $html1 .= "<th class=\"column-title\">".$s_tit[$sizes_code[$s]]."</th>";
+        }
+        $html1 .= "<th class=\"title\">Total</th>";
+        $html1 .= "</tr></thead>";
+        $i=1;
+        // var_dump(mysqli_fetch_array($sql_result44)) ;
+        while($sql_row1_recut2=mysqli_fetch_array($sql_result44))
+        {
+            $o_total12=0;
+            for($s=0;$s<sizeof($sizes_code);$s++)
+            {
+                $s_ord12[$s]=$sql_row1_recut2["cuttable_s_s".$sizes_code[$s].""];
+                $o_total12 += $sql_row1_recut2["cuttable_s_s".$sizes_code[$s]];
+            }
+            $html1 .= "<tr ><th><button type='button'class='btn btn-success' onclick='layplan(".$sql_row1_recut2['serial_no'].")'>Request - $i</button></th>";
+            for($s=0;$s<sizeof($s_tit);$s++)
+            {
+                $html1 .= "<td class=\"sizes\">".$s_ord12[$s]."</td>";
+
+            }
+
+            $html1 .= "<td class=\"sizes\">".$o_total12."</td></tr>";
+            $i++;
+        }
+        $html1 .= "</table>";
+        // while($sql_row=mysqli_fetch_array($sql_result))
+        // {
+        //     $cat_id=$sql_row['cat_id'];
+        //     $cuttable_sum=0;
+
+        //     $sql2="select * from $bai_pro3.cat_stat_log where tid=$cat_id order by catyy DESC";
+        //     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        //     while($sql_row2=mysqli_fetch_array($sql_result2))
+        //     {
+        //         $category_new=$sql_row2['category'];
+        //         for($s=0;$s<sizeof($sizes_code);$s++)
+        //         {
+        //             $cuttable_sum += $sql_row["cuttable_s_s".$sizes_code[$s]];
+        //         }
+        //     }
+
+        //     $html1 .= "<tr>";
+        //     $html1 .= "<td class=\"  \" style='width:30px;'><center>".$category_new."</center></td>";
+        //     $html1 .= "<td class=\"  \" style='width:50px;'><center>".$cuttable_sum."</center></td>";
+        //     $html1 .= "<td style='width:50px;'></td>";
+        //     $html1 .= "</tr>";
+            
+
+        // }
+    // }
+    $html1 .= "</tbody></table>";
+    $html1 .="</div></div>";
+    echo $html1;
+$html .= "<div class='panel panel-primary' id='layplan1'>
 <div class='panel-heading'>Recut Layplan</div>
 <div class='panel-body'>";
-
+ echo "<input type='hidden' id='serial_no'>";
 $html .= "<div class='row'><div class='col-md-4'><b>Style :</b> ".$style."</div><div class='col-md-4'><b>Schedule :</b> ".$schedule."</div><div class='col-md-4'><b>Color :</b> ".$color."</div></div><br/>";
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -62,24 +168,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sizes_reference=rtrim($sizes_reference,",");
-$sql_cat="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and category in ($in_categories)";
-$sql_result_cat=mysqli_query($link, $sql_cat) or exit("Sql Error555".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row_cat=mysqli_fetch_array($sql_result_cat))
-{
-    $cat_ref_id=$sql_row_cat['tid'];
-}
+
 $o_total = 0;
 $sql1="select * from $ord_tbl_name where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql1) or exit("Sql Error55".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result))
 {
-    for($s=0;$s<sizeof($sizes_code);$s++)
-    {
-        if($sql_row1["title_size_s".$sizes_code[$s].""]<>'')
-        {
-            $s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
-        }	
-    }
+    // for($s=0;$s<sizeof($sizes_code);$s++)
+    // {
+    //     if($sql_row1["title_size_s".$sizes_code[$s].""]<>'')
+    //     {
+    //         $s_tit[$sizes_code[$s]]=$sql_row1["title_size_s".$sizes_code[$s].""];
+    //     }	
+    // }
     $sql1_recut="select sum(cuttable_s_s01) as \"s01\", sum(cuttable_s_s02) as \"s02\", sum(cuttable_s_s03) as \"s03\", sum(cuttable_s_s04) as \"s04\", sum(cuttable_s_s05) as \"s05\", sum(cuttable_s_s06) as \"s06\", sum(cuttable_s_s07) as \"s07\", sum(cuttable_s_s08) as \"s08\", sum(cuttable_s_s09) as \"s09\", sum(cuttable_s_s10) as \"s10\", sum(cuttable_s_s11) as \"s11\", sum(cuttable_s_s12) as \"s12\", sum(cuttable_s_s13) as \"s13\", sum(cuttable_s_s14) as \"s14\", sum(cuttable_s_s15) as \"s15\", sum(cuttable_s_s16) as \"s16\", sum(cuttable_s_s17) as \"s17\", sum(cuttable_s_s18) as \"s18\", sum(cuttable_s_s19) as \"s19\", sum(cuttable_s_s20) as \"s20\", sum(cuttable_s_s21) as \"s21\", sum(cuttable_s_s22) as \"s22\", sum(cuttable_s_s23) as \"s23\", sum(cuttable_s_s24) as \"s24\", sum(cuttable_s_s25) as \"s25\", sum(cuttable_s_s26) as \"s26\", sum(cuttable_s_s27) as \"s27\", sum(cuttable_s_s28) as \"s28\", sum(cuttable_s_s29) as \"s29\", sum(cuttable_s_s30) as \"s30\", sum(cuttable_s_s31) as \"s31\", sum(cuttable_s_s32) as \"s32\", sum(cuttable_s_s33) as \"s33\", sum(cuttable_s_s34) as \"s34\", sum(cuttable_s_s35) as \"s35\", sum(cuttable_s_s36) as \"s36\", sum(cuttable_s_s37) as \"s37\", sum(cuttable_s_s38) as \"s38\", sum(cuttable_s_s39) as \"s39\", sum(cuttable_s_s40) as \"s40\", sum(cuttable_s_s41) as \"s41\", sum(cuttable_s_s42) as \"s42\", sum(cuttable_s_s43) as \"s43\", sum(cuttable_s_s44) as \"s44\", sum(cuttable_s_s45) as \"s45\", sum(cuttable_s_s46) as \"s46\", sum(cuttable_s_s47) as \"s47\", sum(cuttable_s_s48) as \"s48\", sum(cuttable_s_s49) as \"s49\", sum(cuttable_s_s50) as \"s50\"  from $bai_pro3.cuttable_stat_log_recut  where order_tid=\"$tran_order_tid\" and cat_id=$cat_ref_id group by cat_id";
    
     $sql1_res_recut=mysqli_query($link, $sql1_recut) or exit("Sql Error255".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -706,6 +807,13 @@ echo $html;
 ?>
 <script>
 
+$(document).ready(function() 
+{
+    $('#layplan').hide();
+});
+function layplan(id) {
+    var request = $('#serial_no').val(id);
+}
 function popup(Site)
 {
 	window.open(Site,'PopupName','toolbar=no,statusbar=yes,menubar=yes,location=no,scrollbars=yes,resizable=yes,width=775,height=700');
