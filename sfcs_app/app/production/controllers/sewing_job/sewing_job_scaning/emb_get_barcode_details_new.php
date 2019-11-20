@@ -854,11 +854,11 @@ if($check_qry_result->num_rows > 0)
 						}
 						
 						//update cps_log
-						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$diffqty+$rejctedqty where doc_no = '".$docno."' and size_title='". $sizes."' AND operation_code = $b_op_id";
+						$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash-$rejctedqty where doc_no = '".$docno."' and size_title='". $sizes."' AND operation_code = $b_op_id";
 						// echo $update_qry_cps_log;
 						$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 						
-						$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$diffqty+$rejctedqty where doc_no = '".$docno."' and size_title='". $sizes."' AND operation_code = $pre_ops_code";   
+						$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash where doc_no = '".$docno."' and size_title='". $sizes."' AND operation_code = $pre_ops_code";   
 						$update_cps_log_res = $link->query($update_pre_qty);
 						//update send qty to next operation if available
 						if($post_ops_code != null)
@@ -2205,10 +2205,10 @@ if($check_qry_result->num_rows > 0)
 
 																if($emb_cut_check_flag == 1)
 																{
-																	$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$embquantity+$rejctedqty where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
+																	$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash-$rejctedqty where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $b_op_id";
 																	$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 																	
-																	$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$embquantity+$rejctedqty where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";
+																	$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash where doc_no = '".$b_doc_num[$key]."' and size_title='". $b_sizes[$key]."' AND operation_code = $pre_ops_code";
 																	$update_cps_log_res = $link->query($update_pre_qty);
 																}
 															}
