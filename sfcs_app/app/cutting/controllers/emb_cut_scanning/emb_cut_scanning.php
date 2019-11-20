@@ -58,9 +58,9 @@
 	$access_reject = $operation_code.'-R';
 	$access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
 	$result = $link->query($access_qry);
-	var_dump($$access_report);
-	var_dump($$access_reject);
-	var_dump($has_permission);
+	// var_dump($$access_report);
+	// var_dump($$access_reject);
+	// var_dump($has_permission);
 
 	if($result->num_rows > 0){
 		if (in_array($$access_report,$has_permission))
