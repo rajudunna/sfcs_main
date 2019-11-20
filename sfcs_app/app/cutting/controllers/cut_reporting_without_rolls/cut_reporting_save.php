@@ -510,7 +510,6 @@ if($target == 'normal'){
 		}
 	}
 	
-    //$update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),act_cut_status='DONE',fabric_status=5 where doc_no = $doc_no ";
     $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
     if($insert_result){
         $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.2');
