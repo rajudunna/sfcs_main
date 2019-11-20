@@ -56,7 +56,7 @@
 	
 	$access_report = $operation_code.'-G';
 	$access_reject = $operation_code.'-R';
-	$access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' or permission_name = '$access_reject' and status='active'";
+	$access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
 	$result = $link->query($access_qry);
 	var_dump($$access_report);
 	var_dump($$access_reject);
