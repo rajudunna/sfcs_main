@@ -7,10 +7,9 @@
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
 	$user_permission = $_POST['auth'];
-	$has_permission = $_POST['has_permission'];
+	$has_permission = json_decode($_POST['has_permission'],true);
     $b_shift = $shift;
-    
-   
+
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
     $op_no = explode('-', $barcode)[1];
@@ -19,12 +18,15 @@
     $good_report = 0;
 
     if($op_no != '') {
-        $access_report = "$op_no.'-G'";
+        $access_report = $op_no.'-G';
 
         $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
+
+        // echo $access_qry;
         $result = $link->query($access_qry);
         
 	    if($result->num_rows > 0){
+    
             if (in_array($$access_report,$has_permission))
             {
                 $good_report = 0;
@@ -34,13 +36,13 @@
                 // good cant be report as it opcode-Good is assigned in user permission for this screen
                 $good_report = 1;
             }
-           
         } else {
             $good_report = 0;
         }
     } else {
         $good_report = 0;
     }
+  
 
 
    
