@@ -6,7 +6,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 
-$sql="select *,sum(quantity) as qty,group_concat(id) as ids from $bai_pro3.m3_transactions where response_status ='pending' and m3_bulk_tran_id IS NULL group by mo_no,api_type,workstation_id,op_code,reason";
+$sql="select *,sum(quantity) as qty,group_concat(id) as ids from $bai_pro3.m3_transactions where response_status ='pending' and m3_bulk_tran_id IS NULL group by mo_no,api_type,workstation_id,op_code,reason,remarks";
 $transaction_result=mysqli_query($link, $sql) or exit("m3_transactions ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))
 {

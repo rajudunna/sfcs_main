@@ -6,7 +6,8 @@ error_reporting(0);
 
 <?php
 	$include_path=getenv('config_job_path');
-	include($include_path.'\sfcs_app\common\config\config_jobs.php');	
+	include($include_path.'\sfcs_app\common\config\config_jobs.php');
+	include($include_path.'\sfcs_app\common\config\config_ajax.php');	
 	set_time_limit(90000);
 //Temp Pool
 
@@ -65,7 +66,7 @@ $end_date_w=date("Y-m-d",($end_date_w+(60*60*24*6)));
 <?php
 
 set_time_limit(90000);
-/* $table_ref="$bai_pro4.week_delivery_plan"; */
+$table_ref="$bai_pro4.week_delivery_plan";
 $table_ref2="$bai_pro3.bai_orders_db";
 $table_ref3="$bai_pro3.bai_orders_db_confirm";
 ?>
@@ -101,19 +102,27 @@ $schedule_db=array();
 // echo $sql."<br/>";
 //mysql_query($sql,$link) or exit("Sql Error2".mysql_error());
 
-
+$schedule_db[]=1;
 //To update Speed Deliveries
-$sql="select speed_schedule,COUNT(*) AS cnt from $bai_pro3.speed_del_dashboard";
+$sql="select distinct speed_schedule as speed_schedule from $bai_pro3.speed_del_dashboard where speed_schedule > 0";
+// echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-$rowcount=mysqli_num_rows($result);
+$rowcount=mysqli_num_rows($sql_result);
 //echo "Count =".count($rowcount);
-while($sql_row=mysqli_fetch_array($sql_result))
+if($rowcount > 0)
 {
-	$schedule_db[]=$sql_row['speed_schedule'];
+	while($sql_row=mysqli_fetch_array($sql_result))
+	{
+		if(!in_array($schedule_db,$sql_row['speed_schedule']))
+		{
+			$schedule_db[]=$sql_row['speed_schedule'];
+		}
+	}
 }
 
 $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,color from $bai_pro4.shipment_plan_ref where ship_tid in (select ship_tid from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\") order by schedule_no";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+//echo $sql."<br>";	
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		//$ssc_code=substr($sql_row['ssc_code'],0,-9);
@@ -160,13 +169,13 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 		}
 		$order=$size_xs1+$size_s1+$size_m1+$size_l1+$size_xl1+$size_xxl1+$size_xxxl1+$size_s061+$size_s081+$size_s101+$size_s121+$size_s141+$size_s161+$size_s181+$size_s201+$size_s221+$size_s241+$size_s261+$size_s281+$size_s301; */
 
-		/* $sql1="select original_order_qty,priority from $bai_pro4.week_delivery_plan where shipment_plan_id=".$ship_tid;
+		$sql1="select original_order_qty,priority from $bai_pro4.week_delivery_plan where shipment_plan_id=".$ship_tid;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$order=$sql_row1['original_order_qty'];
 			$priority_check=$sql_row1['priority'];
-		} */
+		} 
 		
 		//New to get 1% extra order qty 
 		$sql1="select (order_s_xs+order_s_s+order_s_m+order_s_l+order_s_xl+order_s_xxl+order_s_xxxl+order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as order_qty from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
@@ -265,6 +274,57 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 		$size48 = 0;
 		$size49 = 0;
 		$size50 = 0;
+		$size_s01=0;
+		$size_s02=0;
+		$size_s03=0;
+		$size_s04=0;
+		$size_s05=0;
+		$size_s06=0;
+		$size_s07=0;
+		$size_s08=0;
+		$size_s09=0;
+		$size_s10=0;
+		$size_s11=0;
+		$size_s12=0;
+		$size_s13=0;
+		$size_s14=0;
+		$size_s15=0;
+		$size_s16=0;
+		$size_s17=0;
+		$size_s18=0;
+		$size_s19=0;
+		$size_s20=0;
+		$size_s21=0;
+		$size_s22=0;
+		$size_s23=0;
+		$size_s24=0;
+		$size_s25=0;
+		$size_s26=0;
+		$size_s27=0;
+		$size_s28=0;
+		$size_s29=0;
+		$size_s30=0;
+		$size_s31=0;
+		$size_s32=0;
+		$size_s33=0;
+		$size_s34=0;
+		$size_s35=0;
+		$size_s36=0;
+		$size_s37=0;
+		$size_s38=0;
+		$size_s39=0;
+		$size_s40=0;
+		$size_s41=0;
+		$size_s42=0;
+		$size_s43=0;
+		$size_s44=0;
+		$size_s45=0;
+		$size_s46=0;
+		$size_s47=0;
+		$size_s48=0;
+		$size_s49=0;
+		$size_s50=0;
+
 
 		$qty_temp=0;
 
@@ -338,7 +398,7 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 			$qty=$sql_row2['qty'];
 			$qty_temp+=$sql_row2['qty'];
 			
-			/* $sql3="update $table_ref set actu_sec".$bac_sec."=$qty where shipment_plan_id=$ship_tid"; */
+			$sql3="update $table_ref set actu_sec".$bac_sec."=$qty where shipment_plan_id=$ship_tid"; 
 			//echo $sql3;
 			mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -569,10 +629,10 @@ $sql="select ord_qty_new as \"order\", ssc_code_new,ship_tid,schedule_no,style,c
 			$query_add=", act_in=$input_total";
 		}
 		
-	/* 	$sql3="update $table_ref set size_comp_xs='$size_xs', size_comp_s='$size_s', size_comp_m='$size_m', size_comp_l='$size_l', size_comp_xl='$size_xl', size_comp_xxl='$size_xxl', size_comp_xxxl='$size_xxxl', size_comp_s01='$size_s01', size_comp_s02='$size_s02', size_comp_s03='$size_s03', size_comp_s04='$size_s04', size_comp_s05='$size_s05', size_comp_s06='$size_s06', size_comp_s07='$size_s07', size_comp_s08='$size_s08', size_comp_s09='$size_s09', size_comp_s10='$size_s10', size_comp_s11='$size_s11', size_comp_s12='$size_s12', size_comp_s13='$size_s13', size_comp_s14='$size_s14', size_comp_s15='$size_s15', size_comp_s16='$size_s16', size_comp_s17='$size_s17', size_comp_s18='$size_s18', size_comp_s19='$size_s19', size_comp_s20='$size_s20', size_comp_s21='$size_s21', size_comp_s22='$size_s22', size_comp_s23='$size_s23', size_comp_s24='$size_s24', size_comp_s25='$size_s25', size_comp_s26='$size_s26', size_comp_s27='$size_s27', size_comp_s28='$size_s28', size_comp_s29='$size_s29', size_comp_s30='$size_s30', size_comp_s31='$size_s31', size_comp_s32='$size_s32', size_comp_s33='$size_s33', size_comp_s34='$size_s34', size_comp_s35='$size_s35', size_comp_s36='$size_s36', size_comp_s37='$size_s37', size_comp_s38='$size_s38', size_comp_s39='$size_s39', size_comp_s40='$size_s40', size_comp_s41='$size_s41', size_comp_s42='$size_s42', size_comp_s43='$size_s43', size_comp_s44='$size_s44', size_comp_s45='$size_s45', size_comp_s46='$size_s46', size_comp_s47='$size_s47', size_comp_s48='$size_s48', size_comp_s49='$size_s49', size_comp_s50='$size_s50', act_cut='$cut_total'".$query_add.", act_fca='$internal_audited', act_mca='$fcamca', act_fg='$fgqty', act_ship='$shipped', cart_pending='$pendingcarts', priority='$status' where shipment_plan_id=$ship_tid";
+	    $sql3="update $table_ref set size_comp_xs='$size_xs', size_comp_s='$size_s', size_comp_m='$size_m', size_comp_l='$size_l', size_comp_xl='$size_xl', size_comp_xxl='$size_xxl', size_comp_xxxl='$size_xxxl', size_comp_s01='$size_s01', size_comp_s02='$size_s02', size_comp_s03='$size_s03', size_comp_s04='$size_s04', size_comp_s05='$size_s05', size_comp_s06='$size_s06', size_comp_s07='$size_s07', size_comp_s08='$size_s08', size_comp_s09='$size_s09', size_comp_s10='$size_s10', size_comp_s11='$size_s11', size_comp_s12='$size_s12', size_comp_s13='$size_s13', size_comp_s14='$size_s14', size_comp_s15='$size_s15', size_comp_s16='$size_s16', size_comp_s17='$size_s17', size_comp_s18='$size_s18', size_comp_s19='$size_s19', size_comp_s20='$size_s20', size_comp_s21='$size_s21', size_comp_s22='$size_s22', size_comp_s23='$size_s23', size_comp_s24='$size_s24', size_comp_s25='$size_s25', size_comp_s26='$size_s26', size_comp_s27='$size_s27', size_comp_s28='$size_s28', size_comp_s29='$size_s29', size_comp_s30='$size_s30', size_comp_s31='$size_s31', size_comp_s32='$size_s32', size_comp_s33='$size_s33', size_comp_s34='$size_s34', size_comp_s35='$size_s35', size_comp_s36='$size_s36', size_comp_s37='$size_s37', size_comp_s38='$size_s38', size_comp_s39='$size_s39', size_comp_s40='$size_s40', size_comp_s41='$size_s41', size_comp_s42='$size_s42', size_comp_s43='$size_s43', size_comp_s44='$size_s44', size_comp_s45='$size_s45', size_comp_s46='$size_s46', size_comp_s47='$size_s47', size_comp_s48='$size_s48', size_comp_s49='$size_s49', size_comp_s50='$size_s50', act_cut='$cut_total'".$query_add.", act_fca='$internal_audited', act_mca='$fcamca', act_fg='$fgqty', act_ship='$shipped', cart_pending='$pendingcarts', priority='$status' where shipment_plan_id=$ship_tid";
 		// echo $sql3."-A<br/>";
 		mysqli_query($link, $sql3) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 */
+		
 		//TO Update Orders_db
 		$sql3="update $table_ref2 set act_cut=$cut_total ".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		// echo $sql3."-A<br/>";

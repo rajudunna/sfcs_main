@@ -113,7 +113,7 @@ if(isset($_POST['formSubmit']))
     WHERE doc_no = $docket_number_post AND category NOT IN ($in_categories);";
     if(mysqli_num_rows(mysqli_query($link,$check_docket_query)) > 0)
     {
-        $reverse_cut_qty= "UPDATE bai_pro3.plandoc_stat_log SET act_cut_status = '' ,a_plies=p_plies WHERE doc_no = $docket_number_post";
+        $reverse_cut_qty= "UPDATE bai_pro3.plandoc_stat_log SET act_cut_status = '' ,a_plies=p_plies ,manual_flag = 0 WHERE doc_no = $docket_number_post";
         $reverse_cut_qty_result = mysqli_query($link,$reverse_cut_qty) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
         $url = '?r='.$_GET['r'];
         
@@ -139,7 +139,7 @@ if(isset($_POST['formSubmit']))
         }
     }
     $emb_check_flag = 0;
-    $category=['cutting','Send PF','Receive PF','sewing'];
+    $category=['cutting','Send PF','Receive PF'];
     $checking_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = $pre_ops_code";
     // echo $checking_qry.'<br/>';
     $result_checking_qry = $link->query($checking_qry);
@@ -158,6 +158,7 @@ if(isset($_POST['formSubmit']))
         while($row = $get_docket_details_qry_result->fetch_assoc()) 
         {
             // echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
+            $manual_flag = $row['manual_flag'];
             $does_docket_exists_flag= 1;
             if($row['a_plies'] >= $plies_post) {
                 for ($i=0; $i < sizeof($sizes_array); $i++)
@@ -227,8 +228,12 @@ if(isset($_POST['formSubmit']))
                         $bcd_id = $row_result_selecting_qry['id'];
                         $ref_no = $row_result_selecting_qry['bundle_number'];
                         $update_qry_bcd = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty-$value where id = $bcd_id";
+                        $neg_value = 0;
+                        $neg_value = $neg_value - $value;
                         // echo $update_qry_bcd.'<br/>';
                         $update_qry_bcd_result = mysqli_query($link,$update_qry_bcd) or exit(" Error48".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                        $bulk_insert_temp = "INSERT INTO brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`scanned_user`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) SELECT style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,$neg_value,rejected_qty,left_over,operation_id,docket_number, scanned_date, cut_number, input_job_no,'$username',input_job_no_random_ref, shift, assigned_module, remarks FROM brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '15' AND size_id='$key' ";
+                        $bulk_insert_temp_result = mysqli_query($link,$bulk_insert_temp) or exit(" Error488".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         $update_plan_doc_stat_flag = 1;
                     }
                     if($emb_check_flag == 1)
@@ -244,9 +249,10 @@ if(isset($_POST['formSubmit']))
                             $update_qry_bcd_pre_result = mysqli_query($link,$update_qry_bcd_pre) or exit(" Error46".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         }
                     }
-                    $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal')";
+                    $remarks = $username."-".$manual_flag;
+                    $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status,remarks)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal','$remarks')";
                     // echo $docket_log.'<br/>';
-                    $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".$docket_log."-".mysqli_error ($GLOBALS["___mysqli_ston"]));
                     $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$op_code);
                 }
                 if($update_plan_doc_stat_flag==1){
@@ -256,7 +262,7 @@ if(isset($_POST['formSubmit']))
                         $a_plies_old = $sql_row['a_plies'];
                         $p_plies_old = $sql_row['p_plies'];
                         if($a_plies_old==$plies_post) {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='',manual_flag = 0 WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error41".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             $url = '?r='.$_GET['r'];
@@ -299,7 +305,7 @@ if(isset($_POST['formSubmit']))
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
                         }
                         else {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE',manual_flag = 0 WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error42".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             $url = '?r='.$_GET['r'];

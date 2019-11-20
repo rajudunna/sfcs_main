@@ -24,3 +24,4 @@ configuration/API/saved_fields/
 configuration/API/saved_fields/fields.json
 /sfcs_app/app/dashboards/controllers/cps/book/Book3_print.php
 sfcs_app/app/dashboards/controllers/cps/book/Book3_print.php
+/sfcs_app/app/m3_log_files/*
