@@ -37,10 +37,15 @@ if($check_club>0)
 	$rows1=mysqli_num_rows($sql_result12);
 	if($rows==0 && $rows1==0)	
 	{
-		$sql="insert ignore into $brandix_bts.tbl_miniorder_data_deleted select * from brandix_bts.tbl_miniorder_data where docket_numnber in ('".implode(",",$doc_no)."')";
-		//echo $sql."<br>";
-		$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+
+		$sql22="select * from $brandix_bts.tbl_miniorder_data_deleted where docket_numnber in ('".implode(",",$doc_no)."')";
+		$sql22_result43=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql22_result43)==0)
+		{
+			$sql="insert  into $brandix_bts.tbl_miniorder_data_deleted select * from brandix_bts.tbl_miniorder_data where docket_numnber in ('".implode(",",$doc_no)."')";
+			//echo $sql."<br>";
+			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
 		$sql11="select count(*) from $brandix_bts.tbl_miniorder_data where docket_numnber in ('".implode(",",$doc_no)."')";
 		$result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result11)>0)
@@ -75,12 +80,17 @@ else
 	$rows=mysqli_num_rows($sql_result11);
 	if($rows==0)
 	{
-		$sql="insert ignore into $brandix_bts.tbl_miniorder_data_deleted select * from brandix_bts.tbl_miniorder_data where mini_ordeR_ref='".$mini_order_ref."'";
-		//echo $sql."<br>";
-		$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		$sql11="select count(*) from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
-		$result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+		$sql223="select * from $brandix_bts.tbl_miniorder_data_deleted where mini_order_ref='".$mini_order_ref."'";
+		$sql223_result43=mysqli_query($link, $sql223) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql223_result43)==0)
+		{
+			$sql="insert  into $brandix_bts.tbl_miniorder_data_deleted select * from brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
+			//echo $sql."<br>";
+			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
+			$sql11="select count(*) from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."'";
+			$result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result11)>0)
 		{
 			$sql1="delete from $brandix_bts_uat.view_set_snap_1_tbl where tbl_miniorder_data_bundle_number in (select bundle_number from brandix_bts.tbl_miniorder_data where mini_order_ref='".$mini_order_ref."')";

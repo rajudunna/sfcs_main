@@ -12,17 +12,28 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$lot_no=$sql_row['lot_no'];
 	$check1=0;
 	$check2=0;
+
+	$sql2="select * from $bai_rm_pj1.store_in_backup where lot_no=\"$lot_no\""; 
+	$sql2_result=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql2_result)==0)
 	
-	$sql1="insert ignore into $bai_rm_pj1.store_in_backup select * from bai_rm_pj1.store_in where lot_no=\"$lot_no\"";
-	// echo $sql1."<br/>";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	{
+		$sql1="insert  into $bai_rm_pj1.store_in_backup select * from bai_rm_pj1.store_in where lot_no=\"$lot_no\"";
+		// echo $sql1."<br/>";
+		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 	if(mysqli_affected_rows($link)>0) {
 		$check1=1;
 
 	}
 	
-	$sql1="insert ignore into $bai_rm_pj1.store_out_backup select * from bai_rm_pj1.store_out where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=\"$lot_no\")";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql3="select * from $bai_rm_pj1.store_out_backup where lot_no=\"$lot_no\"";
+	$sql3_result=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql3_result)==0)
+	{
+		$sql1="insert  into $bai_rm_pj1.store_out_backup select * from bai_rm_pj1.store_out where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=\"$lot_no\")";
+		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 	if(mysqli_affected_rows($link)>0){
 		$check2=1;
 	}

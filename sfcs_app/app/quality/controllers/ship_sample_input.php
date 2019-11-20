@@ -403,10 +403,16 @@ if(isset($_POST['Update']))
 		$sizes_data .= $sizes[$i]." : ".$samp_input[$i].":".$sizes_ref[$i]."<br/>";		
 		if($samp_input[$i]>0)
 		{
-			$sql="insert ignore into $bai_pro3.sp_sample_order_db(order_tid,size,remarks,sizes_ref) values('$order_tid','".$sizes[$i]."','SAMPLE','".$sizes_ref[$i]."')";
-			// echo $sql;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+			$select_check_one="select order_tid from $bai_pro3.sp_sample_order_db where order_tid='$order_tid' and size='$sizes[$i]'";
+			$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error198".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+			$check_result_one=mysqli_num_rows($result_insert_one);
+			if($check_result_one==0)
+			{
+				$sql="insert into $bai_pro3.sp_sample_order_db(order_tid,size,remarks,sizes_ref) values('$order_tid','".$sizes[$i]."','SAMPLE','".$sizes_ref[$i]."')";
+				// echo $sql;
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 			$sql1="update $bai_pro3.sp_sample_order_db set input_qty='$samp_input[$i]',user='$username',log_time='".date("Y-m-d H:i:s")."' where order_tid='$order_tid' and size='".$sizes[$i]."' and remarks='SAMPLE' and sizes_ref='".$sizes_ref[$i]."'";
 			$sql_result=mysqli_query($link, $sql1) or exit("$sql1 Sql Error $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//$flag=1;

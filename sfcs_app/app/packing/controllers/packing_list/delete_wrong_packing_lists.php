@@ -132,9 +132,14 @@
 			
 			if(($total_order_qtys!=$tot_carton_qty or $total_order_qtys==$tot_carton_qty) and $tot_carton_qty!=0 and $done_count==0)
 			{
-				$sql="insert ignore into $bai_pro3.pac_stat_log_deleted select * from $bai_pro3.pac_stat_log where tid in (".implode(",",$tid_db).")";
-				mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
-				
+
+				$sql1="select * from $bai_pro3.pac_stat_log_deleted  where tid in (".implode(",",$tid_db).")";
+				$sql1_result=mysqli_query($link,$sql1) or exit("Sql Error23".mysqli_error());
+				if(mysqli_num_rows($sql1_result)==0)
+				{
+					$sql="insert  into $bai_pro3.pac_stat_log_deleted select * from $bai_pro3.pac_stat_log where tid in (".implode(",",$tid_db).")";
+					mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
+			    }
 				$sql="delete from $bai_pro3.pac_stat_log where tid in (".implode(",",$tid_db).")";
 				mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 				

@@ -165,7 +165,7 @@ $userName = getrbac_user()['uname'];
                 }				
                 $sql123="select doc_no from  $bai_pro3.plan_dashboard where doc_no='".$org_doc_no."' ";
                 $sql123_result=mysqli_query($link, $sql123) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql11_result)==0)
+                if(mysqli_num_rows($sql123_result)==0)
                 {
                     $sqlx="insert  into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
                     ///echo $sqlx.";<br>";

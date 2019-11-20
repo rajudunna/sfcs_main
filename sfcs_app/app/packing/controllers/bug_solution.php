@@ -65,15 +65,19 @@ echo '<form name="input" method="post" action="'.getFullURL($_GET['r'],'bug_solu
 if(isset($_POST['submit']))
 {
 	$schedule=$_POST['schedule'];
-	
-	$sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_del_no=$schedule";
-	//echo $sql;
+
+	$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'"; 
+	$sql2_result=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql2_result)==0)
+	{
+		$sql="insert  into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
+		//echo $sql;
+		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no='$schedule'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="update $bai_pro3.bai_orders_db_confirm set carton_print_status=NULL where order_del_no=$schedule";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	$sql="select order_style_no, order_del_no from $bai_pro3.bai_orders_db_confirm where style_id=\"\" and order_del_no=$schedule";
+	$sql="select order_style_no, order_del_no from $bai_pro3.bai_orders_db_confirm where style_id=\"\" and order_del_no='$schedule'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))

@@ -706,9 +706,16 @@
 						}
 					}
 				}
-				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
-				$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
-				// echo $insert_carton_ref.'<br>';
+				$select_check_one="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
+				$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				$check_result_one=mysqli_num_rows($result_insert_one);
+				if($check_result_one==0)
+				{
+					$insert_carton_ref="insert into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
+					$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
+					// echo $insert_carton_ref.'<br>';
+				}
 
 				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$tot."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
@@ -732,10 +739,18 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
 
-							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
-						}
+							$select_check_second="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart[$j] and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
+							$result_insert_second=mysqli_query($select_check_second,$link) or ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+							$check_result_second=mysqli_num_rows($result_insert_second);
+							if($check_result_second==0)
+							{
+
+								$insert_tbl_carton_size_ref="insert into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart[$j]."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+							}
+					}
 					}
 				}
 				echo "<script>sweetAlert('Packing Ratio Saved Successfully','','success')</script>";
@@ -766,10 +781,18 @@
 					}
 				}
 				// echo $tot;
-				$insert_carton_ref="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
-				$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
-				// echo $insert_carton_ref.'<br>';
 
+				$select_check_four="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$schedule_original' and carton_tot_quantity='$tot' and ref_order_num='$schedule' and style_code='$style' and carton_method='$pack_method'";
+				$result_insert_four=mysqli_query($select_check_four,$link) or ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+				$check_result_four=mysqli_num_rows($result_insert_four);
+				if($check_result_four==0)
+				{
+
+					$insert_carton_ref="insert into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code,carton_method) values('".$schedule_original."','".$tot."','".$schedule."','".$style."','".$pack_method."')";
+					$insert_carton_ref_result=mysqli_query($link, $insert_carton_ref) or exit("Errror while saving parent details");
+					// echo $insert_carton_ref.'<br>';
+				}
 				$get_inserted_id = "select id from $brandix_bts.tbl_carton_ref where ref_order_num='".$schedule."' and style_code='".$style."' and carton_method='".$pack_method."' and carton_barcode='".$schedule_original."' and carton_tot_quantity='".$tot."' ";
 				$get_insert_id_result=mysqli_query($link, $get_inserted_id) or exit("Errror while selecting ID ");
 				// echo $get_inserted_id.'<br>';
@@ -792,9 +815,16 @@
 								$ref_size_name = $get_ref_size_deatils['ref_size_name'];
 							}
 
-							$insert_tbl_carton_size_ref="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
-							$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
-							// echo $insert_tbl_carton_size_ref.'<br>';
+							$select_check_fifth="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$ref_size_name' and quantity=$GarPerBag[$i][$j] and poly_bags_per_carton=$BagPerCart and garments_per_carton=$GarPerCart[$i][$j] and combo_no=$combo[$i] and size_title='$original_size[$j]'";
+							$result_insert_fifth=mysqli_query($select_check_fifth,$link) or ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+							$check_result_fifth=mysqli_num_rows($result_insert_fifth);
+							if($check_result_fifth==0)
+							{
+								$insert_tbl_carton_size_ref="insert into $brandix_bts.tbl_carton_size_ref (parent_id, color, ref_size_name, quantity, poly_bags_per_carton, garments_per_carton, combo_no, size_title) values('".$id."','".$color[$i]."','".$ref_size_name."','".$GarPerBag[$i][$j]."','".$BagPerCart."','".$GarPerCart[$i][$j]."','".$combo[$i]."','".$original_size[$j]."')";
+								$insert_tbl_carton_ref_result=mysqli_query($link, $insert_tbl_carton_size_ref) or exit("Error while saving child details");
+								// echo $insert_tbl_carton_size_ref.'<br>';
+							}
 						}
 					}
 				}

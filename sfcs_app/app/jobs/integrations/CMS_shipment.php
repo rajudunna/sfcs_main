@@ -126,12 +126,12 @@ function isNumber($c)
 					{
 						$buyer_id_new=$sql_row44['buyer_code'];
 					}
-					$sql14="select movex_style, style_id,buyer_id from $bai_pro2.movex_styles where movex_style='$style' and style_id='$style_id' and buyer_id='$buyer_id_new'";
+					$sql14="select movex_style,style_id,buyer_id from $bai_pro2.movex_styles where movex_style='$style' and style_id='$style_id' and buyer_id='$buyer_id_new'";
 					$sql14_result=mysqli_query($link, $sql14) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql14_result)==0)
 					{
-						$sql22="insert into $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
-						mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql22="insert into $bai_pro2.movex_styles (movex_style,style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
+						mysqli_query($link, $sql22) or exit("Sql Error22.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					$size_ref=0;	
 					$flag=0;

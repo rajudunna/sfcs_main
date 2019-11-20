@@ -585,7 +585,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			if($order_div_ref == "")
 			{				
-				$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module GROUP BY input_job_no_random_ref order by input_priority asc ";				
+				$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module='$module' GROUP BY input_job_no_random_ref order by input_priority asc ";				
 			}
 			else
 			{	
