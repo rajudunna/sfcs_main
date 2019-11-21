@@ -337,7 +337,7 @@ if(isset($_POST['submit']))
 							$check_result_one=mysqli_num_rows($result_insert_one);
 							if($check_result_one==0)
 							{
-								$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")"; 
+								$sql2="insert into $bai_pro.grand_rep(tid) values (\"$code\")"; 
 								mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							}
 							//New code to extract values from existing 
