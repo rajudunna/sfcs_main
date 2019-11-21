@@ -12,7 +12,8 @@ if(isset($_POST['Update']))
 	$cat_id = $_POST['cat_id'];
 	$total_cuttable_qty = $_POST['total_cuttable_qty'];
 	$check_id=$_POST['check_id'];
-
+	$serial_no=$_POST['serial_no'];
+	
 	//$cutnos=$_POST['cutnos'];
 	$cutnos=0;
 	$in_s01=$_POST['in_s01'];
@@ -100,13 +101,13 @@ if(isset($_POST['Update']))
 		
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
 				sweetAlert('Allocated Successfully','','success');	 
-				location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+				location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
 	}else{	
 		echo "<script type='text/javascript'>
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');
 			   setTimeout('Redirect()',0);
 			   function Redirect(){
-					location.href='".getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=$tran_order_tid&check_id=$check_id&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty';
+					location.href='".getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=$tran_order_tid&check_id=$check_id&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&serial_no=$serial_no';
 			   }
 			   </script>";
 

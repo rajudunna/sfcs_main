@@ -23,6 +23,7 @@ if(isset($_POST['update']))
 	$tran_order_tid=$_POST['tran_order_tid'];
 	$cuttable_ref=$_POST['cuttable_ref'];
 	$allocate_ref=$_POST['allocate_ref'];
+	$serial_no=$_POST['serial_no'];
 
 		$tran_order_tid=$_POST['tran_order_tid'];
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
@@ -95,7 +96,7 @@ if(isset($_POST['update']))
 						sweetAlert('Error','User Style ID was not available for this schedule, Please check with the Planning Team.','error');
 						setTimeout(\"Redirect()\",2000); 
 						function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; 
 						}
 					</script>";
 		}
@@ -104,7 +105,7 @@ if(isset($_POST['update']))
 				echo "<script type=\"text/javascript\"> 
 						sweetAlert('Error','Packing Method was not available for this schedule, Please update the Shipment Plan for this schedule.','error');
 						setTimeout(\"Redirect()\",2000); function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; 
 						}
 					</script>";
 		}
@@ -282,14 +283,14 @@ if(isset($_POST['update']))
 					}
 				}
 				 
-							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>
 					sweetAlert('Error','Marker Version is not available.','error');
 					setTimeout('Redirect()',2000);
 					function Redirect(){
-							location.href='".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid&cat_ref=$cat_ref&cuttable_ref=$cuttable_ref&allocate_ref=$allocate_ref';
+							location.href='".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid&cat_ref=$cat_ref&cuttable_ref=$cuttable_ref&allocate_ref=$allocate_ref&serial_no=$serial_no';
 					}                                     
 					</script>";	
 		}

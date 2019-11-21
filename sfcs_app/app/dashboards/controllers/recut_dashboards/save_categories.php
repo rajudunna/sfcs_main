@@ -129,17 +129,17 @@ if(mysqli_num_rows($sql_result)>0)
 if($ii >0 && $temp1==1){
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
     			sweetAlert('Copied Successfully','','success');	 
-   			 location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+   			 location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
 }else{
     if($total_allocated==0){
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('can\'t copy','','warning');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
     }
     else {
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('Already Allocated ','','error');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
     }
 }
                   
