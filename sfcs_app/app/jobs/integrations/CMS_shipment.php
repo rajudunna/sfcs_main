@@ -61,7 +61,7 @@ function isNumber($c)
 <?php
 	$sql39="truncate $bai_pro3.shipment_plan";
 	mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM bai_pro3.bai_orders_db_confirm) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+	$sql23="insert into $bai_pro3.shipment_plan (style_no, schedule_no, color, order_qty, exfact_date, cpo, buyer_div, size_code,packing_method,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination) SELECT TRIM(BOTH FROM Style_No), TRIM(BOTH FROM Schedule_No), TRIM(BOTH FROM Colour), Order_Qty, Ex_Factory, Customer_Order_No, Buyer_Division, Size, Packing_Method,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H,Destination FROM m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(order_style_no),TRIM(order_del_no),TRIM(order_col_des)) FROM $bai_pro3.bai_orders_db_confirm) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
 	echo $sql23."<br>";
 	$result23=mysqli_query($link, $sql23) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result23)
@@ -126,10 +126,17 @@ function isNumber($c)
 					{
 						$buyer_id_new=$sql_row44['buyer_code'];
 					}
-					
-					$sql22="insert ignore into $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
-					mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+
+					$sql1341="select order_tid from $bai_pro2.movex_styles where movex_style=\"".$style."\"";
+					$result1341=mysqli_query($link, $sql1341) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check12=mysqli_num_rows($result1341);
+					if($sql_num_check12==0)
+					{
+						$sql22="insert into $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
+						mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+					}
+
 					$size_ref=0;	
 					$flag=0;
 					$sql13="select order_tid from $bai_pro3.bai_orders_db where order_tid=\"".$ssc_code."\" and title_flag=0";
@@ -298,44 +305,47 @@ function isNumber($c)
 							$order_embl_h=$sql_row3['order_embl_h'];
 
 						}
-						// echo $ssc_code."-".$order_qty."<br>";	
-						// if($order_qty>=0)
+					
+						$sql1233="select  order_tid from $bai_pro3.bai_orders_db where order_tid=\"$ssc_code\"";
+						$sql_result_77=mysqli_query($link, $sql1233) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_num_check77=mysqli_num_rows($sql_result_77);
+						if($sql_num_check77==0)
 						{
-							$sql3="insert ignore into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
+							$sql3="insert into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
 							echo $sql3."<br><br>";
 
 							mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
-							$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
-							echo $sql3."<br><br>";
-							mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-							if($flag==1)
-							{	
-								$vpo='';
-								$customer_style='';
-								$vpo_query="select VPO_NO,Customer_Style_No from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
-								// echo $vpo_no."<br>";
-								$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row3=mysqli_fetch_array($vpo_result))
-								{		
-									$vpo=$sql_row3['VPO_NO'];
-									$customer_style=$sql_row3['Customer_Style_No'];
-								}
-								if($vpo!='')
-								{
-								
-									$sql32="update $bai_pro3.bai_orders_db set vpo=\"$vpo\" where order_tid=\"$ssc_code\" ";//vpo updating#2635
-									echo $sql32."<br><br>";
-									mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-								}
-
-								$sql31="update $bai_pro3.bai_orders_db set  packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
-								echo $sql31."<br><br>";
-								mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$size_ref=$size_ref+1;
-							}
 						}
-					
+
+						
+						$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
+						echo $sql3."<br><br>";
+						mysqli_query($link, $sql3) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if($flag==1)
+						{	
+							$vpo='';
+							$customer_style='';
+							$vpo_query="select VPO_NO,Customer_Style_No from $m3_inputs.order_details where GMT_Color=\"$color\" and Schedule=\"$sch_no\" and Style=\"$style\"";
+							// echo $vpo_no."<br>";
+							$vpo_result=mysqli_query($link, $vpo_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row3=mysqli_fetch_array($vpo_result))
+							{		
+								$vpo=$sql_row3['VPO_NO'];
+								$customer_style=$sql_row3['Customer_Style_No'];
+							}
+							if($vpo!='')
+							{
+							
+								$sql32="update $bai_pro3.bai_orders_db set vpo=\"$vpo\" where order_tid=\"$ssc_code\" ";//vpo updating#2635
+								echo $sql32."<br><br>";
+								mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+
+							$sql31="update $bai_pro3.bai_orders_db set  packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
+							echo $sql31."<br><br>";
+							mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$size_ref=$size_ref+1;
+						}
 					}
 				}
 				else
