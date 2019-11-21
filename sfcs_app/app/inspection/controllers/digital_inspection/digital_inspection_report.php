@@ -218,13 +218,16 @@
 	}
 		#populate_div {
 			position: absolute;
-			top: 176px;
-			right: 78px;
+		    top: 8%;
+    right: 7%;
+
 		}
 		.colunm-select{
 			visibility: hidden;
 		}
 		#output_div {
+			background-color:#f5ecec;
+			height:190px;
 			font-weight: 900;
 			font-size: 1.5rem;
 			line-height: 1.5;
@@ -235,10 +238,17 @@
 		#second_row_div{
 			position: relative;
 			left: 62px;
+			top: 13px;
 		}
 		#second_row_child_div
 		{
-		margin: 0 0 0 123px;
+			/* margin: 0 0 0 123px;  */
+			position: relative;
+   			left: 25%;
+			top:13px;
+		}
+		.custom-div-1{
+			
 		}
 		/* @media only screen and (min-width:1187px) {
 			{
@@ -267,11 +277,12 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			<div class="panel-heading" style="text-align: left;">Digital Inspection Report</div>
 			<div class="panel-body" id="hide_div">
 				<div class="row">
+					<div class="custom-div-1">
 					<div class="col-xs-6 col-sm-6 col-lg-6">
 						<div class="panel-body" style="background-color:#f5ecec">
 							<form class="form-horizontal form-label-left" method="post" name="input2">
 								<div class="form-group">
-									<label class="control-label col-md-3 col-sm-3 col-xs-12">
+									<label class="control-label col-md-3 col-sm-3 col-lg-3">
 										Enter PO NO<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
@@ -281,7 +292,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
 								<div class="form-group">
-									<label class="control-label col-md-3" for="last-name">
+									<label class="control-label col-md-3 col-sm-3 col-lg-3" for="last-name">
 										Enter Supplier Invoice<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
@@ -290,7 +301,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
 								<div class="form-group">
-									<label class="control-label col-md-3" for="last-name">
+									<label class="control-label col-md-3 col-sm-3 col-lg-3" for="last-name">
 										Enter Supplier Batch<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
@@ -299,7 +310,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 								</div>
 								<b class='text-center col-sm-10'>(OR)</b>
 								<div class="form-group">
-									<label class="control-label col-md-3" for="last-name">
+									<label class="control-label col-md-3 col-sm-3 col-lg-3" for="last-name">
 										Enter lot no<span class="required"></span>
 									</label>
 									<div class="col-md-4 col-sm-4 col-xs-12">
@@ -311,6 +322,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 								</div>
 							</form>
 						</div>
+					</div>
 					</div>
 					<?php
 
@@ -384,7 +396,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							?>
 							<div class="col-xs-6 col-sm-6 col-lg-6">
 							
-								<div class="panel-body" id="output_div" style="background-color:#f5ecec;height:167px;">
+								<div class="panel-body" id="output_div">
 									<div class="row">
 										<div class="col-sm-4" id="second_row_div">
 											<div class="panel panel-default">
@@ -625,3 +637,23 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 	}
 	?>
 	</div>
+<style>
+	 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+	{
+  #second_row_child_div{
+    position: absolute;
+    bottom:22px;
+    left: 55px;
+
+ }
+
+  #populate_div{
+    position: absolute;
+    top: 160px;
+    right: 40px;
+ }
+ #output_div{
+	height: 195px;
+ }
+}
+</style>
