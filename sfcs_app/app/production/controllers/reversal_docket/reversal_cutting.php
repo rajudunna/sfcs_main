@@ -20,6 +20,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
     while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
     {
         // $doc_array[$row['doc_no']] = $row['act_cut_status'];
+        $manual_flag = $row['manual_flag'];
         for ($i=0; $i < sizeof($sizes_array); $i++)
         { 
             if ($row['a_'.$sizes_array[$i]] > 0)
@@ -71,8 +72,8 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
             $seq_id = $row['id'];
             $ops_order = $row['operation_order'];
         }
-
-        $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status)values(".$doc_no_ref.",".$id_to_update.",".$ref_no.",'".$key."',".$value.",'Reversal')";
+        $remarks = $username."-".$manual_flag;
+        $reversal_docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,parent_bundle_creation_id,bundle_number,size_title,cutting_reversal,act_cut_status,remarks)values(".$doc_no_ref.",".$id_to_update.",".$ref_no.",'".$key."',".$value.",'Reversal','$remarks')";
         // echo $reversal_docket_log.'<br/>';
         $reversal_docket_log_qry = mysqli_query($link,$reversal_docket_log) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
 
@@ -92,7 +93,7 @@ if(mysqli_num_rows($qry_to_find_in_out_result) > 0)
         // echo '<br/>'.$ref_no.','.$value.','.$op_code.'<br/>';
         $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$op_code);  
     }
-    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post WHERE doc_no=$doc_no_ref";
+    $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,manual_flag = 0 WHERE doc_no=$doc_no_ref";
     // echo $update_plies_qry.'<br/>';
     $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error4".mysqli_error ($GLOBALS["___mysqli_ston"]));
 }
