@@ -62,6 +62,7 @@ $html1 .= "<div class='panel panel-primary'>
         $html1 .= "<th class=\"column-title\">".$s_tit[$sizes_code[$s]]."</th>";
     }
     $html1 .= "<th class=\"title\">Total</th>";
+    $html1 .= "<th class=\"title\">Status</th>";
     $html1 .= "</tr></thead>";
     $i=1;
     while($sql_row1_recut2=mysqli_fetch_array($sql_result44))
@@ -79,9 +80,20 @@ $html1 .= "<div class='panel panel-primary'>
             $html1 .= "<td class=\"sizes\">".$s_ord12[$s]."</td>";
         }
 
-        $html1 .= "<td class=\"sizes\">".$o_total12."</td></tr>";
+        $html1 .= "<td class=\"sizes\">".$o_total12."</td>";
+        $plndoc_qry = "select * from  `$bai_pro3`.`plandoc_stat_log` where cuttable_ref=".$sql_row1_recut2['tid'];
+        $plndoc_qry_res = mysqli_query($link,$plndoc_qry);
+        if(mysqli_num_rows($plndoc_qry_res)>0)
+        {
+            $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Generated</a></th>";
+        } else {
+            $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Not Generated</a></th>";
+
+        }
+        $html1 .= "</tr>";
         $i++;
     }
+    
     $html1 .= "</table>";
     $html1 .= "</tbody></table>";
     $html1 .="</div></div>";
