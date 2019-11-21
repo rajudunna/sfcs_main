@@ -753,7 +753,7 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 order by priority"; //KK223422
+													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 and remarks != 'Recut' order by priority"; //KK223422
 
 													// echo $sql1;
 													// die();
