@@ -218,8 +218,8 @@
 	}
 		#populate_div {
 			position: absolute;
-		    top: 8%;
-    right: 7%;
+		    top: 10%;
+    		right: 7%;
 
 		}
 		.colunm-select{
