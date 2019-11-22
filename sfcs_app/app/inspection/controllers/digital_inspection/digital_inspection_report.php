@@ -218,7 +218,7 @@
 	}
 		#populate_div {
 			position: absolute;
-		    top: 8%;
+		    top: 203px;
     		right: 7%;
 
 		}
