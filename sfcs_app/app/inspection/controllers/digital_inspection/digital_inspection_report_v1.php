@@ -260,10 +260,10 @@ if(isset($_GET['status'])>0){
 		display:none;
 	}
        
-		#populate_div {
+		.populate_div {
 			position: absolute;
-			top: 40%;
-   			right: 27%;
+    		top: 251px;
+    		right:294px;
 
 		}
 		.position_div{
@@ -273,12 +273,12 @@ if(isset($_GET['status'])>0){
 		.panel-heading{
 			background-color: #f4fdd0;
 		}
-		@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
-		#populate_div {
-    position: absolute;
-    top: 40%;
-    right: 23%;
-}
+		@media (min-device-width: 591px) and (max-device-width: 991px) {
+		.populate_div {
+  		  position: absolute;
+			top: 251px;
+   			 right: 20%
+	}
 }
 	</style>
 
@@ -402,7 +402,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						?>
 					</tbody>
 				</table>
-				<div class="button_pop col-sm-8 col-md-8 col-lg-8" id="populate_div">
+				<div class="button_pop col-sm-8 col-md-8 col-lg-8 populate_div" >
 					<?php
 					if($status==0)
 					{
