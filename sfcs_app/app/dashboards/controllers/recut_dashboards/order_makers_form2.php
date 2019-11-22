@@ -71,13 +71,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$color=$sql_row['order_col_des'];
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
+	$serial_no=$_GET['serial_no'];
 }
 ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Form</div>
 <div class="panel-body">
-<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
+<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process.php", "N"); ?>">
 <?php
 
@@ -85,11 +86,13 @@ $cat_ref=$_GET['cat_ref'];
 $tran_order_tid=$_GET['tran_order_tid'];
 $cuttable_ref=$_GET['cuttable_ref'];
 $allocate_ref=$_GET['allocate_ref'];
+$serial_no=$_GET['serial_no'];
 
 echo "<input type='hidden' name='cat_ref' value='$cat_ref'>";
 echo "<input type='hidden' name='tran_order_tid' value='$tran_order_tid'>";
 echo "<input type='hidden' name='cuttable_ref' value='$cuttable_ref'>";
 echo "<input type='hidden' name='allocate_ref' value='$allocate_ref'>";
+echo "<input type='hidden' name='serial_no' value='$serial_no'>";
 
 
 echo "<div class=block>";

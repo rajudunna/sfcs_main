@@ -71,6 +71,7 @@ $check_id=$_GET['check_id'];
 $tran_order_tid=$_GET['tran_order_tid'];
 $total_cuttable_qty=$_GET['total_cuttable_qty'];
 $ref_id = $_GET['ref_id'];
+$serial_no = $_GET['serial_no'];
 
 if ($total_cuttable_qty<0){
 	echo"";
@@ -88,6 +89,7 @@ echo "<input type='hidden' name='total_cuttable_qty' value='$total_cuttable_qty'
 echo "<input type\"text\"  name=\"check_id\" value=\"".$check_id."\" style=\"visibility:hidden\">";
 echo "<input type\"text\"  name=\"cat_id\" value=\"".$cat_id."\" style=\"visibility:hidden\">";
 echo "<input type='hidden' name='ref_id'   value='$ref_id'>";
+echo "<input type='hidden' name='serial_no'   value='$serial_no'>";
 
 
 // echo "<br/>"; 
@@ -728,7 +730,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $ratiocount=$ratiocount+1;
-echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back&serial_no=$serial_no\"><<<< Click here to Go Back</a>";
 echo "<br/><br/>";
 echo "<div class='row'><div class='col-md-6'><table class=\"table table-bordered\">";
 echo "<tr><th>New Ratio</th><th>:</th><td style=\"color: #000000\"> ".$ratiocount."</td></tr>";

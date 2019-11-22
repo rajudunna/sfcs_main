@@ -4,9 +4,10 @@
 
 if(isset($_POST['Update']))
 {
-
+	
 	$ratio=$_POST['ratio'];
 	$plies=$_POST['plies'];
+	$serial_no=$_POST['serial_no'];
 	//$cutnos=$_POST['cutnos'];
 	$cutnos=0;
 	
@@ -93,7 +94,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  
 		sweetAlert('Successfully Updated','','success');	
-		location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+		location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
 }
 
 

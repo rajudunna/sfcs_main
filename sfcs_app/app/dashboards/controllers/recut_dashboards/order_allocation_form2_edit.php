@@ -53,11 +53,13 @@ $check_id=$_GET['check_id'];
 $tran_order_tid=$_GET['tran_order_tid'];
 $cat_id=$_GET['cat_id'];
 $ref_id=$_GET['ref_id'];
+$serial_no=$_GET['serial_no'];
 
 echo "<input class=\"form-control\" type\"text\" style=\"visibility:hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">";
 
 echo "<input type\"text\" name=\"check_id\" value=\"".$check_id."\" style=\"visibility:hidden\">";
 echo "<input type\"text\" name=\"cat_id\" value=\"".$cat_id."\" style=\"visibility:hidden\">";
+echo "<input type='hidden' value='$serial_no' name='serial_no'>";
 
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
@@ -678,11 +680,12 @@ $allocate_s50=$sql_row['allocate_s50'];
 }
 
 echo "<div class=\"block\">";
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back&serial_no=$serial_no\"><< Click here to Go Back</a>";
 echo "<br><br>";
 echo "<table class=\"table table-bordered\">";
 echo "<tr><th>Ratio</th><td>:</td><td> ".$ratiocount."</td></tr>";
 //echo "<tr><td>Cut Count</td><td>:</td><td> <INPUT type=\"text\" name=\"cutnos\" value=\"".$cut_count."\" size=\"10\"></td></tr>";
+
 echo "<input type='hidden' value='$piles' id='plies_dummy'>";
 echo "<tr style=\"color: #000000\"><td>Total No. Of Plies</td><td>:</td><td> <input class=\"form-control integer\" type=\"text\" name=\"plies\" min=1 id='pliesp'   value=\"".$plies."\" size=\"10\" required></td></tr>";
 echo "<tr style=\"color: #000000\"><td>Max Plies per cut</td><td>:</td><td>  <input class=\"form-control integer\" type=\"text\" name=\"pliespercut\"  min=1 id='pliespercutp'   value=\"".$pliespercut."\" size=\"10\" required></td></tr>";
