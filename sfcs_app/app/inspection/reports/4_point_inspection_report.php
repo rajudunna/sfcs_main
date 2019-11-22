@@ -101,7 +101,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$grn_no = $row1112['rec_no'];
 }
 $tot_points=0;
-$get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot,count(points) as count from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,points";
+$get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot,count(points) as count from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
