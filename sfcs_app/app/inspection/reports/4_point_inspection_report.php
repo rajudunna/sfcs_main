@@ -101,14 +101,16 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 	$grn_no = $row1112['rec_no'];
 }
 $tot_points=0;
-$get_inspection_population_info12 = "select insp_child_id,points,sum(points) as tot,count(points) as count from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id";
+$cnt=0;
+$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,selected_point";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
 	while ($row2212 = mysqli_fetch_array($info_result12)) 
 	{
-		$ins_child_count[$row2212['insp_child_id']][$row2212['points']] = $row2212['count'];
-		$ins_child[$row2212['insp_child_id']][$row2212['points']] = $row2212['tot'];
+		$cnt=$row2212['tot']/$row2212['selected_point'];
+		$ins_child_count[$row2212['insp_child_id']][$row2212['selected_point']] = $cnt;
+		$ins_child[$row2212['insp_child_id']][$row2212['selected_point']] = $row2212['tot'];
 		$tot_points=$row2212['tot']+$tot_points;
 	}
 }
