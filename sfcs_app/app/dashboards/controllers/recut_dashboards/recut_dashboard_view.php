@@ -311,13 +311,9 @@
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                                  
-                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,doc_no,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,$doc_nos,".$input_job_no_excess.",".$input_ops_code.")";
-                                    // echo $sql;
-                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
 
                                     //getting docket_number of replacement input_job
-                                    $cps_qry= "select doc_no from $bai_pro3.packing_summary_input where input_job_no_random='$sj'";
+                                    $cps_qry= "select DISTINCT(doc_no) AS doc_no from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$sj' and size_code = '$size_title' ";
                                     $result_cps_qry = $link->query($cps_qry);
                                     if($result_cps_qry->num_rows > 0)
                                     {
@@ -327,6 +323,11 @@
                                         }
                     
                                     }
+
+                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,doc_no,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,$doc_no,".$input_job_no_excess.",".$input_ops_code.")";
+                                    // echo $sql;
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
                                     $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = 15";
                                     mysqli_query($link, $update_cps_log_qry) or exit("update_cps_log_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
