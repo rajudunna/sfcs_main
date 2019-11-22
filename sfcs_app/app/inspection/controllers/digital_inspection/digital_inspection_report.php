@@ -218,7 +218,7 @@
 	}
 		#populate_div {
 			position: absolute;
-		    top: 10%;
+		    top: 203px;
     		right: 7%;
 
 		}
@@ -558,7 +558,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						</table>
 						<?php
 							if (!$num_rows) {
-								echo '<div class="col-sm-4" id="populate_div">
+								echo '<div class="col-sm-4 col-md-4 col-lg-4" id="populate_div">
 										<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Set Inspection Population"> </center>
 										</div>';
 							}
@@ -646,14 +646,15 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
     left: 55px;
 
  }
-
+/* 
   #populate_div{
     position: absolute;
     top: 160px;
     right: 40px;
- }
+ } */
  #output_div{
 	height: 195px;
  }
+
 }
 </style>
