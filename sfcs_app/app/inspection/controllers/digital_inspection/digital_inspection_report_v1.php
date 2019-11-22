@@ -260,10 +260,10 @@ if(isset($_GET['status'])>0){
 		display:none;
 	}
        
-		#populate_div {
+		.populate_div {
 			position: absolute;
-			top: 250px;
-    		right: 301px;
+    		top: 251px;
+    		right:294px;
 
 		}
 		.position_div{
@@ -273,6 +273,13 @@ if(isset($_GET['status'])>0){
 		.panel-heading{
 			background-color: #f4fdd0;
 		}
+		@media (min-device-width: 591px) and (max-device-width: 991px) {
+		.populate_div {
+  		  position: absolute;
+			top: 251px;
+   			 right: 20%
+	}
+}
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
@@ -291,17 +298,17 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 <div class="panel panel-primary" id="navbar">
 <nav>	
 <div class="panel-body sticky_div" >
-		<div class="col-xs-6 col-sm-6 col-lg-6">
+		<div class="col-xs-6 col-sm-10 col-lg-6">
 			<div class="panel-body output_div" style="background-color:#f5ecec;height: 280px;">
 				<div class="row position_div">
-					<div class="col-sm-4">
+					<div class="col-sm-4 col-md-4 col-lg-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Total Rolls</strong></div>
 							<div class="panel-body" id="fixed_rolls">0</div>
 							<input type="hidden" id="fixed_rolls_input_val">
 						</div>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-4 col-md-4 col-lg-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Total Length</strong></div>
 							<div class="panel-body" id="fixed_length">0</div>
@@ -310,14 +317,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					</div>
 				</div>
 				<div class="row position_div">
-					<div class="col-sm-4">
+					<div class="col-sm-4 col-md-4 col-lg-4">
 						<div class="panel panel-default">
 							<div class="panel-heading"><strong>Selected Rolls</strong></div>
 							<div class="panel-body" id="total_rolls">0</div>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-4">
+						<div class="col-sm-4 col-md-4 col-lg-4">
 							<div class="panel panel-default">
 								<div class="panel-heading"><strong>Selected Length</strong></div>
 								<div class="panel-body" id="total_length">0</div>
@@ -395,7 +402,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						?>
 					</tbody>
 				</table>
-				<div class="button_pop col-sm-8" id="populate_div">
+				<div class="button_pop col-sm-8 col-md-8 col-lg-8 populate_div" >
 					<?php
 					if($status==0)
 					{

@@ -5,6 +5,7 @@
 $style = $_GET['style'];
 $schedule = $_GET['schedule'];
 $color = $_GET['color'];
+$serial_no = $_GET['serial_no'];
 
 if(short_shipment_status($style,$schedule,$link)){
 
@@ -93,6 +94,7 @@ $cat_id=$_GET['cat_id'];
 
 echo "<input type\"text\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\" style=\"visibility:hidden\">";
 echo "<input type='hidden' name='total_cuttable_qty' value='$total_cuttable_qty'>";
+echo "<input type='hidden' name='serial_no' value='$serial_no'>";
 
 echo "<input type\"text\"  name=\"check_id\" value=\"".$check_id."\" style=\"visibility:hidden\">";
 echo "<input type\"text\"  name=\"cat_id\" value=\"".$cat_id."\" style=\"visibility:hidden\">";

@@ -119,6 +119,7 @@ $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
 $color=$_GET['color'];
 $schedule=$_GET['schedule'];
+$serial_no=$_GET['serial_no'];
 $sql44="select marker_details_id as marker_details_id from $bai_pro3.maker_stat_log where tid='$mk_ref'";
 $sql_result144=mysqli_query($link, $sql44) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row144=mysqli_fetch_array($sql_result144))
@@ -710,7 +711,7 @@ if($sql_result1_res==0){
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
             sweetAlert('Successfully Generated','','success');
-            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\";
             }
         </script>";
    

@@ -11,6 +11,7 @@ $cat_ref=$_GET['cat_ref'];
 $cuttable_ref=$_GET['cuttable_ref'];
 $allocate_ref=$_GET['allocate_ref'];
 $mk_ref=$_GET['mk_ref'];
+$serial_no=$_GET['serial_no'];
 
 //echo "<br/>".$tran_order_tid."--".$cat_ref."--".$cuttable_ref."--".$allocate_ref."--".$mk_ref."<br/>";
 
@@ -60,7 +61,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 echo "<script type=\"text/javascript\"> 
 		setTimeout(\"Redirect()\",0); 
 		function Redirect(){	 
-				location.href = \"".getFullURL($_GET['r'], "recut_lay_plan.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"; 
+				location.href = \"".getFullURL($_GET['r'], "recut_lay_plan.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back&serial_no=$serial_no\"; 
 			}
 	</script>";	
 //echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "recut_lay_plan.php", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<<< Click here to Go Back</a>";
