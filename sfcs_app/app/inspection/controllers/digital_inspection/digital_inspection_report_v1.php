@@ -158,7 +158,7 @@ if(isset($_GET['status'])>0){
 				};
 				data.map(x => {
 
-					let valtobecheck = x[1] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[0];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -195,7 +195,7 @@ if(isset($_GET['status'])>0){
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[1] + "-" + x[12];
+					let valtobecheck = x[1] + "-" + x[0];
 					sumValue = intVal(sumValue) + intVal(x[12]);
 					distinctRolls.add(valtobecheck);
 
@@ -213,6 +213,10 @@ if(isset($_GET['status'])>0){
 		
 	</script>
 	<style>
+	body,table {
+	  -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
+	}
+
 		.add_fix{
 			position: fixed;
     		top: 340px;
@@ -256,6 +260,9 @@ if(isset($_GET['status'])>0){
 		table tr td {
 			cursor: pointer;
 		}
+		#myTable_wrapper {
+			height: 500px;
+		}
         	#myTable thead th:first-child select {
 		display:none;
 	}
@@ -292,7 +299,6 @@ include(getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
 include(getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/user_acl_v1.php', 3, 'R'));
 ?>
 
 <div class="panel panel-primary" id="navbar">

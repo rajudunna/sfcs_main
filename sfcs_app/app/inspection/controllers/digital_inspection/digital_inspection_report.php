@@ -180,7 +180,7 @@
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[0] + "-" + x[11];
+					let valtobecheck = x[0] + "-" + x[12];
 					sumValue = intVal(sumValue) + intVal(x[11]);
 					distinctRolls.add(valtobecheck);
 
@@ -212,6 +212,9 @@
 
 		table tr td {
 			cursor: pointer;
+		}
+		#myTable_wrapper {
+			height: 500px;
 		}
 		#myTable thead th:last-child select {
 		display:none;
@@ -268,7 +271,6 @@ include(getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
 include(getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/user_acl_v1.php', 3, 'R'));
 ?>
 
 <body>

@@ -265,7 +265,7 @@ $flag = false;
 							
 							$val2=0;
 							$val2_1=0;
-							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
+							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0 order by sno";
 							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
 							while($row2=mysqli_fetch_array($details1_result))
