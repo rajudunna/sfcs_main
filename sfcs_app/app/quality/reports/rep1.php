@@ -16,13 +16,13 @@ $view_access=user_acl("SFCS_0049",$username,1,$group_id_sfcs);
 
 // $categories=array("Fabric","Fabric","Fabric","Fabric","Fabric","Fabric","Cutting","Cutting","Cutting","Sewing","Sewing","Sewing","Sewing","Sewing","Embellishment","Fabric","Fabric","Sewing","Sewing","Sewing","Sewing","Sewing","Sewing","Machine Damages","Machine Damages","Machine Damages","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment","Embellishment");
 
-	$reasons_sql="select * from bai_pro3.bai_qms_rejection_reason order by reason_order";
-	$sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
-	{
-		$reasons[$sql_row_rej['sno']]=$sql_row_rej['reason_desc'];
-		$categories[$sql_row_rej['sno']]=$sql_row_rej['reason_cat'];
-	}
+	// $reasons_sql="select * from bai_pro3.bai_qms_rejection_reason order by reason_order";
+	// $sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
+	// {
+		// $reasons[$sql_row_rej['sno']]=$sql_row_rej['reason_desc'];
+		// $categories[$sql_row_rej['sno']]=$sql_row_rej['reason_cat'];
+	// }
 	
 ?>
 
@@ -295,17 +295,32 @@ if(isset($_POST['filter']))
 
 				//echo "<td class=\"lef\">".$categories[$x]."</td>";
 				//echo "<td class=\"lef\">".$reasons[$x]."</td>";
-				if($categories[$x])
+				if($operation_id==15)
 				{
-					echo "<td class=\"lef\">".$categories[$x]."</td>";
+				    $reasons_sql="select * from bai_rm_pj1.bai_qms_rejection_reason where reason_code=$x order by reason_order ";
+				}
+				else
+				{
+					$reasons_sql="select * from bai_rm_pj1.bai_qms_rejection_reason where sno=$x order by reason_order";
+				}
+				$sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
+				{
+					$reason=$sql_row_rej['reason_desc'];
+					$categories=$sql_row_rej['reason_cat'];
+				}
+				if($categories!='')
+				{
+					echo "<td class=\"lef\">".$categories."</td>";
 				}
 				else
 				{
 					echo "<td class=\"lef\">Category deleted</td>";
 				}
-				if($reasons[$x])
+			    
+				if($reason!='')
 				{
-					echo "<td class=\"lef\">".$reasons[$x]."</td>";
+					echo "<td class=\"lef\">".$reason."</td>";
 				}
 				else
 				{
@@ -329,6 +344,8 @@ if(isset($_POST['filter']))
 				
 				echo "</tr>";
 			}
+			unset($reason);
+			unset($categories);
 		}
 		echo "</table>"; 
 	}else {
