@@ -271,13 +271,16 @@ function verify_date()
 		}
 		else
 		{
-			$sql="select group_concat(distinct schedule_no) as schedules from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '$sdate' and '$edate'";
+			$sql="select distinct schedule_no from $bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '$sdate' and '$edate'";
 			 //echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
-				$sch_db_grand=$sql_row['schedules'];
+				$sch_db_grand[]=$sql_row['schedule_no'];
 			}
+			//$sch_db_grand=implode(',',$sch_db_grand);
+			$sch_db_grand="'" . implode ( "', '", $sch_db_grand ) . "'";
+			
 		}
 		//echo $sch_db_grand;
 		if(sizeof($sch_db_grand)>0)
@@ -320,8 +323,10 @@ function verify_date()
 			if($choice==2)
 			{
 				// $sql1="select sum(bac_Qty) as qty,delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand) and color=\"$sch_color\" and length(size)>0 group by delivery,color,size,bac_no";
-				$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and color = '$sch_color' and length(size_id)>0 and assigned_module > 0 group by schedule,color,size_title,assigned_module,size_id";
+				$sql1="select sum(if(operation_id = 130,recevied_qty,0)) as qty,operation_id,schedule,size_title,size_id,assigned_module,color from $brandix_bts.bundle_creation_data where schedule in ($sch_db_grand) and length(size_id)>0 and assigned_module > 0 group by schedule,color,size_title,assigned_module,size_id";
 			}
+			
+			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{

@@ -128,7 +128,7 @@
                 {
                     $url=getFullURL($_GET['r'],'delete_sewing_jobs.php','N');
 
-                    $get_seq_details = "SELECT DISTINCT pac_seq_no,packing_mode, order_del_no FROM bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule'";
+                    $get_seq_details = "SELECT pac_seq_no,packing_mode, order_del_no FROM bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule' group by pac_seq_no order by pac_seq_no*1";
                     $details_seq=mysqli_query($link, $get_seq_details) or exit("error while fetching sequence details for this schedule"); 
                     if (mysqli_num_rows($details_seq) > 0)
                     {

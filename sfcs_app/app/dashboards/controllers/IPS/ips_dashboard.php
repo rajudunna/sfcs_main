@@ -98,7 +98,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$module=$mods[$x];
 			$blink_check=0;
 			
-			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
+			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND ims_remarks<>'Sample'";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
@@ -250,7 +250,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$cols_de = str_pad("Color:".trim(implode(",",$colors)),80)."\n";
 				}
 					
-				if($input_trims_status>1)
+				if($input_trims_status>2)
 				{
 					$add_css="";
 				}
