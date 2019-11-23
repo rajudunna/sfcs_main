@@ -293,10 +293,10 @@ if(isset($_POST['update']))
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
-				 
+			}
 							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
 		
-			}				
+							
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
 			echo "<script type='text/javascript'>

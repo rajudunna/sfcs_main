@@ -102,7 +102,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			if($r["order_s_".$sizes_array[$i].""]>0)
 			{
 				//$temp1=$r[$test];
-				$sql1113="select * from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and ref_size_name=".$sizes_tmp[$i]." and size_title='".$r["title_size_".$sizes_array[$i].""]."' and order_quantity=".$r["order_s_".$sizes_array[$i].""]." and order_act_quantity=".$r["order_s_".$sizes_array[$i].""]." and order_col_des='".$color_code."'";
+				$sql1113="select parent_id,order_col_des from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and order_col_des='".$color_code."'";
 				$sql1113_result=mysqli_query($link, $sql1113) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1113_result)==0)
 				{
@@ -168,7 +168,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				{
 					if($l["p_".$sizes_array[$i].""]>0)
 					{
-						$sql1114="select * from $brandix_bts.tbl_cut_size_master where color='".$color_code."' and parent_id=".$layplan_id." and ref_size_name=".$sizes_tmp[$i]." and quantity=".$l["p_".$sizes_array[$i].""]."";
+						$sql1114="select color,parent_id,ref_size_name from $brandix_bts.tbl_cut_size_master where color='".$color_code."' and parent_id=".$layplan_id." and ref_size_name=".$sizes_tmp[$i]."";
 						$sql1114_result=mysqli_query($link, $sql1114) or exit("Sql Error1114".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql1114_result)==0)
 						{
