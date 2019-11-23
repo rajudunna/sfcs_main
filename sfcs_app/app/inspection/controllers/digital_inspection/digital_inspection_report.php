@@ -12,9 +12,8 @@
 				document.getElementById(id).checked = false;
 			}
 		}
-				  
 		$(document).ready(function() {
-			if (screen.width <= 960) 
+			if (screen.width <= 1070) 
             {
                 $BODY.toggleClass('nav-md nav-sm');
             }
@@ -290,14 +289,12 @@
         th { background:antiquewhite; }
 	</style>
 
-	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
+	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>
 
 </head>
 <?php
-include(getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
-include(getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 ?>
 
 <body>
@@ -427,7 +424,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							
 								<div class="panel-body" id="output_div">
 									<div class="row">
-										<div class="col-sm-4" id="second_row_div">
+										<div class="col-sm-4 col-sm-4 " id="second_row_div">
 											<div class="panel panel-default">
 												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Rolls</strong></div>
 												<div class="panel-body" id="total_rolls">0</div>
