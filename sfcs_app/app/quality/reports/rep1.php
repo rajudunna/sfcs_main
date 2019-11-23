@@ -298,11 +298,11 @@ if(isset($_POST['filter']))
 				//echo "<td class=\"lef\">".$reasons[$x]."</td>";
 				if($operation_id==15)
 				{
-				    $reasons_sql="select * from bai_rm_pj1.bai_qms_rejection_reason where reason_code=$x order by reason_order ";
+				    $reasons_sql="select * from bai_pro3.bai_qms_rejection_reason where reason_code=$x order by reason_order ";
 				}
 				else
 				{
-					$reasons_sql="select * from bai_rm_pj1.bai_qms_rejection_reason where sno=$x order by reason_order";
+					$reasons_sql="select * from bai_pro3.bai_qms_rejection_reason where sno=$x order by reason_order";
 				}
 				$sql_res_rej=mysqli_query($link, $reasons_sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_rej=mysqli_fetch_array($sql_res_rej))
