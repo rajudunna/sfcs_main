@@ -12,6 +12,10 @@ if(isset($_GET['status'])>0){
  <script>
 		
 		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
 			$('#disable_id').on('click',function(){
 		        $('#submit_type').val('Proceed for Inspection');
 			});
@@ -286,6 +290,17 @@ if(isset($_GET['status'])>0){
 			top: 251px;
    			 right: 20%
 	}
+	.tableFixHead {
+            overflow-y: auto; height: 100px; 
+         }
+        .tableFixHead thead th { 
+            position: sticky; top: 0; 
+        }
+
+        .tableFixHead table  {
+             border-collapse: collapse; width: 100%; 
+        }
+        th { background:antiquewhite; }
 }
 	</style>
 
@@ -353,7 +368,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						}else{
 							echo '<div class="panel panel-primary" style="overflow-x:scroll;">
 							<div class="panel-body">
-							<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+							<table id="myTable" class="table table-striped table-bordered tableFixHead" cellspacing="0" width="100%">
 							<thead>
 						<tr>
 						<th>Select<input type="checkbox" id="selectAlll"></th>

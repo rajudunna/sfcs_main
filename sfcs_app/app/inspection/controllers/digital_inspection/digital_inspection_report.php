@@ -1,6 +1,9 @@
 <head>
 	<script>
-	
+//	var $th = $('.panel.panel-primary').find('thead th')
+//$('.panel.panel-primary').on('scroll', function() {
+ // $th.css('transform', 'translateY('+ this.scrollTop +'px)');
+//});
 		function foo(x,y){
 			if(x==1){
 			 
@@ -9,8 +12,14 @@
 				document.getElementById(id).checked = false;
 			}
 		}
+				  
 		$(document).ready(function() {
-			// $('#myTable thead th:last select').css('visibility','hidden');
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+			$("body");
+			//$('#myTable thead th:last select').css('visibility','hidden');
 			$("#po_no").change(function(){
 				$("#supplier_invoice").val('');
 				$("#supplier_batch").val('');
@@ -260,7 +269,25 @@
 				
 			}
 		} */
-	
+		@media only screen and (max-width: 720px) {
+			
+		}
+	#myTable thead.Fixed
+{
+    position: absolute;
+}
+
+  .tableFixHead {
+            overflow-y: auto; height: 100px; 
+         }
+        .tableFixHead thead th { 
+            position: sticky; top: 0; 
+        }
+
+        .tableFixHead table  {
+             border-collapse: collapse; width: 100%; 
+        }
+        th { background:antiquewhite; }
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
@@ -424,7 +451,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report.php", "0", "N") ?>" method="POST">
 						<input type="hidden" id="hide_rolls" name="hidden_rolls" value='0'>
 						<input type="hidden" id="hide_total" name="hidden_total" value='0'>
-						<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+						<table id="myTable" class="table table-striped table-bordered tableFixHead" cellspacing="0" width="100%">
 							<thead>
 								<tr>
 									<!-- <th>S NO</th> -->

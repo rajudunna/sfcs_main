@@ -1,3 +1,12 @@
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		}
+</script>	
 <?php
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 

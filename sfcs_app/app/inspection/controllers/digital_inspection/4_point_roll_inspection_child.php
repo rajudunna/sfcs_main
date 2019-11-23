@@ -1,5 +1,13 @@
 <head>
-
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		}
+</script>	
 <style>
         .tableBodyScroll::-webkit-scrollbar 
         {
@@ -132,8 +140,7 @@
 </head>
 <?php
 echo "<input type='hidden' name='reject_reasons' id='reject_reasons'>";
-include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config.php");
-
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
     $parent_id = $_GET['parent_id'] or $_POST['parent_id'];
     $store_id = $_GET['store_id'] or $_POST['store_id'];
