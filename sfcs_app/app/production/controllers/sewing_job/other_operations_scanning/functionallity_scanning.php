@@ -878,7 +878,7 @@ function packingReversal($data)
 		else
 		{
 			$b_tid = array();
-			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color, schedule, size_tit FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
+			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color, schedule, GROUP_CONCAT(DISTINCT size_tit) AS size FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = '".$carton_id."'";
 			$tid_result = mysqli_query($link,$get_all_tid);
 			while($row12=mysqli_fetch_array($tid_result))
 			{
@@ -887,12 +887,10 @@ function packingReversal($data)
 				$style=$row12['style'];
 				$color=$row12['color'];
 				$schedule=$row12['schedule'];
-				$size=$row12['size_tit'];
+				$size=$row12['size'];
+				
 			}
-            $result_array['style'] = $style;
-            $result_array['schedule'] = $schedule;
-            $result_array['color'] = $color;
-            $result_array['size'] = $size;
+            
 			// Get first opn in packing
 		    $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) LIMIT 1";
 		    $result_first_opn_packing=mysqli_query($link, $get_first_opn_packing) or exit("1=error while fetching pre_op_code_b4_carton_ready");
@@ -1021,6 +1019,10 @@ function packingReversal($data)
 				}
 				 $result_array['reversal_qty'] = $reversal_qty;
 				 $result_array['carton_no'] = $carton_id;
+				 $result_array['styles'] = $style;
+                 $result_array['schedules'] = $schedule;
+                 $result_array['colors'] = $color;
+                 $result_array['sizes'] = $size;
 				 $result_array['status'] = 3;
 		        echo json_encode($result_array);
 		        die();

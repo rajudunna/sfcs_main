@@ -195,35 +195,36 @@ echo "  </select>
 				 <input type="hidden" name="post_code" id="post_code" value="<?php echo $post_ops?>">
 				<div class='panel-body' id="dynamic_table_panel">	
 					<div id ="dynamic_table1">
+
 				    </div>
+
+					<div id="display_result" name='display_result' class="col-sm-7">
+						<div style='overflow-x:auto;'>
+							<table class="table table-bordered">
+								<tr>
+									<th>Style</th><td id="styles"></td>
+									<th>Sizes</th><td id="sizes"></td>
+								</tr>
+								<tr>
+									<th>Schedule</th><td id="schedules"></td>
+									<th>Carton Qty</th><td id="reversal_qty"></td>
+								</tr>
+								<tr>
+									<th>Colors</th><td id="colors"></td>
+									<th>Carton No</th><td id="carton_no"></td>
+								</tr>
+								<tr>
+									<th>Status</th><td id="status" colspan="3"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+
+					<div class="alert alert-danger col-sm-4" id="error_msg" name='error_msg'>
+						<strong>Error!</strong> <br><span id="error"></span>
+					</div>
 				</div>
 			</form>
-</div>
-
-<div id="display_result" name='display_result' class="col-sm-7">
-	<div style='overflow-x:auto;'>
-		<table class="table table-bordered">
-			<tr>
-				<th>Style</th><td id="style"></td>
-				<th>Sizes</th><td id="size"></td>
-			</tr>
-			<tr>
-				<th>Schedule</th><td id="schedule"></td>
-				<th>Carton Qty</th><td id="reversal_qty"></td>
-			</tr>
-			<tr>
-				<th>Colors</th><td id="color"></td>
-				<th>Carton No</th><td id="carton_no"></td>
-			</tr>
-			<tr>
-				<th>Status</th><td id="status" colspan="3"></td>
-			</tr>
-		</table>
-	</div>
-</div>
-
-<div class="alert alert-danger col-sm-4" id="error_msg" name='error_msg'>
-	<strong>Error!</strong> <br><span id="error"></span>
 </div>
 <script>
 $(document).ready(function() 
@@ -262,11 +263,11 @@ $(document).ready(function()
 						$("#loading_img").hide();
 						$("#error_msg").hide();
 						document.getElementById('carton_no').innerHTML = response['carton_no'];
-						document.getElementById('style').innerHTML = response['style'];
-						document.getElementById('schedule').innerHTML = response['schedule'];
-						document.getElementById('color').innerHTML = response['color'];
+						document.getElementById('styles').innerHTML = response['styles'];
+						document.getElementById('schedules').innerHTML = response['schedules'];
+						document.getElementById('colors').innerHTML = response['colors'];
 						document.getElementById('reversal_qty').innerHTML = response['reversal_qty'];
-						document.getElementById('size').innerHTML = response['size'];
+						document.getElementById('sizes').innerHTML = response['sizes'];
 						document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Reversed Succesfully</center>";
 						$('#status').css("background-color", "limegreen");
 					}else if(response['status']==1 || response['status']==2 || response['status']==4)
@@ -284,9 +285,8 @@ $(document).ready(function()
 						{
 						    var msg = "Carton Not Eligible Due to Quantity not Available";	
 						}
-						
 						$("#error_msg").show();
-						document.getElementById('error').innerHTML = msg;
+						document.getElementById('error_msg').innerHTML = msg;
 						$("#display_result").hide();
 					}else if(response['status']){
 						swal('',response['status'],'error');
@@ -327,8 +327,8 @@ $(document).ready(function()
 						$('#docket_number').val(doc_no);
 	                }
 	                $('#loading-image').hide();
-	                $("#display_result").hide();
-	                $("#error_msg").hide();	
+	                // $("#display_result").hide();
+	                // $("#error_msg").hide();	
 	            }
 			});
 	    }
