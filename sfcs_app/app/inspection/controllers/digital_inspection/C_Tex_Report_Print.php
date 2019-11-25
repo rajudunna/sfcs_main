@@ -2179,7 +2179,7 @@ tags will be replaced.-->
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
   <?php } ?>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
-  <td class=xl13324082 dir=LTR colspan=8 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
+  <td class=xl13324082 dir=LTR colspan=12 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
  </tr>
  
  <?php
@@ -2283,15 +2283,15 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>";
 	//  }
-	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
-	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
+	  echo "<td class=xl12824082  style='border-left:none;'>".wordwrap($temp[14],10,"<br>\n")."</td>
+	  <td class=xl12824082 colspan=12 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
 					if ($temp[15] == $row1['tid']) {
-						echo $row1["reject_desc"];
+						echo wordwrap($row1["reject_desc"],25,"<br>\n");
 					}
 				}
 	 echo "</td>
