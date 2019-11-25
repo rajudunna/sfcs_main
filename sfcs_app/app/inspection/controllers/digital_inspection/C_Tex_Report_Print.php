@@ -1859,7 +1859,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["shade_grp"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 	
 	$scount_temp[]=$sql_row['ref4'];
@@ -2155,6 +2155,8 @@ tags will be replaced.-->
   <td height=41 class=xl13224082 dir=LTR width=80 style='height:30.75pt;
   width:60pt'>Roll No</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Shade
+  </td>
+  <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Shade
   Group</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Ticket
   Length</td>
@@ -2170,7 +2172,7 @@ tags will be replaced.-->
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 dir=LTR colspan=2 width=77 style='border-left:none;width:58pt'>Lot  No</td>
   <?php
-  if($shrinkage_inspection == 'yes')
+ // if($shrinkage_inspection == 'yes')
 	  { ?>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
@@ -2266,6 +2268,7 @@ if($num_check>0)
 	
 	  echo "<td height=20 class=xl12824082 style='height:25pt'>".$temp[1]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[2]."</td>
+	  <td class=xl12824082 style='border-left:none'>".$temp[16]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[4]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[4]-$temp[3]),2)."</td>
@@ -2274,12 +2277,12 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[8]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[6]-$temp[5]),2)."</td>
 	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>";
-	  if($shrinkage_inspection == 'yes')
-	  {
+	 // if($shrinkage_inspection == 'yes')
+	 // {
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>";
-	  }
+	//  }
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
 	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
