@@ -753,7 +753,7 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 order by priority"; //KK223422
+													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 and remarks != 'Recut' order by priority"; //KK223422
 
 													// echo $sql1;
 													// die();
@@ -808,7 +808,7 @@
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
                                                         
                                                         $emb_category = 'Send PF';
-                                                        $get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='$emb_category' limit 1";
+                                                        $get_operations = " SELECT tor.operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tsm.style='$style_new' AND tsm.color='$color_new' AND tor.category='$emb_category' order by tsm.operation_code LIMIT 1;";
 													    //echo $get_operations;
 													    $result_ops = $link->query($get_operations);
 													    while($row_ops = $result_ops->fetch_assoc())
