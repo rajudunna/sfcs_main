@@ -96,8 +96,7 @@ else
 
 	<input type="hidden" name="scan_type" id="scan_type" value=<?= $display_name ?>>
 <?php
-
-$sql = "SELECT DISTINCT category FROM $brandix_bts.tbl_orders_ops_ref WHERE restriction='no'";	
+$sql = "SELECT DISTINCT category FROM $brandix_bts.tbl_orders_ops_ref WHERE restriction='no' and category in('cutting','packing')";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select category:</label>
@@ -196,17 +195,45 @@ echo "  </select>
 				 <input type="hidden" name="post_code" id="post_code" value="<?php echo $post_ops?>">
 				<div class='panel-body' id="dynamic_table_panel">	
 					<div id ="dynamic_table1">
+
 				    </div>
+
+					<div id="display_result" name='display_result' class="col-sm-7">
+						<div style='overflow-x:auto;'>
+							<table class="table table-bordered">
+								<tr>
+									<th>Style</th><td id="styles"></td>
+									<th>Sizes</th><td id="sizes"></td>
+								</tr>
+								<tr>
+									<th>Schedule</th><td id="schedules"></td>
+									<th>Carton Qty</th><td id="reversal_qty"></td>
+								</tr>
+								<tr>
+									<th>Colors</th><td id="colors"></td>
+									<th>Carton No</th><td id="carton_no"></td>
+								</tr>
+								<tr>
+									<th>Status</th><td id="status" colspan="3"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+
+					<div class="alert alert-danger col-sm-4" id="error_msg" name='error_msg'>
+						<strong>Error!</strong> <br><span id="error"></span>
+					</div>
 				</div>
 			</form>
 </div>
-
 <script>
 $(document).ready(function() 
 {
     $('#doc_no').focus();
     $('#dynamic_table1').html('');
     $('#loading-image').hide();
+    $("#error_msg").hide();
+    $("#display_result").hide();
     $("#doc_no").change(function(){
 	    $('#loading-image').show();
 	    var function_text = "<?php echo getFullURL($_GET['r'],'functionallity_scanning.php','R'); ?>";
@@ -229,9 +256,39 @@ $(document).ready(function()
 				{	
 	                s_no = 0;
 					var data = response['table_data'];
-					if(response['success']){
-						swal('',response['status'],'success');
-	                }else if(response['status']){
+					if(response['status']==3)
+					{
+					  $("#loading_img").hide();
+						$("#display_result").show();
+						$("#loading_img").hide();
+						$("#error_msg").hide();
+						document.getElementById('carton_no').innerHTML = response['carton_no'];
+						document.getElementById('styles').innerHTML = response['styles'];
+						document.getElementById('schedules').innerHTML = response['schedules'];
+						document.getElementById('colors').innerHTML = response['colors'];
+						document.getElementById('reversal_qty').innerHTML = response['reversal_qty'];
+						document.getElementById('sizes').innerHTML = response['sizes'];
+						document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Reversed Succesfully</center>";
+						$('#status').css("background-color", "limegreen");
+					}else if(response['status']==1 || response['status']==2 || response['status']==4)
+					{                           
+						$("#loading_img").hide();
+						if (response['status']==1)
+						{
+							var msg = "Carton Not Scanned";
+						}
+						else if (response['status']==2)
+						{
+							var msg = "previous operation not done";
+						}
+						else if (response['status']==4)
+						{
+						    var msg = "Carton Not Eligible Due to Quantity not Available";	
+						}
+						$("#error_msg").show();
+						document.getElementById('error_msg').innerHTML = msg;
+						$("#display_result").hide();
+					}else if(response['status']){
 						swal('',response['status'],'error');
 						$('#dynamic_table1').html('No Data Found');
 						document.getElementById('doc_no').value = '';
@@ -269,7 +326,9 @@ $(document).ready(function()
 						$("#dynamic_table").show();
 						$('#docket_number').val(doc_no);
 	                }
-	                $('#loading-image').hide();	
+	                $('#loading-image').hide();
+	                // $("#display_result").hide();
+	                // $("#error_msg").hide();	
 	            }
 			});
 	    }
