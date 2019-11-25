@@ -1,10 +1,21 @@
 <?php
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',2,'R'));
 $has_permission=haspermission($_GET['r']);
 ?>
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 1070) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		});
+</script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>	
+
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
@@ -14,6 +25,15 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="C_Tex_Interface_files/filelist.xml">
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		}
+</script>	
 <script>
  function isFloat(evt) {
 

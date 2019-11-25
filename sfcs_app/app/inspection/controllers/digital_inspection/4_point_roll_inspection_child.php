@@ -1,4 +1,14 @@
 <head>
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 1070) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		});
+</script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>	
 
 <style>
         .tableBodyScroll::-webkit-scrollbar 
@@ -128,12 +138,13 @@
         swal('warning','Please Select Code Before Remove points','warning');
     }
   }
+  
 </script>
 </head>
 <?php
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 echo "<input type='hidden' name='reject_reasons' id='reject_reasons'>";
-include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config.php");
-
 if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
     $parent_id = $_GET['parent_id'] or $_POST['parent_id'];
     $store_id = $_GET['store_id'] or $_POST['store_id'];

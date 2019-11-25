@@ -1,3 +1,14 @@
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 1070) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		});
+</script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>	
+	
 <?php
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
