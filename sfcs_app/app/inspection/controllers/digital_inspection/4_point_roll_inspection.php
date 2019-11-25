@@ -2,7 +2,7 @@
  <script>
 		
 		$(document).ready(function() {
-			if (screen.width <= 960) 
+			if (screen.width <= 1070) 
             {
                 $BODY.toggleClass('nav-md nav-sm');
             }
@@ -274,6 +274,7 @@ $flag = false;
 							
 							$val2=0;
 							$val2_1=0;
+							$val2_2=0;
 							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0 order by sno";
 							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
@@ -357,6 +358,7 @@ $flag = false;
 								$h_ref="";
 								if($status == 1)
 								{
+									$val2_2 =1;
 									$status_main = 'Pending';
 									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";
 								}
@@ -394,7 +396,8 @@ $flag = false;
 								}									
 							
 							}
-							if($val2==1 && $status == 3 && $val2_1 ==0)
+							
+							if($val2==1 && $status == 3 && $val2_1 ==0 && $val2_2 ==0)
 							{
 								echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
                             }
