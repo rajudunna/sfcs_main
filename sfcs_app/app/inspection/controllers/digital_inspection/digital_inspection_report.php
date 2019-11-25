@@ -1,6 +1,9 @@
 <head>
 	<script>
-	
+//	var $th = $('.panel.panel-primary').find('thead th')
+//$('.panel.panel-primary').on('scroll', function() {
+ // $th.css('transform', 'translateY('+ this.scrollTop +'px)');
+//});
 		function foo(x,y){
 			if(x==1){
 			 
@@ -10,7 +13,12 @@
 			}
 		}
 		$(document).ready(function() {
-			// $('#myTable thead th:last select').css('visibility','hidden');
+			if (screen.width <= 1070) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+			$("body");
+			//$('#myTable thead th:last select').css('visibility','hidden');
 			$("#po_no").change(function(){
 				$("#supplier_invoice").val('');
 				$("#supplier_batch").val('');
@@ -260,17 +268,33 @@
 				
 			}
 		} */
-	
+		@media only screen and (max-width: 720px) {
+			
+		}
+	#myTable thead.Fixed
+{
+    position: absolute;
+}
+
+  .tableFixHead {
+            overflow-y: auto; height: 100px; 
+         }
+        .tableFixHead thead th { 
+            position: sticky; top: 0; 
+        }
+
+        .tableFixHead table  {
+             border-collapse: collapse; width: 100%; 
+        }
+        th { background:antiquewhite; }
 	</style>
 
-	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 3, 'R'); ?>"></script>
+	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>
 
 </head>
 <?php
-include(getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
-include(getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));
-include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 ?>
 
 <body>
@@ -400,7 +424,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							
 								<div class="panel-body" id="output_div">
 									<div class="row">
-										<div class="col-sm-4" id="second_row_div">
+										<div class="col-sm-4 col-sm-4 " id="second_row_div">
 											<div class="panel panel-default">
 												<div class="panel-heading" style="background-color: #f4fdd0;"><strong>Total Rolls</strong></div>
 												<div class="panel-body" id="total_rolls">0</div>
@@ -424,7 +448,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report.php", "0", "N") ?>" method="POST">
 						<input type="hidden" id="hide_rolls" name="hidden_rolls" value='0'>
 						<input type="hidden" id="hide_total" name="hidden_total" value='0'>
-						<table id="myTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+						<table id="myTable" class="table table-striped table-bordered tableFixHead" cellspacing="0" width="100%">
 							<thead>
 								<tr>
 									<!-- <th>S NO</th> -->

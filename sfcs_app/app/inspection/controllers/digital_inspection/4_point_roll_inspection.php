@@ -1,4 +1,13 @@
 <head>
+ <script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		}
+</script>		
 	<style>
 		.selected{
 			background-color:#B0BED9;
