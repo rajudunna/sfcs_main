@@ -210,6 +210,22 @@ if(isset($_POST['submit']))
 
                         }
                     }
+
+                    $rm_chck_qry = "select distinct doc_no as rm_docs from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
+                    $rm_chck_qry_res=mysqli_query($link, $rm_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($rm_chck_row=mysqli_fetch_array($rm_chck_qry_res))
+                    {
+                        $rm_docs[]="'".$rm_chck_row['rm_docs']."'";
+                    }
+                    
+                    if(sizeof($rm_docs)>0){
+                        $plan_dashboard_update="UPDATE $bai_pro3.plan_dashboard SET short_shipment_status=".$status." WHERE doc_no in (".implode(",",$rm_docs).")";
+                        $plan_dashboard_update_resultx=mysqli_query($link, $plan_dashboard_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($plan_dashboard_update_resultx) {
+                            $remarks .="RMS,";
+
+                        }
+                    }
                     
                     //To remove Jobs in Embellishment Dashboard
                     $emblishment_chck_qry = "select distinct doc_no as emb_docs from $bai_pro3.embellishment_plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
