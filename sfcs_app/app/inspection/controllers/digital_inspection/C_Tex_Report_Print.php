@@ -1820,7 +1820,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pur_width=$sql_row['pur_width'];
 	$act_width=$sql_row['act_width'];
 	$sp_rem=$sql_row['sp_rem'];
-	$qty_insp=$sql_row['qty_insp'];
+	//$qty_insp=$sql_row['qty_insp'];
 	$gmt_way=$sql_row['gmt_way'];
 	$pts=$sql_row['pts'];
 	$fallout=$sql_row['fallout'];
@@ -1859,7 +1859,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["shade_grp"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 	
 	$scount_temp[]=$sql_row['ref4'];
@@ -1884,6 +1884,13 @@ $scount_temp2=array_values(array_unique($scount_temp));
 $shade_count=sizeof($scount_temp2);
 //Configuration 
 
+//get inspected_qty
+$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
+$inspected_qty_result=mysqli_query($link, $get_inspected_qty) or exit("Sql Errorqty=".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($qty_row=mysqli_fetch_array($inspected_qty_result))
+{
+   $qty_insp = $qty_row['reported_qty'];
+}
 
 $sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2148,6 +2155,8 @@ tags will be replaced.-->
   <td height=41 class=xl13224082 dir=LTR width=80 style='height:30.75pt;
   width:60pt'>Roll No</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Shade
+  </td>
+  <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Shade
   Group</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Ticket
   Length</td>
@@ -2163,14 +2172,14 @@ tags will be replaced.-->
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 dir=LTR colspan=2 width=77 style='border-left:none;width:58pt'>Lot  No</td>
   <?php
-  if($shrinkage_inspection == 'yes')
+ // if($shrinkage_inspection == 'yes')
 	  { ?>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
   <?php } ?>
-  <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
-  <td class=xl13324082 dir=LTR colspan=8 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
+  <td class=xl13324082 dir=LTR colspan=6 width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
+  <td class=xl13324082 dir=LTR colspan=14 width=68 style='border-left:none;width:130pt'>Rejection Reason</td>
  </tr>
  
  <?php
@@ -2259,6 +2268,7 @@ if($num_check>0)
 	
 	  echo "<td height=20 class=xl12824082 style='height:25pt'>".$temp[1]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[2]."</td>
+	  <td class=xl12824082 style='border-left:none'>".$temp[16]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."</td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[4]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[4]-$temp[3]),2)."</td>
@@ -2267,21 +2277,21 @@ if($num_check>0)
 	  <td class=xl12824082 style='border-left:none'>".$temp[8]."</td>
 	  <td class=xl12824082 style='border-left:none'>".round(($temp[6]-$temp[5]),2)."</td>
 	  <td class=xl12824082 colspan=2 align=right style='border-left:none'>".$temp[7]."</td>";
-	  if($shrinkage_inspection == 'yes')
-	  {
+	 // if($shrinkage_inspection == 'yes')
+	 // {
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[11]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[12]."</td>
 	  <td class=xl12824082 style='border-left:none;'>".$temp[13]."</td>";
-	  }
-	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
-	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
+	//  }
+	  echo "<td class=xl12824082 colspan=6 width=98 style='border-left:none;width:130pt'>".wordwrap($temp[14],10,"<br>\n")."</td>
+	  <td class=xl9624082 colspan=14 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
 					if ($temp[15] == $row1['tid']) {
-						echo $row1["reject_desc"];
+						echo wordwrap($row1["reject_desc"],25,"<br>\n");
 					}
 				}
 	 echo "</td>

@@ -5,6 +5,8 @@
    
     include('../dbconf.php');
    
+    $role = $_POST['role'];
+    // var_dump($role);
     $role_menu_id = $_POST['role_menu_id'];
     $new_permissions = json_decode($_POST['permission_ids']);
     $old_records = $_POST['ids'];
@@ -38,11 +40,13 @@
             $query_result = mysqli_query($link_ui, $sql_insert_query) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         }
-
-        $_SESSION["msg"]='Permissions updated successfully';
-        $_SESSION["status"]=1;
-        $url = getFullURL($_GET['r'],'view_all_user_access_mapping_data.php','N');
-        header("Location:".$url); 
+        // var_dump($query_result);
+        if($query_result ){
+            $_SESSION["msg"]='Permissions updated successfully';
+            $_SESSION["status"]=1;
+            $url = getFullURL($_GET['r'],'view_all_user_access_mapping_data.php','N');
+            header("Location:".$url."&role=".$role); 
+        }
 
     }
     
