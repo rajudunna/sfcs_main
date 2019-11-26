@@ -349,7 +349,7 @@ if(isset($_POST['save']))
 		if(!in_array($c_block,$country_block))
 		{
 			$select_check_ignore="select tid from $bai3_finishing.`barcode_update` where schedule='$schedule' and barcode='$barcode' and username = '$username' and c_block='$c_block'";
-			$result_insert_check=mysql_query($select_check_ignore,$link) or ("Sql error".mysql_error());
+			$result_insert_check=mysqli_query($select_check_ignore,$link) or ("Sql error".mysql_error());
 
 			$check_result=mysqli_num_rows($result_insert_check);
 			if($check_result==0)
@@ -362,7 +362,7 @@ if(isset($_POST['save']))
 	else
 	{
 		$select_check_sec="select id from $brandix_bts.tbl_carton_ref where carton_barcode='$barcode' and carton_tot_quantity=$carton_tot and ref_order_num='$schedule_id' and style_code = $style_id";
-		$result_insert_sec=mysql_query($select_check_sec,$link) or ("Sql error".mysql_error());
+		$result_insert_sec=mysqli_query($select_check_sec,$link) or ("Sql error".mysql_error());
 
 		$check_result_sec=mysqli_num_rows($result_insert_sec);
 		if($check_result_sec==0)
@@ -374,7 +374,7 @@ if(isset($_POST['save']))
 		if(!in_array($c_block,$country_block))
 		{
 			$select_check_third="select tid from $bai3_finishing.barcode_update where style='$style' and schedule='$schedule' and barcode='$barcode' and username='$username' and c_block='$c_block'";
-			$result_insert_third=mysql_query($select_check_third,$link) or ("Sql error".mysql_error());
+			$result_insert_third=mysqli_query($select_check_third,$link) or ("Sql error".mysql_error());
 
 			$check_result_third=mysqli_num_rows($result_insert_third);
 			if($check_result_third==0)
@@ -409,7 +409,7 @@ if(isset($_POST['save']))
 			else
 			{
 				$select_check_three="select id from $brandix_bts.tbl_carton_size_ref where parent_id=$id and color='$color[$i]' and ref_size_name='$size[$i]' and quantity='$ratio[$i]'";
-				$result_insert_three=mysql_query($select_check_three,$link) or ("Sql error".mysql_error());
+				$result_insert_three=mysqli_query($select_check_three,$link) or ("Sql error".mysql_error());
 		
 				$check_result_three=mysqli_num_rows($result_insert_three);
 				if($check_result_three==0)
@@ -421,7 +421,7 @@ if(isset($_POST['save']))
 				if(!in_array($c_block,$country_block))
 				{
 					$select_check_four="select tid from $bai3_finishing.`input_update` where schedule='$schedule' and size='$size_tit[$i]' and color='$color[$i]' and barcode='$barcode'";
-					$result_insert_four=mysql_query($select_check_four,$link) or ("Sql error".mysql_error());
+					$result_insert_four=mysqli_query($select_check_four,$link) or ("Sql error".mysql_error());
 			
 					$check_result_four=mysqli_num_rows($result_insert_four);
 					if($check_result_four==0)

@@ -133,7 +133,7 @@ return false;
 <div class="panel panel-primary">
 <div class="panel-heading">Orders Synchronization</div>
 <div class="panel-body">
-<!---<div id="page_heading"><span style="float: left"><h3>Orders Synchronization</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>--->
+
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
@@ -433,7 +433,7 @@ bai_orders_db_confirm.bts_status
 			else
 			{
 				$insert_query_check = "select id from `$brandix_bts`.`tbl_orders_style_ref` where product_style='$style_code'";
-				$result_insert_check=mysql_query($insert_query_check,$link) or ("Sql error".mysql_error());
+				$result_insert_check=mysqli_query($insert_query_check,$link) or ("Sql error".mysql_error());
 
 				$check_result=mysqli_num_rows($result_insert_check);
 				if($check_result==0){
