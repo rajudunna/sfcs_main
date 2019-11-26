@@ -1,6 +1,9 @@
 <script>
 		
 		$(document).ready(function() {
+			$( function() {
+  			  $( "#demo1" ).datepicker();
+  } );
 			if (screen.width <= 1070) 
             {
                 $BODY.toggleClass('nav-md nav-sm');
@@ -22,7 +25,7 @@
                     <div class="row">
                                     <div class='col-lg-2'>
                                         <label >Select Date: </label>
-                                        <input type="date" class="form-control" data-toggle="datepicker" style=" display: inline-block;" id="demo1" name="date" value="<?php 
+                                        <input type="text" class="form-control" data-toggle="datepicker" style=" display: inline-block;" id="demo1" name="date" value="<?php 
                                         if(isset($_POST['date'])) { echo $_POST['date']; } else { echo date("Y-m-d "); } ?>" />  
                                     </div>
                                     <div class='col-lg-2'>
