@@ -399,13 +399,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $doc_ref[]=0;
       $req_time[]=0;
       $req_date_time[]=0;
+      $track_ids = [];
 
-      $sql2="select doc_no,module from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and send_qty>receive_qty order by log_time,module";
+      $sql2="select doc_no,module,track_id from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and send_qty>receive_qty and short_shipment_status=0 order by log_time,module";
       $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row2=mysqli_fetch_array($result2))
       {
           $doc_ref[]=$row2['doc_no'];
           $req_time[]=$row2['module'].") ".date("M-d H:i",strtotime($row2['req_time']));
+          $track_ids[] = $row2['track_id'];
       }
 
       $sql1="SELECT * from $bai_pro3.plan_dash_doc_summ_embl where doc_no in (".implode(",",$doc_ref).") order by field(doc_no,".implode(",",$doc_ref).")";
@@ -433,6 +435,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       if($sql_num_check>0){
       while($sql_row1=mysqli_fetch_array($sql_result1))
       {
+          $track_id=$sql_row1['track_id'];
+           if(!in_array($track_id,$track_ids))
+              continue;
           $cut_new=$sql_row1['act_cut_status'];
           $cut_input_new=$sql_row1['act_cut_issue_status'];
           $rm_new=strtolower(chop($sql_row1['rm_date']));
@@ -443,7 +448,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $ord_style=$sql_row1['order_style_no'];
           //$fabric_status=$sql_row1['fabric_status'];
           $plan_lot_ref_v1=$sql_row1['plan_lot_ref'];
-          $track_id=$sql_row1['track_id'];
+          $total=$sql_row1['total'];
+          
           
           $fabric_status=$sql_row1['fabric_status_new']; //NEW due to plan dashboard clearing regularly and to stop issuing issued fabric.
           if($fabric_status==null or $fabric_status==0)
@@ -497,7 +503,24 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $send_op_code=$row21['send_op_code'];
             $receive_op_code=$row21['receive_op_code'];
           }
-
+		  $reject_qty_s=0;
+		  $reject_qty_r=0;
+		  $sql221="select sum(rejected_qty) as rej_qty from $bai_pro3.rejection_log_child where doc_no=".$doc_no." and operation_id=$send_op_code";
+          // echo $sql2;
+          $result212=mysqli_query($link, $sql221) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+          while($row212=mysqli_fetch_array($result212))
+          {
+            $reject_qty_s=$row212['rej_qty'];            
+          }
+		$sql2212="select sum(rejected_qty) as rej_qty from $bai_pro3.rejection_log_child where doc_no=".$doc_no." and operation_id=$receive_op_code";
+          // echo $sql2;
+          $result2122=mysqli_query($link, $sql2212) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+          while($row2122=mysqli_fetch_array($result2122))
+          {
+            $reject_qty_r=$row2122['rej_qty'];            
+          }
+		if(($send_qty-$reject_qty_s)<> ($receive_qty))
+		{		
           $id="yash";
           if($receive_qty==0)
           {
@@ -550,7 +573,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $club_c_code=array_unique($club_c_code);
           $club_docs=array_unique($club_docs);
 
-          $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("DOC No:".implode(", ",$club_docs),80)."\n".str_pad("Total_Qty:".$total_qty,80)."\n".str_pad("Send Qty:".$send_qty,80)."\n".str_pad("Received Qty:".$receive_qty,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
+          $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("DOC No:".implode(", ",$club_docs),80)."\n".str_pad("Total Plan Qty:".$orginal_qty,80)."\n".str_pad("Actual Cut Qty:".$total,80)."\n".str_pad("Send Qty:".($send_qty-$reject_qty_s),80)."\n".str_pad("Received Qty:".($receive_qty-$reject_qty_r),80)."\n".str_pad("Rejected Qty:".$reject_qty_r,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
 
           $clr=trim(implode(',',$colors_db),50);
           
@@ -559,6 +582,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>"; 
           }          
         }
+		}
       }   
       echo "</td>";
       echo "</tr>";

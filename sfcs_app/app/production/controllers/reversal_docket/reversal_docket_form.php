@@ -62,23 +62,66 @@
 if(isset($_POST['formSubmit']))
 {
     $docket_number_post = $_POST['docket_number'];
+    $get_order_tid = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $docket_number_post ";
+    // echo $get_order_tid;
+    $get_order_tid_res = mysqli_query($link,$get_order_tid);
+    while($row1 = mysqli_fetch_array($get_order_tid_res)){
+        $order_tid = $row1['order_tid'];
+    }
+    
+    $get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+
+    $get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
+    {
+        $style=$sql_rowx121['style'];
+        $schedule=$sql_rowx121['schedule'];
+    }
+    $short_ship_status =0;
+    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    $shortship_res = mysqli_query($link,$query_short_shipment);
+    $count_short_ship = mysqli_num_rows($shortship_res);
+    if($count_short_ship >0) {
+        while($row_set=mysqli_fetch_array($shortship_res))
+        {
+            if($row_set['remove_type']==1) {
+                $short_ship_status=1;
+            }else{
+                $short_ship_status=2;
+            }
+        }
+    }
+    if($short_ship_status==1){
+        $url = '?r='.$_GET['r'];
+        echo "<script>swal('Error','Short Shipment Done Temporarly','error');window.location = '".$url."'</script>";
+        exit();
+    }
+    else if($short_ship_status==2){
+        $url = '?r='.$_GET['r'];
+        echo "<script>swal('Error','Short Shipment Done Perminently','error');window.location = '".$url."'</script>";
+        exit();
+    }
     $plies_post = $_POST['plies'];
     $does_docket_exists_flag= '';
     $update_plan_doc_stat_flag = 0;
     $op_code = 15;
+
+   
 
     $check_docket_query="SELECT * FROM bai_pro3.plandoc_stat_log psl 
     LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
     WHERE doc_no = $docket_number_post AND category NOT IN ($in_categories);";
     if(mysqli_num_rows(mysqli_query($link,$check_docket_query)) > 0)
     {
-        $reverse_cut_qty= "UPDATE bai_pro3.plandoc_stat_log SET act_cut_status = '' ,a_plies=p_plies WHERE doc_no = $docket_number_post";
+        $reverse_cut_qty= "UPDATE bai_pro3.plandoc_stat_log SET act_cut_status = '' ,a_plies=p_plies ,manual_flag = 0 WHERE doc_no = $docket_number_post";
         $reverse_cut_qty_result = mysqli_query($link,$reverse_cut_qty) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
         $url = '?r='.$_GET['r'];
+        
+
         echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
         exit();
     }
-    //Cehecking for the clubbing dockets
+    //Checking for the clubbing dockets
     $check_club_docket_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log 
             where doc_no = $docket_number_post and org_doc_no >=1 ";
     if(mysqli_num_rows(mysqli_query($link,$check_club_docket_query)) > 0){
@@ -96,7 +139,7 @@ if(isset($_POST['formSubmit']))
         }
     }
     $emb_check_flag = 0;
-    $category=['cutting','Send PF','Receive PF','sewing'];
+    $category=['cutting','Send PF','Receive PF'];
     $checking_qry = "SELECT category FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code = $pre_ops_code";
     // echo $checking_qry.'<br/>';
     $result_checking_qry = $link->query($checking_qry);
@@ -115,6 +158,7 @@ if(isset($_POST['formSubmit']))
         while($row = $get_docket_details_qry_result->fetch_assoc()) 
         {
             // echo '<br/><br/>'.$row['a_plies'].' - '.$plies_post;
+            $manual_flag = $row['manual_flag'];
             $does_docket_exists_flag= 1;
             if($row['a_plies'] >= $plies_post) {
                 for ($i=0; $i < sizeof($sizes_array); $i++)
@@ -184,8 +228,12 @@ if(isset($_POST['formSubmit']))
                         $bcd_id = $row_result_selecting_qry['id'];
                         $ref_no = $row_result_selecting_qry['bundle_number'];
                         $update_qry_bcd = "update $brandix_bts.bundle_creation_data set recevied_qty = recevied_qty-$value where id = $bcd_id";
+                        $neg_value = 0;
+                        $neg_value = $neg_value - $value;
                         // echo $update_qry_bcd.'<br/>';
                         $update_qry_bcd_result = mysqli_query($link,$update_qry_bcd) or exit(" Error48".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                        $bulk_insert_temp = "INSERT INTO brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`scanned_user`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`) SELECT style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,original_qty,send_qty,$neg_value,rejected_qty,left_over,operation_id,docket_number, scanned_date, cut_number, input_job_no,'$username',input_job_no_random_ref, shift, assigned_module, remarks FROM brandix_bts.bundle_creation_data WHERE docket_number=$docket_number_post AND operation_id = '15' AND size_id='$key' ";
+                        $bulk_insert_temp_result = mysqli_query($link,$bulk_insert_temp) or exit(" Error488".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         $update_plan_doc_stat_flag = 1;
                     }
                     if($emb_check_flag == 1)
@@ -201,9 +249,10 @@ if(isset($_POST['formSubmit']))
                             $update_qry_bcd_pre_result = mysqli_query($link,$update_qry_bcd_pre) or exit(" Error46".mysqli_error ($GLOBALS["___mysqli_ston"]));
                         }
                     }
-                    $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal')";
+                    $remarks = $username."-".$manual_flag;
+                    $docket_log= "insert into $brandix_bts.reversal_docket_log(docket_number,bundle_number,operation_id,size_title,cutting_reversal,act_cut_status,remarks)values(".$docket_number_post.",".$ref_no.",".$pre_ops_code.",'".$key."',".$value.",'Reversal','$remarks')";
                     // echo $docket_log.'<br/>';
-                    $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".mysqli_error ($GLOBALS["___mysqli_ston"]));
+                    $docket_log_res = mysqli_query($link,$docket_log) or exit(" Error77".$docket_log."-".mysqli_error ($GLOBALS["___mysqli_ston"]));
                     $updation_m3 = updateM3TransactionsReversal($ref_no,$value,$op_code);
                 }
                 if($update_plan_doc_stat_flag==1){
@@ -213,17 +262,89 @@ if(isset($_POST['formSubmit']))
                         $a_plies_old = $sql_row['a_plies'];
                         $p_plies_old = $sql_row['p_plies'];
                         if($a_plies_old==$plies_post) {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='',manual_flag = 0 WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error41".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             $url = '?r='.$_GET['r'];
+                            $reportingrolls="SELECT * from bai_pro3.docket_roll_info where docket=$docket_number_post";
+                            $reportingrollsresult= mysqli_query($link,$reportingrolls);
+                            $deleteplie=$plies_post;
+                    
+                            if(mysqli_num_rows($reportingrollsresult) > 0)
+                            {
+                                while($reportingrolls = mysqli_fetch_array($reportingrollsresult))
+                                {
+                                    
+                                    if($reportingrolls['reporting_plies']<=$deleteplie)
+                                    {
+                                        $deletedqueries="DELETE FROM bai_pro3.docket_roll_info WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
+                                        $deletedqueriesresult= mysqli_query($link,$deletedqueries) or exit("error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $deleteplie=$deleteplie-$reportingrolls['reporting_plies'];//remaining plie
+                                        
+                                        if($deleteplie==0)
+                                        {
+                                            break;
+                                        }
+                    
+                                    }
+                                else 
+                                    {
+                                            $updatedplie=$reportingrolls['reporting_plies']-$deleteplie;
+                                            $updateroll="UPDATE bai_pro3.docket_roll_info SET reporting_plies = $updatedplie WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
+                                            $updaterollresult= mysqli_query($link,$updateroll);
+                                            $deleteplie=$deleteplie-$reportingrolls['reporting_plies']; //remaining plie
+                                            if($deleteplie==0)
+                                            {
+                                                break;
+                                            }
+                                        
+                                    }
+                                }
+                            
+                            }
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
                         }
                         else {
-                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE' WHERE doc_no=$docket_number_post";
+                            $update_plies_qry = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies=a_plies-$plies_post,act_cut_status='DONE',manual_flag = 0 WHERE doc_no=$docket_number_post";
                             // echo $update_plies_qry.'<br/><br/>';
                             $update_plies_qry_result = mysqli_query($link,$update_plies_qry) or exit(" Error42".mysqli_error ($GLOBALS["___mysqli_ston"]));
                             $url = '?r='.$_GET['r'];
+                            $reportingrolls="SELECT * from bai_pro3.docket_roll_info where docket=$docket_number_post";
+                            $reportingrollsresult= mysqli_query($link,$reportingrolls);
+                            $deleteplie=$plies_post;
+                    
+                            if(mysqli_num_rows($reportingrollsresult) > 0)
+                            {
+                                while($reportingrolls = mysqli_fetch_array($reportingrollsresult))
+                                {
+                                    
+                                    if($reportingrolls['reporting_plies']<=$deleteplie)
+                                    {
+                                        $deletedqueries="DELETE FROM bai_pro3.docket_roll_info WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
+                                        $deletedqueriesresult= mysqli_query($link,$deletedqueries) or exit("error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        $deleteplie=$deleteplie-$reportingrolls['reporting_plies'];//remaining plie
+                                        
+                                        if($deleteplie==0)
+                                        {
+                                            break;
+                                        }
+                    
+                                    }
+                                else 
+                                    {
+                                            $updatedplie=$reportingrolls['reporting_plies']-$deleteplie;
+                                            $updateroll="UPDATE bai_pro3.docket_roll_info SET reporting_plies = $updatedplie WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
+                                            $updaterollresult= mysqli_query($link,$updateroll);
+                                            $deleteplie=$deleteplie-$reportingrolls['reporting_plies']; //remaining plie
+                                            if($deleteplie==0)
+                                            {
+                                                break;
+                                            }
+                                        
+                                    }
+                                }
+                            
+                            }
                             echo "<script>sweetAlert('Reversal Docket','Updated Successfully','success');window.location = '".$url."'</script>";
                            
                           

@@ -77,7 +77,7 @@ if(!(in_array($view,$has_permission)))
 			<div class="col-md-3">
 				<form name="test" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
 					<label>Enter Lot #:</label>
-					<input type="text" id="text1" name="lot_no_ref" value="" class="form-control integer" /required>
+					<input type="text" id="text1" name="lot_no_ref" value="" class="form-control" /required>
 			</div>
 			<div class="col-md-3">
 					<input type="submit" name="submit2" value="Search" class="btn btn-success" style="margin-top:18px;" />
@@ -234,10 +234,23 @@ if(isset($_POST['delete']))
 			$num6=mysqli_affected_rows($link);
 			if($num6>0)
 			{
+				$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+				$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$num8=mysqli_affected_rows($link);
+
 				$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 				//echo "<br/>".$sql7;
 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
+		}
+		else
+		{
+			$label_id = explode('-',$lid);
+			// echo $label_id[1];
+
+			$sql9="delete FROM $bai_rm_pj1.stock_report_inventory where tid='$label_id[1]'";
+			$sql_result8=mysqli_query($link, $sql9) or exit($sql9."<br/>Sql Error label_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $num9=mysqli_affected_rows($link);
 		}
 			$sql1="delete from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -360,12 +373,13 @@ if(isset($_POST['put']))
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		//$total_issued=$sql_row['total_issued'];
+		$total_issued=$sql_row['total_issued'];
 		$total_returned=$sql_row['total_returned'];
 		$total_qty_allocated=$sql_row['total_qty_allocated'];
 	}
 	
-	if($total_qty_allocated==$total_returned)
+	//if($total_qty_allocated==$total_returned)
+	if($total_qty_allocated==0 && ($total_issued-$total_returned)==0)
 	{
 		if(in_array($authorized,$has_permission))
 		{
@@ -420,6 +434,10 @@ if(isset($_POST['put']))
 				
 				if($num5==$num6)
 				{
+					$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+					$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$num8=mysqli_affected_rows($link);
+
 					$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 			 		// "<br/>".$sql7;
 			 
@@ -481,6 +499,10 @@ if(isset($_POST['put']))
 				
 					if($num5==$num6)
 					{
+						$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+						$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$num8=mysqli_affected_rows($link);
+
 						$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
 						$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num7=mysqli_affected_rows($link);
@@ -509,11 +531,11 @@ echo "</div>";
 </div>
 </div>
 <script>
-		jQuery('#text1').keyup(function() {
-		var raw_text =  jQuery(this).val();
-		var return_text = raw_text.replace(/[^a-zA-Z0-9 _]/g,'');
-		jQuery(this).val(return_text);
-	});
+	// 	jQuery('#text1').keyup(function() {
+	// 	var raw_text =  jQuery(this).val();
+	// 	var return_text = raw_text.replace(/[^a-zA-Z0-9 _]/g,'');
+	// 	jQuery(this).val(return_text);
+	// });
 
 		function check_reason()
 		{

@@ -284,8 +284,12 @@ function loadpopup(url)
 setTimeout(function()
 {
     var shift = document.getElementById('shift').value; 
-    var url = window.location.href+'&shift='+shift;
+    var url = window.location.href;
+    var url1 = window.location.href.split('&')[0];
     if(shift){
+      window.location.href = url1+'&shift='+shift;  
+    }
+    else{
         window.location.href = url;    
     }
 }, 120000);
@@ -421,12 +425,12 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
     Input Management System - Production WIP Dashboard -
     <span style="color:#fff;font-size:12px;margin-left:15px;">Refresh Rate: 120 Sec.</span>
     <?php
-    $sql="select max(ims_log_date) as lastup from $bai_pro3.ims_log";
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row=mysqli_fetch_array($sql_result))
-    {   
-      echo '<span style="font-size:12px;color:#CCC;">Last Update at:'.$sql_row['lastup'].'</span>';
-    }
+    // $sql="select max(ims_log_date) as lastup from $bai_pro3.ims_log";
+    // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($sql_row=mysqli_fetch_array($sql_result))
+    // {   
+    //   echo '<span style="font-size:12px;color:#CCC;">Last Update at:'.$sql_row['lastup'].'</span>';
+    // }
     ?>
   </div>
   <div class="panel-body">
@@ -454,7 +458,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
     <div class="table-responsiv">
       <div class='col-sm-12'>
    <?php
-      $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+      $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(module_name ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where module_master.status='active' GROUP BY section ORDER BY section + 0";
       $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $break_counter = 0;
       while($sql_rowx=mysqli_fetch_array($sql_resultx))     //section Loop -start
@@ -525,7 +529,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
               <?php 
                
                $wip='0';  
-                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
+                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
                 $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(mysqli_num_rows($sql_resultwip)>0)
                 {
@@ -533,7 +537,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   {
                       $bundle_numbers[]=$sql_rowwip['pac_tid'];
                   }
-                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module'";
+                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).")";
                  // echo $sqlwip12."<br>";
                   $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
@@ -543,7 +547,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   unset($bundle_numbers);
                 }
                 ?>
-                  <a href="#" data-toggle="tootip" tile="M-<?php echo $module; ?> WIP :  
+                  <a href="#" data-toggle="tooltip" tile="M-<?php echo $module; ?> WIP :  
                   <?php echo $wip; 
                  
                   //$wip=$sql_rowwip['WIP'];
@@ -614,7 +618,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 				  $sizes_implode1="'".implode("','",$sizes_explode)."'"; 				  
                   $rejected=0;
                   unset($sizes_explode);
-                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and qms_remarks in ('".$ims_remarks."')";
+                  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
                   $sql_result33=mysqli_query($link, $sql33) ;
                   //echo  $sql33;
                   while($sql_row33=mysqli_fetch_array($sql_result33))
@@ -641,7 +645,9 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                     $input_qty2=$sql_row2['Input'];      // input qty
                     $output_qty2=$sql_row2['Output'];      // output qty
                   }
-
+				  
+				  
+				
                   $input_qty=$input_qty1+$input_qty2;      // input qty
                   $output_qty=$output_qty1+$output_qty2;
 

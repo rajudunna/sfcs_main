@@ -5,6 +5,8 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+
 $order_quantity_mail=$conf1->get('order_quantity_mail');
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
@@ -283,7 +285,7 @@ echo "</div></div>";
 <form action="index.php?r=<?php echo $_GET['r']?>" method="post" name="f3">
 <?php
 error_reporting(0);
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
 	$row_count = 0;
 	$style=$_POST['style'];

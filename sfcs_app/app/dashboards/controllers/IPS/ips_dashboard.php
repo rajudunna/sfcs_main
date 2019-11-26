@@ -63,7 +63,7 @@ while($sql_row=mysqli_fetch_array($scanning_result))
 
 $sec_id=$_GET["sec"];
 
-$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id GROUP BY section ORDER BY section + 0";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$sec_id and module_master.status='active' GROUP BY section ORDER BY section + 0";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -98,7 +98,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$module=$mods[$x];
 			$blink_check=0;
 			
-			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
+			$sql11="select sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no='$module' AND ims_remarks<>'Sample'";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
@@ -146,6 +146,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$type_of_sewing=$sql_rowy['type_of_sewing'];
 				}
 				$rej_qty=0;
+				$rej_qty1=0;
+				$replce_qty=0;
 				$qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
 				LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
 				WHERE tm.`style` ='$style' AND tm.`color` = '$color_info'
@@ -168,8 +170,25 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 					  $input_ops_code=$sql_row123['operation_code'];
 					}
-				}				
-				$sql1212="SELECT sum(recut_in+replace_in) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
+				}	
+
+				$sql12121="SELECT sum(recut_in) as qty,sum(replace_in) as rqty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
+				// echo $sql12.';<br>';
+				$sql_result12121=mysqli_query($link, $sql12121) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12121=mysqli_fetch_array($sql_result12121))
+				{
+					if($sql_row12121['qty'] > 0)
+					{
+						$rej_qty1 = $sql_row12121['qty'];
+					}
+					
+					if($sql_row12121['rqty'] > 0)
+					{
+						$replce_qty = $sql_row12121['rqty'];
+					}
+				}	
+				
+				$sql1212="SELECT sum(carton_act_qty) as qty FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random ='$input_job_no_random_ref' and doc_type='R'";
 				// echo $sql12.';<br>';
 				$sql_result1212=mysqli_query($link, $sql1212) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1212=mysqli_fetch_array($sql_result1212))
@@ -179,7 +198,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$rej_qty = $sql_row1212['qty'];
 					}
 				}
-				$sql12="SELECT sum(recevied_qty+recut_in) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
+				$sql12="SELECT sum(recevied_qty) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$ops_code";
 				// echo $sql12.';<br>';
 				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -198,7 +217,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					// }			
 				}
 
-				if($rej_qty > 0)
+				if($rej_qty > 0 or $rej_qty1>0 or $replce_qty)
 				{
 					$rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
 				}
@@ -231,7 +250,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$cols_de = str_pad("Color:".trim(implode(",",$colors)),80)."\n";
 				}
 					
-				if($input_trims_status>1)
+				if($input_trims_status>2)
 				{
 					$add_css="";
 				}

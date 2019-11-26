@@ -18,7 +18,7 @@ if($section > 0){
     $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
 
     //getting all modules against to the section
-    $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section GROUP BY section ORDER BY section + 0";
+    $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section=$section GROUP BY section ORDER BY section + 0";
     $modules_result = mysqli_query($link,$modules_query) or exit($data.="No modules Found");
     while($row = mysqli_fetch_array($modules_result)){
         $modules_str = $row['sec_mods'];
@@ -38,7 +38,7 @@ if($section > 0){
             /*  BLOCK - 1 */
             //getting the WIP OF module in a section
             $ims_wip_query = "SELECT SUM(ims_qty-ims_pro_qty) AS WIP  from $bai_pro3.ims_log
-                              WHERE ims_mod_no='$module' and ims_status<>'DONE' AND input_job_rand_no_ref NOT IN (SELECT input_job_no_random FROM $bai_pro3.pac_stat_log_input_job WHERE type_of_sewing=3)";
+                              WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
             //echo $ims_wip_query;                  
             $ims_wip_result = mysqli_query($link,$ims_wip_query) or exit($data.='Problem in ims wip');
             while($row = mysqli_fetch_array($ims_wip_result)){
