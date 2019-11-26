@@ -268,14 +268,10 @@ if(mysqli_num_rows($sql_result1)>0)
 else
 {
 
-	$select_check_two="select yer_mon from $bai_pro.tbl_freez_plan_track where yer_mon='$date'";
-			$result_insert_two=mysql_query($select_check_two,$link) or ("Sql error".mysql_error());
-			$check_result_two=mysqli_num_rows($result_insert_two);
-			if($check_result_two==0)
-			{
-				$sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_track (yer_mon) values ('".$date."')";
-				mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
+
+    $sql="INSERT ignore INTO $bai_pro.tbl_freez_plan_track (yer_mon) values ('".$date."')";
+	mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	$username = getrbac_user()['uname']; 
 	
 	$sql="update $bai_pro.tbl_freez_plan_track set verified_on='".date("Y-m-d H:i:s")."', verified_by='".$username."' where yer_mon='".$date."'";

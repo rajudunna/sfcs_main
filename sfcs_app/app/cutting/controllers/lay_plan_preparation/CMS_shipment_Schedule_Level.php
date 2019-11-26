@@ -120,7 +120,7 @@ function isNumber($c)
 				{
 					$buyer_id_new=$sql_row44['buyer_code'];
 				}
-				$sql1111="select movex_style,style_id,buyer_id from $bai_pro2.movex_styles where movex_style=\"".$style."\" and style_id=\"".$style_id."\" and buyer_id=\"".$buyer_id_new."\"";
+				$sql1111="select movex_style from $bai_pro2.movex_styles where movex_style=\"".$style."\"";
 				$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1111_result)==0)
 				{
