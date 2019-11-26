@@ -719,14 +719,14 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		//if($clubbing==0) //Disabled auto finding of lots, if color is clubbed
 		{
 			//Commented due to performance issue 20120319
-			 $sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-			$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1x=mysqli_fetch_array($sql_result1x))
-			{
+			// $sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+			//$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//while($sql_row1x=mysqli_fetch_array($sql_result1x))
+			//{
 				//Disabled because of taking values from PMS040
 				//echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 				
-			} 
+			//} 
 			//Commented due to performance issue 20120319
 		}
 		
