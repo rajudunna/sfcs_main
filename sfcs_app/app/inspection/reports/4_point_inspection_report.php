@@ -1,3 +1,4 @@
+
 <style>
 @media print {
     @page { margin: 0; }
@@ -13,6 +14,7 @@ body { zoom:72%;}
 #leftbar{ display:none;}
 #CUT_PLAN_NEW_13019{ width:57%; margin-left:20px;}
 }
+
 </style>
 <?php
 include('../../../common/config/config.php');
@@ -1492,7 +1494,7 @@ tags will be replaced.-->
   <td class=xl6919758 style='border-top:none'>&nbsp;</td>
   <td class=xl6919758 style='border-top:none'>&nbsp;</td>
   <td class=xl6919758 colspan=2>Fabric Quality</td>
-  <td class=xl8219758 style='border-top:none'>- <?php echo $fab_qua;?></td>
+  <td class=xl8219758 style='font-size:9pt; border-top:none'>- <?php echo $fab_qua;?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758>&nbsp;</td>
@@ -1513,7 +1515,7 @@ tags will be replaced.-->
   <td class=xl6419758></td>
   <td class=xl6419758></td>
   <td class=xl6419758 colspan=2>Composition</td>
-  <td class=xl8219758 style='border-top:none'>- <?php echo $fabric_composition;?></td>
+  <td class=xl8219758 style='font-size:9pt; border-top:none'>- <?php echo $fabric_composition;?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
@@ -1532,9 +1534,9 @@ tags will be replaced.-->
   <td class=xl6419758>Supplier</td>
   <td class=xl6419758></td>
   <!-- <td class=xl8219758 style='border-top:none'>- <?php echo wordwrap($supplier,30,"<br>\n",TRUE);?></td> -->
-  <td class=xl8219758 style='border-top:none'>- <?php echo substr($supplier,0,28);?></td>
+  <td class=xl8219758 style='font-size:9pt;border-top:none' id='supplier_name'>- <?php echo substr($supplier,0,28);?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
-  <td class=xl8219758 style='border-top:none'>&nbsp;</td>
+  <td class=xl8219758 style='border-top:none'>&nbsp;</td> 
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl1519758></td>
@@ -1554,7 +1556,7 @@ tags will be replaced.-->
   <td class=xl1519758></td>
   <td class=xl6419758>Buyer</td>
   <td class=xl6419758></td>
-  <td class=xl8219758 style='border-top:none'>- <?php echo substr($buyer,0,23)?></td>
+  <td class=xl8219758 style='font-size:9pt;border-top:none'>- <?php echo substr($buyer,0,23)?></td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
   <td class=xl8219758 style='border-top:none'>&nbsp;</td>
@@ -1798,7 +1800,7 @@ tags will be replaced.-->
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Total Point</td>
   <td rowspan=2 class=xl8719758 width=53 style='width:40pt'>Total Points</td>
-  <td rowspan=2 class=xl8719758 width=49 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2 class=xl8719758 width=49 style='border-bottom:.5pt solid black;
   width:37pt'>Point Rate</td>
   <td rowspan=2 class=xl8519758 width=102 style='border-bottom:.5pt solid black;
   width:77pt'>Comments</td>
@@ -1867,7 +1869,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	
 	
 	?></td> 
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
+	<td colspan=2 class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
@@ -2208,7 +2210,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl10419758></td>
   <td class=xl10419758></td>
   <td colspan=2 rowspan=2 class=xl9719758 style='border-right:.5pt solid black;
-  border-bottom:.5pt solid black'>Points / 100 Square</td>
+  border-bottom:.5pt solid black'>Points/100Square</td>
   <td class=xl1519758></td>
   <td class=xl11519758 colspan=2>Swatch</td>
   <td class=xl11619758>&nbsp;</td>
