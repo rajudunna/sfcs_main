@@ -1244,7 +1244,7 @@
                                 $update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
                                 mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                $select_check_three="select tid from $bai_pro3.`ims_log` where tid='$updatable_id'";
+                                $select_check_three="select tid from $bai_pro3.`ims_log` where tid=$updatable_id";
 								$result_insert_three=mysqli_query($select_check_three,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$check_result_three=mysqli_num_rows($result_insert_three);
 								if($check_result_three==0)

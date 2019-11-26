@@ -102,7 +102,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			if($r["order_s_".$sizes_array[$i].""]>0)
 			{
 				//$temp1=$r[$test];
-				$sql1113="select parent_id,order_col_des from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and order_col_des='".$color_code."'";
+				$sql1113="select parent_id,order_col_des from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and order_col_des='".$color_code."' and ref_size_name='".$sizes_tmp[$i]."'";
 				$sql1113_result=mysqli_query($link, $sql1113) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1113_result)==0)
 				{
