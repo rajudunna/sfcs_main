@@ -1798,7 +1798,7 @@ tags will be replaced.-->
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Total Point</td>
   <td rowspan=2 class=xl8719758 width=53 style='width:40pt'>Total Points</td>
-  <td rowspan=2 class=xl8719758 width=49 style='border-bottom:.5pt solid black;
+  <td rowspan=2 colspan=2 class=xl8719758 width=49 style='border-bottom:.5pt solid black;
   width:37pt'>Point Rate</td>
   <td rowspan=2 class=xl8519758 width=102 style='border-bottom:.5pt solid black;
   width:77pt'>Comments</td>
@@ -1867,7 +1867,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	
 	
 	?></td> 
-	<td class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
+	<td colspan=2 class=xl8919758 style='border-top:none;border-left:none;text-align:right'><?php echo $rate; ?></td>
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
@@ -2208,7 +2208,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   <td class=xl10419758></td>
   <td class=xl10419758></td>
   <td colspan=2 rowspan=2 class=xl9719758 style='border-right:.5pt solid black;
-  border-bottom:.5pt solid black'>Points / 100 Square</td>
+  border-bottom:.5pt solid black'>Points/100Square</td>
   <td class=xl1519758></td>
   <td class=xl11519758 colspan=2>Swatch</td>
   <td class=xl11619758>&nbsp;</td>
