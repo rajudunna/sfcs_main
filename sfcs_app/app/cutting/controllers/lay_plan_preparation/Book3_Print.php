@@ -504,8 +504,8 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	}
 	// echo "Pur Length=".$purlength."<br>";
 	//Binding Consumption / YY Calculation
-	
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+	//No changes done in this ticket but in UAT seperate_docket column chnanged in below query
+	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\",seperate_docket from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	if($sql_num_check > 0)
