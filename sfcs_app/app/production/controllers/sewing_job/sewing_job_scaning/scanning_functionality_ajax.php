@@ -1817,7 +1817,7 @@ else if($concurrent_flag == 0)
 						$parent_id=mysqli_insert_id($link);
 
 					}
-					$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+					$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,'$input_job_random_ref','$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
 					$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 				}
 				//inserting into rejections_reason_track'
