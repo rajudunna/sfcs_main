@@ -88,7 +88,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$transaction_time="updated_time=\"".date("Y-m-d H:i:s")."\"";
 				}
-				$sql14="select order_tid2 from $bai_pro3.cat_stat_log where order_tid2='$ssc_code2'";
+				$sql14="select * from $bai_pro3.cat_stat_log where order_tid2='$ssc_code2'";
 				echo $sql14."<br></br>";
 				$sql14_result=mysqli_query($link, $sql14) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql14_result)==0)

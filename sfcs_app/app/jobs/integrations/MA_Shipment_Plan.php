@@ -194,21 +194,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 			if($order_qty>0)
 			{
-				$sql22="select ssc_code from $bai_pro2.shipment_plan_summ where ssc_code='$ssc_code'";
-				$sql22_result=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql22_result)==0)
-				{
-					$sql3="insert  into $bai_pro2.shipment_plan_summ (ssc_code) values (\"$ssc_code\")";
-					mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
+				
+				$sql3="insert ignore into $bai_pro2.shipment_plan_summ (ssc_code) values (\"$ssc_code\")";
+				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-				$sql23="select ssc_code from $bai_pro2.ssc_code_list where ssc_code='$ssc_code'";
-				$sql23_result=mysqli_query($link, $sql23) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql23_result)==0)
-				{
-					$sql3="insert  into $bai_pro2.ssc_code_list(ssc_code) values (\"$ssc_code\")";
-					mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
+				$sql3="insert ignore into $bai_pro2.ssc_code_list(ssc_code) values (\"$ssc_code\")";
+				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($order_qty>$old_order_qty)
 				{
@@ -240,20 +231,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$buyer_id_new=$sql_row44['buyer_code'];
 	}
-			
-		$sql55="select movex_style, style_id,buyer_id from $bai_pro2.movex_styles where movex_style='$style_no' and style_id='$style_no' and buyer_id='$buyer_id_new'";
-		$sql55_result=mysqli_query($link, $sql55) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql55_result)==0)
-	{
-			$sql2="insert into  $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"$style_no\", \"$style_no\",\"".$buyer_id_new."\")";
-			mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-		if(mysqli_affected_rows($link)>0)
-		{
-			$message.="<tr><td>$style_no</td><td>".$buyer_id."</td></tr>";
-			$new_styles++;	
-		}	
-	}	
+	$sql2="insert ignore into  $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"$style_no\", \"$style_no\",\"".$buyer_id_new."\")";
+	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_affected_rows($link)>0)
+	{
+		$message.="<tr><td>$style_no</td><td>".$buyer_id."</td></tr>";
+		$new_styles++;	
+	}		
 }
 // echo $message;
 $sql="select * from $bai_pro2.shipment_plan where style_id is NULL";
