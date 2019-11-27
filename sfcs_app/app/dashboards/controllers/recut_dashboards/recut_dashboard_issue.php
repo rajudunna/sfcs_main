@@ -280,18 +280,21 @@ function issued_to_module($bcd_id,$qty,$ref)
     }else{
 
         //retreaving emblishment operations from operatoin master
-        $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$op_code";
-        $result_ops_seq_check = $link->query($ops_seq_check);
-        if($result_ops_seq_check->num_rows > 0)
-        {
-            while($row = $result_ops_seq_check->fetch_assoc()) 
-            {
-                $ops_seq = $row['ops_sequence'];
-                $seq_id = $row['id'];
-                $ops_order = $row['operation_order'];
-            }
-        }
-        $ops_master_qry = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1"; 
+		
+        // $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$op_code";
+        // $result_ops_seq_check = $link->query($ops_seq_check);
+        // if($result_ops_seq_check->num_rows > 0)
+        // {
+            // while($row = $result_ops_seq_check->fetch_assoc()) 
+            // {
+                // $ops_seq = $row['ops_sequence'];
+                // $seq_id = $row['id'];
+                // $ops_order = $row['operation_order'];
+            // }
+        // }
+        // $ops_master_qry = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and ops_sequence = '$ops_seq'  AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code not in (10,200) ORDER BY operation_order ASC LIMIT 1"; 
+		$ops_master_qry = "SELECT tor.operation_code FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'Send PF' AND style='$style' AND color='$mapped_color' ORDER BY operation_order*1 LIMIT 1"; 
+
     }
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
