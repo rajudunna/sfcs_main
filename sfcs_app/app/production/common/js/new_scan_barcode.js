@@ -59,6 +59,16 @@ function validating_cumulative(e,t)
             }
                    
     }
+//This is for scrap button clicks if it is reverse no need update reasons
+$('#radioscrap').on('click', function(){
+    var controllerElement = document.querySelector('[ng-controller="scancode_ctrl"]');
+    var scope = angular.element(controllerElement).scope();
+    var action_mode=scope.action_mode;
+    if(action_mode=='reverse'){
+        $('#myModal').modal('toggle');
+        scope.barcode_submit('scrap');
+    } 
+})
 
 //mandatory validations for rejection reasons in modal
 $('#rejec_reasons').on('click', function(){
