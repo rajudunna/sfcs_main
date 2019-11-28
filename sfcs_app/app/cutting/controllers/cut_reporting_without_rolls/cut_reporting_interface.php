@@ -517,6 +517,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     function getdetails()
     {
          $('#c_plies').attr('readonly', true);
+         $('#cut_report').attr('disabled', true);
          $('#fab_received').attr('readonly', true);
          $('#fab_returned').attr('readonly', true);
          $('#damages').attr('readonly', true);
@@ -662,6 +663,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         else
         {
                 $('#c_plies').attr('readonly', false);
+                $('#cut_report').attr('disabled', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
                 $('#damages').attr('readonly', false);
@@ -1400,6 +1402,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#rejections_table_body').empty();
         $('#rejection_pieces').attr({'readonly':false});
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
         $('#rejection_pieces').val(0);
         $('#avl_pieces').val(0);
         $('#total_pieces').val(0);
@@ -1411,6 +1414,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     //to clear all the form data 
     function clearFormData(){
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
         $('#c_plies').val(0);
         $('#fab_received').val(0);
         $('#damages').val(0);
@@ -1439,6 +1443,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         rejections_flag = 0;
         $('#avl_pieces').val(0);
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
+        
         $('#total_pieces').val(0);
         $('#rejection_size').empty();
         $('#rejection_pieces').val(0);
@@ -1511,6 +1517,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }
         else{
             $('#c_plies').attr('readonly',false);
+            $('#cut_report').attr('disabled',false);
+            
         }
     });
 
@@ -1775,10 +1783,14 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_color').html(data.colors);
             if($('#good_report').val() == 'readonly'){
                 $('#c_plies').attr('readonly', true);
+                $('#cut_report').attr('disabled', true);
                 // $("#c_plies").attr('readonly', 'readonly');
+                
                 $('#c_plies').val(0);
             } else {
                 $('#c_plies').val(avl_plies);
+                $('#c_plies').attr('readonly', false);
+                $('#cut_report').attr('disabled', false);
             }
             // $('#c_plies').val(avl_plies);
             $('#fab_received').val(fab_req);
