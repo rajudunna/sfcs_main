@@ -153,7 +153,7 @@
 											<td>".$m['bundles']."</td>
 											<td>".$m['qty']."</td>
 											<td >
-												<a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
+												<a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
 											</td>
 										</tr>";
 									$rowcount++;

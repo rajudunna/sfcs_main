@@ -42,8 +42,9 @@
             array_push($mod_ary,$row2x['module_id']);
         }
         $mod = implode(", ",$mod_ary);
-        $mod_qry = "SELECT input_job_no_random_ref as input_job_random FROM plan_dashboard_input WHERE 
-        input_module IN ($mod) order by input_module*1";
+        $mod_qry = "SELECT input_job_no_random_ref as input_job_random FROM $bai_pro3.plan_dashboard_input WHERE 
+        input_module IN ($mod) order by  input_module*1,input_priority*1";
+        // echo  $mod_qry;
         $doc_result=mysqli_query($link, $mod_qry) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($row2x=mysqli_fetch_array($doc_result))
             {
