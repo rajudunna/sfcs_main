@@ -1475,7 +1475,7 @@ else if($concurrent_flag == 0)
 							$hout_update_result = $link->query($hout_update_qry);
 							// update
 						}else{
-							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$cur_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
+							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$plant_time_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
 							$hout_insert_result = $link->query($hout_insert_qry);
 							// insert
 						}

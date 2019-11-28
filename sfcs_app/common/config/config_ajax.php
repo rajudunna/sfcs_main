@@ -1,4 +1,5 @@
 <?php 
+//error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 //M3 Rest API Calls Details
@@ -26,6 +27,8 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 $global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
+
+$barcode_gen_emb=$conf1->get('barcode_gen_emb');
 //SFCS Db Configurations
 $host=$mysql_details['db_host'].":".$mysql_details['db_port'];
 $user=$mysql_details['db_user'];
