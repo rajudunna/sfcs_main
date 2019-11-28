@@ -353,7 +353,7 @@
                         $input_job_expo_after = explode(',',$input_job_expo);
                         foreach($input_job_expo_after as $sj)
                         {
-                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
+                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty) as excess_qty,group_concat(distinct doc_no) as doc_nos FROM `$bai_pro3`.`pac_stat_log_input_job` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
                             $result_excess_job_qry = $link->query($excess_job_qry);
                             if($result_excess_job_qry->num_rows > 0)
                             {
@@ -422,7 +422,7 @@
                                  
 
                                     //getting docket_number of replacement input_job
-                                    $cps_qry= "select DISTINCT(doc_no) AS doc_no from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$sj' and size_code = '$size_title' ";
+                                    $cps_qry= "select DISTINCT(doc_no) AS doc_no from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$sj' and size_code = '$size_title' AND type_of_sewing = 2 ";
                                     $result_cps_qry = $link->query($cps_qry);
                                     if($result_cps_qry->num_rows > 0)
                                     {
