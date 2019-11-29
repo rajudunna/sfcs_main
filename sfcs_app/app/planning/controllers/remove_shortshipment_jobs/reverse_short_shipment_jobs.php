@@ -85,6 +85,9 @@
         
         if(sizeof($remove_docs)>0)
         {
+            //To Reverse docs in RMS and cwip in WPT
+            $plan_doc_qry="UPDATE $bai_pro3.plandoc_stat_log SET short_shipment_status=0 WHERE doc_no in (".implode(",",$remove_docs).") and short_shipment_status = 1 ";
+            $plan_doc_qry_resultx=mysqli_query($link, $plan_doc_qry) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
             
             //To Reverse Jobs in Cut Table Dashboard
             $cut_chck_qry = "select distinct doc_no as cut_docs from $bai_pro3.cutting_table_plan where doc_no in (".implode(",",$remove_docs).") and short_shipment_status = 1";
