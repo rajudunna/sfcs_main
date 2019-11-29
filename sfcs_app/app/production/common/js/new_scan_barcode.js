@@ -220,7 +220,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 var trans_mode=$scope.trans_mode;
                 var action_mode=$scope.action_mode;
                 if((action_mode=='add') && (trans_mode=='good')){
-                    $scope.barcode_submit(action_mode);
+                    $scope.barcode_submit(trans_mode);
                 }
 
                 
@@ -265,7 +265,7 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                     barcode_value: $scope.barcode_value,
                     module:$scope.module,
                     op_code: $scope.op_code,
-                    trans_mode:$scope.trans_mode,
+                    trans_mode:trans_mode,
                     shift:$scope.shift,
                     trans_action:$scope.action_mode,
                     rej_data:$scope.rej_data,
