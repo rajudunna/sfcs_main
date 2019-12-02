@@ -314,10 +314,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0 && $call_flag > 0){
 				$plan_cut_bundle = plan_cut_bundle($docket_no,$pliespercut);
-				// $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
-				// if($insert_bundle_creation_data){
-				// 	//Data inserted successfully
-				// }
+				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+				if($insert_bundle_creation_data){
+					//Data inserted successfully
+				}
 				$docket_no = '';
 			}
 		}
@@ -345,10 +345,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0  && $call_flag > 0){
 				$plan_cut_bundle = plan_cut_bundle($docket_no,$temp);
-				// $insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
-				// if($insert_bundle_creation_data){
-				// 	//Data inserted successfully
-				// }
+				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
+				if($insert_bundle_creation_data){
+					//Data inserted successfully
+				}
 				$docket_no = '';
 			}
 		}
