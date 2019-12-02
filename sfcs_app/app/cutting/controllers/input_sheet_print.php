@@ -26,19 +26,22 @@ while($sql_row41=mysqli_fetch_array($sql_result41))
 		}
 	
 		$sql41="select vpo from $bai_pro3.bai_orders_db_confirm where order_del_no='".$sql_row41['order_del_no']."'";
-		$sql_result41=mysqli_query($link, $sql41) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row413=mysqli_fetch_array($sql_result41))
+		$sql_result412=mysqli_query($link, $sql41) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row413=mysqli_fetch_array($sql_result412))
 		{
 			$vpo=$sql_row413["vpo"];
 		}
 		$status=1;
-		$c_block=$sql_row413['destination'];
+		$c_block=$sql_row41['destination'];
+		$style=$sql_row41['order_style_no'];
+		$schedule=$sql_row41['order_del_no'];
 	}
 
 	$acut_no[$sql_row41['tid']]=$sql_row41['acutno'];
 	$bundle_num[]=$sql_row41['tid'];
 	$size[$sql_row41['tid']]=$sql_row41['m3_size_code'];
 	$quantity[$sql_row41['tid']]=$sql_row41['carton_act_qty'];
+	
 }
 
 $sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$input_job'";
@@ -575,7 +578,8 @@ tags will be replaced.-->
   <td class=xl1532733></td>
   <td class=xl1532733></td>
   <td class=xl6532733>VPO</td>
-  <td colspan=4 class=xl1532733><?php echo $vpo;?></td>
+  <td  colspan=4 class=xl6532733><?php echo $vpo;?></td>
+ 
   <td class=xl1532733></td>
  </tr>
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -628,21 +632,20 @@ tags will be replaced.-->
   <td class=xl6932733 width=87 style='border-left:none;width:65pt'>Bundle #</td>
   <td class=xl6932733 width=64 style='border-left:none;width:48pt'>Size</td>
   <td class=xl6932733 width=64 style='border-left:none;width:48pt'>In Qty</td>
-  <td class=xl7132733 width=37 style='border-left:none;width:28pt'>Line No.</td>
-  <td class=xl6932733 width=66 style='border-left:none;width:50pt'>Date</td>
+  <td class=xl6932733 colspan=2 width=93 style='border-left:none;width:80pt'>Date</td>
   <td class=xl6932733 width=99 style='border-left:none;width:74pt'>Rec. Sign</td>
-  <td class=xl6932733 width=93 style='border-left:none;width:70pt'>PTS Sign.</td>
-  <td class=xl6932733 width=58 style='border-left:none;width:44pt'>Out Qty</td>
+   <td class=xl6932733 width=58 style='border-left:none;width:44pt'>Out Qty</td>
   <td class=xl6932733 width=59 style='border-left:none;width:44pt'>Variance</td>
   <td class=xl6932733 width=57 style='border-left:none;width:43pt'>Reject</td>
   <td class=xl6932733 width=57 style='border-left:none;width:43pt'>Sample</td>
   <td class=xl6932733 width=102 style='border-left:none;width:77pt'>Packing
   Rec.</td>
-  <td class=xl6932733 width=166 style='border-left:none;width:125pt'>Remarks</td>
+  <td class=xl6932733 colspan=2  width=166 style='border-left:none;width:125pt'>Remarks</td>
   <td class=xl6632733 width=40 style='width:30pt'></td>
  </tr>
   <?php
   $total=0;
+  
 	for($i=0;$i<sizeof($bundle_num);$i++)
 	{
 		?>
@@ -650,19 +653,17 @@ tags will be replaced.-->
   <td height=30 class=xl6632733 width=35 style='height:22.5pt;width:26pt'></td>
   <td class=xl7132733 width=88 style='border-top:none;width:66pt'><?php echo ($i+1);?></td>
   <td class=xl7132733 width=87 style='border-top:none;border-left:none;
-  width:65pt'><?php echo $cut_num[$i]."-".$bundle_num[$i];?></td>
+  width:65pt'><?php echo $acut_no[$bundle_num[$i]]."-".$bundle_num[$i];?></td>
+  <td class=xl7132733 width=93 style='border-top:none;border-left:none;
+  width:48pt'><?php echo $size[$bundle_num[$i]];?></td>
   <td class=xl7132733 width=64 style='border-top:none;border-left:none;
-  width:48pt'><?php echo $size[$i];?></td>
-  <td class=xl7132733 width=64 style='border-top:none;border-left:none;
-  width:48pt'><?php echo $quantity[$i];?></td>
-  <td class=xl6932733 width=37 style='border-top:none;border-left:none;
-  width:28pt'>&nbsp;</td>
-  <td class=xl6932733 width=66 style='border-top:none;border-left:none;
-  width:50pt'>&nbsp;</td>
+  width:48pt'><?php echo $quantity[$bundle_num[$i]];?></td>
+  <td class=xl6932733 colspan=2 width=37 style='border-top:none;border-left:none;
+  width:80pt'>&nbsp;</td>
+
   <td class=xl6932733 width=99 style='border-top:none;border-left:none;
   width:74pt'>&nbsp;</td>
-  <td class=xl6932733 width=93 style='border-top:none;border-left:none;
-  width:70pt'>&nbsp;</td>
+  
   <td class=xl6932733 width=58 style='border-top:none;border-left:none;
   width:44pt'>&nbsp;</td>
   <td class=xl6932733 width=59 style='border-top:none;border-left:none;
@@ -673,12 +674,12 @@ tags will be replaced.-->
   width:43pt'>&nbsp;</td>
   <td class=xl6932733 width=102 style='border-top:none;border-left:none;
   width:77pt'>&nbsp;</td>
-  <td class=xl6932733 width=166 style='border-top:none;border-left:none;
+  <td class=xl6932733 colspan=2 width=166 style='border-top:none;border-left:none;
   width:125pt'>&nbsp;</td>
   <td class=xl6632733 width=40 style='width:30pt'></td>
  </tr>
   <?php
-	$total+= $quantity[$i];
+	$total+= $quantity[$bundle_num[$i]];
 	}
   
   ?>
@@ -687,10 +688,8 @@ tags will be replaced.-->
   <td class=xl7132733 colspan=3 width=88 style='border-top:none;width:66pt'>Total</td>
   <td class=xl7132733 width=64 style='border-top:none;border-left:none;
   width:48pt'><?php echo $total;?></td>
-  <td class=xl6932733 width=37 style='border-top:none;border-left:none;
+  <td class=xl6932733 colspan=2 width=37 style='border-top:none;border-left:none;
   width:28pt'>&nbsp;</td>
-  <td class=xl6932733 width=66 style='border-top:none;border-left:none;
-  width:50pt'>&nbsp;</td>
   <td class=xl6932733 width=99 style='border-top:none;border-left:none;
   width:74pt'>&nbsp;</td>
   <td class=xl6932733 width=93 style='border-top:none;border-left:none;
@@ -703,11 +702,9 @@ tags will be replaced.-->
   width:43pt'>&nbsp;</td>
   <td class=xl6932733 width=57 style='border-top:none;border-left:none;
   width:43pt'>&nbsp;</td>
-  <td class=xl6932733 width=102 style='border-top:none;border-left:none;
+  <td class=xl6932733 colspan=2 width=102 style='border-top:none;border-left:none;
   width:77pt'>&nbsp;</td>
-  <td class=xl6932733 width=166 style='border-top:none;border-left:none;
-  width:125pt'>&nbsp;</td>
-  <td class=xl6632733 width=40 style='width:30pt'></td>
+   <td class=xl6632733 width=40 style='width:30pt'></td>
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6632733 width=35 style='height:15.0pt;width:26pt'></td>
