@@ -222,9 +222,11 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 if((action_mode=='add') && (trans_mode=='good')){
                     $scope.barcode_submit(trans_mode);
                 }
-
-                
-
+               //For clear Rejection Reasons inputs after form submit
+                    $('#reason').val('');
+                    $scope.rej_data='';
+                    $("#tablebody").html('');
+                    $scope.rej_data=[];
             }else{
                 $scope.style="";
                 $scope.color="";
@@ -239,6 +241,11 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
                 $scope.scan_proceed="";
                 $scope.color_cod=data.color_code;
                 //$scope.scanned_status="Please Verify Barcode Once..!";
+                //For clear Rejection Reasons inputs after form submit
+                $('#reason').val('');
+                $scope.rej_data='';
+                $("#tablebody").html('');
+                $scope.rej_data=[];
             }
 
         }).error(function (data, status, headers, config) {
