@@ -208,7 +208,7 @@ if(isset($_POST['submit']))
 		
 		echo "<div class='col-sm-12 table-responsive'>
 		<table width='100%' class='table table-bordered info'><thead>
-		<tr><th>S No</th><th>Color</th><th>Sewing Job No</th><th>Cut Job No</th>";
+		<tr><th>S No</th><th>Color</th><th>Sewing Job No</th><th>Cut Job No</th><th>Cut Docket No</th>";
 		for($s=0;$s<sizeof($s_tit);$s++)
 		{
 			echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
@@ -217,7 +217,7 @@ if(isset($_POST['submit']))
 		echo "<th>Plies</th><th>Quantity</th><th>Cumulative Quantity</th><th>Yards</th></tr></thead>";
 		for($i=0;$i<sizeof($doc_no);$i++)
 		{
-			echo "<tr><td>".$sno."</td><td>".$color."</td><td>".$sewing_jobs[$doc_no[$i]]."</td><td>".$cut_no[$doc_no[$i]]."</td>";
+			echo "<tr><td>".$sno."</td><td>".$color."</td><td>".$sewing_jobs[$doc_no[$i]]."</td><td>".$cut_no[$doc_no[$i]]."</td><td>".$doc_no[$i]."</td>";
 			for($s=0;$s<sizeof($s_tit);$s++)
 			{
 				echo "<td>".$doc_no_ratio[$doc_no[$i]][$sizes_code[$s]]."</td>";
