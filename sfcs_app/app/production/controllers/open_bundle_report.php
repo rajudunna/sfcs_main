@@ -192,7 +192,7 @@ function check_val()
                                                     }
                                              ?>
                                          <?php  
-                                                $openbundle_sql="SELECT bundle_number,bundle_qty_status FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' and operation_id IN ($opcodes) GROUP BY bundle_number";
+                                                $openbundle_sql="SELECT bundle_number,bundle_qty_status FROM `brandix_bts`.`bundle_creation_data` WHERE style='".$style."' AND schedule='".$schedule."' and operation_id IN ($opcodes) order BY bundle_number";
 												// echo $openbundle_sql;
 												$select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                 $operation_bundles=array();$bundle_qty_stats_bundles = array();
