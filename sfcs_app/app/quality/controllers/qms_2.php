@@ -234,9 +234,11 @@ if(isset($_GET['tid']))
 		$reason_qty[] = $rejections_ref_explode_ref[1];
 	}
 
+	$form1=str_replace("'","",$form);
+	$form2=explode(",",$form1);
 	for ($z=0; $z < sizeof($reason); $z++)
 	{ 
-		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$reason[$z]."'";
+		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form2[$z]."' and reason_code='".$reason[$z]."'";
 		$rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
 		{
