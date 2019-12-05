@@ -257,7 +257,7 @@ if(isset($_GET['tid']))
 	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
 	
 	$select_check_one="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$tid_ref";
-	$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+	$result_insert_one=mysqli_query($select_check_one,$link) or ("Sql error".$select_check_one.mysqli_errno($GLOBALS["___mysqli_ston"]));
 
 	$check_result_one=mysqli_num_rows($result_insert_one);
 	if($check_result_one==0)
