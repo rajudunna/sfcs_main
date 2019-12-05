@@ -29,7 +29,6 @@ $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
 $color=$_GET['color'];
 $schedule=$_GET['schedule'];
-
 $sql4="select * from $bai_pro3.plandoc_stat_log where order_tid='$tran_order_tid' and cat_ref='$cat_ref2' and allocate_ref='$allocate_ref' and mk_ref='$mk_ref'";
 $sql_result1=mysqli_query($link, $sql4) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1_res=mysqli_num_rows($sql_result1);
@@ -67,6 +66,107 @@ function get_val($table_name,$field,$compare,$key,$link)
         return $sql_row['result'];
     }
     ((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
+}
+
+//plan bundles generation
+function plan_cut_bundle($docket_no,$plies_per_cut) {	
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+	$username = getrbac_user()['uname'];
+
+	$category=['cutting','Send PF','Receive PF'];
+	$operation_codes = array();
+	foreach($category as $key => $value)
+	{
+		$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref WHERE category = '".$category[$key]."'";
+		// echo $fetching_ops_with_category;
+		$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
+		while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
+		{
+			$operation_codes[] = $row['operation_code'];
+			$short_key_code[] = $row['short_cut_code'];
+		}
+	}
+	$cut_done_qty = array();
+	$plan_size_cut = array();
+
+	
+	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no = $docket_no ";
+	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+	{
+		$org_doc = $row['org_doc_no'];
+		$order_tid = $row['order_tid'];
+
+		$get_exact_size_code = "SELECT * FROM $bai_pro3.bai_orders_db_confirm 
+										WHERE order_tid = '".$order_tid."'";
+		$sql_query_size_code = mysqli_query($link,$get_exact_size_code) or exit("bai_orders_db_confirm Error 1423");
+		while($row_size=mysqli_fetch_array($sql_query_size_code))
+		{
+			for($ii=0;$ii<sizeof($sizes_array);$ii++)
+			{
+				if($row_size["title_size_".$sizes_array[$ii].""]<>"")
+				{
+					$check_upto[]=$sizes_array[$ii];
+				}
+			}
+		}			
+		
+		for ($i=0; $i < sizeof($check_upto); $i++)
+		{ 
+			if ($row['a_'.$sizes_array[$i]] > 0)
+			{
+				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+				$plan_size_cut[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]];
+			}
+			else
+			{
+				$cut_done_qty[$sizes_array[$i]] =0;
+				$plan_size_cut[$sizes_array[$i]] =0;
+			}
+		}
+	}
+	foreach($cut_done_qty as $key => $value)
+	{
+		if($value>0)
+		{
+			$qty_to_fetch_size_title = "SELECT *,title_size_$key  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
+			$res_qty_to_fetch_size_title=mysqli_query($link,$qty_to_fetch_size_title) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($nop_res_qty_to_fetch_size_title=mysqli_fetch_array($res_qty_to_fetch_size_title))
+			{
+				$size_title = $nop_res_qty_to_fetch_size_title["title_size_$key"];
+				$b_style =  $nop_res_qty_to_fetch_size_title['order_style_no'];
+				$b_schedule =  $nop_res_qty_to_fetch_size_title['order_del_no'];
+				$b_colors =  $nop_res_qty_to_fetch_size_title['order_col_des'];
+			}
+			$b_size_code = $key;
+			$b_sizes = $size_title;
+
+			$bundle_no=1;
+			//size wise ratio numbers
+			$ratio_number = $plan_size_cut[$key];
+			for($m = $ratio_number; $m > 0; $m--)
+			{
+				$bundle_query = "SELECT max(bundle_no) as bundle_no from $bai_pro3.plan_cut_bundle where doc_no=$docket_no";
+				$bundle_result = mysqli_query($link,$bundle_query);
+				while($bun=mysqli_fetch_array($bundle_result))
+				{
+					$bundle_no = $bun['bundle_no']+1;
+				}	
+				$barcode=$docket_no.'-'.$bundle_no;
+
+				$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`doc_no`,`style`,`color`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`) values ('".$docket_no."','".$b_style."','".$b_colors."','".$b_sizes."','".$bundle_no."','".$plies_per_cut."','".$barcode."','".$username."')";
+				$plan_cut_insert_query_res = $link->query($plan_cut_insert_query);
+				$plan_cut_insert_id = mysqli_insert_id($link);
+				foreach($operation_codes as $index => $op_code)
+				{
+					$plan_cut_insert_transactions_query = "insert into $bai_pro3.plan_cut_bundle_trn(`plan_cut_bundle_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values ('".$plan_cut_insert_id."','".$op_code."','0','".$plies_per_cut."','0','0','".$username."','1')";
+					$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+			
+				}
+			}
+
+		}
+	}
 }
 ?>
 
@@ -196,14 +296,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo "</br>temp>=pliescut :".$sql2."</br>";
+		
+		$docket_no = mysqli_insert_id($link);
+
+
+		
+
+
+
+
+
 		$temp=$temp-$pliespercut;
 
-		$docket_no = mysqli_insert_id($link);
 		//checking for body/front categories
 		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
 		$cat_result = mysqli_query($link,$cat_query);
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0 && $call_flag > 0){
+				$plan_cut_bundle = plan_cut_bundle($docket_no,$pliespercut);
 				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
 				if($insert_bundle_creation_data){
 					//Data inserted successfully
@@ -234,6 +344,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0  && $call_flag > 0){
+				$plan_cut_bundle = plan_cut_bundle($docket_no,$temp);
 				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
 				if($insert_bundle_creation_data){
 					//Data inserted successfully
@@ -244,6 +355,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 }
+
 
 //// For back Redirection
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
@@ -278,7 +390,7 @@ if($sql_num_check==0)
     //$sql_num_confirm=mysql_num_rows($sql_result);
 }
 
-    //echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { location.href = \"../main_interface.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+    // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() { location.href = \"../main_interface.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
 
 
 $sql23="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=\"$cat_ref\" order by acutno";
@@ -412,6 +524,8 @@ while($sql_row=mysqli_fetch_array($order_joins_result))
 {
     $order_joins=$sql_row['order_joins'];
 }
+
+
 if ($order_joins>'0' or $order_joins>0) {
  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
@@ -421,10 +535,10 @@ if ($order_joins>'0' or $order_joins>0) {
         </script>";
         
     // echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-            // function Redirect() {
-                // location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$tran_order_tid&process_name=cutting&filename=layplan\";
-                // }
-            // </script>";      
+    //         function Redirect() {
+    //             location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',3,'N')."&order_tid=$tran_order_tid&process_name=cutting&filename=layplan\";
+    //             }
+    //         </script>";      
 } else {
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
             function Redirect() {
