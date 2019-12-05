@@ -1443,7 +1443,7 @@ else if($concurrent_flag == 0)
 						$plant_time_hour = $hout_plant_timings_result_data['time_value'];
 					}
 				}
-
+				$hour_plant_timing = $plant_time_hour.":00";
 				$hout_ops_qry = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='Down_Time'";
 				// echo $hout_ops_qry;
 				$hout_ops_result = $link->query($hout_ops_qry);
@@ -1476,7 +1476,7 @@ else if($concurrent_flag == 0)
 							$hout_update_result = $link->query($hout_update_qry);
 							// update
 						}else{
-							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$plant_time_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
+							$hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$hour_plant_timing','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
 							$hout_insert_result = $link->query($hout_insert_qry);
 							// insert
 						}
@@ -1818,7 +1818,7 @@ else if($concurrent_flag == 0)
 						$parent_id=mysqli_insert_id($link);
 
 					}
-					$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+					$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,'$input_job_random_ref','$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
 					$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 				}
 				//inserting into rejections_reason_track'
