@@ -156,6 +156,7 @@ $("#reason").change(function(){
         }
         if(tot==1){
             $('#quantity').val(1);
+            $('#footer').show();
             validating_cumulative();
         }
 	}
