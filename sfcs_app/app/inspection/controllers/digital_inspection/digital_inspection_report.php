@@ -373,7 +373,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode("','", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 
 						if ($po_no != '' && ($lot_no_inp == '' && $supplier_invoice == '' && $supplier_batch == '')) {
@@ -385,7 +385,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							}
 							$lot_number = implode("','", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM $bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_invoice != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_batch == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE inv_no=\"" . ($supplier_invoice) . "\"";
@@ -398,7 +398,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode("','", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_batch != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_invoice == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $bai_rm_pj1.sticker_report WHERE batch_no=\"" . ($supplier_batch) . "\"";
@@ -411,7 +411,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 							$lot_number = implode("','", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM bai_rm_pj1.sticker_report sr LEFT JOIN bai_rm_pj1.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 					//echo $sql_po_no;
 						$sql_result_po = mysqli_query($link, $sql_po_no) or exit(message_sql());
@@ -451,6 +451,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 						<table id="myTable" class="table table-striped table-bordered tableFixHead" cellspacing="0" width="100%">
 							<thead>
 								<tr>
+									<th>Select<input type="checkbox" id="selectAlll"></th>
 									<!-- <th>S NO</th> -->
 									<th>Supplier Roll No</th>
 									<th>SFCS Roll No</th>
@@ -460,13 +461,14 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 									<th>Supplier Invoice</th>
 									<th>Item Code</th>
 									<th>Item Description</th>
+									<th>Item Name</th>
 									<th>Lot No</th>
 									<th>Supplier Batch</th>
 									<th>RM Colour</th>
 									<th>Quantity</th>
 
 
-									<th>Select<input type="checkbox" id="selectAlll"></th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -481,13 +483,13 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										$inv_no = $sql_row['inv_no'];
 										$item_code = $sql_row['item'];
 										$item_desc = $sql_row['item_desc'];
+										$item_name = $sql_row['item_name'];
 										$lot_no = $sql_row['lot_no'];
 										$supplier_batch = $sql_row['batch_no'];
 										$supplier_no = $sql_row['supplier_no'];
 										$ref2 = $sql_row['ref2'];
 										$ref3 = $sql_row['qty_rec'];
 										$ctex_width = $sql_row['ctex_width'];
-										$ctex_length = $sql_row['ctex_length'];
 										$ctex_length = $sql_row['ctex_length'];
 										$rm_color = $sql_row['rm_color'];
 										$four_point_status = $sql_row['four_point_status'];
@@ -534,6 +536,11 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 										} else {
 											$item_desc;
 										}
+										if ($item_name == '') {
+											$item_name = 0;
+										} else {
+											$item_name;
+										}
 										if ($lot_no == '') {
 											$lot_no = 0;
 										} else {
@@ -570,10 +577,15 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 											$check_status = '';
 										    $check_tr_class='tr-class-enable';
 										}
-										echo '<tr class="'.$check_tr_class.'" onclick=foo("'.$four_point_status.'","'.$i.'")><td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
-										
-										echo "<td><span class='$var'><input type='checkbox' $check_status id='data_$i' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . "'>
+
+										echo "<tr class='$check_tr_class' onclick=foo('$four_point_status','$i')>
+										<td>
+										<span class='$var'><input type='checkbox' $check_status id='data_$i' name='bindingdata[]' value='" . $po_no_1 . '$' . $po_line . '$' . $po_subline . '$' . $inv_no . '$' . $item_code . '$' . $item_desc . '$' . $lot_no . '$' . $supplier_batch . '$' . $rm_color . '$' . $supplier_no . '$' . $ref2 . '$' . $ref3 . '$' . $tid . '$' . $item_name . "'>
 										</span></td>";
+
+										echo '<td>' . $supplier_no . '</td><td>' . $ref2 . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $item_name . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $ref3 . '</td><input type="hidden" name="main_id" value="' . $tid . '">';
+										
+										
 										
 										echo "</tr>";
 										$i++;
@@ -625,7 +637,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 
 			$lastinsert_id = $link->insert_id;
 
-			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,rec_qty,status,parent_id,store_in_id) VALUES";
+			$insertbinditems = "INSERT IGNORE INTO $bai_rm_pj1.inspection_population(lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,item_name,supplier_batch,rm_color,supplier_roll_no,sfcs_roll_no,rec_qty,status,parent_id,store_in_id) VALUES";
 
 			for ($j = 0; $j < $count1; $j++) {
 
@@ -644,19 +656,21 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$fcs_no = $exp[10];
 				$qty = $exp[11];
 				$main_id = $exp[12];
-				$width = $exp[13];
-				$length = $exp[14];
-				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","' . $batch . '",0,"' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
+				$item_name = $exp[13];
+				$width = $exp[14];
+				$length = $exp[15];
+				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","' . $item_name . '","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
 
 				$update_4point_status = "update bai_rm_pj1.store_in set four_point_status=1 where tid in ('" . $main_id . "')";
 
 				mysqli_query($link, $update_4point_status) or exit(message_sql());
 			}
-
+            
 			$insertbinditems = rtrim($insertbinditems, ",");
+			echo $insertbinditems;
 			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
-
+         // die();
 		echo "<script>swal('Successfully Selected.','Successfully','success')</script>";
 		$url = getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N');
 		echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id'</script>";

@@ -26,15 +26,17 @@
                                     <div class='col-lg-2'>
                                         <label >Select Date: </label>
                                         <input type="text" class="form-control" data-toggle="datepicker" style=" display: inline-block;" id="demo1" name="date" value="<?php 
-                                        if(isset($_POST['date'])) { echo $_POST['date']; } else { echo date("Y-m-d "); } ?>" />  
+                                        if($_POST['date']) { echo $_POST['date']; } ?>" />  
                                     </div>
                                     <div class='col-lg-2'>
                                         <label >Select Batch: </label>
-                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo2" name="batch" value="<?php if(isset($_POST['batch'])) { echo $_POST['batch']; }?>"/>  
+                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo2" name="batch" value="<?php 
+                                        if($_POST['batch']) { echo $_POST['batch']; }?>"/>  
                                     </div>
                                     <div class='col-lg-2'>
                                         <label >Select Lot No: </label>
-                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo3" name="lot_no" value="<?php if(isset($_POST['lot_no'])) { echo $_POST['lot_no']; }?>"/>  
+                                        <input type="text" class="form-control" style=" display: inline-block;" id="demo3" name="lot_no" value="<?php 
+                                        if($_POST['lot_no']) { echo $_POST['lot_no']; }?>"/>  
                                     </div>
                                     <div class='col-lg-2'>
                                         <input type="submit" class="btn btn-success" style='margin-top: 25px'  value="submit" name="submit" />
@@ -90,9 +92,9 @@
 				echo "<th>RM Color</th>";
 				echo "<th>Total Rolls</th>";
 				echo "<th>Total Quantity</th>";
-				echo "<th>Control Step 1</th>";
-				echo "<th>Control Step 2</th>";
-				echo "<th>Report</th>";
+				echo "<th>Status for Inspection Population</th>";
+				echo "<th>Status for 4 Point Population</th>";
+				echo "<th>Reports</th>";
 				echo "</tr>";
 				echo "</thead>";
 				$s_no=1;
@@ -241,15 +243,15 @@
 					$check=mysqli_num_rows($sql_result1);
 					if(mysqli_num_rows($sql_result1)==0)
 					{					
-						echo "<td><div class='col-sm-4' id='populate_div'>
+						echo "<td><div class='col-sm-12' id='populate_div'>
 						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id\">Set Inspection Population</a></center>
 						</div></td>";
 										
 					}	
 					else
 					{
-						echo '<td><div class="col-sm-4" id="populate_div">
-						<center><a class="btn btn-primary"> Complete </a></center>
+						echo '<td><div class="col-sm-12" id="populate_div">
+						<center><label class="label label-primary" style="font-size:12px"> Completed </label></center>
 						</div><br><br>';
 						
 						echo "<div class='col-sm-4' id='populate_div'>
@@ -260,8 +262,8 @@
 					// Third Process
 					if($check==0)
 					{
-						echo '<td><div class="col-sm-4" id="populate_div">
-							<center><a class="btn btn-primary"	> Pending to set Inspection Population </a></center>
+						echo '<td><div class="col-sm-12" id="populate_div">
+							<center><label class="label label-primary" style="font-size:12px"> Pending to set Inspection Population </label></center>
 							</div></td>';
 					}
 					else
@@ -270,14 +272,14 @@
 						$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result12)>0)
 						{					
-							echo "<td><div class='col-sm-4' id='populate_div'>
+							echo "<td><div class='col-sm-12' id='populate_div'>
 								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Proceed 4 Point Inspection</a></center>
 								</div></td>";
 						}
 						else
 						{
-							echo '<td><div class="col-sm-4" id="populate_div">
-							<center><a class="btn btn-primary"	> Complete </a></center>
+							echo '<td><div class="col-sm-12" id="populate_div">
+							<center><label class="label label-primary" style="font-size:12px"> Point Inspection Completed </label></center>
 							</div></td>';
 						}
 					}
@@ -306,22 +308,64 @@
 						 $val2=0;
 					}
 					
-					
-					if($val2==1 && $get_status == 3)
+					//To get color contunity report
+					$get_color_report = "select shade_grp from $bai_rm_pj1.store_in where lot_no ='".$sql_row['lot_no']."'";
+					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($result_color_report)>0)
 					{
-						echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a>
-						   <br><br>
-	                         <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>
-						</td>";
+                        while($row215=mysqli_fetch_array($mysqli_num_rows))
+						{
+                           $shade_grp = $row215['shade_grp'];
+                           if($shade_grp != '')
+                           {
+                           	 $color_report =1;
+                           }
+                           else
+                           {
+                           	$color_report =0;
+                           }
+						}	
 					}
 					else
 					{
-						echo '<td><div class="col-sm-4" id="populate_div">
-						<center><input type="submit" class="btn btn-md btn-primary" id="disable_id" name="set_insp_pop" value="Pending"> </center>
+                      $color_report =0;
+					}	
+					if($val2==1 && $get_status == 3)
+					{
+						echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get 4 Point Report</a>
+						   <br><br>";
+                        
+                        if($color_report ==1)
+                        {
+
+	                      echo" <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Report_Print.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>";
+                        }
+                        else
+                        {
+                        	echo '<div class="col-sm-12" id="populate_div">
+							<center><label class="label label-primary" style="font-size:12px"> Color Contunity Report Pending</label></center>
+							</div>';
+                        }
+						echo "</td>";
+					}
+					else
+					{
+						echo '<td><div class="col-sm-12" id="populate_div">
+						<center><label class="label label-primary" style="font-size:12px">4 Point Report Pending</label></center>
 						</div>';
-						echo "<br><br>
-	                         <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>
-						</td>";
+						echo "<br><br>";
+	                    if($color_report ==1)
+                        {
+
+	                      echo" <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Report_Print.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>";
+                        }
+                        else
+                        {
+                        	echo '<div class="col-sm-12" id="populate_div">
+							<center><label class="label label-primary " style="font-size:12px"> Color Contunity Report Pending</label></center>
+							</div>';
+                        }
+						echo "</td>";
 					}
 					echo "</tr>";
 					$s_no++;

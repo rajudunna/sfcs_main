@@ -1765,9 +1765,20 @@ function printpr()
 	}
 	else
 	{
-		$lot_no=urldecode($_GET['lot_no']);
-		$lot_ref=urldecode($_GET['lot_ref']);
 		$parent_id=$_GET['parent_id'];
+
+		$lot = array();
+		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id='$parent_id'";
+	    //echo $get_details;
+	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+		  $lot[] = $sql_row['lot_no'];
+		  $batch[] = $sql_row['supplier_batch'];
+		}
+
+		$lot_no=implode(",",$batch);
+		$lot_ref=implode(",",$lot);
 	}
 	
 ?>

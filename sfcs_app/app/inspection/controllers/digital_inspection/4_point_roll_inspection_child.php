@@ -214,6 +214,13 @@ while ($row111 = mysqli_fetch_array($details_result1))
     $remarks = $row111['remarks'];
 }
 
+$get_supplier_name = "select supplier from $bai_rm_pj1.sticker_report where batch_no='$batch'";
+$supplier_result = mysqli_query($link, $get_supplier_name) or exit("get_supplier_name Error--4" . mysqli_error($GLOBALS["___mysqli_ston"]));
+while ($row1112 = mysqli_fetch_array($supplier_result))
+{
+   $supplier = $row1112['supplier'];
+}
+
 ?>
 <div class="container-fluid">
     <div class="panel panel-primary">
@@ -285,7 +292,11 @@ while ($row111 = mysqli_fetch_array($details_result1))
                                     <td></td>
                                     <td></td>
                                     <td colspan="3">Remarks</td>
-                                </tr> 
+                                </tr>
+                                <tr>
+                                   <td>Supplier Name</td>
+                                    <td> <?php echo $supplier?></td> 
+                                </tr>   
                                 <tr>
                                     <td>Spec Width</td>
                                     <td><input type="text" id="spec_width" name="spec_width" autocomplete="off" value="<?= $spec_width ?>" <?php if ($spec_width)   ?> class="float"></td>
