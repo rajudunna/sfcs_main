@@ -224,7 +224,7 @@
 		#myTable_wrapper {
 			height: 500px;
 		}
-		#myTable thead th:last-child select {
+		#myTable thead th:first-child select {
 		display:none;
 	}
 		#populate_div {
