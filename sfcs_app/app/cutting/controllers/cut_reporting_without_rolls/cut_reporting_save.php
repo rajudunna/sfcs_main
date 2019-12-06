@@ -58,12 +58,140 @@ if($rollwisedata)
 	$data_exist_rslt=mysqli_query($link,$check_data_qry);
 	if($data_exist_rslt)
 	{
+		while($row_rslt = mysqli_fetch_array($data_exist_rslt))
+		{
+			$idsarr[]=$row_rslt['id'];
+		}
+		
+			$docketexisted="SELECT * from $bai_pro3.docket_number_info where doc_no=".$doc_no."";
+			$docketexistedresult=mysqli_query($link,$docketexisted);
+			if($docketexistedresult)
+			{
+				$scheduleddata1="select order_del_no from $bai_pro3.`order_cat_doc_mk_mix` where doc_no=".$doc_no."";
+				$scheduleddataresult1= mysqli_query($link,$scheduleddata1);
+				while($dockts1 = mysqli_fetch_array($scheduleddataresult1))
+				{
+					$schedule_new = $dockts1['order_del_no'];
+				}
+				
+				
+				$scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no='".$schedule_new."'";
+				$scheduleddataresult= mysqli_query($link,$scheduleddata);
+				if(mysqli_num_rows($scheduleddataresult) > 0)
+				{
+					while($dockts = mysqli_fetch_array($scheduleddataresult))
+					{
+						$scheduledockets[] = $dockts['doc_no'];
+					}
+				}
+				$docketnumberexisted="SELECT max(bundle_end) as bundle_end,max(bundle_no) as bundle_no from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+				$docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+				$docketno = mysqli_fetch_array($docketnumberexistedresult);
+				if(mysqli_num_rows($docketnumberexistedresult) > 0)
+				{
+					$padded = $docketno['bundle_end']+1;
+					$bundle=$docketno['bundle_no']+1;
+				}
+				
+			}
+			else
+			{
+				$scheduleddata1="select order_del_no from $bai_pro3.`order_cat_doc_mk_mix` where doc_no=".$doc_no."";
+				$scheduleddataresult1= mysqli_query($link,$scheduleddata1);
+				while($dockts1 = mysqli_fetch_array($scheduleddataresult1))
+				{
+					$schedule_new = $dockts1['order_del_no'];
+				}           
+				
+				$scheduleddata="select doc_no from $bai_pro3.`order_cat_doc_mk_mix` where order_del_no=".$schedule_new;
+				$scheduleddataresult= mysqli_query($link,$scheduleddata);
+				if(mysqli_num_rows($scheduleddataresult) > 0)
+				{
+					while($dockts = mysqli_fetch_array($scheduleddataresult))
+					{
+						$scheduledockets[] = $dockts['doc_no'];
+					}
+				}
+				$docketnumberexisted="SELECT max(bundle_end) as bundle_end from $bai_pro3.docket_number_info where doc_no IN (".implode(",",$scheduledockets).")";
+				$docketnumberexistedresult=mysqli_query($link,$docketnumberexisted);
+				$docketno = mysqli_fetch_array($docketnumberexistedresult);
+				if(mysqli_num_rows($docketnumberexistedresult) > 0)
+				{
+					$padded = $docketno['bundle_end']+1;
+				}
+				else
+				{            
+					$padded = 1;
+					$bundle = 1;
+				}
+			}
 		foreach($rollwisedata as $value)
 		{ 
 			$laysequence=$value[1]?$value[1]:0;
 			$exec ="INSERT INTO $bai_pro3.`docket_roll_info` (style,schedule,color,docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return)
 			VALUES ('".$style."','".$schedule."','".$color."',".$doc_no.",".$laysequence.",'".$value[2]."','".$value[3]."','".$value[4]."','".$value[5]."','".$value[6]."','".$value[7]."','".$value[8]."','".$value[9]."','".$value[10]."','".$value[11]."')";
-			$result= mysqli_query($link,$exec);   
+			$result= mysqli_query($link,$exec);
+
+			$docket_query="SELECT *,sum(reporting_plies) as totalplies,group_concat(id) as ids FROM $bai_pro3.`docket_roll_info` where docket=".$doc_no." and status=0 group by shade,lay_sequence order by lay_sequence asc";
+			$docket_queryresult = mysqli_query($link,$docket_query);
+			if(mysqli_num_rows($docket_queryresult) > 0)
+			{
+				while($row = mysqli_fetch_array($docket_queryresult))
+				{
+					$docket_info[] = $row;
+					$udpate ="UPDATE $bai_pro3.`docket_roll_info` set status=1 where id in (".$row['ids'].")";
+					mysqli_query($link,$udpate);
+				}		
+				$sizeofrolls=count($docket_info);
+				$shadebundleno=0;	
+				for($i=0;$i<=sizeof($idsarr);$i++)
+				{
+					for($k=0;$k<$sizeofrolls;$k++)
+					{
+						$shadebundleno++;
+						
+						//getting details from plan_cut_bundle
+						$get_det_qry="select size,id,plies from $bai_pro3.plan_cut_bundle where id='".$idsarr[$i]."'";
+						$get_det_qry_rslt= mysqli_query($link,$get_det_qry);
+						while($rowdet = mysqli_fetch_array($get_det_qry_rslt))
+						{
+							$size = $rowdet['size'];
+							$plan_id = $rowdet['id'];
+							$planplies = $rowdet['plies'];
+						
+						
+							if($padded==1)
+							{
+								$startno=$padded;
+								$padded=$docket_info[$k]['totalplies'];
+							}
+							else
+							{
+								$startno=$padded+1;
+								$padded+=$docket_info[$k]['totalplies'];	
+							}
+							
+							//inserting data into docket_number_info
+							$insert_docket_num_info="INSERT INTO $bai_pro3.`docket_number_info` (style,color,plan_cut_bundle_id,doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty,tran_user,status)
+							VALUES ('".$style."','".$color."','".$plan_id."',".$doc_no.",'".$size."',".$bundle.",'".$bundle."-".$shadebundleno."','".$value[2]."',".$startno.",".$padded.",".$plies.",'".$username."','0')";
+							$result= mysqli_query($link,$insert_docket_num_info);
+							$id=mysqli_insert_id($link);
+							
+							foreach($operation_codes as $index => $op_code)
+							{
+								$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values ('".$id."','".$plan_id."','".$op_code."','0','".$plies."','0','0','".$username."','1')";
+								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+						
+							}
+						}
+					}
+					
+					$bundle++;
+					// $ids++;	
+					$shadebundleno=0;				
+				}
+				
+			}	
 		}
 	}
 	else
@@ -248,8 +376,8 @@ if($rollwisedata)
 								$padded+=$docket_info[$k]['totalplies'];	
 							}					
 							
-							$docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty,tran_user)
-							VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].",'".$username."')";
+							$docketrolinfo ="INSERT INTO $bai_pro3.`docket_number_info` (doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty,tran_user,status)
+							VALUES (".$doc_no.",'".$key."',".$bundle.",'".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$padded.",".$docket_info[$k]['totalplies'].",'".$username."','0')";
 							$result= mysqli_query($link,$docketrolinfo);
 							$id=mysqli_insert_id($link);
 							if($emb_check_in_roll==1 && $barcode_gen_emb=='yes')
@@ -407,8 +535,8 @@ else
 						}
 						
 						//inserting data into docket_number_info
-						$insert_docket_num_info="INSERT INTO $bai_pro3.`docket_number_info` (style,color,plan_cut_bundle_id,doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty,tran_user)
-						VALUES ('".$style."','".$color."','".$plan_id."',".$doc_no.",'".$size."',".$bundle.",'".$bundle."-".$shadebundleno."','',".$startno.",".$padded.",".$plies.",'".$username."')";
+						$insert_docket_num_info="INSERT INTO $bai_pro3.`docket_number_info` (style,color,plan_cut_bundle_id,doc_no,size,bundle_no,shade_bundle,shade,bundle_start,bundle_end,qty,tran_user,status)
+						VALUES ('".$style."','".$color."','".$plan_id."',".$doc_no.",'".$size."',".$bundle.",'".$bundle."-".$shadebundleno."','',".$startno.",".$padded.",".$plies.",'".$username."','0')";
 						$result= mysqli_query($link,$insert_docket_num_info);
 						$id=mysqli_insert_id($link);
 						
@@ -431,6 +559,20 @@ else
 	
 }
 
+		$category=['sewing'];
+		$operation_codes = array();
+		foreach($category as $key => $value)
+		{
+			$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref WHERE category = '".$category[$key]."'";
+			// echo $fetching_ops_with_category;
+			$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
+			while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
+			{
+				$operation_codes[] = $row['operation_code'];
+				$short_key_code[] = $row['short_cut_code'];
+			}
+		}
+
 		//getting qty from pac_stat_log_input_job
 		$get_qty_qry="select max(carton_act_qty) as carton_act_qty from $bai_pro3.pac_stat_log_input_job WHERE doc_no=$doc_no";
 		$get_qty_rslt = mysqli_query($link, $get_qty_qry) or exit("Sql Error : get_qty_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -439,7 +581,7 @@ else
 		  $plan_bundleqty=$rslt_row['carton_act_qty'];
 		}
 		//generating actual logical bundles
-		$act_cut_bundle_qry = "SELECT * FROM $bai_pro3.docket_number_info WHERE doc_no=$doc_no";
+		$act_cut_bundle_qry = "SELECT * FROM $bai_pro3.docket_number_info WHERE doc_no=$doc_no and status=0";
         $act_cut_bundle_res = mysqli_query($link, $act_cut_bundle_qry) or exit("Sql Error : act_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($act_cut_bundle_res)>0)
         {
@@ -455,7 +597,6 @@ else
                         $reported_qty = $size_plies;
                     }
                                      
-                    $input_job_num_rand=$schedule.date("ymd").$input_job_num;
                     // doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence,sref_id
                     $ins_qry =  "INSERT INTO $bai_pro3.act_log_bundle 
                     (
@@ -473,8 +614,17 @@ else
                     );
                     ";
                     $result_time = mysqli_query($link, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$actlogid=mysqli_insert_id($link);
                     $size_plies = $size_plies - $reported_qty;
-
+						
+					foreach($operation_codes as $index => $op_code)
+					{
+						$act_log_trn_qry="INSERT INTO $bai_pro3.act_log_bundle_trn(act_log_bundle_id,ops_code,rec_qty,original_qty,good_qty,rejection_qty,tran_user,status) VALUES ('".$actlogid."','".$op_code."','0','".$reported_qty."','0','0','".$username."','1')";
+						$act_log_trn_det = $link->query($act_log_trn_qry);	
+					}
+					
+					$udpate ="UPDATE $bai_pro3.`docket_number_info` set status=1 where id='".$act_cut_bundle_id."'";
+					mysqli_query($link,$udpate);
                 } while ($size_plies > 0);
 
             }
