@@ -154,7 +154,7 @@ function plan_cut_bundle($docket_no,$plies_per_cut) {
 				}	
 				$barcode=$docket_no.'-'.$bundle_no;
 
-				$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`doc_no`,`style`,`color`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`) values ('".$docket_no."','".$b_style."','".$b_colors."','".$b_sizes."','".$bundle_no."','".$plies_per_cut."','".$barcode."','".$username."')";
+				$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`doc_no`,`style`,`color`,`size_code`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`) values ('".$docket_no."','".$b_style."','".$b_colors."','".$b_size_code."','".$b_sizes."','".$bundle_no."','".$plies_per_cut."','".$barcode."','".$username."')";
 				$plan_cut_insert_query_res = $link->query($plan_cut_insert_query);
 				$plan_cut_insert_id = mysqli_insert_id($link);
 				foreach($operation_codes as $index => $op_code)
