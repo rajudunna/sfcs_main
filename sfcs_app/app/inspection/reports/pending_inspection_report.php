@@ -105,6 +105,7 @@
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rows=mysqli_num_rows($sql_result121);
 					
+                    $main_lot[] = $sql_row['lot_no'];
 					$lots=explode(",",$sql_row['lot_no']);
 					$suppliers=explode(",",$sql_row['supplier']);
 					$batchs=explode(",",$sql_row['batch']);
@@ -309,7 +310,8 @@
 					}
 					
 					//To get color contunity report
-					$get_color_report = "select shade_grp from $bai_rm_pj1.store_in where lot_no ='".$sql_row['lot_no']."'";
+					$lotnumber = implode(",",$main_lot);
+					$get_color_report = "select shade_grp from $bai_rm_pj1.store_in where lot_no in ($lotnumber)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
