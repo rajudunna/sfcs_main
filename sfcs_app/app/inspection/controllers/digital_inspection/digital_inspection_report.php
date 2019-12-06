@@ -667,7 +667,6 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			}
             
 			$insertbinditems = rtrim($insertbinditems, ",");
-			echo $insertbinditems;
 			mysqli_query($link, $insertbinditems) or exit(message_sql());
 		}
          // die();
