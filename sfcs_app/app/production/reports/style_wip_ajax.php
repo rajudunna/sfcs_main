@@ -212,7 +212,7 @@ else
 	}
 	$opertions = implode(',',$operation_code1);
 	
-	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
+	$get_ops_query = "SELECT tor.operation_name AS operation_name,tor.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE tor.display_operations='yes' AND tor.operation_code IN ($opertions) GROUP BY operation_code ORDER BY CAST(tsm.operation_order AS CHAR)";
 	//echo $get_ops_query;
 	$ops_query_result=$link->query($get_ops_query);
 	while ($row1 = $ops_query_result->fetch_assoc())
