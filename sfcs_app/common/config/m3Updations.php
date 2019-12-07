@@ -419,7 +419,16 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     {
                         $is_m3 = $row['default_operration'];
                     }
-                   
+                        //getting m3_op_code
+                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
+                        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+                        {
+                            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                            {
+                                $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                            }
+                        }
                         //got the main ops code
                     // if(strtolower($is_m3) == 'yes')
                     // {
