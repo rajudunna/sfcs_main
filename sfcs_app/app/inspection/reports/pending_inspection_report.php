@@ -250,7 +250,7 @@
 					echo "<td>".$sql_row['qty']."</td>";
 					
 					$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
-					
+					$pop_up_path1="../sfcs_app/app/inspection/controllers/digital_inspection/C_Tex_Report_Print.php";
 					
 					// second Process
 					$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
@@ -331,21 +331,20 @@
 					
 					//To get color contunity report
 					$lotnumber = implode(",",$main_lot);
-					$get_color_report = "select ref4 from $bai_rm_pj1.store_in where lot_no in (".$sql_row['lot_no'].")";
+					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in (".$sql_row['lot_no'].")";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
                         while($row215=mysqli_fetch_array($result_color_report))
 						{
-                           $shade_grp = $row215['ref4'];
-                           if($shade_grp != '')
-                           {
-                           	 $color_report =1;
-                           }
-                           else
-                           {
-                           	$color_report =0;
-                           }
+                           if($row215['print_check']==0)
+							{
+							   $color_report =1;
+							}
+                            else
+                            {
+                           	  $color_report =0;
+                            }
 						}	
 					}
 					else
@@ -360,7 +359,7 @@
                         if($color_report ==1)
                         {
 
-	                      echo" <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Report_Print.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>";
+	                      echo" <a class='btn btn-primary' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a>";
                         }
                         else
                         {
@@ -379,7 +378,7 @@
 	                    if($color_report ==1)
                         {
 
-	                      echo" <a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Report_Print.php", "1", "N") . "&parent_id=$id\">Color Contunity Report</a>";
+	                      echo" <a class='btn btn-primary' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a>";
                         }
                         else
                         {
