@@ -20,7 +20,16 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{   
 	        $order_tid1=$sql_row14['order_tid'];
 			$sql15="update `bai_pro3`.`plandoc_stat_log` set `short_shipment_status` =$remove_type where order_tid='$order_tid1'";
+			echo $sql15;
 			$sql_result15=mysqli_query($link, $sql15) or exit("Sql Error15--".mysqli_error($GLOBALS["___mysqli_ston"]));
+		    if($sql_result15)
+			{
+				 echo "</br>successfully updated : ".$order_tid1."</br>";
+			}
+			else
+			{
+                 echo "</br>Failed to updated : ".$order_tid1."</br>";
+			}
 		}
 
 	}
