@@ -5,6 +5,8 @@
 
     $barcode = $_POST['barcode'];
 	//$rejqty=$_POST['rej_id'];
+	$has_permission = json_decode($_POST['has_permission'],true);
+
 	$rej_data=$_POST['rej_data'];
 	// $rejqty=array_sum($rej_data);
 	// if($rejqty!='' || $rejqty!=0)
@@ -29,6 +31,46 @@
     $docket_no = explode('-', $barcode)[0];
 	$op_no = explode('-', $barcode)[1];
 	$seqno = explode('-', $barcode)[2];
+	//auth
+    $good_report = 0;
+
+    if($op_no != '') {
+        $access_report = $op_no.'-G';
+        $access_reject = $op_no.'-R';
+
+        $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
+
+        $result = $link->query($access_qry);
+        
+	    if($result->num_rows > 0){
+		
+            if (in_array($$access_report,$has_permission))
+            {
+                $good_report = 0;
+            }
+            else
+            {
+                // good cant be report as it opcode-Good is assigned in user permission for this screen
+                $good_report = 1;
+			}
+			if (in_array($$access_reject,$has_permission))
+            {
+                $reject_report = 0;
+            }
+            else
+            {
+                // reject cant be report as it opcode-Reject is assigned in user permission for this screen
+                $reject_report = 1;
+            }
+        } else {
+            $good_report = 0;
+            $reject_report = 0;
+        }
+    } else {
+        $good_report = 0;
+        $reject_report = 0;
+	}
+	
 //getting child dockets from plandoc_stat_log
 $get_doc_no_qry="select doc_no from bai_pro3.plandoc_stat_log where org_doc_no=$docket_no";
 $docno_qry_result=mysqli_query($link,$get_doc_no_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -49,12 +91,27 @@ else
 {
 	$docket_no=explode('-', $barcode)[0];
 }	
-	
+
+
+if($good_report == 1 && $reject_report == 1) {
+	$result_array['status'] = 'You are Not Authorized to report Good and Rejection Qty';
+	echo json_encode($result_array);
+	die();
+} else if($good_report == 1) {
+	$result_array['status'] = 'You are Not Authorized to report Good Qty';
+	echo json_encode($result_array);
+	die();
+} else if($reject_report == 1){
+	$result_array['status'] = 'You are Not Authorized to report Rejected Qty';
+	echo json_encode($result_array);
+	die();
+}
 //checking for emblishment Planning done or not
 $check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
 $check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
 if($check_qry_result->num_rows > 0)
 {
+	
 			//getting details from emb_bundles
 			$get_data_qry="select size,club_status,quantity,status from $bai_pro3.emb_bundles where barcode='$barcode'";	
 			$selct_qry_result=mysqli_query($link,$get_data_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1310,6 +1367,7 @@ if($check_qry_result->num_rows > 0)
 					   $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and operation_code=$job_number[4]";
 							
 							$result_ops_seq_check = $link->query($ops_seq_check);
+							
 							if($result_ops_seq_check->num_rows > 0)
 							{
 								while($row = $result_ops_seq_check->fetch_assoc())

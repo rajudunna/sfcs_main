@@ -8,7 +8,7 @@ if($fabric_validation_for_cut_report == 'yes')
 else
     $FABRIC_VALIDATION = 0;
 
-//hardcode for temp purpose
+//hardcode for temp purpose, rejection is removed in this screen
 $operation_code = 15;
 $access_report = $operation_code.'-G';
 $access_reject = $operation_code.'-R';
@@ -138,7 +138,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Act Cut Status</td>
                     <td>Cut Issue Status</td>
                     <td>Good Pieces</td>
-                    <td>Rejected Pieces</td>
+                    <!-- <td>Rejected Pieces</td> -->
                     <td>Date</td>
                     <td>Section</td>
                     <td>Module</td>
@@ -157,7 +157,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_cut_status'></td>
                     <td id='d_cut_issue_status'></td>
                     <td id='d_good_pieces'></td>
-                    <td id='d_rej_pieces'></td>
+                    <!-- <td id='d_rej_pieces'></td> -->
                     <td id='d_date'></td>
                     <td id='d_section'></td>
                     <td id='d_module'></td>
@@ -279,7 +279,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Joints</th>
                             <th>Endbits</th>
                             <th>Shortages</th>
-                            <th>Rejection Pieces</th>
+                            <!-- <th>Rejection Pieces</th> -->
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -307,10 +307,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control float' value='0' id='damages'></td>
                             <td><input type='text' class='form-control float' value='0' id='joints'></td>
                             <td><input type='text' class='form-control float' value='0' id='endbits'></td>
-                            <td><input type='text' class='form-control float' value='0' id='shortages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='shortages'>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
-                            <td>
-                            <input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
+                            
+                            <input type='button' style='display : none' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
                             </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
@@ -517,6 +517,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     function getdetails()
     {
          $('#c_plies').attr('readonly', true);
+         $('#full_reported').attr('disabled', true);
          $('#cut_report').attr('disabled', true);
          $('#fab_received').attr('readonly', true);
          $('#fab_returned').attr('readonly', true);
@@ -663,6 +664,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         else
         {
                 $('#c_plies').attr('readonly', false);
+                $('#full_reported').attr('disabled', false);
                 $('#cut_report').attr('disabled', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
@@ -1784,6 +1786,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             if($('#good_report').val() == 'readonly'){
                 $('#c_plies').attr('readonly', true);
                 $('#cut_report').attr('disabled', true);
+                $('#full_reported').attr('disabled', true);
                 // $("#c_plies").attr('readonly', 'readonly');
                 
                 $('#c_plies').val(0);
@@ -1791,6 +1794,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#c_plies').val(avl_plies);
                 $('#c_plies').attr('readonly', false);
                 $('#cut_report').attr('disabled', false);
+                $('#full_reported').attr('disabled', false);
+
             }
             // $('#c_plies').val(avl_plies);
             $('#fab_received').val(fab_req);
