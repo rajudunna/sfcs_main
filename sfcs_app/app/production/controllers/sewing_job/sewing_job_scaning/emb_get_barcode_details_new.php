@@ -93,6 +93,8 @@ else
 }	
 
 
+
+
 if($good_report == 1 && $reject_report == 1) {
 	$result_array['status'] = 'You are Not Authorized to report Good and Rejection Qty';
 	echo json_encode($result_array);
@@ -101,11 +103,17 @@ if($good_report == 1 && $reject_report == 1) {
 	$result_array['status'] = 'You are Not Authorized to report Good Qty';
 	echo json_encode($result_array);
 	die();
-} else if($reject_report == 1){
-	$result_array['status'] = 'You are Not Authorized to report Rejected Qty';
+} else if($good_report == 0 && $rejctedqty > 0 && $reject_report == 1) {
+	$result_array['status'] = 'You are Not Authorized to report Rejection Qty';
 	echo json_encode($result_array);
 	die();
 }
+
+// else if($reject_report == 1){
+// 	$result_array['status'] = 'You are Not Authorized to report Rejected Qty';
+// 	echo json_encode($result_array);
+// 	die();
+// }
 //checking for emblishment Planning done or not
 $check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
 $check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1233,7 +1241,8 @@ if($check_qry_result->num_rows > 0)
 					$column_to_search = $job_number[0];
 					$column_in_where_condition = 'bundle_number';
 				   
-					$selecting_style_schedule_color_qry = "select style,schedule,color from $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' order by bundle_number";
+					$selecting_style_schedule_color_qry = "select style,schedule,color from $brandix_bts.bundle_creation_data WHERE $column_in_where_condition = '$column_to_search' AND operation_id=$op_no  order by bundle_number";
+					
 					$result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
 					if($result_selecting_style_schedule_color_qry->num_rows > 0)
 					{
