@@ -257,6 +257,11 @@
 						
 						echo "<div class='col-sm-4' id='populate_div'>
 						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&status=1\">Click to Inspection Population</a></center>
+						</div>";
+
+						echo "<br><br>
+						     <div class='col-sm-4' id='populate_div'>
+	                         <center><a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id\">Click to Color Contunity Report</a></center>
 						</div></td>";
 					}
 	
@@ -311,13 +316,13 @@
 					
 					//To get color contunity report
 					$lotnumber = implode(",",$main_lot);
-					$get_color_report = "select shade_grp from $bai_rm_pj1.store_in where lot_no in ($lotnumber)";
+					$get_color_report = "select ref4 from $bai_rm_pj1.store_in where lot_no in (".$sql_row['lot_no'].")";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
-                        while($row215=mysqli_fetch_array($mysqli_num_rows))
+                        while($row215=mysqli_fetch_array($result_color_report))
 						{
-                           $shade_grp = $row215['shade_grp'];
+                           $shade_grp = $row215['ref4'];
                            if($shade_grp != '')
                            {
                            	 $color_report =1;
