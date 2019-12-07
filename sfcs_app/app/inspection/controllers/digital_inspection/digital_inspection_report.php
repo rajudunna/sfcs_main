@@ -678,7 +678,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 	</div>
 <style>
 	 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
-	{
+	
   #second_row_child_div{
     position: absolute;
     bottom:22px;

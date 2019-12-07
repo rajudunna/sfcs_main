@@ -7,7 +7,22 @@
 			if (screen.width <= 1070) 
             {
                 $BODY.toggleClass('nav-md nav-sm');
-            }
+			}
+			$("#demo1").change(function(){
+				$("#demo2").val('');
+				$("#demo3").val('');
+				
+			});
+			$("#demo2").change(function(){
+				$("#demo1").val('');
+				$("#demo3").val('');
+				
+			});
+			$("#demo3").change(function(){
+				$("#demo2").val('');
+				$("#demo1").val('');
+				
+			});
 		});
 </script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>	
