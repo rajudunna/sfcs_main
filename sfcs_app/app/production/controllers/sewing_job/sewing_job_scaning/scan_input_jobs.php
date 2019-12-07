@@ -550,7 +550,7 @@ $(document).ready(function()
 										var temp_var_bal1 = 0;				
 										if(operation_id == operation_code_routing)
 										{
-											if (display_reporting_qty == 'yes')
+											if (display_reporting_qty == 'yes' && $('#good_report').val()== '')
 											{
 												var temp_var_bal1 = data[i].balance_to_report;
 											}
