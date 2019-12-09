@@ -1,4 +1,4 @@
-\<?php
+<?php
 error_reporting(0);
 set_time_limit(900000);
 ini_set('memory_limit', '-1');
