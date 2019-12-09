@@ -200,7 +200,7 @@ if(isset($_GET['status'])>0){
 							i : 0;
 					};
 					let valtobecheck = x[1] + "-" + x[0];
-					sumValue = intVal(sumValue) + intVal(x[12]);
+					sumValue = intVal(sumValue) + intVal(x[13]);
 					distinctRolls.add(valtobecheck);
 
 				});
