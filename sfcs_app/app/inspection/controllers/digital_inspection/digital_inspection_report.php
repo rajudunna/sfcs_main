@@ -188,8 +188,8 @@
 							typeof i === 'number' ?
 							i : 0;
 					};
-					let valtobecheck = x[0] + "-" + x[12];
-					sumValue = intVal(sumValue) + intVal(x[11]);
+					let valtobecheck = x[1] + "-" + x[10];
+					sumValue = intVal(sumValue) + intVal(x[13]);
 					distinctRolls.add(valtobecheck);
 
 
