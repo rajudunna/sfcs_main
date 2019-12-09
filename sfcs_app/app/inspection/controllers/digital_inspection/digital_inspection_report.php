@@ -659,8 +659,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 				$item_name = $exp[13];
 				$width = $exp[14];
 				$length = $exp[15];
-				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","' . $item_name . '","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
-
+				$main_item_name = str_replace('"', '',$item_name);
+				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","'.$main_item_name.'","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . '),';
+        
 				$update_4point_status = "update bai_rm_pj1.store_in set four_point_status=1 where tid in ('" . $main_id . "')";
 
 				mysqli_query($link, $update_4point_status) or exit(message_sql());
