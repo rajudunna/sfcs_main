@@ -331,7 +331,7 @@
 					
 					//To get color contunity report
 					$lotnumber = implode(",",$main_lot);
-					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in (".$sql_row['lot_no'].")";
+					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in ('".$sql_row['lot_no']."')";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
