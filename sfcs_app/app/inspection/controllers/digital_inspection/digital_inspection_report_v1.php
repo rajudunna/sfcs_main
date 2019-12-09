@@ -162,7 +162,7 @@ if(isset($_GET['status'])>0){
 				};
 				data.map(x => {
 
-					let valtobecheck = x[1] + "-" + x[10];
+					let valtobecheck = x[1] + "-" + x[0];
 					sumValue = intVal(sumValue) + intVal(x[13]);
 					distinctRolls.add(valtobecheck);
 
