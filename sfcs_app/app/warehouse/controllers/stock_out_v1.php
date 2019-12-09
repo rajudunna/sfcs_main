@@ -174,7 +174,7 @@ switch (trim($product_group))
   }
   case "Fabric":
   {
-	  echo "<th>Issued Qty (MTR)</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th></tr>";
+	  echo "<th>Issued Qty ($fab_uom)</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th></tr>";
 	  //header("Location: restrict.php");
 	  break;
   }
