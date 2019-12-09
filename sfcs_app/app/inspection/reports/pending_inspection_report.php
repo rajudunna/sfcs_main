@@ -353,13 +353,13 @@
 					}	
 					if($val2==1 && $get_status == 3)
 					{
-						echo "<td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get 4 Point Report</a>
+						echo "<td><center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get 4 Point Report</a></center>
 						   <br><br>";
                         
                         if($color_report ==1)
                         {
 
-	                      echo" <a class='btn btn-primary' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a>";
+	                      echo" <center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
                         }
                         else
                         {
@@ -378,7 +378,7 @@
 	                    if($color_report ==1)
                         {
 
-	                      echo" <a class='btn btn-primary' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a>";
+	                      echo" <center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
                         }
                         else
                         {
