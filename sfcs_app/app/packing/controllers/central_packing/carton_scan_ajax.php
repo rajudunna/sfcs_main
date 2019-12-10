@@ -28,6 +28,10 @@
 		if(mysqli_num_rows($count_result)>0)
 		{
 			$b_tid = array();
+			while ($get_carton_type=mysqli_fetch_array($count_result))
+            {
+            	$opn_status = $get_carton_type['opn_status'];
+            }
 			$get_all_tid = "SELECT group_concat(tid) as tid,min(status) as status, style, color FROM bai_pro3.`pac_stat_log` WHERE pac_stat_id = ".$carton_id."";
 			$tid_result = mysqli_query($link,$get_all_tid);
 			while($row12=mysqli_fetch_array($tid_result))
@@ -75,10 +79,6 @@
 	                    $before_opn = $final_op_code['operation_code'];
 	                }
 	            }
-	            while ($get_carton_type=mysqli_fetch_array($count_result))
-	            {
-	            	$opn_status = $get_carton_type['opn_status'];
-	            }
 	            // echo "$before_opn == $opn_status <br>";
 	            if ($opn_status != $before_opn)
 	            {
@@ -107,7 +107,7 @@
 				$carton_qty=$row['carton_qty'];
 			}
 
-			if ($status == 'DONE')
+			if ($status == 'DONE' || $opn_status == $b_op_id)
 			{
 				$result_array['status'] = 1;
 			}
