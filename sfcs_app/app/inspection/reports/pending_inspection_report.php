@@ -189,17 +189,21 @@
 					
 					echo "<tr $back_color>";
 					echo "<td>$s_no</td>";
+					$lotsString = '';
 					if(sizeof($lots)>1)
 					{
 						echo "<td>";
 						for($i=0;$i<sizeof($lots);$i++)
 						{
+							$lotsString .= "'".$lots[$i]."',";
 							echo $lots[$i]."<br>";
 						}
+						$lotsString = rtrim($lotsString,',');
 						echo "</td>";
 					}
 					else
 					{
+						$lotsString = "'".$sql_row['lot_no']."'";
 						echo "<td>".$sql_row['lot_no']."</td>";
 					}
 					
@@ -330,8 +334,14 @@
 					}
 					
 					//To get color contunity report
-					$lotnumber = implode(",",$main_lot);
-					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in ('".$sql_row['lot_no']."')";
+					$get_store_in_id= "select store_in_id FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id'";
+					$sql_result1212=mysqli_query($link, $get_store_in_id) or exit("Sql Error2.111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row5212=mysqli_fetch_array($sql_result1212))
+					{
+                       $store_in_id[] = $row5212['store_in_id'];
+					}
+					$store_id = implode(",",$store_in_id);
+					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in ($lotsString) AND tid in ($store_id)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
