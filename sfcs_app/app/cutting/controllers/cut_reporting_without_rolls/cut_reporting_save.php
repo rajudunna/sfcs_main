@@ -458,7 +458,7 @@ else
 				$docketno = mysqli_fetch_array($docketnumberexistedresult);
 				if(mysqli_num_rows($docketnumberexistedresult) > 0)
 				{
-					$padded = $docketno['bundle_end']+1;
+					$padded = $docketno['bundle_end'];
 					$bundle=$docketno['bundle_no']+1;
 				}
 				
@@ -486,7 +486,7 @@ else
 				$docketno = mysqli_fetch_array($docketnumberexistedresult);
 				if(mysqli_num_rows($docketnumberexistedresult) > 0)
 				{
-					$padded = $docketno['bundle_end']+1;
+					$padded = $docketno['bundle_end'];
 				}
 				else
 				{            
@@ -581,7 +581,8 @@ else
 		  $plan_bundleqty=$rslt_row['carton_act_qty'];
 		}
 		//generating actual logical bundles
-		$act_cut_bundle_qry = "SELECT * FROM $bai_pro3.docket_number_info WHERE doc_no=$doc_no and status=0";
+        $act_cut_bundle_qry = "SELECT * FROM $bai_pro3.docket_number_info WHERE doc_no=$doc_no and status=0";
+       
         $act_cut_bundle_res = mysqli_query($link, $act_cut_bundle_qry) or exit("Sql Error : act_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($act_cut_bundle_res)>0)
         {
