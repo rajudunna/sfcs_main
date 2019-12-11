@@ -269,16 +269,9 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 
 				$code=$date."-".$module."-".$shift;
 
-				$select_check_one="select tid from $bai_pro.grand_rep where tid='$code'";
-				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$check_result_one=mysqli_num_rows($result_insert_one);
-				if($check_result_one==0)
-				{
-					$sql2="insert into $bai_pro.grand_rep(tid) values (\"$code\")";
-					// echo $sql2."<br>";
-					mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
-
+				$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")";
+				// echo $sql2."<br>";
+				mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				//$sql2="update grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$style_code_new\", max_out=$max where tid=\"$code\"";
 
