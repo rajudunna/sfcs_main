@@ -2490,7 +2490,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no=".$temp[7]." and store_in_id='".$temp[0]."'";
+	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='".$temp[0]."'";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
