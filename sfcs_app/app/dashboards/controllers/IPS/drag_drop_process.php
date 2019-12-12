@@ -24,7 +24,7 @@ include("../../../../common/config/functions.php");
 		$sqlx="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
 		mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1111="select doc_ref from $bai_pro3.fabric_priorities_backup where doc_ref=".implode(",",$remove_docs)."";
+		$sql1111="select doc_ref from $bai_pro3.fabric_priorities_backup where doc_ref in(".implode(",",$remove_docs).")";
 		$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql1111_result)==0)
 		{
