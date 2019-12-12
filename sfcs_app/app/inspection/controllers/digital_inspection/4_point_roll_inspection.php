@@ -348,7 +348,7 @@ $flag = false;
 									}
 									else
 									{
-										$back_color="";
+										$back_color="style='background: green;color:white;'";
 									}	
 								}
 								else
