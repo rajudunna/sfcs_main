@@ -127,7 +127,7 @@ function isNumber($c)
 						$buyer_id_new=$sql_row44['buyer_code'];
 					}
 
-					$sql1341="select order_tid from $bai_pro2.movex_styles where movex_style=\"".$style."\"";
+					$sql1341="select movex_style from $bai_pro2.movex_styles where movex_style=\"".$style."\"";
 					$result1341=mysqli_query($link, $sql1341) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check12=mysqli_num_rows($result1341);
 					if($sql_num_check12==0)
