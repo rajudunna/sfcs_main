@@ -140,7 +140,7 @@ if(isset($_POST['download']))
 			    $rm_color = $api_data['MIRecord'][0]['NameValue'][0]['Value'];
 				
 				$select_check_one="select lot_no from $bai_rm_pj1.sticker_report where lot_no='$lot_num'";
-				$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+				$result_insert_one=mysqli_query($link,$select_check_one) or ("Sql error".mysql_error());
 		
 				$check_result_one=mysqli_num_rows($result_insert_one);
 				if($check_result_one==0)
