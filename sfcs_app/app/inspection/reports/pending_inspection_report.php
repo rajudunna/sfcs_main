@@ -341,25 +341,25 @@
                        $store_in_id[] = $row5212['store_in_id'];
 					}
 					$store_id = implode(",",$store_in_id);
-					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in ($lotsString) AND tid in ($store_id)";
+					$get_color_report = "select * from $bai_rm_pj1.store_in where ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
                         while($row215=mysqli_fetch_array($result_color_report))
 						{
-                           if($row215['print_check']==0)
-							{
-							   $color_report =1;
-							}
-                            else
-                            {
-                           	  $color_report =0;
-                            }
+                           // if($row215['print_check']==0)
+							// {
+							    $color_report =0;
+							// }
+                            // else
+                            // {
+                           	  // $color_report =0;
+                            // }
 						}	
 					}
 					else
 					{
-                      $color_report =0;
+                      $color_report =1;
 					}	
 					if($val2==1 && $get_status == 3)
 					{
