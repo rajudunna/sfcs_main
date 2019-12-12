@@ -65,7 +65,7 @@ if($conn)
 				$result_lot_rodo = mysqli_query($link, $sql_lot_rodo);
 			}
 
-			$sql_sticker_det_rodo = "UPDATE $bai_rm_pj1.sticker_report SET SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'RODO'  WHERE lot_no = \"".$lot_num."\"";
+			$sql_sticker_det_rodo = "UPDATE $bai_rm_pj1.sticker_report SET SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = 'RODO', rm_color = \"".$rm_color."\"  WHERE lot_no = \"".$lot_num."\"";
 			$result_rec_insert_rodo = mysqli_query($link, $sql_sticker_det_rodo);
 			if($result_rec_insert_rodo ){
 				$j++;
