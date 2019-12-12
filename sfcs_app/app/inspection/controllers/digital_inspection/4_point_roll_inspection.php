@@ -348,7 +348,14 @@ $flag = false;
 									}
 									else
 									{
-										$back_color="style='background: green;color:white;'";
+										if($status == 3)
+										{
+											$back_color="style='background: green;color:white;'";
+										}
+										else
+										{
+											$back_color="";
+										}	
 									}	
 								}
 								else
