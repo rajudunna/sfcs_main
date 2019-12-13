@@ -21,6 +21,7 @@
 </div>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/bundle_filling.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
 <?php
 $tran_order_tid=$_GET['tran_order_tid'];
@@ -68,106 +69,7 @@ function get_val($table_name,$field,$compare,$key,$link)
     ((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
 }
 
-//plan bundles generation
-function plan_cut_bundle($docket_no,$plies_per_cut) {	
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-	$username = getrbac_user()['uname'];
 
-	$category=['cutting','Send PF','Receive PF'];
-	$operation_codes = array();
-	foreach($category as $key => $value)
-	{
-		$fetching_ops_with_category = "SELECT operation_code,short_cut_code FROM brandix_bts.tbl_orders_ops_ref WHERE category = '".$category[$key]."'";
-		// echo $fetching_ops_with_category;
-		$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Bundles Query Error 1423");
-		while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
-		{
-			$operation_codes[] = $row['operation_code'];
-			$short_key_code[] = $row['short_cut_code'];
-		}
-	}
-	$cut_done_qty = array();
-	$plan_size_cut = array();
-
-	
-	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no = $docket_no ";
-	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
-	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
-	{
-		$org_doc = $row['org_doc_no'];
-		$order_tid = $row['order_tid'];
-
-		$get_exact_size_code = "SELECT * FROM $bai_pro3.bai_orders_db_confirm 
-										WHERE order_tid = '".$order_tid."'";
-		$sql_query_size_code = mysqli_query($link,$get_exact_size_code) or exit("bai_orders_db_confirm Error 1423");
-		while($row_size=mysqli_fetch_array($sql_query_size_code))
-		{
-			for($ii=0;$ii<sizeof($sizes_array);$ii++)
-			{
-				if($row_size["title_size_".$sizes_array[$ii].""]<>"")
-				{
-					$check_upto[]=$sizes_array[$ii];
-				}
-			}
-		}			
-		
-		for ($i=0; $i < sizeof($check_upto); $i++)
-		{ 
-			if ($row['a_'.$sizes_array[$i]] > 0)
-			{
-				$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
-				$plan_size_cut[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]];
-			}
-			else
-			{
-				$cut_done_qty[$sizes_array[$i]] =0;
-				$plan_size_cut[$sizes_array[$i]] =0;
-			}
-		}
-	}
-	foreach($cut_done_qty as $key => $value)
-	{
-		if($value>0)
-		{
-			$qty_to_fetch_size_title = "SELECT *,title_size_$key  FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid ='$order_tid'";
-			$res_qty_to_fetch_size_title=mysqli_query($link,$qty_to_fetch_size_title) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($nop_res_qty_to_fetch_size_title=mysqli_fetch_array($res_qty_to_fetch_size_title))
-			{
-				$size_title = $nop_res_qty_to_fetch_size_title["title_size_$key"];
-				$b_style =  $nop_res_qty_to_fetch_size_title['order_style_no'];
-				$b_schedule =  $nop_res_qty_to_fetch_size_title['order_del_no'];
-				$b_colors =  $nop_res_qty_to_fetch_size_title['order_col_des'];
-			}
-			$b_size_code = $key;
-			$b_sizes = $size_title;
-
-			$bundle_no=1;
-			//size wise ratio numbers
-			$ratio_number = $plan_size_cut[$key];
-			for($m = $ratio_number; $m > 0; $m--)
-			{
-				$bundle_query = "SELECT max(bundle_no) as bundle_no from $bai_pro3.plan_cut_bundle where doc_no=$docket_no";
-				$bundle_result = mysqli_query($link,$bundle_query);
-				while($bun=mysqli_fetch_array($bundle_result))
-				{
-					$bundle_no = $bun['bundle_no']+1;
-				}	
-				$barcode=$docket_no.'-'.$bundle_no;
-
-				$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`doc_no`,`style`,`color`,`size_code`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`) values ('".$docket_no."','".$b_style."','".$b_colors."','".$b_size_code."','".$b_sizes."','".$bundle_no."','".$plies_per_cut."','".$barcode."','".$username."')";
-				$plan_cut_insert_query_res = $link->query($plan_cut_insert_query);
-				$plan_cut_insert_id = mysqli_insert_id($link);
-				foreach($operation_codes as $index => $op_code)
-				{
-					$plan_cut_insert_transactions_query = "insert into $bai_pro3.plan_cut_bundle_trn(`plan_cut_bundle_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values ('".$plan_cut_insert_id."','".$op_code."','0','".$plies_per_cut."','0','0','".$username."','1')";
-					$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-			
-				}
-			}
-
-		}
-	}
-}
 ?>
 
 <script type="text/javascript">
@@ -295,25 +197,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$sql2="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno, ratio, p_s01, p_s02, p_s03, p_s04, p_s05, p_s06, p_s07, p_s08, p_s09, p_s10, p_s11, p_s12, p_s13, p_s14, p_s15, p_s16, p_s17, p_s18, p_s19, p_s20, p_s21, p_s22, p_s23, p_s24, p_s25, p_s26, p_s27, p_s28, p_s29, p_s30, p_s31, p_s32, p_s33, p_s34, p_s35, p_s36, p_s37, p_s38, p_s39, p_s40, p_s41, p_s42, p_s43, p_s44, p_s45, p_s46, p_s47, p_s48, p_s49, p_s50, p_plies, acutno, a_s01, a_s02, a_s03, a_s04, a_s05, a_s06, a_s07, a_s08, a_s09, a_s10, a_s11, a_s12, a_s13, a_s14, a_s15, a_s16, a_s17, a_s18, a_s19, a_s20, a_s21, a_s22, a_s23, a_s24, a_s25, a_s26, a_s27, a_s28, a_s29, a_s30, a_s31, a_s32, a_s33, a_s34, a_s35, a_s36, a_s37, a_s38, a_s39, a_s40, a_s41, a_s42, a_s43, a_s44, a_s45, a_s46, a_s47, a_s48, a_s49, a_s50,  a_plies, remarks, mk_ref_id) values (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$tran_order_tid\", $count, $ratio, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut, $count, $s01, $s02, $s03, $s04, $s05, $s06, $s07, $s08, $s09, $s10, $s11, $s12, $s13, $s14, $s15, $s16, $s17, $s18, $s19, $s20, $s21, $s22, $s23, $s24, $s25, $s26, $s27, $s28, $s29, $s30, $s31, $s32, $s33, $s34, $s35, $s36, $s37, $s38, $s39, $s40, $s41, $s42, $s43, $s44, $s45, $s46, $s47, $s48, $s49, $s50, $pliespercut, \"$remarks\", $mk_id)";
 
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//echo "</br>temp>=pliescut :".$sql2."</br>";
-		
 		$docket_no = mysqli_insert_id($link);
-
-
-		
-
-
-
-
-
 		$temp=$temp-$pliespercut;
+		if($docket_no > 0){
+			$plan_cut_bundle = plan_cut_bundle($docket_no);
+		}
 
 		//checking for body/front categories
 		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
 		$cat_result = mysqli_query($link,$cat_query);
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0 && $call_flag > 0){
-				$plan_cut_bundle = plan_cut_bundle($docket_no,$pliespercut);
 				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
 				if($insert_bundle_creation_data){
 					//Data inserted successfully
@@ -336,15 +230,19 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		// NEW 20100528
 		$temp=0;
 
+
 		//getting docket number
 		$docket_no = mysqli_insert_id($link);
+		if($docket_no > 0){
+			$plan_cut_bundle = plan_cut_bundle($docket_no);
+		}
+
 		//checking for body/front categories
 		$cat_query = "SELECT category from $bai_pro3.cat_stat_log where tid='$cat_ref' and category in ($in_categories)";
 		$cat_result = mysqli_query($link,$cat_query);
 	
 		if(mysqli_num_rows($cat_result) > 0){
 			if($docket_no > 0  && $call_flag > 0){
-				$plan_cut_bundle = plan_cut_bundle($docket_no,$temp);
 				$insert_bundle_creation_data = doc_size_wise_bundle_insertion($docket_no);
 				if($insert_bundle_creation_data){
 					//Data inserted successfully
