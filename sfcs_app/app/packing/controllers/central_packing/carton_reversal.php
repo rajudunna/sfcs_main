@@ -22,7 +22,7 @@
 				if (isset($_POST['submit']))
 				{
                     $carton_id = $_POST['carton_id'];
-
+                    $application='packing';
 					if($_POST['operation_code']=='')
 					{
 						$b_op_id=200;
