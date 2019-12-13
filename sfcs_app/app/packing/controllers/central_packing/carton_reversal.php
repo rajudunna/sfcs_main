@@ -22,8 +22,17 @@
 				if (isset($_POST['submit']))
 				{
 					$carton_id = $_POST['carton_id'];
-                    $b_op_id = 200;
-					$application='packing';
+                    $application='packing';
+
+					if($_POST['operation_code']=='')
+					{
+						$b_op_id=200;
+					}
+					else
+					{
+						$b_op_id=$_POST['operation_code'];
+					}
+					
 
 					$carton_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id = $carton_id";
 					// echo $carton_query;
@@ -122,7 +131,7 @@
 							}
 							else
 							{
-								if ($packing_last_opn == $b_op_id)
+								if ($b_op_id == 200)
 								{
 									$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
 									mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
