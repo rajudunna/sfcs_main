@@ -634,12 +634,12 @@
 									{
 										for($l=0;$l<sizeof($ops);$l++)
 										{     
-											if($ops_m_id[$last_mo][$ops[$l]]>0)
-											{  
+											 if($ops_m_id[$last_mo][$ops[$l]]>0)
+											 {  
 												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
 												$result1=mysqli_query($link, $sql) or exit('Error Encountered');
 												$res=1;
-											}
+											 }
 										}
 									}
 								}
