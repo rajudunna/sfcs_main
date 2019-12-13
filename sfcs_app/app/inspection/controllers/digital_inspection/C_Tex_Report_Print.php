@@ -1856,12 +1856,15 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 
-$get_roll_details = "select distinct(store_in_id) as roll_numbers from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers,item_name,item_desc,item_code from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
 // echo $get_roll_details;
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
 {
   $rolls[]=$sql_rolls['roll_numbers'];
+  $item_name=$sql_rolls['item_name'];
+  $item_desc=$sql_rolls['item_desc'];
+  $item_code=$sql_rolls['item_code'];
 }
 $roll_num = implode(",",$rolls);
 $sql="select * from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
@@ -2161,7 +2164,48 @@ tags will be replaced.-->
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
  </tr>
  
+ </table>
 
+ <table border=1 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+
+  <tr height=41 style='height:30.75pt'>
+  <td height=41 class=xl12524082x dir=LTR width=80 style='height:30.75pt;
+  width:60pt'>Item Name</td>
+  <td class=xl12524082x dir=LTR width=65 style='border-left:none;width:49pt'>Item Description
+  </td>
+  <td class=xl12524082x dir=LTR width=65 style='border-left:none;width:49pt'>Item Code</td>
+ </tr>
+ <?php
+  echo "
+  <tr height=41 style='height:30.75pt'>
+  <td class=xl12524082x style='border-left:none'>".$item_name."</td>
+  <td class=xl12524082x style='border-left:none'>".$item_desc."</td>
+  <td class=xl12524082x style='border-left:none'>".$item_code."</td>
+  </tr>";
+ ?>
+
+ </table>
+
+ <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+<tr height=21 style='mso-height-source:userset;height:15.75pt'>
+  <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;
+  width:60pt'>&nbsp;</td>
+  <td class=xl6424082 dir=LTR width=65 style='width:49pt'></td>
+  <td class=xl6424082 dir=LTR width=65 style='width:49pt'></td>
+  <td class=xl6524082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=64 style='width:48pt'></td>
+  <td class=xl6424082 dir=LTR width=64 style='width:48pt'></td>
+  <td class=xl6424082 dir=LTR width=99 style='width:74pt'></td>
+  <td class=xl6424082 dir=LTR width=77 style='width:58pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+  <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
+ </tr>
  <tr height=41 style='height:30.75pt'>
   <td height=41 class=xl13224082 dir=LTR width=80 style='height:30.75pt;
   width:60pt'>Roll No</td>

@@ -126,6 +126,7 @@ $flag = false;
 											<th>Supplier Invoice</th>
 											<th>Item Code</th>
 											<th>Item Description</th>
+											<th>Item Name</th>
 											<th>Lot No</th>
 											<th>Supplier Batch</th>
 											<th>RM Colour</th>
@@ -143,6 +144,7 @@ $flag = false;
 							$inv_no = $sql_row['supplier_invoice'];
 							$item_code = $sql_row['item_code'];
 							$item_desc = $sql_row['item_desc'];
+							$item_name = $sql_row['item_name'];
 							$supplier_batch = $sql_row['supplier_batch'];
 							$rm_color = $sql_row['rm_color'];
 							$supplier_roll_no = $sql_row['sfcs_roll_no'];
@@ -155,6 +157,7 @@ $flag = false;
 							if ($inv_no == '') { $inv_no = 0; } else { $inv_no;	}
 							if ($item_code == '') {	$item_code = 0;	} else { $item_code; }
 							if ($item_desc == '') {	$item_desc = 0; } else { $item_desc; }
+							if ($item_name == '') {	$item_name = 0; } else { $item_name; }
 							if ($lot_no == '') { $lot_no = 0; } else { $lot_no; }
 							if ($supplier_batch == '') { $supplier_batch = 0; } else { $supplier_batch;	}
 							if ($supplier_roll_no == '') { $supplier_roll_no = 0; } else {	$supplier_roll_no; }
@@ -163,7 +166,7 @@ $flag = false;
 							if ($rm_color == '') { $rm_color = '--'; } else { $rm_color; }
 					
 
-							echo '<tbody><tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
+							echo '<tbody><tr><td><input type="checkbox" name="bindingdata[]" value="' . $sno . "$" . $lot_no . '"></td><td>' . $fcs_roll_no . '</td><td>' . $supplier_roll_no . '</td><td>' . $po_no_1 . '</td><td>' . $po_line . '</td><td>' . $po_subline . '</td><td>' . $inv_no . '</td><td>' . $item_code . '</td><td>' . $item_desc . '</td><td>' . $item_name . '</td><td>' . $lot_no . '</td><td>' . $supplier_batch . '</td><td>' . $rm_color . '</td><td>' . $qty . '</td></tr>';
 						}
 					}
 						?>										
@@ -248,6 +251,7 @@ $flag = false;
 					      		<th>Item Code</th>
 					      		<th>Color</th>
 					      		<th>Description</th>
+					      		<th>Item Name</th>
 					      		<th>Lot No</th>
 					      		<th>Qty</th>
 					      		<th>Points Rate</th>
@@ -389,6 +393,7 @@ $flag = false;
 								<td $h_ref>".$row2['item_code']."</td>
 								<td $h_ref>".$row2['rm_color']."</td>
 								<td $h_ref>".$row2['item_desc']."</td>
+								<td $h_ref>".$row2['item_name']."</td>
 								<td $h_ref>".$lot_id."</td>
 								<td $h_ref>".$row2['rec_qty']."</td>									
 								<td $h_ref>".$main_points."</td>
