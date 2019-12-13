@@ -15,7 +15,7 @@ $rvalue = $_GET['r'];
 
 
 <div class="panel panel-info">
-    <div class="panel-heading"><b>Buyer Code Generation</b></div>
+    <div class="panel-heading"><b>Buyer Code Edit</b></div>
     <div class="panel-body">
         <form method="post" action="?r=<?php echo $rvalue ?>" name="buyer-form">
             <div class="col-md-12 table-responsive">

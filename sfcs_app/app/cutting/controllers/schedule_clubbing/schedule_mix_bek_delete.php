@@ -230,7 +230,7 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 			$sql4531="DELETE from $bai_pro3.bai_orders_db where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql4531) or exit("Sql Error112"); 
-			$sql1116="select order_tid from $bai_pro3.bai_orders_db where order_tid='".implode("','",$order_tids)."'";
+			$sql1116="select order_tid from $bai_pro3.bai_orders_db where order_tid in('".implode("','",$order_tids)."')";
 			$sql1116_result=mysqli_query($link, $sql1116) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql1116_result)==0)
 			{ 

@@ -298,13 +298,13 @@
 						if(mysqli_num_rows($sql_result12)>0)
 						{					
 							echo "<td><div class='col-sm-12' id='populate_div'>
-								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Proceed 4 Point Inspection</a></center>
+								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Click to Proceed </a></center>
 								</div></td>";
 						}
 						else
 						{
 							echo '<td><div class="col-sm-12" id="populate_div">
-							<center><label class="label label-primary" style="font-size:12px"> Point Inspection Completed </label></center>
+							<center><label class="label label-primary" style="font-size:12px"> Completed </label></center>
 							</div></td>';
 						}
 					}
@@ -341,40 +341,40 @@
                        $store_in_id[] = $row5212['store_in_id'];
 					}
 					$store_id = implode(",",$store_in_id);
-					$get_color_report = "select IF((LENGTH(ref4)=0 AND qty_allocated <=0),1,0) AS print_check from $bai_rm_pj1.store_in where lot_no in ($lotsString) AND tid in ($store_id)";
+					$get_color_report = "select * from $bai_rm_pj1.store_in where ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
                         while($row215=mysqli_fetch_array($result_color_report))
 						{
-                           if($row215['print_check']==0)
-							{
-							   $color_report =1;
-							}
-                            else
-                            {
-                           	  $color_report =0;
-                            }
+                           // if($row215['print_check']==0)
+							// {
+							    $color_report =0;
+							// }
+                            // else
+                            // {
+                           	  // $color_report =0;
+                            // }
 						}	
 					}
 					else
 					{
-                      $color_report =0;
+                      $color_report =1;
 					}	
 					if($val2==1 && $get_status == 3)
 					{
-						echo "<td><center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get 4 Point Report</a></center>
+						echo "<td><center><a class=\"btn btn-xs btn-warning \" style='font-size:12px' href=\"$pop_up_path?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get 4 Point Report</a></center>
 						   <br><br>";
                         
                         if($color_report ==1)
                         {
 
-	                      echo" <center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
+	                      echo" <center><a class=\"btn btn-xs btn-warning \" style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
                         }
                         else
                         {
                         	echo '<div class="col-sm-12" id="populate_div">
-							<center><label class="label label-primary" style="font-size:12px"> Color Contunity Report Pending</label></center>
+							<center><label class="label label-primary" style="font-size:12px">Color Contunity Report Pending</label></center>
 							</div>';
                         }
 						echo "</td>";
@@ -388,12 +388,13 @@
 	                    if($color_report ==1)
                         {
 
-	                      echo" <center><a class='label label-primary' style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
+	                      echo" <center><a class=\"btn btn-xs btn-warning \" style='font-size:12px' href=\"$pop_up_path1?parent_id=$id\" onclick=\"Popup1=window.open('$pop_up_path1?parent_id=$id','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Color Contunity Report</a></center>";
                         }
                         else
                         {
-                        	echo '<div class="col-sm-12" id="populate_div">
-							<center><label class="label label-primary " style="font-size:12px"> Color Contunity Report Pending</label></center>
+                        	
+							echo '<div class="col-sm-12" id="populate_div">
+							<center><label class="label label-primary" style="font-size:12px">Color Contunity Report Pending</label></center>
 							</div>';
                         }
 						echo "</td>";

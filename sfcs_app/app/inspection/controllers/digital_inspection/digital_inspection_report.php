@@ -258,9 +258,9 @@
    			left: 25%;
 			top:13px;
 		}
-		.custom-div-1{
+		/* .custom-div-1{
 			
-		}
+		} */
 		/* @media only screen and (min-width:1187px) {
 			{
 				position: absolute;
@@ -287,6 +287,25 @@
              border-collapse: collapse; width: 100%; 
         }
         th { background:antiquewhite; }
+		@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait){
+
+	#second_row_child_div{
+		position: absolute;
+		bottom:22px;
+		left: 248px;
+
+	}
+/* 
+  #populate_div{
+    position: absolute;
+    top: 160px;
+    right: 40px;
+ } */
+ #output_div{
+	height: 195px;
+ }
+
+}
 	</style>
 
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>
@@ -677,24 +696,3 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 	}
 	?>
 	</div>
-<style>
-	 @media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
-	
-  #second_row_child_div{
-    position: absolute;
-    bottom:22px;
-    left: 55px;
-
- }
-/* 
-  #populate_div{
-    position: absolute;
-    top: 160px;
-    right: 40px;
- } */
- #output_div{
-	height: 195px;
- }
-
-}
-</style>

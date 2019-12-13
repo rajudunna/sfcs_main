@@ -1788,7 +1788,7 @@ function printpr()
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
 
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ',') as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ($lot_ref) and right(lot_no,1)<> 'R' and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ',') as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and right(lot_no,1)<> 'R' and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1864,7 +1864,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $rolls[]=$sql_rolls['roll_numbers'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
+$sql="select * from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -2402,7 +2402,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$flag-5;$j<=$flag-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2428,9 +2428,9 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
-			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result_sc=mysqli_query($link, $sql_sc) or die("Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
 			{
 				$count_sc=$row_sc["cnt"];

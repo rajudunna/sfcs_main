@@ -36,9 +36,16 @@
                     <div class="dropdown">
                         <b>Status</b> <span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span>
                         <select class="form-control" id="status" name="status" required>
-                        <option value="">Please Select</option>
-                        <option value='Active' selected>Active</option>
-                        <option value='In-Active' >In-Active</option>
+                         <?php
+							if($status=="Active"){
+								echo '<option  value="Active" selected>Active</option>';
+								echo '<option value="In-Active">In-Active</option>';
+							}else{
+								echo '<option value="Active">Active</option>';
+								echo '<option value="In-Active" selected>In-Active</option>';
+							}
+
+						?>
                         </select>    
                     </div>
                 </div>

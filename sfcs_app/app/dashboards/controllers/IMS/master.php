@@ -94,7 +94,7 @@ if(isset($_POST['submit']))
 
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					 Add Bundle Operation
+					 Add Bundle Operation Routing
 				</div>
 				<div class="panel-body">
 					<div class="alert alert-danger" style="display:none;">

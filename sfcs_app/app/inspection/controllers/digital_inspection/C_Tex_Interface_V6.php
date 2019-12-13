@@ -2402,16 +2402,16 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 				}
 				else
 				{
-					$status_main="";
+					$status_main="Pending";
 				}	
 			}
 			else
 			{
-				$status_main="";
+				$status_main="Pending";
 			}
 		}else
 		{
-			$status_main="";
+			$status_main="Pending";
 		}						
 	}
 
