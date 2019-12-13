@@ -182,6 +182,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
     $po = $row1['supplier_po'];
     $item_code = $row1['item_code'];
     $item_desc = $row1['item_desc'];
+    $item_name = $row1['item_name'];
     $color = $row1['rm_color'];
     $sfcs_roll = $row1['sfcs_roll_no'];
     $supp_roll = $row1['supplier_roll_no'];
@@ -338,6 +339,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                                     <th>Item Code</th>
                                     <th>Color</th>
                                     <th>Description</th>
+                                    <th>Item Name</th>
                                     <th>Lot No</th>
                                     <th>Qty</th>
                                     <th>Num of Points</th>
@@ -353,6 +355,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                                 <td>" . $item_code . "</td>
                                 <td>" . $color . "</td>
                                 <td>" . $item_desc . "</td>
+                                <td>" . $item_name . "</td>
                                 <td>" . $lot_no . "</td>
                                 <td>" . $invoice_qty . "</td>";
                                 if($sno_points>0)

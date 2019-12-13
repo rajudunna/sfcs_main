@@ -54,6 +54,7 @@ while ($row1 = mysqli_fetch_array($details_result))
 	$po = $row1['supplier_po'];
 	$item_code = $row1['item_code'];
 	$item_desc = $row1['item_desc'];
+	$item_name = $row1['item_name'];
 	$color = $row1['rm_color'];
 	$sfcs_roll[$row1['store_in_id']] = $row1['sfcs_roll_no'];
 	$supp_roll[$row1['store_in_id']] = $row1['supplier_roll_no'];
@@ -1689,8 +1690,48 @@ tags will be replaced.-->
  </tr>
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl1519758 style='height:14.4pt'></td>
-  <td colspan=2 class=xl6419758>Invoice Quantity</td>
-  <td colspan=4 class=xl6319758><?php echo array_sum($inspected_qty);?></td>
+  <td colspan=2 class=xl6419758>Item Code</td>
+  <td colspan=4 class=xl6319758><?php echo $item_code;?></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+ </tr>
+  <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl1519758 style='height:14.4pt'></td>
+  <td colspan=2 class=xl6419758>Item Description</td>
+  <td colspan=4 class=xl6319758><?php echo $item_desc;?></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+  <td class=xl1519758></td>
+ </tr>
+  <tr height=19 style='height:14.4pt'>
+  <td height=19 class=xl1519758 style='height:14.4pt'></td>
+  <td colspan=2 class=xl6419758>Item Name</td>
+  <td colspan=4 class=xl6319758><?php echo $item_name;?></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
   <td class=xl1519758></td>
