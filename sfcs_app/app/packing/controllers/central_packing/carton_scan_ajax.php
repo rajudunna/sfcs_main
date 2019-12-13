@@ -1,6 +1,8 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
+	// include("../../../../common/config/functions.php");
+
 	//API related data
 	$plant_code = $global_facility_code;
 	$company_num = $company_no;
@@ -21,14 +23,15 @@
 		$team_id = $_GET['team_id'];
 		$carton_id = $_GET['carton_id'];
 		$b_op_id = $_GET['operation_id'];
+		//echo $b_op_id;
 		$shift = $_GET['shift'];
-
+        
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
 		{
 			$b_tid = array();
-			while ($get_carton_type=mysqli_fetch_array($count_result))
+			while($get_carton_type=mysqli_fetch_array($count_result))
             {
             	$opn_status = $get_carton_type['opn_status'];
             }
@@ -60,7 +63,7 @@
             	$dont_check = true;
             	// echo "scanned != first<br>";
             }
-
+            //echo $deduct_from_carton_ready;
             if ($dont_check)
             {
             	$get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' AND tbl_style_ops_master.operation_code=$b_op_id";
@@ -72,6 +75,7 @@
 	                $operation_order = $op_order['operation_order'];
 
 	                $get_pre_op_code_b4_carton_ready = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code  WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND category='$application' AND CAST(operation_order AS CHAR) < '$operation_order' AND tbl_style_ops_master.operation_code NOT IN (10,15) ORDER BY operation_order DESC LIMIT 1";
+	                //echo  $get_pre_op_code_b4_carton_ready;
 	                $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("3=error while fetching pre_op_code_b4_carton_ready".$get_pre_op_code_b4_carton_ready);
 	                if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
 	                {
@@ -79,7 +83,7 @@
 	                    $before_opn = $final_op_code['operation_code'];
 	                }
 	            }
-	            // echo "$before_opn == $opn_status <br>";
+	            // echo "$opn_status == $before_opn <br>";
 	            if ($opn_status != $before_opn)
 	            {
 	            	$go_here = 0;
@@ -106,8 +110,45 @@
 				$sizes=$row['sizes'];
 				$carton_qty=$row['carton_qty'];
 			}
-
-			if ($status == 'DONE' || $opn_status == $b_op_id)
+			$short_ship_status =0;
+			$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+			$shortship_res = mysqli_query($link,$query_short_shipment);
+			$count_short_ship = mysqli_num_rows($shortship_res);
+			if($count_short_ship >0) {
+				while($row_set=mysqli_fetch_array($shortship_res))
+				{
+					if($row_set['remove_type']==1) {
+						$short_ship_status=1;
+					}else{
+						$short_ship_status=2;
+					}
+				}
+			}
+			//To check whether scanned or not
+			$checking_temp =0;
+			$imploded_id = implode(",",$b_tid);
+			$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in (".$imploded_id.") and operation_id=$b_op_id";
+            $temp_result = mysqli_query($link,$check_temp);
+			$count_temp = mysqli_num_rows($temp_result);
+			if($count_temp >0) {
+                while($row_temp=mysqli_fetch_array($temp_result))
+				{
+					if($row_temp['quantity'] > 0) {
+						$checking_temp=1;
+					}
+				}
+			}
+		
+			if($short_ship_status==1){
+				$result_array['status'] = 5;
+			}
+			else if($short_ship_status==2){
+				$result_array['status'] = 6;
+			}
+			else if($checking_temp==1){
+				$result_array['status'] = 1;
+			}
+			else if ($status == 'DONE' && $b_op_id == 200)
 			{
 				$result_array['status'] = 1;
 			}
@@ -120,22 +161,21 @@
 
 					if ($reply == 1)
 					{
-						 $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) DESC LIMIT 1;";
+	                    $get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) DESC LIMIT 1";
 	                    $result_last_opn_sewing=mysqli_query($link, $get_last_opn_packing) or exit("error while fetching pre_op_code_b4_carton_ready");
 	                    if (mysqli_num_rows($result_last_opn_sewing) > 0)
 	                    {
 	                        $final_op_code=mysqli_fetch_array($result_last_opn_sewing);
 	                        $packing_last_opn = $final_op_code['operation_code'];
 	                    }
-						// Carton Scan eligible
-						if ($packing_last_opn == $b_op_id)
-						{
+	                    if($b_op_id == 200)
+	                    {
+	                    	// Carton Scan eligible
 							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = ".$carton_id."";
 							// echo $sql;
 							$pac_stat_log_result = mysqli_query($link, $sql) or exit("Error while updating pac_stat_log");
-						}
-
-	                   
+	                    }
+						
 
 	                    if ($packing_last_opn == $b_op_id) {
 	                    	$update_carton_status = ", carton_status='DONE'";
@@ -191,7 +231,7 @@
 					$result_array['status'] = 5;
 				}           
 			}
-			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning || 5 = previous opn not done
+			// 1 = carton already scanned || 2 = carton scanned successfully || 3 = carton scanned failed || 4 =  carton not eligible for scanning || 5= Temporary short shipment already generated || 6= Permanent short shipment already generated
 			$result_array['carton_no'] = $carton_no;
 			$result_array['style'] = $style;
 			$result_array['schedule'] = $schedule;
