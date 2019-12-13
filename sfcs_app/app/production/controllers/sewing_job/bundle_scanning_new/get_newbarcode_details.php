@@ -2886,8 +2886,8 @@ if(isset($_POST["trans_action"])){
                                     }
                                     $result_array['status'] = 'Rejected qunatities deleted for this bundle..!';
                                     $result_array['color_code'] = "#45b645";
-                                    echo json_encode($result_array);
-                                    die();
+                                    // echo json_encode($result_array);
+                                    // die();
                             }else{
                                 $result_array['status'] = 'No rejected qty for this bundle..!';
                                 $result_array['color_code'] = "#f31c06";
