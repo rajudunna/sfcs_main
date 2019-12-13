@@ -21,7 +21,6 @@
 			<?php
 				if (isset($_POST['submit']))
 				{
-					$carton_id = $_POST['carton_id'];
                     $carton_id = $_POST['carton_id'];
 
 					if($_POST['operation_code']=='')
@@ -140,7 +139,7 @@
 								}
 								else
 								{
-									if ($packing_last_opn == $b_op_id)
+									if($b_op_id == 200)
 									{
 										$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
 										mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
