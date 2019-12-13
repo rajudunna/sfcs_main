@@ -124,6 +124,20 @@
 					}
 				}
 			}
+			//To check whether scanned or not
+			$checking_temp =0;
+			$imploded_id = implode(",",$b_tid);
+			$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in ($imploded_id) and operation_id=$b_op_id";
+            $temp_result = mysqli_query($link,$check_temp);
+			$count_temp = mysqli_num_rows($temp_result);
+			if($count_temp >0) {
+                while($row_temp=mysqli_fetch_array($temp_result))
+				{
+					if($row_temp['quantity'] > 0) {
+						$checking_temp=1;
+					}
+				}
+			}
 		
 			if($short_ship_status==1){
 				$result_array['status'] = 5;
@@ -131,7 +145,10 @@
 			else if($short_ship_status==2){
 				$result_array['status'] = 6;
 			}
-			else if ($status == 'DONE' || $opn_status == $b_op_id)
+			else if($checking_temp==1){
+				$result_array['status'] = 1;
+			}
+			else if ($status == 'DONE' && $b_op_id == 200)
 			{
 				$result_array['status'] = 1;
 			}
@@ -151,7 +168,7 @@
 	                        $final_op_code=mysqli_fetch_array($result_last_opn_sewing);
 	                        $packing_last_opn = $final_op_code['operation_code'];
 	                    }
-	                    if($packing_last_opn == $b_op_id)
+	                    if($b_op_id == 200)
 	                    {
 	                    	// Carton Scan eligible
 							$sql="update $bai_pro3.pac_stat_log set status=\"DONE\",scan_date=\"".date("Y-m-d H:i:s")."\",scan_user='$username' where pac_stat_id = ".$carton_id."";
