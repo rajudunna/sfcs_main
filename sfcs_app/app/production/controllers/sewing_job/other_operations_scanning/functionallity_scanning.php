@@ -904,7 +904,7 @@ function packingReversal($data)
                 while($row_temp=mysqli_fetch_array($temp_result))
 				{
                     if($row_temp['quantity'] == 0) {
-                       $result_array['status'] = 2;
+                       $result_array['status'] = 1;
 		               echo json_encode($result_array);
 		                die();
 					}
@@ -912,7 +912,7 @@ function packingReversal($data)
 			}
 			else
 			{
-                $result_array['status'] = 2;
+                $result_array['status'] = 1;
 		        echo json_encode($result_array);
 		        die();
 			}
