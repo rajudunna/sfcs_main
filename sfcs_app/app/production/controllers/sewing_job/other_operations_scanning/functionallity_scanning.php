@@ -890,6 +890,31 @@ function packingReversal($data)
 				$size=$row12['size'];
 				
 			}
+
+			//To check whether scanned or not
+			$checking_temp =0;
+			$imploded_id = implode(",",$b_tid);
+
+			$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in (".$imploded_id.") and operation_id=$b_op_id";
+            $temp_result = mysqli_query($link,$check_temp);
+			$count_temp = mysqli_num_rows($temp_result);
+			//echo $count_temp;
+			if($count_temp >0) {
+                while($row_temp=mysqli_fetch_array($temp_result))
+				{
+                    if($row_temp['quantity'] == 0) {
+                       $result_array['status'] = 1;
+		               echo json_encode($result_array);
+		                die();
+					}
+				}
+			}
+			else
+			{
+                $result_array['status'] = 1;
+		        echo json_encode($result_array);
+		        die();
+			}
             
 			// Get first opn in packing
 		    $get_first_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY CAST(tbl_style_ops_master.operation_order AS CHAR) LIMIT 1";
