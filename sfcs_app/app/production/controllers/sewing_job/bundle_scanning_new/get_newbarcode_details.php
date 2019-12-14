@@ -2934,7 +2934,7 @@ if(isset($_POST["trans_action"])){
         $previuos_time2=$date." ".$prev_hr2;
  
 
-        $qry_curr_sum = "SELECT COALESCE(SUM(recevied_qty), 0 ) AS positive,COALESCE(SUM(rejected_qty) , 0 ) AS negative FROM `$brandix_bts`.bundle_creation_data_temp where date_time BETWEEN ('$current_time1') and ('$current_time2')";
+        $qry_curr_sum = "SELECT COALESCE(SUM(recevied_qty), 0 ) AS positive,COALESCE(SUM(rejected_qty) , 0 ) AS negative FROM `$brandix_bts`.bundle_creation_data_temp where date_time BETWEEN ('$current_time1') and ('$current_time2') and operation_id=".$operation."";
         //echo "Curre Good".$qry_curr_sum."</br>";
         $resultqry_curr_sum = mysqli_query($link, $qry_curr_sum) or exit("Sql Error : sql".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($resultqry_curr_sum)>0)
@@ -2957,7 +2957,7 @@ if(isset($_POST["trans_action"])){
             }  
         }
 
-        $qry_prev_sum = "SELECT COALESCE(SUM(recevied_qty), 0 ) AS positive,COALESCE(SUM(rejected_qty) , 0 ) AS negative FROM `$brandix_bts`.bundle_creation_data_temp where date_time BETWEEN ('$previuos_time1') and ('$previuos_time2')";
+        $qry_prev_sum = "SELECT COALESCE(SUM(recevied_qty), 0 ) AS positive,COALESCE(SUM(rejected_qty) , 0 ) AS negative FROM `$brandix_bts`.bundle_creation_data_temp where date_time BETWEEN ('$previuos_time1') and ('$previuos_time2') and operation_id=".$operation."";
         //echo "Prev good".$qry_prev_sum."</br>";
         $result_qry_prev_sum = mysqli_query($link, $qry_prev_sum) or exit("Sql Error : sql".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($result_qry_prev_sum)>0)
