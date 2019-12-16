@@ -396,7 +396,7 @@ if(isset($_GET['val']))
 		{
 			$input_job=$sql_row['input_job_no_random_ref'];
 
-			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0)";	
+			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
 
 			if(isset($_POST['submit']))
 			{
