@@ -131,7 +131,7 @@ function update_fin(x)
 	{
 		if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		{
-			var result=xmlhttp.response;
+			var result=xmlhttp.responseText;
 			if(result!=0)
 			{
 				document.getElementById("M"+x).innerHTML="<font color='red'>Failed</font>";				
@@ -235,7 +235,6 @@ if(isset($_GET['val']))
 				}
 				$sewing_operations = "'" . implode ( "', '", $operations) . "'";
 				
-			
 				
 				//To Get style
 				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods) and operation_id in ($sewing_operations)";
