@@ -77,6 +77,7 @@ if(isset($_GET['submit']))
 	{
 		$start_time[] = $row['start_time'];
 		$end_time[] = $row['end_time'];
+		$ids[] = $row['time_id'];
 		$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 	}
    	?>
@@ -144,39 +145,39 @@ if(isset($_GET['submit']))
 					$sec_tot_plan_eff=0; $sec_tot_act_eff=0; $sec_tot_hitrate=0; $sec_tot_required=0; $module_count=0;
 					$section = $Sec['section_id'];  $sec_tot_qty_array = array(); $sec_tot_balance=0;
 					// $sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
-					$sql="SELECT fr_data.*, plan_modules.section_id FROM $bai_pro2.fr_data  LEFT JOIN $bai_pro3.plan_modules ON fr_data.team = plan_modules. module_id WHERE fr_data.frdate='$frdate' AND plan_modules.section_id='$section' GROUP BY fr_data.team ORDER BY fr_data.team*1;";
+					$sql="SELECT * from $bai_pro3.module_master WHERE section='$section'";
 					// echo $sql.'<br>';
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
 					{
 						while($row=mysqli_fetch_array($res))
 						{ 
+							$team=$row['module_name'];
+						$sql12="SELECT hours,team,style,smv,fr_qty FROM $bai_pro2.`fr_data` WHERE DATE(frdate)='$frdate' and team='$team' GROUP BY team,style,smv ORDER BY team*1";
+						$res12=mysqli_query($link,$sql12);
+						while($row12=mysqli_fetch_array($res12))
+						{ 
 							$total_qty = 0;
 						
 							$module_count++;
 							// echo $frdate;
-						    $date=$row['frdate'];
+						    $date=$frdate;
+						    $style=trim($row12['style']);
+							$smv=round($row12['smv'],4);
+							$frqty=$row12['fr_qty'];
+							$hours=$row12['hours'];
 							// echo $date;
 							$newDate = date("Y-m-d", strtotime($date));
 							// echo $newDate.'<br>';
-							$team=$row['team'];
+							$team=$team;
 							
+							//{
 							//get styles which run in lines
-							$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-							$res1=mysqli_query($link,$sql1);
-							
-							$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-							$res2=mysqli_query($link,$sql2);
-							
-							$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-							$res3=mysqli_query($link,$sql3);
 							
 							$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 							$res4=mysqli_query($link,$sql4);
 							
-							$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
-							$res5=mysqli_query($link,$sql5);
-							
+								
 							$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
 							// echo $get_nop_query;
 							$nop_result=mysqli_query($link,$get_nop_query);
@@ -185,16 +186,15 @@ if(isset($_GET['submit']))
 								$nop = $result['fix_nop'].'<br>';
 							}
 
-							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
-							// echo $sqlsc;
-							$resc=mysqli_query($link,$sqlsc);
-							if($rowc=mysqli_fetch_array($resc))
+							$sumscqty=0;
+							unset($out);
+							$sql3="SELECT time_parent_id,sum(qty) as outqty FROM $bai_pro2.hout where out_date='$frdate' AND team='$team' and trim(style)='".$style."' and smv='".$row12['smv']."' group by time_parent_id";
+						//	echo $sql3."<br>";
+							$res3=mysqli_query($link,$sql3);							
+							while($row3=mysqli_fetch_array($res3))
 							{
-								$sumscqty=$rowc['sumqty'];
-							}
-							else
-							{
-								$sumcty="";
+								$out[$row3['time_parent_id']]=$row3['outqty'];
+								$sumscqty=$sumscqty+$row3['outqty'];
 							}
 							
 							?>
@@ -206,9 +206,9 @@ if(isset($_GET['submit']))
 									<td><center><?php  echo $nop;  ?></center></td>
 									<td><center>
 										<?php 
-											while($row1=mysqli_fetch_array($res1))
+											//while($row1=mysqli_fetch_array($res1))
 											{
-												echo $row1['style'].'<br>';
+												echo $style;
 											}
 										?>
 									</center></td>
@@ -222,10 +222,10 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td><center>
 										<?php 
-											while($row3=mysqli_fetch_array($res3))
-											{
-												$frqty=$row3['sumfrqty'];
-												echo $row3['sumfrqty'].'<br>';
+											//while($row3=mysqli_fetch_array($res3))
+											//{
+												//$frqty=$row3['sumfrqty'];
+												echo $frqty;
 												$sec_tot_fr_qty = $sec_tot_fr_qty + $frqty;
 												for ($i=0; $i < sizeof($plant_name); $i++) 
 												{
@@ -234,7 +234,7 @@ if(isset($_GET['submit']))
 														$tot_frqty_plantWise[$i] = $tot_frqty_plantWise[$i] + $frqty;
 													}							 	
 												}
-											}
+											//}
 										?>
 									</center></td>
 									<td><center>
@@ -256,17 +256,17 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td><center>
 										<?php
-											while($row5=mysqli_fetch_array($res5))
-											{
-												$smv=round($row5['smv'],2);
-												echo round($row5['smv'],2).'<br>';
-											}
+											//while($row5=mysqli_fetch_array($res5))
+										//	{
+												//$smv=round($row5['smv'],2);
+												echo round($smv,2).'<br>';
+										//	}
 										?>
 									</center></td>
 									<td><center>
 										<?php 
-											$hours=$row['hours'];
-											echo $row['hours'];  
+											//$hours=$row['hours'];
+											echo $hours;  
 										?>
 									</center></td>
 									<td style="background-color:#e1bee7;"><center>
@@ -282,7 +282,9 @@ if(isset($_GET['submit']))
 									<?php
 										for ($i=0; $i < sizeof($time_display); $i++)
 										{
-											$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
+											//$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
+											$row=0;					
+											$row=$out[$ids[$i]];
 											
 											if ($row == '' || $row == NULL )
 											{
@@ -605,6 +607,7 @@ if(isset($_GET['submit']))
 								</tr>
 									<?php
 						}
+					}	
 							$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
 							$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row12=mysqli_fetch_array($result12))
