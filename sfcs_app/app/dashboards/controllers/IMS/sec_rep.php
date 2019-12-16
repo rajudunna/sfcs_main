@@ -120,11 +120,11 @@ function update_fin(x)
 	
 	if (window.XMLHttpRequest)
 	{// code for IE7+, Firefox, Chrome, Opera, Safari
-	xmlhttp=new XMLHttpRequest();
+		xmlhttp=new XMLHttpRequest();
 	}
 	else
 	{// code for IE6, IE5
-	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	
 	xmlhttp.onreadystatechange=function()
@@ -142,6 +142,10 @@ function update_fin(x)
 	xmlhttp.open("GET","ajax_save.php?tid="+x+"&val="+val+"&rand="+Math.random(),true);
 	xmlhttp.send();
 	document.getElementById("M"+x).innerHTML=val;
+	if(val != 'Update Comments')
+	{
+		document.getElementById("M"+x).removeAttribute("style");
+	}
 }
 
 </script>
@@ -232,7 +236,6 @@ if(isset($_GET['val']))
 				$sewing_operations = "'" . implode ( "', '", $operations) . "'";
 				
 				
-
 				//To Get style
 				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods) and operation_id in ($sewing_operations)";
 				//echo $get_style;
@@ -396,7 +399,7 @@ if(isset($_GET['val']))
 		{
 			$input_job=$sql_row['input_job_no_random_ref'];
 
-			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0)";	
+			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
 
 			if(isset($_POST['submit']))
 			{
@@ -559,7 +562,14 @@ if(isset($_GET['val']))
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
-						echo "<td><span id='I".$tid."'></span><span id='M".$tid."' style='width:100%' onclick='update_comm(".$tid.");'>".$team_comm."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+						if(strlen($team_comm)>0)
+						{
+							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
+						else
+						{
+							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
 					}
 					else
 					{
@@ -618,7 +628,14 @@ if(isset($_GET['val']))
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
-						echo "<td><span id='I".$tid."'></span><span id='M".$tid."' style='width:100%' onclick='update_comm(".$tid.");'>".$team_comm."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+						if(strlen($team_comm)>0)
+						{
+							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
+						else
+						{
+							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}						
 					}
 					else
 					{
