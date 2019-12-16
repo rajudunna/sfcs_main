@@ -273,18 +273,9 @@ function auto_cal_clh(){
 						
 							if($date_sub==date('Y-m-d'))
 							{			
-								$select_check_two="select plan_tag from $bai_pro.`pro_plan_today` where plan_tag='$plan_tag'";
-								$result_insert_two=mysqli_query($select_check_two,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$check_result_two=mysqli_num_rows($result_insert_two);
-								if($check_result_two==0)
-								{
-									$sql1="insert ignore into $bai_pro.`pro_plan_today` (plan_tag) values (\"$plan_tag\")";
-										// echo $sql1."<br>";		
-									mysqli_query($link, $sql1) or exit("Sql Error512".mysqli_error($GLOBALS["___mysqli_ston"]));
-								}
 								
 								$sql1="insert ignore into bai_pro.`pro_plan_today` (plan_tag) values (\"$plan_tag\")";
-									 // echo $sql1."<br>";		
+									// echo $sql1."<br>";		
 								mysqli_query($link, $sql1) or exit("Sql Error512".mysqli_error($GLOBALS["___mysqli_ston"]));
 								
 								$sql12="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
@@ -292,38 +283,32 @@ function auto_cal_clh(){
 								mysqli_query($link, $sql12) or exit("Sql Error6 $sql12".mysqli_error($GLOBALS["___mysqli_ston"]));
 								
 								$sql13="insert ignore into bai_pro.`pro_plan`(plan_tag) values (\"$plan_tag\")";
-								//echo "2ndfist".$sql13."<br>";	
+								// echo "2ndfist".$sql12."<br>";	
 								mysqli_query($link, $sql13) or exit("Sql Error514".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
 								$sql1213="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
-								//echo "second seco".$sql1213."<br>";
+								// echo "second seco".$sql1212."<br>";
 								mysqli_query($link, $sql1213) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 								
 								$sql1313="update bai_pro.`tbl_freez_plan_log` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."' where plan_tag=\"".$plan_tag."\"";
-								//echo "second seco".$sql1313."<br>";
+								// echo "second seco".$sql1212."<br>";
 								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
-								
 							}
 							else
 							{
 								// var_dump($eff);
 								// echo $module[$i].$shifts_array[$x]."<br/>";
-								$select_check_three="select plan_tag from $bai_pro.`pro_plan` where plan_tag='$plan_tag'";
-								$result_insert_three=mysqli_query($select_check_three,$link) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$check_result_three=mysqli_num_rows($result_insert_three);
-								if($check_result_three==0)
-								{
-									$sql12="insert ignore into $bai_pro.`pro_plan`(plan_tag) values (\"$plan_tag\")";
-									// echo "2ndfist".$sql12."<br>";	
-									mysqli_query($link, $sql12) or exit("Sql Error514".mysqli_error($GLOBALS["___mysqli_ston"]));
-								}
+								$sql12="insert ignore into bai_pro.`pro_plan`(plan_tag) values (\"$plan_tag\")";
+								// echo "2ndfist".$sql12."<br>";	
+								mysqli_query($link, $sql12) or exit("Sql Error514".mysqli_error($GLOBALS["___mysqli_ston"]));
+										
 								$sql1212="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
 								// echo "second seco".$sql1212."<br>";
 								mysqli_query($link, $sql1212) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));								
 								// echo "Test=".implode(",",$eff[$i])."<br>";
 								
 								$sql1313="update bai_pro.`tbl_freez_plan_log` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."' where plan_tag=\"".$plan_tag."\"";
-								 //echo "second seco".$sql1313."<br>";
+								// echo "second seco".$sql1212."<br>";
 								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 							}
 						}
