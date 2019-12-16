@@ -120,18 +120,18 @@ function update_fin(x)
 	
 	if (window.XMLHttpRequest)
 	{// code for IE7+, Firefox, Chrome, Opera, Safari
-	xmlhttp=new XMLHttpRequest();
+		xmlhttp=new XMLHttpRequest();
 	}
 	else
 	{// code for IE6, IE5
-	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	
 	xmlhttp.onreadystatechange=function()
 	{
 		if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		{
-			var result=xmlhttp.responseText;
+			var result=xmlhttp.response;
 			if(result!=0)
 			{
 				document.getElementById("M"+x).innerHTML="<font color='red'>Failed</font>";				
@@ -142,6 +142,10 @@ function update_fin(x)
 	xmlhttp.open("GET","ajax_save.php?tid="+x+"&val="+val+"&rand="+Math.random(),true);
 	xmlhttp.send();
 	document.getElementById("M"+x).innerHTML=val;
+	if(val != 'Update Comments')
+	{
+		document.getElementById("M"+x).removeAttribute("style");
+	}
 }
 
 </script>
@@ -231,8 +235,8 @@ if(isset($_GET['val']))
 				}
 				$sewing_operations = "'" . implode ( "', '", $operations) . "'";
 				
+			
 				
-
 				//To Get style
 				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods) and operation_id in ($sewing_operations)";
 				//echo $get_style;
@@ -559,7 +563,14 @@ if(isset($_GET['val']))
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
-						echo "<td><span id='I".$tid."'></span><span id='M".$tid."' style='width:100%' onclick='update_comm(".$tid.");'>".$team_comm."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+						if(strlen($team_comm)>0)
+						{
+							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
+						else
+						{
+							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
 					}
 					else
 					{
@@ -618,7 +629,14 @@ if(isset($_GET['val']))
 					echo $quality_log_row;
 					if(in_array($edit,$has_permission))
 					{
-						echo "<td><span id='I".$tid."'></span><span id='M".$tid."' style='width:100%' onclick='update_comm(".$tid.");'>".$team_comm."</span></td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+						if(strlen($team_comm)>0)
+						{
+							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}
+						else
+						{
+							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+						}						
 					}
 					else
 					{
