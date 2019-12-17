@@ -219,11 +219,13 @@ if(isset($_GET['val']))
 		echo "</form>";
 
 		echo "<div class='panel-body'>";
-				$sql="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section GROUP BY section ORDER BY section + 0";
+				$sql="SELECT GROUP_CONCAT(quote(`module_name`) ORDER BY module_name+0 ASC ) AS sec_mods, GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC ) AS sec_mod_val,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section GROUP BY section ORDER BY section + 0";
+				// echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					$sec_mods=$sql_row['sec_mods'];
+					$sec_mods1=$sql_row['sec_mods'];
+					$sec_mods=$sql_row['sec_mod_val'];
 				}
 
 				//To get sewing operations 
@@ -235,9 +237,9 @@ if(isset($_GET['val']))
 				}
 				$sewing_operations = "'" . implode ( "', '", $operations) . "'";
 				
-				
+
 				//To Get style
-				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods) and operation_id in ($sewing_operations)";
+				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods1) and operation_id in ($sewing_operations)";
 				//echo $get_style;
 				$style_result=mysqli_query($link, $get_style) or die("Error-".$get_style."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($style_result))
@@ -399,7 +401,7 @@ if(isset($_GET['val']))
 		{
 			$input_job=$sql_row['input_job_no_random_ref'];
 
-			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
+			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
 
 			if(isset($_POST['submit']))
 			{
@@ -454,7 +456,7 @@ if(isset($_GET['val']))
 	
 				$rejected1=array();
 				$rejected=array();
-                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job'";
+                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and input_job_no_random_ref = '$input_job'";
                 //getting selection and apend result to query
 				if(isset($_POST['submit']))
 				{
@@ -489,7 +491,7 @@ if(isset($_GET['val']))
 				}
 
 				//To get Age from ims_log
-				$get_detais_ims="select tid,team_comm,ims_date From $bai_pro3.ims_log where ims_mod_no=$module_ref and input_job_rand_no_ref='$input_job' and ims_status<>'DONE'";
+				$get_detais_ims="select tid,team_comm,ims_date From $bai_pro3.ims_log where ims_mod_no='$module_ref' and input_job_rand_no_ref='$input_job' and ims_status<>'DONE'";
 				 //******To get Age bundle wise
 				 if(isset($_POST['submit']))
 				 {
