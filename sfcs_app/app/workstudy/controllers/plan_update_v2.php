@@ -288,11 +288,11 @@ function auto_cal_clh(){
 										
 								$sql1213="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
 								//echo "second seco".$sql1213."<br>";
-								mysqli_query($link, $sql1213) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
+								mysqli_query($link, $sql1213) or exit("Sql Error6 $sql1213".mysqli_error($GLOBALS["___mysqli_ston"]));	
 								
 								$sql1313="update bai_pro.`tbl_freez_plan_log` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."' where plan_tag=\"".$plan_tag."\"";
 								//echo "second seco".$sql1313."<br>";
-								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
+								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1313".mysqli_error($GLOBALS["___mysqli_ston"]));	
 								
 							}
 							else
@@ -305,12 +305,12 @@ function auto_cal_clh(){
 										
 								$sql1212="update bai_pro.`pro_plan` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
 								// echo "second seco".$sql1212."<br>";
-								mysqli_query($link, $sql1212) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));								
+								mysqli_query($link, $sql1212) or exit("Sql Error6 $sql1212".mysqli_error($GLOBALS["___mysqli_ston"]));								
 								// echo "Test=".implode(",",$eff[$i])."<br>";
 								
 								$sql1313="update bai_pro.`tbl_freez_plan_log` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',plan_pro='".$pro[$i]."', nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."' where plan_tag=\"".$plan_tag."\"";
 								 //echo "second seco".$sql1313."<br>";
-								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));	
+								mysqli_query($link, $sql1313) or exit("Sql Error6 $sql1313".mysqli_error($GLOBALS["___mysqli_ston"]));	
 							}
 						}
 					
