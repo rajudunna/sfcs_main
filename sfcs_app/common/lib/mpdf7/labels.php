@@ -120,14 +120,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$log_user=$sql_row['log_user'];
 	$remarks=$sql_row['remarks'];
 	$log_stamp=$sql_row['log_stamp'];
-	
+	$item_name1 = '';
+	if(strlen($item_name)>=45)
+	{
+		$item_name1=substr($item_name,0,45)." ";
+	}
+	else
+	{
+		$item_name1 = $item_name;
+	}
+
 	$html.= '<div><table>';
 		switch (trim($product_group))
 		{
 			case "Elastic":	
 			{	
 				$html.= '<tr><td>ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
- 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
+ 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT).$item_name2."</strong></td></tr>";  
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong>: <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
  				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>/ REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
@@ -153,7 +162,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			case "Fabric":	
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
- 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
+				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>"; 
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / REF NO # : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO # : <strong>$remarks</strong>/ PKG # : <b>$pkg_no</b>   </td></tr>";
