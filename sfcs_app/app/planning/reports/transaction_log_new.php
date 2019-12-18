@@ -208,7 +208,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 					$end_hour=$rows12['end_time'];
 					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
 				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
