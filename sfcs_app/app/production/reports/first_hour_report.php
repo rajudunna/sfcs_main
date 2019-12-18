@@ -243,9 +243,18 @@ if(isset($_POST['submit']))
 	echo "<th>SAH</th>";
 	echo "</tr>";
 	
-	$time_value_am=6;
-	$time_value_pm=14;
-	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$time_value_am'"; 
+	
+    //get last hour
+    $get_end_hour="SELECT HOUR(end_time) as last_time FROM $bai_pro3.tbl_plant_timings ORDER BY time_id DESC LIMIT 1";
+    $sql_result123=mysqli_query($link, $get_end_hour) or exit("Sql Error2.1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows123=mysqli_fetch_array($sql_result123))
+    {
+        $last_time = $rows123['last_time'];
+    }
+    
+    $time_value_pm = $last_time - 8;
+
+	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings LIMIT 1"; 
 	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows1231=mysqli_fetch_array($sql_result22121))
 	{
