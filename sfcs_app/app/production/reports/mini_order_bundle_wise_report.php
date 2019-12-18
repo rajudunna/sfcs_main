@@ -244,18 +244,19 @@ if($_POST['reptype'] == NULL){
                      
                     <div class='table-responsive'>
                     <table class='table table-bordered table-responsive' id='report' name='report'>
-                    <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th><th>Sewing Job Number</th>
+                    <tr class='info'><td>Style</td><td>Schedule</td><td>Color</td><td>Sewing Job Number</td>
                      <?php
                      // Bundle Wise Report
                      if($reptype == 1){ ?>
-                     <th>Bundle Number</th>
+                     <td>Bundle Number</td>
                      <?php  } ?>
-                    <th>Size</th>
+                    <td>Size</td>
                     <?php
                     $op_count=sizeof($main_result['columns']);
                     foreach($main_result['columns'] as $key1=>$value1){
                     ?>
-                        <th colspan='2' style='text-align:center'><?= $value1['op_name']; ?></th>
+                        <td style='text-align:center'><?= $value1['op_name']."-".$value1['op_code']; ?></td>
+                        <td></td>
                     <?php
                     }
                     ?>
