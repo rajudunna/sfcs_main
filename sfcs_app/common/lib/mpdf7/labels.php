@@ -120,10 +120,23 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$log_user=$sql_row['log_user'];
 	$remarks=$sql_row['remarks'];
 	$log_stamp=$sql_row['log_stamp'];
+	$sno=$sql_row['supplier_no'];
+	$item_name_len = strlen($item_name);
 	$item_name1 = '';
-	if(strlen($item_name)>=45)
+	$item_name2 ='';
+
+	if(strlen($item_name)>=44)
 	{
-		$item_name1=substr($item_name,0,45)." ";
+		$item_name1=substr($item_name,0,40)."";
+		if(strlen($item_name)<=90)
+		{
+			$item_name2=substr($item_name,41,$item_name_len);
+		}
+		else
+		{
+			$item_name2=substr($item_name,41,50)."..,";
+			
+		}
 	}
 	else
 	{
@@ -140,7 +153,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong>: <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
  				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>/ REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
-				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots  / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
+				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots  / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
 				//$html.= "<tr><td>REC # : <strong>$rec_no </strong>/ GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)."</strong> / GRN D: <strong>$grn_date</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
 				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b>  </td></td></tr>";
@@ -153,7 +166,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
  				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
-				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> /  Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."/ </b>  /</td></tr>";
+				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> /  Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."/ </b>/ SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN D: <strong>$grn_date</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
 				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
@@ -162,11 +175,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			case "Fabric":	
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
-				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>"; 
+				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT).$item_name2."</strong></td></tr>"; 
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / REF NO # : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO # : <strong>$remarks</strong>/ PKG # : <b>$pkg_no</b>   </td></tr>";
-				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
+				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b>  </td></tr>";
 				$html.= "<tr><td>REC # : <strong>$rec_no </strong> / GRN D: <strong>$grn_date</strong> /Qty (YDS) : <strong> $qty_rec</strong></td></tr>";
 				//$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
 				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / ROLL # : <b>$ref2</b>  </td></tr>";
@@ -181,7 +194,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
  				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b></td></tr>";
-				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
+				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong> / GRN D: <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
 				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)." </b>/ BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
@@ -193,7 +206,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
 				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
-				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> </td></tr>";
+				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
 				$html.= "<tr><td>Style :<strong>".str_pad($style_no, 7, " ", STR_PAD_RIGHT)."</strong> / BATCH # : <b>".str_pad($batch_no, 12, " ", STR_PAD_RIGHT)."</b> / BOX # : <b>$ref2</b> </td></td></tr>";
 				$html.= "<tr><td>".'<barcode code="'.leading_zeros($barcode_number,8).'" type="C39"/ height="0.60" size="0.90" text="1">       '."<strong>".str_pad(leading_zeros($barcode_number,8), 10, " ", STR_PAD_RIGHT)."</strong></tr>";
@@ -221,7 +234,7 @@ $html.='</body></html>';
 
 //include("../../mpdf7/mpdf.php");
 //$mpdf= new \mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
-
+// echo $html;
 $mpdf->WriteHTML($html); 
 $mpdf->Output();
 
