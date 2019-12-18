@@ -10,8 +10,12 @@
 	Output : Get Performance Report Of All Sewing Operations.
 */
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $style=$_POST['style'];
 $reptype=$_POST['reptype'];
+if($_POST['reptype'] == NULL){
+    $reptype=1;
+}
 
 ?>
 <div class="panel panel-primary">
@@ -26,7 +30,7 @@ $reptype=$_POST['reptype'];
                     //geting style of sewing operation only so used packing_summary_input to retrive
                     $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.packing_summary_input";	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    echo "<select class='form-control' name=\"style\"  id=\"style\" id='style'>";
+                    echo "<select class='form-control' name=\"style\"  id=\"style\" id='style' onchange='verify(event)'>";
     
                     echo "<option value='' disabled selected>Please Select</option>";
                     while($sql_row=mysqli_fetch_array($sql_result))
@@ -46,14 +50,14 @@ $reptype=$_POST['reptype'];
                     ?>
                 </div>
                 <div class="col-md-4">
-                    <label for='reptype'>Report : </label>
-                    <select class='form-control' name="reptype" id='reptype'>
+                    <label for='reptype'>Report Type: </label>
+                    <select class='form-control' name="reptype" id='reptype' onchange=verify(event)>
                     <option value=1>Bundle Level Report</option>
                     <option value=2 selected>Sewing Job Level Report</option>
                     </select>
                 </div>
                 <div class="col-md-1"><br/>
-                    <input class="btn btn-success" type="submit" value="Show" onclick="verify_input();" name="submit">
+                    <input class="btn btn-success" type="submit" value="Show" id='show' onclick="verify_input();" name="submit">
                 </div>
                
             </div>
@@ -99,33 +103,6 @@ $reptype=$_POST['reptype'];
                             }
                         }
                     }
-                   
-                    if(count($over_all_operations)>0){
-                        $operation_codes_no = implode(',',$over_all_operations);
-                        //columns Data
-                        if($reptype == 1){
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,bundle_number,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,size_title,bundle_number,operation_id order by bundle_number,operation_id";
-                        } 
-                        else{
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,bundle_number,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,input_job_no_random_ref,size_title,operation_id order by input_job_no_random_ref,size_title,operation_id";
-                        }
-               
-                    //    echo $get_data_bcd_temp;
-                    //    die();
-                        $result5 = $link->query($get_data_bcd_temp);
-                        $op_count1 = mysqli_num_rows($result5);
-                        if($op_count1>0){
-                            while($row5 = $result5->fetch_assoc()){
-                                if($row5['recevied_qty'])
-                                {
-                                    $rec_qty = (int)$row5['recevied_qty'];
-                                    $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),$row5['op_code']=>$rec_qty,'op_code'=>$row5['op_code']];
-                                    array_push($total_data,$data);
-                                }
-                            }
-                        }
-                    }
-                   
                     $operation_codes_str = implode(',',$over_all_operations);
                     //To get operation names
                     $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($operation_codes_str) and category='sewing' order by field(operation_code,$operation_codes_str) ";
@@ -138,17 +115,121 @@ $reptype=$_POST['reptype'];
                         }
                     }
                     $main_result['columns'] = $opertion_names;
+
+                    
+                    if(count($over_all_operations)>0){
+                        $operation_codes_no = implode(',',$over_all_operations);
+                        //columns Data
+                        if($reptype == 1){
+                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,input_job_no,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,size_title,bundle_number,operation_id order by bundle_number,operation_id";
+                        } 
+                        else{
+                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,input_job_no,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,input_job_no_random_ref,size_title,operation_id order by input_job_no_random_ref,size_title,operation_id";
+                        }
+               
+                  
+                        $result5 = $link->query($get_data_bcd_temp);
+                        $operation_array = explode(",", $operation_codes_no);
+                        $op_count1 = mysqli_num_rows($result5);
+                        function myfunction($job_num_old,$size_old,$total_data, $all_operations)
+                        {
+                            $response['status'] = false;
+                            $old_operations = array_column($total_data, "op_code");
+                            $diff_operations = array_diff($all_operations, $old_operations);
+                            if(sizeof($diff_operations) > 0){
+                                $response['status'] = true;
+                                $response['diff_operations'] = $diff_operations;
+                            }
+                            return $response;
+                        }
+                        function myfunction1($job_num_old,$bun_num_old,$size_old,$total_data, $all_operations)
+                        {
+                            $response['status'] = false;
+                            $old_operations = array_column($total_data, "op_code");
+                            $diff_operations = array_diff($all_operations, $old_operations);
+                            if(sizeof($diff_operations) > 0){
+                                $response['status'] = true;
+                                $response['diff_operations'] = $diff_operations;
+                            }
+                            return $response;
+                        }
+                        if($op_count1>0){
+                            $job_num_old = null;
+                            $bun_num_old = null;
+                            $size_old = null;
+                            $total_data_current=[];
+                            while($row5 = $result5->fetch_assoc()){
+                               
+                                if($row5['recevied_qty'])
+                                {
+                                    if($reptype == 1){
+                                        // to get null values of non existing operations of bundle numbers
+                                        if($bun_num_old == null && $size_old == null) {
+                                            $bun_num_old = $row5['bundle_number'];
+                                            $size_old = trim($row5['size_title']);
+                                        }else {
+                                            if(($bun_num_old != $row5['bundle_number'])) {
+                                                $fun_add_missed = myfunction1($job_num_old,$bun_num_old,$size_old,$total_data_current, $operation_array);
+                                                if($fun_add_missed['status']){
+                                                  
+                                                    foreach($fun_add_missed['diff_operations'] as $key => $value){
+                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$bun_num_old,'color'=>trim($row5['color']),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
+                                                        array_push($total_data,$data);
+                                                    }
+                                                }
+                                                $total_data_current = [];
+                                            }
+                                        }
+                                    }
+                                    if($reptype == 2){
+                                        if($job_num_old == null && $size_old == null) {
+                                            $job_num_old = $row5['input_job_no_random_ref'];
+                                            $size_old = trim($row5['size_title']);
+                                        }else {
+                                            
+                                            if(($job_num_old == $row5['input_job_no_random_ref'] || $job_num_old != $row5['input_job_no_random_ref'])  && $size_old != trim($row5['size_title'])) {
+                                                $fun_add_missed = myfunction($job_num_old,$size_old, $total_data_current, $operation_array);
+                                                if($fun_add_missed['status']){
+                                                    foreach($fun_add_missed['diff_operations'] as $key => $value){
+                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
+                                                        array_push($total_data,$data);
+                                                    }
+                                                }
+                                                $total_data_current = [];
+                                            }
+                                        }
+                                    }
+                                    $job_num_old = $row5['input_job_no_random_ref'];
+                                    $bun_num_old = $row5['bundle_number'];
+                                    $size_old = trim($row5['size_title']);
+                                    
+
+                                   
+                                    $rec_qty = (int)$row5['recevied_qty'];
+                                    $rej_qty = (int)$row5['rejected_qty'];
+                                    $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'input_job_no'=>$row5['input_job_no'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty,'op_code'=>$row5['op_code']];
+                                   
+                                    array_push($total_data,$data);
+                                    array_push($total_data_current,$data);
+                                    
+                                }
+                            }
+                        }
+                    }
+                   
+                   
                     $main_result['data'] = $total_data;
+                    // var_dump($main_result['data']);die();
                     echo '<div class="row">';
-                        echo '<div class="col-md-4">';
+                        echo '<div class="col-md-5">';
                         if($reptype == 1) { 
                             $r_name = 'Bundle Wise Report';
                         } else {
-                            $r_name = 'Mini Order Wise Report';
+                            $r_name = 'Sewing Job Wise Report';
                         }
-                        echo "<h3>&nbsp; $r_name <span><b>Style :</b>".$style."</span></h3>";
+                        echo "<h3>&nbsp; $r_name <span> for <b>Style :</b>".$style."</span></h3>";
                         echo '</div>';
-                        echo '<div class="col-md-7">';
+                        echo '<div class="col-md-6">';
                         echo '</div>';
                         echo '<div class="col-md-1">';
                             echo '<form action="'.getFullURL($_GET['r'],'export_excel1.php','R').'" method ="post" > 
@@ -174,7 +255,24 @@ $reptype=$_POST['reptype'];
                     $op_count=sizeof($main_result['columns']);
                     foreach($main_result['columns'] as $key1=>$value1){
                     ?>
-                        <th><?= $value1['op_name']; ?></th>
+                        <th colspan='2' style='text-align:center'><?= $value1['op_name']; ?></th>
+                    <?php
+                    }
+                    ?>
+                    </tr>
+                    <tr class='warning'><td></td><td></td><td></td><td></td>
+                     <?php
+                     // Bundle Wise Report
+                     if($reptype == 1){ ?>
+                     <td></td>
+                     <?php  } ?>
+                    <td></td>
+                    <?php
+                    $op_count=sizeof($main_result['columns']);
+                    foreach($main_result['columns'] as $key1=>$value1){
+                    ?>
+                        <td>Good</td>
+                        <td>Rejected</td>
                     <?php
                     }
                     $job_num= '';
@@ -186,19 +284,23 @@ $reptype=$_POST['reptype'];
                             if($bundle_num != $value['bundle_number']) {
                                 ?></tr><?php
                             }
-                            if($bundle_num != $value['bundle_number']){ ?>
+                            if($bundle_num != $value['bundle_number']){ 
+                                $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$value['input_job_no'],$value['input_job_no_random_ref'],$link);
+                            ?>
                                 <tr>
                                 <td><?=$value['style']; ?></td>
                                 <td><?=$value['schedule']; ?></td>
                                 <td><?=$value['color']; ?></td>
-                                <td><?=$value['input_job_no_random_ref']; ?></td>
+                                <td><?=$job_number; ?></td>
                                 <?php if($reptype == 1){ ?>
                                     <td><?=$value['bundle_number']; ?></td>
                                 <?php  } ?>
                                 <td><?=$value['size']; ?></td>
                                 <td><?=$value[$value['op_code']]; ?></td>
+                                <td><?=$value['rej']; ?></td>
                             <?php } else { ?>
                                 <td><?=$value[$value['op_code']]; ?></td>
+                                <td><?=$value['rej']; ?></td>
                                 <?php }
                                 $bundle_num = $value['bundle_number'];
                         }
@@ -209,21 +311,29 @@ $reptype=$_POST['reptype'];
                         // for Report Type Sewing Number
                     if($reptype == 2){
                         foreach($main_result['data'] as $key1=>$value1){
+                            // var_dump($value1);
+                            // die();
                             if($job_num != $value1['input_job_no_random_ref'] || $size != $value1['size']) {
                                 ?>
                               </tr> <?php
                             }
-                            if($job_num != $value1['input_job_no_random_ref'] || $size != $value1['size']){ ?>
+                            if($job_num != $value1['input_job_no_random_ref'] || $size != $value1['size'])
+                            {
+                                $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$value1['input_job_no'],$value1['input_job_no_random_ref'],$link);
+                                ?>
                                 <tr>
                                 <td><?=$value1['style']; ?></td>
                                 <td><?=$value1['schedule']; ?></td>
                                 <td><?=$value1['color']; ?></td>
-                                <td><?=$value1['input_job_no_random_ref']; ?></td>
+                                <td><?=$job_number; ?></td>
                                 <td><?=$value1['size']; ?></td>
                                 <td><?=$value1[$value1['op_code']]; ?></td>
+                                <td><?=$value1['rej']; ?></td>
                             <?php
                             } else { ?> 
-                                <td><?=$value1[$value1['op_code']]; ?></td> <?php
+                                <td><?=$value1[$value1['op_code']]; ?></td>
+                                <td><?=$value1['rej']; ?></td>
+                            <?php
                             }
                             $job_num = $value1['input_job_no_random_ref'];
                             $size = $value1['size'];
@@ -248,6 +358,8 @@ function getCSVData(){
 $(document).ready(function(){
     document.getElementById('reptype').value = "<?php echo $_POST['reptype'];?>";
     $('#reset').addClass('btn btn-warning btn-xs');
+    var btn = document.getElementById('show');
+    btn.disabled = true;
 });
 
 $('#reset').addClass('btn btn-warning');
@@ -265,13 +377,20 @@ $('#reset').addClass('btn btn-warning');
 						};
 	setFilterGrid( "report",table6_Props );
 	
-function verify_input(){
+function verify(){
     var style = $('#style').val();
     var reptype = $('#reptype').val();
-
-    if(style == '' && reptype == '') {
-        sweetAlert('Style and Report Type','Should not be Empty!','warning');
+    // alert(style);
+    // alert(reptype);
+    if(style != '' && reptype != null) {
+        var btn = document.getElementById('show');
+        btn.disabled = false;
     }
+    
+    //  else{
+    //     sweetAlert('Style and Report Type','Should not be Empty!','warning');
+
+    // }
 }
 </script>
 <style>
@@ -305,17 +424,17 @@ h3{
     background-color: #221572;
     color:white; 
 }
-/* table th
+table th
 {
 	border: 1px solid black;
 	text-align: center;
-	background-color: #337ab7;
+	/* background-color: #337ab7;
 	border-color: #337ab7;
 	color: WHITE;
 	white-space:nowrap; 
 	padding-left: 5px;
-	padding-right: 5px;
-} */
+	padding-right: 5px; */
+}
 
 table{
 	white-space:nowrap; 
