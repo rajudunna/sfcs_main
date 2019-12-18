@@ -78,7 +78,7 @@ if($_POST['reptype'] == NULL){
                     
                     //To get all the operations	
                     //To get default Operations
-                    $get_operations_workflow= "select DISTINCT(operation_code),default_operration from $brandix_bts.default_operation_workflow where operation_code IN (SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing') order by operation_order*1";
+                    $get_operations_workflow= "select DISTINCT(operation_code),default_operration from $brandix_bts.default_operation_workflow where operation_code IN (SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing') order by operation_order";
                     $result1 = $link->query($get_operations_workflow);
                     $op_count = mysqli_num_rows($result1);
                     if($op_count>0){
@@ -131,12 +131,19 @@ if($_POST['reptype'] == NULL){
                         $result5 = $link->query($get_data_bcd_temp);
                         $operation_array = explode(",", $operation_codes_no);
                         $op_count1 = mysqli_num_rows($result5);
+                        // var_dump($op_count1);
+                        // die();
                         function myfunction($job_num_old,$size_old,$total_data, $all_operations)
                         {
                             $response['status'] = false;
                             $old_operations = array_column($total_data, "op_code");
                             $diff_operations = array_diff($all_operations, $old_operations);
+                            // var_dump($total_data,'<br/>');
+                            // var_dump($all_operations,'<br/>');
+                            // var_dump($old_operations,'<br/>');
                             if(sizeof($diff_operations) > 0){
+                                // var_dump($diff_operations,'~~~<br/>');
+
                                 $response['status'] = true;
                                 $response['diff_operations'] = $diff_operations;
                             }
@@ -144,10 +151,16 @@ if($_POST['reptype'] == NULL){
                         }
                         function myfunction1($job_num_old,$bun_num_old,$size_old,$total_data, $all_operations)
                         {
+                            // echo 'hi';
                             $response['status'] = false;
                             $old_operations = array_column($total_data, "op_code");
                             $diff_operations = array_diff($all_operations, $old_operations);
+                            // var_dump($total_data,'<br/>');
+                            // var_dump($all_operations,'<br/>');
+                            // var_dump($old_operations,'<br/>');
                             if(sizeof($diff_operations) > 0){
+                                // var_dump($diff_operations,'~~~<br/>');
+
                                 $response['status'] = true;
                                 $response['diff_operations'] = $diff_operations;
                             }
@@ -158,40 +171,55 @@ if($_POST['reptype'] == NULL){
                             $bun_num_old = null;
                             $size_old = null;
                             $total_data_current=[];
+                            $records_inserted_count =1;
                             while($row5 = $result5->fetch_assoc()){
-                               
+                            //    var_dump($row5,'<br/><br/><br/>');
                                 if($row5['recevied_qty'])
                                 {
                                     if($reptype == 1){
                                         // to get null values of non existing operations of bundle numbers
-                                        if($bun_num_old == null && $size_old == null) {
+                                        if($bun_num_old == null && $size_old == null && $color_old == null) {
                                             $bun_num_old = $row5['bundle_number'];
                                             $size_old = trim($row5['size_title']);
+                                            $color_old = trim($row5['color']);
                                         }else {
+                                            // var_dump($records_inserted_count,"=",$op_count1,'<br/>');
+                                            // var_dump($records_inserted_count,"!=",$op_count1,'<br/>');
+                                            // if(($bun_num_old != $row5['bundle_number']) || $records_inserted_count == $op_count1) {
                                             if(($bun_num_old != $row5['bundle_number'])) {
                                                 $fun_add_missed = myfunction1($job_num_old,$bun_num_old,$size_old,$total_data_current, $operation_array);
+                                                // if($records_inserted_count== $op_count1){
+
+                                                //     // var_dump($total_data_current ,'<br/>');
+                                                // }
                                                 if($fun_add_missed['status']){
-                                                  
                                                     foreach($fun_add_missed['diff_operations'] as $key => $value){
-                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$bun_num_old,'color'=>trim($row5['color']),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
+                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$bun_num_old,'color'=>trim($color_old),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
+                                                        // if($records_inserted_count== $op_count1){
+                                                        // // var_dump($data,'<br/>');
+                                                        // }
                                                         array_push($total_data,$data);
                                                     }
                                                 }
                                                 $total_data_current = [];
                                             }
+
                                         }
                                     }
                                     if($reptype == 2){
-                                        if($job_num_old == null && $size_old == null) {
+                                        if($job_num_old == null && $size_old == null && $color_old == null) {
                                             $job_num_old = $row5['input_job_no_random_ref'];
                                             $size_old = trim($row5['size_title']);
+                                            $color_old = trim($row5['color']);
                                         }else {
-                                            
-                                            if(($job_num_old == $row5['input_job_no_random_ref'] || $job_num_old != $row5['input_job_no_random_ref'])  && $size_old != trim($row5['size_title'])) {
+                                            // var_dump($job_num_old,'<br/>',$row5['input_job_no_random_ref'],'<br/>');
+                                            // var_dump($size_old,'<br/>',$row5['size_title'],'<br/>');
+                                            // var_dump($color_old,'<br/>',$row5['color'],'<br/>');
+                                            if(($job_num_old == $row5['input_job_no_random_ref'] || $job_num_old != $row5['input_job_no_random_ref'])  && ($size_old != trim($row5['size_title']) || $color_old != trim($row5['color']))) {
                                                 $fun_add_missed = myfunction($job_num_old,$size_old, $total_data_current, $operation_array);
                                                 if($fun_add_missed['status']){
                                                     foreach($fun_add_missed['diff_operations'] as $key => $value){
-                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
+                                                        $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$job_num_old,'bundle_number'=>$row5['bundle_number'],'color'=>trim($color_old),'size'=>$size_old,$value=>0,'rej'=>0,'op_code'=>$value];
                                                         array_push($total_data,$data);
                                                     }
                                                 }
@@ -202,6 +230,7 @@ if($_POST['reptype'] == NULL){
                                     $job_num_old = $row5['input_job_no_random_ref'];
                                     $bun_num_old = $row5['bundle_number'];
                                     $size_old = trim($row5['size_title']);
+                                    $color_old = trim($row5['color']);
                                     
 
                                    
@@ -213,6 +242,7 @@ if($_POST['reptype'] == NULL){
                                     array_push($total_data_current,$data);
                                     
                                 }
+                                $records_inserted_count++;
                             }
                         }
                     }
