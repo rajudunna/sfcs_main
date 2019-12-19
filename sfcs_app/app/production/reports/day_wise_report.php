@@ -62,15 +62,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$edate=$_POST['edate'];
 				  
 				$r_name='Daily wise performance Report';
-				echo "<h3>&nbsp; Daily wise performance Report </h3>";
+				echo "<div class='col-md-5'><h3>&nbsp; Daily wise performance Report </h3>";
 				echo '</div>';
-				echo '<div class="col-md-7">';
+				echo '<div class="col-md-6">';
 				echo '</div>';
 				echo '<div class="col-md-1">';
-				echo '<form action="'.getFullURL($_GET['r'],'export_to_excel3.php','R').'" method ="post" > 
+				echo '<form action="'.getFullURL($_GET['r'],'export_to_excel_3.php','R').'" method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
 				<input type="hidden" name="csvname" id="csvname" value="'.$r_name.'">
-				<input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export Excel" onclick="getCSVData()">
+				<input type="submit" class="btn btn-info btn-xs" id="expexc" name="expexc" value="Export Excel" onclick="getCSVData()">
 				</form>';
 				echo '</div>';
 				echo '</div>';
@@ -78,26 +78,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$sql_operation="SELECT op_flow.operation_name AS ops_name,op_flow.operation_code AS ops_code 
 				FROM $brandix_bts.tbl_orders_ops_ref AS op_flow LEFT JOIN $brandix_bts.default_operation_workflow AS w_flow ON op_flow.operation_code=w_flow.operation_code WHERE op_flow.display_operations='yes' ORDER BY w_flow.`operation_order`"; 
 				$select_opertation=mysqli_query($link,$sql_operation) or exit($sql_operation."Error at something");
-				echo "<div class='table-responsive'>";
+				echo "<div class='table-responsive' style='height:500px;overflow-y: scroll;'>";
 				echo '<table class="table table-bordered table-responsive" id="report" name="report">
 				<tr>
-				<th rowspan="2">Date</th>
-				<th rowspan="2">Module</th>
-				<th rowspan="2">Shift</th>
-				<th rowspan="2">Style</th>
-				<th rowspan="2">Schedule</th>				
-				<th rowspan="2">Color</th>
-				<th rowspan="2">Size</th>';
-				$ab="";
+				<th>Date</th>
+				<th>Module</th>
+				<th>Shift</th>
+				<th>Style</th>
+				<th>Schedule</th>				
+				<th>Color</th>
+				<th>Size</th>';
 				$operation_codes=array();
 				while( $row_1 = mysqli_fetch_assoc( $select_opertation ) )
 				{
 					$operation_codes[]=$row_1['ops_code'];
-					echo "<th colspan='2' >".$row_1['ops_name']."</th>";
-					$ab.="<th>Good Quantity</th>
-					<th>Rejected Quantity</th>";
+					echo "<th>".$row_1['ops_name']."[".$row_1['ops_code']."] - Good</th>";
+					echo "<th>".$row_1['ops_name']."[".$row_1['ops_code']."] - Rejected</th>";
 				}				
-				echo "<th rowspan='2'>SAH</th></tr><tr>".$ab."</tr>";				
+				echo "<th>SAH</th></tr>";				
 				$i=0;
 				$date=array();
 				$mod=array();
@@ -205,8 +203,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                             
 <script>
 function getCSVData(){
- var csv_value=$('#report').table2CSV({delivery:'value'});
- $("#csv_text").val(csv_value);	
+	var dummytable = $('.fltrow').html();
+	var dummytotal = $('.total_excel').html();
+	$('.fltrow').html('');
+	$('.total_excel').html('');
+	var csv_value= $("#report").table2CSV({delivery:'value',excludeRows: '.fltrow .total_excel'});
+	$("#csv_text").val(csv_value);	
+	$('.fltrow').html(dummytable);
+	$('.total_excel').html(dummytotal);
+
 }
 $(document).ready(function(){
     document.getElementById('reptype').value = "<?php echo $_POST['reptype'];?>";
