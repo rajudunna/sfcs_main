@@ -212,6 +212,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
+					$count = mysqli_num_rows($sql_result1);
 					while($sql_row=mysqli_fetch_array($sql_result1))
 					{
 						$module=$sql_row['bac_no'];
@@ -362,7 +363,10 @@ var fnsFilters = {
 		
 	};
 	
-	 setFilterGrid("table1",fnsFilters);
+	 <?php
+	  if($count > 1)
+	  echo 'setFilterGrid("table1",fnsFilters)';
+	 ?>
 	
 
 </script>
