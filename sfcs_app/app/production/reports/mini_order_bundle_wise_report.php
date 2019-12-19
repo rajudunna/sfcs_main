@@ -195,12 +195,14 @@ if($_POST['reptype'] == NULL){
                     $bundle_num= '';
                     $size= '';
                     if($reptype == 1){
-                        foreach($all_bundles as $key => $value){ ?>
+                        foreach($all_bundles as $key => $value){ 
+                            $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$bundle_data[$value][0]['input_job_no'],$bundle_data[$value][0]['input_job_no_random_ref'],$link);
+                            ?>
                         <tr>
                             <td><?= $bundle_data[$value][0]['style']  ?></td>
                             <td><?= $bundle_data[$value][0]['schedule']  ?></td>
                             <td><?= $bundle_data[$value][0]['color']  ?></td>
-                            <td><?= $bundle_data[$value][0]['input_job_no_random_ref']  ?></td>
+                            <td><?= $job_number  ?></td>
                             <td><?= $value ?></td>
                             <td><?= $bundle_data[$value][0]['size']  ?></td>
 
@@ -232,12 +234,13 @@ if($_POST['reptype'] == NULL){
                         foreach($sewing_data as $sew_key => $sew_values){ 
 
                             foreach($sew_values as $size_key => $size_values){
+                                $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$size_values[0]['input_job_no'],$size_values[0]['input_job_no_random_ref'],$link);
                             ?>
                             <tr>
                                 <td><?= $size_values[0]['style']  ?></td>
                                 <td><?= $size_values[0]['schedule']  ?></td>
                                 <td><?= $size_values[0]['color']  ?></td>
-                                <td><?= $size_values[0]['input_job_no_random_ref']  ?></td>
+                                <td><?= $job_number  ?></td>
                                 <td><?= $size_values[0]['size']  ?></td>
 
 
