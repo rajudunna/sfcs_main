@@ -1,5 +1,5 @@
-Roll ID,Qty
-1,10
-2,10
-3,10
-4,10
+supplier_roll_no,Roll ID,Qty
+1,1,5
+2,2,5
+3,3,5
+4,4,5
