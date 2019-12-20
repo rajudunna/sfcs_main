@@ -26,6 +26,12 @@ $legend=getFullURLLevel($_GET['r'],'factory_view.htm',0,'R');
 					while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$sections_db[]=$sql_rowx['sec_id'];
+						$sql_sec="SELECT distinct section_display_name FROM bai_pro3.sections_master WHERE sec_name = '".$sql_rowx['sec_id']."' limit 1";
+						$sql_sec_resultx=mysqli_query($link, $sql_sec) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_sec_rowx=mysqli_fetch_array($sql_sec_resultx))
+						{
+							$sec_name[]=$sql_sec_rowx['section_display_name'];
+						}
 					}
 					//echo "<tr><th colspan=7 valign=\"middle\"><h1><font color=yellow>Factory View</font></h1></th></tr>";
 					echo " <thead><tr><th>Performance / Section</th>";
@@ -37,7 +43,7 @@ $legend=getFullURLLevel($_GET['r'],'factory_view.htm',0,'R');
 					{
 						// getFullURL($_GET['r'],'production_kpi/plant_dash_board_v2.php','N');
 						
-						echo "<th><a href='".getFullURLLevel($_GET['r'],'factory_view.php',0,'N')."&sec_x=".$sections_db[$i]."' target='_blank'>".$sections_db[$i]."</a></th>";
+						echo "<th><a href='".getFullURLLevel($_GET['r'],'factory_view.php',0,'N')."&sec_x=".$sections_db[$i]."' target='_blank'>".$sec_name[$i]."</a></th>";
 					}
 					echo "</tr> </thead>";
 					?>
@@ -72,8 +78,3 @@ $legend=getFullURLLevel($_GET['r'],'factory_view.htm',0,'R');
 // Get the content that is in the buffer and put it in your file //
 file_put_contents('factory_kpi.php', ob_get_contents());
 ?>
-
-
-
-
-

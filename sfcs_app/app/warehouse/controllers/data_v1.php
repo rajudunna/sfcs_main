@@ -50,7 +50,9 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$ref1=$_POST['ref1'];
 		$ref2=$_POST['ref2'];
 		$ref3=$_POST['ref3'];
+		$ref4=$_POST['ref4'];
 		$qty=$_POST['qty'];
+		$supplier_no=$_POST['supplier_roll_no'];
 		$lot_no=$_POST['lot_no'];
 		$remarks=$_POST['remarks'];
 		$user_name=$_SESSION['SESS_MEMBER_ID'];
@@ -75,15 +77,17 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					
 						$handle = fopen($_FILES['file']['tmp_name'],"r");
 						$flag = true;
-						$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user) values ";
+						$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user) values ";
 						$values = array();
 						$total_qty=0;
 						$iro_cnt = 0;
 						while(($data = fgetcsv($handle, 1000, ",")) !== FALSE)
 						{
 							if($flag) { $flag = false; continue; }
-							$item1 = $data[0];
-							$item2 = $data[1];	
+							$item1 = $data[1];
+							$item2 = $data[2];
+							$item3=$data[0];
+
 								//if the entry from excel file is not an nummeric or is -ve then quitting process	
 								if(!is_numeric($item2)){
 									throw new Exception('Error');
@@ -109,7 +113,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						
 							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
 							
-							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','".$username."-".$plant_name."')");
+							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."')");
 							$total_qty=$total_qty+$item2;
 							$iro_cnt++;
 						}
@@ -129,6 +133,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							
 						if($total_qty>$available)
 						{
+														
 							echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>input qty(".$total_qty.") more than balance qty</font></h1></center></div>";
 							$url = getFullURL($_GET['r'],'insert_v1.php','N');
 							echo "<a class='btn btn-primary' href='$url&lot_no=$lot_no'><center><br/><br/><br/><h3><font color='blue'>Back to Stock In Screen</font></h3></center></a>";
@@ -193,6 +198,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		$ref1=$_POST['ref1'];
 		$ref2=$_POST['ref2'];
 		$ref3=$_POST['ref3'];
+		$ref4=$_POST['ref4'];
 		$qty=$_POST['qty'];
 		$lot_no=$_POST['lot_no'];
 		$remarks=$_POST['remarks'];
@@ -250,7 +256,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						}
 					}
-						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
+						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 					$last_id = mysqli_insert_id($link);
@@ -259,7 +265,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
-
+				
 				// if(!$sql_result)
 				// {
 				// 	echo "Failed to insert record<br/>";
