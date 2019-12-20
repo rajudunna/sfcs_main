@@ -121,7 +121,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$remarks=$sql_row['remarks'];
 	$log_stamp=$sql_row['log_stamp'];
 	$sno=$sql_row['supplier_no'];
-	
 	$item_name_len = strlen($item_name);
 	$item_name1 = '';
 	$item_name2 ='';
