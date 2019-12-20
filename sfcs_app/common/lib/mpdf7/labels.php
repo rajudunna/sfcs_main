@@ -130,11 +130,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$item_name1=substr($item_name,0,40)."";
 		if(strlen($item_name)<=90)
 		{
-			$item_name2=substr($item_name,41,$item_name_len);
+			$item_name2=substr($item_name,40,$item_name_len);
 		}
 		else
 		{
-			$item_name2=substr($item_name,41,50)."..,";
+			$item_name2=substr($item_name,40,50)."..,";
 			
 		}
 	}
