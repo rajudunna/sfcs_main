@@ -114,7 +114,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($plan_cut_bundle_res)>0)
         {
-            $plan_logical_bundles = plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,$schedule);
+            $plan_logical_bundles = plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,$schedule,$cut);
 
             
             
