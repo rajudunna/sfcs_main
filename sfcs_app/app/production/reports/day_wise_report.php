@@ -60,8 +60,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$sdate=$_POST['sdate'];
 				$edate=$_POST['edate'];
 				  
-				$r_name='Daily wise performance Report';
-				echo "<div class='col-md-5'><h3>&nbsp; Daily wise performance Report </h3>";
+				$r_name='Day wise performance Report';
+				echo "<div class='col-md-5'><h3>&nbsp; Day wise performance Report </h3>";
 				echo '</div>';
 				echo '<div class="col-md-6">';
 				echo '</div>';
