@@ -93,7 +93,7 @@ if($_POST['reptype'] == NULL){
                     if(count($operation_code)>0){
                         foreach ($operation_code as $key => $value) {	
                             //columns
-                            $get_operations_no= "select DISTINCT(operation_id) from $brandix_bts.bundle_creation_data_temp where style = '$style' and operation_id ='".$value['op_code']."'";
+                            $get_operations_no= "select DISTINCT(operation_id) from $brandix_bts.bundle_creation_data_temp where style = '$style' and operation_id =".$value['op_code']."";
                             // echo $get_operations_no.'<br/>';
                             $result4 = $link->query($get_operations_no);
                             $op_count = mysqli_num_rows($result4);
@@ -123,10 +123,10 @@ if($_POST['reptype'] == NULL){
                         $operation_codes_no = implode(',',$over_all_operations);
                         //columns Data
                         if($reptype == 1){
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,input_job_no,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,size_title,bundle_number,operation_id order by bundle_number,operation_id";
+                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(original_qty) as job_qty,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,assigned_module,input_job_no,operation_id as op_code,remarks FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY bundle_number,operation_id order by bundle_number,operation_id";
                         } 
                         else{
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,input_job_no,operation_id as op_code FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY style,SCHEDULE,color,input_job_no_random_ref,size_title,operation_id order by input_job_no_random_ref,size_title,operation_id";
+                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(original_qty) as job_qty,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,assigned_module,input_job_no,operation_id as op_code,remarks FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY SCHEDULE,input_job_no_random_ref,color,size_title,operation_id order by input_job_no_random_ref,size_title,operation_id";
                         }
                
                   
@@ -137,7 +137,7 @@ if($_POST['reptype'] == NULL){
                             while($row5 = $result5->fetch_assoc()){
                                 $rec_qty = (int)$row5['recevied_qty'];
                                 $rej_qty = (int)$row5['rejected_qty'];
-                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'input_job_no'=>$row5['input_job_no'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code']];
+                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'input_job_no'=>$row5['input_job_no'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'org_qty'=>$row5['job_qty'],'assigned_module'=>$row5['assigned_module'],'remarks'=>$row5['remarks']];
 
                                 $bundle_data[$row5['bundle_number']][] = $data;
                                 $sewing_data[$row5['input_job_no_random_ref']][$row5['size_title']][] = $data;
@@ -185,8 +185,13 @@ if($_POST['reptype'] == NULL){
                      <?php
                      // Bundle Wise Report
                      if($reptype == 1){ ?>
-                     <th>Bundle Number</th>
-                     <?php  } ?>
+                    <th>Bundle Number</th><th>Bundle Qty</th><th>Module</th>
+                     <?php  }
+					else
+					{
+						echo  "<th>Sewing Job Qty</th>";
+					}
+	?>
                     <th>Size</th>
                     <?php
                     $op_count=sizeof($main_result['columns']);
@@ -205,16 +210,18 @@ if($_POST['reptype'] == NULL){
                     $size= '';
                     if($reptype == 1){
                         foreach($all_bundles as $key => $value){ 
-                            $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$bundle_data[$value][0]['input_job_no'],$bundle_data[$value][0]['input_job_no_random_ref'],$link);
+                            $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$bundle_data[$value][0]['remarks'],$link);
+							$job_number = $prefix.leading_zeros($bundle_data[$value][0]['input_job_no'],3);
                             ?>
                         <tr>
                             <td><?= $bundle_data[$value][0]['style']  ?></td>
                             <td><?= $bundle_data[$value][0]['schedule']  ?></td>
                             <td><?= $bundle_data[$value][0]['color']  ?></td>
                             <td><?= $job_number  ?></td>
-                            <td><?= $value ?></td>
-                            <td><?= $bundle_data[$value][0]['size']  ?></td>
-
+							<td><?= $value ?></td>
+							<td><?= $bundle_data[$value][0]['org_qty']  ?></td>                            
+                            <td><?= $bundle_data[$value][0]['assigned_module']  ?></td>
+							<td><?= $bundle_data[$value][0]['size']  ?></td>
                             <?php
                                 foreach($operation_array as $main_op_key => $main_op_value ) {
                                     if(in_array($main_op_value, array_column($bundle_data[$value], 'op_code'))){
@@ -243,13 +250,15 @@ if($_POST['reptype'] == NULL){
                         foreach($sewing_data as $sew_key => $sew_values){ 
 
                             foreach($sew_values as $size_key => $size_values){
-                                $job_number = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$size_values[0]['input_job_no'],$size_values[0]['input_job_no_random_ref'],$link);
+                                $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[0]['remarks'],$link);
+								$job_number = $prefix.leading_zeros($size_values[0]['input_job_no'],3);
                             ?>
                             <tr>
                                 <td><?= $size_values[0]['style']  ?></td>
                                 <td><?= $size_values[0]['schedule']  ?></td>
                                 <td><?= $size_values[0]['color']  ?></td>
                                 <td><?= $job_number  ?></td>
+								<td><?= $size_values[0]['org_qty']  ?></td>
                                 <td><?= $size_values[0]['size']  ?></td>
 
 
@@ -338,9 +347,9 @@ $(document).ready(function(){
 $('#reset').addClass('btn btn-warning');
 	var table6_Props = 	{
                             // col_0: "select", 
-                            // col_1: "select", 
-                            // col_2: "select", 
-                            // col_3: "select", 
+                             col_1: "select", 
+                             col_2: "select", 
+                             col_3: "select", 
                             // col_4: "select", 
 							rows_counter: true,
 							btn_reset: true,
