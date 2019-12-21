@@ -28,7 +28,7 @@ if($_POST['reptype'] == NULL){
                     <label for='style'>Style</label>
                     <?php
                     //geting style of sewing operation only so used packing_summary_input to retrive
-                    $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.packing_summary_input";	
+                    $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.packing_summary_input where order_style_no != ''";	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<select class='form-control' name=\"style\"  id=\"style\" id='style' onchange='verify(event)'>";
     
@@ -52,6 +52,7 @@ if($_POST['reptype'] == NULL){
                 <div class="col-md-4">
                     <label for='reptype'>Report Type: </label>
                     <select class='form-control' name="reptype" id='reptype' onchange=verify(event)>
+                    <option value='' selected disabled>Please select</option>
                     <option value=1>Bundle Level Report</option>
                     <option value=2 selected>Sewing Job Level Report</option>
                     </select>
@@ -143,6 +144,14 @@ if($_POST['reptype'] == NULL){
                             }
                             $all_bundles = array_keys($bundle_data);
                             
+                        } else {
+                            echo "<script>sweetAlert('No Data Found','','warning');</script>";
+                            echo "<script type=\"text/javascript\"> 
+                                setTimeout(\"Redirect()\",0); 
+                                function Redirect(){	 
+                                        location.href = \"".getFullURL($_GET['r'], "mini_order_bundle_wise_report.php","N")."\"; 
+                                    }
+                            </script>";
                         }
                     }
                    
