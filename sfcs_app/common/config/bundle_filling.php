@@ -216,17 +216,20 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 		}
 	}
 	
-	$docketexisted="SELECT * from $bai_pro3.act_cut_bundle where docket=".$doc_no."";
+	$docketexisted="SELECT max(end_no) as start,count(*) as bundles from $bai_pro3.act_cut_bundle where docket=".$doc_no."";
 	$docketexistedresult=mysqli_query($link,$docketexisted);
-	if(mysqli_num_rows($docketexistedresult)>0)
+	while($row_act = mysqli_fetch_array($docketexistedresult))
 	{
-		$startno = mysqli_num_rows($docketnumberexistedresult)+1;
-		$bundle = $startno;
-	}
-	else
-	{        
-		$startno = 1;
-		$bundle = 1;
+		if($row_act['bundles']==0)
+		{
+			$startno = 1;
+			$bundle = 1;
+		}
+		else
+		{		
+			$startno = $row_act['start']+1;
+			$bundle = $row_act['bundles'];
+		}
 	}
 	$docket_query="SELECT * FROM $bai_pro3.`docket_roll_alloc` where docket=".$doc_no." and plies>0 and status=0 order by lay_seq,shade asc";
 	$docket_queryresult = mysqli_query($link,$docket_query);
@@ -236,7 +239,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 		{
 			$docket_info[] = $row;
 			$udpate ="UPDATE $bai_pro3.`docket_roll_alloc` set status=1 where id =".$row['id']."";
-			//mysqli_query($link,$udpate);
+			mysqli_query($link,$udpate);
 			$sizeofrolls=count($docket_info);
 			$shadebundleno=0;	
 		}
@@ -245,6 +248,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 		$get_det_qry_rslt= mysqli_query($link,$get_det_qry);
 		if(mysqli_num_rows($get_det_qry_rslt)>0)
 		{
+			$check_value=array();
 			$check_qty="SELECT plan_cut_bundle_id,sum(plies) as fill FROM $bai_pro3.`act_cut_bundle` where docket=".$doc_no." group by plan_cut_bundle_id";
 			$check_qty_result = mysqli_query($link,$check_qty);
 			if(mysqli_num_rows($check_qty_result) > 0)
@@ -254,7 +258,6 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					$check_value[$rows['plan_cut_bundle_id']]=$rows['fill'];
 				}
 			}
-			
 			while($rowdet = mysqli_fetch_array($get_det_qry_rslt))
 			{					
 				$size = $rowdet['size'];
@@ -266,34 +269,38 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 				else
 				{
 					$planplies = $rowdet['plies']-$check_value[$plan_id];
-				}	
-				for($k=0;$k<$sizeofrolls;$k++)
-				{
-					$shadebundleno++;					
-					$endno+=$docket_info[$k]['plies'];					
-					//inserting data into docket_number_info
-					$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order)
-					VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','ACB-".$doc_no."-".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$endno.",".$docket_info[$k]['plies'].",'".$username."','".$docket_info[$k]['lay_seq']."')";
-					$result= mysqli_query($link,$insert_docket_num_info);
-					$id=mysqli_insert_id($link);						
-					foreach($operation_codes as $index => $op_code)
-					{
-						if($op_code==15)
-						{									
-							$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values (".$id.",".$plan_id.",".$op_code.",".$docket_info[$k]['plies'].",".$docket_info[$k]['plies'].",".$docket_info[$k]['plies'].",0,'".$username."',1)";
-							$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-						}
-						else
-						{
-							$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values (".$id.",".$plan_id.",".$op_code.",0,".$docket_info[$k]['plies'].",0,0,'".$username."',0)";
-							$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-						}						
-					}					
-					$startno=$startno+$docket_info[$k]['plies'];
-					$planplies=$planplies-$docket_info[$k]['plies'];
 				}
-				$bundle++;
-				$shadebundleno=0;				
+				if($planplies>0)
+				{
+					for($k=0;$k<$sizeofrolls;$k++)
+					{
+						$shadebundleno++;					
+						$endno=($startno+$docket_info[$k]['plies'])-1;					
+						//inserting data into docket_number_info
+						$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order)
+						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','ACB-".$doc_no."-".$bundle."-".$shadebundleno."','".$docket_info[$k]['shade']."',".$startno.",".$endno.",".$docket_info[$k]['plies'].",'".$username."','".$docket_info[$k]['lay_seq']."')";
+						$result= mysqli_query($link,$insert_docket_num_info);
+						$id=mysqli_insert_id($link);						
+						foreach($operation_codes as $index => $op_code)
+						{
+							if($op_code==15)
+							{									
+								$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values (".$id.",".$plan_id.",".$op_code.",".$docket_info[$k]['plies'].",".$docket_info[$k]['plies'].",".$docket_info[$k]['plies'].",0,'".$username."',1)";
+								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+							}
+							else
+							{
+								$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`) values (".$id.",".$plan_id.",".$op_code.",0,".$docket_info[$k]['plies'].",0,0,'".$username."',0)";
+								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+							}						
+						}
+						
+						$startno=$startno+$docket_info[$k]['plies'];
+						$planplies=$planplies-$docket_info[$k]['plies'];
+					}				
+					$bundle++;
+					$shadebundleno=0;
+				}				
 			}			
 			unset($operation_codes);		
 			// Filling Actual Logical bundles		
@@ -374,7 +381,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 				unset($values_qct_shade);
 				unset($values_plan_qty);
 				unset($values_plan_ids);
-			}				
+			}			
 		}			
 	}		
 }

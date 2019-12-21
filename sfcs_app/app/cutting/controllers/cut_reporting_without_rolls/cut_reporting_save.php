@@ -20,6 +20,38 @@ $rollwisestatus   = $_POST['rollwisestatus'];
 $emb_check_in_roll=0;
 $ids=0;
 $num=1;
+$response_data = array();
+$data = $_POST;
+
+$op_code = 15;
+$target = $data['doc_target_type'];
+$doc_no = $data['doc_no'];
+$plies  = $data['c_plies'];
+$f_ret  = $data['fab_returned'];
+$f_rec  = $data['fab_received'];
+$shift  = $data['shift'];
+$cut_table = $data['cut_table'];
+$team_leader = $data['team_leader'];
+$bundle_location = $data['bundle_location'];
+$returned_to = $data['returned_to'];
+$damages = $data['damages'];
+$joints_endbits = $data['joints_endbits'];
+$shortages = $data['shortages'];
+$style   = $data['style'];
+$schedule= $data['schedule'];
+$color   = $data['color'];
+$date      = date('Y-m-d');
+$date_time = date('Y-m-d H:i:s'); 
+$rejections_flag = $data['rejections_flag'];
+$rejection_details = $data['rejections'];
+$full_reporting_flag = $data['full_reporting_flag'];
+// for schedule clubbing we are grabbing all colors and picking one randomly
+$colors = explode(',',$color);
+$color = $colors[0];
+//for schedule clubbing we are grabbing all schedules
+$schedules = explode(',',$schedule);
+$schedule = $schedules[0];
+
 if($rollwisedata)
 {
     foreach($rollwisedata as $value)
@@ -34,8 +66,8 @@ if($rollwisedata)
 		mysqli_query($link,$exec1);
 		
     }
-	$act_bundles = act_logical_bundles($doc_no,$schedule,$style,$color);
-    if($result)
+	
+	if($result)
     {
 		$sql1="select * from $bai_pro3.`bai_orders_db_confirm` where orde_del_no=".$schedule."";
 		$resut_1= mysqli_query($link,$sql1);
@@ -229,44 +261,8 @@ else
 		$exec1 ="INSERT INTO $bai_pro3.`docket_roll_alloc` (docket,lay_seq,roll_no,shade,width,fabric_recv_qty,plies,damages,joints,endbits,shortages,fabric_return,tran_user,status,color)
 		VALUES (".$doc_no.",1,0,'None',0,'".$f_rec."','".$plies."','".$damages."','".$value[0]."','".$value[1]."','".$shortages."','".$f_ret."','".$username."',0,'".$color."')";
 		$result= mysqli_query($link,$exec1);	
-	}
-	$act_bundles = act_logical_bundles($doc_no,$schedule,$style,$color);
+	}	
 }
-
-$response_data = array();
-$data = $_POST;
-
-$op_code = 15;
-$target = $data['doc_target_type'];
-$doc_no = $data['doc_no'];
-$plies  = $data['c_plies'];
-$f_ret  = $data['fab_returned'];
-$f_rec  = $data['fab_received'];
-$shift  = $data['shift'];
-$cut_table = $data['cut_table'];
-$team_leader = $data['team_leader'];
-$bundle_location = $data['bundle_location'];
-$returned_to = $data['returned_to'];
-$damages = $data['damages'];
-$joints_endbits = $data['joints_endbits'];
-$shortages = $data['shortages'];
-$style   = $data['style'];
-$schedule= $data['schedule'];
-$color   = $data['color'];
-$date      = date('Y-m-d');
-$date_time = date('Y-m-d H:i:s'); 
-$rejections_flag = $data['rejections_flag'];
-$rejection_details = $data['rejections'];
-$full_reporting_flag = $data['full_reporting_flag'];
-// for schedule clubbing we are grabbing all colors and picking one randomly
-$colors = explode(',',$color);
-$color = $colors[0];
-//for schedule clubbing we are grabbing all schedules
-$schedules = explode(',',$schedule);
-$schedule = $schedules[0];
-
-
-
 
 $size_update_string = '';
 $p_sizes_str   = '';
@@ -381,7 +377,7 @@ if(strpos($target,'_other')==true){
     $update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.0'); 
     $update_result2 = mysqli_query($link,$update_query2) or force_exit('Query Error Cut 2.1');
     $response_data['saved'] = 1;
-    $response_data['pass'] = 1;
+    $response_data['pass'] = 1;	
     echo json_encode($response_data);
     exit();
 }
@@ -555,6 +551,7 @@ if($target == 'normal'){
         echo json_encode($response_data);
         exit();
     }else{
+		act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $m3_status;
         echo json_encode($response_data);
@@ -839,6 +836,7 @@ if($target == 'schedule_clubbed')
         echo json_encode($response_data);
         exit();
     }else{
+		act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
@@ -1299,6 +1297,7 @@ if($target == 'style_clubbed'){
         echo json_encode($response_data);
         exit();
     }else{
+		act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
