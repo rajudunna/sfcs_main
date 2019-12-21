@@ -275,7 +275,7 @@ function auto_cal_clh(){
 							{			
 								
 								$sql1="insert ignore into bai_pro.`pro_plan_today` (plan_tag) values (\"$plan_tag\")";
-									// echo $sql1."<br>";		
+									 // echo $sql1."<br>";		
 								mysqli_query($link, $sql1) or exit("Sql Error512".mysqli_error($GLOBALS["___mysqli_ston"]));
 								
 								$sql12="update bai_pro.`pro_plan_today` set sec_no='".$section[$i]."', date=\"$date_sub\", mod_no='".$module[$i]."', shift=\"$shifts_array[$x]\", plan_eff='".$eff[$i]."',  plan_pro='".$pro[$i]."', fix_nop='".$nop[$i]."', plan_clh='".$clh[$i]."',plan_sah='".$sah[$i]."',act_hours='".$plant_hrs[$i]."' where plan_tag=\"".$plan_tag."\"";
