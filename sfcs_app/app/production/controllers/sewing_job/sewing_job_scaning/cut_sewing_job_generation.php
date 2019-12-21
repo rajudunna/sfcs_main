@@ -298,6 +298,9 @@ if(isset($_POST) && isset($_POST['main_data'])){
 
             $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
             $delete_result = mysqli_query($link,$delete_query);
+
+			$delete_query2 = "DELETE from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and operation_id in (".$ips_op_code.")";
+            $delete_result = mysqli_query($link,$delete_query2);
         // MO Deletion end
         echo 'success';
     }

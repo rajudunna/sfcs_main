@@ -130,6 +130,7 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 		$operation_codes[] = $row1['operation_code'];				
 		$smv[$row1['operation_code']] = $row1['smv'];				
 	}
+	$barcode='';
 	$cut_no=$cut;
 	$shift='A';
 	$module=0;
@@ -168,15 +169,17 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 					$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
 					$input_job_num_rand=$schedule.date("ymd").$input_job_num;
 				}
-					
+				$barcode="SPB-".$dono."-".$input_job_num."-".$bundle_seq."";	
 				$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 				(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$input_job_num."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."',
-				'".$doc_type."', '-1', $inserted_id, $plan_cut_bundle_id,$bundle_seq,'".$username."','SPB-".$dono."-".$input_job_num."-".$bundle_seq."','".$style."','".$color."','".$schedule."')";
-				mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+				'".$doc_type."', '-1', $inserted_id, $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."')";
+				$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$pac_tid= mysqli_insert_id($link);
 				foreach($operation_codes as $index => $op_code)
 				{
-					$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','".$size."','". $size_code."','". $smv[$op_code]."','SPB-".$dono."-".$input_job_num."-".$bundle_seq."',".$logic_qty.",0,0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'SPB-".$dono."-".$input_job_num."-".$bundle_seq."')";
+					$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','".$size."','". $size_code."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",0,0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
 					mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
+				$barcode='';
 				$size_plies = $size_plies - $logic_qty;
 				$count++;
 				$bundle_seq++;
@@ -185,7 +188,8 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
         // update count of plan logical bundles for each sewing job
         $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
         $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
-    }	
+    }
+	
 }
 
 function act_logical_bundles($doc_no,$schedule_new,$style,$color)
