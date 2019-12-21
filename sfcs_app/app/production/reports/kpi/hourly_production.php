@@ -84,7 +84,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			while ($row = mysqli_fetch_array($plant_timings_result))
 			{
 				$start_time[] = $row['start_time'];
-				$ids[] = $row['time_id'];
 				$end_time[] = $row['end_time'];
 				$time_display[] = $row['time_display'].'<br>'.$row['day_part'];
 			}
@@ -93,9 +92,10 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			// list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
 			// $minutes_29 = $minutes-1;
 
-			$sql="SELECT * FROM $bai_pro2.`fr_data` WHERE DATE(frdate)='$frdate' GROUP BY team,style,smv ORDER BY team*1";
+			$sql="SELECT * FROM $bai_pro2.fr_data where frdate='$frdate' GROUP BY team ORDER BY team*1";
+			// echo $sql.'<br>';
 			$res=mysqli_query($link,$sql);
-			
+	
 			$i=0; ?>
 			<section class="content-area">
 			<div class='table-responsive'>
@@ -135,55 +135,68 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				</tr>
 			</thead>
 			<?php 
-				$tot_reported_plantWise=array(); 
-				$tot_frqty_plantWise=array(); 
-				$tot_forecast_qty_plantWise=array();
-				$tot_scanned_plantWise=array(); 
-				$tot_scanned_sah_plantWise=array(); 
-				$tot_fr_sah_plantWise=array();
-				$tot_forecast_sah_plantWise=array(); 
-				$tot_act_sah_plantWise=array(); 
-				$tot_sah_diff_plantWise=array();
-				$tot_plan_eff_plantWise=array(); 
-				$tot_act_eff_plantWise=array(); 
-				$tot_balance_plantWise=array();
-				$tot_hit_rate_plantWise=array();	
-				$grand_tot_qty_time_array1 = array(); 
+				$tot_reported_plantWise=array(); $tot_frqty_plantWise=array(); $tot_forecast_qty_plantWise=array();
+				$tot_scanned_plantWise=array(); $tot_scanned_sah_plantWise=array(); $tot_fr_sah_plantWise=array();
+				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
+				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
+				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array(); 
 			
 			while($row=mysqli_fetch_array($res))
 			{
 				$module_count++;
+
 				$total_qty = 0;
+
+				// echo $frdate;
 				$date=$row['frdate'];
+				//echo $date;
 				$newDate = date("Y-m-d", strtotime($date));
+				//echo $newDate.'<br>';
 				$team=$row['team'];
-				$style=trim($row['style']);
-				$smv=round($row['smv'],4);
-				$frqty=$row['fr_qty'];
-				$hours=$row['hours'];
-				//$sumscqty=$row['out'];
-				$sumscqty=0;
-				$sql3="SELECT time_parent_id,sum(qty) as outqty FROM $bai_pro2.hout where out_date='$frdate' AND team='$team' and trim(style)='".$style."' and smv='".$row['smv']."' group by time_parent_id";
-				//echo $sql3."<br>";
+				// echo $team;
+				//get styles which run in lines
+				$sql1="SELECT distinct style FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$res1=mysqli_query($link,$sql1);
+
+				$sql2="SELECT distinct schedule FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$res2=mysqli_query($link,$sql2);
+
+				$sql3="SELECT SUM(fr_qty) AS sumfrqty FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
 				$res3=mysqli_query($link,$sql3);
-				unset($out);
-				while($row3=mysqli_fetch_array($res3))
-				{
-					$out[$row3['time_parent_id']]=$row3['outqty'];
-					$sumscqty=$sumscqty+$row3['outqty'];
-				}
-				$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team' group by module*1";
-				//    echo $sql4."</br>";
+
+				$sql4="SELECT qty FROM $bai_pro3.line_forecast where date='$frdate' AND module='$team'";
 				$res4=mysqli_query($link,$sql4);
-				
+
+				$sql5="SELECT AVG(smv) AS smv FROM $bai_pro2.fr_data where frdate='$frdate' AND team='$team'";
+				$res5=mysqli_query($link,$sql5);
+
 				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
-				//   echo $get_nop_query."<br>";
+				// echo $get_nop_query;
 				$nop_result=mysqli_query($link,$get_nop_query);
 				while($result=mysqli_fetch_array($nop_result))
 				{
 					$nop = $result['fix_nop'].'<br>';
 				}
-			
+				
+				// $sql6="SELECT out_time,qty,status FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
+				// $res6=mysqli_query($link,$sql6);
+				
+				// $sql6="SELECT $query remarks FROM $bai_pro2.hout where out_date='$frdate' AND team='$team'";
+				// echo $sql6.'<br><br>';
+				// $res6=mysqli_query($link,$sql6);
+
+				$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
+				// echo $sqlsc;
+				$resc=mysqli_query($link,$sqlsc);
+				if($rowc=mysqli_fetch_array($resc))
+				{
+					$sumscqty=$rowc['sumqty'];
+				}
+				else
+				{
+					$sumcty="";
+				}
+						
 				?>
 
 			  
@@ -191,37 +204,69 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				<tr>
 					<td><center><?php  echo $team;  ?></center></td>
 					<td><center><?php  echo $nop;  ?></center></td>
-					<td><center><?php  echo $style;  ?>	</center></td>
 					<td><center>
 						<?php 
-							echo $frqty.'<br>';
-							for ($i=0; $i < sizeof($plant_name); $i++) 
+							while($row1=mysqli_fetch_array($res1))
 							{
-								if (in_array($team, $plant_modules[$i]))
-								{
-									$tot_frqty_plantWise[$i] = $tot_frqty_plantWise[$i] + $frqty;
-								}							 	
-							}						
-						?>
-					</center></td>
-					<td><center>
-						<?php 
-						while($row4=mysqli_fetch_array($res4))
-						{
-							$forecastqty=$row4['qty'];
-							echo $row4['qty'].'<br>';
-							for ($i=0; $i < sizeof($plant_name); $i++) 
-							{
-								if (in_array($team, $plant_modules[$i]))
-								{
-									$tot_forecast_qty_plantWise[$i] = $tot_forecast_qty_plantWise[$i] + $forecastqty;
-								}							 	
+								echo $row1['style'].'<br>';
 							}
-						}
 						?>
 					</center></td>
-					<td><center><?php echo $smv;?></center></td>
-					<td><center><?php echo $hours;?></center></td>
+					<td style='display:none;'>	
+						<?php 
+							while($row2=mysqli_fetch_array($res2))
+							{
+								echo $row2['schedule'].'<br>';
+							}
+						?>
+					</center></td>
+					<td><center>
+						<?php 
+							while($row3=mysqli_fetch_array($res3))
+							{
+								$frqty=$row3['sumfrqty'];
+								echo $row3['sumfrqty'].'<br>';
+								for ($i=0; $i < sizeof($plant_name); $i++) 
+								{
+									if (in_array($team, $plant_modules[$i]))
+									{
+										$tot_frqty_plantWise[$i] = $tot_frqty_plantWise[$i] + $frqty;
+									}							 	
+								}
+							}
+						?>
+					</center></td>
+					<td><center>
+						<?php 
+							while($row4=mysqli_fetch_array($res4))
+							{
+								$forecastqty=$row4['qty'];
+								echo $row4['qty'].'<br>';
+								for ($i=0; $i < sizeof($plant_name); $i++) 
+								{
+									if (in_array($team, $plant_modules[$i]))
+									{
+										$tot_forecast_qty_plantWise[$i] = $tot_forecast_qty_plantWise[$i] + $forecastqty;
+									}							 	
+								}
+							}
+						?>
+					</center></td>
+					<td><center>
+						<?php
+							while($row5=mysqli_fetch_array($res5))
+							{
+								$smv=round($row5['smv'],2);
+								echo round($row5['smv'],2).'<br>';
+							}
+						?>
+					</center></td>
+					<td><center>
+						<?php 
+							$hours=$row['hours'];
+							echo $row['hours'];  
+						?>
+					</center></td>
 					<td style="background-color:#e1bee7;"><center>
 						<?php
 							if ($forecastqty == 0 || $hours == 0) {
@@ -235,17 +280,13 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					<?php
 						for ($i=0; $i < sizeof($time_display); $i++)
 						{
-							$row=0;
-								
-							$row=$out[$ids[$i]];
-							
+							$row=echo_title("$bai_pro2.hout","SUM(qty)","out_date='$frdate' AND rep_start_time = TIME('".$start_time[$i]."') AND rep_end_time = TIME('".$end_time[$i]."') and team",$team,$link);
+
 							if ($row == '' || $row == NULL )
 							{
 								$row=0;
 							}
 							
-							
-						//	echo $row."<br>";
 							if (round($pcsphr) == 0)
 							{
 								if ($row > 0)
@@ -380,7 +421,6 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									}
 									else
 									{
-									//	$total_qty = $total_qty + $row;
 										echo "<td><img src='$img_url' alt=\"Update Downtime\" height=\"42\" width=\"42\"></td>";
 									}
 								}
