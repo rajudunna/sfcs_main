@@ -1,10 +1,21 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
+
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',2,'R'));
 $has_permission=haspermission($_GET['r']);
 ?>
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 1070) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		});
+</script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'], 'common/js/openbundle_report.min.js', 4, 'R'); ?>"></script>	
+
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
@@ -14,6 +25,15 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="C_Tex_Interface_files/filelist.xml">
+<script>
+		
+		$(document).ready(function() {
+			if (screen.width <= 960) 
+            {
+                $BODY.toggleClass('nav-md nav-sm');
+            }
+		}
+</script>	
 <script>
  function isFloat(evt) {
 
@@ -1708,33 +1728,52 @@ table
 <div style="float:left;">
 <h5 style='color:red;'><b>*All Green Fields are mandatory to confirm*</b></h5>
 </div>
-<div style="float:right;">
+<!-- <div style="float:right;">
 	<?php
 	$url = getURL(getBASE($_GET['r'])['base'].'/c_Tex_index.php')['url'];
 	?>
 	<a href="<?php echo $url; ?>" class="btn btn-primary">Back</a>
-</div>
+</div> -->
 
 
 
 
 <?php
 
-
-	if(isset($_POST['submit']))
+	if(isset($_POST['submit']) || isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$lot_no=$_POST['lot_no'];
+		$parent_id=$_POST['parent_id'];
+		$get_ids="select store_in_id from $bai_rm_pj1.inspection_population where parent_id='$parent_id' and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
+		//echo $get_ids;
+		$ids_result=mysqli_query($link, $get_ids) or exit("Sql Error41111".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($id_row=mysqli_fetch_array($ids_result))
+		{
+		  $tid[] = $id_row['store_in_id'];
+		}
+        $roll_num = implode(",",$tid);
 	}
 	else
 	{
-		$lot_no=urldecode($_GET['batch_no']);
-		$lot_ref=urldecode($_GET['lot_ref']);
+		$parent_id=$_GET['parent_id'];
+
+		$lot = array();
+		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id='$parent_id'";
+	    //echo $get_details;
+	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+		  $lot[] = $sql_row['lot_no'];
+		  $batch[] = $sql_row['supplier_batch'];
+		}
+		 //$lot_no=$batch;
+		 $lot_no=implode(",",$batch);
+		$lot_ref=implode(",",$lot);
+		// $lot_no=$_GET['batch_no'];
+		// $lot_ref=$_GET['lot_ref'];
 	}
-?>
-
-
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',1,'R')); 
+	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/supplier_db.php',2,'R')); 
 //Configuration
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
@@ -1743,7 +1782,9 @@ if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 	<?php
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' id='lot_ref' name='lot_ref' value='".$lot_ref."'>";
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $bai_rm_pj1.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no=\"".trim($lot_no)."\"";
+echo '<input type="hidden" id="parent_id"  name="parent_id" value="'.$parent_id.'">';
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $bai_rm_pj1.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1786,7 +1827,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pur_width=$sql_row['pur_width'];
 	$act_width=$sql_row['act_width'];
 	$sp_rem=$sql_row['sp_rem'];
-	$qty_insp=$sql_row['qty_insp'];
+	//$qty_insp=$sql_row['qty_insp'];
 	$gmt_way=$sql_row['gmt_way'];
 	$pts=$sql_row['pts'];
 	$fallout=$sql_row['fallout'];
@@ -1808,14 +1849,23 @@ $avg_c_width=0;
 $print_check=0;
 //removed validation of print button
 // $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers,status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+while($sql_rolls=mysqli_fetch_array($roll_details_result))
+{
+  $rolls[]=$sql_rolls['roll_numbers'];
+  $status=$sql_rolls['status'];
+}
+$roll_num = implode(",",$rolls);
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["shade_grp"]."~".$sql_row["act_width_grp"]."~".$sql_row["four_point_status"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
-	
 	$scount_temp[]=$sql_row['ref4'];
 
 	$ctex_sum+= ($sql_row['ref5']);
@@ -1839,7 +1889,7 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["shade_grp"]."~".$sql_row["act_width_grp"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
 		$scount_temp[]=$sql_row1['ref4'];
@@ -1874,8 +1924,9 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+//echo $sql;
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error42=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$total_rolls=$sql_row['count'];
@@ -1892,6 +1943,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 
 }
+
+//get inspected_qty
+$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
+$inspected_qty_result=mysqli_query($link, $get_inspected_qty) or exit("Sql Errorqty=".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($qty_row=mysqli_fetch_array($inspected_qty_result))
+{
+   $qty_insp = $qty_row['reported_qty'];
+}
 ?>
 <!--[if !excel]>&nbsp;&nbsp;<![endif]-->
 <!--The following information was generated by Microsoft Excel's Publish as Web
@@ -1904,7 +1963,7 @@ tags will be replaced.-->
 <div id="C_Tex_Interface_24082" align=center x:publishsource="Excel">
 <div class="table-responsive">
 
-<table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+<table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1144pt'>
  <col class=xl11024082 width=80 style='mso-width-source:userset;mso-width-alt: 2925;width:60pt'>
  <col class=xl11024082 width=65 span=2 style='mso-width-source:userset; mso-width-alt:2377;width:49pt'>
  <col class=xl12124082 width=68 style='mso-width-source:userset;mso-width-alt: 2486;width:51pt'>
@@ -1914,14 +1973,14 @@ tags will be replaced.-->
  <col class=xl11024082 width=77 style='mso-width-source:userset;mso-width-alt: 2816;width:58pt'>
  <col class=xl11024082 width=68 span=7 style='mso-width-source:userset; mso-width-alt:2486;width:51pt'>
  <tr height=25 style='mso-height-source:userset;height:18.75pt'>
-  <td colspan=16 height=25 class=xl12524082 dir=LTR width=1126  style='height:18.75pt;width:845pt'><a name="RANGE!A1:P19">Fabric Inspection Report - Roll Details</a></td>
+  <td colspan=16 height=25 class=xl12524082 dir=LTR width=1126  style='height:18.75pt;width:845pt'><a name="RANGE!A1:P19">Color Contunity Report - Roll Details</a></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9524082 dir=LTR width=80 style='height:20.1pt;  width:60pt'>Item Code</td>
   <td colspan=2 class=xl9624082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item; ?></td>
   <td colspan=2 rowspan=1 class=xl9624082 dir=LTR width=136 style='width:102pt'>Fabric  Description</td>
   <td colspan=5 rowspan=1 class=xl9624082 dir=LTR width=372 style='width:279pt'><?php echo $item_name; ?></td>  <td colspan=2 class=xl9624082 dir=LTR width=136 style='border-left:none;  width:102pt'>Batch No</td>
-  <td colspan=4 class=xl9624082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $batch_no; ?></td>
+  <td colspan=4 class=xl9624082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo wordwrap($batch_no,30,"<br>\n",TRUE); ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;
@@ -1946,7 +2005,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Color</td>
   <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $item_desc; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty,2); ?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty1,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
@@ -1956,7 +2015,7 @@ tags will be replaced.-->
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>PO Number</td>
   <td  class="scroll_number" colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php echo $po_no; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty Inspected</td>
-  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="qty_insp" name="qty_insp" value="'.$qty_insp.'" >'; } else { echo $qty_insp; }?></td>
+  <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if($qty_insp > 0) {echo $qty_insp;} else { echo "0";} ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>Fallout</td>
   <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
   
@@ -2159,7 +2218,7 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'&parent_id='.$parent_id.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2177,6 +2236,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
+  	
 	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
 	{
 	//$update_access
@@ -2213,14 +2273,20 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   <tr>
  	<td class=xl6424082 dir=LTR width=68 style='width:51pt'>Note: </td>
  	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:red;color:white'>Inspection Not Done</td>
- 	 <td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:green;color:white'>Inspection Done</td>
+ 	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:green;color:white'>Inspection Done</td>
+	<td colspan="2" class=xl6424082 dir=LTR width=68 style='width:80pt;background-color:orange;color:white'>Set for Four Point Inspection</td>
  </tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'></tr>
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
  <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1>Auto Fill</td>
   <!-- <td height=21 class=xl6324082 dir=LTR width=80 style='height:15.75pt;  width:60pt'>&nbsp;</td> -->
-
+  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
+  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
+  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
    <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="alpha" id="fill_shade_grp" name="fill_shade_grp"  maxlength="8"   value="" size="6">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(4)">Fill</a></td>	
+  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
+  <td class="xl6424082" dir="LTR" width="68" style="width:51pt"></td>
+   
   <td class=xl6424082 dir=LTR width=65 style='width:49pt' colspan=1></td>
   <td class=xl6524082 dir=LTR width=68 style='width:51pt'><input type="text"  class="float" id="fill_c_length" name="fill_c_length"   value="" size="3">&nbsp;<a class="btn btn-success btn-xs" onclick="fill(1)">Fill</a></td>	
   <td class=xl6424082 dir=LTR width=68 style='width:51pt'></td>
@@ -2238,25 +2304,31 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>
  <tr height=41 style='height:32pt'>
   <td class=xl13224082 dir=LTR width=68 style='width:51pt'>Roll No</td>
+  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Length</td>
+  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Width</td>
+  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Shrinkage  Group</td>
+  <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Shade</td>
   <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Shade Group</td>
+  <td class=xl13324082 dir=LTR width=20 style='border-left:none;width:19pt'>Actual Width Group</td>
   <td class=xl13324082 dir=LTR width=65 style='border-left:none;width:49pt'>Ticket  Length</td>
-  <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>C-TEX  Length</td>
+  <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Actual  Length</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Length  Deviation</td>
   <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Ticket  Width</td>
-  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>C-TEX  Width</td>
+  <td class=xl13324082 dir=LTR width=64 style='border-left:none;width:48pt'>Actual  Width</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>No of Joins</td>
   <td class=xl13324082 dir=LTR width=99 style='border-left:none;width:74pt'>Width  Deviation</td>
   <td class=xl13324082 colspan=2 dir=LTR width=99 style='border-left:none;width:100px'>Lot No</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Roll Status</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Rejection reason</td>
+  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>4 Roll Inspection Status</td>
   <td class=xl13324082 dir=LTR width=68 style='border-left:none;width:51pt'>Partial Rej Qty</td>
   <?php
-  if($shrinkage_inspection == 'yes')
-	  { ?>
-  <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
+//   if($shrinkage_inspection == 'yes')
+// 	  { ?>
+  <!-- <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Length</td>
   <td class=xl13324082 dir=LTR  colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Width</td>
   <td class=xl13324082 dir=LTR colspan=2 width=68 style='border-left:none;width:51pt'>Shrinkage  Group</td>
-	 <?php } ?>
+	 <?php //} ?> -->
   <td class=xl13324082 dir=LTR colspan=3 width=68 style='border-left:none;width:51pt'>Roll Remarks</td>
  </tr>
  
@@ -2281,17 +2353,82 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>"; */
  $shade_group_total=array();
  echo "<input type=\"hidden\" id=\"rowcount\" value=\"".sizeof($values)."\" />";
+ $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status=3";
+	$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row522=mysqli_fetch_array($details_result_points))
+	{ 					
+		if($row522['qty']>0)
+		{
+			$invoice_qty=$row522['qty'];
+			if($fab_uom == "meters"){
+				$invoice_qty=round($invoice_qty*1.09361,2);
+			}else
+			{
+				$invoice_qty;
+			}
+			$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";
+			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_min=mysqli_fetch_array($min_value_result))
+			{
+               $width_s = $row_min['width_s'];
+               $width_m = $row_min['width_m'];
+               $width_e = $row_min['width_e'];
+			}
+            $min_value = min($width_s,$width_m,$width_e);
+            $inch_value=round($min_value/(2.54),2);
+		
+			$back_color="";		
+			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";	
+			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($status_details_result2)>0)
+			{	
+				while($row52=mysqli_fetch_array($status_details_result2))
+				{ 
+					$point=$row52['pnt'];
+					$main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);
+					$main_points = round($main_points,2);
+				}
 
+				if($point>0)
+				{	
+					if($main_points<28)
+					{
+						$status_main="Approved";
+					}
+					else
+					{
+						$status_main="Rejected";
+					}
+				}
+				else
+				{
+					$status_main="Pending";
+				}	
+			}
+			else
+			{
+				$status_main="Pending";
+			}
+		}else
+		{
+			$status_main="Pending";
+		}						
+	}
+
+	
  for($i=0;$i<sizeof($values);$i++)
  {
- 	$temp=array();
+ 	$check_status=3;
+	$temp=array();
 	$temp=explode("~",$values[$i]);
+	
+	// $store_in_id=$temp[0];
+
 	//for shade wise category
 	if(in_array($temp[2],$scount_temp2))
 	{
 		$shade_group_total[array_search($temp[2],$scount_temp2)]+=$temp[3];
 	}
-	
 	//for shade wise category
 	if(in_array($authorized,$has_permission))
 	{
@@ -2308,16 +2445,37 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		if(!in_array($authorized,$has_permission))
 		{
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
+			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); value=\"".trim($temp[2])."\" />";
 		}
 		else
 		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); validate_unique_shade(\"".trim($temp[2])."\", \"".$temp[1]."\", $i)' value=\"".trim($temp[2])."\" />";
-		}		
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);  value=\"".trim($temp[2])."\" />";
+		}	
+
+		if(!in_array($authorized,$has_permission))
+		{
+			$temp_shade_tag1.=$temp[17]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade1[$i]\" name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[17])."\" />";
+		}
+		else
+		{
+			$temp_shade_tag1.="<input type=\"text\" class='textbox alpha shade_grp1 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade1[$i]\"  name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' \"".$temp[1]."\", $i)' value=\"".trim($temp[17])."\" />";
+		}
+		
+		if(!in_array($authorized,$has_permission))
+		{
+			$temp_shade_tag2.=$temp[18]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade2[$i]\" name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
+		}
+		else
+		{
+			$temp_shade_tag2.="<input type=\"text\" class='textbox alpha shade_grp2 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade2[$i]\"  name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
+		}
+		
 	}
 	else
 	{
 		$temp_shade_tag.=$temp[2];
+		$temp_shade_tag1.=$temp[17];
+		$temp_shade_tag2.=$temp[18];
 	}
 	if($temp[1]=="")
 	{
@@ -2331,19 +2489,118 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	{
 		$insp_status="Red";		
 	}
+	
+	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='".$temp[0]."'";
+	//echo $get_status;
+	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_status=mysqli_fetch_array($status_details_result))
+	{
+	   $i_status = $sql_status['status'];
+	}
+	if($i_status > 0)
+	{
+		$insp_status="orange";			
+	}
+	else
+	{
+		$insp_status="";
+	}	
+
+	/*-----*/
+	if($temp[2]=='')
+	{
+		$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$temp[0] and status<>0";
+		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($details_result_points)>0)
+		{
+			while($row522=mysqli_fetch_array($details_result_points))
+			{ 
+				$invoice_qty=$row522['rec_qty'];
+				if($fab_uom == "meters"){
+					$invoice_qty=round($invoice_qty*1.09361,2);
+				}else
+				{
+					$invoice_qty;
+				}
+			}
+			$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$temp[0]";
+			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_min=mysqli_fetch_array($min_value_result))
+			{
+			   $width_s = $row_min['width_s'];
+			   $width_m = $row_min['width_m'];
+			   $width_e = $row_min['width_e'];
+			}
+			$min_value = min($width_s,$width_m,$width_e);
+			$inch_value=round($min_value/(2.54),2);
+			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$temp[0]."";
+			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($status_details_result2)>0)
+			{	
+				while($row52=mysqli_fetch_array($status_details_result2))
+				{ 
+					$point=$row52['pnt'];
+					if($inch_value > 0)
+					{
+					  $main_points=((($row52['pnt']/$invoice_qty)*(36/$inch_value))*100);	
+					}
+					else
+					{
+						$main_points=0;
+					}	
+					
+					$main_points = round($main_points,2);
+				}
+				
+				if($point>0)
+				{	
+					if($main_points>28)
+					{
+						$temp[10]=1;
+					}
+				}	
+			}
+		}
+	}
+	
+	/*-----*/
+	
+	$sgroup = $temp[13];
+	if($sgroup=='')
+	{
+		$sgroup=0;
+	}
 	 echo "<input type='hidden' class='roll_no_".$temp[1]."' value='".$temp[1]."'>";
+	 
 	  echo "
-	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";color:white'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
+	  <td height=50 class='xl12824082' style='height:15.0pt;background-color: ".$insp_status.";'>".$temp[1]."<input type='hidden' id='ele_tid[$i]' name='ele_tid[$i]' value='".$temp[0]."'><input type='hidden' name='ele_check[$i]' value=''><input type='hidden' name='tot_elements' id='tot_elements' value='".sizeof($values)."'></td>";
+
+	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float_negitive shr_len' ".$readonly."  type='text' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082 style='border-left:none'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+		// if($shrinkage_inspection == 'yes')
+		// {
+		// echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		// <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+		// <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+		// }
+		// else
+		// {
+		// 	echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		// 	<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+		// 	<td class=xl12824082  colspan=2 style='border-left:none; display: none;'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
+		// }
 	  
 	  echo "<td class=xl12824082 style='border-left:none'>".$temp_shade_tag."<input type='hidden' id='ele_shades[$i]'  name='ele_shades[$i]' value='".trim($temp[2])."'></td>
-
+	  <td class=xl12824082 style='border-left:none'>".$temp_shade_tag1."<input type='hidden' id='ele_shades1[$i]'  name='ele_shades1[$i]' value='".trim($temp[17])."'></td>
+	  <td class=xl12824082 style='border-left:none'>".$temp_shade_tag2."<input type='hidden' id='ele_shades2[$i]'  name='ele_shades2[$i]' value='".trim($temp[18])."'></td>
 	  <td class=xl12824082 style='border-left:none'>".$temp[3]."<input class='hidden' type='hidden' id='ele_t_length".$i."' name='ele_t_length[$i]' value='".$temp[3]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".$temp[4]."' onchange='change_body(2,this.name,$i)' ></td>
+	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_len float' ".$readonly." type='text'  min='0'  id='ele_c_length".$i."'  onkeyup='Subtract(".$i.");' name='ele_c_length[$i]' value='".round($temp[4],2)."' onchange='change_body(2,this.name,$i)' ></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='subt".$i."' id='subt".$i."' readonly value='".round(($temp[4] - $temp[3]),2)."' ></td>
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox ticket_wid float' ".$readonly." type='text' min='0'  name='ele_t_width[$i]' id='ele_t_width".$i."' onkeyup='minus(".$i.");' value='".$temp[5]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".$temp[6]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082 style='border-left:none'><input class='textbox ctex_wid float' ".$readonly." type='text' min='0'  name='ele_c_width[$i]' id='ele_c_width".$i."' onkeyup='minus(".$i.");' value='".round($temp[6],2)."' onchange='change_body(2,this.name,$i)'></td>
 
 
 	  <td class=xl12824082 style='border-left:none'><input class='textbox el_joins integer' ".$readonly." type='text' id='ele_c_joins[$i]'  name='ele_c_joins[$i]'  value='".$temp[8]."' onchange='change_body(2,this.name,$i)' ></td>
@@ -2351,30 +2608,37 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  <td class=xl12824082 style='border-left:none'><input class='Text_B' type='text' name='min".$i."' id='min".$i."' readonly value='".round(($temp[6] - $temp[5]),2)."'></td>
 
 	  <td class=xl12824082 colspan='2' style='border-left:none;width:100px'>".$temp[7]."</td>";
-	  
-	  if(in_array($authorized,$has_permission))
-	  {	  
-	    echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
-	    	<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
-	    for($iq=0;$iq<sizeof($roll_status);$iq++)
-	    {
-	  	 	if($iq==$temp[10])
-			{
-				echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
-			}	  	
-			else
-			{
-				echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
-			}
-	  	}
-		echo "</select></td>";
-	  } 	
-	  else
+	
+	  if($check_status<3)
 	  {
-	  	echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
+		echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$check_status_val."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' /></td>";	  
 	  }
-	  
-	  	
+	else
+		{	
+		  if(in_array($authorized,$has_permission))
+		  {	  
+			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
+				<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
+			for($iq=0;$iq<sizeof($roll_status);$iq++)
+			{
+				if($iq==$temp[10])
+				{
+					echo "<option value='".$iq."' selected>".$roll_status[$iq]."</option>";
+				}	  	
+				else
+				{
+					echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
+				}
+			}
+			echo "</select></td>";
+		  } 	
+		  else
+		  {
+			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
+		  }
+		} 	
+			  
+
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	  		$reject_reason_query="select * FROM $bai_rm_pj1.reject_reasons ";
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2390,7 +2654,6 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$style = '';
 	}else{
 		$style = 'style=display:none'; 
-		// $style = '';
 	}
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
@@ -2407,31 +2670,19 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
 					}
 				}
-				$sgroup = $temp[13];
-				if($sgroup=='')
-				{
-					$sgroup=0;
-				}
+				
 		echo "</select>
-	  </td>
-
-	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
-	  if($shrinkage_inspection == 'yes')
-	  {
-	  echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float_negitive shr_len' ".$readonly."  type='text' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
-	  }
-	  else
-	  {
-		echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float_negitive shr_len' ".$readonly."  type='text'  id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082  colspan=2 style='border-left:none; display: none;'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
-	  }
+	  </td>";
+      
+	  echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$status_main."<input type=\"hidden\" class='textbox' id=\"inspection_status[$i]\"  name=\"inspection_status\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$check_status."\" /></td>";
+	  echo "<td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
+	  
 	 echo "<td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
 	 
 	 </tr>";
 	 $temp_shade_tag="";
+	 $temp_shade_tag1="";
+	 $temp_shade_tag2="";
 	
  }
  
@@ -2504,7 +2755,7 @@ echo '</form>';
  </tr>
 </table>
  
- <table border=0 cellpadding=0 cellspacing=0 width=1126 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:1050pt'>
+ <table border=0 cellpadding=0 cellspacing=0 class=xl11024082 style='border-collapse:collapse;table-layout:fixed;width:500pt'>
   	 <?php
   /*echo "<td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
@@ -2512,27 +2763,80 @@ echo '</form>';
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6624082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>
   <td class=xl6724082 dir=LTR width=68 style='border-left:none;width:51pt'>&nbsp;</td>";*/
-  echo "<td class=xl6824082 style='height:23.25pt;border-top:1pt solid'></td>";
+  // echo "<td class=xl6824082 style='height:23.25pt;border-top:1pt solid'></td>";
+
+for($i=0;$i<$shade_count;$i++)
+{ 
+    $flag=$i;
+  	$flag++;
+	if($flag%5 ==1)
+	{
+		echo "<tr>";
+	}
+		echo "<td colspan=2 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$scount_temp2[$i]."</td>";
+	if($flag%5 ==0)
+	{
+		echo "</tr>";
+	}
+
+	if($flag%5 ==0 )
+	{
+		echo "<tr>";
+		for($j=0;$j<=4;$j++)
+		{
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
+		}
+		echo "</tr><tr>";
+
+		for($j=$flag-5;$j<=$flag-1;$j++)
+		{
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+		//echo $sql_sc;
+			$result_sc=mysqli_query($link, $sql_sc) or die("Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_sc=mysqli_fetch_array($result_sc))
+			{
+				$count_sc=$row_sc["cnt"];
+			}
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+		  width:51pt'>".$shade_group_total[$j]."</td>";
+		}
+		echo "</tr>";
+	}
+	if($flag==$shade_count)
+	{
+		echo "</tr><tr>";
+		for($j=1;$j<=$flag%5;$j++)
+		{
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
+		}
+
+		echo "</tr><tr>";
+
+		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
+		{
+			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+		//echo $sql_sc;
+			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row_sc=mysqli_fetch_array($result_sc))
+			{
+				$count_sc=$row_sc["cnt"];
+			}
+			echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+			echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+		  width:51pt'>".$shade_group_total[$j]."</td>";
+		}
+		echo "</tr>";
+	}
+}
+
   
-  for($i=0;$i<$shade_count;$i++)
-  { 
-	echo "<td colspan=2 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$scount_temp2[$i]."</td>";
-	
-  }
-  
-  ?>
+ ?>
+
   <tr>
-  	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Group</td>
- 	<?php
-	  for($i=0;$i<$shade_count;$i++)
-	  { 
-		echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Rolls</td>";
-		echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-left:none;width:51pt'>Qty</td>";
-	  }
-	?>
- </tr>
-  <tr>
-  	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Qty</td>
+  <!-- 	<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:none'>Qty</td> -->
   	<?php
   
   /* echo " <td class=xl7124082 dir=LTR width=68 style='border-top:none;border-left:none;
@@ -2548,20 +2852,19 @@ echo '</form>';
   <td class=xl12024082 dir=LTR width=68 style='border-top:none;border-left:
   none;width:51pt'>&nbsp;</td>"; */
   
-for($i=0;$i<$shade_count;$i++)
- {
-	  $sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and ref4=\"".$scount_temp2[$i]."\"";
-	//echo $sql_sc;
-	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row_sc=mysqli_fetch_array($result_sc))
-	{
-		$count_sc=$row_sc["cnt"];
-	}
-	echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
-	echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
-  width:51pt'>".$shade_group_total[$i]."</td>";
+// for($i=0;$i<$shade_count;$i++)
+//  {
+ //  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\" and tid in ($roll_num) order by tid";
+	// $result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row_sc=mysqli_fetch_array($result_sc))
+	// {
+	// 	$count_sc=$row_sc["cnt"];
+	// }
+	// echo "<td colspan=1 class=xl6824082 style='height:23.25pt;border-top:1pt solid;'>".$count_sc."</td>";
+	// echo "<td colspan=1 class=xl6824082 dir=LTR width=68 style='border-top:none;border-left:none;
+ //  width:51pt'>".$shade_group_total[$i]."</td>";
   
- }  
+ // }  
   ?>
 
   </tr>
@@ -2620,11 +2923,13 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$supplier=$_POST['supplier'];
 	$lot_no_new=trim($_POST['lot_no']); //Batch Number
 	$lot_ref=$_POST['lot_ref'];	
+	$main_id=$_POST['parent_id'];
 	$consumption_ref=$_POST["consumption"];
 	
 	if($head_check>0)
 	{
 		$sql="insert ignore into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
+		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		if(mysqli_affected_rows($link))
@@ -2655,6 +2960,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				
 			  }
 		  	$sql="update $bai_rm_pj1.inspection_db set unique_id=\"$count\" where batch_ref=\"$lot_no_new\"";
+		  	//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
@@ -2684,6 +2990,8 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$ele_t_width=$_POST['ele_t_width'];
 	$ele_c_width=$_POST['ele_c_width'];	
 	$ele_shade=$_POST['ele_shades'];
+	$ele_shade1=$_POST['ele_shades1'];
+	$ele_shade2=$_POST['ele_shades2'];
 	$roll_joins=$_POST['ele_c_joins'];
 	$roll_status_ref=$_POST["roll_status"];
 	$rejection_reason=$_POST['rejection_reason'];
@@ -2697,6 +3005,14 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$ele_shade=$_POST['ele_shade'];
 	}
+	if(in_array($authorized,$has_permission))
+	{
+		$ele_shade1=$_POST['ele_shade1'];
+	}
+	if(in_array($authorized,$has_permission))
+	{
+		$ele_shade2=$_POST['ele_shade2'];
+	}
 	
 	for($i=0;$i<$tot_elements;$i++)
 	{	
@@ -2705,24 +3021,28 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			$add_query="";
 			if(in_array($authorized,$has_permission))
 			{
-				$add_query=", ref4=\"".$ele_shade[$i]."\"";
+				$add_query=", ref4=\"".$ele_shade[$i]."\", shade_grp=\"".$ele_shade1[$i]."\", act_width_grp=\"".$ele_shade2[$i]."\"";
 			}
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
-				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
-				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
+				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,shade_grp,act_width_grp)
+				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\",\"".$ele_shade1[$i]."\",\"".$ele_shade2[$i]."\"
 				  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   //
 				  	   
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				//   echo $sql1.'<br/>';
+				//   die();
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			}
 			else
 			{
 				$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				// echo $sql.'<br/>';
+				// die();
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
@@ -2732,7 +3052,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
-	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
+	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."';";
 	echo "function Redirect(){location.href=url;}</script>";	
 }
 ?>
@@ -2844,6 +3164,36 @@ function enableButton1()
 	        		j = j + 1;
 	        	}
 	        }
+			if (parseInt((document.input["ele_shade1[" + i + "]"].value).length) > 0) 
+	        {
+	            j = j + 0;
+	        } 
+	        else
+	        {
+	        	if($('input[name="ele_shade1[' + i + ']"]').is('[readonly]'))
+	        	{
+	    		 	j = j + 0;
+	    		}
+	    		 else
+	        	{
+	        		j = j + 1;
+	        	}
+	        }
+			if (parseInt((document.input["ele_shade2[" + i + "]"].value).length) > 0) 
+	        {
+	            j = j + 0;
+	        } 
+	        else
+	        {
+	        	if($('input[name="ele_shade2[' + i + ']"]').is('[readonly]'))
+	        	{
+	    		 	j = j + 0;
+	    		}
+	    		 else
+	        	{
+	        		j = j + 1;
+	        	}
+	        }
 	       
 	        // if (parseFloat(document.input["ele_c_width[" + i + "]"].value) > 0) 
 	        // {
@@ -2911,6 +3261,42 @@ function enableButton1()
 			if($.trim($('#ele_shade\\['+i+'\\]').val()) == '')
 			{
 				if($('input[name="ele_shade[' + i + ']"]').is('[readonly]'))
+				{
+					v.removeClass('mandate');
+				}
+				else
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+			}
+		}
+
+		for(var i=0;i<shade_grp.length;i++){
+			var v = $('#ele_shade1\\['+i+'\\]');
+
+			v.removeClass('mandate');
+			if($.trim($('#ele_shade1\\['+i+'\\]').val()) == '')
+			{
+				if($('input[name="ele_shade1[' + i + ']"]').is('[readonly]'))
+				{
+					v.removeClass('mandate');
+				}
+				else
+				{
+					v.addClass('mandate');
+					counter_man++;
+				}
+			}
+		}
+		
+		for(var i=0;i<shade_grp.length;i++){
+			var v = $('#ele_shade2\\['+i+'\\]');
+
+			v.removeClass('mandate');
+			if($.trim($('#ele_shade2\\['+i+'\\]').val()) == '')
+			{
+				if($('input[name="ele_shade2[' + i + ']"]').is('[readonly]'))
 				{
 					v.removeClass('mandate');
 				}
@@ -3063,6 +3449,8 @@ function fill(x,t,e)
 		var y=document.getElementById('fill_shade_grp').value;
 		if(y != ''){
 			var name1="ele_shade[";
+			// var name3="ele_shade1[";
+			// var name4="ele_shade2[";
 			var name2="qty_allocated[";
 
 			for (var i=0; i < tot_elements; i++)
@@ -3073,8 +3461,12 @@ function fill(x,t,e)
 				else
 				{
 					document.input[name1+i+"]"].value=y;
+					// document.input[name3+i+"]"].value=y;
+					// document.input[name3+i+"]"].value=y;
 					document.input["ele_check["+i+"]"].value=1;
 					document.input[name1+i+"]"].style.background="#FFCCFF";
+					// document.input[name4+i+"]"].style.background="#FFCCFF";
+					// document.input[name4+i+"]"].style.background="#FFCCFF";
 				}
 			
 
@@ -3157,7 +3549,7 @@ function validate_unique_shade(shde, roll, index)
 	var ele_shade = $('#ele_shade\\['+index+'\\]');
 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
-		sweetAlert('Please Enter Shade Group','','warning');
+		sweetAlert('Please Enter Shade','','warning');
 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
 		
 	}
@@ -3168,11 +3560,13 @@ function validate_unique_shade(shde, roll, index)
 			arr.push($(this).val().toUpperCase());
 		}
 	});
+	// alert(arr.length);
 	if(arr.length > 0){
 		var unique_elem = $.unique(arr);
+		// alert(unique_elem.length);
 		if(unique_elem.length > 1){
 			ele_shade.val('');
-			swal('Roll Number and shade group should be unique.');
+			swal('Roll Number and shade should be uniquee.');
 		}else{
 			return true;
 		}
@@ -3182,6 +3576,67 @@ function validate_unique_shade(shde, roll, index)
 	
 	// alert();
 }
+// function validate_unique_shade1(shde, roll, index)
+// {
+// 	var ele_shade = $('#ele_shade\\['+index+'\\]');
+// 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
+// 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
+// 		sweetAlert('Please Enter Shade Group','','warning');
+// 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
+		
+// 	}
+// 	console.log('ele_shade['+index+']');
+// 	var arr = new Array();
+// 	$('.unique_shade_'+roll).each(function(){
+// 		if($(this).val() != ''){
+// 			arr.push($(this).val().toUpperCase());
+// 		}
+// 	});
+// 	if(arr.length > 0){
+// 		var unique_elem = $.unique(arr);
+// 		if(unique_elem.length > 1){
+// 			ele_shade.val('');
+// 			swal('Roll Number and shade group should be unique.');
+// 		}else{
+// 			return true;
+// 		}
+// 		console.log(arr);
+// 		console.log($.unique(arr));
+// 	}
+	
+// 	// alert();
+// }
+
+// function validate_unique_shade2(shde, roll, index)
+// {
+// 	var ele_shade = $('#ele_shade\\['+index+'\\]');
+// 	var ele_shade1 = document.input["ele_shade["+index+"]"].value;
+// 	if($.trim($('#ele_shade\\['+index+'\\]').val()) == ''){
+// 		sweetAlert('Please Enter Actual width group','','warning');
+// 		document.input["ele_shade["+index+"]"].style.background="#99ff88";
+		
+// 	}
+// 	console.log('ele_shade['+index+']');
+// 	var arr = new Array();
+// 	$('.unique_shade_'+roll).each(function(){
+// 		if($(this).val() != ''){
+// 			arr.push($(this).val().toUpperCase());
+// 		}
+// 	});
+// 	if(arr.length > 0){
+// 		var unique_elem = $.unique(arr);
+// 		if(unique_elem.length > 1){
+// 			ele_shade.val('');
+// 			swal('Roll Number and Actual width group should be unique.');
+// 		}else{
+// 			return true;
+// 		}
+// 		console.log(arr);
+// 		console.log($.unique(arr));
+// 	}
+	
+// 	// alert();
+// }
 function change_head(x,y)
 {
 	document.getElementById('head_check').value=1;
