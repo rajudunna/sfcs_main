@@ -1,5 +1,4 @@
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
 <?php 
 
@@ -41,11 +40,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	<div class="panel-body">
         <div class="row">
 		    <form method="post" name="test" action="#">
-            <div class="col-md-3">
+            <div class="col-md-2">
 			<label>Start Date:</label> 
 			<input type="text" data-toggle="datepicker" class="form-control"  name="sdate" id="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10">
 			</div>
-			<div class="col-md-3"><label>End Date:</label>
+			<div class="col-md-2"><label>End Date:</label>
 			<input type="text" data-toggle="datepicker" class="form-control"  name="edate" id="edate" onchange='return verify_date()' value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10">
 			</div>
 			<div class="col-md-2">
@@ -213,19 +212,6 @@ function getCSVData(){
 	$('.total_excel').html(dummytotal);
 
 }
-$(document).ready(function(){
-    document.getElementById('reptype').value = "<?php echo $_POST['reptype'];?>";
-    $('#reset').addClass('btn btn-warning btn-xs');
-});
-
-$('#reset').addClass('btn btn-warning');
-	var table6_Props = 	{
-							rows_counter: true,
-							btn_reset: true,
-							loader: true,
-							loader_text: "Filtering data..."
-						};
-	setFilterGrid( "report",table6_Props );
 	
 </script>
 <style>
