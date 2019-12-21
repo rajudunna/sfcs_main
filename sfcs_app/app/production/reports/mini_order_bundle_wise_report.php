@@ -16,10 +16,15 @@ $reptype=$_POST['reptype'];
 if($_POST['reptype'] == NULL){
     $reptype=1;
 }
+if($reptype == 1) { 
+    $r_name = 'Bundle Wise ';
+} else {
+    $r_name = 'Sewing Job Wise';
+}
 
 ?>
 <div class="panel panel-primary">
-	<div class="panel-heading"><b>Performance Report</b></div>
+	<div class="panel-heading"><b> <?= $r_name; ?> Performance Report</b></div>
 	<div class="panel-body">
         <div class="row">
             <form method="post" name="input" action="?r=<?php echo $_GET['r']; ?>">
@@ -140,7 +145,7 @@ if($_POST['reptype'] == NULL){
                                 $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'input_job_no'=>$row5['input_job_no'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'org_qty'=>$row5['job_qty'],'assigned_module'=>$row5['assigned_module'],'remarks'=>$row5['remarks']];
 
                                 $bundle_data[$row5['bundle_number']][] = $data;
-                                $sewing_data[$row5['input_job_no_random_ref']][$row5['size_title']][] = $data;
+                                $sewing_data[$row5['input_job_no_random_ref']][$row5['size_title']][$row5['size_title']][] = $data;
                             }
                             $all_bundles = array_keys($bundle_data);
                             
@@ -159,11 +164,7 @@ if($_POST['reptype'] == NULL){
                     $main_result['data'] = $total_data;
                     echo '<div class="row">';
                         echo '<div class="col-md-5">';
-                        if($reptype == 1) { 
-                            $r_name = 'Bundle Wise Report';
-                        } else {
-                            $r_name = 'Sewing Job Wise Report';
-                        }
+                        
                         echo "<h3>&nbsp; $r_name <span> for <b>Style :</b>".$style."</span></h3>";
                         echo '</div>';
                         echo '<div class="col-md-6">';
@@ -179,9 +180,10 @@ if($_POST['reptype'] == NULL){
 
                      ?>
                      
-                    <div class='table-responsive' style='height:500px;overflow-y: scroll;'>
-                    <table class='table table-bordered table-responsive' id='report' name='report'>
-                    <tr class='info'><th>Style</th><th>Schedule</th><th>Color</th><th>Sewing Job Number</th>
+                    <div  id="table-scroll" class="table-scroll" style='height:600px;overflow-y: scroll;'>
+                    <table class="report" id='report' name='report'>
+                    <thead>
+                    <tr  id='myHeader' class='info' style='color:white'><th>Style</th><th>Schedule</th><th>Color</th><th>Sewing Job Number</th>
                      <?php
                      // Bundle Wise Report
                      if($reptype == 1){ ?>
@@ -191,7 +193,7 @@ if($_POST['reptype'] == NULL){
 					{
 						echo  "<th>Sewing Job Qty</th>";
 					}
-	?>
+	                ?>
                     <th>Size</th>
                     <?php
                     $op_count=sizeof($main_result['columns']);
@@ -203,7 +205,8 @@ if($_POST['reptype'] == NULL){
                     }
                     ?>
                     </tr>
-                   
+                    </thead>
+                    <tbody>
                     <?php
                     $job_num= '';
                     $bundle_num= '';
@@ -250,25 +253,26 @@ if($_POST['reptype'] == NULL){
                         foreach($sewing_data as $sew_key => $sew_values){ 
 
                             foreach($sew_values as $size_key => $size_values){
-                                $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[0]['remarks'],$link);
-								$job_number = $prefix.leading_zeros($size_values[0]['input_job_no'],3);
+                               
+                                $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[$size_key][0]['remarks'],$link);
+								$job_number = $prefix.leading_zeros($size_values[$size_key][0]['input_job_no'],3);
                             ?>
                             <tr>
-                                <td><?= $size_values[0]['style']  ?></td>
-                                <td><?= $size_values[0]['schedule']  ?></td>
-                                <td><?= $size_values[0]['color']  ?></td>
+                                <td><?= $size_values[$size_key][0]['style']  ?></td>
+                                <td><?= $size_values[$size_key][0]['schedule']  ?></td>
+                                <td><?= $size_values[$size_key][0]['color']  ?></td>
                                 <td><?= $job_number  ?></td>
-								<td><?= $size_values[0]['org_qty']  ?></td>
-                                <td><?= $size_values[0]['size']  ?></td>
+								<td><?= $size_values[$size_key][0]['org_qty']  ?></td>
+                                <td><?= $size_values[$size_key][0]['size']  ?></td>
 
 
                                 <?php
                                     foreach($operation_array as $main_op_key => $main_op_value ) {
-                                        if(in_array($main_op_value, array_column($size_values, 'op_code'))){
-                                            $filter = array_search($main_op_value, array_column($size_values, 'op_code'));
+                                        if(in_array($main_op_value, array_column($size_values[$size_key], 'op_code'))){
+                                            $filter = array_search($main_op_value, array_column($size_values[$size_key], 'op_code'));
                                             if($filter >= 0){
-                                                echo "<td>". $size_values[$filter]['rec_qty'] ."</td>";
-                                                echo "<td>". $size_values[$filter]['rej'] ."</td>";
+                                                echo "<td>". $size_values[$size_key][$filter]['rec_qty'] ."</td>";
+                                                echo "<td>". $size_values[$size_key][$filter]['rej'] ."</td>";
                                             }else{
                                                 echo "<td>". 0 ."</td>";
                                                 echo "<td>". 0 ."</td>";     
@@ -287,6 +291,7 @@ if($_POST['reptype'] == NULL){
                         }
                     }
                     ?>
+                    </tbody>
                     </table>
                     </div>
             <?php
@@ -310,31 +315,7 @@ function getCSVData(){
 	$('.fltrow').html(dummytable);
 	$('.total_excel').html(dummytotal);
 }
-// function getCSVData() {
-//     var reptype = $('#reptype').val();
-//   $('table').attr('border', '1');
-//   $('table').removeClass('table-bordered');
-//   var uri = 'data:application/vnd.ms-excel;base64,'
-//     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
-//     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-//     , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-  
-//     var table = document.getElementById('report').innerHTML;
-//     // $('thead').css({"background-color": "blue"});
-//     if(reptype == 1){
-//         var report_name = 'Bundle Wise Report';
-//     } else {
-//         var report_name = 'Sewing Job Wise Report';
-//     }
-//     var ctx = {worksheet: name || report_name, table : table}
-//     //window.location.href = uri + base64(format(template, ctx))
-//     var link = document.createElement("a");
-//     link.download = report_name+".xls";
-//     link.href = uri + base64(format(template, ctx));
-//     link.click();
-//     $('table').attr('border', '0');
-//     $('table').addClass('table-bordered');
-// }
+
 $(document).ready(function(){
     document.getElementById('reptype').value = "<?php echo $_POST['reptype'];?>";
     $('#reset').addClass('btn btn-warning btn-xs');
@@ -376,12 +357,48 @@ function verify(){
 
     // }
 }
+
+// // When the user scrolls the page, execute myFunction
+// window.onscroll = function() {myFunction()};
+
+// // Get the header
+// var header = document.getElementById("myHeader");
+
+// // Get the offset position of the navbar
+// var sticky = header.offsetTop;
+
+// // Add the sticky class to the header when you reach its scroll position. Remove "sticky" when you leave the scroll position
+// function myFunction() {
+//   if (window.pageYOffset > sticky) {
+//     header.classList.add("sticky");
+//   } else {
+//     header.classList.remove("sticky");
+//   }
+// }
+$(function(){
+  $('#report').stickyTable({
+    copyTableClass: true,
+    copyEvents: false
+  });
+});
+$(function(){
+  $('#report').stickyTable({
+    overflowy: true
+  });
+});
 </script>
 <style>
-	table
+/* .sticky {
+  position: fixed;
+  top: 100px;
+  width: auto;
+} */
+
+table
 {
 	font-family:calibri;
 	font-size:15px;
+    width:100%;
 }
 
 table tr
@@ -424,6 +441,7 @@ table{
 	white-space:nowrap; 
 	border-collapse:collapse;
 	font-size:15px;
+    
 }
 #reset{
 	width : 50px;
@@ -432,4 +450,79 @@ table{
 	margin-left : 0px;
 	margin-bottom:15pt;
 }
+
+
+
+/* html {
+  box-sizing: border-box;
+} */
+/* *,
+*:before,
+*:after {
+  box-sizing: inherit;
+} */
+/* .intro {
+  max-width: 1280px;
+  margin: 1em auto;
+} */
+.table-scroll {
+  position: relative;
+  width:100%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+  height: 350px;
+}
+.table-scroll table {
+  width: 100%;
+  min-width: 1280px;
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-wrap {
+  position: relative;
+}
+.table-scroll th,
+.table-scroll td {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  background: #fff;
+  vertical-align: top;
+}
+.table-scroll thead th {
+  background: #2687ad;
+  color: #fff;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+/* safari and ios need the tfoot itself to be position:sticky also */
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #666;
+  color: #fff;
+  z-index:4;
+}
+
+/* a:focus {
+  background: red;
+} testing links */
+
+/* th:first-child {
+  position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #ccc;
+} */
+/* thead th:first-child,
+tfoot th:first-child {
+  z-index: 5;
+} */
+
 </style>
