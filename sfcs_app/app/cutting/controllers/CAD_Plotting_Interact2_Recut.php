@@ -244,17 +244,20 @@ window.print();
 <?php
 $doc_refs=array();
 $date_yest=date("Y-m-d",mktime(0, 0, 0, date("m")  , date("d")-2, date("Y")));
-/*$sql2="select distinct doc_ref as doc_ref from fabric_priorities where date(issued_time)=\"0000-00-00\" or date(issued_time) > \"".$date_yest."\" group by doc_ref_club";
-$sql_result2=mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
-while($sql_row2=mysql_fetch_array($sql_result2))
+$doc_refs=array();
+$doc_refs[]=0;
+$sql2="select distinct doc_ref as doc_ref from $bai_pro3.fabric_priorities group by doc_ref_club";
+//echo $sql2."<br/>";
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row2=mysqli_fetch_array($sql_result2))
 {
 	$doc_refs[]=$sql_row2["doc_ref"];	
 }
 
-*/
-$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.recut_v2 where length(plan_lot_ref)>0 and lastup>\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" and fabric_status=5 and print_status>='2014-04-21' and cut_inp_temp is null and remarks in (\"Body\",\"Front\")";	
+$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status =5 and length(plan_lot_ref)>0 and remarks='Recut' and act_cut_status<>\"DONE\" ";
 // echo $sql1;
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error: ".mysqli_error($GLOBALS["___mysqli_ston"]));	
+
 
 echo "<div class=\"panel panel-primary\">
 <div class=\"panel-heading\">Marker Plot Jobs Track Panel</div><div class=\"panel-body\">";
