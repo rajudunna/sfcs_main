@@ -11,7 +11,7 @@
     $barcode_number = explode('-', $barcode)[0];
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
-    WHERE barcode_number = $barcode_number";
+    WHERE bundle_number = $barcode_number";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
 	{
