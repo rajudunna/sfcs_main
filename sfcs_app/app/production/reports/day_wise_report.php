@@ -60,8 +60,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$sdate=$_POST['sdate'];
 				$edate=$_POST['edate'];
 				  
-				$r_name='Daily wise performance Report';
-				echo "<div class='col-md-5'><h3>&nbsp; Daily wise performance Report </h3>";
+				$r_name='Day wise performance Report';
+				echo "<div class='col-md-5'><h3>&nbsp; Day wise performance Report </h3>";
 				echo '</div>';
 				echo '<div class="col-md-6">';
 				echo '</div>';
@@ -77,8 +77,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$sql_operation="SELECT op_flow.operation_name AS ops_name,op_flow.operation_code AS ops_code 
 				FROM $brandix_bts.tbl_orders_ops_ref AS op_flow LEFT JOIN $brandix_bts.default_operation_workflow AS w_flow ON op_flow.operation_code=w_flow.operation_code WHERE op_flow.display_operations='yes' ORDER BY w_flow.`operation_order`"; 
 				$select_opertation=mysqli_query($link,$sql_operation) or exit($sql_operation."Error at something");
-				echo "<div class='table-responsive' style='height:500px;overflow-y: scroll;'>";
-				echo '<table class="table table-bordered table-responsive" id="report" name="report">
+				echo "<div class='table-scroll' id='table-scroll' style='height:500px;overflow-y: scroll;'>";
+				echo '<table class="table table-bordered table-fixed" id="report" name="report">
+				<thead>
 				<tr>
 				<th>Date</th>
 				<th>Module</th>
@@ -94,7 +95,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					echo "<th>".$row_1['ops_name']."[".$row_1['ops_code']."] - Good</th>";
 					echo "<th>".$row_1['ops_name']."[".$row_1['ops_code']."] - Rejected</th>";
 				}				
-				echo "<th>SAH</th></tr>";				
+				echo "<th>SAH</th></tr></thead><tbody>";				
 				$i=0;
 				$date=array();
 				$mod=array();
@@ -193,6 +194,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					echo "<td>".$sah[$ii]."</td></tr>";
 				}
 				?>
+				</tbody>
 				</table>
 				</div>
 			</div>
@@ -269,4 +271,48 @@ table{
 	margin-left : 0px;
 	margin-bottom:15pt;
 }
+.table-scroll {
+  position: relative;
+  width:100%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+  height: 350px;
+}
+.table-scroll table {
+  width: 100%;
+  min-width: 1280px;
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.table-wrap {
+  position: relative;
+}
+.table-scroll th,
+.table-scroll td {
+  padding: 5px 10px;
+  border: 1px solid #000;
+  background: #fff;
+  vertical-align: top;
+}
+.table-scroll thead th {
+  background: #2687ad;
+  color: #fff;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+/* safari and ios need the tfoot itself to be position:sticky also */
+.table-scroll tfoot,
+.table-scroll tfoot th,
+.table-scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #666;
+  color: #fff;
+  z-index:4;
+}
+
 </style>
