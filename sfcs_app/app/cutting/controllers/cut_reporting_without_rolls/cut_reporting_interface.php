@@ -106,7 +106,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Act Cut Status</td>
                     <td>Cut Issue Status</td>
                     <td>Good Pieces</td>
-                    <td>Rejected Pieces</td>
                     <td>Date</td>
                     <td>Section</td>
                     <td>Module</td>
@@ -125,7 +124,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_cut_status'></td>
                     <td id='d_cut_issue_status'></td>
                     <td id='d_good_pieces'></td>
-                    <td id='d_rej_pieces'></td>
                     <td id='d_date'></td>
                     <td id='d_section'></td>
                     <td id='d_module'></td>
@@ -247,7 +245,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Joints</th>
                             <th>Endbits</th>
                             <th>Shortages</th>
-                            <th>Rejection Pieces</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -277,9 +274,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control float' value='0' id='endbits'></td>
                             <td><input type='text' class='form-control float' value='0' id='shortages'></td>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
-                            <td>
-                            <input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
-                            </td>
+                            
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
                     </tbody>

@@ -85,11 +85,11 @@
 				{
 					$get_ops_dep = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and ops_dependency = $next_operation";
 					$result_ops_dep = $link->query($get_ops_dep);
-					   while($row_dep = $result_ops_dep->fetch_assoc())
-					   {
-						  $operations[] = $row_dep['operation_code'];
-					   }
-					   $emb_operations = implode(',',$operations);
+				    while($row_dep = $result_ops_dep->fetch_assoc())
+				    {
+						$operations[] = $row_dep['operation_code'];
+				    }
+				    $emb_operations = implode(',',$operations);
 				}
 				if($prev_operation>0)
 				{
@@ -104,7 +104,6 @@
 				$flag='parallel_scanning';
 			}
 			
-			
 			$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$ops_code";
 			$result_ops_seq_check = $link->query($ops_seq_check);
 			while($row = $result_ops_seq_check->fetch_assoc())
@@ -113,7 +112,7 @@
 				$seq_id = $row['id'];
 				$ops_order = $row['operation_order'];
 			}
-			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code NOT IN (10,200) ORDER BY operation_order ASC LIMIT 1";
+			$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
 			$result_post_ops_check = $link->query($post_ops_check);
 			if($result_post_ops_check->num_rows > 0)
 			{
@@ -123,7 +122,7 @@
 				}
 			}
 			
-			$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN (10,200) ORDER BY operation_order DESC LIMIT 1";
+			$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and ORDER BY operation_order DESC LIMIT 1";
 			$result_pre_ops_check = $link->query($pre_ops_check);
 			if($result_pre_ops_check->num_rows > 0)
 			{
@@ -144,30 +143,28 @@
 				}
 				else
 				{
-						//quantity filling in act_cut_bundle_trn
-						$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty-$rejctedqty),status=1 where barcode='".$barcode."'";
-						$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
-						
-						if($pre_ops_code)
-						{
-							$pre_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$pre_ops_code;
-							$update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
-							$result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
-						}
-						if($post_ops_code)
-						{
-							$post_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$post_ops_code;
-							$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
-							$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
-						}
-						$result_array['bundle_no'] = $barcode;	
-						$result_array['style'] = $style;	
-						$result_array['color_dis'] = $color;	
-						$result_array['reported_qty'] = $report_qty-$rejctedqty;	
-						$result_array['rejected_qty'] = $rejctedqty;	
-						echo json_encode($result_array);
-						die();
-
+					//quantity filling in act_cut_bundle_trn
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty),status=1 where barcode='".$barcode."'";
+					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');					
+					if($pre_ops_code)
+					{
+						$pre_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$pre_ops_code;
+						$update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
+						$result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
+					}
+					if($post_ops_code)
+					{
+						$post_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$post_ops_code;
+						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty where barcode='".$post_ops_barcode."'";
+						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
+					}
+					$result_array['bundle_no'] = $barcode;	
+					$result_array['style'] = $style;	
+					$result_array['color_dis'] = $color;	
+					$result_array['reported_qty'] = $report_qty-$rejctedqty;	
+					$result_array['rejected_qty'] = $rejctedqty;	
+					echo json_encode($result_array);
+					die();
 				}
 			}
 			else
@@ -181,9 +178,8 @@
 				else
 				{
 					//quantity filling in act_cut_bundle_trn
-					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty-$rejctedqty),status=1 where barcode='".$barcode."'";
-					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
-					
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty),status=1 where barcode='".$barcode."'";
+					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');					
 					if($pre_ops_code)
 					{
 						$pre_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$pre_ops_code;
@@ -193,7 +189,7 @@
 					if($post_ops_code)
 					{
 						$post_ops_barcode="ACB-".$docket_no."-".$bundle_no."-".$post_ops_code;
-						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
+						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty where barcode='".$post_ops_barcode."'";
 						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
 					}
 				}
@@ -203,8 +199,7 @@
 				$result_array['reported_qty'] = $report_qty-$rejctedqty;	
 				$result_array['rejected_qty'] = $rejctedqty;	
 				echo json_encode($result_array);
-				die();
-				
+				die();				
 			}
 		}
 		else
@@ -213,7 +208,5 @@
 			echo json_encode($result_array);
 			die();
 		}
-	}
-	scanningdetails($barcode,$rej_data,$rejctedqty);
-	
+	}		
 ?>	

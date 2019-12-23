@@ -15,7 +15,7 @@ if(isset($_GET['gatepass'])){
 ?>
 
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-    <div class="panel-heading">Bundle/Docket Scanning</div>
+    <div class="panel-heading">Barcode Scanning Form</div>
     <div class="panel-body">
     <form method ='POST' id="frm1" action='<?php echo $url ?>'>
         <div class="row">

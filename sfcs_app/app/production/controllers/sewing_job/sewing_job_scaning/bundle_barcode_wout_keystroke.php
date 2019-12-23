@@ -2,14 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	$shift = $_POST['shift'];
-	$op_code=$_POST['operation_code'];
-	$gate_id=$_POST['gate_id'];	
-	if($gate_id=='')
-	{
-		$gate_id=0;
-	}
-	//echo $gate_id."--".$op_code."--".$shift."<br>";
-    $has_permission=haspermission($_GET['r']);
+	$has_permission=haspermission($_GET['r']);
     if (in_array($override_sewing_limitation,$has_permission))
     {
         $value = 'authorized';
@@ -18,23 +11,21 @@
     {
         $value = 'not_authorized';
     }
-	$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
-	
-	
- //To Get Emblishment Operations
-	$category =['Send PF','Receive PF'];
+		
+	//To Get Emblishment Operations
+	$category =['cutting','Send PF','Receive PF'];
 	$get_operations = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category IN ('".implode("','",$category)."')";
 	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_out=mysqli_fetch_array($operations_result_out))
 	{
 		$sewing_operations[]=$sql_row_out['operation_code'];
 	}
-
 	//echo $operation_code;
 	if(in_array($operation_code,$sewing_operations))
 	{
-	$form = "'G','P'";
-	}else
+		$form = "'G','P'";
+	}
+	else
 	{
 		$form = "'P'";
 	}
@@ -88,25 +79,10 @@ th,td{
 				<div class="col-md-9">				
                     Barcode:<input type="text" id="barcode_scan" class="form-control input-lg" ng-model="barcode" ng-keypress="scanned($event)" placeholder="scan here" autofocus>
 				</div>
-					<input type="hidden" id="pass_id" ng-model="pass_id" ng-init="pass_id='<?= $gate_id; ?>'">
 					<input type="hidden" id="rej_data" ng-model="rej_data">
                     <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'bundle_barcode_details_new.php',0,'R') ?>'">
-					<?php
-					if($gate_id>0)
-					{
-						?>
-						<div class="col-sm-2 form-group" style="padding-top:20px;">
-						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
-						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
-						?>
-						</form>
-						</div> 
-						<br>					
-						<?php
-					}
-					?>					
+									
                 </div>
             </div>
 			
@@ -216,9 +192,4 @@ th,td{
     </div>
 </div>
 <script src="<?= getFullURLLevel($_GET['r'],'common/js/bundle_scan_barcode.js',3,'R') ?>"></script>
-<script>
-function gatepass_page(i)
-{
-	//window.location = $url&?gatepassid=".$gate_id.""; 
-}
-</script>
+
