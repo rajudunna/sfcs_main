@@ -138,7 +138,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					}
 				}
 				$selectSQL = "SELECT DATE(date_time) as dates,assigned_module,shift,style,SCHEDULE,color,$query size_title FROM 
-				$brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$sdate."' AND '".$edate."' 
+				$brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' 
 				GROUP BY DATE(date_time),assigned_module,shift,style,SCHEDULE,color,size_title";
 				//echo $selectSQL."<br>";
 				//die();
