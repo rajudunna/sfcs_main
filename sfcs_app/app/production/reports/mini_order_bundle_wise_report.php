@@ -63,7 +63,7 @@ if($reptype == 1) {
                     </select>
                 </div>
                 <div class="col-md-3"><br/>
-                    <input class="btn btn-success" type="submit" value="Show" id='show' onclick="verify_input();" name="submit">
+                    <input class="btn btn-success" type="submit" value="Show" id='show' onclick="verify();" name="submit">
                     
                 </div>
                
@@ -302,6 +302,7 @@ if($reptype == 1) {
 </div>
 
 <script type="text/javascript">
+$('#style').select2();
 
 function getCSVData(){
 //  var csv_value=$('#report').table2CSV({delivery:'value'});
@@ -319,9 +320,9 @@ function getCSVData(){
 $(document).ready(function(){
     document.getElementById('reptype').value = "<?php echo $_POST['reptype'];?>";
     $('#reset').addClass('btn btn-warning btn-xs');
-    var btn = document.getElementById('show');
-    // var btn1 = document.getElementById('excel');
-    btn.disabled = true;
+    // var btn = document.getElementById('show');
+    // // var btn1 = document.getElementById('excel');
+    // btn.disabled = true;
     // btn1.disabled = true;
 });
 
@@ -343,14 +344,21 @@ $('#reset').addClass('btn btn-warning');
 function verify(){
     var style = $('#style').val();
     var reptype = $('#reptype').val();
-    // alert(style);
-    // alert(reptype);
-    if(style != '' && reptype != null) {
+    
+    if(style == null && reptype ==null){
+        swal('Warning','Please Select Style & Report Type','warning');
+        var btn = document.getElementById('show');
+        btn.disabled = true;
+    }
+    else if(style != null && (reptype == 1 || reptype == 2)) {
+        var btn = document.getElementById('show');
+        btn.disabled = false;
+    } else {
         var btn = document.getElementById('show');
         // var btn1 = document.getElementById('excel');
-        btn.disabled = false;
-        // btn1.disabled = false;
+        btn.disabled = true;
     }
+    
     
     //  else{
     //     sweetAlert('Style and Report Type','Should not be Empty!','warning');
