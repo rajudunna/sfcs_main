@@ -250,7 +250,7 @@ if(mysqli_num_rows($sql_result1)>0)
 		mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$select_check_one="select yer_mon from $bai_pro.tbl_freez_plan_track where yer_mon='$date'";
-			$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
+			$result_insert_one=mysqli_query($link, $select_check_one) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$check_result_one=mysqli_num_rows($result_insert_one);
 			if($check_result_one==0)
 			{
