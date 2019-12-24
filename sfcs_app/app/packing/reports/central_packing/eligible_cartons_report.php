@@ -50,7 +50,9 @@ table, th, td {
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
-							if(str_replace(" ","",$sql_row['vpo'])==str_replace(" ","",$vpo))
+							// echo $sql_row['vpo']."--".strlen(trim($sql_row['vpo']))."==".strcmp(trim($sql_row['vpo']),trim($vpo))."==".strlen(trim($vpo))."--".$vpo."</br>";
+							
+							if(trim($sql_row['vpo'])==trim($vpo))
 							{
 								echo "<option value=\"".$sql_row['vpo']."\" selected>".$sql_row['vpo']."</option>";
 							}
