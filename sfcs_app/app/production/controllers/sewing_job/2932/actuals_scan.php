@@ -119,4 +119,22 @@ function reduceCutBundleRemainingQty($id, $reduced_qty) {
     return;
 }
 
+
+function updateActualCutBundle($cut_bundle_id, $rec_qty) {
+    global $link;
+    global $bai_pro3;
+    $actual_cut_bundle_query = "Update $bai_pro3.act_cut_bundle set act_used_qty = act_used_qty + $rec_qty where id = $cut_bundle_id ";
+    msyqli_query($link, $actual_cut_bundle_query) or exit("error 1 - $actual_cut_bundle_query");
+    return;
+}
+
+function insertActualBundleLogTran($bundle_id, $cut_bundle_id, $rec_qty, $scan_user) {
+    global $link;
+    global $bai_pro3;
+    $actual_log_bundle_insert_query = "Insert into $bai_pro3.act_log_bundle_trn (plan_log_bundle_id, act_cut_bundle_id, rec_qty, tran_user) 
+        values ($bundle_id, $cut_bundle_id, $rec_qty, $scan_user)";
+    mysqli_query($link, $actual_log_bundle_insert_query) or exit("error 1 - $actual_log_bundle_insert_query");
+    return;
+}
+
 ?>
