@@ -116,6 +116,7 @@ th,td{
                         <th>S.no</th>
                         <th>Barcode</th>
                         <th>Style</th>
+                        <th>Schedule</th>
                         <th>Color</th>
                         <th>Reported Good Qty</th>
 						<th>Reject Qty</th>
@@ -127,6 +128,7 @@ th,td{
 						<td>{{$index+1}}</td>
                         <td>{{bar_code_details.data.bundle_no}}</td>
                         <td>{{bar_code_details.data.style}}</td>
+                        <td>{{bar_code_details.data.schedule}}</td>
                         <td>{{bar_code_details.data.color_dis}}</td>
                         <td>{{bar_code_details.data.reported_qty}}</td>
                         <td>{{bar_code_details.data.rejected_qty}}</td>
