@@ -8,7 +8,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 // getEligibleReport($sewing_job,0);
 // error_reporting(1);
 
-function getEligibleReport($sewing_job , $bundle, $isFirstOperation = false) {
+function getEligibleReport($sewing_job , $bundle = 0, $isFirstOperation = false) {
     global $link;
     global $brandix_bts;
     global $bai_pro3;
@@ -28,7 +28,7 @@ function getEligibleReport($sewing_job , $bundle, $isFirstOperation = false) {
     } else {
         $cut_bundles_query = "Select tid,plan_cut_bundle_id, style, color  from $bai_pro3.pac_stat_log_input_job  
             where input_job_no_random = '$sewing_job'";
-    } 
+    }
     $cut_bundles_result = mysqli_query($link, $cut_bundles_query) or exit("error 1 - $cut_bundles_query");
     while($row = mysqli_fetch_array($cut_bundles_result)) {
         $bundles[] = $row['tid'];
@@ -49,18 +49,14 @@ function getEligibleReport($sewing_job , $bundle, $isFirstOperation = false) {
     
    //  echo $first_sewing_operation['operation_code']."---".$previous_operations;
 
-    $cut_bundles_query = "Select style, size, color, SUM(remaining_qty) as remaining_qty
-        from $bai_pro3.act_cut_bundle acb
-        left join $bai_pro3.act_cut_bundle_trn acbt ON acbt.act_cut_bundle_id = acb.id
-        where acb.plan_cut_bundle_id IN ($cut_bundle_ids) and ops_code in ($previous_operations)
-        group by size, ops_code";
+    $cut_bundles_query = "Select style, size, color, SUM(act_good_qty - act_used_qty) as remaining_qty
+        from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($cut_bundle_ids)
+        group by size";
     $cut_bundles_result =  mysqli_query($link, $cut_bundles_query) or exit("error 2 - $cut_bundles_query");
     while($row = mysqli_fetch_array($cut_bundles_result)) {
         $size = $row['size'];
-        if($eligible_size_qtys[$size] <= 0) {
+        if($row['remaining_qty'] > 0) {
             $eligible_size_qtys[$size] = $row['remaining_qty'];
-        } else {
-            $eligible_size_qtys[$size] = min($eligible_size_qtys[$size] , $row['remaining_qty']);
         }
     }
     return $eligible_size_qtys;
@@ -110,5 +106,49 @@ function getPreviousOperations($style, $color, $current_operation, $current_oper
     return $previous_operations;
 }
 
+
+// return array of [ actual_cut_bundle_id => remaining_qty]
+function getActualCutBundles($sewing_job, $bundle = 0) {
+    global $link;
+    global $bai_pro3;
+
+    $plan_cut_bundle_ids = [];
+    $cut_bundle_qtys = [];
+
+    if($bundle) {
+        $plan_cut_bundles_query = "Select tid, plan_cut_bundle_id, style, color from $bai_pro3.pac_stat_log_input_job  
+            where tid = $bundle";
+    } else {
+        $plan_cut_bundles_query = "Select tid,plan_cut_bundle_id, style, color  from $bai_pro3.pac_stat_log_input_job  
+            where input_job_no_random = '$sewing_job'";
+    }
+    $plan_cut_bundle_ids_result = mysqli_query($link, $plan_cut_bundles_query);
+    while($row = mysqli_fetch_array($plan_cut_bundle_ids_result) ) {
+        $plan_cut_bundle_ids[] = $row['plan_cut_bundle_id'];
+    }
+    $plan_cut_bundles = implode(',', $plan_cut_bundle_ids_result);
+
+    $act_cut_bundles_query = "Select id, (act_good_qty - act_used_qty) as remaining_qty 
+            from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($plan_cut_bundles) 
+            group by size order by docket ASC";
+    $act_cut_bundles_result = mysqli_query($link, $act_cut_bundles_query) or exit("error 1 - $act_cut_bundles_query");
+    while($row = mysqli_fetch_array($act_cut_bundles_result)) {
+        $cut_bundle_id = $row['id'];
+        $rem_qty = $row['remaining_qty'];
+        $cut_bundle_qtys[$cut_bundle_id] = $rem_qty;
+    }
+
+    return $cut_bundle_qtys;
+}
+
+
+function updateActCutBundle($cut_bundle_qtys) {
+    global $link;
+    global $bai_pro3.;
+
+    foreach($cut_bundle_qtys as $cut_bundle_id => $used_qty) {
+        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle "
+    }
+}
 
 ?>
