@@ -270,7 +270,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 			$udpate ="UPDATE $bai_pro3.`docket_roll_alloc` set status=1 where id =".$row['id']."";
 			mysqli_query($link,$udpate);
 		}
-		$shadebundleno=0;
+		//$shadebundleno=0;
 		$endno=0;
 		$get_det_qry="select size,id from $bai_pro3.plan_cut_bundle where doc_no=".$doc_no."";
 		$get_det_qry_rslt= mysqli_query($link,$get_det_qry);
@@ -285,10 +285,10 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					$shade_seq_values = explode('$', $shade_seq_key);
 					$shade = $shade_seq_values[0];
 					$lay_seq = $shade_seq_values[1];
-					$shadebundleno++;					
+					//$shadebundleno++;					
 					$endno=($startno+$plies)-1;					
 					//Actual Cut Bundle 
-					$barcode="ACB-".$doc_no."-".$bundle."-".$shadebundleno."";
+					$barcode="ACB-".$doc_no."-".$bundle."";
 					$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order)
 					VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.")";	
 					$result= mysqli_query($link,$insert_docket_num_info);
@@ -320,7 +320,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					$planplies=$planplies - $plies;
 				}				
 				$bundle++;
-				$shadebundleno=0;							
+				//$shadebundleno=0;							
 			}
 		}			
 	}		
