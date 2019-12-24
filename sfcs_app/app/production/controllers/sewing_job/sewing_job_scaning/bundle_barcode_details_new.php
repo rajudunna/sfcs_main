@@ -61,6 +61,7 @@
 			while($selct_qry_result_rows=mysqli_fetch_array($selct_qry_res))
 			{
 				$bundle_no = $selct_qry_result_rows['bundle_number'];
+				$b_tid[]= $selct_qry_result_rows['bundle_number'];
 				$schedule = $selct_qry_result_rows['schedule'];
 				$input_job_no_random = $selct_qry_result_rows['input_job_no_random_ref'];
 			}
@@ -164,19 +165,39 @@
 				else
 				{
 					//quantity filling in act_cut_bundle_trn
-					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty-$rejctedqty),status=1 where barcode='".$barcode."'";
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",status=1 where barcode='".$barcode."'";
 					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');					
-					if($pre_ops_code)
-					{
-						$pre_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$pre_ops_code;
-						$update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
-						$result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
-					}
+					// if($pre_ops_code)
+					// {
+						// $pre_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$pre_ops_code;
+						// $update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
+						// $result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
+					// }
 					if($post_ops_code)
 					{
 						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
 						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
+					}
+					
+					$category=['cutting','Send PF','Receive PF'];
+					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$ops_code'";
+					$result_checking_qry = $link->query($checking_qry);
+					while($row_cat = $result_checking_qry->fetch_assoc())
+					{
+						$category_act = $row_cat['category'];
+					}
+					if($category_act=='Receive PF')
+					{
+						$qry_min_prevops="SELECT MIN(good_qty) AS min_recieved_qty FROM $bai_pro3.act_cut_bundle_trn WHERE act_cut_bundle_id=".$act_cut_bundle_id." and ops_code in ($emb_operations)";
+						$result_qry_min_prevops = $link->query($qry_min_prevops);
+						while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
+						{
+							$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
+						}
+						
+						$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$previous_minqty where id='".$act_cut_bundle_id."'";
+						$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
 					}
 					
 					$rep_m3_qty=$report_qty-$rejctedqty;
@@ -322,19 +343,33 @@
 				else
 				{
 					//quantity filling in act_cut_bundle_trn
-					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",remaining_qty=remaining_qty+($report_qty-$rejctedqty),status=1 where barcode='".$barcode."'";
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=$report_qty-$rejctedqty,rejection_qty=".$rejctedqty.",status=1 where barcode='".$barcode."'";
 					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');					
-					if($pre_ops_code)
-					{
-						$pre_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$pre_ops_code;
-						$update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
-						$result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
-					}
+					// if($pre_ops_code)
+					// {
+						// $pre_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$pre_ops_code;
+						// $update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
+						// $result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
+					// }
 					if($post_ops_code)
 					{
 						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
 						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
+					}
+					
+					//updating good quantity in act_cut_bundle
+					$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
+					$get_data_qry="select ops_code from $bai_pro3.act_cut_bundle_trn where barcode='".$post_ops_barcode."'";
+					$result_data_qry = $link->query($get_data_qry);
+					while($row = $result_data_qry->fetch_assoc())
+					{
+						$opcodeforupdate=$row['ops_code'];
+					}
+					if($opcodeforupdate=='')
+					{
+						$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+($report_qty-$rejctedqty) where id=".$act_cut_bundle_id."";
+						$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle');	
 					}
 					
 					$rep_m3_qty=$report_qty-$rejctedqty;
@@ -458,16 +493,17 @@
 					else{
 						updateM3Transactions($b_tid[0],$ops_code,$rep_m3_qty);
 					}
-					
-					$result_array['bundle_no'] = $barcode;	
-					$result_array['style'] = $style;	
-					$result_array['schedule'] = $schedule;	
-					$result_array['color_dis'] = $color;	
-					$result_array['reported_qty'] = $report_qty-$rejctedqty;	
-					$result_array['rejected_qty'] = $rejctedqty;	
-					echo json_encode($result_array);
-					die();	
+						
 				}
+				
+				$result_array['bundle_no'] = $barcode;	
+				$result_array['style'] = $style;	
+				$result_array['schedule'] = $schedule;	
+				$result_array['color_dis'] = $color;	
+				$result_array['reported_qty'] = $report_qty-$rejctedqty;	
+				$result_array['rejected_qty'] = $rejctedqty;	
+				echo json_encode($result_array);
+				die();
 							
 			}
 		}
