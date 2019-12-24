@@ -144,10 +144,10 @@ function getActualCutBundles($sewing_job, $bundle = 0) {
 
 function updateActCutBundle($cut_bundle_qtys) {
     global $link;
-    global $bai_pro3.;
+    global $bai_pro3;
 
     foreach($cut_bundle_qtys as $cut_bundle_id => $used_qty) {
-        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle "
+        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle ";
     }
 }
 

@@ -80,6 +80,8 @@ function getjobdetails($job_number)
     $emb_cut_check_flag = 0;
     $job_number[4]=$job_number[1];
     include("../../../../../common/config/config_ajax.php");
+    include("../../../../../common/config/config_ajax.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app\app\production\controllers\sewing_job\2932\sewing_qty_retreaving_and_reporting.php");
     $column_to_search = $job_number[0];
     $column_in_where_condition = 'bundle_number';
     $column_in_pack_summary = 'tid';
@@ -299,6 +301,9 @@ function getjobdetails($job_number)
     }
     else
     {
+        if ($emb_cut_check_flag == 1 && $bg == 1) {
+            $eligible_to_report_size_wise = getElegiblereportFromACB($actual_input_job_number);
+        }
         $result_style_data = $link->query($schedule_query);
         $parellel_ops=array();
         while($row = $result_style_data->fetch_assoc()) 
@@ -372,17 +377,22 @@ function getjobdetails($job_number)
                 $min_val_doc_wise = array();
                 $row_bundle_wise_qty =0;
                 $bundle_tot_qty =0;
-
-				if(sizeof($parellel_ops)<=0){
-				$qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
-				$qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
-					if($qry_parellel_ops_result->num_rows > 0){
-						while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
-						{ 
-							$parellel_ops[] = $row_prellel['operation_code'];
-						}
-					}
-				}
+                if ($bg != 1) {
+                    $act_bal_to_report = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
+                } else {
+                    $act_bal_to_report = $eligible_to_report_size_wise[$row['size_code']];
+                }
+                /* COMMENTING BECAUSE OF #2932 
+				// if(sizeof($parellel_ops)<=0){
+				// $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
+				// $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
+				// 	if($qry_parellel_ops_result->num_rows > 0){
+				// 		while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
+				// 		{ 
+				// 			$parellel_ops[] = $row_prellel['operation_code'];
+				// 		}
+				// 	}
+				// }
 				if(sizeof($parellel_ops)>0){
 					//$parellel_operations = implode(',',$parellel_ops);
 					$retreving_remaining_qty_qry = "select min(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code in (".implode(',',$parellel_ops).")";
@@ -520,11 +530,11 @@ function getjobdetails($job_number)
                         $result_array['is_emb_flag'] = 1;
                     else    
                         $result_array['is_emb_flag'] = 0;
-                }
+                } 
                 else
                 {
                     $act_bal_to_report = 0;
-                }
+                } */
                 $row['balance_to_report'] = $act_bal_to_report;
             }
             $result_array['table_data'][] = $row;
