@@ -2,7 +2,6 @@
 <?php
 // get elgible to report qty for sewing job;
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-include("first_sewing_operation_eligibility.php");
 
 
 // docket - the scanning docket
