@@ -9,8 +9,6 @@ error_reporting(0);
 $LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 $LEFT = 0;
- 
-
 $rollwisedata=$_POST['data'];
 $doc_no=$_POST['doc_no'];
 $style   = $_POST['style'];
@@ -437,8 +435,7 @@ if($target == 'normal'){
 // $doc_no = 524879; 
 //Schedule Clubbing Docket Saving
 
-if($target == 'schedule_clubbed')
-{
+if($target == 'schedule_clubbed'){
     $rejection_details_each = [];
     $quit_counter1 = 0;
     $quit_counter2 = 0;
@@ -1333,7 +1330,6 @@ function update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejecti
     else    
         return 0; 
 }
-
 
 function force_exit($str){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');

@@ -1,12 +1,38 @@
-
-
 <?php
-// get elgible to report qty for sewing job;
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 
-// $sewing_job = '707673191217731';
-// getEligibleReport($sewing_job,0);
-// error_reporting(1);
+function getElegiblereportFromACB($sewing_job_number, $bundle = 0) {  
+    if ($bundle) {
+       $eleibile_report = getEligibleReport($sewing_job_number, $bundle);
+    } else {
+        $eleibile_report = getEligibleReport($sewing_job_number);
+    }
+    return $eleibile_report;
+}
+
+function sewingBundleReporting($sewing_job_number = '', $bundle, $qty) {
+    $actual_acb_fillable_qty = [];
+    $cut_bundle_qtys['ACB1'] = 3;
+    $cut_bundle_qtys['ACB2'] = 7;
+    $totalelegible_qty = array_sum($cut_bundle_qtys);
+    if ($qty > $totalelegible_qty) {
+        return false;
+    } else {
+        $fillable_qty = $qty;
+        foreach ($cut_bundle_qtys as $key => $value) {
+            if ($fillable_qty > 0) {
+                if ($fillable_qty <= $value){
+                    $actual_acb_fillable_qty[$key] = $fillable_qty;
+                    $fillable_qty = 0 ;
+                } else {
+                    $actual_acb_fillable_qty[$key] = $value;
+                    $fillable_qty = $fillable_qty - $value;
+                }
+            }
+        }
+        return $actual_acb_fillable_qty;
+    }
+}
 
 function getEligibleReport($sewing_job , $bundle = 0, $isFirstOperation = false) {
     global $link;
@@ -144,10 +170,10 @@ function getActualCutBundles($sewing_job, $bundle = 0) {
 
 function updateActCutBundle($cut_bundle_qtys) {
     global $link;
-    global $bai_pro3.;
+    global $bai_pro3;
 
     foreach($cut_bundle_qtys as $cut_bundle_id => $used_qty) {
-        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle "
+        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle ";
     }
 }
 

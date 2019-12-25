@@ -54,9 +54,7 @@ function plan_cut_bundle($docket_no)
 	while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
 	{
 		$operation_codes[] = $row['operation_code'];			
-	}
-	
-	
+	}	
 	$bundle_no=1;
 	foreach($cut_done_qty as $key => $value)
 	{
@@ -178,7 +176,7 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 				foreach($operation_codes as $index => $op_code)
 				{
 					//Plan Logical Bundle Trn
-					$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','".$size."','". $size_code."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",0,0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
+					$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",0,0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
 					mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				$barcode='';
@@ -249,7 +247,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 		else
 		{		
 			$startno = $row_act['start']+1;
-			$bundle = $row_act['bundles'];
+			$bundle = $row_act['bundles']+1;
 		}
 	}
 	
@@ -289,37 +287,52 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					$endno=($startno+$plies)-1;					
 					//Actual Cut Bundle 
 					$barcode="ACB-".$doc_no."-".$bundle."";
-					$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order)
-					VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.")";	
-					$result= mysqli_query($link,$insert_docket_num_info);
-					$id=mysqli_insert_id($link);
-					
-					$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,remaining_qty,barcode) values ($id,$plan_id,15,$plies,$plies,$plies,0,'$username',1,$plies,'".$barcode."-15')";
-					$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-					
-					//Actual Cut Bundle Trn	
-					foreach($operation_codes as $index => $op_code)
+					if(sizeof($operation_codes)==1)
 					{
-						if($op_code==15)
-						{
-							continue; 
-						}
-						else if(in_array($op_code,$next_operations))
-						{
-							$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,remaining_qty,barcode) values ($id,$plan_id,$op_code,$plies,$plies,0,0,'$username',0,0,'".$barcode."-".$op_code."')";
-							$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-						}
-						else
-						{											
-							$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,remaining_qty,barcode) values ($id,$plan_id,$op_code,0,$plies,0,0,'$username',0,0,'".$barcode."-".$op_code."')";
-							$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
-						}						
+						$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order,act_good_qty)
+						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.",".$plies.")";	
+						$result= mysqli_query($link,$insert_docket_num_info);
+						$id=mysqli_insert_id($link);
+						
+						$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,15,$plies,$plies,$plies,0,'$username',1,'".$barcode."-15')";
+						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+						
 					}
+					else
+					{
+						$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order)
+						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.")";	
+						$result= mysqli_query($link,$insert_docket_num_info);
+						$id=mysqli_insert_id($link);
+						
+						$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,15,$plies,$plies,$plies,0,'$username',1,'".$barcode."-15')";
+						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+						
+						//Actual Cut Bundle Trn	
+						foreach($operation_codes as $index => $op_code)
+						{
+							if($op_code==15)
+							{
+								continue; 
+							}
+							else if(in_array($op_code,$next_operations))
+							{
+								$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,$op_code,$plies,$plies,0,0,'$username',0,'".$barcode."-".$op_code."')";
+								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+							}
+							else
+							{											
+								$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`rec_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,$op_code,0,$plies,0,0,'$username',0,'".$barcode."-".$op_code."')";
+								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+							}						
+						}					
+					}	
 					
 					$startno=$startno + $plies;
 					$planplies=$planplies - $plies;
+					$bundle++;
 				}				
-				$bundle++;
+				//$bundle++;
 				//$shadebundleno=0;							
 			}
 		}			
