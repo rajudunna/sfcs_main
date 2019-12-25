@@ -289,7 +289,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					$barcode="ACB-".$doc_no."-".$bundle."";
 					if(sizeof($operation_codes)==1)
 					{
-						$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order,good_qty)
+						$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,plies,tran_user,bundle_order,act_good_qty)
 						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.",".$plies.")";	
 						$result= mysqli_query($link,$insert_docket_num_info);
 						$id=mysqli_insert_id($link);
