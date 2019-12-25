@@ -1,5 +1,6 @@
 <?php
 
+include("../../../../../common/config/sewing_qty_retreaving_and_reporting.php");
 if(isset($_GET['variable']))
 {
     $variable = $_GET['variable'];
@@ -74,14 +75,14 @@ if(isset($_GET['job_number']))
         getjobdetails($job_number);
     }
 }
+
 function getjobdetails($job_number)
 {
     $job_number = explode(",",$job_number);
     $emb_cut_check_flag = 0;
     $job_number[4]=$job_number[1];
     include("../../../../../common/config/config_ajax.php");
-    include("../../../../../common/config/config_ajax.php");
-    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app\app\production\controllers\sewing_job\2932\sewing_qty_retreaving_and_reporting.php");
+   
     $column_to_search = $job_number[0];
     $column_in_where_condition = 'bundle_number';
     $column_in_pack_summary = 'tid';
@@ -379,8 +380,9 @@ function getjobdetails($job_number)
                 $bundle_tot_qty =0;
                 if ($bg != 1) {
                     $act_bal_to_report = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
+                    $act_bal_to_report = $act_bal_to_report[$row['old_size']];
                 } else {
-                    $act_bal_to_report = $eligible_to_report_size_wise[$row['size_code']];
+                    $act_bal_to_report = $eligible_to_report_size_wise[$row['old_size']];
                 }
                 /* COMMENTING BECAUSE OF #2932 
 				// if(sizeof($parellel_ops)<=0){

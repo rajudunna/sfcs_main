@@ -289,6 +289,7 @@ $userName = getrbac_user()['uname'];
 				mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
 				$msc68=microtime(true);
 				$update_bcd="UPDATE brandix_bts.`bundle_creation_data` SET assigned_module='$items[0]' WHERE assigned_module='0' AND input_job_no_random_ref='.$items[1]'";
+				mysqli_query($link, $update_bcd) or die("Updating BCD module".$insert_log_query);
 				$log.="<th>".$msc68."</th>";
 				$msc69=$msc68-$msc67;
 				$log.="<th>".$msc69."</th></tr>";
