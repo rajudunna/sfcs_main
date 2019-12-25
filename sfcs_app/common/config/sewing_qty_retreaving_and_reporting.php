@@ -11,26 +11,26 @@ function getElegiblereportFromACB($sewing_job_number, $bundle = 0) {
 }
 
 function sewingBundleReporting($sewing_job_number = '', $bundle, $qty) {
-    $actual_acb_fillable_qty = [];
-    $cut_bundle_qtys['ACB1'] = 3;
-    $cut_bundle_qtys['ACB2'] = 7;
-    $totalelegible_qty = array_sum($cut_bundle_qtys);
+    echo "qty - $qty";
+    $actual_acb_fillable_qty = getActualCutBundles('', $bundle);
+    $filled_qtys = [];
+    $totalelegible_qty = array_sum($actual_acb_fillable_qty);
     if ($qty > $totalelegible_qty) {
         return false;
     } else {
         $fillable_qty = $qty;
-        foreach ($cut_bundle_qtys as $key => $value) {
+        foreach ($actual_acb_fillable_qty as $key => $value) {
             if ($fillable_qty > 0) {
                 if ($fillable_qty <= $value){
-                    $actual_acb_fillable_qty[$key] = $fillable_qty;
+                    $filled_qtys[$key] = $fillable_qty;
                     $fillable_qty = 0 ;
                 } else {
-                    $actual_acb_fillable_qty[$key] = $value;
+                    $filled_qtys[$key] = $value;
                     $fillable_qty = $fillable_qty - $value;
                 }
             }
         }
-        return $actual_acb_fillable_qty;
+        return $filled_qtys;
     }
 }
 
@@ -152,7 +152,7 @@ function getActualCutBundles($sewing_job, $bundle = 0) {
     while($row = mysqli_fetch_array($plan_cut_bundle_ids_result) ) {
         $plan_cut_bundle_ids[] = $row['plan_cut_bundle_id'];
     }
-    $plan_cut_bundles = implode(',', $plan_cut_bundle_ids_result);
+    $plan_cut_bundles = implode(',', $plan_cut_bundle_ids);
 
     $act_cut_bundles_query = "Select id, (act_good_qty - act_used_qty) as remaining_qty 
             from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($plan_cut_bundles) 
@@ -166,15 +166,21 @@ function getActualCutBundles($sewing_job, $bundle = 0) {
 
     return $cut_bundle_qtys;
 }
-
-
-function updateActCutBundle($cut_bundle_qtys) {
+function updateActualCutBundle($cut_bundle_id, $rec_qty) {
     global $link;
     global $bai_pro3;
+    $actual_cut_bundle_query = "Update $bai_pro3.act_cut_bundle set act_used_qty = act_used_qty + $rec_qty where id = $cut_bundle_id ";
+    mysqli_query($link, $actual_cut_bundle_query) or exit("error 1 - $actual_cut_bundle_query");
+    return;
+}
 
-    foreach($cut_bundle_qtys as $cut_bundle_id => $used_qty) {
-        $update_cut_bundle_query = "Update $bai_pro3.act_cut_bundle ";
-    }
+function insertActualBundleLogTran($bundle_id, $cut_bundle_id, $rec_qty, $scan_user) {
+    global $link;
+    global $bai_pro3;
+    $actual_log_bundle_insert_query = "Insert into $bai_pro3.act_log_bundle_trn (plan_log_bundle_id, act_cut_bundle_id, rec_qty, tran_user) 
+        values ($bundle_id, $cut_bundle_id, $rec_qty, '$scan_user')";
+    mysqli_query($link, $actual_log_bundle_insert_query) or exit("error 1 - $actual_log_bundle_insert_query");
+    return;
 }
 
 ?>

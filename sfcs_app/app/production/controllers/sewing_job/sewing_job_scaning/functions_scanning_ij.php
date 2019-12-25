@@ -380,9 +380,9 @@ function getjobdetails($job_number)
                 $bundle_tot_qty =0;
                 if ($bg != 1) {
                     $act_bal_to_report = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
-                    $act_bal_to_report = $act_bal_to_report[$row['old_size']];
+                    $act_bal_to_report = $act_bal_to_report[$row['size_code']];
                 } else {
-                    $act_bal_to_report = $eligible_to_report_size_wise[$row['old_size']];
+                    $act_bal_to_report = $eligible_to_report_size_wise[$row['size_code']];
                 }
                 /* COMMENTING BECAUSE OF #2932 
 				// if(sizeof($parellel_ops)<=0){

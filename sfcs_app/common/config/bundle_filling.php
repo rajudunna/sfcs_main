@@ -109,8 +109,14 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 	{
         $input_job_num=1;
     }
+	$sql1="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=".$dono."";
+    $sql_result1=mysqli_query($link, $sql1) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row1 = mysqli_fetch_array($sql_result1))
+	{
+		$order_tid = $sql_row1['order_tid'];
+	}
     //get destination to fill logical bundle
-    $sql="select destination,order_style_no,order_col_des from bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
+    $sql="select destination,order_style_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
     $sql_result=mysqli_query($link, $sql) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row = mysqli_fetch_array($sql_result))
 	{
