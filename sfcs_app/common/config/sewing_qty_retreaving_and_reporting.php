@@ -1,6 +1,5 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-
 function getElegiblereportFromACB($sewing_job_number, $bundle = 0) {  
     if ($bundle) {
        $eleibile_report = getEligibleReport($sewing_job_number, $bundle);
@@ -10,9 +9,8 @@ function getElegiblereportFromACB($sewing_job_number, $bundle = 0) {
     return $eleibile_report;
 }
 
-function sewingBundleReporting($sewing_job_number = '', $bundle, $qty) {
-    echo "qty - $qty";
-    $actual_acb_fillable_qty = getActualCutBundles('', $bundle);
+function sewingBundleReporting($sewing_job_number = '', $bundle, $qty, $is_reversal = false) {
+    $actual_acb_fillable_qty = getActualCutBundles('', $bundle, $is_reversal);
     $filled_qtys = [];
     $totalelegible_qty = array_sum($actual_acb_fillable_qty);
     if ($qty > $totalelegible_qty) {
@@ -134,7 +132,7 @@ function getPreviousOperations($style, $color, $current_operation, $current_oper
 
 
 // return array of [ actual_cut_bundle_id => remaining_qty]
-function getActualCutBundles($sewing_job, $bundle = 0) {
+function getActualCutBundles($sewing_job, $bundle = 0, $is_reversal = false) {
     global $link;
     global $bai_pro3;
 
@@ -154,10 +152,16 @@ function getActualCutBundles($sewing_job, $bundle = 0) {
     }
     $plan_cut_bundles = implode(',', $plan_cut_bundle_ids);
 
-    $act_cut_bundles_query = "Select id, (act_good_qty - act_used_qty) as remaining_qty 
-            from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($plan_cut_bundles) 
-            group by size order by docket ASC";
-    $act_cut_bundles_result = mysqli_query($link, $act_cut_bundles_query) or exit("error 1 - $act_cut_bundles_query");
+    if ($is_reversal) { 
+        $act_cut_bundles_query = "Select id, act_used_qty as remaining_qty 
+                from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($plan_cut_bundles) 
+                group by size order by docket ASC";
+    } else {
+        $act_cut_bundles_query = "Select id, (act_good_qty - act_used_qty) as remaining_qty 
+                from $bai_pro3.act_cut_bundle where plan_cut_bundle_id IN ($plan_cut_bundles) 
+                group by size order by docket ASC";
+    }
+    $act_cut_bundles_result = mysqli_query($link, $act_cut_bundles_query) or exit("error act_cut_bundles_query - $act_cut_bundles_query");
     while($row = mysqli_fetch_array($act_cut_bundles_result)) {
         $cut_bundle_id = $row['id'];
         $rem_qty = $row['remaining_qty'];
@@ -174,13 +178,20 @@ function updateActualCutBundle($cut_bundle_id, $rec_qty) {
     return;
 }
 
-function insertActualBundleLogTran($bundle_id, $cut_bundle_id, $rec_qty, $scan_user) {
+function insertActualBundleLogTranGood($bundle_id, $cut_bundle_id, $rec_qty, $scan_user) {
     global $link;
     global $bai_pro3;
-    $actual_log_bundle_insert_query = "Insert into $bai_pro3.act_log_bundle_trn (plan_log_bundle_id, act_cut_bundle_id, rec_qty, tran_user) 
+    $actual_log_bundle_insert_query = "Insert into $bai_pro3.act_log_bundle_trn (plan_log_bundle_id, act_cut_bundle_id, good_qty, tran_user) 
         values ($bundle_id, $cut_bundle_id, $rec_qty, '$scan_user')";
     mysqli_query($link, $actual_log_bundle_insert_query) or exit("error 1 - $actual_log_bundle_insert_query");
     return;
 }
-
+function insertActualBundleLogTranRej($bundle_id, $cut_bundle_id, $rej_qty, $scan_user) {
+    global $link;
+    global $bai_pro3;
+    $actual_log_bundle_insert_query = "Insert into $bai_pro3.act_log_bundle_trn (plan_log_bundle_id, act_cut_bundle_id, rej_qty, tran_user) 
+        values ($bundle_id, $cut_bundle_id, $rej_qty, '$scan_user')";
+    mysqli_query($link, $actual_log_bundle_insert_query) or exit("error 1 - $actual_log_bundle_insert_query");
+    return;
+}
 ?>

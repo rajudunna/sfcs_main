@@ -2,6 +2,7 @@
 include("../../../../../common/config/config_ajax.php");
 include("../../../../../common/config/functions.php");
 include("../../../../../common/config/m3Updations.php");
+include("../../../../../common/config/sewing_qty_retreaving_and_reporting.php");
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 $operation_code = $new_data['operation_id'];
@@ -51,6 +52,7 @@ $b_rej_qty=$new_data['rejection_qty'];
 $b_op_id = $new_data['operation_id'];
 $b_op_name = $new_data['operation_name'];
 $b_tid = $new_data['tid'];
+
 $b_inp_job_ref = $new_data['inp_job_ref'];
 $b_a_cut_no = $new_data['a_cut_no'];
 $b_module = $new_data['module'];
@@ -83,13 +85,22 @@ if($barcode_generation == 1)
 	$reason_remaining_qty = array();
 	$b_in_job_qty = array();
 	$actual_bundles_cumulative = array();
-	$table_flag_checking = "SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
+	$table_flag_checking = "SELECT sum(send+recevied_qty+rejected_qty) as qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 	//echo $table_flag_checking;
 	$result_select_send_qty = $link->query($table_flag_checking);
+	$first_scan = false;
 	if($result_select_send_qty->num_rows >0)
 	{
-		$table_name = 'bundle_creation_data';
+		while($row = $result_select_send_qty->fetch_assoc()) 
+		{
+			if($row['qty']>0)
+			{
+				$first_scan = false;
+				$table_name = 'bundle_creation_data';
+			}
+		}		
 	}
+/*
 	$b_inp_job_ref = array();
 	if($table_name == 'packing_summary_input')
 	{
@@ -425,6 +436,7 @@ if($barcode_generation == 1)
 		// var_dump($b_module);	
 	}
 	else
+*/	
 	{
 		//for positive quantities 
 		foreach($b_tid as $key => $value)
@@ -463,7 +475,8 @@ if($barcode_generation == 1)
 						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
 						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
 					}else{
-						$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						//$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+						$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $b_tid[$key]);
 					}
 					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
 					// if($result_retreving_remaining_qty_qry->num_rows > 0)
@@ -810,6 +823,7 @@ if($barcode_generation == 1)
 		$b_rej_qty[] = $actual_rej_quantities[$value];
 	}
 }
+
 //Before CR Logic
 foreach ($b_tid as $key=>$value)
 {
@@ -1744,7 +1758,21 @@ else if($concurrent_flag == 0)
 			{
 				updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
 			}
-			
+			$total_used_qty = $b_rep_qty[$i] + $b_rej_qty[$i];
+			if ($b_rep_qty[$i] > 0) {
+				$to_update_acb = sewingBundleReporting('', $b_tid[$i], $b_rep_qty[$i]);
+				foreach($to_update_acb as $acb => $qty) {
+					updateActualCutBundle($acb, $qty);
+					insertActualBundleLogTranGood($b_tid[$i], $acb, $qty, $username);
+				}
+			}
+			if ($b_rej_qty[$i] > 0) {
+				$to_update_acb = sewingBundleReporting('', $b_tid[$i], $b_rej_qty[$i]);
+				foreach($to_update_acb as $acb => $qty) {
+					updateActualCutBundle($acb, $qty);
+					insertActualBundleLogTranRej($b_tid[$i], $acb, $qty, $username);
+				}
+			}
 		}
 		if(sizeof($actual_rejection_reason_array_string) > 0)
 		{

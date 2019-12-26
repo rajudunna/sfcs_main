@@ -537,7 +537,7 @@ function getjobdetails($job_number)
                 {
                     $act_bal_to_report = 0;
                 } */
-                $row['balance_to_report'] = $act_bal_to_report;
+                $row['balance_to_report'] = min($act_bal_to_report,$row['balance_to_report']);
             }
             $result_array['table_data'][] = $row;
         }

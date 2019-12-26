@@ -2,7 +2,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
-
+	include(getFullURLLevel($_GET['r'],'/common/config/sewing_qty_retreaving_and_reporting.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 	if (in_array($override_sewing_limitation,$has_permission))
 	{
@@ -945,6 +945,11 @@
 					//}	
 				}
 				$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);
+				$to_update_acb = sewingBundleReporting('', $bundle_no[$key], $reversalval[$key], true);
+				foreach($to_update_acb as $acb => $qty) {
+					updateActualCutBundle($acb, -$qty);
+					insertActualBundleLogTranGood($bundle_no[$key], $acb, -$qty, $username);
+				}
 			}
 			
 			// Check for sewing job existance in plan_dashboard_input

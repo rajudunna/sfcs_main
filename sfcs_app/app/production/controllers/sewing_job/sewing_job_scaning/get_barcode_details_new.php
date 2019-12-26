@@ -465,16 +465,17 @@
                             $doc_no = $row['doc_no'];
                             $size = $row['old_size'];
 
-                            $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                           // echo $retreving_remaining_qty_qry;
-                            $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-                            if($result_retreving_remaining_qty_qry->num_rows > 0)
-                            {
-                                while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
-                                {
-                                    $sum_balance = $row_remaining['balance_to_report'];
-                                }
-                            }
+                        //     $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
+                        //    // echo $retreving_remaining_qty_qry;
+                        //     $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
+                        //     if($result_retreving_remaining_qty_qry->num_rows > 0)
+                        //     {
+                        //         while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
+                        //         {
+                        //             $sum_balance = $row_remaining['balance_to_report'];
+                        //         }
+                        //     }
+                            $sum_balance = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
                             if($sum_balance < $row['balance_to_report'])
                             {
                                 $result_array['status'] = 'Previous operation not yet done for this jobs.';
@@ -1442,6 +1443,13 @@
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+                if ($b_rep_qty[$i] > 0) {
+                    $to_update_acb = sewingBundleReporting('', $b_tid[$i], $b_rep_qty[$i]);
+                    foreach($to_update_acb as $acb => $qty) {
+                        updateActualCutBundle($acb, $qty);
+                        insertActualBundleLogTranGood($b_tid[$i], $acb, $qty, $username);
+                    }
+                }
             }
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
