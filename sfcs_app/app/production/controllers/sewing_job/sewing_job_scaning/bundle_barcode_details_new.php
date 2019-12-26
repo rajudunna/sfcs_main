@@ -25,13 +25,13 @@
 		$diffqty=$report_qty-$rejctedqty;
 		
 		//getting operation code
-		$get_curr_ops_code="select ops_code,rec_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
+		$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
 		$rslt_get_cur_ops = $link->query($get_curr_ops_code);
 		while($row_rslt = $rslt_get_cur_ops->fetch_assoc())
 		{
 			$ops_code=$row_rslt['ops_code'];
-			$rec_qty=$row_rslt['rec_qty'];
-			$report_qty=$row_rslt['rec_qty'];
+			$rec_qty=$row_rslt['send_qty'];
+			$report_qty=$row_rslt['send_qty'];
 			$good_qty=$row_rslt['good_qty'];
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
@@ -298,13 +298,13 @@
 		
 		
 		//getting operation code
-		$get_curr_ops_code="select ops_code,rec_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
+		$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
 		$rslt_get_cur_ops = $link->query($get_curr_ops_code);
 		while($row_rslt = $rslt_get_cur_ops->fetch_assoc())
 		{
 			$ops_code=$row_rslt['ops_code'];
-			$rec_qty=$row_rslt['rec_qty'];
-			$report_qty=$row_rslt['rec_qty'];
+			$rec_qty=$row_rslt['send_qty'];
+			$report_qty=$row_rslt['send_qty'];
 			$good_qty=$row_rslt['good_qty'];
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
@@ -444,7 +444,7 @@
 					if($post_ops_code)
 					{
 						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
-						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
+						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
 					}
 					
@@ -624,7 +624,7 @@
 					if($post_ops_code)
 					{
 						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
-						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET rec_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
+						$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 						$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
 					}
 					
