@@ -129,7 +129,7 @@ function fillActualCutBundleGoodQty($act_cut_bundles_array, $good_qty, $operatio
     global $link;
     global $bai_pro3;
     $act_cut_bundles = implode(',', $act_cut_bundles_array);
-    $actual_cut_bundle_trans_query = "select id, act_cut_bundle_id, ops_code, original_qty, rec_qty - (good_qty + rejection_qty) as rem_qty 
+    $actual_cut_bundle_trans_query = "select id, act_cut_bundle_id, ops_code, original_qty, send_qty - (good_qty + rejection_qty) as rem_qty 
         from $bai_pro3.act_cut_bundle_trn 
         where act_cut_bundle_id IN ($act_cut_bundles) and ops_code = $operation order by id ASC";
     $actual_cut_bundle_trans_result = mysqli_query($link, $actual_cut_bundle_trans_query) or exit("error actual_cut_bundle_trans_query $actual_cut_bundle_trans_query");
@@ -163,7 +163,7 @@ function fillActualCutBundleRejQty($act_cut_bundles_array, $rej_qty, $operation)
     global $link;
     global $bai_pro3;
     $act_cut_bundles = implode(',', $act_cut_bundles_array);
-    $actual_cut_bundle_trans_query = "select id, act_cut_bundle_id, ops_code, rec_qty - (good_qty + rejection_qty) as rem_qty 
+    $actual_cut_bundle_trans_query = "select id, act_cut_bundle_id, ops_code, send_qty - (good_qty + rejection_qty) as rem_qty 
         from $bai_pro3.act_cut_bundle_trn 
         where act_cut_bundle_id IN ($act_cut_bundles) and ops_code = $operation order by id DESC";
     $actual_cut_bundle_trans_result = mysqli_query($link, $actual_cut_bundle_trans_query) or exit("error actual_cut_bundle_trans_query $actual_cut_bundle_trans_query");
@@ -216,7 +216,7 @@ function updateActualCutBundleTrnGoodQty($act_cut_bundle_id, $operation, $good_q
 function updateActualCutBundleTrnRecQty($act_cut_bundle_id, $operation,  $rec_qty) {
     global $link;
     global $bai_pro3;
-    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set rec_qty = $rec_qty
+    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set send_qty = $rec_qty
         where act_cut_bundle_id = $act_cut_bundle_id and ops_code = $operation";
     mysqli_query($link,$act_cut_bundle_trn_update_query) or exit("error act_cut_bundle_trn_update_query $act_cut_bundle_trn_update_query");
     return;
