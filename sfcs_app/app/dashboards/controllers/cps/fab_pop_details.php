@@ -15,22 +15,15 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
 $has_permission=haspermission($url_r); 
-// $authorized=user_acl("SFCS_0199",$username,50,$group_id_sfcs); 
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+$ctd =array_slice($php_self, 0, -2);
+$get_url=implode('/',$ctd)."/cps/marker_length_popup.php";
+
+$get_url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."".$get_url;
+
 ?>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
-<!--
-Ticket #: 252392-Kirang/2014-02-07
-This amendement was done based on the confirmation to issue excess (1%) material depending on the savings.
--->
-<!--
-Core Module:In this interface we can get update lot details against the fabric issuing, print the dockets, get the issued details for fabric.
-Description:In this interface we can get update lot details against the fabric issuing, print the dockets, get the issued details for fabric.
-Changes Log:
 
-2014-05-29/dharanid/Ticket 854380 : Add "nagendral" user in $authorized array for recut dashboard access.
-
-2014-05-29/dharanid/Service Request #370686: Add sivaramakrishnat in $authorized array For Docket allocation in CPS Dashboard
--->
 <?php 
 if($dash==1){
  	$php_self = explode('/',$_SERVER['PHP_SELF']);
@@ -45,6 +38,9 @@ else{
 	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 }
 ?>
+
+
+
 <br/>
 <div class='row'>
 		<div class='col-md-2 pull-left'>
@@ -231,16 +227,6 @@ $group_docs=$_GET['group_docs'];
 
 <?php
 
-//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=$username_list[1];
-
-
-// $authorized=array("kirang","rameshk","santhoshbo","bhupalv","vemanas","srinivasaraot","kishorek","rajud","baiadmn","lovakumarig","dharmarajua","eswararaop","bhanul","gowthamis","lovarajub","pavang","rajinig","ramud","revathil","varalakshmik","dharanid","gowthamis","rajinig","revathil","lovarajub","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat");
-//Added for view purpose
-//$authorized=array("kirang");
-//echo $username."<br>"; 
-//echo $authorized[0]."<br>"; 
 if(!(in_array($authorized,$has_permission)))
 {
 	header($_GET['r'],'restrict.php?group_docs=$group_docs','N');
@@ -259,8 +245,11 @@ if(!(in_array($authorized,$has_permission)))
 
 <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
-<script src="../../../../common/js/jquery.min.js"></script>
-<script src="../../../../common/js/bootstrap.min.js"></script>
+<script src="../../../../common/js/jquery1.min.js"></script>
+<script src="../../../../common/js/bootstrap1.min.js"></script>
+
+
+
 
 
 <style>
@@ -319,7 +308,7 @@ th
 <script>
  function button_disable()
 {
-	document.getElementById('process_message').style.visibility="visible";
+	// document.getElementById('process_message').style.visibility="visible";
 	document.getElementById('allocate').style.visibility="hidden";
 }
  
@@ -328,7 +317,7 @@ th
 function dodisable()
 {
 //enableButton();
-document.getElementById('process_message').style.visibility="hidden"; 
+// document.getElementById('process_message').style.visibility="hidden"; 
 //document.ins.allocate.style.visibility="hidden"; 
 
 }
@@ -455,7 +444,7 @@ echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to id
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 
-echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Reference</th>
+echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Marker Update</th><th>Required<br/>Qty</th><th>Reference</th>
 <th>Shrinkage</th><th>Width</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
 //$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
 
@@ -510,6 +499,7 @@ $print_validation=0;
 $print_status=1;
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {	
+	$cat_refnce[$sql_row1["doc_no"]] = $sql_row1["category"];
 	if($style_flag==0)
 	{
 		$docno_lot=$sql_row1['doc_no'];
@@ -565,6 +555,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}
 	$shrinkaage='';
 	$mwidt='A';
+	$marker_id='';
 	$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$docno_lot."\"";
 	$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row007=mysqli_fetch_array($sql_result007))
@@ -572,18 +563,20 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$reference=$row007["reference"];
 		if($row007['mk_ref_id']>0)
 		{	
-			$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+			$sql11x1321="select shrinkage_group,width,marker_length,parent_id from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
 			$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
 			{
 				$shrinkaage=$row111x2112['shrinkage_group'];
 				$mwidt=$row111x2112['width'];
+				$marker_id=$row111x2112['parent_id'];
 			}
 		}
 		else
 		{
 			$shrinkaage='N/A';
 			$mwidt='N/A';
+			$marker_id='';
 		}
 }
 	// echo "</br>Seperated--".$seperate_docket;
@@ -609,11 +602,24 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}else{
 		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption_qty;
 	}
+
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
+	$maker_update="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$sql_row1['doc_no']."'";
+	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($maker_update_result)>0)
+	{
+		echo "<td><center><span class='label label-warning'>Can't Edit</span></center></td>";
+	} else {
+		if($marker_id != ''){
+			echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$sql_row1['doc_no']." onclick=marker_edit(".$sql_row1['doc_no'].") value='Edit'></center></td>";
+		} else {
+			//for old marker values we cant edit.
+			echo "<td><center><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn'".$sql_row1['doc_no']." onclick=no_marker_edit(".$sql_row1['doc_no'].") value='Edit'></center></td>";
+		}
+	}
 	$extra=0;
-
 
 	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
 	echo "<td>".($material_requirement_orig+$extra)."</td>";
@@ -802,8 +808,8 @@ echo "</tr>";
 unset($lotnos_array);
 unset($seperated_lots);	
 }
-echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
-echo "</table>";
+echo "<tr><td colspan=4><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+echo "</table></div>";
 //echo $Disable_allocate_flag;
 if($enable_allocate_button==1)
 {	
@@ -1124,22 +1130,361 @@ if(isset($_POST['allocate']))
 	
 }
 
+
 //ALTER TABLE `bai_rm_pj1`.`fabric_cad_allocation` ADD COLUMN `status` INT NULL COMMENT '1- Check_pending, 2-Check_completed' AFTER `allocated_qty`;
 // ALTER TABLE `bai_rm_pj1`.`store_out` CHANGE COLUMN `updated_by` `updated_by` VARCHAR(20) NOT NULL ;
 // ALTER TABLE `bai_rm_pj1`.`fabric_cad_allocation_deleted` ADD COLUMN `status` INT NULL COMMENT '1- Check_pending, 2-Check_completed' AFTER `allocated_qty`;
+foreach($cat_refnce as $docno => $doc_cat){
+
+
 ?>
+<div class="modal fade" id="rejections_modal<?= $docno ;?>" role="dialog">
+    <div class="modal-dialog" style="width: 90%;  height: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">Change Marker Length
+                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
+			</div>
+			<div class="modal-body">
+                <div class='panel panel-primary'>
+                    <div class='panel-heading'>
+                        Marker Length Details
+                    </div>
+                    <div class='panel-body'>
+					<div class='col-sm-12'>
+						<div class='table-responsive'>
+                            <table class='table table-bordered rejections_table' max-width="80%" id='mark_len_table<?=$docno; ?>'>
+							<thead>
+								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks 1</th><th>Remarks 2</th><th>Remarks 3</th><th>Remarks 4</th><th>Control</th></tr>
+							</thead>
+                                <tbody id='rejections_table_body<?=$docno; ?>'>
+								<?php 
+									
+									$doc_no = $docno;									
+									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
+									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$rows=0;
+									
+									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
+									{
+										$mk_ref_id=$row111x2['mk_ref_id'];
+										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
+										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$values_rows=mysqli_num_rows($sql_marker_details_result);
+										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
+										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
+										{   
+											// var_dump($sql_marker_details_res[id]);
+											// var_dump($mk_ref_id);
+											$rows++;
+											if($sql_marker_details_res[id] == $mk_ref_id)
+											{
+												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
+												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
+												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
+												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td>	
+												<td>Can't Delete</td>
+												</tr>";
+											}
+											else
+											{
+												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
+												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
+												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
+												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
+												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
+												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
+												<td style='display:none;'  id='doc_no'>$doc_no</td>
+												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
+												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
+												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
+												
+												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td></tr>";
+											}												
+										}										
+									}
+									?>
+                                </tbody>
 
-<!-- <script>
-$('#address').on('input', function () {
+                                <tbody id='rejections_table'>
+                                                
+									<tr>
+									<td></td>
+									<?php
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
+									?>
+									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
+									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
+									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks1" id= "rmks1<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks2" id= "rmks2<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks3" id= "rmks3<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
+									<td></td>
+									</tr>  
+								</tbody>
+                            </table>
+							</div>
+								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
+								<?php 
+									echo "<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen(".$doc_no.")' id='add_marker_length'>";
+								?>
+					<br>
+					<?php
+					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
+					?>
+
+                    </div>
+
+                </div>
+				</div>
+                    
+                
+            </div>
+		</div>
+	</div>
+</div>
+<?php
+}
+?>		
+<script>
+// $('#address').on('input', function () {
 	
-    var hasNumber = this.value.match(/\d/);
-    var isAlfa    = this.value.match(/^[0-9/]+$/);
+//     var hasNumber = this.value.match(/\d/);
+//     var isAlfa    = this.value.match(/^[0-9/]+$/);
     
-    if ( hasNumber && isAlfa ) {
-        //$('#valid').removeClass('invalid');
-    } else {
-        //$('#valid').addClass('invalid');
-    }
+//     if ( hasNumber && isAlfa ) {
+//         //$('#valid').removeClass('invalid');
+//     } else {
+//         //$('#valid').addClass('invalid');
+//     }
 
-});
-</script> -->
+// });
+function no_marker_edit(doc_no){
+	swal('Marker Can\'t edit','','warning');
+}
+function marker_edit(doc_no){
+	$("#rejections_modal"+doc_no).modal('toggle');	
+}
+
+function compareArrays(arr1, arr2){
+	arr1 = $.trim(arr1);
+	arr2 = $.trim(arr2);
+	if(arr1.toString() == arr2.toString()){
+		return true;
+	}else{
+		return false;
+	}
+}
+function marker_validation(id_name, cur_element) 
+{
+	if($("#mk_name"+id_name).val() != ''){
+	var array = [];
+	var CurData=[];
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_name"+id_name).val()];
+		var table = $('#mark_len_table'+id_name);
+		var tr_length= table.find('tr').length;
+		for($i=0; $i<tr_length - 1; $i++)
+		{
+			rowData = [array[$i][11]];
+			if(compareArrays(CurData, rowData)){
+				swal('Marker Name Already exists','Please Check.','warning');
+				$("#"+cur_element.id).val('');
+				return true;
+			}
+		}
+	}
+}
+
+function validate_data(id_name, cur_element) 
+{
+	if($("#mk_ver"+id_name).val() != '' && $("#sk_grp"+id_name).val() != '' && $("#width"+id_name).val() != '' && $("#mk_len"+id_name).val()){
+	var array = [];
+	var CurData=[];
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_ver"+id_name).val(), $("#sk_grp"+id_name).val(), $("#width"+id_name).val(), Math.round($("#mk_len"+id_name).val())];
+		var table = $('#mark_len_table'+id_name);
+		var tr_length= table.find('tr').length;
+	
+
+		for($i=0; $i<tr_length - 1; $i++)
+		{
+			rowData = [array[$i][7], array[$i][8], array[$i][9], Math.round(array[$i][10])];
+			// if(compareArrays(CurData, rowData)){
+			// 	swal('Marker Name Must be Unique','','error');
+			// 	$("#"+cur_element.id).val('');
+			// 	return true;
+			// }
+			if(compareArrays(CurData, rowData)){
+				swal('Using Same combinations...','Please Check.','warning');
+				$("#"+cur_element.id).val('');
+				return true;
+			}
+		}
+	}
+	
+}
+function add_Newmklen(doc_no)
+{	
+	var mk_type = $('#mk_type'+doc_no).val();
+	var mk_ver = $('#mk_ver'+doc_no).val();
+	var sk_grp = $('#sk_grp'+doc_no).val();
+	var width = $('#width'+doc_no).val();
+	var mk_len = $('#mk_len'+doc_no).val();
+	var mk_name = $('#mk_name'+doc_no).val();
+	var ptr_name = $('#ptr_name'+doc_no).val();
+	var mk_eff = $('#mk_eff'+doc_no).val();
+	var permts = $('#permts'+doc_no).val();
+	var rmks1 = $('#rmks1'+doc_no).val();
+	var rmks2 = $('#rmks2'+doc_no).val();
+	var rmks3 = $('#rmks3'+doc_no).val();
+	var rmks4 = $('#rmks4'+doc_no).val();
+	var values_rows1 = $('#first_val').val();
+	var all_refs = $('#all_ref'+doc_no).val();
+	var doc_nos = doc_no;
+	var doc_no_new = doc_no;
+	var mk_refs = $('#mk_ref'+doc_no).val();
+	var rows_valu = parseInt($('#rows_val').val())+1;
+	$('.checked_value').text('no');
+
+	if(mk_ver == ''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	
+	if(mk_len <=0)
+	{
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(width <=0){
+		sweetAlert('Please enter valid Marker Width','','warning');
+		return false;
+	}
+	if(mk_len == ''|| mk_len <=0){
+		sweetAlert('Please enter valid Marker Length','','warning');
+		return false;
+	}
+	if(mk_eff == '')
+	{
+		mk_eff = 0;
+	}
+	if(mk_eff>100){
+		sweetAlert('Please enter valid Marker Efficiency','','warning');
+		return false;
+	}
+	if(mk_ver <=0 || mk_ver ==''){
+		sweetAlert('Please enter valid Marker Version','','warning');
+		return false;
+	}
+	var table_body = $("#rejections_table_body"+doc_no);
+	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
+	
+	$("#rejections_table_body"+doc_no).append(new_row);
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks1'+doc_no).val(' ');
+	$('#rmks2'+doc_no).val(' ');
+	$('#rmks3'+doc_no).val(' ');
+	$('#rmks4'+doc_no).val(' ');
+}
+function delete_row(rows_valu,doc_no){
+	
+	$("#rejections_table_body"+doc_no+" tr#unique_d_"+doc_no+"_r_"+rows_valu).remove();
+	var values_rows1 = $("#first_val"+doc_no+"").val();
+	$('.checked_value').text('no');
+	$('#checked'+values_rows1).text('yes');
+	$('#check'+values_rows1).prop('checked', true);
+}
+function clear_row(doc_no)
+{
+	$('#mk_type'+doc_no).val(' ');
+	$('#mk_ver'+doc_no).val(' ');
+	$('#sk_grp'+doc_no).val(' ');
+	$('#width'+doc_no).val(' ');
+	$('#mk_len'+doc_no).val(' ');
+	$('#mk_name'+doc_no).val(' ');
+	$('#ptr_name'+doc_no).val(' ');
+	$('#mk_eff'+doc_no).val(' ');
+	$('#permts'+doc_no).val(' ');
+	$('#rmks1'+doc_no).val(' ');
+	$('#rmks2'+doc_no).val(' ');
+	$('#rmks3'+doc_no).val(' ');
+	$('#rmks4'+doc_no).val(' ');
+}
+function valid_button(row_num)
+{
+	$('.checked_value').text('no');
+	$('#checked'+row_num).text('yes');
+}
+function submit_mklen(doc_no)
+{
+	var tabledata = [];
+	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+		var tabledataItem = [];
+		$('td', $(this)).each(function(index, item) {
+			tabledataItem[index] = $(item).text();
+		});
+		tabledata.push(tabledataItem);
+	});
+	var jsonString = JSON.stringify(tabledata);
+	$.ajax({
+	type : "POST",
+	url : '<?= $get_url1 ?>',
+	data: {data : jsonString,doc_no:doc_no}, 
+	success : function(response){
+		var data = jQuery.parseJSON(response);
+		var p1 = data.status_no;
+		
+		if(p1 == 1)
+		{
+			swal('Success',data.status,'success');
+		}
+		else if(p1 == 2)
+		{
+			swal('Success',data.status_new,'success');
+		}
+		else
+		{
+			swal('error','Something Went Wrong Please try again..!','error');	
+		}	
+		// location.reload();
+		window.setTimeout(function(){location.reload()},2000);
+	}
+	});
+}
+</script>
+
