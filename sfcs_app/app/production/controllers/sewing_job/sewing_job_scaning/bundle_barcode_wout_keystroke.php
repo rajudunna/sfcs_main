@@ -60,7 +60,7 @@ th,td{
 </div>
 <div class="panel panel-primary " id="scanBarcode" ng-app="scanning_interface" ng-cloak>
 
-       <div class="panel-heading" >Bundle/Docket Scanning</div>
+       <div class="panel-heading" >Bundle Scanning Form</div>
 	   <span style="color: red;font-size: 22px;"><b>Note:If you have rejections Please enter rejected quantity before scan the barcode</b></span>
     <div class="panel-body"  ng-controller="scanctrl">
         <div class="row jumbotron " ng-init="shift='<?= $shift ?>'">
