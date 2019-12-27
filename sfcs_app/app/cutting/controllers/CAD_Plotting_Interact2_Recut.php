@@ -246,7 +246,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	$doc_refs[]=$sql_row2["doc_ref"];	
 }
 
-$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status =5 and length(plan_lot_ref)>0 and remarks='Recut' and act_cut_status<>\"DONE\" ";
+$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status in (1,5) and length(plan_lot_ref)>0 and remarks='Recut' and act_cut_status<>\"DONE\" ";
 // echo $sql1;
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error: ".mysqli_error($GLOBALS["___mysqli_ston"]));	
 
