@@ -11,8 +11,11 @@ function getElegiblereportFromACB($sewing_job_number, $bundle = 0) {
 
 function sewingBundleReporting($sewing_job_number = '', $bundle, $qty, $is_reversal = false) {
     $actual_acb_fillable_qty = getActualCutBundles('', $bundle, $is_reversal);
+    // var_dump($actual_acb_fillable_qty);
     $filled_qtys = [];
     $totalelegible_qty = array_sum($actual_acb_fillable_qty);
+    // echo '</br>'.$totalelegible_qty.'-';
+    // echo $qty;
     if ($qty > $totalelegible_qty) {
         return false;
     } else {
@@ -79,9 +82,9 @@ function getEligibleReport($sewing_job , $bundle = 0, $isFirstOperation = false)
     $cut_bundles_result =  mysqli_query($link, $cut_bundles_query) or exit("error 2 - $cut_bundles_query");
     while($row = mysqli_fetch_array($cut_bundles_result)) {
         $size = $row['size'];
-        if($row['remaining_qty'] > 0) {
+        // if($row['remaining_qty'] > 0) {
             $eligible_size_qtys[$size] = $row['remaining_qty'];
-        }
+        // }
     }
     return $eligible_size_qtys;
 }

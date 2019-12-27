@@ -9,11 +9,12 @@
 	if($rej_data!='')
 	{
 		$rejctedqty=array_sum($rej_data);		
-	}else
+	}
+	else
 	{
 		$rejctedqty=0;
 	}
-	
+		
 	function updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode)
 	{
 		$docket_no = explode('-', $barcode)[1];
@@ -38,7 +39,7 @@
 		}
 		
 		//getting style and color
-		$get_style_details="select style,color,size from $bai_pro3.act_cut_bundle where docket=".$docket_no." and id=".$act_cut_bundle_id."";
+		$get_style_details="select style,color,size from $bai_pro3.act_cut_bundle where id=".$act_cut_bundle_id."";
 		$result_selecting_style_color_qry = $link->query($get_style_details);
 		while($row = $result_selecting_style_color_qry->fetch_assoc())
 		{
@@ -115,7 +116,7 @@
 			}
 			$flag='parallel_scanning';
 		}
-		
+		$category=['cutting','Send PF','Receive PF'];
 		$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$ops_code";
 		$result_ops_seq_check = $link->query($ops_seq_check);
 		while($row = $result_ops_seq_check->fetch_assoc())
@@ -124,7 +125,10 @@
 			$seq_id = $row['id'];
 			$ops_order = $row['operation_order'];
 		}
-		$post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' ORDER BY operation_order ASC LIMIT 1";
+			
+		
+		$post_ops_check = "SELECT tsm.operation_order AS operation_order FROM $brandix_bts.tbl_style_ops_master tsm 
+			LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' and tsm.ops_sequence = '$ops_seq' AND CAST(tsm.operation_order AS CHAR) > '$ops_order' and tor.category in ('".implode("','",$category)."') GROUP BY tsm.operation_code ORDER BY tsm.operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
 		{
@@ -145,9 +149,8 @@
 		}
 		
 		if($flag=='parallel_scanning')
-		{
-			$category=['cutting','Send PF','Receive PF'];
-			$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$ops_code'";
+		{			
+			$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
 			$result_checking_qry = $link->query($checking_qry);
 			while($row_cat = $result_checking_qry->fetch_assoc())
 			{
@@ -155,11 +158,11 @@
 			}
 			
 			//updating data in bundle_creation_data
-			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$diffqty."',`rejected_qty`=rejected_qty+'".$rejctedqty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$ops_code;
+			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+".$diffqty.",`rejected_qty`=rejected_qty+".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$ops_code;
 			$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
 			
 			//insert into bundle_creation_data_temp
-			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status) SELECT cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
+			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style, schedule,  color,       size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status) SELECT cut_number,  style,            schedule,  color,  size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
 
 			$result_query_bcd_temp = $link->query($insert_bcd_temp) or exit('error insert into bundle_creation_data_temp');
 			$last_id = $link->insert_id;
@@ -208,17 +211,17 @@
 				$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 			}
 			
-			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$previous_minqty where doc_no = '".$docket_no."' and size_title='". $size."' AND operation_code = $ops_code";
+			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $ops_code";
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 		   
-			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = '".$docket_no."' and size_title='". $size."' AND operation_code = $pre_ops_code";   
+			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
 			$update_cps_log_res = $link->query($update_pre_qty);
 			
 		}
 		else
 		{
 			//updating data in bundle_creation_data
-			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+'".$diffqty."',`rejected_qty`=rejected_qty+'".$rejctedqty."', `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$ops_code;
+			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+".$diffqty.",`rejected_qty`=rejected_qty+".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$ops_code;
 			$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
 			
 			//insert into bundle_creation_data_temp
@@ -228,12 +231,12 @@
 			$last_id = $link->insert_id;
 			
 			//update bundle_creation_data_temp quantity
-			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= '".$diffqty."', `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
+			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where id=$last_id ";
 			$result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
 			
 			if($post_ops_code != null)
 			{
-				$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+'".$diffqty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$docket_no and size_title='$size' and operation_id = ".$post_ops_code;
+				$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+".$diffqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where docket_number =$docket_no and size_title='$size' and operation_id = ".$post_ops_code;
 				$result_query = $link->query($query_post) or exit('query error in updating');
 			}
 			
@@ -265,11 +268,11 @@
 			}
 			
 			//update cps_log
-			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash-$rejctedqty where doc_no = '".$docket_no."' and size_title='". $size."' AND operation_code = $ops_code";
+			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash-$rejctedqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $ops_code";
 			// echo $update_qry_cps_log;
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 			
-			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash where doc_no = '".$docket_no."' and size_title='". $size."' AND operation_code = $pre_ops_code";   
+			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
 			$update_cps_log_res = $link->query($update_pre_qty);
 			
 			
@@ -277,10 +280,6 @@
 		
 		return true;
 	}
-	
-	
-	
-	
 	
 	function scanningdetails($barcode,$rej_data,$rejctedqty)
 	{
@@ -456,7 +455,7 @@
 							}
 							
 							$category=['cutting','Send PF','Receive PF'];
-							$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$ops_code'";
+							$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
 							$result_checking_qry = $link->query($checking_qry);
 							while($row_cat = $result_checking_qry->fetch_assoc())
 							{
@@ -471,7 +470,7 @@
 									$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
 								}
 								
-								$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$previous_minqty where id='".$act_cut_bundle_id."'";
+								$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$previous_minqty where id=".$act_cut_bundle_id."";
 								$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
 							}
 							
@@ -806,6 +805,6 @@
 			die();
 		}
 	}
-	scanningdetails($barcode,$rej_data,$rejctedqty);
-		
+	
+	scanningdetails($barcode,$rej_data,$rejctedqty);	
 ?>	

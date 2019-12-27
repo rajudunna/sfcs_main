@@ -70,7 +70,6 @@ $barcode_sequence = $new_data['barcode_sequence'];
 $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
 
-
 if($barcode_generation == 1)
 {
 	$concurrent_flag = 0;
@@ -469,32 +468,38 @@ if($barcode_generation == 1)
 				$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty,color,size_title,size_id,original_qty,cut_number,docket_number,input_job_no,barcode_sequence FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id and docket_number = $doc_value and assigned_module='$module_cum' order by barcode_sequence";
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$remaining_qty_rec = 0;
-				if($emb_cut_check_flag != 0)
-				{
-					if(sizeof($parellel_ops)>0){
-						$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
-						WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
-					}else{
-						//$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-						$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $b_tid[$key]);
-					}
-					$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-					// if($result_retreving_remaining_qty_qry->num_rows > 0)
-					// {
-						while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
-						{
-							$remaining_qty_doc = $row_remaining['balance_to_report'];
-						}
-						//echo $remaining_qty_doc.'-'.$cumulative_qty.'</br>';
-						if($remaining_qty_doc <= $cumulative_qty)
-						{
-							$to_add_doc_val = $cumulative_qty - $remaining_qty_doc;
-							$cumulative_qty = $remaining_qty_doc;
-							//echo $doc_value.'down'.$to_add_doc_val.'</br>';
-						}
+				// echo $sizeof($parellel_ops);
+				// if($emb_cut_check_flag != 0)
+				// {
+				// 	// if(sizeof($parellel_ops)>0){
+				// 	// 	$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+				// 	// 	WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+				// 	// 	while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
+				// 	// 	{
+				// 	// 		$remaining_qty_doc = $row_remaining['balance_to_report'];
+				// 	// 	}
+				// 	// }else{
+				// 		echo 'coming';
+				// 		//$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+				// 		// $retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $b_tid[$key]);
+				// 		$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $b_tid[$key]);
+				// 		echo $b_tid[$key].'-';
+				// 		var_dump($retreving_remaining_qty_qry).'</br>';
+				// 		$remaining_qty_doc = $retreving_remaining_qty_qry[$b_sizes[$key]];
+				// 	// }
+				// 	//$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
+				// 	// if($result_retreving_remaining_qty_qry->num_rows > 0)
+				// 	// {
+				// 		//echo $remaining_qty_doc.'-'.$cumulative_qty.'</br>';
+				// 		if($remaining_qty_doc <= $cumulative_qty)
+				// 		{
+				// 			$to_add_doc_val = $cumulative_qty - $remaining_qty_doc;
+				// 			$cumulative_qty = $remaining_qty_doc;
+				// 			//echo $doc_value.'down'.$to_add_doc_val.'</br>';
+				// 		}
 
-				//	}
-				}
+				// //	}
+				// }
 				while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 				{
 					$qms[$nop_qry_row['bundle_number']]['order_col_des'] = $nop_qry_row['color'];
@@ -519,9 +524,28 @@ if($barcode_generation == 1)
 					$b_module1[] = $module_cum;
 					$bundle_individual_number = $nop_qry_row['bundle_number'];
 					//echo $doc_value.'-'.$bundle_individual_number.'-'.$cumulative_qty.'</br>';
+					// if ($emb_cut_check_flag != 0) {
+					// 	$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $bundle_individual_number);
+					// 	echo $bundle_individual_number.'-';
+					// 	var_dump($retreving_remaining_qty_qry[$b_sizes[$key]]).'</br>';
+					// 	$remaining_qty_doc = $retreving_remaining_qty_qry[$b_sizes[$key]];
+					// 	if($remaining_qty_doc <= $cumulative_qty)
+					// 	{
+					// 		$to_add_doc_val = $cumulative_qty - $remaining_qty_doc;
+					// 		$cumulative_qty = $remaining_qty_doc;
+					// 		//echo $doc_value.'down'.$to_add_doc_val.'</br>';
+					// 	}
+					// }
 					if($cumulative_qty > 0)
 					{
-						$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+$nop_qry_row['rejected_qty']);
+						if($emb_cut_check_flag != 0) {
+							$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $bundle_individual_number);
+							$bundle_pending_qty = $retreving_remaining_qty_qry[$b_sizes[$key]];
+							// echo $bundle_individual_number.'-'.$bundle_pending_qty.'</br>';
+
+						} else {
+							$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+$nop_qry_row['rejected_qty']);
+						}
 						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
@@ -604,38 +628,48 @@ if($barcode_generation == 1)
 					$query_to_fetch_individual_bundles = "select bundle_number,(send_qty+recut_in+replace_in)as send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where color = '$b_colors[$key]' and size_title = '$b_sizes[$key]' and input_job_no_random_ref = '$b_job_no' AND operation_id = $b_op_id AND docket_number = $doc_value AND assigned_module = '$module_cum' order by barcode_sequence DESC";
 					// echo $query_to_fetch_individual_bundles.'-';
 					$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if($emb_cut_check_flag != 0)
-					{
-						if(sizeof($parellel_ops)>0){
-							$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
-							WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
-						}else{
-							$retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
-						}
+					// echo $emb_cut_check_flag.'#</br>';
+					// if($emb_cut_check_flag != 0)
+					// {
+						// if(sizeof($parellel_ops)>0){
+						// 	$retreving_remaining_qty_qry =  "SELECT MIN(recevied_qty) AS balance_to_report FROM brandix_bts.bundle_creation_data  
+						// 	WHERE docket_number IN ($doc_value) AND size_title='$b_sizes[$key]' AND operation_id IN (".implode(',',$parellel_ops).")";
+						// 	if($result_retreving_remaining_qty_qry->num_rows > 0)
+						// 	{
+						// 		while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
+						// 		{
+						// 			$remaining_qty_doc = $row_remaining['balance_to_report'];
+						// 		}
+						// 	}
+						// }else{
+							// $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report FROM $bai_pro3.cps_log WHERE doc_no in ($doc_value) AND size_title='$b_sizes[$key]' AND operation_code = $emb_cut_check_flag";
+							
+						// }
 						
-						$result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-						if($result_retreving_remaining_qty_qry->num_rows > 0)
-						{
-							while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
-							{
-								$remaining_qty_doc = $row_remaining['balance_to_report'];
-							}
-							if($remaining_qty_doc <= $cumulative_rej_qty)
-							{
-								$to_add_doc_val = $cumulative_rej_qty - $remaining_qty_doc;
-								$cumulative_rej_qty = $remaining_qty_doc;
-								$remaining_qty_rej = $remaining_qty_doc;
-								//echo $cumulative_qty.'-'.$remaining_qty_doc.'</br>' ;
-							}
+						// $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
+						// if($remaining_qty_doc <= $cumulative_rej_qty)
+						// {
+						// 	$to_add_doc_val = $cumulative_rej_qty - $remaining_qty_doc;
+						// 	$cumulative_rej_qty = $remaining_qty_doc;
+						// 	$remaining_qty_rej = $remaining_qty_doc;
+						// 	//echo $cumulative_qty.'-'.$remaining_qty_doc.'</br>' ;
+						// }
 
-						}
-					}
+						// }
+					// }
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{
 						$bundle_individual_number = $nop_qry_row['bundle_number'];
 						if($cumulative_rej_qty > 0)
 						{
-							$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
+							if($emb_cut_check_flag != 0) {
+								$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $bundle_individual_number);
+								$bundle_pending_qty_rej = $retreving_remaining_qty_qry[$b_sizes[$key]] - $rec_qtys_array[$bundle_individual_number];
+								// echo $bundle_individual_number.'-'.$bundle_pending_qty_rej.'</br>';
+
+							} else {
+								$bundle_pending_qty_rej =  $nop_qry_row['send_qty'] - ( $nop_qry_row['recevied_qty']+$rec_qtys_array[$bundle_individual_number]+$nop_qry_row['rejected_qty']);
+							}
 							if($bundle_pending_qty_rej != 0)
 							{
 								if($bundle_pending_qty_rej <= $remaining_qty_rej)

@@ -526,8 +526,7 @@ function getjobdetails($job_number)
                        
                         
                     }
-                                              
-                    $result_array['emb_cut_check_flag'] = $pre_ops_code;
+                                            
                     if(in_array($category_act,$emb_category))
                         $result_array['is_emb_flag'] = 1;
                     else    
@@ -537,6 +536,7 @@ function getjobdetails($job_number)
                 {
                     $act_bal_to_report = 0;
                 } */
+                $result_array['emb_cut_check_flag'] = $pre_ops_code;
                 $row['balance_to_report'] = min($act_bal_to_report,$row['balance_to_report']);
             }
             $result_array['table_data'][] = $row;
