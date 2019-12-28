@@ -197,6 +197,15 @@ if(isset($_POST['reject']))
     //deleting from cps
     $delete_qry = "delete from $bai_pro3.pac_stat_log_input_job where doc_no = $doc_no";
     mysqli_query($link, $delete_qry) or exit("deleting Excess sewing jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    //delete plan cut bundles
+    $delete_trns_qry = "delete from $bai_pro3.plan_cut_bundle_trn where plan_cut_bundle_id IN (SELECT id FROM $bai_pro3.plan_cut_bundle WHERE doc_no = $doc_no)";
+    mysqli_query($link, $delete_trns_qry) or exit("deleting Plan cut bundle trns".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+    $delete_plan_cutqry = "delete FROM $bai_pro3.plan_cut_bundle WHERE doc_no = $doc_no";
+    mysqli_query($link, $delete_plan_cutqry) or exit("deleting Plan cut bundle".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
     $url = '?r='.$_GET['r'];
     echo "<script>sweetAlert('Docket Successfully Rejected','','error');window.location = '".$url."'</script>";
 

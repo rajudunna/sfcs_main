@@ -2,11 +2,14 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
+
 include 'sewing_barcode_generation.php';
 ?>
 <?php
 if(isset($_POST['formSubmit']))
 {
+
     $cat=$_POST['cat'];
     $mklen=$_POST['mklen'];
     $plies=$_POST['plies'];
@@ -77,6 +80,8 @@ if(isset($_POST['formSubmit']))
     $sql="insert into $bai_pro3.recut_track(doc_no,username,sys_name,log_time,level,status) values(\"".$doc_nos."\",\"".$username."\",\"".$hostname[0]."\",\"".date("Y-m-d H:i:s")."\",\"".$codes."\",\"".$status."\")";
     mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $url = '?r='.$_GET['r'];
+    //update plan cut bundle
+        $plan_cut = plan_cut_bundle($doc_nos);
     echo "<script>sweetAlert('Successfully Markers updated','','success');window.location = '".$url."'</script>";
 }
 if(isset($_POST['formIssue']))

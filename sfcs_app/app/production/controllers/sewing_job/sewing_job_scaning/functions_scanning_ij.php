@@ -304,6 +304,11 @@ function getjobdetails($job_number)
     {
         if ($emb_cut_check_flag == 1 && $bg == 1) {
             $eligible_to_report_size_wise = getElegiblereportFromACB($actual_input_job_number);
+            if(sizeof($eligible_to_report_size_wise)==0){
+                $result_array['status'] = 'Previous Operation is not done';
+                echo json_encode($result_array);
+                die();
+            }
         }
         $result_style_data = $link->query($schedule_query);
         $parellel_ops=array();
