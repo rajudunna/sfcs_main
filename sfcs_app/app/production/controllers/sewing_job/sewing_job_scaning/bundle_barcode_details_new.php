@@ -168,7 +168,7 @@
 			$last_id = $link->insert_id;
 			
 			//update bundle_creation_data_temp quantity
-			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= '".$diffqty."', `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
+			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",,rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
 			$result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
 			
 			if($post_ops_code != null)
@@ -231,7 +231,7 @@
 			$last_id = $link->insert_id;
 			
 			//update bundle_creation_data_temp quantity
-			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where id=$last_id ";
+			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where id=$last_id ";
 			$result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
 			
 			if($post_ops_code != null)
