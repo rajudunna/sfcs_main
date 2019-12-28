@@ -162,14 +162,14 @@
 			$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
 			
 			//insert into bundle_creation_data_temp
-			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style, schedule,  color,       size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status) SELECT cut_number,  style,            schedule,  color,  size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
+			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  missing_qty,    left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status,recevied_qty,rejected_qty,scanned_date) SELECT cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,    missing_qty,    left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,     shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status ,$diffqty,$rejctedqty,'".date('Y-m-d H:i:s')."' FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
 
 			$result_query_bcd_temp = $link->query($insert_bcd_temp) or exit('error insert into bundle_creation_data_temp');
-			$last_id = $link->insert_id;
+			// $last_id = $link->insert_id;
 			
 			//update bundle_creation_data_temp quantity
-			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",,rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
-			$result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
+			// $query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",,rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
+			// $result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
 			
 			if($post_ops_code != null)
 			{
@@ -222,17 +222,17 @@
 		{
 			//updating data in bundle_creation_data
 			$query = "UPDATE $brandix_bts.bundle_creation_data SET `recevied_qty`= recevied_qty+".$diffqty.",`rejected_qty`=rejected_qty+".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where bundle_number =$bundle_no and operation_id = ".$ops_code;
-			$result_query = $link->query($query) or exit('query error in updating bundle_creation_data');
+			$result_query = $link->query($query) or exit("".$query."---query error in updating bundle_creation_data");
 			
 			//insert into bundle_creation_data_temp
-			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status) SELECT cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  recevied_qty,  missing_qty,  rejected_qty,  left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    scanned_date,         shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
+			$insert_bcd_temp="INSERT INTO $brandix_bts.bundle_creation_data_temp (cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,  missing_qty,    left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,    shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status,recevied_qty,rejected_qty,scanned_date) SELECT cut_number,  style,            schedule,  color,                           size_id,  size_title,  sfcs_smv,  bundle_number,  original_qty,  send_qty,    missing_qty,    left_over,  operation_id,  operation_sequence,  ops_dependency,  docket_number,  bundle_status,  split_status,  sewing_order_status,  is_sewing_order,  sewing_order,  assigned_module,  remarks,     shift,    scanned_user,     sync_status,  shade,   input_job_no,  input_job_no_random_ref,  bundle_qty_status ,$diffqty,$rejctedqty,'".date('Y-m-d H:i:s')."' FROM $brandix_bts.bundle_creation_data where bundle_number =$bundle_no and operation_id = ".$ops_code;
 
 			$result_query_bcd_temp = $link->query($insert_bcd_temp) or exit('error insert into bundle_creation_data_temp');
-			$last_id = $link->insert_id;
+			// $last_id = $link->insert_id;
 			
 			//update bundle_creation_data_temp quantity
-			$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where id=$last_id ";
-			$result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
+			//$query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d H:i:s')."' where id=$last_id ";
+			//$result_query_update = $link->query($query_update) or exit("".$query_update."---query error in updating bundle_creation_data_temp");
 			
 			if($post_ops_code != null)
 			{
