@@ -127,7 +127,7 @@
 		}
 			
 		
-		$post_ops_check = "SELECT tsm.operation_order AS operation_order FROM $brandix_bts.tbl_style_ops_master tsm 
+		$post_ops_check = "SELECT tsm.operation_code AS operation_code, FROM $brandix_bts.tbl_style_ops_master tsm 
 			LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' and tsm.ops_sequence = '$ops_seq' AND CAST(tsm.operation_order AS CHAR) > '$ops_order' and tor.category in ('".implode("','",$category)."') GROUP BY tsm.operation_code ORDER BY tsm.operation_order ASC LIMIT 1";
 		$result_post_ops_check = $link->query($post_ops_check);
 		if($result_post_ops_check->num_rows > 0)
