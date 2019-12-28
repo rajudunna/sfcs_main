@@ -295,11 +295,11 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
-		//checking for emblishment Planning done or not
-		$check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
-		$check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if($check_qry_result->num_rows > 0)
-		{	
+		// checking for emblishment Planning done or not
+		// $check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
+		// $check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// if($check_qry_result->num_rows > 0)
+		// {	
 			//getting operation code
 			$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
 			$rslt_get_cur_ops = $link->query($get_curr_ops_code);
@@ -587,13 +587,15 @@
 												}
 												updateM3TransactionsRejections($b_tid,$ops_code,$r_qty,$m3_reason_code);
 												updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
-												updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
+												
 												
 											}
 									}
+									updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
 									
 							}
-							else{
+							else
+							{
 								updateM3Transactions($b_tid[0],$ops_code,$rep_m3_qty);
 								updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
 							}
@@ -761,10 +763,11 @@
 												}
 												updateM3TransactionsRejections($b_tid,$ops_code,$r_qty,$m3_reason_code);
 												updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
-												updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
+												
 												
 											}
 									}
+									updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
 									
 							}
 							else{
@@ -797,13 +800,13 @@
 				echo json_encode($result_array);
 				die();
 			}
-		}
-		else
-		{
-			$result_array['status'] = 'Please Plan Embellishment For This Dockets';
-			echo json_encode($result_array);
-			die();
-		}
+		// }
+		// else
+		// {
+			// $result_array['status'] = 'Please Plan Embellishment For This Dockets';
+			// echo json_encode($result_array);
+			// die();
+		// }
 	}
 	
 	scanningdetails($barcode,$rej_data,$rejctedqty);	
