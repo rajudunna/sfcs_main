@@ -586,11 +586,12 @@
 													$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 												}
 												updateM3TransactionsRejections($b_tid,$ops_code,$r_qty,$m3_reason_code);
-												updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
+												
 												
 												
 											}
 									}
+									updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
 									updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
 									
 							}
@@ -762,11 +763,10 @@
 													$insert_into_rejections_reason_track_res =$link->query($insert_into_rejections_reason_track);
 												}
 												updateM3TransactionsRejections($b_tid,$ops_code,$r_qty,$m3_reason_code);
-												updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
-												
 												
 											}
 									}
+									updateM3Transactions($b_tid,$ops_code,$rep_m3_qty);
 									updatechildtrans($bundle_no,$ops_code,$report_qty,$rejctedqty,$size,$barcode);
 									
 							}
