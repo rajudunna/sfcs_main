@@ -171,7 +171,7 @@
 			// $query_update = "UPDATE $brandix_bts.bundle_creation_data_temp SET `recevied_qty`= ".$diffqty.",,rejected_qty=".$rejctedqty.", `scanned_date`='". date('Y-m-d')."' where id=$last_id ";
 			// $result_query_update = $link->query($query_update) or exit('query error in updating bundle_creation_data');
 			
-			if($post_ops_code != null)
+			if($post_ops_code != null && $category_act=='Send PF')
 			{
 				$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+".$diffqty.", `scanned_date`='". date('Y-m-d')."' where docket_number =$docket_no and size_title='$size' and operation_id = ".$post_ops_code;
 				$result_query = $link->query($query_post) or exit('query error in updating');
