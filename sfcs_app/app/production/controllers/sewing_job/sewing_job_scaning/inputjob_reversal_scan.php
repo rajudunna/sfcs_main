@@ -2,7 +2,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
-
+	include(getFullURLLevel($_GET['r'],'/common/config/sewing_qty_retreaving_and_reporting.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 	if (in_array($override_sewing_limitation,$has_permission))
 	{
@@ -978,10 +978,26 @@
 					$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
 					mysqli_query($link, $insert_qry_ips) or exit(message_sql($b_shift));
 				}
+				$updating = updateM3TransactionsReversal($bundle_no[$key],$reversalval[$key],$operation_id);
+				$to_update_acb = sewingBundleReporting('', $bundle_no[$key], $reversalval[$key], true);
+				foreach($to_update_acb as $acb => $qty) {
+					updateActualCutBundle($acb, -$qty);
+					insertActualBundleLogTranGood($bundle_no[$key], $acb, -$qty, $username);
+				}
+			}
+			
+			// Check for sewing job existance in plan_dashboard_input
+			$checking_qry_plan_dashboard = "SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref = '$input_job_no_random'";
+			$result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
+			if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
+			{
+				// insert into plan_dashboard_input if sewing job not exists
+				$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
+				mysqli_query($link, $insert_qry_ips) or exit(message_sql($b_shift));
+			}
 
 				$url = '?r='.$_GET['r']."&shift=$b_shift";
 				echo "<script>window.location = '".$url."'</script>";
-			}
 			mysqli_commit($link);
 		} else {
 			echo "<script>swal('UnAuthorized','You are not allowed to reverse.','warning');</script>";

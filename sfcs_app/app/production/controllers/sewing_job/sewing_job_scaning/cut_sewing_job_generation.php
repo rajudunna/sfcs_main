@@ -47,6 +47,7 @@ function assign_to_gets($ars,$data_samps){
 if(isset($_POST) && isset($_POST['main_data'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
     //$datt = $_POST['date_y']."-".$_POST['date_m']."-".$_POST['date_d'];
     //echo $datt;die();
     $main_data = $_POST['main_data'];
@@ -54,6 +55,8 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $style  = $_POST['style'];
     $docnos = $_POST['docnos'];
     $colorname=$_POST['color'];
+    $plan_jobcount=$_POST['plan_jobcount'];
+    $plan_bundleqty=$_POST['plan_bundleqty'];
     $count = 0;
 
     $ins_qry2 = "INSERT INTO `bai_pro3`.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
@@ -65,27 +68,25 @@ if(isset($_POST) && isset($_POST['main_data'])){
     $old_jobs_cnt_res = mysqli_query($link, $old_jobs_cnt_qry) or exit("Sql Error : old_jobs_cnt_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $oldqty_jobcount = mysqli_num_rows($old_jobs_cnt_res);    
     
-    // print_r($oldqty_jobcount)."<br/>";
-    // if($oldqty_jobcount['old_jobs'] > 0)
-    //     $oldqty_jobcount['old_jobs'] += 1;
 
-            if($oldqty_jobcount == 0)
+
+    if($oldqty_jobcount == 0)
+    {
+        $job1 = 0; 
+    } 
+    else
+    {
+            $old_jobs_count_qry = "SELECT max(input_job_no*1) as max_job FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
+            //echo $old_jobs_count_qry;
+            $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
             {
-                $job1 = 0; 
+            $max_job_count=$max_oldqty_jobcount['max_job'];
             } 
-            else
-            {
-                 $old_jobs_count_qry = "SELECT max(input_job_no*1) as max_job FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
-                 //echo $old_jobs_count_qry;
-                 $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-                 while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
-                 {
-                    $max_job_count=$max_oldqty_jobcount['max_job'];
-                 } 
 
-                 $job1 = $max_job_count;
-            }     
-
+            $job1 = $max_job_count;
+    }     
+           
     foreach($_POST['main_data'] as $iv){
         //$reason = explode('(',$iv['reasons'])[0];
         $cut = $iv['cut'];
@@ -93,6 +94,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $dono = $iv['dono'];
         $ration = $iv['ratio'];
         $details = $iv['sizedetails'];
+        $details_new = $iv['result'];
         $doc_type = 'N';
         $packing_mode = 1;
         $status = '';
@@ -101,110 +103,122 @@ if(isset($_POST) && isset($_POST['main_data'])){
         $barcode_seq=1;
         $doc_no_ref = '';
         $temp_job=1;
-		$docs[]=$iv['dono'];
-
+        $docs[]=$iv['dono'];
         
+        // foreach ($details_new as $dets_key => $dets_obj ) {
+        //     $bundles_data['job_qty_sum'] = array_sum(array_column($dets_obj, 'job_qty'));
+        //     $bundles_data['`job_qty_max`'] = max(array_column($dets_obj, 'job_qty'));
+        // }
         
-        foreach ($details as $term ) {
-            // echo 'JOB COUNT '.$term['job_id'].'<br/>';
-            // continue;  
+        $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$dono";
+        $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($plan_cut_bundle_res)>0)
+        {
+            $plan_logical_bundles = plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,$schedule,$cut);
 
-                            $job = $job1+$term['job_id'];
+            
+            
+        }else{
+            foreach ($details as $term ) {
+                // echo 'JOB COUNT '.$term['job_id'].'<br/>';
+                // continue;  
+
+                                $job = $job1+$term['job_id'];
 
 
-            if(($job<>$temp_job) || $barcode_seq==1)
-            {
-                $i=1;
-                $barcode_seq=0;
+                if(($job<>$temp_job) || $barcode_seq==1)
+                {
+                    $i=1;
+                    $barcode_seq=0;
+                }
+                $rand=$schedule.date("ymd").$job;
+                $carton_act_qty = $term['job_qty'];
+                $size_code = $term['job_size'];
+                $old_size = $term['job_size_key'];
+                $type_of_sewing  = $term['type_of_sewing'];
+                if($type_of_sewing==2)
+                {
+                    $job='E1';
+                }
+                elseif($type_of_sewing==3)
+                {
+                    $job='S1';
+                }
+                //echo $job."<br/>";
+                $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
+                (
+                    doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence,sref_id
+                )
+                VALUES
+                ( 
+                    '".$dono."', 
+                    '".$size_code."', 
+                    '".$carton_act_qty."', 
+                    '".$job."', 
+                    '".$rand."',
+                    '".$destination."',
+                    '".$packing_mode."',
+                    '".$old_size."',
+                    '".$doc_type."',
+                    '".$type_of_sewing."',
+                    '-1',
+                    $i,
+                    $inserted_id
+                );
+                ";
+                $temp_job=$job;
+                $i++;
+                $result_time = mysqli_query($link, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $count++;
             }
-            $rand=$schedule.date("ymd").$job;
-            $carton_act_qty = $term['job_qty'];
-            $size_code = $term['job_size'];
-            $old_size = $term['job_size_key'];
-            $type_of_sewing  = $term['type_of_sewing'];
-			if($type_of_sewing==2)
-			{
-				$job='E1';
-			}
-			elseif($type_of_sewing==3)
-			{
-				$job='S1';
-			}
-            //echo $job."<br/>";
-            $ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 
-            (
-                doc_no, size_code, carton_act_qty,input_job_no, input_job_no_random,destination,packing_mode,old_size,doc_type,type_of_sewing,pac_seq_no,barcode_sequence,sref_id
-            )
-            VALUES
-            ( 
-                '".$dono."', 
-                '".$size_code."', 
-                '".$carton_act_qty."', 
-                '".$job."', 
-                '".$rand."',
-                '".$destination."',
-                '".$packing_mode."',
-                '".$old_size."',
-                '".$doc_type."',
-                '".$type_of_sewing."',
-                '-1',
-                $i,
-                $inserted_id
-            );
-            ";
-            $temp_job=$job;
-            $i++;
-            $result_time = mysqli_query($link, $ins_qry) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $count++;
+            $old_jobs_count_qry1 = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
+            $old_jobs_count_res1 = mysqli_query($link, $old_jobs_count_qry1) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($max_oldqty_jobcount1 = mysqli_fetch_array($old_jobs_count_res1))
+            {
+                $max_job_count1=$max_oldqty_jobcount1['result'];
+            }
+            $j=1;
+            $sql_query = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
+            $result_1 = mysqli_query($link, $sql_query) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($result_1)>0)
+            {
+                while($row1 = mysqli_fetch_array($result_1))
+                {
+                    if($row1['tid']>0)
+                    {
+                        $updatesql = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$j."' where tid='".$row1['tid']."'";
+                        mysqli_query($link,$updatesql) or exit("Problem while inserting to sewing jos ref");
+                        $j++;
+                    }
+                }
+            }
+            $jj=1;
+            $sql_query1 = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
+            $result_11 = mysqli_query($link, $sql_query1) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($result_11)>0)
+            {
+                while($row11 = mysqli_fetch_array($result_11))
+                {
+                    if($row11['tid']>0)
+                    {
+                        $updatesql1 = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$jj."' where tid='".$row11['tid']."'";
+                        mysqli_query($link,$updatesql1) or exit("Problem while inserting to sewing jos ref");
+                        $j++;
+                    }
+                }
+            }
+            $rand1=$schedule.date("ymd").$max_job_count1;	
+            $update_query_e = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand1."' where input_job_no='E1' and doc_no in ('".implode(",",$docs)."') ";
+            mysqli_query($link,$update_query_e) or exit("Problem while inserting to sewing jos ref");
+            $max_job_count1++;
+            $rand2=$schedule.date("ymd").$max_job_count1;
+            $update_query_s = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand2."' where input_job_no='S1' and doc_no in ('".implode(",",$docs)."') ";
+            mysqli_query($link,$update_query_s) or exit("Problem while inserting to sewing jos ref");
+            
+            //echo $count;
+            $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
+            $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
         }
-		$old_jobs_count_qry1 = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
-		$old_jobs_count_res1 = mysqli_query($link, $old_jobs_count_qry1) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($max_oldqty_jobcount1 = mysqli_fetch_array($old_jobs_count_res1))
-		{
-			$max_job_count1=$max_oldqty_jobcount1['result'];
-		}
-		$j=1;
-		$sql_query = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
-		$result_1 = mysqli_query($link, $sql_query) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($result_1)>0)
-		{
-			while($row1 = mysqli_fetch_array($result_1))
-			{
-				if($row1['tid']>0)
-				{
-					$updatesql = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$j."' where tid='".$row1['tid']."'";
-					mysqli_query($link,$updatesql) or exit("Problem while inserting to sewing jos ref");
-					$j++;
-				}
-			}
-		}
-		$jj=1;
-		$sql_query1 = "SELECT tid FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no='E1' and doc_no in ('".implode(",",$docs)."')";
-		$result_11 = mysqli_query($link, $sql_query1) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($result_11)>0)
-		{
-			while($row11 = mysqli_fetch_array($result_11))
-			{
-				if($row11['tid']>0)
-				{
-					$updatesql1 = "UPDATE $bai_pro3.`pac_stat_log_input_job` set barcode_sequence = '".$jj."' where tid='".$row11['tid']."'";
-					mysqli_query($link,$updatesql1) or exit("Problem while inserting to sewing jos ref");
-					$j++;
-				}
-			}
-		}
-		$rand1=$schedule.date("ymd").$max_job_count1;	
-		$update_query_e = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand1."' where input_job_no='E1' and doc_no in ('".implode(",",$docs)."') ";
-        mysqli_query($link,$update_query_e) or exit("Problem while inserting to sewing jos ref");
-		$max_job_count1++;
-		$rand2=$schedule.date("ymd").$max_job_count1;
-		$update_query_s = "UPDATE $bai_pro3.`pac_stat_log_input_job` set input_job_no = '".$max_job_count1."',input_job_no_random='".$rand2."' where input_job_no='S1' and doc_no in ('".implode(",",$docs)."') ";
-        mysqli_query($link,$update_query_s) or exit("Problem while inserting to sewing jos ref");
-		
-        //echo $count;
-        $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
-        $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jos ref");
-
         
     }
     insertMOQuantitiesSewing($schedule,$inserted_id);
@@ -284,6 +298,9 @@ if(isset($_POST) && isset($_POST['main_data'])){
 
             $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
             $delete_result = mysqli_query($link,$delete_query);
+
+			$delete_query2 = "DELETE from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and operation_id in (".$ips_op_code.")";
+            $delete_result = mysqli_query($link,$delete_query2);
         // MO Deletion end
         echo 'success';
     }
@@ -838,6 +855,13 @@ app.controller('cutjobcontroller', function($scope, $http) {
             var bun_jobs = $scope.genbundle($scope.jobs);
             var arrange_jobs = $scope.arrange_jobs(bun_jobs);
             dummy['sizedetails'] = arrange_jobs;
+
+            var result = groupBy(dummy['sizedetails'], function(item)
+            {
+                return [item.job_size_key,item.job_id,item.type_of_sewing];
+            });
+            console.log(result);
+            dummy['result'] = result;
             $scope.fulljob[ss] = dummy;
 
             }
@@ -851,6 +875,24 @@ app.controller('cutjobcontroller', function($scope, $http) {
             swal('Bundle Quantity should be less then Sewing Job quantity.');
         }
     }
+
+    function groupBy( array , f )
+        {
+            var groups = {};
+            array.forEach( function( o )
+            {
+                var group = JSON.stringify( f(o) );
+                // console.log(group);
+                groups[group] = groups[group] || [];
+                groups[group].push( o );  
+                // console.log(groups[group]);
+            });
+            return Object.keys(groups).map( function( group )
+            {
+                // console.log(groups);
+                return groups[group]; 
+            })
+        }
 
     $scope.arrange_jobs = function(bun_jobs){
         console.log(bun_jobs);
@@ -962,8 +1004,9 @@ app.controller('cutjobcontroller', function($scope, $http) {
             
         // }
         //console.log(rv);
+        console.log($scope.jobcount+'$scope.jobcount');
         var params = $.param({
-        'main_data' : $scope.fulljob, 'style' : style, 'schedule' : schedule, 'color' : color,'docnos' : docnos
+        'main_data' : $scope.fulljob, 'style' : style, 'schedule' : schedule, 'color' : color,'docnos' : docnos,'plan_jobcount': $scope.jobcount,'plan_bundleqty': $scope.bundleqty,
         });
         console.log($scope.fulljob)
             $scope.saveinit = false;
@@ -976,8 +1019,8 @@ app.controller('cutjobcontroller', function($scope, $http) {
                 data: params
             })
             .then(function successCallback(response) {
-                console.log(response.data);
-                if(response.data.message=='success'){
+                // console.log(response);
+                if(response.status==200){
                     swal('Cut Sewing jobs generated successfully');
                     location.reload();
                 }else{

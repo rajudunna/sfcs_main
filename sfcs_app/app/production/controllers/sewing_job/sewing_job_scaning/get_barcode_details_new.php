@@ -49,7 +49,7 @@
     
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
-    WHERE barcode_number = $barcode_number";
+    WHERE bundle_number = $barcode_number";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
 	{
@@ -506,17 +506,19 @@
                         
                             $doc_no = $row['doc_no'];
                             $size = $row['old_size'];
-
-                            $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                           // echo $retreving_remaining_qty_qry;
-                            $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
-                            if($result_retreving_remaining_qty_qry->num_rows > 0)
-                            {
-                                while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
-                                {
-                                    $sum_balance = $row_remaining['balance_to_report'];
-                                }
-                            }
+                        //     $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
+                        //    // echo $retreving_remaining_qty_qry;
+                        //     $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
+                        //     if($result_retreving_remaining_qty_qry->num_rows > 0)
+                        //     {
+                        //         while($row_remaining = $result_retreving_remaining_qty_qry->fetch_assoc()) 
+                        //         {
+                        //             $sum_balance = $row_remaining['balance_to_report'];
+                        //         }
+                        //     }
+                            $sum_balance_retrieve = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
+                            $sum_balance = $sum_balance_retrieve[$row['size_code']];
+                            
                             if($sum_balance < $row['balance_to_report'])
                             {
                                 $result_array['status'] = 'Previous operation not yet done for this jobs.';
@@ -1568,6 +1570,13 @@
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+                if ($b_rep_qty[$i] > 0) {
+                    $to_update_acb = sewingBundleReporting('', $b_tid[$i], $b_rep_qty[$i]);
+                    foreach($to_update_acb as $acb => $qty) {
+                        updateActualCutBundle($acb, $qty);
+                        insertActualBundleLogTranGood($b_tid[$i], $acb, $qty, $username);
+                    }
+                }
             }
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
