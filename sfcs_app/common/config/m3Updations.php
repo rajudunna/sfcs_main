@@ -351,7 +351,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
         }
 
         if($def_op=='yes'|| $def_op=='Yes')
-         {
+		{
             $main_ops_code = $main_operationnumber;
         }
         else{
@@ -418,6 +418,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
             $total_bundle_present_qty = $total_bundle_rej_present_qty;
             $mo_number = trim($nop_qry_row['mo_no']);
             $mo_quantity = $nop_qry_row['bundle_quantity'];
+            $ops_des = $nop_qry_row['op_desc'];
             $good_quantity_past = $nop_qry_row['good_quantity'];
             $rejected_quantity_past = $nop_qry_row['rejected_quantity'];
             $id = $nop_qry_row['id'];
@@ -462,7 +463,7 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     // if(strtolower($is_m3) == 'yes')
                     // {
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) 
-                        VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'',$id,'$work_station_id','pending','$main_ops_code','opn')";
+                        VALUES ('$current_date','$mo_number',$to_update_qty,'$r_reasons[$key]','Normal','$username','',$b_module,'$b_shift',$op_code,'$ops_des',$id,'$work_station_id','pending','$main_ops_code','opn')";
                         mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into the m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     // }

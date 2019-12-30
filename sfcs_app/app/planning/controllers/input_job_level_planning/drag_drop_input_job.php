@@ -662,7 +662,12 @@ $module_limit=14;
 		  $style=$sql_row['order_style_no'];
 		}
 	}
-
+	$sql_ops="SELECT operation_code FROM `brandix_bts`.`tbl_ims_ops` WHERE appilication='IMS_OUT' ";
+	$sql_result_ops=mysqli_query($link, $sql_ops) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_ops=mysqli_fetch_array($sql_result_ops))
+	{
+				$imsout=$sql_row_ops["operation_code"];
+	}
 $code_db=array();
 $code_db=explode("*",$code);
 
@@ -806,14 +811,14 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				}
 			}
 			unset($mods);
-			$get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+			$get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='') and operation_code='$imsout' ";
 			$sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
 			while ($row2=mysqli_fetch_array($sql_res)) 
 			{
 				$short_key = $row2['short_cut_code'];
 			}
 
-			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code='$short_key' ";
 			// echo $work_station_module;
 			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
 			while ($row1=mysqli_fetch_array($sql_result1))

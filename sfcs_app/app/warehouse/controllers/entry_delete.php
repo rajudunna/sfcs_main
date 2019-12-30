@@ -373,12 +373,13 @@ if(isset($_POST['put']))
 
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		//$total_issued=$sql_row['total_issued'];
+		$total_issued=$sql_row['total_issued'];
 		$total_returned=$sql_row['total_returned'];
 		$total_qty_allocated=$sql_row['total_qty_allocated'];
 	}
 	
-	if($total_qty_allocated==$total_returned)
+	//if($total_qty_allocated==$total_returned)
+	if($total_qty_allocated==0 && ($total_issued-$total_returned)==0)
 	{
 		if(in_array($authorized,$has_permission))
 		{

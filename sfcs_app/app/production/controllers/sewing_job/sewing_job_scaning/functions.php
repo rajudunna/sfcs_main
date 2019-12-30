@@ -43,7 +43,7 @@ function gettabledata($params)
 	$params = explode(",",$params);
 	include("../../../../../common/config/config_ajax.php");
 
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.operation_order*1";
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by CAST(tos.operation_order AS CHAR)";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
