@@ -213,9 +213,17 @@
 			
 			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $ops_code";
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
-		   
-			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
-			$update_cps_log_res = $link->query($update_pre_qty);
+		   if($category_act=='Send PF')
+		   {
+			  $update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $prev_operation";   
+			  $update_cps_log_res = $link->query($update_pre_qty); 
+		   }
+		   else
+		   {
+			   $update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$previous_minqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
+			   $update_cps_log_res = $link->query($update_pre_qty); 
+		   }
+			
 			
 		}
 		else
