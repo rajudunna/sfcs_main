@@ -173,7 +173,7 @@
 			
 			if($post_ops_code != null)
 			{
-				$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+'".$diffqty."', `scanned_date`='". date('Y-m-d')."' where docket_number =$docket_no and size_title='$size' and operation_id = ".$post_ops_code;
+				$query_post = "UPDATE $brandix_bts.bundle_creation_data SET `send_qty` = send_qty+".$diffqty.", `scanned_date`='". date('Y-m-d')."' where docket_number =$docket_no and size_title='$size' and operation_id = ".$post_ops_code;
 				$result_query = $link->query($query_post) or exit('query error in updating');
 			}
 			
@@ -316,7 +316,7 @@
 			if($ops_code!='')
 			{
 				//getting style and color
-				$get_style_details="select style,color,size from $bai_pro3.act_cut_bundle where docket=".$docket_no." and id=".$act_cut_bundle_id."";
+				$get_style_details="select style,color,size from $bai_pro3.act_cut_bundle where id=".$act_cut_bundle_id."";
 				$result_selecting_style_color_qry = $link->query($get_style_details);
 				while($row = $result_selecting_style_color_qry->fetch_assoc())
 				{
