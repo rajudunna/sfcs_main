@@ -247,10 +247,48 @@ if(isset($_GET['tid']))
 	// echo $bts_update."<br>";
 	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	// echo $bts_update.'</br>';
+	
 	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
 	// echo $bts_insert;
 	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	
+	$act_id=array();
+	$act_id_qty=array();
+	$qms_qty_check=$qms_qty;
+	$selct_sql="select * from $bai_pro3.act_log_bundle_trn where plan_log_bundle_id=".$bundle_no_ref." and rej_qty>0";
+	//echo $selct_sql."<br>";
+	$check_result=mysqli_query($link, $selct_sql) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($check_result)>0)
+	{
+		while($row_result=mysqli_fetch_array($check_result))
+		{			
+			if($qms_qty_check>0)
+			{
+				if($qms_qty_check>=$row_result['rej_qty'])
+				{
+					$act_id[]=$row_result['act_cut_bundle_id'];
+					$act_id_qty[]=$row_result['rej_qty'];
+					$qms_qty_check=$qms_qty_check-$row_result['rej_qty'];
+				}
+				else
+				{				
+					$act_id[]=$row_result['act_cut_bundle_id'];
+					$act_id_qty[]=$qms_qty_check;
+					$qms_qty_check=0;
+				}
+			}			
+		}
+		
+		for($i=0;$i<sizeof($act_id);$i++)
+		{
+			$update="UPDATE $bai_pro3.act_cut_bundle set act_used_qty=act_used_qty-".$act_id_qty[$i]." where id=".$act_id[$i]."";
+			echo $update."<br>";
+			//mysqli_query($link, $update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+			$insert="insert $bai_pro3.act_log_bundle_trn(plan_log_bundle_id,act_cut_bundle_id,rej_qty) values(".$bundle_no_ref.",".$act_id[$i].",".(-1*$act_id_qty[$i]).")";
+			echo $insert."<br>";
+			//mysqli_query($link, $insert) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+		}
+		
+	}
 	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
 
 	//Insert selected row into table deleted table
