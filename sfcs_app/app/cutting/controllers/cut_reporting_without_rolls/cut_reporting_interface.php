@@ -1,11 +1,43 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
+$has_permission=haspermission($_GET['r']); 
+
 if($fabric_validation_for_cut_report == 'yes')
     $FABRIC_VALIDATION = 1;
 else
     $FABRIC_VALIDATION = 0;
 
+//hardcode for temp purpose, rejection is removed in this screen
+$operation_code = 15;
+$access_report = $operation_code.'-G';
+$access_reject = $operation_code.'-R';
+$access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
+$result = $link->query($access_qry);
+if($result->num_rows > 0){
+    if (in_array($$access_report,$has_permission))
+    {
+        $good_report = '';
+    }
+    else
+    {
+        $good_report = 'readonly';
+    }
+    if (in_array($$access_reject,$has_permission))
+    {
+        $reject_report = '';
+    }
+    else
+    {
+        $reject_report = 'readonly';
+    }
+} else {
+    $good_report = '';
+    $reject_report = '';
+}
+
+echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
+echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
     $cut_table = $_GET['cut_table'];
     $doc_no = $_GET['doc_no'];
@@ -16,7 +48,7 @@ if(isset($_GET['doc_no'])){
             loadDetails($doc_no);
         });
     </script>";
-
+    
 
 $sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -106,6 +138,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td>Act Cut Status</td>
                     <td>Cut Issue Status</td>
                     <td>Good Pieces</td>
+                    <!-- <td>Rejected Pieces</td> -->
                     <td>Date</td>
                     <td>Section</td>
                     <td>Module</td>
@@ -124,6 +157,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_cut_status'></td>
                     <td id='d_cut_issue_status'></td>
                     <td id='d_good_pieces'></td>
+                    <!-- <td id='d_rej_pieces'></td> -->
                     <td id='d_date'></td>
                     <td id='d_section'></td>
                     <td id='d_module'></td>
@@ -245,6 +279,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Joints</th>
                             <th>Endbits</th>
                             <th>Shortages</th>
+                            <!-- <th>Rejection Pieces</th> -->
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -272,9 +307,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control float' value='0' id='damages'></td>
                             <td><input type='text' class='form-control float' value='0' id='joints'></td>
                             <td><input type='text' class='form-control float' value='0' id='endbits'></td>
-                            <td><input type='text' class='form-control float' value='0' id='shortages'></td>
+                            <td><input type='text' class='form-control float' value='0' id='shortages'>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             
+                            <input type='button' style='display : none' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
+                            </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
                     </tbody>
@@ -480,6 +517,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     function getdetails()
     {
          $('#c_plies').attr('readonly', true);
+         $('#full_reported').attr('disabled', true);
+         $('#cut_report').attr('disabled', true);
          $('#fab_received').attr('readonly', true);
          $('#fab_returned').attr('readonly', true);
          $('#damages').attr('readonly', true);
@@ -625,6 +664,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         else
         {
                 $('#c_plies').attr('readonly', false);
+                $('#full_reported').attr('disabled', false);
+                $('#cut_report').attr('disabled', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
                 $('#damages').attr('readonly', false);
@@ -922,6 +963,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     });
 
     $(document).ready(function(){
+        if($('#reject_report').val() == 'readonly' ){
+            $('#rejections_panel_btn').attr({'disabled':true});
+        }
         $('.rej_tab').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
@@ -939,6 +983,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('.user_msg').css({'display':'none'});
         $('#hide_details_reported').css({'display':'none'});
         $('#hide_details_reporting').css({'display':'none'});
+       
         clearAll();
         clearFormData();
         clearRejections();
@@ -1359,6 +1404,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#rejections_table_body').empty();
         $('#rejection_pieces').attr({'readonly':false});
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
         $('#rejection_pieces').val(0);
         $('#avl_pieces').val(0);
         $('#total_pieces').val(0);
@@ -1370,6 +1416,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     //to clear all the form data 
     function clearFormData(){
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
         $('#c_plies').val(0);
         $('#fab_received').val(0);
         $('#damages').val(0);
@@ -1398,6 +1445,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         rejections_flag = 0;
         $('#avl_pieces').val(0);
         $('#c_plies').attr({'readonly':false});
+        $('#cut_report').attr({'disabled':false});
+        
         $('#total_pieces').val(0);
         $('#rejection_size').empty();
         $('#rejection_pieces').val(0);
@@ -1470,6 +1519,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }
         else{
             $('#c_plies').attr('readonly',false);
+            $('#cut_report').attr('disabled',false);
+            
         }
     });
 
@@ -1732,8 +1783,21 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_style').html(data.styles);
             $('#d_schedule').html(data.schedules);
             $('#d_color').html(data.colors);
+            if($('#good_report').val() == 'readonly'){
+                $('#c_plies').attr('readonly', true);
+                $('#cut_report').attr('disabled', true);
+                $('#full_reported').attr('disabled', true);
+                // $("#c_plies").attr('readonly', 'readonly');
+                
+                $('#c_plies').val(0);
+            } else {
+                $('#c_plies').val(avl_plies);
+                $('#c_plies').attr('readonly', false);
+                $('#cut_report').attr('disabled', false);
+                $('#full_reported').attr('disabled', false);
 
-            $('#c_plies').val(avl_plies);
+            }
+            // $('#c_plies').val(avl_plies);
             $('#fab_received').val(fab_req);
 
             $('#post_style').val(data.styles);
@@ -1765,7 +1829,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
                 //calculatecutreport();
             }
-                $('#c_plies').attr('readonly', false);
+                // $('#c_plies').attr('readonly', false);
                 $('#fab_received').attr('readonly', false);
                 $('#fab_returned').attr('readonly', false);
                 $('#damages').attr('readonly', false);

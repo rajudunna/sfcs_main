@@ -188,9 +188,14 @@ function getActCutBundleMinGoodQty($act_cut_bundle_id, $last_cut_operations) {
     global $link;
     global $bai_pro3;
     $operations = implode(',', $last_cut_operations);
-    $min_good_qty_query = "Select min(good_qty) from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id = $act_cut_bundle_id 
+    $min_good_qty = 0;
+    $min_good_qty_query = "Select min(good_qty) as good_qty from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id = $act_cut_bundle_id 
         and ops_code IN ($operations) ";
-    
+    $min_good_qty_result = mysqli_query($link, $min_good_qty_query) or exit(" error min_good_qty_query $min_good_qty_query");
+    while($row = mysqli_fetch_array($min_good_qty_result)) {
+        $min_good_qty = $row['good_qty'];
+    }
+    return $min_good_qty;
 }
 
 

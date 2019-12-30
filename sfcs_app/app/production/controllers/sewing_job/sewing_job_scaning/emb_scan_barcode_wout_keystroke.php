@@ -95,6 +95,7 @@ th,td{
 				</div>
 					<input type="hidden" id="pass_id" ng-model="pass_id" ng-init="pass_id='<?= $gate_id; ?>'">
 					<input type="hidden" id="rej_data" ng-model="rej_data">
+                    <input type="hidden" id="has_permission" ng-model="has_permission" ng-init="has_permission='<?= htmlspecialchars(json_encode($has_permission)) ?>'">
                     <input type="hidden" id="user_permission" ng-model="user_permission" ng-init="user_permission='<?= $value; ?>'">
                     <input type="hidden" class="form-control" ng-model="url" ng-init="url='/<?= getFullURLLevel($_GET['r'],'emb_get_barcode_details_new.php',0,'R') ?>'">
 					<?php

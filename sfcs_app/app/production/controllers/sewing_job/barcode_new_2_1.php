@@ -115,8 +115,8 @@
 								<td colspan=15></td>
 								</tr>
 								<tr>	
-									<td colspan=3><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
-									<td colspan=8><b>Country:</b>'.trim($destination).'</td>
+									<td colspan=2><b>CutNo:</b>'.chr($color_code).leading_zeros($cutno, 3).'</td>
+									<td colspan=6><b>Country:</b>'.trim($destination).'</td>
 								</tr>
 							</table>
 						</div><br><br><br><br><br>';
@@ -145,7 +145,7 @@
 						   <tr>
 							  <td colspan=8>
 										<div>
-											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.25" size="0.55" text="1">
+											<barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="1.40" size="0.80" text="1">
 										</div>
 									<center>'.trim($barcode).'</td>
 							</tr>

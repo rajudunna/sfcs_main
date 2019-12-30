@@ -2,13 +2,51 @@
     error_reporting(0);
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     include 'functions_scanning_ij.php';
+
     $barcode = $_POST['barcode'];
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
 	$user_permission = $_POST['auth'];
-    $b_shift = $shift;	
+	$has_permission = json_decode($_POST['has_permission'],true);
+    $b_shift = $shift;
+
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
+    $op_no = explode('-', $barcode)[1];
+
+    //auth
+    $good_report = 0;
+
+    if($op_no != '') {
+        $access_report = $op_no.'-G';
+
+        $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
+
+        // echo $access_qry;
+        $result = $link->query($access_qry);
+        
+	    if($result->num_rows > 0){
+    
+            if (in_array($$access_report,$has_permission))
+            {
+                $good_report = 0;
+            }
+            else
+            {
+                // good cant be report as it opcode-Good is assigned in user permission for this screen
+                $good_report = 1;
+            }
+        } else {
+            $good_report = 0;
+        }
+    } else {
+        $good_report = 0;
+    }
+  
+
+
+   
+    
     //retriving original bundle_number from this barcode
     $selct_qry = "SELECT bundle_number FROM $brandix_bts.bundle_creation_data 
     WHERE bundle_number = $barcode_number";
@@ -57,7 +95,6 @@
     }
     
     //ends on #978
-    $op_no = explode('-', $barcode)[1];
     $emb_cut_check_flag = 0;
     $msg = 'Scanned Successfully';
 
@@ -81,7 +118,12 @@
         $stri = "0,$bundle_no,$op_no,wout_keystroke,0";
         $ret = validating_with_module($stri);
         // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
-        if($short_ship_status==1){
+        if($good_report == 1) {
+            $result_array['status'] = 'You are Not Authorized to report Bundle';
+            echo json_encode($result_array);
+            die();
+        }
+        else if($short_ship_status==1){
              $result_array['status'] = 'Short Shipment Done Temporarly';
             echo json_encode($result_array);
             die();
@@ -1207,6 +1249,46 @@
                 }
             }
 
+            //To remove bundles from ims_log for fully rejected_qty
+            if($b_op_id == $output_ops_code)
+            {
+                $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
+                //echo $ops_sequence_check;
+                $result_ops_sequence_check = $link->query($ops_sequence_check);
+                while($row2 = $result_ops_sequence_check->fetch_assoc()) 
+                {
+                    $ops_seq = $row2['ops_sequence'];
+                    $seq_id = $row2['id'];
+                    $ops_order = $row2['operation_order'];
+
+                }
+
+                $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+               // echo  $pre_operation_check;
+                $result_pre_operation_check = $link->query($pre_operation_check);
+                while($row23 = $result_pre_operation_check->fetch_assoc()) 
+                {
+                    $previous_operation = $row23['operation_code'];
+                }
+
+                $get_rejected_bundles= "select bundle_number from $brandix_bts.bundle_creation_data where input_job_no_random_ref='".$b_job_no."' and operation_id=$previous_operation and send_qty = rejected_qty and bundle_qty_status=1";
+                $result_rejected_bundles = $link->query($get_rejected_bundles);
+                if($result_rejected_bundles->num_rows > 0)
+                {
+                    while($row231 = $result_rejected_bundles->fetch_assoc()) 
+                    {
+                        $bundle_number = $row231['bundle_number'];
+
+                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = $bundle_number";
+                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = $bundle_number";
+                        mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $ims_delete="delete from $bai_pro3.ims_log where pac_tid = $bundle_number";
+                        mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
+                }
+            }
+
 			  $application='IPS';
 			  $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
 			  $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1299,6 +1381,24 @@
                           $operation_name=$sql_row['operation_name'];
                           $operation_code=$sql_row['operation_code'];
                         }
+                        //*To get previous Operation
+                       $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
+                        //echo $ops_sequence_check;
+                       $result_ops_sequence_check = $link->query($ops_sequence_check);
+                       while($row2 = $result_ops_sequence_check->fetch_assoc()) 
+                       {
+                            $ops_seq = $row2['ops_sequence'];
+                            $seq_id = $row2['id'];
+                            $ops_order = $row2['operation_order'];
+                       }
+
+                       $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+                       // echo  $pre_operation_check;
+                       $result_pre_operation_check = $link->query($pre_operation_check);
+                       while($row23 = $result_pre_operation_check->fetch_assoc()) 
+                       {
+                           $previous_operation = $row23['operation_code'];
+                       }
 						
                         if($operation_code == 100 || $operation_code == 129)
                         {
@@ -1331,7 +1431,7 @@
                                 // }
                                //get bundle qty status
 							   $ims_removal_flag = 0;  
-                               $get_qty_details="select sum(if(operation_id = $operation_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
+                               $get_qty_details="select sum(if(operation_id = $previous_operation,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
                                $get_qty_result=mysqli_query($link,$get_qty_details) or exit("barcode status Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
                                while($qty_details=mysqli_fetch_array($get_qty_result))
                                {
