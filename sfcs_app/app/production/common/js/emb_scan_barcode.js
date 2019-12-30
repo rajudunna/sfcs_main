@@ -56,6 +56,7 @@ function validating_cumulative(e,t)
 $('#rejec_reasons').on('click', function(){
 	var qty_data = [];
     var reason_data = [];
+    
     //console.log(reason_data);
     //console.log(qty_data);
 
@@ -152,6 +153,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.url = '';
     $scope.user_permission = '';
     $scope.pass_id = '';
+    $scope.has_permission = [];
+
 //$scope.rej_id = '';
     $scope.showtable = false;
     $scope.showscanlist = false;
@@ -205,9 +208,11 @@ $scope.$watch('op_code', function(op_code){
                             // swal('Please Check Barcode you scanned.');
                             $scope.barcode = '';
                         }else{
+                            console.log($scope.has_permission+'has_per');
                             var params = $.param({
                                 auth: $scope.user_permission,
                                 barcode: $scope.last_barcode,
+                                has_permission: $scope.has_permission,
                                 shift: $scope.shift,
                                 gate_id: $scope.pass_id,
 								rej_id:$scope.rej_id,
