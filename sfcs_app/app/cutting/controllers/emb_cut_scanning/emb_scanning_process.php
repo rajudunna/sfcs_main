@@ -34,7 +34,7 @@ $ops_dep='';
 $qry_status='';
 
 try {
-    $operations_info = getOperationsInfo($b_style, $b_colors[0], $b_op_id);
+	$operations_info = getOperationsInfo($b_style, $b_colors[0], $b_op_id);
 	$next_immediate_cut_operations = $operations_info['next_immediate_cut_operations'];
 	$last_cut_operations = $operations_info['last_cut_operations'];
 	$is_last_cut_operation = $operations_info['is_last_cut_operation'];

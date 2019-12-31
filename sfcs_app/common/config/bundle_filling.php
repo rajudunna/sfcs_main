@@ -280,6 +280,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 		}
 		//$shadebundleno=0;
 		$endno=0;
+		$update=array();
 		$get_det_qry="select size,id from $bai_pro3.plan_cut_bundle where doc_no=".$doc_no."";
 		$get_det_qry_rslt= mysqli_query($link,$get_det_qry);
 		if(mysqli_num_rows($get_det_qry_rslt)>0)
@@ -303,7 +304,6 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.",".$plies.")";	
 						$result= mysqli_query($link,$insert_docket_num_info);
 						$id=mysqli_insert_id($link);
-						
 						$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,15,$plies,$plies,$plies,0,'$username',1,'".$barcode."-15')";
 						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
 						
@@ -314,7 +314,8 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 						VALUES ('".$style."','".$color."',".$plan_id.",".$doc_no.",'".$size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$plies.",'".$username."',".$lay_seq.")";	
 						$result= mysqli_query($link,$insert_docket_num_info);
 						$id=mysqli_insert_id($link);
-						
+						$update_qty[$size]+=$plies;
+						$sizes_all[]=$size;
 						$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$plan_id,15,$plies,$plies,$plies,0,'$username',1,'".$barcode."-15')";
 						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
 						
@@ -336,8 +337,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 								$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
 							}						
 						}					
-					}	
-					
+					}					
 					$startno=$startno + $plies;
 					$planplies=$planplies - $plies;
 					$bundle++;
@@ -345,6 +345,21 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 				//$bundle++;
 				//$shadebundleno=0;							
 			}
+			
+			if(sizeof($next_operations)>0)
+			{
+				$sizes_all=array_values(array_unique($sizes_all));
+				for($jj=0;$jj<sizeof($sizes_all);$jj++)
+				{
+					for($j=0;$j<sizeof($next_operations);$j++)
+					{
+						$update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+".$update_qty[$sizes_all[$jj]]."
+						WHERE docket_number = ".$doc_no." AND size_id = '".$sizes_all[$jj]."'	AND operation_id = ".$next_operations[$j]."";
+						mysqli_query($link,$update_bcd_query);
+					}
+				}	
+			}	
+			
 		}			
 	}		
 }
