@@ -354,7 +354,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 					for($j=0;$j<sizeof($next_operations);$j++)
 					{
 						$update_bcd_query = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+".$update_qty[$sizes_all[$jj]]."
-						WHERE docket_number = ".$doc_no." AND size_id = '".$sizes_all[$jj]."'	AND operation_id = ".$next_operations[$j]."";
+						WHERE size_title = '".$sizes_all[$jj]."' AND operation_id = ".$next_operations[$j]." AND docket_number = ".$doc_no."";
 						mysqli_query($link,$update_bcd_query);
 					}
 				}	

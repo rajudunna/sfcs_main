@@ -43,11 +43,11 @@ try {
 	foreach($b_tid as $key => $bundle_id) {
 		$size = $b_sizes[$key];
 		$good_qty = $b_rep_qty[$key];
-		$rej_qty = $b_rej_qty[$key];
+        $rej_qty = $b_rej_qty[$key];
 		embDocketScan($docket, $size, $good_qty, $rej_qty, $operation, $next_immediate_cut_operations, $last_cut_operations, $is_last_cut_operation);
 	}
-} catch(Exception e) {
-	echo e;
+} catch(Exception $e) {
+	echo $e;
 	exit();
 }
 
