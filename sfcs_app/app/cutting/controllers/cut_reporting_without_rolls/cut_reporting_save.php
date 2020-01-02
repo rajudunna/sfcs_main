@@ -620,7 +620,7 @@ if($target == 'schedule_clubbed'){
         echo json_encode($response_data);
         exit();
     }else{
-		act_logical_bundles($doc_no,$schedule,$style,$color);
+		//act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
@@ -1016,7 +1016,7 @@ if($target == 'style_clubbed'){
         echo json_encode($response_data);
         exit();
     }else{
-		act_logical_bundles($doc_no,$schedule,$style,$color);
+		//act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
