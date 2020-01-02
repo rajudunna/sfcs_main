@@ -2,6 +2,7 @@
 error_reporting(0);
 include("../../../../common/config/config_ajax.php");
 include("../../../../common/config/m3Updations.php");
+include("../../../../common/config/emb_docket_scan.php");
 $post_data = $_POST['bulk_data'];
 parse_str($post_data,$new_data);
 $b_style= $new_data['style'];
@@ -31,6 +32,25 @@ $page_flag = $new_data['page_flag'];
 $form = 'P';
 $ops_dep='';
 $qry_status='';
+
+try {
+	$operations_info = getOperationsInfo($b_style, $b_colors[0], $b_op_id);
+	$next_immediate_cut_operations = $operations_info['next_immediate_cut_operations'];
+	$last_cut_operations = $operations_info['last_cut_operations'];
+	$is_last_cut_operation = $operations_info['is_last_cut_operation'];
+	$docket = $b_doc_no;
+	$operation = $b_op_id;
+	foreach($b_tid as $key => $bundle_id) {
+		$size = $b_sizes[$key];
+		$good_qty = $b_rep_qty[$key];
+        $rej_qty = $b_rej_qty[$key];
+		embDocketScan($docket, $size, $good_qty, $rej_qty, $operation, $next_immediate_cut_operations, $last_cut_operations, $is_last_cut_operation);
+	}
+} catch(Exception $e) {
+	echo $e;
+	exit();
+}
+
 if($b_op_id >=130 && $b_op_id < 300)
 {
 	$form = 'G';

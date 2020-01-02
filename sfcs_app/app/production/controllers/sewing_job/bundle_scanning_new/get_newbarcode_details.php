@@ -5,6 +5,7 @@ include('../sewing_job_scaning/functions_scanning_ij.php');
 
 if (isset($_POST["barcode_info"])){
     $op_code=$_POST['op_code'];
+    $action_mod=$_POST['action_mod'];
     //getting barocde info to scanning screen
     $barcode_info=$_POST['barcode_info'];
     if($barcode_info!=''){
@@ -42,6 +43,7 @@ if (isset($_POST["barcode_info"])){
                 if($result_qry_eligible_qty->num_rows > 0){
                     while($row_eligible_qty = $result_qry_eligible_qty->fetch_assoc()){
                         $json['bundle_eligibl_qty']=$row_eligible_qty['send_qty']-($row_eligible_qty['recevied_qty']+$row_eligible_qty['rejected_qty']);
+                        $recevied_qty=$row_eligible_qty['recevied_qty'];
                     }
                 }else{
                     $json['bundle_eligibl_qty']=$row['carton_act_qty'];
@@ -71,17 +73,27 @@ if (isset($_POST["barcode_info"])){
                 }
 
                 $json['short_shipment'] = $short_ship_status;
-
-                if($json['bundle_eligibl_qty']>0){
-                    $json['color_code'] = "#45b645";
-                    $json['status'] = "Proceed";
-                    echo json_encode($json);
-                }else{
-                    $json['color_code'] = "#f31c06";
-                    $json['status'] = "No eligible qunatity for this bundle";
-                    echo json_encode($json);
-                    die();
-                }        
+                
+                    if($json['bundle_eligibl_qty']>0){
+                        $json['color_code'] = "#45b645";
+                        $json['status'] = "Proceed";
+                        echo json_encode($json);
+                    }else{
+                        if($recevied_qty>0 && $action_mod=='reverse')
+                        {
+                          $json['color_code'] = "#45b645";
+                          $json['status'] = "Proceed";
+                          echo json_encode($json);
+                        }
+                        else
+                        {
+                          $json['color_code'] = "#f31c06";
+                          $json['status'] = "No eligible qunatity for this bundle";
+                          echo json_encode($json);
+                          die();
+                        }  
+                        
+                    }            
                 
             }
         }else{

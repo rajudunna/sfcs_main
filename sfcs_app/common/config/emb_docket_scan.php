@@ -25,9 +25,9 @@ function getOperationsInfo($style, $color, $operation) {
     $operations_info = [];
     $operation_order = getOperationOrder($style, $color, $operation);
     $first_sewing_operation_info = getFirstSewingOperation($style, $color);
-    $first_sewing_operation = $first_sewing_operation_info['operation_code'];
+    $first_sewing_operation = $first_sewing_operation_info;
     if($operation_order) {
-        $next_immediate_cut_operations = getNextCuttingOperations($style, $color, $operation, $operation_order);
+        $next_immediate_cut_operations = getNextCuttingOperations($style, $color, $operation, $operation_order, $first_sewing_operation);
         $last_cut_operations = getLastCutOperations($style, $color, $operation, $operation_order, $first_sewing_operation);
         if(in_array($operation, $last_cut_operations)) {
             $is_last_cut_operation = true;
@@ -76,7 +76,8 @@ function getLastCutOperations($style, $color, $operation_order, $first_sewing_op
     global $brandix_bts;
     $cutting_category = "'Send PF','Receive PF'";
     $last_operations = [];
-    $last_cut_operations_query1 = "Select operation_code from $brandix_bts.tbl_style_ops_master
+    $last_cut_operations_query1 = "Select som.operation_code from $brandix_bts.tbl_style_ops_master som 
+        left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
         and ops_dependency = $first_sewing_operation";
     $last_cut_operations_result1 = mysqli_query($link, $last_cut_operations_query1) or exit("error last_cut_operations_query1 $last_cut_operations_query1");
@@ -85,9 +86,10 @@ function getLastCutOperations($style, $color, $operation_order, $first_sewing_op
             $last_operations[] = $row['operation_code'];
         }
     } else {
-        $last_cut_operations_query2 = "Select operation_code from $brandix_bts.tbl_style_ops_master
+        $last_cut_operations_query2 = "Select som.operation_code from $brandix_bts.tbl_style_ops_master som
+        left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
-        and operation_order > '$operation_order' order by operation_order ";
+        and operation_order > '$operation_order' order by operation_order DESC limit 1";
         $last_cut_operations_result2 = mysqli_query($link, $last_cut_operations_query2) or exit("error last_cut_operations_query2 $last_cut_operations_query2");
         while($row = mysqli_fetch_array($last_cut_operations_result2)) {
             $last_operations[] = $row['operation_code'];
@@ -96,26 +98,30 @@ function getLastCutOperations($style, $color, $operation_order, $first_sewing_op
     return $last_operations;
 }
 
-function getNextCuttingOperations($style, $color, $operation, $operation_order) {
+function getNextCuttingOperations($style, $color, $operation, $operation_order, $first_sew_operation = 0) {
     global $link;
     global $brandix_bts;
     $cutting_category = "'Send PF','Receive PF'";
     $next_operations = [];
-    $next_cut_operations_query1 =  "Select operation_code from $brandix_bts.tbl_style_ops_master
+    $next_cut_operations_query1 =  "Select som.operation_code from $brandix_bts.tbl_style_ops_master som 
+        left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
-        and previous_operation = $operation
+        and ops_dependency = $first_sew_operation
+        and operation_code = $operation
         order by operation_order ASC";
-    $next_cut_operations_result1 = mysqli_query($link, $next_cut_operations_query1) or exit("error next_cut_operations_result1 $next_cut_operations_result1");
-    if(mysqli_num_rows($next_cut_operations_result1) > 1) {
+    $next_cut_operations_result1 = mysqli_query($link, $next_cut_operations_query1) or exit("error next_cut_operations_query1 $next_cut_operations_query1");
+    if(mysqli_num_rows($next_cut_operations_result1) > 0) {
         while($row = mysqli_fetch_array($next_cut_operations_result1)) {
-            $next_operations[] = $row['operation_code'];
+            // $next_operations[] = $row['operation_code'];
+            $next_operations = [];
         }
     } else {
-        $next_cut_operations_query2 =  "Select operation_code from $brandix_bts.tbl_style_ops_master
+        $next_cut_operations_query2 =  "Select som.operation_code from $brandix_bts.tbl_style_ops_master som 
+        left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
         and operation_order > '$operation_order'
         order by operation_order ASC limit 1";
-        $next_cut_operations_result2 = mysqli_query($link, $next_cut_operations_query2) or exit("next_cut_operations_result2 $next_cut_operations_result2");
+        $next_cut_operations_result2 = mysqli_query($link, $next_cut_operations_query2) or exit("next_cut_operations_query2 $next_cut_operations_query2");
         while($row = mysqli_fetch_array($next_cut_operations_result2)) {
             $next_operations[] = $row['operation_code'];
         }
@@ -188,9 +194,14 @@ function getActCutBundleMinGoodQty($act_cut_bundle_id, $last_cut_operations) {
     global $link;
     global $bai_pro3;
     $operations = implode(',', $last_cut_operations);
-    $min_good_qty_query = "Select min(good_qty) from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id = $act_cut_bundle_id 
+    $min_good_qty = 0;
+    $min_good_qty_query = "Select min(good_qty) as good_qty from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id = $act_cut_bundle_id 
         and ops_code IN ($operations) ";
-    
+    $min_good_qty_result = mysqli_query($link, $min_good_qty_query) or exit(" error min_good_qty_query $min_good_qty_query");
+    while($row = mysqli_fetch_array($min_good_qty_result)) {
+        $min_good_qty = $row['good_qty'];
+    }
+    return $min_good_qty;
 }
 
 
@@ -206,7 +217,7 @@ function updateActualCutBundleGoodQty($act_cut_bundle_id, $good_qty) {
 function updateActualCutBundleTrnGoodQty($act_cut_bundle_id, $operation, $good_qty) {
     global $link;
     global $bai_pro3;
-    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set good_quantity = $good_qty
+    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set good_qty = good_qty + $good_qty
         where act_cut_bundle_id = $act_cut_bundle_id and ops_code = $operation";
     mysqli_query($link,$act_cut_bundle_trn_update_query) or exit("error act_cut_bundle_trn_update_query $act_cut_bundle_trn_update_query");
     return;
@@ -216,7 +227,7 @@ function updateActualCutBundleTrnGoodQty($act_cut_bundle_id, $operation, $good_q
 function updateActualCutBundleTrnRecQty($act_cut_bundle_id, $operation,  $rec_qty) {
     global $link;
     global $bai_pro3;
-    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set send_qty = $rec_qty
+    $act_cut_bundle_trn_update_query = "Update $bai_pro3.act_cut_bundle_trn set send_qty = send_qty + $rec_qty
         where act_cut_bundle_id = $act_cut_bundle_id and ops_code = $operation";
     mysqli_query($link,$act_cut_bundle_trn_update_query) or exit("error act_cut_bundle_trn_update_query $act_cut_bundle_trn_update_query");
     return;
@@ -225,7 +236,7 @@ function updateActualCutBundleTrnRecQty($act_cut_bundle_id, $operation,  $rec_qt
 function updateActualCutBundleTrnRejQty($act_cut_bundle_id, $operation, $rej_qty) {
     global $link;
     global $bai_pro3;
-    $act_cut_bundle_update_query = "Update $bai_pro3.act_cut_bundle_trn set rejection_qty = $rej_qty
+    $act_cut_bundle_update_query = "Update $bai_pro3.act_cut_bundle_trn set rejection_qty = rejection_qty + $rej_qty
         where act_cut_bundle_id = $act_cut_bundle_id and ops_code = $operation";
     mysqli_query($link,$act_cut_bundle_update_query) or exit("error act_cut_bundle_update_query $act_cut_bundle_update_query");
     return;

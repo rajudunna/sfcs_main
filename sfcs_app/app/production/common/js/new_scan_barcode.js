@@ -64,10 +64,14 @@ $('#radioscrap').on('click', function(){
     var controllerElement = document.querySelector('[ng-controller="scancode_ctrl"]');
     var scope = angular.element(controllerElement).scope();
     var action_mode=scope.action_mode;
-    if(action_mode=='reverse'){
+	var barcode=scope.barcode_value;
+	//alert(barcode);
+    if(action_mode=='reverse' || barcode==''){
         $('#myModal').modal('toggle');
         scope.barcode_submit('scrap');
-    } 
+    }
+   		
+	
 })
 
 //mandatory validations for rejection reasons in modal
@@ -193,7 +197,8 @@ app.controller('scancode_ctrl', function ($scope, $http, $window) {
             url: $scope.url,
             data: $.param({
                 barcode_info: $scope.barcode_value,
-                op_code: $scope.op_code
+                op_code: $scope.op_code,
+                action_mod:$scope.action_mode
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         }).success(function (data, status, headers, config) {
