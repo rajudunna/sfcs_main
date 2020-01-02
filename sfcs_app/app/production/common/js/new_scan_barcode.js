@@ -73,6 +73,9 @@ $('#radioscrap').on('click', function(){
    		
 	
 })
+$('#radioreverse').on('click', function(){
+   	$('input[name=trans_mode]').prop("checked", false);	
+})
 
 //mandatory validations for rejection reasons in modal
 $('#rejec_reasons').on('click', function(){
