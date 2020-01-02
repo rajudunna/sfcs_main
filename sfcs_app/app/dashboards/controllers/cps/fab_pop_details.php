@@ -613,9 +613,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	echo "<tr><td>".$sql_row1['category']."</td>";
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
-	$maker_update="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$sql_row1['doc_no']."'";
+	$maker_update="select * from $bai_pro3.plandoc_stat_log where doc_no='".$sql_row1['doc_no']."'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($maker_update_result)>0)
+	while($row=mysqli_fetch_array($maker_update_result)){
+		$allocation = $row['plan_lot_ref'];	
+	}
+	if($allocation != '')
 	{
 		echo "<td><center><span class='label label-warning'>Can't Edit</span></center></td>";
 	} else {
