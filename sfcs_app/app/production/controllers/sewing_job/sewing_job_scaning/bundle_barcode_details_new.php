@@ -446,7 +446,28 @@
 					}
 					
 					
-							
+					$getting_send_ops_qry="select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and previous_operation = $ops_code";
+					$result_send_ops_qry = $link->query($getting_send_ops_qry);
+					while($rows = $result_send_ops_qry->fetch_assoc())
+					{
+						$parlops[] = $rows['operation_code'];
+					}
+					
+					$send_operations = implode(',',$parlops);
+					
+					if($category_act=='cutting' && $send_operations!='')
+					{									
+						$update_qry_act_trn="update bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where act_cut_bundle_id =".$act_cut_bundle_id." and ops_code in ($send_operations)";
+						$result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
+						
+					}
+					else
+					{
+						$update_qry_act_trn="update bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where act_cut_bundle_id =".$act_cut_bundle_id." and ops_code=".$post_ops_code."";
+						$result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
+					}						
+
+						
 							
 							if($flag=='parallel_scanning')
 							{
@@ -633,24 +654,6 @@
 							}
 							else
 							{
-								
-								if($category_act=='cutting')
-								{									
-									$getting_send_ops_qry="select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and previous_operation = $ops_code";
-									$result_send_ops_qry = $link->query($getting_send_ops_qry);
-									while($rows = $result_send_ops_qry->fetch_assoc())
-									{
-										$parlops[] = $rows['operation_code'];
-									}
-									
-									$send_operations = implode(',',$parlops);
-
-									$update_qry_act_trn="update bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where act_cut_bundle_id =".$act_cut_bundle_id." and ops_code in ($send_operations)";
-									$result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
-									
-								}	
-								
-								
 								if($rec_qty=$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
