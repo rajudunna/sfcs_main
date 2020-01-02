@@ -49,7 +49,7 @@ function plan_cut_bundle($docket_no)
 	}
 				
 	$fetching_ops_with_category = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
-	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$b_style' AND color='$b_colors' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
+	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$b_style' AND color='$b_colors' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') and tsm.operation_code<>10 GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
 	$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Issue while selecting the Operations");
 	while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
 	{
@@ -208,7 +208,7 @@ function act_logical_bundles($doc_no,$schedule_new,$style,$color)
 	
 	$operation_codes = array();
 	$fetching_ops_with_category = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
-	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
+	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') GROUP BY tsm.operation_code and tsm.operation_code<>10 ORDER BY tsm.operation_order";
 	$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Issue while selecting the Operations");
 	while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
 	{
