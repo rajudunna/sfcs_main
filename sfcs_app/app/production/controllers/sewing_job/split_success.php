@@ -26,7 +26,7 @@
 
 	// echo "ij = $input_job_no<br>ij_rand = $input_job_no_random<br>";
 
-	$getlastrec="SELECT MAX(input_job_no) AS input_job_no FROM $bai_pro3.packing_summary_input WHERE status = '$input_job_no' and order_del_no='$schedule'"; 
+	$getlastrec="SELECT MAX(input_job_no * 1) AS input_job_no FROM $bai_pro3.packing_summary_input WHERE status = '$input_job_no' and order_del_no='$schedule'"; 
 	// echo $getlastrec;die();
 	$res_last_rec=mysqli_query($link,$getlastrec);
 	if(mysqli_num_rows($res_last_rec) > 0)
