@@ -307,10 +307,10 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
 		// checking for emblishment Planning done or not
-		// $check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
-		// $check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// if($check_qry_result->num_rows > 0)
-		// {	
+		$check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
+		$check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if($check_qry_result->num_rows > 0)
+		{	
 			//getting operation code
 			$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
 			$rslt_get_cur_ops = $link->query($get_curr_ops_code);
@@ -461,11 +461,11 @@
 						$result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
 						
 					}
-					else
-					{
-						$update_qry_act_trn="update bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where act_cut_bundle_id =".$act_cut_bundle_id." and ops_code=".$post_ops_code."";
-						$result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
-					}						
+					// else
+					// {
+						// $update_qry_act_trn="update bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where act_cut_bundle_id =".$act_cut_bundle_id." and ops_code=".$post_ops_code."";
+						// $result_acttrn_query = $link->query($update_qry_act_trn) or exit('query error in updating act_cut_bundle_trn');
+					// }						
 
 						
 							
@@ -842,13 +842,13 @@
 				echo json_encode($result_array);
 				die();
 			}
-		// }
-		// else
-		// {
-			// $result_array['status'] = 'Please Plan Embellishment For This Dockets';
-			// echo json_encode($result_array);
-			// die();
-		// }
+		}
+		else
+		{
+			$result_array['status'] = 'Please Plan Embellishment For This Dockets';
+			echo json_encode($result_array);
+			die();
+		}
 	}
 	
 	scanningdetails($barcode,$rej_data,$rejctedqty);	
