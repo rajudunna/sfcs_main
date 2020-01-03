@@ -1519,6 +1519,23 @@ else if($concurrent_flag == 0)
 							// insert
 						}
 					}
+
+
+				}
+				$hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$i]' and operation_code=$b_op_id";
+				// echo $hout_ops_qry;
+				$hout_ops_result = $link->query($hout_ops_qry);
+
+				if($hout_ops_result->num_rows > 0)
+				{
+					while($hout_ops_result_data = $hout_ops_result->fetch_assoc()) 
+					{
+						$smv = $hout_ops_result_data['smv'];
+					}
+					if($smv>0){
+						$hout_insert_qry_new = "insert into $bai_pro2.hout2(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id, style,color,smv,bcd_id) values('$tod_date','$plant_time_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id','$b_style','$b_colors[$i]','$smv','$b_tid[$i]')";
+							$hout_insert_result = $link->query($hout_insert_qry_new);
+					}
 				}
                   
                   //To get Sewing In operation From Operation Routing
