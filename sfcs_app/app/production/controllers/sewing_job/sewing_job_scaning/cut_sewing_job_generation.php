@@ -34,7 +34,7 @@ function assign_to_gets($ars,$data_samps){
                 $ars['s'.$snp] = (($ars['s'.$snp])-$excess);
             }
             echo "<script>
-            var sp_values = document.getElementById('dataval'+".$ars['ratio']."+'_'+".$lp."+".$ars['end'].");
+            var sp_values = document.getElementById('dataval'+".$ars['ratio']."+".$lp."+".$ars['end'].");
             sp_values.setAttribute('data-sample','".$sample."');
             sp_values.setAttribute('data-excess','".$excess."');
             </script>";
@@ -501,7 +501,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].'_'.$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -569,7 +569,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                     <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].'_'.$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -790,7 +790,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
            $scope.jobs   = [];
            $scope.balance = 0;
            $scope.excess = 0;
-           //$scope.j++;
+           $scope.j++;
         for(var i=0; i<$scope.details.length; i++)
         {
             if($scope.balance>0){
@@ -1075,7 +1075,7 @@ function assigndata(s,max,end){
         dummy['size_details'] = [];
         for(var i=1;Number(i)<=Number(max);i++){
             var sp_title = document.getElementById('datatitle'+i);
-            var sp_values = document.getElementById('dataval'+s+'_'+i+jpg);
+            var sp_values = document.getElementById('dataval'+s+i+jpg);
             a = sp_title.getAttribute('data-title');
             b = sp_values.getAttribute('data-title');
 
