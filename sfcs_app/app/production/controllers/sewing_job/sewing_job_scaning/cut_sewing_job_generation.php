@@ -790,7 +790,7 @@ app.controller('cutjobcontroller', function($scope, $http) {
            $scope.jobs   = [];
            $scope.balance = 0;
            $scope.excess = 0;
-           $scope.j++;
+           //$scope.j++;
         for(var i=0; i<$scope.details.length; i++)
         {
             if($scope.balance>0){
