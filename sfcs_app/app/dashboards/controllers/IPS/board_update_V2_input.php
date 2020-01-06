@@ -313,6 +313,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$doc_no_ref=$sql_row1['doc_no'];
+			$doc_no_ref1 = $sql_row1['doc_no'];
 			$order_tid=$sql_row1['order_tid'];
 			$input_job_no_random_ref=$sql_row1["input_job_no_random_ref"];
 			$style=$sql_row1['order_style_no'];
@@ -338,6 +339,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{				
 				$order_col .= $cols[$i]."<br>";
 			}
+			if($doc_no_ref != ''){
+					$parent_doc_query = "SELECT GROUP_CONCAT(org_doc_no) as docs from $bai_pro3.plandoc_stat_log  
+										where doc_no IN ($doc_no_ref) and org_doc_no > 0";
+					$parent_doc_result = mysqli_query($link,$parent_doc_query);
+					if($org_row = mysqli_fetch_array($parent_doc_result))
+						$doc_no_ref = $org_row['docs'];
+				}
+				if($doc_no_ref == '')
+					$doc_no_ref = $doc_no_ref1;
+				
 			$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 			$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -348,6 +359,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 			$sql1x1="select * from $bai_pro3.plandoc_stat_log where act_cut_status<>'DONE' and doc_no in ($doc_no_ref)";
 			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
 			if(mysqli_num_rows($sql_result1x1)>0)
 			{
 				$cut_status="0";
@@ -458,27 +470,29 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$operation_code=$sql_row['operation_code'];
 				}
-				$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id='".$operation_code."'";
+				$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id=".$operation_code."";
 				$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 				while($sql_row=mysqli_fetch_array($cut_input_report_result))
 				{
 					$cut_origional_qty=$sql_row['cut_qty'];
-					$report_origional_qty=$sql_row['report_qty'];								
-				}			
-				if($cut_origional_qty > $report_origional_qty)
-				{
+					$report_origional_qty=$sql_row['report_qty'];
+					$recevied_qty=$sql_row['recevied_qty'];									
+				}
+				
+				if(($cut_origional_qty > $report_origional_qty) && $recevied_qty>0){
 					$id='orange';
 				}
 			}
 			//For Color Clubbing
 			$club_c_code=array();
-			$sql33x1="SELECT color_code,acutno FROM $bai_pro3.plan_dash_doc_summ where doc_no in (".$doc_no_ref.") order by doc_no*1";
+			$sql33x1="SELECT color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix where doc_no in (".$doc_no_ref.") order by doc_no*1";
 			$sql_result33x1=mysqli_query($link, $sql33x1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//echo $sql33x1;
 			while($sql_row33x1=mysqli_fetch_array($sql_result33x1))
 			{
-				$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);
-			}			
+				$club_c_code[]=chr($sql_row33x1['color_code']).leading_zeros($sql_row33x1['acutno'],3);			
+			}	
+			
 			$club_c_code=array_unique($club_c_code);
 			$ex_factory="NIP";
 			$sql11="select order_date as ex_factory_date_new from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
@@ -495,7 +509,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					$ex_factory="<span style=\"background-color:blue; color:white;\">$ex_factory</span>";
 				}								
-			}		
+			}
+			
 			if($schedule!='')
 			{			
 				echo "<td>".$style."<br/><strong>".$schedule."<br/>".$display_prefix1."</strong><br/>".implode(", ",$club_c_code)."<br/>".$total_qty."</td><td><b>Back Col</b>:".strtoupper($id)."</br><b>Col</b>:".strtoupper($order_col)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: ".$doc_no_ref."</b></td>";

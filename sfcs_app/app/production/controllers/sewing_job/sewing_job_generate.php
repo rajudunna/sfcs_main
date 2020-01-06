@@ -1039,6 +1039,32 @@
 		}
 	}
 	*/
+	$c_ref = echo_title("$brandix_bts.tbl_carton_ref","id","ref_order_num",$schedule_id,$link);
+	$get_docs ="select docket_number from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$carton_id."'";
+	//echo $get_docs;
+	$result_get_docs=mysqli_query($link, $get_docs) or die ("Error1.1=".$get_docs.mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row121=mysqli_fetch_array($result_get_docs))
+    {
+       $docket[] = $row121['docket_number'];
+    }
+    $check_docs = "select * from $bai_pro3.pac_stat_log_input_job where doc_no in (".implode(',',$docket).")";
+    $result_check_docs=mysqli_query($link, $check_docs) or die ("Error1.1=".$check_docs.mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($result_check_docs) == 0)
+    {
+    	$sql="Delete from $brandix_bts.tbl_miniorder_data where mini_order_ref='".$carton_id."'";
+    	mysqli_query($link, $sql) or exit("Failed to Delete tbl_miniorder_data");
+
+    	$sql1="UPDATE $brandix_bts.`tbl_carton_ref` SET merge_status='' where id='".$c_ref."'";
+    	mysqli_query($link, $sql1) or exit("Failed to update tbl_carton_ref");
+
+    	$sql2="UPDATE $brandix_bts.`tbl_carton_size_ref` SET split_qty='', no_of_cartons='' where parent_id='".$c_ref."'";
+    	mysqli_query($link, $sql2) or exit("Failed to update tbl_carton_size_ref");
+
+    	//echo "<h2>Error in sewing job generation please regenerate the sewing job<h2>";
+    	echo "<script>sweetAlert('Error in sewing job generation please regenerate the sewing job!','warning');</script>";
+    	echo("<script>setTimeout(function(){location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."'},5000);</script>");
+    	die();
+    }
 	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
 	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'sewing_job_create_original.php',0,'N')."&style=$style_id&schedule=$schedule_id';</script>");
 ?> 

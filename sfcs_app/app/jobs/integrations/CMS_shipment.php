@@ -1,57 +1,55 @@
 <?php
 $start_timestamp = microtime(true);
-include("m3_process_ses_track.php");
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 error_reporting(0);
-$time_diff=(int)date("YmdH")-$log_time;
 
 set_time_limit(6000000);
 
-$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) AND CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) IN (SELECT CONCAT(TRIM(Style),TRIM(SCHEDULE),TRIM(GMT_Color)) FROM $m3_inputs.order_details_original WHERE MO_Released_Status_Y_N='Y') ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
+$insert_shipment_plan="INSERT INTO $m3_inputs.shipment_plan SELECT * FROM $m3_inputs.shipment_plan_original WHERE CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) NOT IN (SELECT CONCAT(TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)) FROM $m3_inputs.shipment_plan) ORDER BY TRIM(Style_No),TRIM(Schedule_No),TRIM(Colour)";
 echo $insert_shipment_plan."<br><br>";
 $res=mysqli_query($link, $insert_shipment_plan) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 if($res)
 {
 	print("Data Inserted into shipment_plan from shipment_plan_original ")."\n";
 }
-function check_style($string)
-{
-	global $link;
-	global $bai_pro2;
-	$check=0;
-	for ($index=0;$index<strlen($string);$index++) {
-    	if(isNumber($string[$index]))
-		{
-			$nums = $string[$index];
-		}
-     	else    
-		{
-			$chars = $string[$index];
-			$check=$check+1;
-			if($check==2)
-			{
-				break;
-			}
-		} 			
-	}
+// function check_style($string)
+// {
+// 	global $link;
+// 	global $bai_pro2;
+// 	$check=0;
+// 	for ($index=0;$index<strlen($string);$index++) {
+//     	if(isNumber($string[$index]))
+// 		{
+// 			$nums = $string[$index];
+// 		}
+//      	else    
+// 		{
+// 			$chars = $string[$index];
+// 			$check=$check+1;
+// 			if($check==2)
+// 			{
+// 				break;
+// 			}
+// 		} 			
+// 	}
 
-	$sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
-	$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row3=mysqli_fetch_array($sql_result3))
-	{
-		$style_id_new=$sql_row3['style_id'];
-	}
+	// $sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
+	// $sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row3=mysqli_fetch_array($sql_result3))
+	// {
+	// 	$style_id_new=$sql_row3['style_id'];
+	// }
 	
-	if(strlen($style_id_new)>0)
-	{
-		return $style_id_new;
-	}
-	else
-	{
-		return $nums;
-	}	
-}
+	// if(strlen($style_id_new)>0)
+	// {
+	// 	return $style_id_new;
+	// }
+	// else
+	// {
+	// 	return $nums;
+	// }	
+// }
 
 function isNumber($c) 
 {
@@ -70,25 +68,9 @@ function isNumber($c)
 	{
 		print("M3 to SFCS Sync Successfully Completed")."\n";
 	}
-	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_1\")";
-	$res1=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res1)
-	{
-		print("Please wait for furthur process")."\n";
-	}
 
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"ssc_plan_process.php\"; }</script>";
 ?>
 <?php
-	$username="ber_databasesvc";
-	$username_val="orderdetail_plan_".$username.date("YmdHis");
-	$sql="CREATE TEMPORARY TABLE temp_pool_db.$username_val ENGINE=MyISAM select DISTINCT MO_NUMBER,TRIM(BOTH FROM Style) as Style,TRIM(BOTH FROM SCHEDULE) as SCHEDULE,TRIM(BOTH FROM GMT_Color) as GMT_Color,GMT_Size,MO_Qty FROM $m3_inputs.order_details WHERE MO_Released_Status_Y_N='Y'";
-	// echo $sql."<br>";
-	$res=mysqli_query($link, $sql) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($res)
-	{
-		echo "temperory table created";
-	}
 			
 	$size=array("s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50"); 
 	
@@ -114,12 +96,12 @@ function isNumber($c)
 				$color=str_pad($sql_row2['color'],"30"," ");
 				$ssc_code=$style.$sch_no.$color;
 				// echo $ssc_code."<br>";
-				$style_id=check_style($style);
+				// $style_id=check_style($style);
 				// echo "<br><br>".$style." Len=".strlen($style_id)."<br><br>";
-				if(strlen($style_id)==0)
-				{
+				// if(strlen($style_id)==0)
+				// {
 					$style_id=$style;
-				}
+				// }
 
 				$size_code = [];   
 				$get_sizes = "select size_code from $bai_pro3.shipment_plan where schedule_no=\"$sch_no\" and style_no=\"$style\" and color=\"$color\"";
@@ -131,7 +113,7 @@ function isNumber($c)
 				}
 				$sizes = '"'.implode('","',$size_code).'"';
 
-                $check_mo_status = "select * from $m3_inputs.mo_details where STYLE=\"$style\" AND SCHEDULE=\"$sch_no\" AND COLOURDESC=\"$color\" AND SIZEDESC in ($sizes) AND REFORDLINE !=99";
+                $check_mo_status = "select * from $m3_inputs.mo_details where STYLE=\"$style\" AND SCHEDULE=\"$sch_no\" AND COLOURDESC=\"$color\" AND SIZEDESC in ($sizes) AND REFORDLINE !='99'";
                 // echo $check_mo_status;
                 $mo_status_result=mysqli_query($link, $check_mo_status) or exit("Sql Error Mo".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if (mysqli_num_rows($mo_status_result) > 0) 
@@ -339,8 +321,15 @@ function isNumber($c)
 									$vpo=$sql_row3['VPO_NO'];
 									$customer_style=$sql_row3['Customer_Style_No'];
 								}
+								if($vpo!='')
+								{
 								
-								$sql31="update $bai_pro3.bai_orders_db set vpo=\"$vpo\", packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
+									$sql32="update $bai_pro3.bai_orders_db set vpo=\"$vpo\" where order_tid=\"$ssc_code\" ";//vpo updating#2635
+									echo $sql32."<br><br>";
+									mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}
+
+								$sql31="update $bai_pro3.bai_orders_db set  packing_method=\"$packing_method\",destination=\"$destination\", zfeature=\"$zfeature\", style_id=\"$style_id\",  order_style_no=\"$style\", order_del_no=\"$sch_no\", order_col_des=\"$color\", order_s_".$size[$size_ref]."=$order_qty,title_size_".$size[$size_ref]."=\"".trim($size_code)."\",order_date=\"$exfact_date\",title_flag=\"$flag\", order_po_no=\"$cpo\",co_no=\"$cpo\", order_div=\"$buyer_div\",customer_style_no=\"$customer_style\" where order_tid=\"$ssc_code\"";//co_no added on 2017-12-23
 								echo $sql31."<br><br>";
 								mysqli_query($link, $sql31) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$size_ref=$size_ref+1;
@@ -356,12 +345,7 @@ function isNumber($c)
 			}
 		}
 	}
-	// $sql3="delete from $bai_pro3.shipment_plan";
-	// mysqli_query($link,$sql3) or exit("Sql Error".mysql_error());
 
-	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"CMS_SP_2\")";
-	mysqli_query($link, $sql3) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"ssc_color_coding.php\"; }</script>";
 ?>
 <?php	
 
@@ -389,27 +373,27 @@ function isNumber($c)
 						$maxcolor=0;
 						$sql3="select max(color_code) as maxcolor from $bai_pro3.bai_orders_db where order_style_no=\"$style_no\" and order_del_no=\"$sch_no\"";
 				
-					$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row3=mysqli_fetch_array($sql_result3))
-					{
-						$maxcolor=$sql_row3['maxcolor'];
-					}
+						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row3=mysqli_fetch_array($sql_result3))
+						{
+							$maxcolor=$sql_row3['maxcolor'];
+						}
 					
-					if($maxcolor>0)
-					{
-						$startcolor=$maxcolor+1;	
-					}
-					else
-					{
-						$startcolor=65;
-					}
-					
-							$order_tid=$sql_row32['order_tid'];
-							//echo $order_tid;
-							$sql33="update $bai_pro3.bai_orders_db set color_code=$startcolor where order_tid=\"$order_tid\"";
-							
-							mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$startcolor=$startcolor+1;
+						if($maxcolor>0)
+						{
+							$startcolor=$maxcolor+1;	
+						}
+						else
+						{
+							$startcolor=65;
+						}
+						
+						$order_tid=$sql_row32['order_tid'];
+						//echo $order_tid;
+						$sql33="update $bai_pro3.bai_orders_db set color_code=$startcolor where order_tid=\"$order_tid\"";
+						
+						mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$startcolor=$startcolor+1;
 					}
 					
 	
@@ -417,70 +401,8 @@ function isNumber($c)
 					
 		}
 				
-	$sql3="insert into $bai_pro3.db_update_log (date, operation) values (\"".date("Y-m-d")."\",\"COLOR1\")";
-	// echo $sql3;
-	mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
-		//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"test.php\"; }</script>";
-		
-		
-	//Embellishment For Previous Entries
-
-	// $sql33="select schedule,op_desc from bai_pro3.bai_emb_db where mo_type=\"MO\"";
-	//SR# 63724733 - KiranG/2015-08-4: Data field test (SCHEDULE) case causing an issue to extract schedule value and subsequent query execution.
-	$sql33="select MAX(emb_tid), schedule,op_desc FROM $bai_pro3.bai_emb_db WHERE mo_type='MO' GROUP BY schedule"; //KiranG 2015-07-25 filter query.
-
-	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row33=mysqli_fetch_array($sql_result33))
-	{
-		$schedule=$sql_row33['schedule'];
-		$op_desc=$sql_row33['op_desc'];
-		if(strpos($op_desc," GF"))
-		{
-			$sql3="update $bai_pro3.bai_orders_db set order_embl_e=1,order_embl_f=1,order_embl_a=0,order_embl_b=0,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0 where order_del_no=\"$schedule\"";
-			// echo $sql3;
-			$res = mysqli_query($link, $sql3) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-			$sql31="update $bai_pro3.bai_orders_db_confirm set order_embl_e=1,order_embl_f=1,order_embl_a=0,order_embl_b=0,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0 where order_del_no=\"$schedule\"";
-			// echo $sql31;
-			mysqli_query($link, $sql31) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-		}
-		else
-		{
-			if(strpos($op_desc," PF"))
-			{
-				$sql3="update $bai_pro3.bai_orders_db set order_embl_a=1,order_embl_b=1,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
-				// echo $sql3;
-				mysqli_query($link, $sql3) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-				$sql31="update $bai_pro3.bai_orders_db_confirm set order_embl_a=1,order_embl_b=1,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
-				// echo $sql31;
-				mysqli_query($link, $sql31) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-			}
-			else
-			{
-				$sql3="update $bai_pro3.bai_orders_db set order_embl_a=0,order_embl_b=0,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
-				// echo $sql3;
-				mysqli_query($link, $sql3) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$sql31="update $bai_pro3.bai_orders_db_confirm set order_embl_a=0,order_embl_b=0,order_embl_c=0,order_embl_d=0,order_embl_g=0,order_embl_h=0,order_embl_e=0,order_embl_f=0 where order_del_no=\"$schedule\"";
-				// echo $sql31;
-				mysqli_query($link, $sql31) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-			}
-		}	
-	}
 	
-	$myFile = "m3_process_ses_track.php";
-	$fh = fopen($myFile, 'w') or die("can't open file");
-	$stringData = "<?php $"."log_time=".(int)date("YmdH")."; ?>";
-	fwrite($fh, $stringData);
-	fclose($fh);
 
-	//Embellishment For Previous Entries
-
-	// echo "<script language=\"javascript\"> setTimeout(\"CloseWindow()\",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script>";
 	$end_timestamp = microtime(true);
 	$duration = $end_timestamp - $start_timestamp;
 	print("Execution took ".$duration." milliseconds.");		

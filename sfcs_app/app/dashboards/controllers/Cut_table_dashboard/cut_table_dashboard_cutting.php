@@ -127,7 +127,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                   $sql2="select * from $bai_pro3.cutting_table_plan as ctp  left join $bai_pro3.`plandoc_stat_log` as psl 
                   on ctp.doc_no = psl.doc_no
                   where ctp.cutting_tbl_id =".$section_mods." and (psl.act_cut_status='' or psl.a_plies
-                  !=psl.p_plies) order by ctp.log_time asc";
+                  !=psl.p_plies) and ctp.short_shipment_status=0 order by ctp.log_time asc";
                   $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($row2=mysqli_fetch_array($result2))
                   {
@@ -543,7 +543,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                         $clr=trim(implode(',',$colors_db),50);
                         /*Getting required qty and allocated qty and catyy and Cuttable excess% and fab cad alloaction*/
                         //getting allocated qty;
-                        $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+                        $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
                         $sql_fabcadallow_result=mysqli_query($link, $sql_fabcadallow) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $sql_num_check=mysqli_num_rows($sql_fabcadallow_result);
                         while($sql_fabcadallow_row=mysqli_fetch_array($sql_fabcadallow_result))

@@ -1827,7 +1827,7 @@ $scount_temp=array();
 $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
-$sql="select * from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
+$sql="select * from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1843,7 +1843,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //Added Backup Lots for visibility in Inspection Report
 
-$sql1="select * from $bai_rm_pj1.store_in_backup where lot_no in ($lot_ref_batch) order by ref2+0";
+$sql1="select * from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 //echo $sql1."<br>";
 
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1880,7 +1880,7 @@ $shade_count=sizeof($scount_temp2);
 
 
 //$sql="select count(*) as \"count\" from store_in where lot_no in ($lot_ref_batch)";
-$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch)";
+$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in  ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2351,7 +2351,7 @@ if($num_check>0)
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo ($ctex_sum-$rec_qty); ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $avg_t_width; ?></td>
   <td class=xl7024082 style='border-top:none;border-left:none'><?php echo $avg_c_width; ?></td>
-  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo ($avg_c_width-$avg_t_width); ?></td>
+  <td class=xl7024082 style='border-top:none;border-left:none'><?php echo round(($avg_c_width-$avg_t_width),2); ?></td>
   <td class=xl7824082 style='border-top:none;border-left:none ;border-right:1pt solid '><?php echo $lot_count; ?></td>
   </tr>
 </table>

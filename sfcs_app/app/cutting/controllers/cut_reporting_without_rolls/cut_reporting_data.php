@@ -4,7 +4,7 @@ error_reporting(1);
 
 $response_data = array();
 $op_code = 15;
-
+ 
 foreach($sizes_array as $size){
     $a_sizes_sum .= 'a_'.$size.'+';
     $a_sizes_str .= 'a_'.$size.',';
@@ -16,27 +16,75 @@ $a_sizes_str = rtrim($a_sizes_str,',');
 if($_GET['rejection_docket']!=''){
     $r_doc = $_GET['rejection_docket'];
     //if clubbed docket then getting all child dockets
-    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
+    $child_docs_query = "SELECT GROUP_CONCAT(doc_no) as doc_no,order_tid from $bai_pro3.plandoc_stat_log where org_doc_no = $r_doc ";
     $child_docs_result = mysqli_query($link,$child_docs_query);
     while($row = mysqli_fetch_array($child_docs_result)){
         $doc_no = $row['doc_no'];
+        $order_tid = $row['order_tid'];
         $child_docs = $doc_no;
     }
     getRejectionDetails($r_doc,$child_docs);
     exit();
 }else{
     $doc_no = $_GET['doc_no'];
+    $child_docs_query1 = "SELECT order_tid from $bai_pro3.plandoc_stat_log where doc_no = $doc_no ";
+    // echo $child_docs_query1;
+    $child_docs_result1 = mysqli_query($link,$child_docs_query1);
+    while($row1 = mysqli_fetch_array($child_docs_result1)){
+        $order_tid = $row1['order_tid'];
+        $child_docs = $doc_no;
+    }
 }
 
-$doc_status_query  = "SELECT a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
+$get_shipment_details="select order_style_no as style,order_del_no as schedule from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+
+$get_shipment_details_res=mysqli_query($link, $get_shipment_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
+{
+    $style=$sql_rowx121['style'];
+    $schedule=$sql_rowx121['schedule'];
+}
+$short_ship_status =0;
+$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+$shortship_res = mysqli_query($link,$query_short_shipment);
+$count_short_ship = mysqli_num_rows($shortship_res);
+if($count_short_ship >0) {
+    while($row_set=mysqli_fetch_array($shortship_res))
+    {
+        if($row_set['remove_type']==1) {
+            $short_ship_status=1;
+        }else{
+            $short_ship_status=2;
+        }
+    }
+}
+if($short_ship_status==1){
+    $response_data['error'] = '2';
+    echo json_encode($response_data);
+    exit();
+}
+else if($short_ship_status==2){
+    $response_data['error'] = '3';
+    echo json_encode($response_data);
+    exit();
+}
+$manual_flag = 0;
+$doc_status_query  = "SELECT manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+                    // echo $doc_status_query;
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
     $row = mysqli_fetch_array($doc_status_result);
     $a_plies = $row['a_plies'];
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
-   
+    $manual_flag = $row['manual_flag'];
+    $cmnt = '';
+    if($manual_flag == '1')
+    {
+        $cmnt = 'Confirmed Manually';
+    }
+    $response_data['reported'] = $cmnt;
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
     $ratio   = $row['ratio'];
@@ -153,6 +201,15 @@ if($act_cut_status == 'DONE'){
         $fab_rec = $fab_row['fab_received'];
         $fab_ret = $fab_row['fab_returned'];
         $shortages= $fab_row['shortages'];
+        $joints_endbits=$fab_row["joints_endbits"];
+        $jo_int_check=explode('$',$joints_endbits);
+        $joints=0;$endbits=0;   
+        for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+        {
+            $values_joint=explode('^',$jo_int_check[$ii]);
+            $joints=$joints+$values_joint[0];
+            $endbits=$endbits+$values_joint[1];         
+        }
         $damages = $fab_row['damages'];
         $shift   = $fab_row['shift'];
         $section = $fab_row['section'];
@@ -162,7 +219,7 @@ if($act_cut_status == 'DONE'){
 
 
 
-if($a_plies == $p_plies && $act_cut_status == 'DONE'){
+if($a_plies == $p_plies && $act_cut_status == 'DONE' && $manual_flag==0){
     $response_data['cut_done']  = 1;
     $response_data['avl_plies'] = 0;
     $response_data['a_plies']  = $p_plies;
@@ -172,16 +229,59 @@ if($a_plies == $p_plies && $act_cut_status == 'DONE'){
     $response_data['a_plies']  = 0;
 }
 
-if($a_plies != $p_plies && $act_cut_status == 'DONE'){
+if($a_plies != $p_plies && $act_cut_status == 'DONE' && $manual_flag==0){
     $response_data['avl_plies'] = $p_plies - $a_plies;
     $response_data['partial'] = 1;
     $response_data['a_plies']  = $a_plies;
 }
 
+$rollwisecutdedetailssum="SELECT sum(reporting_plies) as rollwisereportedsum from $bai_pro3.docket_roll_info where docket=$doc_no";
+$rollwisecutdedetailssumresult= mysqli_query($link,$rollwisecutdedetailssum);
+if($rollwisecutdedetailssumresult)
+{
+    $rollwisereportedsum = mysqli_fetch_array($rollwisecutdedetailssumresult);
+    $rollwisereportedsum = $rollwisereportedsum['rollwisereportedsum'];
+    
+
+    $rollwisecutdedetails="SELECT * from $bai_pro3.docket_roll_info where docket=$doc_no";
+    $rollwisecutdedetailsresult= mysqli_query($link,$rollwisecutdedetails);
+     
+    while($detials=mysqli_fetch_array($rollwisecutdedetailsresult))
+    {
+         $rollwisesummarydetials[]=$detials;
+    } 
+
+    $response_data['rollwisedetails'] = $rollwisesummarydetials;
+    $response_data['rollwisedetailsdone'] = $rollwisecutdedetailssumresult;
+
+
+    if($rollwisereportedsum == $p_plies && $act_cut_status == 'DONE'){
+    $response_data['cut_done_roll_wise']  = 1;
+    $response_data['avl_plies_roll_wise'] = 0;
+    $response_data['a_plies_roll_wise']  = $p_plies;
+    }else{
+        $response_data['cut_done_roll_wise'] = 0;
+        $response_data['avl_plies_roll_wise']= $p_plies;
+        $response_data['a_plies_roll_wise']  = 0;
+    }
+
+    if($rollwisereportedsum != $p_plies && $act_cut_status == 'DONE'){
+        $response_data['avl_plies_roll_wise'] = $p_plies - $rollwisereportedsum;
+        $response_data['partial_roll_wise'] = 1;
+        $response_data['a_plies_roll_wise']  = $rollwisereportedsum;
+    }
+}
+
+
+
+
+
+
+
 //Verifying for the 'F' forcefully reported docket
 $nfully_report = 0;
 $cps_full_status_query = "SELECT reported_status from $bai_pro3.cps_log where doc_no IN ($child_docs) 
-                    and operation_code = $op_code ";                                        
+                    and operation_code = $op_code ORDER BY reported_status ASC";                                        
 $cps_full_status_result = mysqli_query($link,$cps_full_status_query);
 while($row=mysqli_fetch_array($cps_full_status_result)){
     if($row['reported_status'] == 'P' || $row['reported_status'] == ''){
@@ -191,7 +291,7 @@ while($row=mysqli_fetch_array($cps_full_status_result)){
         $response_data['cut_done'] = 1;
     }    
 }            
-if($response_data['cut_done'] == 1 && $fully_report =0 )
+if($response_data['cut_done'] == 1 && $manual_flag = 1)
     $response_data['partial']  = 0;        
 
 if(!in_array($category,$fabric_categories_array) ){
@@ -207,7 +307,15 @@ if(!in_array($category,$fabric_categories_array) ){
         $response_data['cut_done']  = 1;
     }
 }
-    
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check12=mysqli_num_rows($sql_result12);
+
+$checkstock="SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE plan_lot_ref LIKE '%STOCK%' and doc_no ='$doc_no'";
+$checkstockresult12=mysqli_query($link, $checkstock) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$checkstockresult=mysqli_num_rows($checkstockresult12);
+
+
 $response_data['doc_no'] = $doc_no;
 $response_data['fab_required'] = $fab_required; 
 $response_data['doc_qty']    = $doc_qty;
@@ -221,12 +329,16 @@ $response_data['fab_status']   = $fabric_status;
 $response_data['fab_received'] = $fab_rec;
 $response_data['fab_returned'] = $fab_ret;
 $response_data['shortages'] = $shortages;
+$response_data['joints'] = $joints;
+$response_data['endbits'] = round($endbits,4);
 $response_data['damages']   = $damages;
 $response_data['shift']     = $shift;
 $response_data['section']   = $section;
 $response_data['date']      = $date;
 $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
+$response_data['rollinfo']      = $sql_num_check12;
+$response_data['rollinfo1']      = $checkstockresult;
 
 
 echo json_encode($response_data);

@@ -81,7 +81,11 @@ else
 
 <?php
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
+$url1 = getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R');
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.$url1);
+$company_num = $company_no;
 if(isset($_POST['download'])) 
 {	
 	set_time_limit(6000000);
@@ -125,11 +129,20 @@ if(isset($_POST['download']))
 				$style = str_replace('"', '\"', $row['STYLE']);
 				$order_type = str_replace('"', '\"', $row['ORDER_TYPE']);
 				$warehouse = str_replace('"', '\"', $row['WAREHOUSE']);
+				$po_line = str_replace('"', '\"', $row['PO_LINE_NUMBER']); 
+				$po_subline = str_replace('"', '\"', $row['PO_SUB_LINE_NUMBER']);
+
+				$item_number = urlencode($item_no);
+				//API call for rm color
+				$api_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/LstMITMAHX1;returncols=TY15?CONO=$company_num&ITNO=".$item_number;
+			    $api_data = $obj->getCurlAuthRequest($api_url);
+			    $api_data = json_decode($api_data, true);
+			    $rm_color = $api_data['MIRecord'][0]['NameValue'][0]['Value'];
 				
 				$sql_lot = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
 				//echo $sql_lot."</br>";
 				$result_lot = mysqli_query($link, $sql_lot);
-				$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = '', grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\" WHERE lot_no = \"".$lot_num."\"";
+				$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = \"".$grn_entry_no."\", grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\", rm_color = \"".$rm_color."\" WHERE lot_no = \"".$lot_num."\"";
 				//echo $sql_sticker_det."</br>";
 				$result_rec_insert = mysqli_query($link, $sql_sticker_det);
 				if($result_rec_insert)

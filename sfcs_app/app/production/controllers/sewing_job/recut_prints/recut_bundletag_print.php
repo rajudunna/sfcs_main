@@ -3,7 +3,15 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));  
 
   ?>
-
+<style> 
+.btn-group-sm>.btn, .btn-xs {
+	font-size: 10px;
+    line-height: 3;
+}
+span{
+	font-size: 11px;
+}
+</style>
 <script type="text/javascript">
 	function pop_check()
 	{
@@ -103,23 +111,23 @@ if(isset($_POST['submit']))
 				$check_status=2;
 			}	
 			echo "<table class='table table-bordered'><tr><th>".$sql_row_value['status']."</th><th rospan=3>You are going to take bundle print</th>";
-			if($barcode_4x2=='yes')
+			
+			if($barcode_4x2=='yes' || $barcode_2x1=='yes')
 			{
 				$url = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_4_2.php',2,'R');
-				$url = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_4_2.php',2,'R');
-				echo "<td><a class='btn btn-info btn-sm' href='$url?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Operation 4*2</a></td>";
-				$url2 = getFullURLLevel($_GET['r'],'sewing_job/reprint_tagwithout_operation.php',2,'R');
-				echo "<td><a class='btn btn-info btn-sm' href='$url?recut_id=".$recut."&sticker_type=2sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Out Operation 4*2</a></td>";
+				echo "<td><a class='btn btn-info btn-xs' href='$url?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Operation 4*2</span></a></td>";
+				// $url2 = getFullURLLevel($_GET['r'],'sewing_job/reprint_tagwithout_operation.php',2,'R');
+				echo "<td><a class='btn btn-info btn-xs' href='$url?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Out Operation 4*2</span></a></td>";
+				
+				$url1 = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_2_1.php',2,'R');
+				echo "<td><a class='btn btn-info btn-xs' href='$url1?recut_id=".$recut."&sticker_type=1sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Operation 2*1</span></a></td>";
+				// $url2 = getFullURLLevel($_GET['r'],'sewing_job/reprint_tagwithout_operation.php',2,'R');
+				echo "<td><a class='btn btn-info btn-xs' href='$url1?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Out Operation 2*1</span></a></td>";
 				echo "</tr>";
 			}
-			else if($barcode_2x1=='yes')
+			else
 			{
-				$url1 = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_2_1.php',2,'R');
-				$url1 = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_2_1.php',2,'R');
-				echo "<td><a class='btn btn-info btn-sm' href='$url1?recut_id=".$recut."&sticker_type=1sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Operation 2*1</a></td>";
-				$url2 = getFullURLLevel($_GET['r'],'sewing_job/reprint_tagwithout_operation.php',2,'R');
-				echo "<td><a class='btn btn-info btn-sm' href='$url1?recut_id=".$recut."&sticker_type=2sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print With Out Operation 2*1</a></td>";
-				echo "</tr>";
+				echo "<script>sweetAlert('Barcode stickers not availabe for this bundle','','warning')</script>";
 			}
 			echo "</table>";
 		}

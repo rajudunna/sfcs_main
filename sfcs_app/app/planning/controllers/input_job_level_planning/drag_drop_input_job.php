@@ -224,7 +224,7 @@ $module_limit=14;
 	
 	************************************************************************************************************/
 	var boxSizeArray = [];
-	for(var i=0; i<120; i++){
+	for(var i=0; i<200; i++){
 		boxSizeArray.push('<?= $module_limit; ?>');
 	}
 	
@@ -662,7 +662,12 @@ $module_limit=14;
 		  $style=$sql_row['order_style_no'];
 		}
 	}
-
+	$sql_ops="SELECT operation_code FROM `brandix_bts`.`tbl_ims_ops` WHERE appilication='IMS_OUT' ";
+	$sql_result_ops=mysqli_query($link, $sql_ops) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_ops=mysqli_fetch_array($sql_result_ops))
+	{
+				$imsout=$sql_row_ops["operation_code"];
+	}
 $code_db=array();
 $code_db=explode("*",$code);
 
@@ -777,7 +782,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		mysqli_query($link, $sql_ix) or exit("$sql_ix Sql Error index creation".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		
 			
-		$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name GROUP BY section ORDER BY section + 0";
+		$sqlx="SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where module_master.status='active' GROUP BY section ORDER BY section + 0";
       $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     
       while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -806,14 +811,14 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				}
 			}
 			unset($mods);
-			$get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
+			$get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='') and operation_code='$imsout' ";
 			$sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
 			while ($row2=mysqli_fetch_array($sql_res)) 
 			{
 				$short_key = $row2['short_cut_code'];
 			}
 
-			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1)";
+			$work_station_module="select module,operation_code from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code='$short_key' ";
 			// echo $work_station_module;
 			$sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
 			while ($row1=mysqli_fetch_array($sql_result1))
@@ -844,7 +849,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							$cut_no1=$sql_row1['acutno'];
 							$color_code1=$sql_row1['color_code'];
 							
-							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
+							$sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.bai_orders_db WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
 							$sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_id=mysqli_fetch_array($sql_result_id))
 							{

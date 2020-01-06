@@ -106,6 +106,21 @@ function check_style($string)
 function isNumber($c) {
     return preg_match('/[0-9]/', $c);
 }
+
+function short_shipment_status($style,$schedule,$link) {
+	
+	$short_shipment_qry = mysqli_fetch_array(mysqli_query($link, "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'"));
+	if(sizeof($short_shipment_qry)) {
+		if($short_shipment_qry['remove_type']==1) {
+			echo "<script>swal('Short Shipment Done Temporarly','','error');</script>";
+		}else{
+			echo "<script>swal('Short Shipment Done Permanently','','error');</script>";
+		}
+		return false;
+	} else {
+		return true;
+	}
+}
 ?>
 
 

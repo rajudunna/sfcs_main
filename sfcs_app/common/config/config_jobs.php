@@ -33,6 +33,15 @@ $password_ms = $conf->get('m3_password');
 $m3_db = $conf->get('m3_db');
 $conn_string = "DRIVER={iSeries Access ODBC Driver};System=".$host_ms.";Uid=".$user_ms.";Pwd=".$password_ms.";";
 
+//Promis Configurations
+$promis_sql_odbc_host = $conf->get('promis-mssql-odbc');
+$promis_sql_odbc_server = $conf->get('promis-server-name');
+$promis_sql_odbc_user = $conf->get('promis-user-name');
+$promis_sql_odbc_pass = $conf->get('promis-password');
+$promis_db = $conf->get('promisdatabase');
+$promis_sql_driver_name = $conf->get('promis_driver_name');
+
+
 //sfcs-ffsp configurations
 $sfsp_serverName=$conf->get('sf_sp_servername');
 $sfsp_m3_databasename=$conf->get('sf_sp_dbname');
@@ -54,6 +63,12 @@ $prod_status_password = $conf->get('prod-status-password');
 $prod_status_database=$conf->get('prod-status-db');
 $prod_status_driver_name=$conf->get('prod-status-driver-name');
 
+//BEL_WISDOM Connections Details
+$bel_wisdom_server_name=$conf->get('belwisdom-prod-status-server-name');
+$bel_wisdom_username=$conf->get('belwisdom-prod-status-user-name');
+$bel_wisdom_password = $conf->get('belwisdom-prod-status-password');
+$bel_wisdom_database=$conf->get('belwisdom-prod-status-db');
+$bel_wisdom_table=$conf->get('belwisdom-prod-status-table');
 
 //m3 integration plant codes
 $grn_details=$conf->get('grndetails');
@@ -93,6 +108,12 @@ $emp_active_status = $conf->get('emp_active_status');
 
 //REST API TimeOut
 $API_CALL_TIME_OUT = $conf->get('api_call_time_out');
+
+//rm dashboard api
+$rm_dashboard_api = $conf->get('rm_dashboard_api');
+
+//Enable API
+$enable_api_call = $conf->get('enable-api-call');
 
 //Central Administraion Group ID's
 $group_id_sfcs=8;

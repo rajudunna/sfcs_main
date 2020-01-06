@@ -327,18 +327,24 @@ function getjobdetails($job_number)
             if($flag == 'packing_summary_input')
             {
                 $job_number_reference = $row['type_of_sewing'];
-                if($job_number_reference == 3)
-                {
-                    $row['remarks'] = 'Sample';
-                }
-                else if($job_number_reference == 2)
-                {
-                    $row['remarks'] = 'Excess';
-                }
-                else
-                {
-                    $row['remarks'] = 'Normal';
-                }
+                // if($job_number_reference == 3)
+                // {
+                    // $row['remarks'] = 'Sample';
+                // }
+                // else if($job_number_reference == 2)
+                // {
+                    // $row['remarks'] = 'Excess';
+                // }
+                // else
+                // {
+                    // $row['remarks'] = 'Normal';
+                // }
+				$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
+				$get_remark_arry_req = $link->query($get_remark);
+				while($row_remark = $get_remark_arry_req->fetch_assoc()) 
+				{
+					$row['remarks']  = $row_remark['prefix_name'];
+				}
                 $select_modudle_qry = "select input_module from $bai_pro3.plan_dashboard_input where input_job_no_random_ref = '$actual_input_job_number'";
                 $result_select_modudle_qry = $link->query($select_modudle_qry);
                 if($result_select_modudle_qry->num_rows > 0)
@@ -401,11 +407,15 @@ function getjobdetails($job_number)
 
 							//get Current operation alaready scanned qty
                             $current_recieved_qty="SELECT ((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id = '$job_number[4]'";
-                            //echo "</br>".$current_recieved_qty."</br>";
-							$result_current_recieved_qty = $link->query($current_recieved_qty);
-							while($row_result_current_recieved_qty = $result_current_recieved_qty->fetch_assoc()){
-								$current_ops_qty=$row_result_current_recieved_qty['current_recieved_qty'];
-							}
+                            $result_current_recieved_qty = $link->query($current_recieved_qty);
+                            if($result_current_recieved_qty->num_rows > 0)
+                            {
+                                while($row_result_current_recieved_qty = $result_current_recieved_qty->fetch_assoc()){
+                                    $current_ops_qty=$row_result_current_recieved_qty['current_recieved_qty'];
+                                }
+                            }else{
+                                $current_ops_qty=0;
+                            }
 							//echo "</br>Testing ".$current_ops_qty."</br>";
 							$bal_toreport=($previous_minqty-$current_ops_qty);
 							if($bal_toreport>0){
@@ -563,7 +573,40 @@ function getjobreversaldetails($job_rev_no)
     {
         $json1['module_status'] = "No Module available for this job";
     }
- echo json_encode($json1);
+    
+    $check_short_ship_status=0;
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
+    $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
+    if($result_selecting_style_schedule_color_qry->num_rows > 0)
+    {
+        $check_short_ship_status=1;
+        while($row = $result_selecting_style_schedule_color_qry->fetch_assoc()) 
+        {
+            $style= $row['order_style_no'];
+            $schedule= $row['order_del_no'];
+        }
+    }
+    else
+    {
+        $json1['invalid_status'] = 'Invalid Input. Please Check And Try Again !!!';
+    }
+
+    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    $shortship_res = mysqli_query($link,$query_short_shipment);
+    $count_short_ship = mysqli_num_rows($shortship_res);
+    if($count_short_ship >0) {
+        while($row_set=mysqli_fetch_array($shortship_res))
+        {
+            if($row_set['remove_type']==1) {
+                $short_ship_status=1;
+                $json1['short_shipment_status'] = 'Short Shipment Done Temporarly';
+            }else{
+                $short_ship_status=2;
+                $json1['short_shipment_status'] = 'Short Shipment Done Permanently';
+            }
+        }
+    }
+     echo json_encode($json1);
 }
 if(isset($_GET['data_rev']))
 {
@@ -631,7 +674,49 @@ function getreversalscanningdetails($job_number)
         $post_ops_code = 0;
     }
     $result_array['post_ops'][] = $post_ops_code;
-    if($post_ops_code != 0)
+    if($post_ops_code > 0)
+    {
+        $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
+        $result_checking_qry = $link->query($checking_qry);
+        while($row_cat = $result_checking_qry->fetch_assoc()) 
+        {
+            $category_act = $row_cat['category'];
+        }
+        if($category_act == 'sewing')
+        {
+            $flag = "check";
+        }
+    }
+    
+    if($post_ops_code != 0 && $flag == "check")
+    {
+       $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
+        $result_pre_ops_validation = $link->query($pre_ops_validation);
+        while($row = $result_pre_ops_validation->fetch_assoc()) 
+        {
+            $b_number = $row['bundle_number'];
+            $sizes[] = $row['size_title'];
+            $size_code = $row['size_title'];
+            $color = $row['color'];
+            $assigned_module = $row['assigned_module'];
+            $post_ops_qry_to_find_rec_qty = "select SUM(recevied_qty) AS recevied_qty,size_title from $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
+            //echo $post_ops_qry_to_find_rec_qty;
+            $result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
+            if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
+            {
+                while($row3 = $result_post_ops_qry_to_find_rec_qty->fetch_assoc()) 
+                {   
+                    $qty=$row3['recevied_qty'];   
+                }
+                $result_array['rec_qtys'][] = $qty;
+            }
+            else
+            {
+                $result_array['rec_qtys'][] = 0;
+            }
+        }
+    }
+    else if($post_ops_code != 0 && $flag != "check")
     {
         $pre_ops_validation = "SELECT id,(sum(recevied_qty)+sum(rejected_qty)) as recevied_qty,send_qty,size_title,bundle_number,color,assigned_module FROM $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' and assigned_module='$module1' AND operation_id = $job_number[0] GROUP BY size_title,color,assigned_module order by bundle_number";
         $result_pre_ops_validation = $link->query($pre_ops_validation);
@@ -643,6 +728,7 @@ function getreversalscanningdetails($job_number)
             $color = $row['color'];
             $assigned_module = $row['assigned_module'];
             $post_ops_qry_to_find_rec_qty = "select group_concat(bundle_number) as bundles,(SUM(recevied_qty)+SUM(rejected_qty)) AS recevied_qty,size_title from $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
+            //echo $post_ops_qry_to_find_rec_qty;
             $result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
             if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
             {
@@ -1399,7 +1485,44 @@ function validating_with_module($pre_array_module)
     $operation = $pre_array_module[2];
     $screen = $pre_array_module[3];
     $scan_type = $pre_array_module[4];
-    
+
+    $column_to_search = $job_no;
+    $column_in_pack_summary = 'tid';
+    if($scan_type == 1)
+    {
+        $column_in_pack_summary = 'input_job_no_random';
+    }
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
+    $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
+    if($result_selecting_style_schedule_color_qry->num_rows > 0)
+    {
+        while($row = $result_selecting_style_schedule_color_qry->fetch_assoc()) 
+        {
+            $style= $row['order_style_no'];
+            $schedule= $row['order_del_no'];
+        }
+    }
+    else
+    {
+        $result=8;
+        echo $result;
+        die();
+    }
+    $short_ship_status =0;
+    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    $shortship_res = mysqli_query($link,$query_short_shipment);
+    $count_short_ship = mysqli_num_rows($shortship_res);
+    if($count_short_ship >0) {
+        while($row_set=mysqli_fetch_array($shortship_res))
+        {
+            if($row_set['remove_type']==1) {
+                $short_ship_status=1;
+            }else{
+                $short_ship_status=2;
+            }
+        }
+    }
+		
     $application='IPS';
     $get_routing_query="SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
     $routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
@@ -1463,18 +1586,23 @@ function validating_with_module($pre_array_module)
             $check_if_ij_is_scanned = "SELECT sum(recevied_qty) as recevied_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$job_no' AND operation_id='$operation'";
         }               
     }
-
-    if ($operation == $opn_routing_code && $screen == 'scan')
+    $tms_status = 0;
+    if (($operation == $opn_routing_code && $screen == 'scan') or ($operation == $opn_routing_code && $screen == 'wout_keystroke'))
     {
+        // echo 'if';
         $check_tms_status_query = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='$job_no'";
         $tms_check_result = $link->query($check_tms_status_query);
         if (mysqli_num_rows($tms_check_result) > 0) {
+            // echo 'two';
             while ($tms_result = mysqli_fetch_array($tms_check_result))
             {
                 $tms_status = $tms_result['input_trims_status'];
             }
         } else {
-            $check_tms_status_query_backup = "SELECT input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
+            // echo 'three';
+
+            $check_tms_status_query_backup = "SELECT max(input_trims_status) as input_trims_status FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='$job_no'";
+            // echo $check_tms_status_query_backup;
             $tms_check_result_backup = $link->query($check_tms_status_query_backup);
             while ($tms_result_backup = mysqli_fetch_array($tms_check_result_backup))
             {
@@ -1484,11 +1612,12 @@ function validating_with_module($pre_array_module)
     }
     else
     {
+        // echo 'else';
         $tms_status = 4;
     }
         
 
-    if ($tms_status > 1)
+    if ($tms_status > 2)
     {
         $check_result = $link->query($check_if_ij_is_scanned);
         while ($row = mysqli_fetch_array($check_result))
@@ -1566,16 +1695,22 @@ function validating_with_module($pre_array_module)
     else
     {
         $response_flag = 5;
-    }       
+    }
+    
+    if($short_ship_status== 1){
+        $response_flag = 6;
+    }else if($short_ship_status== 2){
+        $response_flag = 7;
+    }
     // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
     if ($screen == 'wout_keystroke')
- {
- return $response_flag;
- }
- else
- {
- echo $response_flag;
- }
+    {
+        return $response_flag;
+    }
+    else
+    {
+        echo $response_flag;
+    }
 }
 
 

@@ -212,6 +212,7 @@ if(isset($_POST['submit']))
 $reptype = $_POST['reptype'];
 //echo 'rep type = '.$reptype;
 if(isset($_POST['submit']) && $reptype == 1)
+
 {
 
 //NEW Enhancement for category breakup		 
@@ -223,6 +224,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
 			$doc_ref_no=$sql_row2['doc_no'];
+			
+							 
 			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=\"$doc_ref_no\"";
@@ -293,6 +296,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Fabric Returned</th>";
 	echo "<th>Damages</th>";
 	echo "<th>Shortages</th>";
+	echo "<th>joints</th>";
+	echo "<th>Endbits</th>";
 	echo "<th>Net Utlization</th>";
 	echo "<th>Ordering Consumpt-ion</th>";
 	echo "<th>Actual Consumpt-ion</th>";
@@ -314,15 +319,24 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$fab_ret=$sql_row['fab_returned'];
 		$damages=round($sql_row['damages'],2);
 		$shortages=round($sql_row['shortages'],2);
-		$leader_name = $sql_row['leader_name'];
+		$leader_name = $sql_row['leader_name'];	
+		$joints_endbits=$sql_row["joints_endbits"];
+		$jo_int_check=explode('$',$joints_endbits);
+		$joints=0;$endbits=0;	
+		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+		{
+			$values_joint=explode('^',$jo_int_check[$ii]);
+			$joints=$joints+$values_joint[0];
+			$endbits=$endbits+$values_joint[1];		
+		}
 
-		//
 			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))
 			{
 			  $leader_name1 = $sql_row22['emp_name'];
+			  
 			}
 		//
 
@@ -441,14 +455,29 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$schedule=$sql_row1['order_del_no'];
 			$color_code=$sql_row1['color_code'];
 			$color=$sql_row1['order_col_des'];
-		}		
-			$net_util=$fab_rec-$fab_ret-$damages-$shortages;
-			$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
-			$net_con=round($net_util/$act_total,4);
-			$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
-			$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
-			$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
-			$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
+		}	
+        $req_qty=0;
+		$issued_qty=0;
+        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result112)>0)
+		{
+			while($sql_row112=mysqli_fetch_array($sql_result112))
+			{
+				$req_qty=$sql_row112['req_qty'];
+				$issued_qty=$sql_row112['issued_qty'];
+			}
+		}
+		$doc_req=$doc_req+$req_qty;
+		$fab_rec=$fab_rec+$issued_qty;
+
+        $net_util=$fab_rec-$fab_ret-$damages-$shortages-$endbits;
+        $act_con=round(($fab_rec-$fab_ret)/$act_total,4);
+        $net_con=round($net_util/$act_total,4);
+        $act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
+        $act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
+        $net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
+        $net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
 		
 		echo "<tr height=17 style='height:12.75pt'>";
 		//echo "<td height=17 class=xl6418241 style='height:12.75pt'></td>";
@@ -470,6 +499,9 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$fab_ret</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$damages</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$shortages</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$joints</td>";
+		echo "<td class=xl6618241 style='border-top:none;border-left:none'>".round($endbits,4)."</td>";
+
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_util</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$cat_yy</td>";
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_con</td>";
@@ -480,10 +512,10 @@ if(isset($_POST['submit']) && $reptype == 1)
 		echo "<td class=xl6618241 style='border-top:none;border-left:none'>$leader_name1</td>";
 		// echo "<td class=xl6618241 style='border-top:none;border-left:none'>$net_saving_pct%</td>";
 		echo "</tr>";
+	}	
 	}
-	echo "</table>
-	</div>";
- }
+	echo "</table>";
+
  
  ?>
  
@@ -498,6 +530,7 @@ if(isset($_POST['submit']) && $reptype==2)
  		$doc_ref_new="";
 		
 		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+		
 		//mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -506,7 +539,7 @@ if(isset($_POST['submit']) && $reptype==2)
 			
 			
 			$sql="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_ref_no'";
-			
+			//echo $sql."<br>";
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -514,13 +547,13 @@ if(isset($_POST['submit']) && $reptype==2)
 				$cat_ref_new=$sql_row['cat_ref'];
 			}
 
-			$sql="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
-			
+			$sql1="select * from $bai_pro3.cat_stat_log where category in ($cat) and tid='$cat_ref_new'";
+			//echo $sql."<br>";
 			//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result);
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check1=mysqli_num_rows($sql_result1);
 			
-			if($sql_num_check>0)
+			if($sql_num_check1>0)
 			{
 				$doc_ref_new=$doc_ref_new.$doc_ref_no.", ";
 			}
@@ -531,7 +564,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		$query="";
 		if( strlen($doc_ref_new)>0)
 		{
-			$query="and doc_no in ('$doc_ref_new')";
+			$query="and doc_no in ($doc_ref_new)";
 		}
 		else
 		{
@@ -539,7 +572,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		}
 //NEW Enhancement for category breakup	
    
-$sql="select distinct section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. "order by section";
+$sql="select section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. " group by section order by section";
 
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -549,11 +582,13 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "<h5>Summary Report</h5>";
 	echo "<table class='table table-bordered table-responsive' id='report'>";	
 	echo "<tr class='info'>";
-	echo "<th>Section</th>";
+	echo "<th>Table</th>";
 	echo "<th>Shift</th>";
 	echo "<th>Cut Qty</th>";
 	echo "<th>Damages</th>";
 	echo "<th>Shortages</th>";
+	echo "<th>Joints</th>";
+	echo "<th>Endbits</th>";
 	echo "<th>ActualSaving</th>";
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
@@ -562,9 +597,8 @@ $sql_num_check=mysqli_num_rows($sql_result);
 	echo "</tr>";
 
 while($sql_row=mysqli_fetch_array($sql_result))
-
-{	$section_new=$sql_row['section'];
-	
+{
+	$section_new=$sql_row['section'];
 	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
 	//mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -624,7 +658,7 @@ $sql33="select * from $bai_pro3.act_cut_status where section in ($section) and s
 //mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error 10".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check33=mysqli_num_rows($sql_result33);
-
+$joints=0;$endbits=0;	
 while($sql_row33=mysqli_fetch_array($sql_result33))
 {
 	
@@ -638,7 +672,14 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$damages_new=$sql_row33['damages'];
 	$shortages_new=$sql_row33['shortages'];
 	$leader_name = $sql_row33['leader_name'];
-
+	$joints_endbits=$sql_row33["joints_endbits"];
+	$jo_int_check=explode("$",$joints_endbits);	
+	for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+	{
+		$values_joint=explode("^",$jo_int_check[$ii]);
+		$joints=$joints+$values_joint[0];
+		$endbits=$endbits+$values_joint[1];			
+	}
 	
 	
 	$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no='$doc_no'";
@@ -646,6 +687,9 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
+		
+		//Binding Consumption / YY Calculation
+		$order_tid=$sql_row1['order_tid'];
 		$cat_ref=$sql_row1['cat_ref'];
 		$act_cut_no=$sql_row1['acutno'];
 		$mk_ref=$sql_row1['mk_ref'];
@@ -658,6 +702,20 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$act_xxl=$sql_row1['a_xxl']*$sql_row1['a_plies'];
 		$act_xxxl=$sql_row1['a_xxxl']*$sql_row1['a_plies'];
 		
+		$req_qty=0;
+		$issued_qty=0;
+		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result112)>0)
+		{
+			while($sql_row112=mysqli_fetch_array($sql_result112))
+			{
+				$req_qty=$sql_row112['req_qty'];
+				$issued_qty=$sql_row112['issued_qty'];
+			}
+			$fab_rec=$fab_rec+$issued_qty;
+		}
+
 			$act_s01=$sql_row1['a_s01']*$sql_row1['a_plies'];
 			$act_s02=$sql_row1['a_s02']*$sql_row1['a_plies'];
 			$act_s03=$sql_row1['a_s03']*$sql_row1['a_plies'];
@@ -721,8 +779,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$doc_req=$mk_length*$a_plies;
 		
-		//Binding Consumption / YY Calculation
-		$order_tid=$sql_row1['order_tid'];
+		
 
 		$sql1="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -732,6 +789,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		}	
 		$doc_req+=$act_total*$binding_consumption;
 	}
+	
 	
 	$sql1="select * from $bai_pro3.cat_stat_log where tid='$cat_ref'";
 	//echo $sql1."<br>";
@@ -743,21 +801,21 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		$order_tid=$sql_row1['order_tid'];
 		$cat_yy=$sql_row1['catyy'];
 	}	
-	
 	$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row1=mysqli_fetch_array($sql_result1))
-	{
-		$style=$sql_row1['order_style_no'];
-		$schedule=$sql_row1['order_del_no'];
-		$color_code=$sql_row1['color_code'];
-		$color=$sql_row1['order_col_des'];
-	}	
+		//mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 15".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$style=$sql_row1['order_style_no'];
+			$schedule=$sql_row1['order_del_no'];
+			$color_code=$sql_row1['color_code'];
+			$color=$sql_row1['order_col_des'];
+		}	
 	
 	
 	
-	$net_util=$fab_rec-$fab_ret-$damages_new-$shortages_new;
+	
+	$net_util=$fab_rec-$fab_ret-$damages_new-$shortages_new-$endbits;
 	$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 	$net_con=round($net_util/$act_total,4);
 	$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
@@ -797,6 +855,8 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 	echo "<td>$cut_qty</td>";
 	echo "<td>$damages</td>";
 	echo "<td>$shortages</td>";
+	echo "<td>$joints</td>";
+	echo "<td>".round($endbits,4)."</td>";
 	echo "<td>$act_saving_sum</td>";
 	echo "<td>".$act_saving_pct."%</td>";
 	echo "<td>$net_saving_sum</td>";

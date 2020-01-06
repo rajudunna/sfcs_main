@@ -1,57 +1,48 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
-// $mrn_request_mail= $conf1->get('mrn_request_mail');
-if(isset($_POST['update']))
-{
-	//echo "Update";
+$mrn_request_mail= $conf1->get('mrn_request_mail');
+
+if(isset($_POST['dataset']))
+{   
+  
+	$arryData = $_POST['dataset'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
-	$color=$_POST['color'];
-	$cutno=$_POST['cutno'];
-	$qty=$_POST['qty'];
-	$product=$_POST['product'];
-	$item_code=$_POST['item_code'];
-	$item_desc=$_POST['item_desc'];
-	$uom=$_POST['uom'];
-	$co=$_POST['co'];
-	$price=$_POST['price'];
-	$reason=$_POST['reason'];
-	$remarks=$_POST['remarks'];
+	$color=$_POST['color'];	
+	$cutno=$_POST['cutnum'];
 	$section=$_POST['section'];
-
-	$batch_ref=$_POST['batch_ref'];
-	
+    $batch_ref=$_POST['batch_refer'];
 	$rand=rand(1000,10000).date("Hs");
-	$test=0;
-	
 	$table="Dear All, <br/><br/> Please find the below details of additional material request and as per given below remarks.<br/><br/>";
 	$table.="Style:$style<br/>Schedule:$schedule<br/>Color:$color<br/>Requested By:$username<br/><br/>";
 	$table.="<table><tr><th>Product</th><th>M3 Item Code</th><th>Reason</th><th>Qty</th><th>Remarks</th></tr>";
-	
 	$cost=0;
-	for($i=0;$i<sizeof($qty);$i++)
+	$reason_id_db = array();
+    $reason_code_db = array();
+	$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+	$sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$count = mysqli_num_rows($sql_result);
+	
+	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		if($qty[$i]>0)
-		{
-			//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
-			$sql="insert into $bai_rm_pj2.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$product[$i]."\",\"".$item_code[$i]."\",\"".$item_desc[$i]."\",\"".$co[$i]."\",\"".$price[$i]."\",\"".$uom[$i]."\",\"".$qty[$i]."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$reason[$i]."\",\"".$remarks[$i]."\",\"".$batch_ref."\")";
-			// echo $sql."<br><br>".$host;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//echo $sql_result;
-			//die();
-			$test=1;
-			$cost+=($qty[$i]*$price[$i]);
-			
-			$table.="<tr><td>".$product[$i]."</td><td>".$item_code[$i]."</td><td>".$reason_code_db[array_search($reason[$i],$reason_id_db)]."</td><td>".$qty[$i]."</td><td>".$remarks[$i]."</td></tr>";
-		}
+		$reason_id_db[]=$sql_row['reason_tid'];
+		$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+	}
+    for($i=0;$i<sizeof($arryData);$i++)
+	{ 
+		$sql="insert into bai_rm_pj2.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\")";
+		echo $sql."<br>";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$test=1;
+		$cost+=($arryData[$i]['qty']*$arryData[$i]['price']);
+		echo $reason_code_db[array_search($arryData[$i]['reason'],$reason_id_db)].'-'.'</br>';
+		$table.="<tr><td>".$arryData[$i]['products']."</td><td>".$arryData[$i]['item']."</td><td>".$reason_code_db[array_search($arryData[$i]['reason'],$reason_id_db)]."</td><td>".$arryData[$i]['qty']."</td><td>".$arryData[$i]['rem']."</td></tr>";
+
 	}
 	$table.="</table>";
 	$table.="<br/><br/><h3>Total Cost: <font color=red>$ $cost </font></h3>";
 	$message.=$table.$message_f;
-	
-	$pageurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N');
-	//MAIL
 	if($test==1)
 	{
 		
@@ -73,12 +64,12 @@ if(isset($_POST['update']))
 		
 		mail($to, $subject, $message, $headers);
 		
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$pageurl&msg=1&ref=$rand\"; }</script>";
+		//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$pageurl&msg=1&ref=$rand\"; }</script>";
 	}
 	else
 	
 	{
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$pageurl&msg=2\"; }</script>";
+		//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$pageurl&msg=2\"; }</script>";
 	}
 	
 }

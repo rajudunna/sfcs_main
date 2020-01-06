@@ -606,7 +606,7 @@
                 $bindex=0;
                 $blink_docs=array();
                 //Ticket #663887  display buyers like pink,logo and IU as per plan_modules table
-                $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
+                $sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section>0 GROUP BY section ORDER BY section + 0";
                 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $rows5=mysqli_num_rows($sql_resultx);   
                 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -709,8 +709,8 @@
 
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
 
-                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                            SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                            $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing<>'0' and short_shipment_status = 0 ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                            SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module  AND ((a_plies != p_plies AND act_cut_status = 'DONE') OR (a_plies = p_plies AND act_cut_status != 'DONE')) AND clubbing='0' and short_shipment_status = 0 ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
 
                             // var_dump($sql1);
                             
@@ -718,18 +718,18 @@
                             //Filter view to avoid Cut Completed and Fabric Issued Modules
                             if($_GET['view']==1)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' and short_shipment_status = 0  ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND fabric_status_new='5' AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' and short_shipment_status = 0  ".$order_div_ref." GROUP BY doc_no order by log_time limit $priority_limit";
                                 $view_count=0;
                             }       
                             //filter to show only cut completed
                             if($_GET['view']==3)
                             {
-                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
-                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
+                                $sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status!='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing<>'0' and short_shipment_status = 0 ".$order_div_ref." GROUP BY order_del_no,clubbing,acutno UNION 
+                                SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND ((a_plies != p_plies AND act_cut_status='DONE') OR (a_plies = p_plies AND act_cut_status!='DONE')) AND clubbing='0' and short_shipment_status = 0 ".$order_div_ref." GROUP BY doc_no order by priority limit $priority_limit";
                                 $view_count=0;
                             }
-                           
+                           //echo $sql1;
                             $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
                             $sql_num_check=mysqli_num_rows($sql_result1);
                             while($sql_row1=mysqli_fetch_array($sql_result1))

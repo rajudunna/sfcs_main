@@ -1,6 +1,15 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php
+$style = $_GET['style'];
+$schedule = $_GET['schedule'];
+$color = $_GET['color'];
 
+if(short_shipment_status($style,$schedule,$link)){
+
+	
+?>
 <!-- <style>
 div.block
 {
@@ -1175,7 +1184,7 @@ echo "<option value=\"Pilot\">Pilot";
 echo "</select></div>";
 
 echo "<input type\"text\" name=\"ratio\" value=\"".$ratiocount."\" id=\"ratio\" style=\"visibility:hidden\">";
-
+// var_dump($ratiocount);
 //echo "<div class=\"col-sm-4\"><input type=\"checkbox\"  name=\"option\"  id=\"option\" onclick=\"javascript:enableButton();\">Enable</div>
 echo "<div class=\"col-sm-4\"><input type = \"submit\" class = \"btn btn-sm btn-success\" id=\"update\" name = \"Update\" value = \"Update\"  style='margin-top:22px;'></div>";
 echo "</div>";
@@ -1189,7 +1198,14 @@ echo "</div>";
 
 </div></div>
 </body>
+<?php
+	} else {
 
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+		
+	}
+?>
 <script>
 function verify_num(event){
 	//var char = String.fromCharCode(event.keyCode);

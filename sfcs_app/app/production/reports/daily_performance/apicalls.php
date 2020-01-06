@@ -55,7 +55,7 @@ function getData($date){
 			while($row5 = $result5->fetch_assoc()){
 				if($row5['recevied_qty']){
 					$rec_qty = (int)$row5['recevied_qty'];
-					$data = ['style'=>$row5['style'],'schedule'=>$row5['SCHEDULE'],'color'=>$row5['color'],'size'=>$row5['size_title'],$row5['op_code']=>$rec_qty,'op_code'=>$row5['op_code']];
+					$data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),$row5['op_code']=>$rec_qty,'op_code'=>$row5['op_code']];
 					array_push($total_data,$data);
 				}
 			}

@@ -1,15 +1,15 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
 <?php
 	//require_once('phplogin/auth.php');
-	if(date("Y-m-d") >= "2012-11-16")
-	{
-		//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-		//$username=strtolower($username_list[1]);
-	}
-	else
-	{
-		$user_name="baiadmn";
-	}	
+	// if(date("Y-m-d") >= "2012-11-16")
+	// {
+	// 	//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+	// 	//$username=strtolower($username_list[1]);
+	// }
+	// else
+	// {
+	// 	$user_name="baiadmn";
+	// }	
 // $auth_to_modify=array("kirang","ravipu","sarojiniv","kirang","baiadmn","sfcsproject1");
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
@@ -262,7 +262,7 @@ if(isset($_POST['put']))
 	
 	for($i=0; $i<sizeof($qty_return); $i++)
 	{	
-		$username='sfcsproject1';
+		//$username='sfcsproject1';
 		if($qty_return[$i]>0)
 		{
 			$qty_returned_new=0;

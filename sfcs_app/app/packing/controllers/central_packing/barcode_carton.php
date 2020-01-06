@@ -75,6 +75,9 @@
 					$destination=$norows['destination'];
 					$ex_fact_date=$norows['order_date'];
 
+				}
+				if(strlen($color)>=130){
+					$color=substr($color,0,130)."...,";
 				}				
 				$html.= '<div>								
 					<table>

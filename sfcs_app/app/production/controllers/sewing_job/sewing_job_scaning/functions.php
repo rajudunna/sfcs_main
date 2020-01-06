@@ -43,7 +43,7 @@ function gettabledata($params)
 	$params = explode(",",$params);
 	include("../../../../../common/config/config_ajax.php");
 
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by tos.operation_order";
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by CAST(tos.operation_order AS CHAR)";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
@@ -166,7 +166,7 @@ error_reporting (0);
 
 // var_dump($params1);
 	$qry_get_miniorder_no = "SELECT min_order_ref FROM $brandix_bts.tbl_style_ops_master WHERE scan_status=1 AND color='$params1[0]' AND style='$params1[1]' ";
-	echo $qry_get_miniorder_no;
+	// echo $qry_get_miniorder_no;
 	$miniorder = $link->query($qry_get_miniorder_no);
 	//$row = $miniorder->fetch_assoc();
 	while($row = $miniorder->fetch_assoc()) 
@@ -234,9 +234,9 @@ function savingdata($saving)
    //echo $cnt;
    if($cnt > 0)
    {
-	    //var_dump($saving);
-		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component) values ($saving)";
-		//echo $saving_sub_oper_data_qry;
+	    // var_dump("sssssiii".$saving);
+		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component,manual_smv) values ($saving)";
+		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
 		$last_id = mysqli_insert_id($link);
@@ -256,7 +256,7 @@ function savingdata($saving)
 				// $temp = "'%".$sub_ops_code_compare."%'";
 				// echo "Hi".$temp."</br>";
 				//echo $sub_ops_code_compare;
-				$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode) values ($saving)";
+				$saving_sub_oper_data_qry = "bt into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode,manual_smv) values ($saving)";
 				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= '$saving1[2]' and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
 			// echo $checking_for_same_ops_order;
 				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
@@ -451,7 +451,7 @@ function updating($editable_data)
 	include("../../../../../common/config/config_ajax.php");
 
 	//echo $editable_data[6];
-	if($editable_data[4] != '')
+	if($editable_data[4] != ''|| $editable_data[4] !=0)
 	{
 		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$editable_data[7] and color = $editable_data[8] and operation_code=$editable_data[9]";
 		//echo $qry_check_dependency;
@@ -465,19 +465,20 @@ function updating($editable_data)
 		$cnt = 1;
 		$editable_data[4] = null;
 	}
-   //echo $editable_data[4];
+//    echo $editable_data[4];
    if($cnt > 0)
 	{
-		if($editable_data[4] == '')
+		// var_dump($editable_data[5]);
+		if($editable_data[4] == '' || $editable_data[4] != 0) 
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 		else
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency=$editable_data[5],component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency='$editable_data[5]',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 
-		//echo $qry_updation;
+		// echo $qry_updation;
 		$condi = $link->query($qry_updation);
 		if(!$condi)
 		{

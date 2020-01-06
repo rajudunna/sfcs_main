@@ -1,78 +1,40 @@
-<?php
-$url = getFullURLLevel($_GET['r'],'jobs/rm_warehouse/stock_report_source.php',2,'R');
-//echo $url;
-include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-?>
+<!DOCTYPE html>
+<html>
 
- <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  
-  
-  <title>RM Stock Report</title>
-  
-<style>
-/* body
-{
-	font-family:calibri;
-	font-size:12px;
-}
+<head>
+	<title>RM Stock Report</title>
+	<meta charset="utf-8">
 
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
-} */
-th
-{
-	white-space: nowrap;
-}
-</style>
-
-<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
-
-<script type="text/javascript" src="/sfcs_app/common/js/table2CSV.js" ></script>
- 
 </head>
+
 <body>
+	<div id="app">
+	</div>
 
-<div class="panel panel-primary">
-<div class="panel-heading">RM Stock Report</div>
-<div class="panel-body">
-<h3><span class='label label-primary'><?php echo $data;?></span></h3><BR>
-<a class='btn btn-xs btn-primary' type='button' href="<?php echo getFullURLLevel($_GET['r'],'jobs/rm_warehouse/stock_report.csv',2,'R'); ?>">Export to excel</a>
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/react.development.js"></script>
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/react-dom.development.js"></script>
 
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/axios.min.js"></script>
+
+
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/babel.min.js"></script>
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/lodash.min.js"></script>
+
+	<!-- JS -->
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/react-table.js"></script>
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/react-table.min.js"></script>
+	<script src="/sfcs_app/app/production/reports/open_style_wip_report/xlsx.full.min.js"></script>
+	<script src="/sfcs_app/common/js/sweetalert.min.js"></script>
+	<!-- CSS -->
+	<link rel="stylesheet" href="/sfcs_app/app/production/reports/open_style_wip_report/react-table.css">
+	<script>
+		var ReactTable = window.ReactTable.default;
+		var XLSX = window.XLSX;
+	</script>
+	<script type="text/jsx" src="/sfcs_app/app/warehouse/reports/rm_stock_report.js"></script>
+
+
+
+</body>
+
+</html>

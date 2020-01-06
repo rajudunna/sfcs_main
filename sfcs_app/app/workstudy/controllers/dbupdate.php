@@ -91,7 +91,8 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 						if($data[$k]>0)
 						{					
 							$temp_val[$k]=$data[$k];
-							$sag_val[$k]=round_or_not($data[$k],$teamcount);
+							//$sag_val[$k]=round_or_not($data[$k],$teamcount);
+							$sag_val[$k]=round(($data[$k]/$teamcount),2);
 						}
 						else
 						{

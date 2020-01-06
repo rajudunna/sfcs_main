@@ -170,10 +170,18 @@
                         $recut_allowing_qty = 0;
                     }
                     foreach ($insert_id_act as $key_insert => $val_insert) 
+                    { 
+					
+					$category_new = "SELECT * FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$val_insert)";
+					
+					$category_new_res = $link->query($category_new);
+                    while($category_new_res1 = $category_new_res->fetch_assoc()) 
                     {
-                        if($to_add > 0)
-                        {
-                            $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                        $cty =$category_new_res1['category'];
+                    }
+					 if($to_add > 0)
+                    {
+						 $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
                             VALUES($val_insert,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
                             mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
                             //retreaving bundle_number of recut docket from bcd and inserting into moq
@@ -183,6 +191,11 @@
                             {
                                 $bundle_number_recut = $row_bcd_recut['bundle_number'];
                             }
+					if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
+					    {
+						
+                       
+                           
                             $multiple_mos_tot_qty = $to_add;
                             $array_mos = array();
                             //retreaving mo_number which is related to that bcd_act_id
@@ -238,6 +251,7 @@
                             $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
                             mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
+					}
                         if($val_insert == $insert_id)
                         {
                             $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
@@ -247,7 +261,7 @@
             }
         }
         $url = '?r='.$_GET['r'];
-        echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
+       echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
     }
     if(isset($_POST['formSubmit1']))
     {
@@ -339,7 +353,7 @@
                         $input_job_expo_after = explode(',',$input_job_expo);
                         foreach($input_job_expo_after as $sj)
                         {
-                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty)as excess_qty,group_concat(distinct doc_no)as doc_nos FROM `$bai_pro3`.`packing_summary_input` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
+                            $excess_job_qry = "SELECT input_job_no_random AS input_job_no_random_ref,SUM(carton_act_qty) as excess_qty,group_concat(distinct doc_no) as doc_nos FROM `$bai_pro3`.`pac_stat_log_input_job` WHERE input_job_no_random='$sj' and size_code = '$size[$key]' AND type_of_sewing = 2";
                             $result_excess_job_qry = $link->query($excess_job_qry);
                             if($result_excess_job_qry->num_rows > 0)
                             {
@@ -402,12 +416,13 @@
                                 }
                                 if($to_add_sj > 0)
                                 {
-                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,$sj,$to_add_sj,'$size_title')";
+                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,'$sj',$to_add_sj,'$size_title')";
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                 
 
                                     //getting docket_number of replacement input_job
-                                    $cps_qry= "select doc_no from $bai_pro3.packing_summary_input where input_job_no_random='$sj'";
+                                    $cps_qry= "select DISTINCT(doc_no) AS doc_no from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$sj' and size_code = '$size_title' AND type_of_sewing = 2 ";
                                     $result_cps_qry = $link->query($cps_qry);
                                     if($result_cps_qry->num_rows > 0)
                                     {
@@ -417,6 +432,11 @@
                                         }
                     
                                     }
+
+                                    $sql="insert into $bai_pro3.bai_qms_db (qms_style,qms_schedule,qms_color,log_date,qms_size,qms_qty,qms_tran_type,doc_no,input_job_no,operation_id) values (\"$style\",\"$scheule\",\"$color\",\"".date("Y-m-d")."\",\"".str_replace("a_","",$size_title)."\",".$to_add_sj.",2,$doc_no,".$input_job_no_excess.",".$input_ops_code.")";
+                                    // echo $sql;
+                                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
                                     $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = 15";
                                     mysqli_query($link, $update_cps_log_qry) or exit("update_cps_log_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -618,7 +638,7 @@
             <?php  
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
-            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id`
+            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE short_shipment_status=0
             GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0 order by r.id";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)
@@ -1100,11 +1120,14 @@ function isInt(t)
 }
     function checks(){
         $('#recut').hide();
-        $('input[type=checkbox]').each((key,val)=>{
-            if(val.checked == true){
-                $('#recut').show();
-            }
-        });
+            var val = [];
+            $(':checkbox:checked').each(function(i){
+                val[i] = $(this).val().toLowerCase();
+                if(val[i]=='body' || val[i]=='front')
+                {
+                    $('#recut').show();
+                }
+            });
     }
 
 $(document).ready(function() 

@@ -2,6 +2,8 @@
 $include_path=getenv('config_job_path');
 
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+
+
 $start_timestamp = microtime(true);
 error_reporting(0);
 ?>
@@ -9,7 +11,16 @@ error_reporting(0);
 <?php
 
 $shifts_array = $conf->get('shifts');
-$date=date("Y-m-d");
+//$date=date("Y-m-d");
+if($_GET['date'])
+{
+	$date=$_GET['date'];
+}
+else
+{
+	$date=date("Y-m-d");
+}
+//echo $date;
 
 $sql="delete from $bai_pro.bai_bac";
 mysqli_query($link, $sql) or exit("Sql Error1-$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -101,7 +112,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 else
 {
-	$sql="delete from $bai_pro.pro_style where date>=\"".date("Y-m-d")."\"";
+	$sql="delete from $bai_pro.pro_style where date>=\"$date\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	$sql="select * from $bai_pro.pro_style where date=(select max(date) from bai_pro.pro_style)";

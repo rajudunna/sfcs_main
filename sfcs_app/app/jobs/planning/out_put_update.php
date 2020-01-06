@@ -70,7 +70,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$order_qty=$sql_row2["order_qty"];
 			}
 			
-			if(trim($size_ref)==trim($size))
+			if($size_ref==$size)
 			{
 				$size_data=$size_ref;
 				$size_data_ref=$sizes_array[$i];

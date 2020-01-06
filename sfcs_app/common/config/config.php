@@ -25,6 +25,15 @@ $ms_sql_odbc_pass = $conf1->get('mssql-password');
 $mssql_db = $conf1->get('m3database');
 $ms_sql_driver_name = $conf1->get('driver_name');
 
+//Promis Configurations
+$promis_val = $conf1->get('promis_val');
+$promis_sql_odbc_host = $conf1->get('promis-mssql-odbc');
+$promis_sql_odbc_server = $conf1->get('promis-server-name');
+$promis_sql_odbc_user = $conf1->get('promis-user-name');
+$promis_sql_odbc_pass = $conf1->get('promis-password');
+$promis_db = $conf1->get('promisdatabase');
+$promis_sql_driver_name = $conf1->get('promis_driver_name');
+
 //Barcode Configuration
 $barcode_4x2 = $conf1->get('4x2-barcode');
 $barcode_2x1 = $conf1->get('2x1-barcode');
@@ -129,6 +138,7 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
 $shifts_array = $conf1->get('shifts');
+$plant_hours=7.5;
 $teams_array = $conf1->get('teams');
 //$shifts_array = array("A","B","C","G","ALL");
 
@@ -161,7 +171,7 @@ $logo = '/sfcs_app/common/images/logo.png';
 $icon2='/sfcs_app/common/images/BAI_Logo.JPG';
 
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
-
+$select_pack_method= $conf1->get('pack_code');
 $plant_start_time = $conf1->get('plant-start-time');
 $plant_end_time = $conf1->get('plant-end-time');
 $detailed_bundle_sticker = $conf1->get('detailed-bundle-sticker');
@@ -175,6 +185,8 @@ $header_from="From: Shop Floor System Alert <'".$smtp_user."'>";
 $header_name=$smtp_user." Alert";
 $header_mail=$conf1->get('smtp_mail_from');
 $dispatch_mail = $conf1->get('dispatch_mail');
+$short_shipment_mail = $conf1->get('short_shipment_mail');
+
 $wpt_refresh_time = $conf1->get('wpt-refresh-time');
 
 //Central Administration Menu Access

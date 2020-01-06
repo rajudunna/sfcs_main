@@ -33,14 +33,19 @@ echo "<div>
 					// <th class=\"column-title\"><center>Allocate_REF</center></th>
 					// <th class=\"column-title\"><center>Marker Ref</center></th>
 					echo "		  
-					<th class=\"word-wrap\"><center>Marker Length</center></th><th class=\"word-wrap\"><center>Marker EFF%</center></th>
+					<th class=\"word-wrap\"><center>Lay Length</center></th><th class=\"word-wrap\"><center>Marker EFF%</center></th>
 					<th class=\"column-title\"><center>Version</center></th><th class=\"column-title\"><center>Controls</center></th>
 					<th class=\"word-wrap\"><center>Delete Control</center></th>
 					<th class=\"word-wrap\"><center>Ratio wise Savings%</center></th>
 					<th class=\"word-wrap\"><center>Ratio wise CAD Consumption</center></th>
 					<th class=\"word-wrap\"><center>Used $fab_uom</center></th>
 					<th class=\"word-wrap\"><center>Used $fab_uom For Binding</center></th>
-					<th class=\"word-wrap\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th>
+					<th class=\"word-wrap\"><center>Current Status</center></th>
+					<th class=\"column-title\"><center>Marker Name</center></th>
+					<th class=\"column-title\"><center>Remark1</center></th>
+					<th class=\"column-title\"><center>Remark2</center></th>
+					<th class=\"column-title\"><center>Remark3</center></th>
+					<th class=\"column-title\"><center>Remark4</center></th>
 				</tr>
 			</thead>";
 			foreach($cats_ids as $key=>$value)
@@ -65,16 +70,31 @@ echo "<div>
 						$mklength1=0;
 						$mkeff1=0;
 						$mk_ref1=0;
-
-						$sql2="select * from $bai_pro3.maker_stat_log where allocate_ref=$allocate_ref1 and cuttable_ref > 0";	
+						$mk_version='';
+						$remark1='';
+						$remark2='';
+						$remark3='';
+						$remark4='';
+						// $cat_yy1='';
+						// $category1='';
+						$ratio ='';
+						$mk_remarks1 ='';
+						$binding_consumption='';
+						$sql2="select * from $bai_pro3.maker_stat_log left join maker_details on  maker_details.id=maker_stat_log.marker_details_id where allocate_ref=$allocate_ref1 and cuttable_ref > 0";
+						// echo "</br> Maker Qry : ".$sql2."</br>";		
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
 							$mklength1=$sql_row2['mklength'];
 							$mkeff1=$sql_row2['mkeff'];
 							$mk_ref1=$sql_row2['tid'];
-							$mk_remarks1=$sql_row2['remarks'];
+							$mk_remarks1=$sql_row2['marker_name'];
 							$mk_version=$sql_row2['mk_ver'];
+							$remark1=$sql_row2['remark1'];
+							$remark2=$sql_row2['remark2'];
+							$remark3=$sql_row2['remark3'];
+							$remark4=$sql_row2['remark4'];
+					
 						}
 
 						$sql2="select *,COALESCE(binding_consumption,0) AS binding_con from $bai_pro3.cat_stat_log where tid=$cat_ref1 order by lastup";
@@ -118,16 +138,17 @@ echo "<div>
 									echo "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
 									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 								}else{
-									if($mk_status1==9)
-									{
-										echo "<td class=\"  \"><center>
-												<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&lock_status=1\">Edit</a></center></td>";
-									}
-									else
-									{
-										echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
-										echo " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
-									}
+									echo "<td class=\"  \"><center>Updated</center></td>";
+									// if($mk_status1==9)
+									// {
+									// 	echo "<td class=\"  \"><center>
+									// 			<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&lock_status=1\">Edit</a></center></td>";
+									// }
+									// else
+									// {
+									// 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_makers_form2_edit.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Edit</a>";
+									// 	echo " | <a id='revise_form' class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
+									// }
 								}
 							}	
 							$sql21="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid1\" and mk_ref=$mk_ref1 ";
@@ -212,12 +233,17 @@ echo "<div>
 							}
 
 							echo "<td class=\"word-wrap\"><center>".$mk_remarks1."</center></td>";
+							echo "<td class=\"word-wrap\"><center>".$remark1."</center></td>";
+							echo "<td class=\"word-wrap\"><center>".$remark2."</center></td>";
+							echo "<td class=\"word-wrap\"><center>".$remark3."</center></td>";
+							echo "<td class=\"word-wrap\"><center>".$remark4."</center></td>";
 							echo "
 						</tr>";
 					}
-					echo "<tr style='background-color: yellow;'><td colspan=9><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=2></td></tr>";
+					echo "<tr style='background-color: yellow;'><td colspan=9><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=6></td></tr>";
 				}
 			}
+			
 	echo "
 		</table>
 	</div>";

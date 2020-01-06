@@ -21,12 +21,14 @@ set_time_limit(6000000);
 	try{
 		$to = date('Ymd',  strtotime('+3 month'));
 		$from = date('Ymd',  strtotime('-1 month'));
+		// $from="20181215";
+		// $to="20181231";
 		$result2 = $soap_client->MOData(array('Facility'=>$global_facility_code,'FromDate'=>$from,'ToDate'=>$to));
 		$i=1;
 		$new_ids = [];
 		echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
 		echo "<table>";
-		echo "<tr><th>S.NO</th><th>MONUMBER</th><th>MOQTY</th><th>STARTDATE</th><th>VPO</th><th>COLORNAME</th><th>COLOURDESC</th><th>SIZENAME</th><th>SIZEDESC</th><th>ZNAME</th><th>ZDESC</th><th>SCHEDULE</th><th>STYLE</th><th>PRODUCT</th><th>PRDNAME</th><th>PRDDESC</th><th>REFERENCEORDER</th><th>REFORDLINE</th><th>MOSTS</th><th>MAXOPERATIONSTS</th><th>COPLANDELDATE</th><th>COREQUESTEDDELDATE</th></tr>";
+		echo "<tr><th>S.NO</th><th>MONUMBER</th><th>MOQTY</th><th>STARTDATE</th><th>VPO</th><th>COLORNAME</th><th>COLOURDESC</th><th>SIZENAME</th><th>SIZEDESC</th><th>ZNAME</th><th>ZDESC</th><th>SCHEDULE</th><th>STYLE</th><th>PRODUCT</th><th>PRDNAME</th><th>PRDDESC</th><th>REFERENCEORDER</th><th>REFORDLINE</th><th>MOSTS</th><th>MAXOPERATIONSTS</th><th>COPLANDELDATE</th><th>COREQUESTEDDELDATE</th><th>SIZECODE</th><th>COLORCODE</th><th>ZCODE</th></tr>";
 		foreach(($result2->new1Collection)->new1Item as $value){
 			// echo "<tr>";
 			// 	echo "<td>".$i++."</td>";
@@ -51,46 +53,63 @@ set_time_limit(6000000);
 			// 	echo "<td>".$value->MAXOPERATIONSTS."</td>";
 			// 	echo "<td>".$value->COPLANDELDATE."</td>";
 			// 	echo "<td>".$value->COREQUESTEDDELDATE."</td>";
+			// 	echo "<td>".$value->SIZECODE."</td>";
+			// 	echo "<td>".$value->COLORCODE."</td>";
+			// 	echo "<td>".$value->ZCODE."</td>";
 			// echo "</tr>";
 
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
 			
-            if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
-				$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
-				$last_buyer_details = ['status'=>false];
-				if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
-					$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
-				}
-				if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!=''){
-					$ins_qry = "
-					INSERT IGNORE INTO `m3_inputs`.`mo_details` 
-					(`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `SIZENAME`, `SIZEDESC`, `ZNAME`, `ZDESC`, `SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`,`packing_method`,`destination`,`cpo`,`buyer_id`) VALUES ('".$mo_number."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".$value->COLORNAME."','".$value->COLOURDESC."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->ZNAME."','".$value->ZDESC."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."','".$rest_call['response']['TEPA']."','".$rest_call['response']['ADID']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."')";
+				//1940 exclude mo's whcih are having status 99
+				if($rest_call['response']['ORST'] !='99'){
+
+						if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
+							$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
+							$last_buyer_details = ['status'=>false];
+							if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
+								$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
+							}
+							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!=''){
+								$ins_qry = "
+								INSERT IGNORE INTO `m3_inputs`.`mo_details` 
+								(`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `COLORCODE`, `SIZENAME`, `SIZEDESC`, `SIZECODE`, `ZNAME`, `ZDESC`, `ZCODE`,`SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`,`packing_method`,`destination`,`cpo`,`buyer_id`) VALUES ('".$mo_number."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".trim($value->COLORNAME)."','".trim($value->COLOURDESC)."','".trim($value->COLORCODE)."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->SIZECODE."','".$value->ZNAME."','".$value->ZDESC."','".$value->ZCODE."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."','".$rest_call['response']['TEPA']."','".$rest_call['response']['ADID']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."')";
+								
+								$ins_qry1 = "INSERT IGNORE INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`,packing_method,cpo,buyer_id,material_master_status,shipment_master_status) VALUES ('".date('Y-m-d H:i:s')."','".$mo_number."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".trim($value->COLOURDESC)."','".$value->SIZENAME."','".$rest_call['response']['ADID']."','".$value->ZNAME."','','','".$value->PRODUCT."','".$rest_call['response']['TEPA']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."',0,0)";
+								$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if($result){
+									//$new_ids[] = mysqli_insert_id($link);
+								}
+							}
+						}
+			}else{
+
+				//validate that particular mo already layplan created or not,if yes dont delete that MO
+				$qry_validat_layplan="SELECT * FROM `bai_pro3`.`bai_orders_db_confirm` WHERE order_style_no='$value->STYLE' AND order_del_no='$value->SCHEDULE' AND order_col_des='$value->COLOURDESC'";
+				$result_qry_validat_layplan = $link->query($qry_validat_layplan);
+
+				if(($result_qry_validat_layplan->num_rows) <= 0){
 					
-					$ins_qry1 = "INSERT IGNORE INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`,packing_method,cpo,buyer_id,material_master_status,shipment_master_status) VALUES ('".date('Y-m-d H:i:s')."','".$mo_number."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".$value->COLOURDESC."','".$value->SIZENAME."','".$rest_call['response']['ADID']."','".$value->ZNAME."','','','".$value->PRODUCT."','".$rest_call['response']['TEPA']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."',0,0)";
-					$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if($result){
-						//$new_ids[] = mysqli_insert_id($link);
-					}
+					//delete queries  for if already inserted records exists in mo details and  bom details
+					$mo_details_delete1="DELETE FROM bai_pro3.`mo_details` WHERE mo_no ='$mo_number'";
+					$mo_details_delete1_result = mysqli_query($link, $mo_details_delete1) or exit("Sql Error delete bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+					$mo_details_delete2="DELETE FROM `m3_inputs`.`mo_details` WHERE MONUMBER ='$mo_number'";
+					$mo_details_delete2_result = mysqli_query($link, $mo_details_delete2) or exit("Sql Error delete m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+					$bom_details_delete="DELETE FROM `m3_inputs`.`bom_details` WHERE mo_no='$mo_number'";
+					$bom_details_delete_result = mysqli_query($link, $bom_details_delete) or exit("Sql Error delete m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+					//Deleted mo's track here 
+					$insert_deleted_mos="INSERT INTO `m3_inputs`.`deleted_mos`(`mo_number`,`orts_status`,`updated_date`) VALUES ('$mo_number','".$rest_call['response']['ORST']."','".date('Y-m-d H:i:s')."')";
+					$insert_deleted_mos_result = mysqli_query($link, $insert_deleted_mos) or exit("Sql Error Insert m3_inputs.deleted_mos".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				}
+
 			}
 		}
 		echo "</table>";
-		// if(count($new_ids)>0){
-		// 	foreach($new_ids as $idps){
-		// 		$qry_mo_details = "select * from `m3_inputs`.`mo_details` where id = ".$idps;
-		// 		$result_mo_details = mysqli_query($link, $qry_mo_details) or exit("Sql Error Get mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// 		$mo_details_row = mysqli_fetch_array($result_mo_details);
-
-		// 		$ins_order_details = "INSERT INTO `m3_inputs`.`order_details`(`Facility`, `Customer_Style_No`, `CPO_NO`, `VPO_NO`, `CO_no`, `Style`, `Schedule`, `Manufacturing_Schedule_no`, `MO_Split_Method`, `MO_Released_Status_Y_N`, `GMT_Color`, `GMT_Size`, `GMT_Z_Feature`, `Graphic_Number`, `CO_Qty`, `MO_Qty`, `PCD`, `Plan_Delivery_Date`, `Destination`, `Packing_Method`, `Item_Code`, `Item_Description`, `RM_Color_Description`, `Order_YY_WO_Wastage`, `Wastage`, `Required_Qty`, `UOM`, `MO_NUMBER`, `SEQ_NUMBER`, `time_stamp`) VALUES ('".$conf_tool->get('plantcode')."','','','".$mo_details_row['VPO']."','','".$mo_details_row['STYLE']."','".$mo_details_row['SCHEDULE']."','','','','".$mo_details_row['COLORNAME']."','".$mo_details_row['SIZENAME']."','".$mo_details_row['ZNAME']."','','','".$mo_details_row['MOQTY']."','','".date('Y-m-d',strtotime($mo_details_row['COPLANDELDATE']))."','','','".$mo_details_row['PRODUCT']."','".$mo_details_row['PRDDESC']."','".$mo_details_row['COLOURDESC']."','','','','','".$mo_details_row['MONUMBER']."','','')";
-		// 		$res_order_details = mysqli_query($link, $ins_order_details) or exit("Sql Error Insert Order Details".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-		// 		$ins_shipment_details = "INSERT INTO `m3_inputs`.`shipment_plan`(`Customer_Order_No`, `CO_Line_Status`, `Ex_Factory`, `Order_Qty`, `Mode`, `Destination`, `Packing_Method`, `FOB_Price_per_piece`, `MPO`, `CPO`, `DBFDST`, `Size`, `HMTY15`, `ZFeature`, `MMBUAR`, `Style_No`, `Product`, `Buyer_Division`, `Buyer`, `CM_Value`, `Schedule_No`, `Colour`, `Alloc_Qty`, `Dsptched_Qty`, `BTS_vs_Ord_Qty`, `BTS_vs_FG_Qty`, `time_stamp`) VALUES ('".$mo_details_row['REFERENCEORDER']."','','".$mo_details_row['COPLANDELDATE']."','".$mo_details_row['MOQTY']."','','','','','','','','".$mo_details_row['SIZENAME']."','','".$mo_details_row['ZNAME']."','','".$mo_details_row['STYLE']."','".$mo_details_row['PRODUCT']."','','','','".$mo_details_row['SCHEDULE']."','".$mo_details_row['COLORNAME']."','','','','','')";
-		// 		$res_shipment_details = mysqli_query($link, $ins_shipment_details) or exit("Sql Error Insert Shipment Details".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// 	}
-		// }
 	}
 	catch(Exception $e){
 		var_dump($e->getMessage());

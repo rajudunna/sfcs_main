@@ -135,7 +135,7 @@ if(count($colors)>0){
                         $size_name = $row['size_code'];
                         $size_qty = $row['carton_act_qty'];
                 
-                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."' LIMIT 1";
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                         $mo_numrows=mysqli_num_rows($mo_sql_result);
                         
