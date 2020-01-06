@@ -26,8 +26,86 @@ body {
   background-repeat: no-repeat;
   background-position: center;
 }
-</style>
+table
+{
+	font-family:calibri;
+	font-size:15px;
+}
 
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: center;
+	white-space:nowrap; 
+}
+
+table td.lef
+{
+	border: 1px solid black;
+	text-align: left;
+	white-space:nowrap; 
+}
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+	background-color: #337ab7;
+	border-color: #337ab7;
+	color: WHITE;
+	white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:15px;
+}
+#reset_example1{
+	width : 50px;
+	color : #ec971f;
+	margin-top : 10px;
+	margin-left : 0px;
+	margin-bottom:15pt;
+}
+</style>
+ <div class='panel panel-primary'>
+        <div class='panel-heading'>
+            <h3 class='panel-title'>M3 Bulk Opration Reconfirm Interface</h3>
+        </div>
+        <div class='panel-body'>
+        <form action="<?= '?r='.$_GET['r']; ?>" method="post">
+        <div class='row'>   
+   <div class="form-group col-sm-3">
+         <label>From Date</label><br/>
+         <input type="text" data-toggle='datepicker' id='sdate'  name="dat" class="form-control" size="8" value="<?php  if(isset($_POST['dat'])) { echo $_POST['dat']; } else { echo date("Y-m-d"); } ?>" required/>
+   </div>
+   <div class="form-group col-sm-3">
+         <label>To Date</label><br/>
+         <input type="text"  data-toggle='datepicker' id='edate' name="dat1" size="8" class="form-control" value="<?php  if(isset($_POST['dat1'])) { echo $_POST['dat1']; } else { echo date("Y-m-d"); } ?>" required/>
+   </div>
+   <div class="form-group col-sm-1">
+   <input type="submit" value="submit" class='btn btn-success' name="submit" id="submit" style='margin-top:22px;' >
+   </div>
+</div>
+        </form>
+</div>
+</div>
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
 <script>
 function checkAll()
 {
@@ -66,28 +144,34 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs); 
 ?>
              <?php 
+              if(isset($_POST["submit"]))
+             {
+                $shour='12:00:00';
+                $ehour='11:59:59';
+                $sdate=$_POST['dat'];
+                $edate=$_POST['dat1'];
+
                //  $sql="SELECT id,ref_no,response_status,mo_no,m3_bulk_tran_id FROM $bai_pro3.`m3_transactions` WHERE response_status='fail' AND m3_trail_count=4";
-              $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity,`brandix_bts`.`transactions_log`.`response_message` FROM `bai_pro3`.`m3_transactions`  
+              $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
               LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-              LEFT JOIN `brandix_bts`.`transactions_log` ON `brandix_bts`.`transactions_log`.`transaction_id`=`bai_pro3`.`m3_transactions`.`m3_bulk_tran_id`
-               WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4";
-          
+               WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
+               // echo $sql;
                mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $count=mysqli_num_rows($sql_result);
                
                if($count>0){
-               echo '<div class="panel panel-primary">
-                      <div class="panel-heading">M3 Bulk Opration Reconfirm Interface</div>
-                      <br/>
-                      <form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST">                    
-                       
-                        <div class="panel-body">
+               echo '<form action="'.getFullURL($_GET['r'],'export_excel2.php','R').'" method ="post" > 
+               <input type="hidden" name="csv_text" id="csv_text">
+               <input type="hidden" name="csvname" id="csvname" value="Order Summary Report">
+               <input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
+               </form>';
+               echo '<div class="panel-body">
                         <div class="table-responsive">
-                                 <table id="example" cellspacing="0" width="100%" class="table table-bordered">
-                                 <input type="submit" value="Re-Confirm" class="btn btn-primary">
-                                 <tr><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
-                           echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th></tr>';
+                                 <table  id="example1" name="example1" >
+                                 <tr class="tblheading"><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
+                           echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th>
+                           <form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST"> </tr> <input type="submit" value="Re-Confirm" class="btn btn-primary">';
                      $i=1;
                 while($sql_row=mysqli_fetch_array($sql_result))
                 {
@@ -99,10 +183,9 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                      $schedule=$sql_row['SCHEDULE'];
                      $color=$sql_row['color'];
                      $size=$sql_row['size'];
-                     $remarks=$sql_row['response_message'];
                      $mo_qty=$sql_row['quantity'];
                      $trail_count=$sql_row['m3_trail_count'];
-                     $response=$sql_row['response_status'];
+                     $response_status=$sql_row['response_status']; 
                      $op_dec=$sql_row['op_des'];
                      // echo $m3_bulk_tran_id; 
                      if($style==''){
@@ -136,13 +219,19 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                         $mo_qty="--";
                      }else{
                         $mo_qty;
-                     }
-                     if($response=='fail'){
-                        $response='Fail';
+                     }if($response_status=='fail'){
+                     $response_status='Fail';
                      }else{
-                        $response;
+                        $response_status='--';
                      }
-                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$remarks."</td><td>".$trail_count."</td><td>".$response."</td>";
+
+                     $ndr = "SELECT response_message FROM brandix_bts.`transactions_log` WHERE transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
+                     $sql_result1=mysqli_query($link, $ndr) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                     while($sql_row1=mysqli_fetch_array($sql_result1))
+                     {
+                         $response=$sql_row1['response_message'];
+                     }
+                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$response_status."</td><td>".$trail_count."</td><td>".$response."</td>";
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
                   
                 }
@@ -157,7 +246,8 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                   <div class="panel-heading" style="text-align:center;">Data Not Found....!</div>';
                }
              
-              
+            
+         }
            ?>
         <?php
    if(isset($_POST['bindingdata']))
@@ -186,3 +276,25 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
     }
 
 ?>
+<script language="javascript">
+function getCSVData(){
+ var csv_value=$('#example1').table2CSV({delivery:'value'});
+ $("#csv_text").val(csv_value);	
+}
+</script>
+<script language="javascript" type="text/javascript">
+	//<![CDATA[
+		$('#reset_example1').addClass('btn btn-warning');
+	var table6_Props = 	{
+							table6_Props: true,
+							btn_reset: true,
+							// btn_reset_text: "Clear",
+							loader: true,
+							loader_text: "Filtering data..."
+						};
+	setFilterGrid( "example1",table6_Props );
+	$(document).ready(function(){
+		$('#reset_example1').addClass('btn btn-warning btn-xs');
+	});
+	//]]>
+</script>
