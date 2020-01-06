@@ -60,7 +60,8 @@ while ($row1 = mysqli_fetch_array($details_result))
 	$supp_roll[$row1['store_in_id']] = $row1['supplier_roll_no'];
 	$lot_no = $row1['lot_no'];
 	$invoice_qty[$row1['store_in_id']] = $row1['rec_qty'];	
-	$store_in_id = $row1['store_in_id'];	
+	$store_in_id = $row1['store_in_id'];
+	$lots_no[] = $row1['lot_no'];	
 	if($row1['status']==1)
 	{
 		$status='Pending';
@@ -89,7 +90,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 }
 
 
-$get_details12 = "select * from $bai_rm_pj1.`sticker_report` where po_no=".$po_no." limit 1";
+$get_details12 = "select * from $bai_rm_pj1.`sticker_report` where lot_no in (".implode(",",$lots_no).")";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 
