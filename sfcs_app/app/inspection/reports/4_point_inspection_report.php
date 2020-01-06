@@ -1619,7 +1619,13 @@ tags will be replaced.-->
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $repeat_length;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Average Points</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php 
-  $rate = round(($tot_points/array_sum($invoice_qty))*(36/$inch_value)*100,2);
+  if($fab_uom == "meters"){
+		$qty=round($invoice_qty*1.09361,2);
+	}else
+	{
+		$qty=$invoice_qty;
+	}
+  $rate = round(($tot_points/array_sum($qty))*(36/$inch_value)*100,2);
 	echo "".$rate;
 ?></td>
   <td class=xl1519758></td>
