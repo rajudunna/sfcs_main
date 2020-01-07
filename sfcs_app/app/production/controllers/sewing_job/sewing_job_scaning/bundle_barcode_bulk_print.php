@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 $path="".getFullURLLevel($_GET['r'], "bundle_barcode_new.php", "0", "r")."";
-$path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
+$path2="".getFullURLLevel($_GET['r'], "bundle_barcode2_1.php", "0", "r")."";
 
 $url_r = $_GET['r'];
 $has_permission=haspermission($url_r);
