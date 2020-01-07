@@ -471,6 +471,15 @@
 							
 							if($flag=='parallel_scanning')
 							{
+								
+								$category=['cutting','Send PF','Receive PF'];
+								$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
+								$result_checking_qry = $link->query($checking_qry);
+								while($row_cat = $result_checking_qry->fetch_assoc())
+								{
+									$category_act = $row_cat['category'];
+								}
+								
 								if($rec_qty=$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
@@ -488,20 +497,14 @@
 										// $update_prev_ops_qry="update $bai_pro3.act_cut_bundle_trn SET remaining_qty=0 where barcode='".$pre_ops_barcode."'";
 										// $result_update_query = $link->query($update_prev_ops_qry) or exit('query error in updating pre ops');
 									// }
-									if($post_ops_code)
+									if($category_act=='Send PF')
 									{
 										$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
 										$update_post_ops_qry="update $bai_pro3.act_cut_bundle_trn SET send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 										$result_update_query = $link->query($update_post_ops_qry) or exit('query error in updating post ops');
 									}
 									
-									$category=['cutting','Send PF','Receive PF'];
-									$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $ops_code";
-									$result_checking_qry = $link->query($checking_qry);
-									while($row_cat = $result_checking_qry->fetch_assoc())
-									{
-										$category_act = $row_cat['category'];
-									}
+									
 									if($category_act=='Receive PF')
 									{
 										$qry_min_prevops="SELECT MIN(good_qty) AS min_recieved_qty FROM $bai_pro3.act_cut_bundle_trn WHERE act_cut_bundle_id=".$act_cut_bundle_id." and ops_code in ($emb_operations)";
