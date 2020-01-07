@@ -175,8 +175,8 @@
 							<td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
 							</tr> 
 							<tr>
-							<td colspan=5><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
-						if($shadedet!='')
+							<td colspan=4><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
+						if($shadedet!='' && $shadedet!='None')
 						{
 							$html.=	'<td colspan=1><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
 						}
