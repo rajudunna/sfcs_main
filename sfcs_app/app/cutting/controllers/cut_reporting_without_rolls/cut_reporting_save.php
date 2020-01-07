@@ -425,7 +425,7 @@ if($target == 'normal'){
 
 // ------------------------- NEW --------------------------
 //Schedule Clubbing Docket Saving
-if($target == 'schedule_clubbed'){
+if($target == 'schedule_clubbed' || $target == 'style_clubbed'){
     $reporting_plies = $plies;
     $reported = [];
     //getting all child dockets
@@ -474,23 +474,17 @@ if($target == 'schedule_clubbed'){
    // $status = update_cps_bcd_schedule_club($reported,$style,$schedule,$color,$rejection_details_each_size);
     iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
-        //force_exit('Schedule Clubbed Docket Reporting Failed');
         echo json_encode($response_data);
         exit();
     }else{
-		//act_logical_bundles_gen_club($doc_no,$style,$color)
 		$call_status=2;
 		act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
-       // emblishment_quantities(implode(",",$child_docs),$style,$color);
         exit();
     } 
 }
-
-
-
 
 /*
 // -------------- OLD ---------------
@@ -699,8 +693,8 @@ if($target == 'schedule_clubbed'){
         exit();
     } 
 }
-*/
-//Style clubbing docket saving
+
+//Style clubbing docket saving old
 if($target == 'style_clubbed'){
     $rejection_details_each = [];
     $quit_counter1 = 0;
@@ -1095,7 +1089,7 @@ if($target == 'style_clubbed'){
         exit();
     } 
 }
-
+*/
 //for style or schdule club dockets a random color is picked 
 function get_me_emb_check_flag($style,$color,$op_code){
     //getting post operation code

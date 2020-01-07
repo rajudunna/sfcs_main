@@ -137,7 +137,7 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 	}
 	$barcode='';
 	$cut_no=$cut;
-	$shift='A';
+	$shift='';
 	$module=0;
 	$bundle_cum_qty=0;
 	$bundle_seq=1;
@@ -196,7 +196,7 @@ function plan_logical_bundles($dono,$plan_jobcount,$plan_bundleqty,$inserted_id,
 			}while ($size_plies > 0);   
         }			
         // update count of plan logical bundles for each sewing job
-        $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = '$inserted_id' ";
+        $update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
         $update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
     }	
 }
@@ -345,7 +345,7 @@ function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
 				//$bundle++;
 				//$shadebundleno=0;							
 			}
-			
+			/*
 			if(sizeof($next_operations)>0)
 			{
 				$sizes_all=array_values(array_unique($sizes_all));
@@ -358,7 +358,8 @@ function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
 						mysqli_query($link,$update_bcd_query);
 					}
 				}	
-			}		
+			}
+			*/			
 		}			
 	}
 	
@@ -399,7 +400,6 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 	}
 	
 	$plan_cut = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no = $docket_no";
-	echo $plan_cut."<br>";
 	$result_plan_cut = mysqli_query($link,$plan_cut) or exit("Issue while selecting the plan_cut_bundle");
 	while($row_plan_cut=mysqli_fetch_array($result_plan_cut))
 	{
@@ -708,6 +708,7 @@ function act_logical_bundles_gen_club($doc_no,$style,$color)
 				}					
 			}				
 		}
+		/*
 		$qty=0;
 		if(sizeof($next_operations)>0)
 		{
@@ -733,6 +734,7 @@ function act_logical_bundles_gen_club($doc_no,$style,$color)
 				}
 			}		
 		}
+		*/
 	}	
 }
 
