@@ -73,7 +73,7 @@
 				
 				//$detailed_bundle_sticker=1;
 				$check=0;               
-                $barcode_qry="SELECT docket as doc_no,size, act.barcode as barcode,original_qty as quantity, ops_code,act_cut_bundle_id FROM $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket=".$doc_no."";
+                $barcode_qry="SELECT docket as doc_no,size, act.barcode as barcode,original_qty as quantity, ops_code,act_cut_bundle_id,shade FROM $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket=".$doc_no."";
 				// echo $barcode_qry;		
 				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
@@ -84,22 +84,23 @@
 					$barcode=$barcode_rslt['barcode'];
 					$quantity=$barcode_rslt['quantity'];
 					$numbid=$barcode_rslt['num_id'];
+					$shade=$barcode_rslt['shade'];
 					$get_ops="SELECT operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$barcode_rslt['ops_code']."";
 					$get_ops_res=mysqli_query($link, $get_ops) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($get_ops_row = mysqli_fetch_array($get_ops_res))
 					{
 						$code=trim($get_ops_row['operation_name'])."-".$barcode_rslt['ops_code'];
 					}
-					// if($numbid!='')
-					// {
+					if($shade!='')
+					{
 						// get shande and bundno from docket_number_info
-						// $get_det_qry="select bundle_start,bundle_end,shade from $bai_pro3.docket_number_info where id=$numbid";
-						// $get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						// while($get_det_row = mysqli_fetch_array($get_det_qry_res))
-						// {
-							// $shadedet=$get_det_row['bundle_start']."-".$get_det_row['shade']."-".$get_det_row['bundle_end'];
-						// }
-					// }
+						$get_det_qry="select start_no,end_no,shade from $bai_pro3.act_cut_bundle where  docket=".$doc_no."";
+						$get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($get_det_row = mysqli_fetch_array($get_det_qry_res))
+						{
+							$shadedet=$get_det_row['start_no']."-".$get_det_row['shade']."-".$get_det_row['end_no'];
+						}
+					}
 					
 					// if((int)$detailed_bundle_sticker == 1 && $check<>$barcode_rslt['tran_id'])
 					// {
