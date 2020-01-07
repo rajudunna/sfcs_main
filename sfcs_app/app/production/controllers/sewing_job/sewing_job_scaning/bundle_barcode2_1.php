@@ -73,13 +73,14 @@
 				
 				//$detailed_bundle_sticker=1;
 				$check=0;               
-                $barcode_qry="SELECT docket as doc_no,size, act.barcode as barcode,original_qty as quantity, ops_code,act_cut_bundle_id,shade FROM $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket=".$doc_no."";
+                $barcode_qry="SELECT acb.id as id,docket as doc_no,size, act.barcode as barcode,original_qty as quantity, ops_code,act_cut_bundle_id,shade FROM $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket=".$doc_no."";
 				// echo $barcode_qry;		
 				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
 				{				
 					// $barcode=leading_zeros($barcode_rslt['tid'],4);
 					$cutno=$barcode_rslt['acutno'];
+					$acbid=$barcode_rslt['id'];
 					$size=$barcode_rslt['size'];
 					$barcode=$barcode_rslt['barcode'];
 					$quantity=$barcode_rslt['quantity'];
@@ -94,7 +95,7 @@
 					if($shade!='')
 					{
 						// get shande and bundno from docket_number_info
-						$get_det_qry="select start_no,end_no,shade from $bai_pro3.act_cut_bundle where  docket=".$doc_no."";
+						$get_det_qry="select start_no,end_no,shade from $bai_pro3.act_cut_bundle where  id=".$acbid."";
 						$get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($get_det_row = mysqli_fetch_array($get_det_qry_res))
 						{
