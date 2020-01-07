@@ -176,7 +176,7 @@
 							</tr> 
 							<tr>
 							<td colspan=4><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
-						if($shadedet!='' && $shadedet!='None')
+						if($shade!='' && $shade!='None')
 						{
 							$html.=	'<td colspan=1><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
 						}
