@@ -139,7 +139,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 
 	$sHTML_Content.="<div class='table-responsive'><table id=\"table1\" border=\"1\" cellspacing=\"0\" cellpadding=\"1\" class=\"table table-bordered\">";
 
-	$sHTML_Content.= "<tr><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sno</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Buyer Division</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Customer Order No</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">MPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">CPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Style</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Schedule NO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Color</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sections</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Order<br>Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Cut Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Input</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Output</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FG</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA</th>";
+	$sHTML_Content.= "<tr><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sno</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Buyer Division</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Customer Order No</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">MPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Style</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Schedule NO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Color</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sections</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Order<br>Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Cut Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Input</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Output</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FG</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA</th>";
 	
 	$sHTML_Content.="<th bgcolor=\"#002060\" style=\"color:#ffffff\">Low Status</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">High Status</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">EX-FactoryDate</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Planing<br>Remarks</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Offered Time</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA Time</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Dispatch Time</th></tr>";
 
@@ -725,7 +725,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+		//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -755,7 +755,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 		$sHTML_Content .="<td bgcolor=\"$id\">$x</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+		//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -785,7 +785,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 		$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 		$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-		$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+		//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 		$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -814,7 +814,7 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 
 	$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 	$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-	$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+	//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 	$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 	$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 	$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
