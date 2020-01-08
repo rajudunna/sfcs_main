@@ -734,7 +734,7 @@
 				{ 
 					if ($row['a_'.$sizes_array[$i]] > 0)
 					{
-						$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
+						$cut_done_qty[$sizes_array[$i]] = $row['p_'.$sizes_array[$i]] * $row['p_plies'];
 					}
 					else
 					{
