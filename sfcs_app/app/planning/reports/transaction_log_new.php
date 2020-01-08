@@ -311,7 +311,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						unset($sizes);				
 					}
 				}
-				$time_query='';
+				//$time_query='';
 			}			
 			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 		}
