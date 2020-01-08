@@ -380,14 +380,14 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 	$bundle_no=1;
 	$fetching_ops_with_category = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
 	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') and tsm.operation_code<>10 GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
-	$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Issue while selecting the Operations");
+	$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit(message_sql());
 	while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
 	{
 		$operation_codes[] = $row['operation_code'];			
 	}
 	
 	$qry_cut_qty_check_qry = "SELECT cat_ref,cutno,order_tid,destination,order_del_no,size,SUM(qty) as qty FROM bai_pro3.mix_temp_desti WHERE doc_no = $docket_no GROUP BY order_del_no,size";
-	$result_qry_cut_qty_check_qry = mysqli_query($link,$qry_cut_qty_check_qry) or exit("Issue while selecting the mix_temp_desti");
+	$result_qry_cut_qty_check_qry = mysqli_query($link,$qry_cut_qty_check_qry) or exit(message_sql());
 	while($row = mysqli_fetch_array($result_qry_cut_qty_check_qry)) 
 	{
 		$schedule[] = $row['order_del_no'];
@@ -400,7 +400,7 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 	}
 	
 	$plan_cut = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no = $docket_no";
-	$result_plan_cut = mysqli_query($link,$plan_cut) or exit("Issue while selecting the plan_cut_bundle");
+	$result_plan_cut = mysqli_query($link,$plan_cut) or exit(message_sql());
 	while($row_plan_cut=mysqli_fetch_array($result_plan_cut))
 	{
 		$tot_plies =  $row_plan_cut['plies'];
@@ -416,13 +416,13 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 				{
 					// Plan Cut Bundle
 					$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`style`,`schedule`,`color`,`size_code`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`,`parent_docket_id`,`parent_plan_cut_bundle_id`) values ('".$row_plan_cut['style']."','".$schedule[$j]."','".$row_plan_cut['color']."','".$size_code."','".$row_plan_cut['size']."',".$bundle_no.",".$plies.",'".$barcode."','".$username."',".$docket_no.",".$row_plan_cut['id'].")";
-					$result_qry_cut_qty_check_qry = $link->query($plan_cut_insert_query);
+					$result_qry_cut_qty_check_qry = mysqli_query($link,$plan_cut_insert_query) or exit(message_sql());
 					$plan_cut_insert_id = mysqli_insert_id($link);					
 					foreach($operation_codes as $index => $op_code)
 					{
 						// Plan Cut Bundle Trn
 						$plan_cut_insert_transactions_query = "insert into $bai_pro3.plan_cut_bundle_trn(`plan_cut_bundle_id`,`ops_code`,`original_qty`,`tran_user`,`status`) values (".$plan_cut_insert_id.",".$op_code.",".$plies.",'".$username."',0)";
-						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);			
+						$plan_cut_insert_transactions_query_res = mysqli_query($link,$plan_cut_insert_transactions_query) or exit(message_sql());			
 					}	
 					$fill_qty[$schedule[$j]][$size_code]=$fill_qty[$schedule[$j]][$size_code]-$plies;
 					$plies=0;						
@@ -430,13 +430,13 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 				else
 				{
 					$plan_cut_insert_query = "insert into $bai_pro3.plan_cut_bundle(`style`,`schedule`,`color`,`size_code`,`size`,`bundle_no`,`plies`,`barcode`,`tran_user`,`parent_docket_id`,`parent_plan_cut_bundle_id`) values ('".$row_plan_cut['style']."','".$schedule[$j]."','".$row_plan_cut['color']."','".$size_code."','".$row_plan_cut['size']."',".$bundle_no.",".$fill_qty[$schedule[$j]][$size_code].",'".$barcode."','".$username."',".$docket_no.",".$row_plan_cut['id'].")";
-					$result_qry_cut_qty_check_qry = $link->query($plan_cut_insert_query);
+					$result_qry_cut_qty_check_qry = mysqli_query($link,$plan_cut_insert_query) or exit(message_sql());
 					$plan_cut_insert_id = mysqli_insert_id($link);					
 					foreach($operation_codes as $index => $op_code)
 					{
 						// Plan Cut Bundle Trn
 						$plan_cut_insert_transactions_query = "insert into $bai_pro3.plan_cut_bundle_trn(`plan_cut_bundle_id`,`ops_code`,`original_qty`,`tran_user`,`status`) values (".$plan_cut_insert_id.",".$op_code.",".$fill_qty[$schedule[$j]][$size_code].",'".$username."',0)";
-						$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);			
+						$plan_cut_insert_transactions_query_res = mysqli_query($link,$plan_cut_insert_transactions_query) or exit(message_sql());			
 					}
 					$plies=$plies-$fill_qty[$schedule[$j]][$size_code];
 					$fill_qty[$schedule[$j]][$size_code]=0;
@@ -448,7 +448,7 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 	
 	// Creating Docket and updating
 	$plan_cut_ratio = "SELECT id,SCHEDULE,size_code,size,plies FROM $bai_pro3.plan_cut_bundle WHERE parent_docket_id = $docket_no";
-	$result_plan_cut_ratio = mysqli_query($link,$plan_cut_ratio) or exit("Issue while selecting the plan_cut_bundle");
+	$result_plan_cut_ratio = mysqli_query($link,$plan_cut_ratio) or exit(message_sql());
 	while($row_result_plan_cut_ratio=mysqli_fetch_array($result_plan_cut_ratio))
 	{
 		$ids[]=$row_result_plan_cut_ratio['id'];
@@ -494,10 +494,10 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 				}
 				$plandoc_query="insert into $bai_pro3.plandoc_stat_log (date,cat_ref,cuttable_ref,allocate_ref,mk_ref,order_tid,pcutno,acutno,p_plies,a_plies,destination,org_doc_no,org_plies,ratio,remarks,$query_head_p $query_head_a pcutdocid) select date,cat_ref,cuttable_ref,allocate_ref,mk_ref,'".$order_tid[$get_unique_schedules[$i]]."',".$cut_no.",".$cut_no.",".$get_unique_plies[$ii].",".$get_unique_plies[$ii].",'".$destination[$get_unique_schedules[$i]]."',doc_no,".$tot_plies.",ratio,remarks,$query_val_p $query_val_a pcutdocid 
 				from $bai_pro3.plandoc_stat_log where cat_ref=$cat_ref and doc_no=".$docket_no;
-				mysqli_query($link,$plandoc_query) or exit("Issue while Inserting the plandoc_stat_log" . $link -> error);
+				mysqli_query($link,$plandoc_query) or exit(message_sql());
 				$docn=mysqli_insert_id($link);
 				$update_plan_cut = "update $bai_pro3.plan_cut_bundle set doc_no = $docn where id in (".implode(",",$ids_val).")";
-				$update_plan_cut=$link->query($update_plan_cut);
+				mysqli_query($link,$update_plan_cut) or exit(message_sql());
 				unset($ids_val);
 				unset($sizes_new);
 				unset($sizecnt);
