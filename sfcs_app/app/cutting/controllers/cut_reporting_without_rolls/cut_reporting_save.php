@@ -412,7 +412,8 @@ if($target == 'normal'){
         echo json_encode($response_data);
         exit();
     }else{
-		act_logical_bundles($doc_no,$schedule,$style,$color);
+		$call_status=0;
+		act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $m3_status;
         echo json_encode($response_data);
@@ -421,11 +422,93 @@ if($target == 'normal'){
     }
 	
 }
-// $target = 'schedule_club';
-// $plies = 50;
-// $doc_no = 524879; 
-//Schedule Clubbing Docket Saving
 
+// ------------------------- NEW --------------------------
+//Schedule Clubbing Docket Saving
+if($target == 'schedule_clubbed' || $target == 'style_clubbed'){
+    $reporting_plies = $plies;
+    $reported = [];
+	
+	 $remarks = "$date^$cut_table^$shift^$f_rec^$f_ret^$damages^$shortages^$returned_to^$plies";
+     $insert_query = "INSERT into $bai_pro3.act_cut_status (doc_no,date,section,shift,fab_received,fab_returned, 
+                    damages,shortages,remarks,log_date,bundle_loc,leader_name,joints_endbits) 
+                    values ($doc_no,'$date','$cut_table','$shift','$f_rec','$f_ret','$damages','$shortages','$remarks','$date_time','$bundle_location','$team_leader','$joints_endbits')
+                    ON DUPLICATE KEY 
+                    UPDATE date='$date',section='$cut_table',shift='$shift',fab_received=fab_received + $f_rec,fab_returned='$f_ret',damages='$damages',shortages='$shortages',
+                    remarks=CONCAT(remarks,'$','$remarks'),
+                    log_date='$date_time',bundle_loc='$bundle_location',leader_name='$team_leader',joints_endbits=CONCAT(joints_endbits,'$','$joints_endbits')";
+    
+    $update_query = "UPDATE $bai_pro3.plandoc_stat_log SET a_plies = IF(a_plies = p_plies,$plies,a_plies+$plies),
+                    act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
+    $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.1');   
+	if($insert_result > 0){
+		$update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.3');
+        if($update_result){
+            $response_data['saved'] = 1;
+           }else{
+            $response_data['saved'] = 0;
+            echo json_encode($response_data);
+            exit();    
+        } 
+    }else{
+        $response_data['saved'] = 0;
+        echo json_encode($response_data);
+        exit();
+    }
+	
+    //getting all child dockets
+    $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
+                        LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
+                        where org_doc_no = $doc_no and category IN ($in_categories)";
+    $child_docs_result = mysqli_query($link,$child_docs_query);
+    while($row = mysqli_fetch_array($child_docs_result)){
+        $child_docs[] = $row['doc_no'];
+    }
+    foreach($child_docs as $child_doc) {
+        $childDocketReportingPlies = 0;
+		$pending_plies=0;
+        $size_qty_query = "SELECT p_plies,a_plies,act_cut_status from $bai_pro3.plandoc_stat_log 
+                        where doc_no = $child_doc ";              
+        $sizes_qty_result = mysqli_query($link,$size_qty_query); 
+        while($row = mysqli_fetch_array($sizes_qty_result)){
+            if($row['act_cut_status']=='DONE')
+            {
+                $pending_plies = $row['p_plies'] - $row['a_plies'];
+            }
+            else
+            {
+                $pending_plies = $row['p_plies'];
+            }
+            $childDocketReportingPlies =  min($pending_plies, $reporting_plies);            
+        }
+              
+		if($pending_plies>0)
+		{
+			$update_childs_query = "UPDATE $bai_pro3.plandoc_stat_log set act_cut_status = 'DONE',
+            a_plies = IF(a_plies = p_plies,$childDocketReportingPlies,a_plies+$childDocketReportingPlies),fabric_status=5 $update_manual_flag where doc_no = $child_doc ";							
+            $update_childs_result = mysqli_query($link,$update_childs_query) or force_exit("Child Docket Update Error $update_childs_query");
+			$status = update_cps_bcd_normal($child_doc,$childDocketReportingPlies,$style,$schedule,$color,[]);
+		}
+        unset($size_update_string);
+        unset($reported);		
+    }   
+
+     iquit : if($status === 'fail'){
+        $response_data['pass'] = 0;
+        echo json_encode($response_data);
+        exit();
+    }else{
+		$call_status=2;
+		act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
+        $response_data['pass'] = 1;
+        $response_data['m3_updated'] = $status;
+        echo json_encode($response_data);
+        exit();
+    } 
+}
+
+/*
+// -------------- OLD ---------------
 if($target == 'schedule_clubbed'){
     $rejection_details_each = [];
     $quit_counter1 = 0;
@@ -445,10 +528,7 @@ if($target == 'schedule_clubbed'){
                     act_cut_status='DONE',fabric_status=5 $update_manual_flag where doc_no = $doc_no ";
     $insert_result = mysqli_query($link,$insert_query) or force_exit('Query Error Cut 1.1');   
 	
-    
-	
-	
-	
+
     if($insert_result > 0){
 		$update_result = mysqli_query($link,$update_query) or force_exit('Query Error Cut 2.3');
         if($update_result){
@@ -458,7 +538,7 @@ if($target == 'schedule_clubbed'){
             //     echo json_encode($response_data);
             //     exit();
             // }
-        }else{   
+        }else{
             $response_data['saved'] = 0;
             // mysqli_rollback($link2);
             // mysqli_close($link2);
@@ -481,31 +561,36 @@ if($target == 'schedule_clubbed'){
     //getting all child dockets
     $child_docs_query = "SELECT doc_no from $bai_pro3.plandoc_stat_log psl  
                         LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref
-                        where org_doc_no = '$doc_no' and category IN ($in_categories)";
+                        where org_doc_no = $doc_no and category IN ($in_categories)";
     $child_docs_result = mysqli_query($link,$child_docs_query);
     while($row = mysqli_fetch_array($child_docs_result)){
         $child_docs[] = $row['doc_no'];
     }
+
     //getting size wise qty of parent docket
     $doc_qty_query = "SELECT $p_sizes_str,doc_no from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no' ";
     $doc_qty_result = mysqli_query($link,$doc_qty_query);
     while($row = mysqli_fetch_array($doc_qty_result)){
         foreach($sizes_array as $size){
-            if($row['p_'.$size] > 0)
-                $reporting[$size] = $row['p_'.$size] * $plies;
+            if($row['p_'.$size] > 0) {
+                $reporting[$size] = $row['p_'.$size] * min($plies, $pending_plies);
+            }
         }
     }
     
     //for each child docket calculating a_s01,a_s02,..
-    foreach($child_docs as $child_doc){
-        $size_qty_query = "SELECT $p_sizes_str,$a_sizes_str from $bai_pro3.plandoc_stat_log 
+    foreach($child_docs as $child_doc) {
+        $size_qty_query = "SELECT $p_sizes_str,$a_sizes_str,p_plies,a_plies from $bai_pro3.plandoc_stat_log 
                         where doc_no = '$child_doc' ";              
         $sizes_qty_result = mysqli_query($link,$size_qty_query); 
         while($row = mysqli_fetch_array($sizes_qty_result)){
             //getting all the planned sizes for child dockets
-            foreach($sizes_array as $size){
-                if($row['p_'.$size] - $row['a_'.$size] > 0)
-                    $planned[$child_doc][$size]    = $row['p_'.$size] - $row['a_'.$size];
+            $pending_plies = $row['p_plies'] - $row['a_plies'];
+            if($pending_plies > 0) {
+                foreach($sizes_array as $size) {
+                    if($row['p_'.$size] - $row['a_'.$size] > 0)
+                        $planned[$child_doc][$size]    = $row['p_'.$size] - $row['a_'.$size];
+                }
             }
         }
 
@@ -620,7 +705,8 @@ if($target == 'schedule_clubbed'){
         echo json_encode($response_data);
         exit();
     }else{
-		//act_logical_bundles($doc_no,$schedule,$style,$color);
+		//act_logical_bundles_gen_club($doc_no,$style,$color)
+		act_logical_bundles($doc_no,$schedule,$style,$color);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
@@ -629,7 +715,7 @@ if($target == 'schedule_clubbed'){
     } 
 }
 
-//Style clubbing docket saving
+//Style clubbing docket saving old
 if($target == 'style_clubbed'){
     $rejection_details_each = [];
     $quit_counter1 = 0;
@@ -1024,7 +1110,7 @@ if($target == 'style_clubbed'){
         exit();
     } 
 }
-
+*/
 //for style or schdule club dockets a random color is picked 
 function get_me_emb_check_flag($style,$color,$op_code){
     //getting post operation code
