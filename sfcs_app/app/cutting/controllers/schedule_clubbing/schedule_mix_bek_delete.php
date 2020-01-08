@@ -212,7 +212,8 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 				$delete_bcd_query = "DELETE from $brandix_bts.bundle_creation_data where docket_number IN ($docs)";
 				$delete_moq_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_ids) 
 									and op_code in ($op_codes)";
-
+				$delete_act_cut_bundle_trn_query = "DELETE from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id IN (SELECT id FROM bai_pro3.`act_cut_bundle` WHERE docket IN ($docs));";					
+				$delete_act_cut_bundle_query = "DELETE from $bai_pro3.act_cut_bundle where docket IN ($docs)";
 				// echo $delete_cps_query.'<br/>';
 				// echo $delete_bcd_query.'<br/>';
 				// echo $delete_moq_query.'<br/>';
@@ -220,7 +221,9 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 				$delete_cps_result = mysqli_query($link,$delete_cps_query);
 				$delete_bcd_result = mysqli_query($link,$delete_bcd_query);
 				$delete_moq_result = mysqli_query($link,$delete_moq_query);
-				if($delete_cps_result && $delete_bcd_result && $delete_moq_result)
+				$delete_act_cut_bundle_trn_result = mysqli_query($link,$delete_act_cut_bundle_trn_query);
+				$delete_act_cut_bundle_result = mysqli_query($link,$delete_act_cut_bundle_query );
+				if($delete_cps_result && $delete_bcd_result && $delete_moq_result && $delete_act_cut_bundle_result && $delete_act_cut_bundle_trn_result)
 					mysqli_commit($link);
 				else	
 					mysqli_rollback($link);

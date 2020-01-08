@@ -715,22 +715,11 @@
 				}
 			}			
 			//this block only works for filling while schedule clubbing
+			/*
 			if($club_flag == 1){
 				for ($i=0; $i < sizeof($check_upto); $i++)
 				{ 
 					if ($row['p_'.$sizes_array[$i]] > 0)
-					{
-						$cut_done_qty[$sizes_array[$i]] = $row['p_'.$sizes_array[$i]];
-					}
-					else
-					{
-						$cut_done_qty[$sizes_array[$i]] =0;
-					}
-				}
-			}else{
-				for ($i=0; $i < sizeof($check_upto); $i++)
-				{ 
-					if ($row['a_'.$sizes_array[$i]] > 0)
 					{
 						$cut_done_qty[$sizes_array[$i]] = $row['a_'.$sizes_array[$i]] * $row['a_plies'];
 					}
@@ -739,7 +728,20 @@
 						$cut_done_qty[$sizes_array[$i]] =0;
 					}
 				}
-			}			
+			}else{
+				*/
+				for ($i=0; $i < sizeof($check_upto); $i++)
+				{ 
+					if ($row['a_'.$sizes_array[$i]] > 0)
+					{
+						$cut_done_qty[$sizes_array[$i]] = $row['p_'.$sizes_array[$i]] * $row['p_plies'];
+					}
+					else
+					{
+						$cut_done_qty[$sizes_array[$i]] =0;
+					}
+				}
+			//}			
 		}
 		foreach($cut_done_qty as $key => $value)
 		{
