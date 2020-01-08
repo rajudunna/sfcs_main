@@ -3,10 +3,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 
 if($_POST['modal_submit'])
-{
-    
+{    
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
-
     $jobcount = $_POST['jobcount'];
     $bundle_qty = $_POST['bundleqty'];
     $docs = $_POST['docs'];
@@ -15,19 +13,15 @@ if($_POST['modal_submit'])
     $style = $_POST['style1'];
     $color = $_POST['color1'];
 
-
     $ins_qry2 = "INSERT INTO $bai_pro3.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
     $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
     $inserted_id = mysqli_insert_id($link);
-
     $plan_logical_bundles = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-    
-    if($plan_logical_bundles){
+    if($plan_logical_bundles)
+	{
         echo "<script>sweetAlert('Cut Sewing jobs generated successfully','','');</script>";
-        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "cut_sewing_job_generation.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
-
-    }
-   
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "cut_sewing_job_generation.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+    }   
 }
 
 if(isset($_POST) && isset($_POST['del_recs'])){
@@ -69,47 +63,40 @@ if(isset($_POST) && isset($_POST['del_recs'])){
         $get_docs = implode(",", array_unique($docket_no));
 
         $delete_plan_dashbrd_qry="DELETE FROM $bai_pro3.plan_dashboard WHERE doc_no in($get_docs)"; 
-        // echo $delete_plan_dashboard_qry."<br>"; 
         mysqli_query($link, $delete_plan_dashbrd_qry) or exit("Sql Error delete_plan_dashbrd_qry"); 
          
         $delete_plan_input_qry="DELETE FROM bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref IN (SELECT input_job_no_random FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN ($get_tids))"; 
-        // echo $delete_plan_input_qry."<br>"; 
         mysqli_query($link, $delete_plan_input_qry) or exit("Sql Error delete_plan_input_qry");
 
         $qry = "DELETE FROM `bai_pro3`.`pac_stat_log_input_job` where doc_no IN (".$doc_no.") and pac_seq_no='-1'";
         $result_time2 = mysqli_query($link, $qry) or exit("Deleate jobs.".mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES (USER(),now(),'Cut job based','$get_order_del_no')"; 
-        // echo $insert_log."</br>"; 
         mysqli_query($link, $insert_log) or exit("Sql Error insert_log");
+		$sewing_cat = 'sewing';
+		$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+						  WHERE trim(category) = '$sewing_cat' ";
+		$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+		while($row=mysqli_fetch_array($op_code_result)) 
+		{
+			$op_codes  = $row['codes']; 
+		}
 
-        // MO Deletion start
-            $sewing_cat = 'sewing';
-            $op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-                              WHERE trim(category) = '$sewing_cat' ";
-            $op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-            while($row=mysqli_fetch_array($op_code_result)) 
-            {
-                $op_codes  = $row['codes']; 
-            }
+		$mo_query  = "SELECT GROUP_CONCAT(\"'\",mo_no,\"'\") as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
+		$mo_result = mysqli_query($link,$mo_query);
+		while($row = mysqli_fetch_array($mo_result))
+		{
+			$mos = $row['mos'];
+		}
 
-            $mo_query  = "SELECT GROUP_CONCAT(\"'\",mo_no,\"'\") as mos from $bai_pro3.mo_details where schedule = '$get_order_del_no'";
-            $mo_result = mysqli_query($link,$mo_query);
-            while($row = mysqli_fetch_array($mo_result))
-            {
-                $mos = $row['mos'];
-            }
+		$delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
+		$delete_result = mysqli_query($link,$delete_query);
 
-            $delete_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($get_tids) and op_code in ($op_codes) ";
-            $delete_result = mysqli_query($link,$delete_query);
-
-			$delete_query2 = "DELETE from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and operation_id in (".$ips_op_code.")";
-            $delete_result = mysqli_query($link,$delete_query2);
-        // MO Deletion end
+		$delete_query2 = "DELETE from $brandix_bts.bundle_creation_data where docket_number in (".$doc_no.") and operation_id in (".$ips_op_code.")";
+		$delete_result = mysqli_query($link,$delete_query2);
         echo 'success';
     }
     echo 'success';
-
 }
 function calculate_ratio($doc,$link){
     $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no=$doc
@@ -231,12 +218,10 @@ function assign_to_gets($ars,$data_samps){
 <?php
 if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$link))
 {
-
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
    LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
    LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 
    WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal' ";
-  //echo $ratio_query;
     $doc_nos = [];
     $view_shows=[];
     $ratio_result = mysqli_query($link, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));

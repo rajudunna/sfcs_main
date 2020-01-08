@@ -86,8 +86,21 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 {	
 	$doc_list_new = explode(",",$doc_list);
 	$cut_new = explode(",",$cut);
-	// var_dump($doc_list_new);
-	// die();
+	$sql1="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=".$doc_list_new[0]."";
+	$sql_result1=mysqli_query($link, $sql1) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row1 = mysqli_fetch_array($sql_result1))
+	{
+		$order_tid = $sql_row1['order_tid'];
+	}
+	$sql="select destination,order_style_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
+	$sql_result=mysqli_query($link, $sql) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row = mysqli_fetch_array($sql_result))
+	{
+		$destination = $sql_row['destination'];
+		$style = $sql_row['order_style_no'];
+		$color = $sql_row['order_col_des'];		
+	}
+	
 	foreach($doc_list_new as $key_list => $dono)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
@@ -115,22 +128,7 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 		{
 			$input_job_num=1;
 		}
-		$sql1="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=".$dono."";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1 = mysqli_fetch_array($sql_result1))
-		{
-			$order_tid = $sql_row1['order_tid'];
-		}
-		//get destination to fill logical bundle
-		$sql="select destination,order_style_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
-		$sql_result=mysqli_query($link, $sql) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row = mysqli_fetch_array($sql_result))
-		{
-			$destination = $sql_row['destination'];
-			$style = $sql_row['order_style_no'];
-			$color = $sql_row['order_col_des'];		
-		}
-	
+		
 		$category='sewing';
 		$operation_codes = array();
 		$fetching_ops_with_category1 = "SELECT tsm.operation_code AS operation_code,tsm.m3_smv AS smv FROM $brandix_bts.tbl_style_ops_master tsm 
@@ -209,7 +207,6 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 			return true;	
 		}
 	}
-	// die();
 }
 
 function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
