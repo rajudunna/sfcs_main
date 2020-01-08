@@ -768,11 +768,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             damages = $tds.find('#'+i+'cdamages').val();
             joints =$tds.find('#'+i+'cjoints').val();
             endbits = $tds.find('#'+i+'cendbits').val();
-            shortages =$tds.find('#'+i+'cshortages').val();
+            //shortages =$tds.find('#'+i+'cshortages').val(); commented bcoz #3111 ticket new formua for shortage
             fabricreturn=$tds.find('#'+i+'cfabricreturn').val();
             mlength=$tds.find('#mlength').val();
             completed = $tds.eq(16).text();
           
+          //#3111 ticket chnages for shortage formila changes.
+          shortages = parseFloat(Number(receivedqty) - ((Number(reportingplies*mlength)) + Number(damages) + Number(joints) + Number(endbits) + Number(fabricreturn))).toFixed(2);
+          $tds.find('#'+i+'cshortages').val(shortages);
+
+
         // do something with laysequence, rollno, shade
         fabricreturnqty = parseFloat(Number(receivedqty) - ((Number(reportingplies*mlength)) + Number(endbits) + Number(shortages))).toFixed(2);
         //fabricreturnqty=fabricreturnqty.toFixed(2);
