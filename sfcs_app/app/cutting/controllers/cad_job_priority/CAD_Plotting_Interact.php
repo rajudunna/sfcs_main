@@ -208,7 +208,7 @@ if(isset($_POST['submit']))
 	if(mysqli_num_rows($sql_result11)==0)
 	{
 		$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$ilast_id."-".$p_width."')";
-		mysqli_query($link, $sql11) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$sql="update $bai_pro3.marker_ref_matrix set marker_ref='$ilast_id', marker_width='".$p_width."', marker_length='".$mk_length."',cat_ref=$cat_ref,allocate_ref=$allocate_ref, style_code='$style_code', buyer_code='$buyer_code',pat_ver='$pat_ver', ".implode(",",$allo_c)." where marker_ref_tid='".$ilast_id."-".$p_width."'";
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
