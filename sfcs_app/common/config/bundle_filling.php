@@ -84,6 +84,7 @@ function plan_cut_bundle($docket_no)
 
 function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted_id,$schedule,$cut) 
 {	
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$doc_list_new = explode(",",$doc_list);
 	$cut_new = explode(",",$cut);
 	$sql1="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=".$doc_list_new[0]."";
