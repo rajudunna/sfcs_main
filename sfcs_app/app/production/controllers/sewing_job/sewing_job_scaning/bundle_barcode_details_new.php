@@ -480,7 +480,7 @@
 									$category_act = $row_cat['category'];
 								}
 								
-								if($rec_qty=$good_qty+$rejection_qty)
+								if($rec_qty==$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
 									echo json_encode($result_array);
@@ -657,7 +657,7 @@
 							}
 							else
 							{
-								if($rec_qty=$good_qty+$rejection_qty)
+								if($rec_qty==$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
 									echo json_encode($result_array);
@@ -1129,7 +1129,7 @@
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
-		if($rec_qty=$good_qty+$rejection_qty)
+		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
 			echo json_encode($result_array);
@@ -1141,7 +1141,7 @@
 			echo json_encode($result_array);
 			die();
 		}
-		if($ops_code!='')
+		if($ops_code=='')
 		{
 			$result_array['status'] = 'Please Check The barcode You have Scanned';
 			echo json_encode($result_array);
