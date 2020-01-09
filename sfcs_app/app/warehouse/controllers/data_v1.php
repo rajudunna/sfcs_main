@@ -130,8 +130,10 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 								}
 							}
 						}
-							
-						if($total_qty>$available)
+						
+
+						//if($total_qty>$available)
+						if(strval($total_qty)>strval($available))
 						{
 														
 							echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color='red'>input qty(".$total_qty.") more than balance qty</font></h1></center></div>";
@@ -227,7 +229,8 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 
 
 
-		if($total_qty>$available)
+		//if($total_qty>$available)
+		if(strval($total_qty)>strval($available))
 		{
 			//echo $total_qty;
 			//echo "<font color=red>input qty :".$total_qty." more than available</font>";
