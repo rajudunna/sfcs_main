@@ -204,10 +204,11 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 			$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
 			$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
 		}
-		if($update_result) {
-			return true;	
-		}
+		// if($update_result) {
+			// return true;	
+		// }
 	}
+	return true;
 }
 
 function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
