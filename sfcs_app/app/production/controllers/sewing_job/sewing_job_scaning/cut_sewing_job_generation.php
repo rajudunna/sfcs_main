@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 if($_POST['modal_submit'])
 {    
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
     $jobcount = $_POST['jobcount'];
     $bundle_qty = $_POST['bundleqty'];
     $docs = $_POST['docs'];
@@ -19,10 +19,9 @@ if($_POST['modal_submit'])
     $plan_logical_bundles = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
     if($plan_logical_bundles)
 	{
-		return true;
-    } else {
-		return false;
-	}   
+        echo "<script>sweetAlert('Cut Sewing jobs generated successfully','','');</script>";
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "cut_sewing_job_generation.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+    }   
 }
 
 if(isset($_POST) && isset($_POST['del_recs'])){
@@ -524,7 +523,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <input type="button" id='markers' class="btn btn-success" value="Confirm.." name="modal_submit">
+                            <input type="submit" id='markers' class="btn btn-success" value="Confirm.." name="modal_submit">
                         </div>
                         </form>
                     </div>
@@ -548,8 +547,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                             </tbody>
                         </table>
                     </div>
-                    
-                    <div id="generate_message" class='alert alert-success'>
+                    <div ng-show='!jobs.length' class='alert alert-warning'>
+                        Please generate jobs..
+                    </div>
+
+                    <div id="generate_message" class='alert alert-success' style="display: none">
                         Please Wait while we Generate Sewing Jobs...
                     </div>
 
@@ -668,8 +670,8 @@ function delet(docs_id){
 
 
     $(document).ready(function(){
-		$("#generate_message").css("display","none");
         var url1 = '?r=<?= $_GET['r'] ?>';
+        console.log(url1);
         $("#style").change(function(){
             //alert("The text has been changed.");
             var optionSelected = $("option:selected", this);
@@ -724,32 +726,8 @@ function delet(docs_id){
                 $("#bundle-qty").val($("#bundle-qty1").val());
             }
         });
-		
-		 $("#markers").click(function(e) {
-			 $("#generate_message").css("display","block");
-			 $("#markers").prop("disabled", true);
-			 e.preventDefault();
-			  $.ajax({
-				type: 'post',
-				url: url1,
-				data: $('#modal_form').serialize()+'&'+$.param({ 'modal_submit': 'modal_submit' }),
-				success: function (res) {
-					$("#generate_message").css("display","none");
-					if(res) {
-						sweetAlert('Cut Sewing jobs generated successfully','','');
-						var optionSelected = $("option:selected", this);
-						var color = $("#color").val();
-						var style = $("#style").val();
-						var schedule = $("#schedule").val();
-						window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
-					} else {
-						sweetAlert('Cut Sewing jobs generation failed','','');
-						$("#markers").prop("disabled", false);
-					}
-					
-				}
-			  });
-		 });
+        
+
     });
 </script>
 <style>
