@@ -1284,6 +1284,20 @@
 					$update_qry_send_qty = "update $bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 					$update_rslt_send_qty = $link->query($update_qry_send_qty);
 				}
+				
+				if($category_act=='Receive PF')
+				{
+					$qry_min_prevops="SELECT MIN(good_qty) AS min_recieved_qty FROM $bai_pro3.act_cut_bundle_trn WHERE act_cut_bundle_id=".$act_cut_bundle_id." and ops_code in ($emb_operations)";
+					$result_qry_min_prevops = $link->query($qry_min_prevops);
+					while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
+					{
+						$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
+					}
+					
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$previous_minqty where id=".$act_cut_bundle_id."";
+					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
+				}
+				
 				$good_qty = $report_qty - $rejctedqty;
 				foreach($actcut_qty as $act_cut_id => $act_qty) {
 					if ($good_qty > 0) {
@@ -1321,6 +1335,19 @@
 				$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
 				$update_qry_send_qty = "update $bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 				$update_rslt_send_qty = $link->query($update_qry_send_qty);
+				
+				//updating good quantity in act_cut_bundle
+				$get_data_qry="select ops_code from $bai_pro3.act_cut_bundle_trn where barcode='".$post_ops_barcode."'";
+				$result_data_qry = $link->query($get_data_qry);
+				while($row = $result_data_qry->fetch_assoc())
+				{
+					$opcodeforupdate=$row['ops_code'];
+				}
+				if($opcodeforupdate=='')
+				{
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+($report_qty-$rejctedqty) where id=".$act_cut_bundle_id."";
+					$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle');	
+				}
 				
 				$good_qty = $report_qty - $rejctedqty;
 				foreach($actcut_qty as $act_cut_id => $act_qty) {
