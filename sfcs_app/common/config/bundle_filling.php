@@ -92,24 +92,258 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 	while($sql_row1 = mysqli_fetch_array($sql_result1))
 	{
 		$order_tid = $sql_row1['order_tid'];
-	}
-	$sql="select destination,order_style_no,order_col_des from $bai_pro3.bai_orders_db_confirm where order_tid='".$order_tid."'";
-	$sql_result=mysqli_query($link, $sql) or exit("Issue while Selecting Bai_orders".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row = mysqli_fetch_array($sql_result))
+	}	
+	// Getting Order
+	$get_exact_size_code = "SELECT * FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid = '".$order_tid."'";
+	$sql_query_size_code = mysqli_query($link,$get_exact_size_code) or exit("Issue while selecting the Bai_order_db");
+	while($row_size=mysqli_fetch_array($sql_query_size_code))
 	{
-		$destination = $sql_row['destination'];
-		$style = $sql_row['order_style_no'];
-		$color = $sql_row['order_col_des'];		
+		$destination = $row_size['destination'];
+		$style = $row_size['order_style_no'];
+		$color = $row_size['order_col_des'];
+		for($ii=0;$ii<sizeof($sizes_array);$ii++)
+		{
+			if($row_size["title_size_".$sizes_array[$ii].""]<>"")
+			{
+				$check_upto[]=$sizes_array[$ii];
+				$order_qty[$sizes_array[$ii]] = $row_size["order_s_".$sizes_array[$ii].""];
+				$size_title[$sizes_array[$ii]] = $row_size["title_size_".$sizes_array[$ii].""];
+			}
+		}
+	}
+	$category='sewing';
+	$operation_codes = array();
+	$fetching_ops_with_category1 = "SELECT tsm.operation_code AS operation_code,tsm.m3_smv AS smv FROM $brandix_bts.tbl_style_ops_master tsm 
+	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category='".$category."' GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
+	$result_fetching_ops_with_cat1 = mysqli_query($link,$fetching_ops_with_category1) or exit("Issue while Selecting Operaitons");
+	while($row1=mysqli_fetch_array($result_fetching_ops_with_cat1))
+	{
+		$operation_codes[] = $row1['operation_code'];				
+		$smv[$row1['operation_code']] = $row1['smv'];				
 	}
 	
+	// Getting Plan
+	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE order_tid = '".$order_tid."' order by doc_no desc";
+	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
+	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
+	{
+		$dockets[]=$row['doc_no'];
+		$docket_cut[$row['doc_no']]=$row['pcutno'];
+		for ($i=0; $i < sizeof($check_upto); $i++)
+		{ 
+			if ($row['p_'.$sizes_array[$i]] > 0)
+			{
+				$cut_plan_qty[$sizes_array[$i]] += $row['p_'.$sizes_array[$i]] * $row['p_plies'];
+				$cut_plan_docket[$row['doc_no']][$sizes_array[$i]] = $row['p_'.$sizes_array[$i]] * $row['p_plies'];
+			}			
+		}
+	}
+	// Get Diffrence between Order and Plan
+	for($s=0;$s<sizeof($check_upto);$s++)
+	{		
+		if($order_qty[$sizes_array[$s]]>0)
+		{
+			if($order_qty[$sizes_array[$s]]>$cut_plan_qty[$sizes_array[$s]])
+			{
+				$pending_plan[$sizes_array[$s]]=$order_qty[$sizes_array[$s]]-$cut_plan_qty[$sizes_array[$s]];
+			}
+			else
+			{
+				$excess[$sizes_array[$s]]=$cut_plan_qty[$sizes_array[$s]]-$order_qty[$sizes_array[$s]];				
+			}
+		}
+	}
+	
+	$usage_from_plan_id=array();
+	if(sizeof($excess)>0)
+	{	
+		//Getting Samples
+		$qry_sample_qty_check_qry = "SELECT * FROM $bai_pro3.sp_sample_order_db WHERE order_tid = '".$order_tid."'";
+		$result_qry_sample_qty_check_qry = $link->query($qry_sample_qty_check_qry);
+		if(mysqli_num_rows($result_qry_sample_qty_check_qry)>0)
+		{
+			while($row_sample = $result_qry_sample_qty_check_qry->fetch_assoc()) 
+			{
+				for ($i=0; $i < sizeof($check_upto); $i++)
+				{ 
+					$samp_qty[$row_sample['sizes_ref']] = $row_sample['input_qty'];							
+				}
+			}
+		}
+				
+		// Verifying from whcih docket we need remove execess & Samples
+		for($s=0;$s<sizeof($dockets);$s++)
+		{
+			for($ss=0;$ss<sizeof($check_upto);$ss++)
+			{		
+				if($excess[$sizes_array[$ss]]>0 && $cut_plan_docket[$dockets[$s]][$sizes_array[$ss]]>0)
+				{
+					if($excess[$sizes_array[$ss]]<$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]])
+					{
+						$remove_from_excess[$dockets[$s]][$sizes_array[$ss]] = $excess[$sizes_array[$ss]];
+						$excess[$sizes_array[$ss]]=0;
+					}
+					else
+					{
+						$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]=$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+						$excess[$sizes_array[$ss]]=$excess[$sizes_array[$ss]]-$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+					}
+					$remaval_dockets[]=$dockets[$s];
+				}
+			}
+		}
+		
+		// Verifying from whcih docket we need remove Samples
+		if(sizeof($samp_qty)>0)
+		{
+			for($s=0;$s<sizeof($dockets);$s++)
+			{
+				for($ss=0;$ss<sizeof($check_upto);$ss++)
+				{		
+					if($remove_from_excess[$dockets[$s]][$sizes_array[$ss]]>0 && $samp_qty[$sizes_array[$ss]]>0)
+					{
+						if($samp_qty[$sizes_array[$ss]]<$remove_from_excess[$dockets[$s]][$sizes_array[$ss]])
+						{
+							$remove_from_sample[$dockets[$s]][$sizes_array[$ss]] = $samp_qty[$sizes_array[$ss]];
+							$samp_qty[$sizes_array[$ss]]=0;
+							$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]= $remove_from_excess[$dockets[$s]][$sizes_array[$ss]] - $samp_qty[$sizes_array[$ss]];
+						}
+						else
+						{
+							$remove_from_sample[$dockets[$s]][$sizes_array[$ss]]=$remove_from_excess[$dockets[$s]][$sizes_array[$ss]];
+							$samp_qty[$sizes_array[$ss]]=$samp_qty[$sizes_array[$ss]]-$remove_from_excess[$dockets[$s]][$sizes_array[$ss]];
+							$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]=0;
+						}
+						$remaval_dockets[]=$dockets[$s];
+					}
+				}
+			}
+		}		
+		$remaval_dockets=array_values(array_unique($remaval_dockets));		
+		//get input job number for each schedule
+		$old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
+		$old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($old_jobs_count_res)>0)
+		{
+			while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+			{
+				if($max_oldqty_jobcount['result'] > 0) 
+				{
+					$input_job_num=$max_oldqty_jobcount['result'];
+				} 
+				else 
+				{
+					$input_job_num=1;
+				}
+			}
+		} 
+		else 
+		{
+			$input_job_num=1;
+		}
+		
+		foreach($remaval_dockets as $key => $docket_no)
+		{
+			if(in_array($docket_no,$doc_list_new))
+			{
+				for($i=0;$i<sizeof($check_upto);$i++)
+				{	
+					$plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$docket_no and size_code='".$sizes_array[$i]."' order by id desc";
+					$plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Issue while Selecting PCB".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($plan_cut_bundle_row = mysqli_fetch_array($plan_cut_bundle_res))
+					{
+						$plan_cut_bundle_id = $plan_cut_bundle_row['id'];						
+						$sizes[$plan_cut_bundle_id] = $plan_cut_bundle_row['size'];
+						$size_codes[$plan_cut_bundle_id] = $plan_cut_bundle_row['size_code'];
+						$size_plies = $plan_cut_bundle_row['plies'];
+						
+						do 
+						{							
+							if($remove_from_sample[$docket_no][$sizes_array[$i]]>0)
+							{							
+								if($size_plies >= $remove_from_sample[$docket_no][$sizes_array[$i]])
+								{
+									$usage_from_plan_id[$plan_cut_bundle_id] +=$remove_from_sample[$docket_no][$sizes_array[$i]];
+									$fill_qty[$plan_cut_bundle_id][3] = $remove_from_sample[$docket_no][$sizes_array[$i]];
+									$size_plies=$size_plies-$remove_from_sample[$docket_no][$sizes_array[$i]];
+									$remove_from_sample[$docket_no][$sizes_array[$i]]=0;									
+								} 
+								else 
+								{
+									$usage_from_plan_id[$plan_cut_bundle_id] +=$size_plies;
+									$fill_qty[$plan_cut_bundle_id][3] = $size_plies;
+									$remove_from_sample[$docket_no][$sizes_array[$i]]=$remove_from_sample[$docket_no][$sizes_array[$i]]-$size_plies;
+									$size_plies=0;									 		
+								}
+								$plan_ids[]=$plan_cut_bundle_id;
+							}
+							else if($remove_from_excess[$docket_no][$sizes_array[$i]]>0) 
+							{
+								if($size_plies >= $remove_from_excess[$docket_no][$sizes_array[$i]])
+								{
+									$usage_from_plan_id[$plan_cut_bundle_id] +=$remove_from_excess[$docket_no][$sizes_array[$i]];
+									$fill_qty[$plan_cut_bundle_id][2] = $remove_from_excess[$docket_no][$sizes_array[$i]];
+									$size_plies=$size_plies-$remove_from_excess[$docket_no][$sizes_array[$i]];
+									$remove_from_excess[$docket_no][$sizes_array[$i]]=0;									
+								} 
+								else 
+								{
+									$usage_from_plan_id[$plan_cut_bundle_id] +=$size_plies;
+									$fill_qty[$plan_cut_bundle_id][2] = $size_plies;
+									$remove_from_excess[$docket_no][$sizes_array[$i]]=$remove_from_excess[$docket_no][$sizes_array[$i]]-$size_plies;
+									$size_plies=0;									 		
+								}
+								$plan_ids[]=$plan_cut_bundle_id;
+							}							
+						}while ($size_plies > 0 && $remove_from_sample[$docket_no][$sizes_array[$i]]>0 && $remove_from_excess[$docket_no][$sizes_array[$i]]>0);						
+					}	
+				}
+				$plan_ids=array_values(array_unique($plan_ids));
+				// Executing the Bundles		
+				for($j=2;$j<4;$j++) 
+				{				
+					$bundle_seq=1;
+					$input_job_no=$input_job_num;
+					$input_job_num_rand=$schedule.date("ymd").$input_job_no;
+					echo $input_job_no."---".$input_job_num_rand."---".$bundle_seq."<br>";					
+					for($jj=0;$jj<sizeof($plan_ids);$jj++)
+					{
+						if($fill_qty[$plan_ids[$jj]][$j]>0)
+						{
+							$barcode="SPB-".$docket_no."-".$input_job_no."-".$bundle_seq."";
+							//Plan Logical Bundle				
+							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 				(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$plan_ids[$jj]]."', ".$fill_qty[$plan_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$plan_ids[$jj]]."','N', '-1', $inserted_id, $plan_ids[$jj],$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."',$j)";
+							//echo $ins_qry."<br>";
+							$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$pac_tid= mysqli_insert_id($link);
+							foreach($operation_codes as $index => $op_code)
+							{
+								$send_qty = 0;
+								if($index == 0) {
+									$send_qty = $fill_qty[$plan_ids[$jj]][$j];
+								}
+								//Plan Logical Bundle Trn
+								$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_codes[$plan_ids[$jj]]."','".$sizes[$plan_ids[$jj]]."','". $smv[$op_code]."',".$pac_tid.",".$fill_qty[$plan_ids[$jj]][$j].",".$send_qty.",0,0,0,".$op_code.",'".$docket_no."','".date('Y-m-d H:i:s')."', '".$username."','".$docket_cut[$docket_no]."','".$input_job_num."','".$input_job_num_rand."','','','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
+								mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+							$barcode='';
+							$bundle_seq++;							
+						}
+					}
+					$input_job_num++;					
+				}
+				unset($plan_ids);
+			}			
+		}	
+	}
+		
 	foreach($doc_list_new as $key_list => $dono)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 		$doc_type = 'N';
 		$packing_mode = 1;
-		$destination = '';	
 		//get input job number for each schedule
-		$old_jobs_count_qry1 = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.packing_summary_input WHERE order_del_no='".$schedule."'";
+		$old_jobs_count_qry1 = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
 		$old_jobs_count_res1 = mysqli_query($link, $old_jobs_count_qry1) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($old_jobs_count_res1)>0)
 		{
@@ -128,18 +362,7 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 		else 
 		{
 			$input_job_num=1;
-		}
-		
-		$category='sewing';
-		$operation_codes = array();
-		$fetching_ops_with_category1 = "SELECT tsm.operation_code AS operation_code,tsm.m3_smv AS smv FROM $brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category='".$category."' GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
-		$result_fetching_ops_with_cat1 = mysqli_query($link,$fetching_ops_with_category1) or exit("Issue while Selecting Operaitons");
-		while($row1=mysqli_fetch_array($result_fetching_ops_with_cat1))
-		{
-			$operation_codes[] = $row1['operation_code'];				
-			$smv[$row1['operation_code']] = $row1['smv'];				
-		}
+		}		
 		$barcode='';
 		$cut_no[$key_list]=$cut_new[$key_list];
 		$shift='';
@@ -153,61 +376,68 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 		if(mysqli_num_rows($plan_cut_bundle_res)>0)
 		{        
 			while($plan_cut_bundle_row = mysqli_fetch_array($plan_cut_bundle_res))
-			{
+			{								
 				$size = $plan_cut_bundle_row['size'];
 				$size_code = $plan_cut_bundle_row['size_code'];
 				$plan_cut_bundle_id = $plan_cut_bundle_row['id'];
 				$size_plies = $plan_cut_bundle_row['plies'];
+				
+				if($usage_from_plan_id[$plan_cut_bundle_id]>0)
+				{
+					$size_plies = $size_plies-$usage_from_plan_id[$plan_cut_bundle_id];
+				}			
+				
 				do 
 				{
-					if($size_plies >= $plan_bundleqty)
+					if($size_plies > 0)
 					{
-						$logic_qty = $plan_bundleqty;
-					} 
-					else 
-					{
-						$logic_qty = $size_plies;
-					}
-					
-					$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
-					
-					if($plan_jobcount1 < $bundle_cum_qty)
-					{
-						$input_job_num++;
-						$bundle_cum_qty=0;
-						$bundle_seq=1;
-						$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
-						$input_job_num_rand=$schedule.date("ymd").$input_job_num;
-					}
-					$barcode="SPB-".$dono."-".$input_job_num."-".$bundle_seq."";
-					//Plan Logical Bundle				
-					$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 				(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$input_job_num."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','".$doc_type."', '-1', $inserted_id, $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
-					$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$pac_tid= mysqli_insert_id($link);
-					foreach($operation_codes as $index => $op_code)
-					{
-						$send_qty = 0;
-						if($index == 0) {
-							$send_qty = $logic_qty;
+						if($size_plies >= $plan_bundleqty)
+						{
+							$logic_qty = $plan_bundleqty;
+						} 
+						else 
+						{
+							$logic_qty = $size_plies;
 						}
-						//Plan Logical Bundle Trn
-						$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no[$key_list]."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
-						mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+						$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
+						
+						if($plan_jobcount1 < $bundle_cum_qty)
+						{
+							$input_job_num++;
+							$bundle_cum_qty=0;
+							$bundle_seq=1;
+							$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
+							$input_job_num_rand=$schedule.date("ymd").$input_job_num;
+						}
+						$barcode="SPB-".$dono."-".$input_job_num."-".$bundle_seq."";
+						//Plan Logical Bundle				
+						$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 				(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$input_job_num."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','".$doc_type."', '-1', $inserted_id, $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$pac_tid= mysqli_insert_id($link);
+						foreach($operation_codes as $index => $op_code)
+						{
+							$send_qty = 0;
+							if($index == 0) {
+								$send_qty = $logic_qty;
+							}
+							//Plan Logical Bundle Trn
+							$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_no[$key_list]."','".$input_job_num."','".$input_job_num_rand."','".$shift."','".$module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
+							mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
+						$barcode='';
+						$size_plies = $size_plies - $logic_qty;
+						$count++;
+						$bundle_seq++;
 					}
-					$barcode='';
-					$size_plies = $size_plies - $logic_qty;
-					$count++;
-					$bundle_seq++;
 				}while ($size_plies > 0);   
 			}			
 			// update count of plan logical bundles for each sewing job
 			$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
 			$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
-		}
-		if($update_result) {
-			return true;	
-		}
+		}		
 	}
+	return true;
 }
 
 function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
