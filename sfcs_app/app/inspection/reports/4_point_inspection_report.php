@@ -88,9 +88,8 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$po_no = $row111['supplier'];
 	$remarks = $row111['remarks'];
 }
-
-
-$get_details12 = "select * from $bai_rm_pj1.`sticker_report` where lot_no in (".implode(",",$lots_no).")";
+ $lot_ref = implode(",",$lots_no);
+ $get_details12 = "select * from $bai_rm_pj1.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".")";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 
@@ -1619,17 +1618,17 @@ tags will be replaced.-->
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php echo $repeat_length;?></td>
   <td colspan=2 class=xl7919758 style='border-left:none'>Average Points</td>
   <td class=xl7719758 style='border-top:none;text-align:center;'><?php 
+ $tot_qty = 0;
+  $rate=0;
  for($i=0;$i<sizeof($tot_ids);$i++)
  {
-	$rate=0;
-	if($fab_uom == "meters"){
-		$qty[]=round($invoice_qty[$tot_ids[$i]]*1.09361, 2);
-	}else
-	{
-		$qty[]=$invoice_qty[$tot_ids[$i]];
-	}	
+	
+	$tot_qty += $invoice_qty[$tot_ids[$i]];
  }
-  $rate = round(($tot_points/array_sum($qty))*(36/$inch_value)*100,2);
+ if($fab_uom == "meters"){
+	$tot_qty = round($tot_qty*1.09361,2);
+ }
+  $rate = round(($tot_points/$tot_qty)*(36/$inch_value)*100,2);
   echo "".$rate;
 ?></td>
   <td class=xl1519758></td>
