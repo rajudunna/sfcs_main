@@ -4,6 +4,8 @@ app.controller('scanctrl', function ($scope, $http, $window) {
     $scope.barcode = '';
     $scope.url = '';
     $scope.user_permission = '';
+    $scope.has_permission = [];
+    $scope.pass_id = '';
     $scope.pass_id = '';
     $scope.showtable = false;
     $scope.showscanlist = false;
@@ -53,8 +55,10 @@ app.controller('scanctrl', function ($scope, $http, $window) {
                             // swal('Please Check Barcode you scanned.');
                             $scope.barcode = '';
                         }else{
+                            console.log($scope.has_permission);
                             var params = $.param({
                                 auth: $scope.user_permission,
+                                has_permission: $scope.has_permission,
                                 barcode: $scope.last_barcode,
                                 shift: $scope.shift,
                                 gate_id: $scope.pass_id								

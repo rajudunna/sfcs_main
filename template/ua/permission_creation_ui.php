@@ -1,4 +1,6 @@
-
+<?php
+    $get_url = getFullURLLevel($_GET['r'],'permission_validation.php',0,'R'); 
+?>
 
 <div class="panel panel-primary">
 
@@ -10,7 +12,7 @@
                 <div class = "row">    
                     <div class = "form_group col-md-3">    
                         <label>Permission Name:</label>    
-                        <input type = "text" name = "pname" value = "" class="form-control" required/> 
+                        <input type = "text" name = "pname" id = "pname" value = "" class="form-control" required/> 
                     </div>
                     <div class = "form_group col-md-3">   
                         <label>Permission Desciption:</label>    
@@ -39,7 +41,7 @@
 
                 if(isset($_POST['submit']))
                 {
-                    $permission_name = $_POST['pname'];
+                    $permission_name = strtoupper($_POST['pname']);
                     $permission_des = $_POST['pdes'];
                    
                     $sql_select_query = "SELECT COUNT(*) as count FROM rbac_permission WHERE permission_name = '$permission_name'";
@@ -71,4 +73,20 @@
         </div> 
     </div> 
 </div> 
+<script>
+
+$('#pname').on('change',function(){
+    pname = $('#pname').val();
+    $.ajax({
+        url : '<?= $get_url ?>?pname='+pname
+    }).done(function(res)
+    {
+        if(res.trim() == 'duplicate'){
+            $('#pname').val('');
+            swal('Error','Duplicate Permission name','error');
+        }
+       
+    });
+});
+</script>
 

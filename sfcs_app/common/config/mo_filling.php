@@ -574,7 +574,8 @@
 									$bundle_no = $row1234['tid'];
 									for($kk=0;$kk<sizeof($mo_no);$kk++)
 									{                                                     
-										$last_mo = $mo_no[sizeof($mo_no)];      
+										// $last_mo = $mo_no[sizeof($mo_no)]; 
+										$last_mo = $mo_no[$kk];     
 										$m_fil=0;
 										$sql12345="SELECT sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE mo_no='".$mo_no[$kk]."' and op_code IN ($ops[0]) GROUP BY op_code";
 										$result12345=mysqli_query($link, $sql12345) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -633,12 +634,23 @@
 									{
 										for($l=0;$l<sizeof($ops);$l++)
 										{     
-											if($ops_m_id[$last_mo][$ops[$l]]>0)
-											{  
-												$sql = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
-												$result1=mysqli_query($link, $sql) or exit('Error Encountered');
-												$res=1;
-											}
+											 if($ops_m_id[$last_mo][$ops[$l]]>0)
+											 { 
+										        $sql11 = "select * from $bai_pro3.mo_operation_quantites where mo_no ='$last_mo' and ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
+												$result11=mysqli_query($link, $sql11) or exit('Error Encountered');
+												if(mysqli_num_rows($result11)>0)
+												{
+                                                  $sql12 = "Update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity + $qty where mo_no ='$last_mo' and	ref_no=".$row1234['tid']." and op_code =".$ops_m_id[$last_mo][$ops[$l]];
+												  $result12=mysqli_query($link, $sql12) or exit('Error Encountered');
+												  $res=1;
+												}
+												else
+												{
+													$sql="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`,`bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$last_mo."','".$row1234['tid']."','".$qty."', '".$ops_m_id[$last_mo][$ops[$l]]."', '".$ops_m_name[$last_mo][$ops[$l]]."')";
+												    $result1=mysqli_query($link, $sql) or exit('Error Encountered');
+												    $res=1;
+												}
+											 }
 										}
 									}
 								}
