@@ -312,7 +312,7 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 						{
 							$barcode="SPB-".$docket_no."-".$input_job_no."-".$bundle_seq."";
 							//Plan Logical Bundle				
-							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` 				(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$plan_ids[$jj]]."', ".$fill_qty[$plan_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$plan_ids[$jj]]."','N', '-1', $inserted_id, $plan_ids[$jj],$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."',$j)";
+							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$plan_ids[$jj]]."', ".$fill_qty[$plan_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$plan_ids[$jj]]."','N', '-1', $inserted_id, $plan_ids[$jj],$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."',$j)";
 							//echo $ins_qry."<br>";
 							$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$pac_tid= mysqli_insert_id($link);
@@ -441,7 +441,8 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 }
 
 
-function plan_logical_bundles_pac_based(){
+function plan_logical_bundles_pac_based($doc_list,$seq_no){
+
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$list = array();
 	$complete_list;
@@ -451,11 +452,15 @@ function plan_logical_bundles_pac_based(){
 	$shift='';
 	$module=0;
 		
-		
-		$plan_cut_bundles="select * from $bai_pro3.plan_cut_bundle where doc_no in('22','23')";
+	foreach($doc_list as $doc)
+	{
+
+		$plan_cut_bundles="select * from $bai_pro3.plan_cut_bundle where doc_no in($doc)";
+
 		if(sizeof($complete_pcb_list) != 0) {
 			$plan_cut_bundles .= " and id not in ($complete_pcb_list)";
 		}
+
 		$plan_cut_bundles .= " order by size_code,doc_no";
 		// echo $plan_cut_bundles.'<br/>';
 		$plan_cut_bundles_res=mysqli_query($link, $plan_cut_bundles) or exit("Issue while Selecting plan_cut_bundle".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -472,7 +477,7 @@ function plan_logical_bundles_pac_based(){
 			
 			do {
 			
-				$split_row_new="select * from $bai_pro3.pac_stat_log_input_job where doc_no = '".$pcb_doc_no."' and old_size= '".$pcb_size_code."' and plan_cut_bundle_id = ''";
+				$split_row_new="select * from $bai_pro3.pac_stat_log_input_job where doc_no = '".$pcb_doc_no."' and old_size= '".$pcb_size_code."' and pac_seq_no=$seq_no and plan_cut_bundle_id = ''";
 				if(sizeof($complete_list) != 0) {
 					$split_row_new .= " and tid not in ($complete_list)";
 				}
@@ -558,24 +563,14 @@ function plan_logical_bundles_pac_based(){
 
 			
 		}
-		
+	
 		$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $spb_sref_id";
 		$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
 
 		$delete_old_spb = "delete from $bai_pro3.`pac_stat_log_input_job` where tid in ($complete_list)";
 		$delete_old_spb_res=mysqli_query($link, $delete_old_spb) or exit("Issue in Deleting old SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$pac_tid= mysqli_insert_id($link);
-		var_dump($complete_list);
-
-		// $plan_cut_bundle_id = $split_row['plan_cut_bundle_id'];
-		// $barcode = $split_row['barcode'];
-		// $style = $split_row['style'];
-		// $schedule = $split_row['schedule'];
-		// $color = $split_row['color'];
-	// }
-
-
-
+	}
 
 }
 
