@@ -691,7 +691,6 @@ if(isset($_POST["trans_action"])){
                                                 $size = $row['old_size'];
 
                                                 $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
-                                            // echo $retreving_remaining_qty_qry;
                                                 $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
                                                 if($result_retreving_remaining_qty_qry->num_rows > 0)
                                                 {
@@ -700,6 +699,7 @@ if(isset($_POST["trans_action"])){
                                                         $sum_balance = $row_remaining['balance_to_report'];
                                                     }
                                                 }
+                                              
                                                 if($sum_balance < $row['balance_to_report'])
                                                 {
                                                     $result_array['status'] = 'Previous operation not yet done for this jobs.';
