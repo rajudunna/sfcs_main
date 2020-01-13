@@ -1129,7 +1129,7 @@
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
-		if($rec_qty=$good_qty+$rejection_qty)
+		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
 			echo json_encode($result_array);
