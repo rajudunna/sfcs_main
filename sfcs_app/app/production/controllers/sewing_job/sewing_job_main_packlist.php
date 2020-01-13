@@ -40,6 +40,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/bundle_filling.php',4,'R'));
 	// $carton_id=$_GET["id"];
 	$schedule=$_GET["schedule"];
 	$seq_no=$_GET["seq_no"];
@@ -1250,7 +1251,21 @@
 			//Updated Successfully
 		}
 	}
+	$docs_list=array();
 
+	$get_doc_list_query = "SELECT DISTINCT(doc_no) as doc FROM  bai_pro3.pac_stat_log_input_job WHERE pac_seq_no = $seq_no";
+	// echo $get_doc_list_query;
+	$get_doc_list_query_res=mysqli_query($link, $get_doc_list_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($doc_row=mysqli_fetch_array($get_doc_list_query_res)) 
+	{ 
+		$docs_list[]=$doc_row['doc'];
+	}
+	$split_jobs = plan_logical_bundles_pac_based($docs_list,$seq_no);
+
+	if($split_jobs){
+		//Inserted Successfully
+	}
+	// die();
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
 	if($inserted){
