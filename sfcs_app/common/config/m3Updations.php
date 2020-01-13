@@ -420,15 +420,15 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                         $is_m3 = $row['default_operration'];
                     }
                         //getting m3_op_code
-                        $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
-                        $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-                        {
-                            while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-                            {
-                                $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
-                            }
-                        }
+                        // $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $main_ops_code";
+                        // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+                        // {
+                        //     while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+                        //     {
+                        //         $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+                        //     }
+                        // }
                         //got the main ops code
                     // if(strtolower($is_m3) == 'yes')
                     // {
@@ -857,15 +857,15 @@ function updateM3TransactionsLay($ref_id,$op_code,$qty,$cut_num)
         if(strtolower($is_m3) == 'yes')
         {
             //getting m3_op_code
-            $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
-            $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
-            if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
-            {
-                while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
-                {
-                    $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
-                }
-            }
+            // $bundle_creation_data_check = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
+            // $bundle_creation_data_check_result=mysqli_query($link, $bundle_creation_data_check) or exit("Sql Error bundle_creation_data_check".mysqli_error($GLOBALS["___mysqli_ston"]));
+            // if(mysqli_num_rows($bundle_creation_data_check_result) > 0)
+            // {
+            //     while($row_bundle_creation_data_check_result =mysqli_fetch_array($bundle_creation_data_check_result))
+            //     {
+            //         $main_ops_code = $row_bundle_creation_data_check_result['Main_OperationNumber'];
+            //     }
+            // }
             //got the main ops code
             $cur_date = date('Y-m-d H:s:i');
             $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`api_type`) 
