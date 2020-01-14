@@ -307,7 +307,7 @@
 		$operation = explode('-', $barcode)[3];
 
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+		// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
 		// checking for emblishment Planning done or not
 		$check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
