@@ -1813,7 +1813,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBAL
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["qty_issued"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 	
 	$scount_temp[]=$sql_row['ref4'];
@@ -1839,7 +1839,7 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["qty_issued"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
 		$scount_temp[]=$sql_row1['ref4'];
@@ -2295,7 +2295,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	//for shade wise category
 	if(in_array($authorized,$has_permission))
 	{
-		if ($temp[16] > 0) 
+		if ($temp[16] > 0 || $temp[17] > 0) 
 		{
 			$readonly = 'readonly';
 			$dropdown_read = 'disabled';
