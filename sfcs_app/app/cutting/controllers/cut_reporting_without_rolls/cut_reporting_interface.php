@@ -779,7 +779,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
 
         // do something with laysequence, rollno, shade
-        fabricreturnqty = parseFloat(Number(receivedqty) - ((Number(reportingplies*mlength)) + Number(endbits) + Number(shortages))).toFixed(2);
+        fabricreturnqty = parseFloat(Number(receivedqty) - ((Number(reportingplies*mlength)) + Number(endbits) + Number(shortages) + Number(damages) + Number(joints))).toFixed(2);
         //fabricreturnqty=fabricreturnqty.toFixed(2);
         
         // if(fabricreturnqty<0)
