@@ -201,7 +201,7 @@ if(isset($_POST["submit"]))
 	echo "<table id=\"table1\" class=\"table table-bordered\" style='width:100%'>";
 	echo "<tr class='danger'><th>TID</th><th>Size</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 	$packing_tid_list=array();
-	$sql="select * from $bai_pro3.packing_summary where tid in (select tid from $bai_pro3.pac_stat_log where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date)";
+	$sql="select * from $bai_pro3.packing_summary where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	if(mysqli_num_rows($sql_result))
 	{
@@ -213,7 +213,7 @@ if(isset($_POST["submit"]))
 		$packing_tid_list[]=$sql_row['tid'];
 		$size_code=$sql_row['size_code'];
 		$status=$sql_row['status'];
-		$lastup=$sql_row['lastup'];
+		$lastup=$sql_row['scan_date'];
 		$container=$sql_row['container'];
 		$disp_carton_no=$sql_row['disp_carton_no'];
 		$disp_id=$sql_row['disp_id'];
@@ -226,7 +226,7 @@ if(isset($_POST["submit"]))
 		$size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper(substr("a_".$sql_row['size_code'],2)),$link);
 					
 
-		echo "<tr><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['lastup']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
+		echo "<tr><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['scan_date']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
 	}
 	echo '<tr><th colspan=7 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
 		echo "</table>";

@@ -18,7 +18,8 @@
     else
     {
         $value = 'not_authorized';
-    }
+	}
+	
 ?>
 
 <form  method="POST">
@@ -50,6 +51,9 @@
 				    $barcode=$_POST['barcode'];
 					$barcodeno=explode('-', $barcode)[0];
 					$operation=explode('-', $barcode)[1];
+
+					
+					
 					echo "<table class='table table-bordered'>";
 					echo "<tr class='success'>
 					      <th>Style</th>
@@ -63,6 +67,7 @@
 						//getting data from bundle_creation_data
 						$getbundledata1="Select * From $bai_pro3.emb_bundles where barcode = '$barcode' and good_qty>0";
 						$check_data_qry_result1=mysqli_query($link,$getbundledata1) or exit("while retriving data from bundle_creation_data".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
 						if(mysqli_num_rows($check_data_qry_result1)>0)
 						{							
 							while($row2=mysqli_fetch_array($check_data_qry_result1))
@@ -147,6 +152,24 @@ if(isset($_POST['reverse']))
 	$op_no=explode('-', $barcode)[1];
 	$seqno=explode('-', $barcode)[2];
 
+	$access_report = $op_no.'-G';
+	$access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
+	$result = $link->query($access_qry);
+	if($result->num_rows > 0){
+		
+		if (in_array($$access_report,$has_permission))
+		{
+			$good_report = '';
+		}
+		else
+		{
+			$good_report = 'readonly';
+		}
+		
+	} else {
+		$good_report = '';
+	}
+	
 	$normdoc[]=explode('-', $barcode)[0];
 	
 	
@@ -376,8 +399,10 @@ if(isset($_POST['reverse']))
 		$tid=$qry_row['tid'];
 		$rejqty=$qry_row['reject_qty'];
 	}
-
-	if($rejqty==0)
+	if($good_report == 'readonly'){
+		echo "<script>swal('UnAuthorized','to reverse Embleshment bundle','warning')</script>";
+	}
+	else if($rejqty==0)
 	{
 			
 			if($bundstaus==1)

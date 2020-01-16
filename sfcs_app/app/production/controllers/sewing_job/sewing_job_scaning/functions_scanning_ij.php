@@ -1617,7 +1617,7 @@ function validating_with_module($pre_array_module)
     }
         
 
-    if ($tms_status > 1)
+    if ($tms_status > 2)
     {
         $check_result = $link->query($check_if_ij_is_scanned);
         while ($row = mysqli_fetch_array($check_result))
