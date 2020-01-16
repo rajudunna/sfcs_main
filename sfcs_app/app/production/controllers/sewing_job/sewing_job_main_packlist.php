@@ -2,7 +2,7 @@
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing Job Generation</div>
 <div class="panel-body">
-	<!-- <style>
+	<style>
 		#loading-image
 		{
 			position:fixed;
@@ -22,7 +22,7 @@
 
 	<div class="ajax-loader" id="loading-image">
 	    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
-	</div> -->
+	</div>
 <?php
 	function get_desired_qty(&$array, $color, $size)
 	{
