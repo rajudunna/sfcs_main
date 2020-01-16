@@ -2,7 +2,7 @@
 <div class="panel panel-primary">
 <div class="panel-heading">Sewing Job Generation</div>
 <div class="panel-body">
-	<style>
+	<!-- <style>
 		#loading-image
 		{
 			position:fixed;
@@ -22,7 +22,7 @@
 
 	<div class="ajax-loader" id="loading-image">
 	    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
-	</div>
+	</div> -->
 <?php
 	function get_desired_qty(&$array, $color, $size)
 	{
@@ -1251,20 +1251,14 @@
 			//Updated Successfully
 		}
 	}
-	$docs_list=array();
+	
+	// die();
 
-	$get_doc_list_query = "SELECT DISTINCT(doc_no) as doc FROM  bai_pro3.pac_stat_log_input_job WHERE pac_seq_no = $seq_no";
-	// echo $get_doc_list_query;
-	$get_doc_list_query_res=mysqli_query($link, $get_doc_list_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	while($doc_row=mysqli_fetch_array($get_doc_list_query_res)) 
-	{ 
-		$docs_list[]=$doc_row['doc'];
-	}
-	$split_jobs = plan_logical_bundles_pac_based($docs_list,$seq_no);
+	$split_jobs = plan_logical_bundles_pac_based($inserted_id);
 
-	if($split_jobs){
-		//Inserted Successfully
-	}
+	// if($split_jobs){
+	// 	//Inserted Successfully
+	// }
 	// die();
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
