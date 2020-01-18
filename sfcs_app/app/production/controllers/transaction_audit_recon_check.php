@@ -200,7 +200,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sample_out_qty=$sql_row12["out_qty"];
 		}
 		
-		$sql_sample="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0";
+		$sql_sample="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0 or size_".str_replace('a_','',$sql_row['ims_size'])."< 0";
 		$sql_result12=mysqli_query($link,$sql_sample) or exit("Sql Error12=".$sql_sample."-".mysqli_error());
 		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{

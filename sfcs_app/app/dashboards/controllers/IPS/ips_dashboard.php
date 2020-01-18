@@ -110,7 +110,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$id="yash";
 			$y=0;
 		
-			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
+			// $sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit']; 
+			$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL) and date(log_time) >=\"2013-01-09\" GROUP BY input_job_no_random_ref order by input_priority asc limit ".$_GET['priority_limit'];	
 			// echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row=mysqli_fetch_array($result))
