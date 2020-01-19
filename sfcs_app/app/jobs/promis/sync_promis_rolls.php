@@ -19,7 +19,7 @@ $conn = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Dat
 if($conn)
 {
 	$get_details = "SELECT id,Roll_Number,Qty,CTex_Length,CTex_Width,User_ID,Loc_ID,CPL,Split_ID,Ins_Clr_HDR_Comment,PO_Number,PO_SubLine,PO_Line,GRNNo FROM 
-	[$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line >= 0 and PO_SubLine >= 0";
+	[$promis_db].[dbo].[ProMIS_SX_WH_Inventory] WHERE SFCS_Sync = 0 and Inspect_Approve = 1 and PO_Line >= 0 and PO_SubLine >= 0 and Ins_Status='4'";
 	$sql_result1 = odbc_exec($conn, $get_details);
 	while(odbc_fetch_row($sql_result1))
 	{ 
