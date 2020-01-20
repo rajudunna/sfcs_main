@@ -156,7 +156,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$start_time=$sql_row['start_time'];
 	$end_time=$sql_row['end_time'];
 	
-	if($start_time <13)
+	if($start_time <12)
 	{
 		echo "<td>".$start_time." AM</td>";
 	}
@@ -165,7 +165,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td>".$start_time." PM</td>";
 	}
 	
-	if($end_time <13)
+	if($end_time <12)
 	{
 		echo "<td>".$end_time." AM</td>";
 	}
