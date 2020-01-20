@@ -445,6 +445,7 @@ function plan_logical_bundles_pac_based($inserted_id){
 	
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$list = array();
+	$list1 = array();
 	$complete_list;
 	$pcb_list = array();
 	$complete_pcb_list;
@@ -452,7 +453,8 @@ function plan_logical_bundles_pac_based($inserted_id){
 	$shift='';
 	$module=0;
 	$spb_input_job_no_random='';
-
+	$doc_no='';
+	$size_code='';
 	$tid_list=array();
 
 	$get_doc_list_query = "SELECT DISTINCT(tid) as tids FROM  bai_pro3.pac_stat_log_input_job WHERE sref_id=$inserted_id  order by tid";
@@ -465,13 +467,14 @@ function plan_logical_bundles_pac_based($inserted_id){
 	// var_dump($tid_list,'<br/>');
 
 	$get_input_job_nums = "SELECT *,SUM(carton_act_qty) as carton_act_qty1 FROM  bai_pro3.pac_stat_log_input_job WHERE sref_id=$inserted_id GROUP BY input_job_no_random,old_size,doc_no ORDER BY tid";
-	// echo $get_input_job_nums;
+	echo $get_input_job_nums.'get_input_job_nums<br/>';
 	$get_input_job_nums_res=mysqli_query($link, $get_input_job_nums) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($job_row = mysqli_fetch_array($get_input_job_nums_res)) 
 	{ 
 		$old_spb = $job_row['tid'];
 		$spb_doc_no = $job_row['doc_no'];
 		$spb_size_code = $job_row['size_code'];
+		$max_carton_act_qty = $job_row['carton_act_qty'];
 		$carton_act_qty = $job_row['carton_act_qty1'];
 		$spb_input_job_no = $job_row['input_job_no'];
 		$spb_input_job_no_random = $job_row['input_job_no_random'];
@@ -489,34 +492,68 @@ function plan_logical_bundles_pac_based($inserted_id){
 		$spb_tran_ts = $job_row['tran_ts'];
 		$spb_bundle_print_time = $job_row['bundle_print_time'];
 		$spb_tran_user = $job_row['tran_user'];
-		
-		// var_dump($job_row,'<br/>');
+
+		// echo $max_carton_act_qty.'max_carton_act_qty<br/>';
+		// echo $carton_act_qty.'carton_act_qty<br/>';
 
 		$plan_cut_bundles="select * from $bai_pro3.plan_cut_bundle where doc_no = '".$spb_doc_no."' and size_code= '".$spb_old_size."'";
 		if(sizeof($complete_pcb_list) != 0) {
 			$plan_cut_bundles .= " and id not in ($complete_pcb_list)";
 		}
 		$plan_cut_bundles .= " order by size_code,doc_no";
-		// echo $plan_cut_bundles.'<br/>';
+		echo $plan_cut_bundles.'plan_cut_bundles<br/>';
 		$plan_cut_bundles_res=mysqli_query($link, $plan_cut_bundles) or exit("Issue while Selecting plan_cut_bundle".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($pcb_row = mysqli_fetch_array($plan_cut_bundles_res))
 		{
+			
 			$pcb_id = $pcb_row['id'];
-			$pcb_plies = $pcb_row['plies'];
+			
+			// $query="select SUM(carton_act_qty) as count from $bai_pro3.pac_stat_log_input_job where plan_cut_bundle_id = '".$pcb_id."' group by plan_cut_bundle_id";
+			// $query_res=mysqli_query($link, $query) or exit("Issue while Selecting pac_stat_log_input_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($query_row = mysqli_fetch_array($query_res))
+			// {
+			// 	$completed_qty = $query_row['count'];
+			// }
+
+			// if($completed_qty == $pcb_row['plies']){
+			// 	break;
+			// }
 			$style = $pcb_row['style'];
 			$schedule = $pcb_row['schedule'];
 			$color = $pcb_row['color'];
+			if($pcb_row['doc_no']==$doc_no && $pcb_row['size_code']==$size_code){
+				if($pcb_plies == 0 || $pcb_plies == ''){
+					$pcb_plies = $pcb_row['plies'];
+				}
+			} else {
+				$pcb_plies = $pcb_row['plies'];
+			}
+			$doc_no = $pcb_row['doc_no'];
+			$size_code = $pcb_row['size_code'];
 			do {
 				// if($carton_act_qty > 0){
-					if($pcb_plies >= $carton_act_qty){
-						$spb_qty = $carton_act_qty;
+					echo $pcb_plies.'pcb_plies<br/>';
+					echo $carton_act_qty.'carton_act_qty<br/>';
+					echo $max_carton_act_qty.'max_carton_act_qty<br/>';
+
+					if($pcb_plies >= $max_carton_act_qty){
+						if($carton_act_qty > $max_carton_act_qty){
+							$spb_qty = $max_carton_act_qty;
+							echo $spb_qty.'ifif<br/>';
+						} else {
+							$spb_qty = $carton_act_qty;
+							echo $spb_qty.'ifelse<br/>';
+						}
 					} else {
 						$spb_qty = $pcb_plies;
+						echo $spb_qty.'elseelse<br/>';
+
 					}
 					if($spb_qty > 0){
 						$spb_barcode = "SPB-".$spb_doc_no."-".$spb_input_job_no."-".$spb_barcode_sequence."";
 				
 						$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job` (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$spb_doc_no.", '".$spb_size_code."', ".$spb_qty.", '".$spb_input_job_no."', '".$spb_input_job_no_random."', '".$spb_destination."', '".$spb_packing_mode."', '".$spb_old_size."','".$spb_doc_type."', '$spb_pac_seq_no', $spb_sref_id, $pcb_id,$spb_barcode_sequence,'".$username."','".$spb_barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+						echo $ins_qry.'ins_qry<br/>';
 				
 						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$pac_tid= mysqli_insert_id($link);
@@ -547,21 +584,32 @@ function plan_logical_bundles_pac_based($inserted_id){
 		
 						$count++;
 		
-		
-						array_push($list, $old_spb);
-						$complete_list = implode(", ",$list);
 						$pcb_plies = $pcb_plies-$spb_qty;
 						$carton_act_qty = $carton_act_qty-$spb_qty;
+						// echo $pcb_plies.'pcb_plies<br/>';
+						// echo $carton_act_qty.'carton_act_qty<br/>';
+
+						if($pcb_plies==0){
+							array_push($list, $old_spb);
+							$complete_list = implode(", ",$list);
+							array_push($list1, $pcb_id);
+							$complete_pcb_list = implode(", ",$list1);
+							var_dump($complete_list,'complete_list<br/>');
+							var_dump($complete_pcb_list,'complete_pcb_list<br/>');
+							
+						}
 					}
 				// }
 			} while($pcb_plies > 0 && $carton_act_qty >0);
 		}
 	}
 	$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
+	echo $update_query.'<br/>';
 	$update_result = mysqli_query($link,$update_query) or exit("Problem while inserting to sewing jobs ref");
 	$tid_list_final = implode(", ",$tid_list);
 	
 	$delete_old_spb = "delete from $bai_pro3.`pac_stat_log_input_job` where tid in ($tid_list_final)";
+	echo $delete_old_spb.'<br/>';
 	$delete_old_spb_res=mysqli_query($link, $delete_old_spb) or exit("Issue in Deleting old SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 }
