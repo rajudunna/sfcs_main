@@ -4,15 +4,6 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');?>"></script>
 
-
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions2.php',3,'R'));
-	$view_access=user_acl("SFCS_0095",$username,1,$group_id_sfcs); 
-	//require_once('../phplogin/auth2.php');
-	//Ticket # 118925 : Changed displayed widith from type (int) to (float
-?>
-
 <?php
 // include("../dbconf.php"); 
 	if(isset($_GET['doc_no']))

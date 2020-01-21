@@ -8,13 +8,6 @@ create the interface for recut plot job priority.
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 ?>
 
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0096",$username,1,$group_id_sfcs);
-	//require_once('../phplogin/auth2.php');
-	//Ticket # 118925 : Changed displayed widith from type (int) to (float
-?>
 
 <style>
 th,td { color : #000; }
