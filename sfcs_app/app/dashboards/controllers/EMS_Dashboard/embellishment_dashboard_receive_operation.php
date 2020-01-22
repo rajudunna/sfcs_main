@@ -579,7 +579,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           
           if($send_qty > 0)
           {            
-            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>"; 
+            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:($receive_op_code)</span></div></div><br>"; 
           }          
         }
 		}

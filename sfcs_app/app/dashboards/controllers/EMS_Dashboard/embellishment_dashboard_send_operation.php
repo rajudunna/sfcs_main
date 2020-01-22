@@ -308,6 +308,7 @@ echo "</div>";
 
 $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// echo $sqly;
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
 {
   $buyer_div=$sql_rowy['buyer_div'];
@@ -581,11 +582,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'>";
+          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;' title='$title'>";
           if($cut_new=="DONE"){
-            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span>";
+            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:($send_op_code)</span>";
           }else{
-            echo "$schedule(".implode(", ",$club_c_code).")";
+            echo "$schedule(".implode(", ",$club_c_code).")-OP:($send_op_code)";
           }
           echo "</div></div><br>";    
 		}		  
