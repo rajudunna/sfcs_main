@@ -353,6 +353,14 @@
 					}
 				}
 				
+				if($rec_qty==0)
+				{
+					$result_array['status'] = 'There is no available quantity to Report';
+					echo json_encode($result_array);
+					die();
+				}
+				
+				
 				if($rec_qty>0)
 				{
 					//getting previous operation
@@ -1129,18 +1137,25 @@
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
+		
+		if($rec_qty==0)
+		{
+			$result_array['status'] = 'There is no available quantity to Report';
+			echo json_encode($result_array);
+			die();
+		}
 		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
 			echo json_encode($result_array);
 			die();
 		}
-		if($rec_qty<=0)
-		{
-			$result_array['status'] = 'Previous Operation Not Yet Done';
-			echo json_encode($result_array);
-			die();
-		}
+		// if($rec_qty<=0)
+		// {
+			// $result_array['status'] = 'Previous Operation Not Yet Done';
+			// echo json_encode($result_array);
+			// die();
+		// }
 		if($ops_code=='')
 		{
 			$result_array['status'] = 'Please Check The barcode You have Scanned';
@@ -1153,6 +1168,8 @@
 		$rslt_planbun_id = $link->query($get_planbun_id_qry);
 		if(mysqli_num_rows($rslt_planbun_id)>0)
 		{
+			if($rec_qty>0)
+			{
 			$docket_no = explode('-', $barcode)[1];
 			$bun_no = explode('-', $barcode)[2];
 			$operation = explode('-', $barcode)[3];
@@ -1424,13 +1441,20 @@
 						nextBundle : null;
 					}	
 				}
-			$result_array['bundle_no'] = $parent_barcode;	
-			$result_array['style'] = $style;	
-			$result_array['schedule'] = $schedule;	
-			$result_array['color_dis'] = $color;	
-			$result_array['reported_qty'] = $report_qty-$rejctedqty;	
-			$result_array['rejected_qty'] = $rejctedqty;	
-			echo json_encode($result_array);
+				$result_array['bundle_no'] = $parent_barcode;	
+				$result_array['style'] = $style;	
+				$result_array['schedule'] = $schedule;	
+				$result_array['color_dis'] = $color;	
+				$result_array['reported_qty'] = $report_qty-$rejctedqty;	
+				$result_array['rejected_qty'] = $rejctedqty;	
+				echo json_encode($result_array);
+			}
+			else
+			{
+				$result_array['status'] = 'Previous Operation Not Yet Done';
+				echo json_encode($result_array);
+				die();
+			}
 		}
 		else
 		{
