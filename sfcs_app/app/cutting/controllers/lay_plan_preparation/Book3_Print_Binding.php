@@ -3157,16 +3157,16 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-if($print==1)
-{
-	if($print_status=="0000-00-00" || $print_status == "")
-    {
-	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	    //echo $sql;
-	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if($print==1)
+// {
+// 	if($print_status=="0000-00-00" || $print_status == "")
+//     {
+// 	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+//  	    //echo $sql;
+// 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-    }
-}
+//     }
+// }
 
 //Refresh Parent Page After this Print Out 
 echo"<script>
