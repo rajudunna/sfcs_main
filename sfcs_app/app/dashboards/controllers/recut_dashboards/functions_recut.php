@@ -260,7 +260,7 @@ function ReplaceProcess($replace_id_edit)
 			$ops_order = $row['operation_order'];
 		}
     }
-    $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
+    $pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN (10,200) ORDER BY operation_order DESC LIMIT 1";
 	$result_pre_ops_check = $link->query($pre_ops_check);
 	if($result_pre_ops_check->num_rows > 0)
 	{
@@ -304,7 +304,7 @@ function ReplaceProcess($replace_id_edit)
                 $exces_qty = min($exces_qty_org,$cps_row_excess);
             }
             //checking that inputjob already scanned or not
-            if($exces_qty)
+            if($exces_qty > 0)
             {
                 $count++;
                 $rec_qty = 0;
@@ -338,13 +338,22 @@ function ReplaceProcess($replace_id_edit)
                 {
                     $already_replaced_qty = 0;
                 }
+                $rec_already_replaced = $rec_qty + $already_replaced_qty;
                 if($rec_qty > 0)
                 {
-                    $exces_qty = min($exces_qty,($send_qty - $rec_qty + $already_replaced_qty));
+                    $exces_qty = min($exces_qty,($send_qty - $rec_already_replaced));
                 }
                 else
                 {
-                     $exces_qty = ($exces_qty) - ($rec_qty + $already_replaced_qty);
+                     //checking two conditions and getting excess quantity value -3092
+                    if($exces_qty < $rec_already_replaced)
+                    {
+                        $exces_qty = min($exces_qty,$rec_already_replaced);
+                    }
+                    else
+                    {
+                        $exces_qty = ($exces_qty) - ($rec_already_replaced);
+                    }
                 }
                 $excess_table .= "<tr><td>".$input_job_no_excess."</td><td>".$excess_size_title."</td><td>$rec_qty</td><td>$already_replaced_qty</td><td id='$excess_size_title'>".$exces_qty."</td></tr>";
                 $excess_table .= "<input type='hidden' name='input_job_no_random_ref_replace[$excess_size_title]' value='$input_job_no_excess'>";

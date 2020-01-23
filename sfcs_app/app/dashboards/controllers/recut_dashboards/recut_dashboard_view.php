@@ -398,7 +398,18 @@
                                     }
                                 }
                                 $already_replaced_with_sj = array_sum($replacing_input_job_with_qty[$sj][$size_title]);
-                                $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
+                                // $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
+                                $rec_already_replaced_and_with_sj = $rec_qty + $already_replaced_qty + $already_replaced_with_sj;
+                                //checking two conditions and getting excess quantity value -3092
+                                if($exces_qty < $rec_already_replaced_and_with_sj)
+                                {
+                                    $exces_qty = min($exces_qty,$rec_already_replaced_and_with_sj);
+                                }
+                                else
+                                {
+                                    $exces_qty = ($exces_qty) - ($rec_already_replaced_and_with_sj);
+                                }
+
                             }
                             if($exces_qty > 0)
                             {
