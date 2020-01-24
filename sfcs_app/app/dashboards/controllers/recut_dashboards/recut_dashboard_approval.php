@@ -101,7 +101,6 @@ if(isset($_POST['approve']))
         $i=0;
         foreach($buffer_qty as $size => $excess_qty)
         {
-            $i++;
             if($excess_qty > 0)
             {
                 $retriving_size = "SELECT size_title FROM `$bai_pro3`.`recut_v2_child` rc 
@@ -166,11 +165,10 @@ if(isset($_POST['approve']))
                                     $ops = $ops_row['operation_code'];
                                     $ops_name = $ops_row['operation_name'];
                                     $mo_operations_insertion="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$excess_qty."', '".$ops."', '".$ops_name."')";
-                                    // echo $mo_operations_insertion.'<br/>';
                                     $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 }
 
-
+                                //splitting pcb and excess qty into each spb
                                 $size_plies -= $logic_qty;
                                 $excess_qty -= $logic_qty;
                                 

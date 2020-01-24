@@ -276,8 +276,8 @@ if(isset($_POST['formIssue']))
             } 
         }
     }
-    // $url = '?r='.$_GET['r'];
-    // echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
+    $url = '?r='.$_GET['r'];
+    echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
 }
 function issued_to_module($bcd_id,$qty,$ref)
 {
