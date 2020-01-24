@@ -1166,7 +1166,7 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 	$list = array();
 	$completed_list;
 	
-	$excess_doc_query = "select tid,input_job_no,sref_id from $bai_pro3.pac_stat_log_input_job where doc_no ='".$dono."' and doc_type='R'";
+	$excess_doc_query = "select tid,input_job_no,sref_id from $bai_pro3.pac_stat_log_input_job where doc_no ='".$dono."' and doc_type='R' and type_of_sewing='2'";
 	$excess_doc_query_res = mysqli_query($link, $excess_doc_query) or exit("issue in excess doc query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($excess_doc_query_res_row = mysqli_fetch_array($excess_doc_query_res))
     {
@@ -1246,57 +1246,73 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
             $size_code = $plan_cut_bundle_row['size_code'];
             $plan_cut_bundle_id = $plan_cut_bundle_row['id'];
 			$size_plies = $plan_cut_bundle_row['plies'];
-			
+
+			$filled_plies=0;
+			$filled_qry = "SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE plan_cut_bundle_id=$plan_cut_bundle_id";
+			$filled_qry_res = mysqli_query($link, $filled_qry) or exit("Issue while Selecting PLB".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($filled_qry_res)>0)
+			{
+				while($filled_qry_res_row = mysqli_fetch_array($filled_qry_res))
+        		{
+					$filled_plies = $filled_qry_res_row['carton_act_qty'];
+				}
+			}
+			$size_plies = $size_plies - $filled_plies;
 			do 
 			{
-				if($size_plies >= $plan_bundleqty)
-				{
-					$logic_qty = $plan_bundleqty;
-				} 
-				else 
-				{
-					$logic_qty = $size_plies;
-				}
-				// echo $plan_jobcount1.'$plan_jobcount1<br/>';
-				// echo $logic_qty.'$logic_qty<br/>';
-				if($plan_jobcount1 <= $logic_qty){
-					$logic_qty = $plan_jobcount1;
-				}
-				// echo $logic_qty.' final logic_qty<br/>';
-				if($logic_qty > 0){
-
-					$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
-				
-					$barcode="SPB-".$dono."-".$job."-".$bundle_seq."";
-					//Plan Logical Bundle				
-					$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$job."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','R', '-1', '', $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
-					// echo $ins_qry.'<br/>';
-					$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$pac_tid= mysqli_insert_id($link);
-					foreach($operation_codes as $index => $op_code)
+				if($plan_jobcount1 > 0){
+					if($size_plies >= $plan_bundleqty)
 					{
-						$send_qty = 0;
-						if($index == 0) {
-							$send_qty = $logic_qty;
-						}
-						//Plan Logical Bundle Trn
-						$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$dono."','".$job."','".$input_job_num_rand."','".$assigned_module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
-						// echo $b_query.'<br/>';
-						mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
-						$moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$pac_tid."','".$logic_qty."', '".$op_code."', '".$operation_names[$index]."')";
-						// echo $moq_qry.'<br/>';
-						mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$logic_qty = $plan_bundleqty;
+					} 
+					else 
+					{
+						$logic_qty = $size_plies;
 					}
-					$barcode='';
-					$size_plies = $size_plies - $logic_qty;
-					$count++;
-					$bundle_seq++;
-					$plan_jobcount1 = $plan_jobcount1 - $logic_qty;
-				} else {
-					// var_dump($excess_tid.'~~~~excess_tid');
-					// var_dump(sizeof($excess_tid).'excess_tid');
+					// echo $plan_jobcount1.'$plan_jobcount1<br/>';
+					// echo $logic_qty.'$logic_qty<br/>';
+					if($plan_jobcount1 <= $logic_qty){
+						$logic_qty = $plan_jobcount1;
+					}
+					// echo $logic_qty.' final logic_qty<br/>';
+					if($logic_qty > 0){
+	
+						$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
+					
+						$barcode="SPB-".$dono."-".$job."-".$bundle_seq."";
+						//Plan Logical Bundle				
+						$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$job."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','R', '-1', '', $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+						// echo $ins_qry.'<br/>';
+						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$pac_tid= mysqli_insert_id($link);
+						foreach($operation_codes as $index => $op_code)
+						{
+							$send_qty = 0;
+							if($index == 0) {
+								$send_qty = $logic_qty;
+							}
+							//Plan Logical Bundle Trn
+							$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$dono."','".$job."','".$input_job_num_rand."','".$assigned_module."','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
+							// echo $b_query.'<br/>';
+							mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	
+							$moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$pac_tid."','".$logic_qty."', '".$op_code."', '".$operation_names[$index]."')";
+							// echo $moq_qry.'<br/>';
+							mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
+						$barcode='';
+						$size_plies = $size_plies - $logic_qty;
+						$count++;
+						$bundle_seq++;
+						$plan_jobcount1 = $plan_jobcount1 - $logic_qty;
+					} else {
+						// var_dump($excess_tid.'~~~~excess_tid');
+						// var_dump(sizeof($excess_tid).'excess_tid');
+						$size_plies=0;
+						$plan_jobcount1=0;
+					}
+				} else{
 					if(sizeof($excess_tid) > 0){
 						// echo $completed_list.'completed_list<br/>';
 						$old_list = implode(", ",$excess_tid);
@@ -1366,7 +1382,7 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 					} else {
 						$size_plies=0;
 					}
-				
+					// $size_plies = 0;
 				}
 			}while ($size_plies > 0);   
         }			
