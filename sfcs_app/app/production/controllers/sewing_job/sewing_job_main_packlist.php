@@ -40,6 +40,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/bundle_filling.php',4,'R'));
 	// $carton_id=$_GET["id"];
 	$schedule=$_GET["schedule"];
 	$seq_no=$_GET["seq_no"];
@@ -1250,7 +1251,15 @@
 			//Updated Successfully
 		}
 	}
+	
+	// die();
 
+	$split_jobs = plan_logical_bundles_pac_based($inserted_id);
+
+	// if($split_jobs){
+	// 	//Inserted Successfully
+	// }
+	// die();
 	//----------MO FILL Function Calling  -----
 	$inserted = insertMOQuantitiesSewing($schedule,$inserted_id);
 	if($inserted){

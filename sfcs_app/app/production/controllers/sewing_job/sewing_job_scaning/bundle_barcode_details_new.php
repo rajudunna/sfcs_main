@@ -307,7 +307,7 @@
 		$operation = explode('-', $barcode)[3];
 
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
+		// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
 		// checking for emblishment Planning done or not
 		$check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
@@ -352,6 +352,14 @@
 						$input_job_no_random = $selct_qry_result_rows['input_job_no_random_ref'];
 					}
 				}
+				
+				if($rec_qty==0)
+				{
+					$result_array['status'] = 'There is no available quantity to Report';
+					echo json_encode($result_array);
+					die();
+				}
+				
 				
 				if($rec_qty>0)
 				{
@@ -480,7 +488,7 @@
 									$category_act = $row_cat['category'];
 								}
 								
-								if($rec_qty==$good_qty+$rejection_qty)
+								if($rec_qty=$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
 									echo json_encode($result_array);
@@ -657,7 +665,7 @@
 							}
 							else
 							{
-								if($rec_qty==$good_qty+$rejection_qty)
+								if($rec_qty=$good_qty+$rejection_qty)
 								{
 									$result_array['status'] = 'Already Scanned';
 									echo json_encode($result_array);
@@ -1129,18 +1137,25 @@
 			$rejection_qty=$row_rslt['rejection_qty'];
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
+		
+		if($rec_qty==0)
+		{
+			$result_array['status'] = 'There is no available quantity to Report';
+			echo json_encode($result_array);
+			die();
+		}
 		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
 			echo json_encode($result_array);
 			die();
 		}
-		if($rec_qty<=0)
-		{
-			$result_array['status'] = 'Previous Operation Not Yet Done';
-			echo json_encode($result_array);
-			die();
-		}
+		// if($rec_qty<=0)
+		// {
+			// $result_array['status'] = 'Previous Operation Not Yet Done';
+			// echo json_encode($result_array);
+			// die();
+		// }
 		if($ops_code=='')
 		{
 			$result_array['status'] = 'Please Check The barcode You have Scanned';
@@ -1153,6 +1168,8 @@
 		$rslt_planbun_id = $link->query($get_planbun_id_qry);
 		if(mysqli_num_rows($rslt_planbun_id)>0)
 		{
+			if($rec_qty>0)
+			{
 			$docket_no = explode('-', $barcode)[1];
 			$bun_no = explode('-', $barcode)[2];
 			$operation = explode('-', $barcode)[3];
@@ -1284,6 +1301,20 @@
 					$update_qry_send_qty = "update $bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 					$update_rslt_send_qty = $link->query($update_qry_send_qty);
 				}
+				
+				if($category_act=='Receive PF')
+				{
+					$qry_min_prevops="SELECT MIN(good_qty) AS min_recieved_qty FROM $bai_pro3.act_cut_bundle_trn WHERE act_cut_bundle_id=".$act_cut_bundle_id." and ops_code in ($emb_operations)";
+					$result_qry_min_prevops = $link->query($qry_min_prevops);
+					while($row_result_min_prevops = $result_qry_min_prevops->fetch_assoc())
+					{
+						$previous_minqty=$row_result_min_prevops['min_recieved_qty'];
+					}
+					
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$previous_minqty where id=".$act_cut_bundle_id."";
+					$result_query = $link->query($update_qnty_qry) or exit('query error in updating');
+				}
+				
 				$good_qty = $report_qty - $rejctedqty;
 				foreach($actcut_qty as $act_cut_id => $act_qty) {
 					if ($good_qty > 0) {
@@ -1321,6 +1352,19 @@
 				$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
 				$update_qry_send_qty = "update $bai_pro3.act_cut_bundle_trn set send_qty=$report_qty-$rejctedqty where barcode='".$post_ops_barcode."'";
 				$update_rslt_send_qty = $link->query($update_qry_send_qty);
+				
+				//updating good quantity in act_cut_bundle
+				$get_data_qry="select ops_code from $bai_pro3.act_cut_bundle_trn where barcode='".$post_ops_barcode."'";
+				$result_data_qry = $link->query($get_data_qry);
+				while($row = $result_data_qry->fetch_assoc())
+				{
+					$opcodeforupdate=$row['ops_code'];
+				}
+				if($opcodeforupdate=='')
+				{
+					$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+($report_qty-$rejctedqty) where id=".$act_cut_bundle_id."";
+					$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle');	
+				}
 				
 				$good_qty = $report_qty - $rejctedqty;
 				foreach($actcut_qty as $act_cut_id => $act_qty) {
@@ -1397,13 +1441,20 @@
 						nextBundle : null;
 					}	
 				}
-			$result_array['bundle_no'] = $parent_barcode;	
-			$result_array['style'] = $style;	
-			$result_array['schedule'] = $schedule;	
-			$result_array['color_dis'] = $color;	
-			$result_array['reported_qty'] = $report_qty-$rejctedqty;	
-			$result_array['rejected_qty'] = $rejctedqty;	
-			echo json_encode($result_array);
+				$result_array['bundle_no'] = $parent_barcode;	
+				$result_array['style'] = $style;	
+				$result_array['schedule'] = $schedule;	
+				$result_array['color_dis'] = $color;	
+				$result_array['reported_qty'] = $report_qty-$rejctedqty;	
+				$result_array['rejected_qty'] = $rejctedqty;	
+				echo json_encode($result_array);
+			}
+			else
+			{
+				$result_array['status'] = 'Previous Operation Not Yet Done';
+				echo json_encode($result_array);
+				die();
+			}
 		}
 		else
 		{

@@ -1225,14 +1225,14 @@ function update_cps_bcd_normal($doc_no,$plies,$style,$schedule,$color,$rejection
             $update_bcd_result = mysqli_query($link,$update_bcd_query);
             if(mysqli_affected_rows($link) == 1 && $cps_counter == 1)   
                 $counter++;
-/*
+
             if($emb_cut_check_flag > 0)
             {
                 $update_bcd_query2 = "UPDATE $brandix_bts.bundle_creation_data set send_qty = send_qty+$qty
                                     WHERE docket_number = $doc_no AND size_id = '$size' 
                                     AND operation_id = $emb_cut_check_flag ";
                 $update_bcd_result2 = mysqli_query($link,$update_bcd_query2);
-            } */
+            } 
 			
             // if($update_cps_result && $update_bcd_result)
             //     $counter++;

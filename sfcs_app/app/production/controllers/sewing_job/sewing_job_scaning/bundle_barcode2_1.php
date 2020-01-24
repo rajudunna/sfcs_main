@@ -86,12 +86,16 @@
 					$quantity=$barcode_rslt['quantity'];
 					$numbid=$barcode_rslt['num_id'];
 					$shade=$barcode_rslt['shade'];
-					$get_ops="SELECT operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$barcode_rslt['ops_code']."";
+					$get_ops="SELECT tor.operation_name,tsm.barcode FROM $brandix_bts.tbl_orders_ops_ref tor left join $brandix_bts.tbl_style_ops_master tsm on tsm.operation_code=tor.operation_code where tor.operation_code=".$barcode_rslt['ops_code']." and style='$style' and color='$color'";
 					$get_ops_res=mysqli_query($link, $get_ops) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($get_ops_row = mysqli_fetch_array($get_ops_res))
 					{
 						$code=trim($get_ops_row['operation_name'])."-".$barcode_rslt['ops_code'];
+						$barstat=$get_ops_row['barcode'];
 					}
+					
+					if($barstat=='Yes')
+					{
 					if($shade!='')
 					{
 						// get shande and bundno from docket_number_info
@@ -100,6 +104,7 @@
 						while($get_det_row = mysqli_fetch_array($get_det_qry_res))
 						{
 							$shadedet=$get_det_row['start_no']."-".$get_det_row['shade']."-".$get_det_row['end_no'];
+							
 						}
 					}
 					
@@ -177,6 +182,7 @@
 							   $html.='</tr>
 									</table>
 								</div><br><br><br><br><br>';					
+				}
 				}
 	$html.='
 				</body>

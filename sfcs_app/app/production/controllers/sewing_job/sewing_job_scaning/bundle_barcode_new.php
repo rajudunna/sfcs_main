@@ -85,114 +85,120 @@
 					$shade=$barcode_rslt['shade'];
 					// $numbid=$barcode_rslt['num_id'];
 					$code='';
-					$get_ops="SELECT operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$barcode_rslt['ops_code']."";
+					$get_ops="SELECT tor.operation_name,tsm.barcode FROM $brandix_bts.tbl_orders_ops_ref tor left join $brandix_bts.tbl_style_ops_master tsm on tsm.operation_code=tor.operation_code where tor.operation_code=".$barcode_rslt['ops_code']." and style='$style' and color='$color'";
+					// echo $get_ops."</br>";
 					$get_ops_res=mysqli_query($link, $get_ops) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($get_ops_row = mysqli_fetch_array($get_ops_res))
 					{
 						$code=$barcode_rslt['ops_code']." / ". $get_ops_row['operation_name'];
+						$barstat=$get_ops_row['barcode'];
 					}
-					if($shade!='')
-					{
-						// get shande and bundno from docket_number_info
-						$get_det_qry="select start_no,end_no,shade from $bai_pro3.act_cut_bundle where  id=".$acbid."";
-						$get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($get_det_row = mysqli_fetch_array($get_det_qry_res))
+					
+					if($barstat=='Yes')
+					{					
+						if($shade!='')
 						{
-							$shadedet=$get_det_row['start_no']."-".$get_det_row['shade']."-".$get_det_row['end_no'];
+							// get shande and bundno from docket_number_info
+							$get_det_qry="select start_no,end_no,shade from $bai_pro3.act_cut_bundle where  id=".$acbid."";
+							$get_det_qry_res=mysqli_query($link, $get_det_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($get_det_row = mysqli_fetch_array($get_det_qry_res))
+							{
+								$shadedet=$get_det_row['start_no']."-".$get_det_row['shade']."-".$get_det_row['end_no'];
+							}
 						}
-					}
-					
-					// if((int)$detailed_bundle_sticker == 1 && $check<>$barcode_rslt['tran_id'])
-					// {
-						// $check=$barcode_rslt['tran_id'];
-						// $html.=   '
-						// <table>
-							// <tr rowspan=2>
-								// <td colspan=17><b>Stab Here:</b></td>
-								// <td colspan=3>
-									// <svg height="20" width="20">
-										// <circle cx="10" cy="10" r="8"  />
-									// </svg>
-								// </td>
-								
-							// </tr>
-							 // <tr><td colspan=5><b>Style:</b></td><td colspan=7>'.$style.'</td>
-							 // <td colspan=1><b>Size:</b></td><td colspan=4>'.$barcode_rslt['size'].'</td>
-							 // </tr>';
-				
-					// $html.= '<tr><td colspan=5><b>Schedule:</b></td><td colspan=7>'.$schedule.'</td>
-							// <td colspan=1><b>Doc no:</b></td><td colspan=2>'.$doc_no.'</td>
-							
-							 // </tr>';
-			
-					
-					// $html.= '<tr><td colspan=5><b>Barcode:</b></td><td colspan=7>'.$barcode.'</td>
-							// <td colspan=1><b>CutNo:</b></td><td colspan=4>'.$cut_no.'</td>
-							// </tr>
-							// <tr>
-							// <td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
-							// </tr>';
-							// if($shadedet!='')
-							// {
-								// $html.=	'<td colspan=1><b>S#:</b></td><td colspan=15>'.$shadedet.'</td>';
-							// }
-							// $html.=	'<tr>
-							// <td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
-							// <td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['tran_id'],7).'</td>
-							// <tr>
-							// <td colspan=1><b></b></td><td colspan=15></td>
-							// </tr>
-							// <tr>
-							// <td colspan=1><b></b></td><td colspan=15></td>
-							// </tr>
-							// <tr>
-							// <td colspan=1><b></b></td><td colspan=15></td>
-							// </tr></table>
-							// <br>';		
-					// }
-					
 						
-					// $qty[$barcode_rslt['barcode']] = $barcode_rslt['qty'];
-					$html.=   '<div>
-					<div style="margin-left:40px;"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
-					 </div>
-						<table>
-							
-							 <tr><td colspan=5><b>Style:</b></td><td colspan=7>'.$style.'</td>
-							 <td colspan=1><b>Size:</b></td><td colspan=4>'.$barcode_rslt['size'].'</td>
-							 </tr>';
-				
-					$html.= '<tr><td colspan=5><b>Schedule:</b></td><td colspan=7>'.$schedule.'</td>
-							<td colspan=1><b>Doc no:</b></td><td colspan=2>'.$doc_no.'</td>
-							
-							 </tr>';
-			
+						// if((int)$detailed_bundle_sticker == 1 && $check<>$barcode_rslt['tran_id'])
+						// {
+							// $check=$barcode_rslt['tran_id'];
+							// $html.=   '
+							// <table>
+								// <tr rowspan=2>
+									// <td colspan=17><b>Stab Here:</b></td>
+									// <td colspan=3>
+										// <svg height="20" width="20">
+											// <circle cx="10" cy="10" r="8"  />
+										// </svg>
+									// </td>
+									
+								// </tr>
+								 // <tr><td colspan=5><b>Style:</b></td><td colspan=7>'.$style.'</td>
+								 // <td colspan=1><b>Size:</b></td><td colspan=4>'.$barcode_rslt['size'].'</td>
+								 // </tr>';
 					
-					$html.= '<tr><td colspan=5><b>Barcode:</b></td><td colspan=7>'.$barcode.'</td>
-							<td colspan=1><b>CutNo:</b></td><td colspan=4>'.$cut_no.'</td>
-							</tr>
-							<tr>
-							<td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
-							</tr> 
-							<tr>
-							<td colspan=4><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
-						if($shade!='' && $shade!='None')
-						{
-							$html.=	'<td colspan=1><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
-						}
+						// $html.= '<tr><td colspan=5><b>Schedule:</b></td><td colspan=7>'.$schedule.'</td>
+								// <td colspan=1><b>Doc no:</b></td><td colspan=2>'.$doc_no.'</td>
+								
+								 // </tr>';
+				
+						
+						// $html.= '<tr><td colspan=5><b>Barcode:</b></td><td colspan=7>'.$barcode.'</td>
+								// <td colspan=1><b>CutNo:</b></td><td colspan=4>'.$cut_no.'</td>
+								// </tr>
+								// <tr>
+								// <td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
+								// </tr>';
+								// if($shadedet!='')
+								// {
+									// $html.=	'<td colspan=1><b>S#:</b></td><td colspan=15>'.$shadedet.'</td>';
+								// }
+								// $html.=	'<tr>
+								// <td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
+								// <td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['tran_id'],7).'</td>
+								// <tr>
+								// <td colspan=1><b></b></td><td colspan=15></td>
+								// </tr>
+								// <tr>
+								// <td colspan=1><b></b></td><td colspan=15></td>
+								// </tr>
+								// <tr>
+								// <td colspan=1><b></b></td><td colspan=15></td>
+								// </tr></table>
+								// <br>';		
+						// }
+						
 							
-					$html.=	'</tr>
-							<tr>
-							<td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
-							<td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['act_cut_bundle_id'],7).'</td>
-							
-							<tr>
-							<td colspan=1><b></b></td><td colspan=15></td>
-							</tr>
-							<tr>
-							<td colspan=1><b></b></td><td colspan=15></td>
-							</tr></table>
-							<br>';		
+						// $qty[$barcode_rslt['barcode']] = $barcode_rslt['qty'];
+						$html.=   '<div>
+						<div style="margin-left:40px;"><barcode code="'.$barcode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>
+						 </div>
+							<table>
+								
+								 <tr><td colspan=5><b>Style:</b></td><td colspan=7>'.$style.'</td>
+								 <td colspan=1><b>Size:</b></td><td colspan=4>'.$barcode_rslt['size'].'</td>
+								 </tr>';
+					
+						$html.= '<tr><td colspan=5><b>Schedule:</b></td><td colspan=7>'.$schedule.'</td>
+								<td colspan=1><b>Doc no:</b></td><td colspan=2>'.$doc_no.'</td>
+								
+								 </tr>';
+				
+						
+						$html.= '<tr><td colspan=5><b>Barcode:</b></td><td colspan=7>'.$barcode.'</td>
+								<td colspan=1><b>CutNo:</b></td><td colspan=4>'.$cut_no.'</td>
+								</tr>
+								<tr>
+								<td colspan=5><b>Color:</b></td><td colspan=15>'.trim($color).'</td>
+								</tr> 
+								<tr>
+								<td colspan=4><b>Ops/Des:</b></td><td colspan=15>'.$code.'</td>';
+							if($shade!='' && $shade!='None')
+							{
+								$html.=	'<td colspan=1><b>S#</b></td><td colspan=15>'.$shadedet.'</td>';
+							}
+								
+						$html.=	'</tr>
+								<tr>
+								<td colspan=5><b>Qty:</b></td><td colspan=7>'.leading_zeros($quantity,4).'</td>
+								<td colspan=5><b>Bundle No:</b></td><td colspan=7>'.leading_zeros($barcode_rslt['act_cut_bundle_id'],7).'</td>
+								
+								<tr>
+								<td colspan=1><b></b></td><td colspan=15></td>
+								</tr>
+								<tr>
+								<td colspan=1><b></b></td><td colspan=15></td>
+								</tr></table>
+								<br>';		
+					}
 				}
 			$html.='
 				</body>
