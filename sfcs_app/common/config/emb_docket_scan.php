@@ -106,8 +106,8 @@ function getNextCuttingOperations($style, $color, $operation, $operation_order, 
     $next_cut_operations_query1 =  "Select som.operation_code from $brandix_bts.tbl_style_ops_master som 
         left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
-        and ops_dependency = $first_sew_operation
-        and operation_code = $operation
+        and som.ops_dependency = $first_sew_operation
+        and som.operation_code = $operation
         order by operation_order ASC";
     $next_cut_operations_result1 = mysqli_query($link, $next_cut_operations_query1) or exit("error next_cut_operations_query1 $next_cut_operations_query1");
     if(mysqli_num_rows($next_cut_operations_result1) > 0) {
