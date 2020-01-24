@@ -47,7 +47,7 @@ if($conn)
 		{
 			$sql="INSERT INTO `bai_rm_pj1`.`store_in`(`ref_tid`, `lot_no`, `ref1`, `ref2`, `ref3`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `log_user`, `remarks`, `log_stamp`, `status`, `ref4`, `ref5`, `ref6`, `allotment_status`, `qty_allocated`, `roll_joins`, `roll_status`, `partial_appr_qty`, `upload_file`, `shrinkage_length`, `shrinkage_width`, `shrinkage_group`, `roll_remarks`, `rejection_reason`, `m3_call_status`, `split_roll`, `barcode_number`)
 			VALUES (".$id.", '".$lot_no."', '".$loc_id."', '".$rol_no."', '".$ctex_width."', '".$qty_rec."', '0.00', '0.00', '".$date."', '".$user_id."', 'Directly came ".$remarks."', '".date("Y-m-d H:i:s")."', '0', '".$shade."', '".$ctex_length."', '".$ticket_width."', '0', '0.00', '0', '0', '0.00', NULL, '0', '0', '0', '".$rol_remars."', '', 'N', '".$split_id."', '".$barcode."')";
-			$result_value = mysqli_query($link,$sql)
+			$result_value = mysqli_query($link,$sql);
 			if($result_value)
 			{
 				$update_query = "UPDATE [$promis_db].[dbo].[ProMIS_SX_WH_Inventory] set SFCS_Sync = 1 WHERE ID = '".$id."'";
