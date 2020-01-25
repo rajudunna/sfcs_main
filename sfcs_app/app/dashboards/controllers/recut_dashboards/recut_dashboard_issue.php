@@ -97,7 +97,7 @@ if(isset($_POST['formIssue']))
     $doc_no_ref = $_POST['doc_no_ref'];
     $job_no = $_POST['job_no'];
     $size = $_POST['size'];
-    // var_dump($bcd_id1);
+    // var_dump($_POST);
     // die();
     
     $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
@@ -182,7 +182,46 @@ if(isset($_POST['formIssue']))
                     }
                 }
             }
-            $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
+            $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$doc_no_ref";
+            $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($plan_cut_bundle_res)>0) {
+                
+                foreach($job_no as $key=>$array) {
+                    $doc_no = $doc_no_ref;
+                    foreach($size as $category=>$size_array) {
+                      
+                        $size_new = $size_array[$key];
+                        $job_new = $array;
+                        $plan_jobcount = $issueval[$category][$key];
+                            
+                        $get_schedule = "SELECT order_del_no AS SCHEDULE,acutno FROM `bai_pro3`.`plan_doc_summ` WHERE doc_no = '$doc_no'";
+                        $get_schedule_res = mysqli_query($link, $get_schedule) or exit("Sql Error : get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($row = $get_schedule_res->fetch_assoc()) 
+                        {
+                            $schedule = $row['SCHEDULE'];
+                            $cut = $row['acutno'];
+                        }
+                        
+                        $pre_send_qty_qry = "select input_job_no,max(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job_new' and size_code= '$size_new'";
+                        $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                        while($row = $result_pre_send_qty->fetch_assoc()) 
+                        {
+                            $plan_bundleqty = $row['bundle_qty'];
+                            $job = $row['input_job_no'];
+                        }
+                    
+                        if($plan_jobcount > 0) {
+                            $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
+                        }
+                    }
+                   
+
+                }
+                
+            } else {
+                $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
+            }
+            // die();
         }
         else
         {
