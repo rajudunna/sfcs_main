@@ -101,6 +101,7 @@ if(isset($_POST['approve']))
         $i=0;
         foreach($buffer_qty as $size => $excess_qty)
         {
+            $i++;
             if($excess_qty > 0)
             {
                 $retriving_size = "SELECT size_title FROM `$bai_pro3`.`recut_v2_child` rc 
@@ -137,7 +138,7 @@ if(isset($_POST['approve']))
 
                                 $barcode="SPB-".$doc_nos."-".$act_input_job_no."-".$i."";
                                 $insert_qry = "INSERT INTO `$bai_pro3`.`pac_stat_log_input_job` (`doc_no`,`size_code`,`carton_act_qty`,`input_job_no`,`input_job_no_random`,`destination`,`packing_mode`,`old_size`,`doc_type`,`type_of_sewing`,`sref_id`,`pac_seq_no`,`barcode_sequence`,`plan_cut_bundle_id`,`tran_user`,`barcode`,`style`,`color`,`schedule`,`tran_ts`)
-                                VALUES ($doc_nos,'$size_title_ind',$logic_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,$pac_seq_no,$i,$pcb_id,'$username','$barcode','$style','$color','$schedule',date('Y-m-d H:i:s'))";
+                                VALUES ($doc_nos,'$size_title_ind',$logic_qty,$act_input_job_no,'$act_input_job_no_random','$destination',$packing_mode,'$size','R',2,$sref_id,$pac_seq_no,$i,$pcb_id,'$username','$barcode','$style','$color','$schedule','".date("Y-m-d H:i:s")."')";
                                 mysqli_query($link, $insert_qry) or exit("while Generating sewing job ".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $i++;
                                 $bundle_number=mysqli_insert_id($link);
