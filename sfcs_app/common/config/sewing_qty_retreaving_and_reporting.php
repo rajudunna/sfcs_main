@@ -58,10 +58,12 @@ function getEligibleReport($sewing_job , $bundle = 0, $isFirstOperation = false)
     }
     $cut_bundles_result = mysqli_query($link, $cut_bundles_query) or exit("error 1 - $cut_bundles_query");
     while($row = mysqli_fetch_array($cut_bundles_result)) {
-        $bundles[] = $row['tid'];
-        $plan_cut_bundle_ids[] = $row['plan_cut_bundle_id'];
-        $style = $row['style'];
-        $color = $row['color'];
+        if($row['plan_cut_bundle_id'] > 0) {
+            $bundles[] = $row['tid'];
+            $plan_cut_bundle_ids[] = $row['plan_cut_bundle_id'];
+            $style = $row['style'];
+            $color = $row['color'];
+        }
     }
     // $style = 'V01740AA       ';
     // $color = 'PURE BLACK 2ZUO               ';
