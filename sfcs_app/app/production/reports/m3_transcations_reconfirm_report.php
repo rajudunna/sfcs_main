@@ -84,6 +84,10 @@ table{
         <div class='panel-body'>
         <form action="<?= '?r='.$_GET['r']; ?>" method="post">
         <div class='row'>   
+   <div class='col-sm-2'>
+         <label>Schedule</label><br/>
+         <input class='form-control' type='text' id='schedule' name='schedule' value="<?= $_GET['schedule'] ?>"/>
+   </div>
    <div class="form-group col-sm-3">
          <label>From Date</label><br/>
          <input type="text" data-toggle='datepicker' id='sdate'  name="dat" class="form-control" size="8" value="<?php  if(isset($_POST['dat'])) { echo $_POST['dat']; } else { echo date("Y-m-d"); } ?>" required/>
@@ -150,12 +154,13 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                 $ehour='11:59:59';
                 $sdate=$_POST['dat'];
                 $edate=$_POST['dat1'];
+                $schedule=$_POST['schedule'];
 
                //  $sql="SELECT id,ref_no,response_status,mo_no,m3_bulk_tran_id FROM $bai_pro3.`m3_transactions` WHERE response_status='fail' AND m3_trail_count=4";
               $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
               LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
-               WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\"";
-               // echo $sql;
+               WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\" or bai_pro3.mo_details.schedule='$schedule' ";
+               echo $sql;
                mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $count=mysqli_num_rows($sql_result);
@@ -169,7 +174,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                echo '<div class="panel-body">
                         <div class="table-responsive">
                                  <table  id="example1" name="example1" >
-                                 <tr class="tblheading"><th>S.No</th><th>Mo No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
+                                 <tr class="tblheading"><th>S.No</th><th>Mo No</th><th>ID</th><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>Quantity</th><th>Operation</th><th>M3 Operation Code</th><th>Tran_Id</th><th>Failed Reason</th><th>Failed Count</th><th>Response Status</th>';
                            echo  '<th><input type="checkbox" onClick="checkAll()"/>Select All</th>
                            <form action="'.getFullURLLevel($_GET["r"],"m3_transcations_reconfirm_report.php","0","N").'" name="print" method="POST"> </tr> <input type="submit" value="Re-Confirm" class="btn btn-primary">';
                      $i=1;
@@ -225,13 +230,14 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                         $response_status='--';
                      }
 
-                     $ndr = "SELECT response_message FROM brandix_bts.`transactions_log` WHERE transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
+                     $ndr = "SELECT response_message,transaction_id FROM brandix_bts.`transactions_log` WHERE transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
                      $sql_result1=mysqli_query($link, $ndr) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
                      while($sql_row1=mysqli_fetch_array($sql_result1))
                      {
                          $response=$sql_row1['response_message'];
+                         $tran_id=$sql_row1['transaction_id'];
                      }
-                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$response_status."</td><td>".$trail_count."</td><td>".$response."</td>";
+                    echo "<tr><td>".$i++."</td><td>".$sql_row['mo_no']."</td><td>".$id."<td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$size."</td><td>".$mo_qty."</td><td>".$op_dec."</td><td>".$m3_ops_code."</td><td>".$tran_id."</td><td>".$response_status."</td><td>".$trail_count."</td><td>".$response."</td>";
                     echo "<td><input type='checkbox' name='bindingdata[]' value='".$id.'-'.$m3_bulk_tran_id."'></td>";
                   
                 }
@@ -247,7 +253,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                }
              
             
-         }
+      }
            ?>
         <?php
    if(isset($_POST['bindingdata']))
