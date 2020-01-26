@@ -160,7 +160,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
               $sql="SELECT `bai_pro3`.`m3_transactions`.id,m3_trail_count,response_status,op_des,`bai_pro3`.`m3_transactions`.mo_no,m3_bulk_tran_id,m3_ops_code,style,SCHEDULE,color,size,quantity FROM `bai_pro3`.`m3_transactions`  
               LEFT JOIN `bai_pro3`.`mo_details` ON `bai_pro3`.`mo_details`.`mo_no`=`bai_pro3`.`m3_transactions`.`mo_no`
                WHERE `bai_pro3`.`m3_transactions`.`response_status`='fail' AND `bai_pro3`.`m3_transactions`.`m3_trail_count`=4 and `bai_pro3`.`m3_transactions`.date_time between \"".$sdate." ".$shour."\" and \"".$edate." ".$ehour."\" or bai_pro3.mo_details.schedule='$schedule' ";
-               echo $sql;
+               // echo $sql;
                mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                $count=mysqli_num_rows($sql_result);
