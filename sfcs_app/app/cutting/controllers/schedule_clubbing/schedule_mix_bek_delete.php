@@ -212,8 +212,7 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 				$delete_bcd_query = "DELETE from $brandix_bts.bundle_creation_data where docket_number IN ($docs)";
 				$delete_moq_query = "DELETE from $bai_pro3.mo_operation_quantites where ref_no in ($bundle_ids) 
 									and op_code in ($op_codes)";
-				$delete_act_cut_bundle_trn_query = "DELETE from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id IN (SELECT id FROM bai_pro3.`act_cut_bundle` WHERE docket IN ($docs));";					
-				$delete_act_cut_bundle_query = "DELETE from $bai_pro3.act_cut_bundle where docket IN ($docs)";
+
 				// echo $delete_cps_query.'<br/>';
 				// echo $delete_bcd_query.'<br/>';
 				// echo $delete_moq_query.'<br/>';
@@ -221,9 +220,7 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 				$delete_cps_result = mysqli_query($link,$delete_cps_query);
 				$delete_bcd_result = mysqli_query($link,$delete_bcd_query);
 				$delete_moq_result = mysqli_query($link,$delete_moq_query);
-				$delete_act_cut_bundle_trn_result = mysqli_query($link,$delete_act_cut_bundle_trn_query);
-				$delete_act_cut_bundle_result = mysqli_query($link,$delete_act_cut_bundle_query );
-				if($delete_cps_result && $delete_bcd_result && $delete_moq_result && $delete_act_cut_bundle_result && $delete_act_cut_bundle_trn_result)
+				if($delete_cps_result && $delete_bcd_result && $delete_moq_result)
 					mysqli_commit($link);
 				else	
 					mysqli_rollback($link);
@@ -233,14 +230,11 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 			$sql4531="DELETE from $bai_pro3.bai_orders_db where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql4531) or exit("Sql Error112"); 
-			$sql1116="select order_tid from $bai_pro3.bai_orders_db where order_tid in('".implode("','",$order_tids)."')";
-			$sql1116_result=mysqli_query($link, $sql1116) or exit("Sql Error1116".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql1116_result)==0)
-			{ 
-				$sql4551="INSERT INTO $bai_pro3.bai_orders_db SELECT * FROM $bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
-				// echo $sql4551."<br>"; 
-				$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error113"); 
-			} 
+			 
+			$sql4551="INSERT IGNORE INTO $bai_pro3.bai_orders_db SELECT * FROM $bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
+			// echo $sql4551."<br>"; 
+			$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error113"); 
+			 
 			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no='' where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql45312) or exit("Sql Error113"); 
