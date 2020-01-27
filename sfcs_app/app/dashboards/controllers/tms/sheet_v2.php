@@ -191,7 +191,7 @@ if(count($colors)>0){
                                     $prno = urlencode($value1['PRNO']);
                                     $mseq = $value1['MSEQ'];
 
-                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/PMS100MI/GetMatLine;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                     $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                     $api_data_result = json_decode($api_data_wastage, true);
                                     
@@ -221,7 +221,7 @@ if(count($colors)>0){
                                     $prno = urlencode($value1['PRNO']);
                                     $mseq = $value1['MSEQ'];
 
-                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                                    $api_url_wastage = $host.":".$port."/m3api-rest/execute/PMS100MI/GetMatLine;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                                     $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                                     $api_data_result = json_decode($api_data_wastage, true);
                                     
