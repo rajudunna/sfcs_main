@@ -40,7 +40,7 @@ foreach($store_data as $data){
 	$pTRIMHigherStatus = $resultObj[0]->PTRIMHigherStatus;
 		
 	$ft_status=null;
-    if(in_array($fabHigherStatus,array(10,11,13)))
+    if(in_array($fabHigherStatus,$fabricstatus))
     {
         $ft_status=1;
     }
@@ -50,7 +50,7 @@ foreach($store_data as $data){
     }
     
     $st_status=null;
-    if(in_array($sTRIMHigherStatus,array(10,11,13)))
+    if(in_array($sTRIMHigherStatus,$strimstatus))
     {
         $st_status=1;
     }
@@ -60,7 +60,7 @@ foreach($store_data as $data){
     }
     
     $pt_status=null;
-    if(in_array($pTRIMHigherStatus,array(10,11,13)))
+    if(in_array($pTRIMHigherStatus,$ptrimstatus))
     {
         $pt_status=1;
     }
