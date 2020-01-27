@@ -49,24 +49,6 @@ function gettabledata($params)
 	if ($result_style_data->num_rows > 0) {
 		while($row = $result_style_data->fetch_assoc()) 
 		{
-			
-			//validation for operations if exists in schedule operations master #2864
-			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$params[1]' AND ColorId='$params[0]' and OperationNumber='$row[operation_code]'";
-			$qry_ops_validation_data = $link->query($qry_ops_validation);
-			if ($qry_ops_validation_data->num_rows > 0) {
-				//echo "</br>validation working..!</br>";
-				$row['flag_valid']=1;
-				//$result_array[]=$row;
-				//$result_array[]=$valid_array;
-
-			}else{
-				//echo "</br>validation not working..!</br>";
-				$row['flag_valid']=0;
-				//$result_array[]=$row;
-				//$result_array[]=$valid_array;
-
-			}
-
 			$result_array[] = $row;
 		}
 		$json_data = json_encode($result_array);
@@ -489,7 +471,7 @@ function updating($editable_data)
 		// var_dump($editable_data[5]);
 		if($editable_data[4] == '' || $editable_data[4] != 0) 
 		{
-			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation=$editable_data[4],ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
+			$qry_updation = "update $brandix_bts.tbl_style_ops_master set barcode=$editable_data[1],emb_supplier=$editable_data[2],ops_sequence=$editable_data[3],previous_operation='',ops_dependency='',component=$editable_data[6],operation_code = $editable_data[9],default_operration = $editable_data[10],manual_smv = $editable_data[11] where id=$editable_data[0]";
 		}
 		else
 		{

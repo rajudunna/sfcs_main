@@ -17,7 +17,7 @@
               $operation_code_ims=$sql_row['operation_code'];
             }
 
-    $selct_qry = "select style,color,assigned_module,send_qty,schedule from $brandix_bts.bundle_creation_data where bundle_number = $barcode_number and operation_id=$ops_code";
+    $selct_qry = "select style,color,assigned_module,send_qty,schedule from $brandix_bts.bundle_creation_data where barcode_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($selct_qry_result->num_rows > 0)
     {       

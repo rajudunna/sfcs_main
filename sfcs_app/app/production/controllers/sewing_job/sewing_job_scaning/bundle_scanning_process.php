@@ -11,11 +11,11 @@ if(isset($_GET['gatepass'])){
     include(getFullURLLevel($_GET['r'],'common/js/jquery-1.12.4.js',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-    $url = getFullURLLEVEL($_GET['r'],'bundle_barcode_wout_keystroke.php',0,'N');
+    $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke.php',0,'N');
 ?>
 
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-    <div class="panel-heading">Barcode Scanning Form</div>
+    <div class="panel-heading">Bundle Barcode Scanning</div>
     <div class="panel-body">
     <form method ='POST' id="frm1" action='<?php echo $url ?>'>
         <div class="row">
