@@ -156,6 +156,9 @@ $api_port_no = $conf1->get('api-port');
 
 //m3 integration plant codes
 $grn_details=$conf1->get('grndetails');
+$fabricstatus=$conf1->get('fabricstatus');
+$strimstatus=$conf->get('strimstatus');
+$ptrimstatus=$conf->get('ptrimstatus');
 $cluster_code=$conf1->get('cluster_code');
 $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
