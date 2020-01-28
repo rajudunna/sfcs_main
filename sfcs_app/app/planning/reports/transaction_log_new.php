@@ -198,7 +198,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		do{
 			for($ii=$hour_from;$ii<=$hour_to;$ii++)
 			{
-				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
+				$number = str_pad($ii, 2, '0', STR_PAD_LEFT);
+				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$number'"; 
 				$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rows12=mysqli_fetch_array($sql_result2212))
 				{
@@ -208,10 +209,11 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 					$end_hour=$rows12['end_time'];
 					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
 				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
+					$count = mysqli_num_rows($sql_result1);
 					while($sql_row=mysqli_fetch_array($sql_result1))
 					{
 						$module=$sql_row['bac_no'];
@@ -310,7 +312,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						unset($sizes);				
 					}
 				}
-				$time_query='';
+				//$time_query='';
 			}			
 			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 		}
@@ -362,7 +364,10 @@ var fnsFilters = {
 		
 	};
 	
-	 setFilterGrid("table1",fnsFilters);
+	 <?php
+	  if($count > 1)
+	  echo 'setFilterGrid("table1",fnsFilters)';
+	 ?>
 	
 
 </script>
