@@ -1744,7 +1744,7 @@ table
 	{
 		$lot_no=$_POST['lot_no'];
 		$parent_id=$_POST['parent_id'];
-		$get_ids="select store_in_id from $bai_rm_pj1.inspection_population where parent_id='$parent_id' and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
+		$get_ids="select store_in_id from $bai_rm_pj1.inspection_population where parent_id=$parent_id and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
 		//echo $get_ids;
 		$ids_result=mysqli_query($link, $get_ids) or exit("Sql Error41111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($id_row=mysqli_fetch_array($ids_result))
@@ -1758,7 +1758,7 @@ table
 		$parent_id=$_GET['parent_id'];
 
 		$lot = array();
-		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id='$parent_id'";
+		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id ";
 	    //echo $get_details;
 	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -2490,7 +2490,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id='".$temp[0]."'";
+	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id=$temp[0]";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
