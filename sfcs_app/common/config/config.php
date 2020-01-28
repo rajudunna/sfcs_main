@@ -157,8 +157,13 @@ $api_port_no = $conf1->get('api-port');
 //m3 integration plant codes
 $grn_details=$conf1->get('grndetails');
 $fabricstatus=$conf1->get('fabricstatus');
+<<<<<<< HEAD
 $strimstatus=$conf->get('strimstatus');
 $ptrimstatus=$conf->get('ptrimstatus');
+=======
+$strimstatus=$conf1->get('strimstatus');
+$ptrimstatus=$conf1->get('ptrimstatus');
+>>>>>>> 3093-m3-transaction-reconfirm-report
 $cluster_code=$conf1->get('cluster_code');
 $comp_no=$conf1->get('company_no');
 $central_wh_code=$conf1->get('central_wh_code');
