@@ -53,7 +53,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
             $url_wastage = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$comp_no&FACI=$global_facility_code&MFNO=$mfno&PRNO=$prno&MSEQ=$sequence_no";
             //echo $url_wastage;die();
             $moac3=microtime(true);
-            print("response_wastage API Call Start: ".$moac3." milliseconds. Parameters: ".$url_wastage.": ")."\n";
+            print("response_wastage API Call Start: ".$moac3." milliseconds. Parameters: ".$url_wastage."; ")."\n";
 							
             $response_wastage = getCurlAuthRequestLocal($url_wastage,$basic_auth);
             
@@ -71,7 +71,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         
             $color_size_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMITMAHX1?CONO=$comp_no&ITNO=$item_code";
             $moac5=microtime(true);
-            print("response_size_data API Call Start: ".$moac5." milliseconds. Parameters: ".$color_size_url.": ")."\n";
+            print("response_size_data API Call Start: ".$moac5." milliseconds. Parameters: ".$color_size_url."; ")."\n";
             
             $response_size_data = getCurlAuthRequestLocal($color_size_url,$basic_auth);
             
@@ -83,7 +83,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                 $option_des_url_all =$api_hostname.":".$api_port_no."/m3api-rest/execute/PDS050MI/Get?CONO=$comp_no&OPTN=";
             
                 $moac7=microtime(true);
-                print("response_color_data API Call Start: ".$moac7." milliseconds. Parameters: ".$option_des_url_all."".$color_res.": ")."\n";
+                print("response_color_data API Call Start: ".$moac7." milliseconds. Parameters: ".$option_des_url_all."".$color_res."; ")."\n";
             
                 $response_color_data = getCurlAuthRequestLocal($option_des_url_all.$color_res,$basic_auth);
 
@@ -96,7 +96,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     $optz = $response_size_data['status'] ? $response_size_data['response']['OPTZ'] : '';
             
                     $moac9=microtime(true);
-                    print("size_description API Call Start: ".$moac9." milliseconds. Parameters: ".$option_des_url_all."".$optx.": ")."\n";
+                    print("size_description API Call Start: ".$moac9." milliseconds. Parameters: ".$option_des_url_all."".$optx."; ")."\n";
             
                     $size_description = getCurlAuthRequestLocal($option_des_url_all.$optx,$basic_auth)['response']['TX30'] ?? '';
             
@@ -105,7 +105,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     print("size_description API call Duration : ".($moac10-$moac9)."milliseconds")."\n";
                     
                     $moac11=microtime(true);
-                    print("z_feature_description API Call Start: ".$moac11." milliseconds. Parameters: ".$option_des_url_all."".$optz.": ")."\n";
+                    print("z_feature_description API Call Start: ".$moac11." milliseconds. Parameters: ".$option_des_url_all."".$optz."; ")."\n";
             
                     $z_feature_description = getCurlAuthRequestLocal($option_des_url_all.$optz,$basic_auth)['response']['TX30'] ?? '';
 
@@ -129,7 +129,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                         $moac13=microtime(true);
                         
                         $parm1=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO='.$item_code;
-                        $parm2=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO=internal API response';
+                        $parm2=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$comp_no.'&ITNO=Parameter1 API response';
 
                         print("item_description1 API Call Start: ".$moac13." milliseconds. two api calls in loop Parameter1: ".$parm1."; Parameter2:".$parm2."; ")."\n";
             
@@ -144,7 +144,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                          $get_customer_style = $api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetHead?CONO='.$comp_no.'&ORNO='.$res_m3_trans_mo['REFERENCEORDER'].'';
                          //echo $get_customer_style;
                         $moac15=microtime(true);
-                        print("response_customer_style API Call Start: ".$moac15." milliseconds. Parameters: ".$get_customer_style.": ")."\n";
+                        print("response_customer_style API Call Start: ".$moac15." milliseconds. Parameters: ".$get_customer_style."; ")."\n";
             
                         $response_customer_style = getCurlAuthRequestLocal($get_customer_style,$basic_auth);
                          
