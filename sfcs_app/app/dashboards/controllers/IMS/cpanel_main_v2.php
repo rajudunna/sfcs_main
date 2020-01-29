@@ -670,7 +670,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $diff = array_intersect($ims_jobs, $rej_jobs);
                   $jobs = "'" . implode ( "', '", $diff ) . "'";
 
-                  $check_pac_stat="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random in ($jobs) and old_size in ($sizes_implode1)";
+                  $check_pac_stat="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random in ($jobs)";
                  // echo $check_pac_stat;
                   $result_pac_stat=mysqli_query($link, $check_pac_stat) or exit("Sql Errorrecut111".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($pac_row=mysqli_fetch_array($result_pac_stat))
@@ -687,16 +687,30 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                         $value='';
                         if($rejected > 0)
                         {
-                          if($rejected - $recut >0)
-                          {
-                            $rejection_border = "";
-                            $value='R';
-                          }
-                          else 
+                          if($recut >0)
                           {
                             $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
                             $value=''; 
                           }
+                          else
+                          {
+                            if($rejected > 0)
+                            {
+                              $rejection_border = "";
+                              $value='R';
+                            }
+                          }  
+                          
+                          // if(($rejected) - ($recut) >0)
+                          // {
+                          //   $rejection_border = "";
+                          //   $value='R';
+                          // }
+                          // else 
+                          // {
+                          //   $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
+                          //   $value=''; 
+                          // }
                           if($replace > 0)
                           {
                             $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
