@@ -1,5 +1,6 @@
 <?php
 $start_timestamp = microtime(true);
+print("\n Schedules_Operation__Masters_Capturing file start : ".$start_timestamp." milliseconds.")."\n";
 
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -28,9 +29,14 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
     //$url = str_replace(' ', '%20', $url);
-    echo "</br>".$url."</br>";
-
+    //echo "</br>".$url."</br>";
+    $moac1=microtime(true);
+    print("result obj API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+       
     $result = $obj->getCurlAuthRequest($url);
+    $moac2=microtime(true);
+    print("result obj API call End : ".$moac2."milliseconds")."\n";
+    print("result obj API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
     $decoded = json_decode($result,true);
     
     if($decoded['@type'])
@@ -62,8 +68,15 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
         //==========call api for INTO value for validating =========
         $url_INTO = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMPDWCT00?CONO=$comp_no&FACI=$facility_code&PLGR=$WorkCenterId";
-        echo "</br>".$url_INTO."</br>";
+        //echo "</br>".$url_INTO."</br>";
+            $moac3=microtime(true);
+            print("response_INTO API Call Start: ".$moac3." milliseconds. Parameters: ".$url_INTO."; ")."\n";
             $response_INTO = getCurlAuthRequestLocal($url_INTO,$basic_auth);
+            
+            $moac4=microtime(true);
+            print("response_INTO API call End : ".$moac4."milliseconds")."\n";
+            print("response_INTO API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+
             $into_value = '';
             if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
@@ -161,6 +174,7 @@ function getCurlAuthRequestLocal($url,$basic_auth){
 
 
 $end_timestamp = microtime(true);
-$duration = $end_timestamp - $start_timestamp;
-print("Execution took ".$duration." seconds.");
+$duration=$end_timestamp-start_timestamp;
+print("Schedules_Operation__Masters_Capturing file End : ".$end_timestamp." milliseconds.")."\n";
+print("Schedules_Operation__Masters_Capturing file total Duration : ".$duration." milliseconds.")."\n";
 ?>

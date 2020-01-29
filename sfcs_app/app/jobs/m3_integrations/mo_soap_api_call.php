@@ -7,6 +7,7 @@
 	Output : Save the response in mo_details,order_details&shipment_plan tables in m3_inputs database.
 */
 $start_timestamp = microtime(true);
+print("\n mo_soad_api_call file start : ".$start_timestamp." milliseconds.")."\n";
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
@@ -23,7 +24,12 @@ set_time_limit(6000000);
 		$from = date('Ymd',  strtotime('-1 month'));
 		// $from="20181215";
 		// $to="20181231";
+		$mosc1=microtime(true);
+		print("Soap Call  Start (Facility->".$global_facility_code.";FromDate->".$from.";ToDate->".$to."):".$mosc1." Milliseconds")."\n";
 		$result2 = $soap_client->MOData(array('Facility'=>$global_facility_code,'FromDate'=>$from,'ToDate'=>$to));
+		$mosc2=microtime(true);
+		print("Soap Call  End :".$mosc2." Milliseconds")."\n";
+		print("Soap Call Duration:".($mosc2-$mosc1)." Milliseconds")."\n";
 		$i=1;
 		$new_ids = [];
 		echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
@@ -60,16 +66,46 @@ set_time_limit(6000000);
 
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
+			
+			$moac1=microtime(true);
+			$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE.'&PONR='.$value->REFORDLINE.','.$basic_auth;
+			print("rest_call API Call Start: ".$moac1." milliseconds. Parameters: ".$args.": ")."\n";
+			
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
 			
+			$moac2=microtime(true);
+			print("rest_call API call End : ".$moac2."milliseconds")."\n";
+			print("rest_call API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+
+			print("Mo Soap API call file start : ".$start_timestamp." milliseconds.")."\n";
 				//1940 exclude mo's whcih are having status 99
 				if($rest_call['response']['ORST'] !='99'){
 
 						if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
+							
+							$moac3=microtime(true);
+							$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']).','.$basic_auth;
+							print("get_buyer_details API Call Start: ".$moac1." milliseconds. Parameters: ".$args.": ")."\n";
+							
 							$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
+							
+							$moac4=microtime(true);
+							print("get_buyer_details API call End : ".$moac4."milliseconds")."\n";
+							print("get_buyer_details API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+
 							$last_buyer_details = ['status'=>false];
 							if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
+								
+								$moac5=microtime(true);
+								$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'].','.$basic_auth;
+								print("last_buyer_details API Call Start: ".$moac1." milliseconds. Parameters: ".$args.": ")."\n";
+							
 								$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
+
+								$moac6=microtime(true);
+								print("last_buyer_details API call End : ".$moac6."milliseconds")."\n";
+								print("last_buyer_details API call Duration : ".($moac6-$moac5)."milliseconds")."\n";
+
 							}
 							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!=''){
 								$ins_qry = "
@@ -137,5 +173,9 @@ set_time_limit(6000000);
 		}
 		
 	}
+	$end_timestamp = microtime(true);
+	$duration=$end_timestamp-start_timestamp;
+	print("mo_soad_api_call file End : ".$end_timestamp." milliseconds.")."\n";
+	print("mo_soad_api_call file total Duration : ".$duration." milliseconds.")."\n";
 ?>
 
