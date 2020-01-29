@@ -127,7 +127,7 @@ th
 			
 			$sql="SELECT b.order_style_no,b.order_del_no,b.order_col_des,p.order_tid,p.doc_no,p.pcutno,p.act_cut_status,p.print_status,
 			p.docket_printed_person,p.fabric_status,p.log_update,
-			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time,p.order_tid
+			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time,p.order_tid,cat.category
 			FROM $bai_pro3.plandoc_stat_log p 
 			JOIN $bai_pro3.fabric_priorities f
 			ON p.doc_no=f.doc_ref
@@ -135,6 +135,7 @@ th
 			ON p.order_tid=b.order_tid
 			LEFT JOIN $bai_pro3.log_rm_ready_in_pool l
 			ON p.doc_no=l.doc_no
+			left join $bai_pro3.cat_stat_log cat on cat.tid=p.cat_ref
 			WHERE date(f.log_time) between \"$sdate\" and \"$edate\"";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -150,7 +151,7 @@ th
 		';
 			
 			echo "<table class=\"table table-bordered\" id=\"table_one\" >";
-			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Docket#</th><th>Cut#</th><th>Fabric requested user</th>
+			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Fabric Category</th><th>Docket#</th><th>Cut#</th><th>Fabric requested user</th>
 			<th>CPS status</th><th>CPS status log time</th>
 			<th>User log time</th><th>Fab. requested time</th><th>Fab. Ready time</th><th>Fab. Issued time</th><th>Docket print status</th><th>Docket printed user</th><th>Actual cut status</th></tr></thead>";
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -176,6 +177,7 @@ th
 				$log_update=$sql_row['log_update'];
 				$req_user=$sql_row['req_user'];
 				$log_time=$sql_row['log_time'];
+				$category=$sql_row['category'];
 				
 				$req_time=$sql_row['req_time'];
 				$fab_ready_time=$sql_row['fab_ready_time'];
@@ -200,6 +202,7 @@ th
 					echo "<td>$order_style_no</td>";
 					echo "<td>$order_del_no</td>";
 					echo "<td>$order_col_des</td>";
+					echo "<td>$category</td>";
 					echo "<td>$doc_no</td>";
 					echo "<td>".chr($color_code).leading_zeros($pcutno,3)."</td>";
 					echo "<td>$req_user</td>";
