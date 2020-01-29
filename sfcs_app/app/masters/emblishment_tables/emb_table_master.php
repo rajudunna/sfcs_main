@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Emblishment Table Master</title>
+	<title>Embellishment Table Master</title>
 	<?php 
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 		$self_url = getFullURL($_GET['r'],'emb_table_master.php','N');
@@ -50,7 +50,7 @@
 </head>
 <body>
 	<div class="panel panel-primary ">
-		<div class="panel-heading"><strong>Emblishment Table Master</strong></div>
+		<div class="panel-heading"><strong>Embellishment Table Master</strong></div>
 		<div class="panel-body">
 			<form  action="<?= $self_url ?>" method="POST" class="form-inline">
 				<?php
@@ -60,7 +60,7 @@
 					}					
 				?>
 				<div class="form-group">
-					<label>Emblishment Table: </label>
+					<label>Embellishment Table: </label>
 					<input type="text" name="emb_table_name" class="form-control" value="<?php echo $emb_tbl_name_edit; ?>" required>
 				</div>
 				&nbsp;&nbsp;
@@ -142,7 +142,7 @@
 							<thead>
 								<tr>
 									<th>S.No</th>
-									<th>Emblishment Table Name</th>
+									<th>Embellishment Table Name</th>
 									<th>Cutting Table Name</th>
 									<th>Work Station ID</th>
 									<th>Status</th>
