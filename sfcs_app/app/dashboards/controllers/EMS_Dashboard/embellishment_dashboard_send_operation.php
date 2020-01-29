@@ -584,9 +584,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
         
           echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;' title='$title'>";
           if($cut_new=="DONE"){
-            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:($send_op_code)</span>";
+            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</span>";
           }else{
-            echo "$schedule(".implode(", ",$club_c_code).")-OP:($send_op_code)";
+            echo "$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code";
           }
           echo "</div></div><br>";    
 		}		  
