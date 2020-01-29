@@ -1812,14 +1812,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 	$new_ref_date=substr($grn_date,0,4)."-".substr($grn_date,4,2)."-".substr($grn_date,6,2);
-	if($new_ref_date>"2011-05-12")
-	{
+	// if($new_ref_date>"2011-05-12")
+	// {
 		
-	}
-	else
-	{
+	// }
+	// else
+	// {
 
-	}
+	// }
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
