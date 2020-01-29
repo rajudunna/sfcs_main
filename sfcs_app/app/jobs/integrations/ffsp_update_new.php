@@ -1,4 +1,6 @@
 <?php
+$start_timestamp = microtime(true);
+print("\n ffsp_update_new file start : ".$start_timestamp." milliseconds.")."\n";
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -24,8 +26,15 @@ foreach($store_data as $data){
     //this is updated due to #2581 
     $url  = $rm_dashboard_api.'api/ScheduleStatus?style='.$data['style'].'&schedule='.$data['schedule'].'&color='.$data['color'];	
 	$url = str_replace(" ", '%20', $url);	
-	$start_timestamp = microtime(true);
+    $start_timestamp = microtime(true);
+    
+    $moac1=microtime(true);
+    print("ffsp result API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
     $result = $obj->getCurlRequest($url);	
+    $moac2=microtime(true);
+    print("ffsp result API call End : ".$moac2."milliseconds")."\n";
+    print("ffsp result API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+
 	$resultObj = json_decode($result);
 	$end_timestamp = microtime(true);
 	$duration = $end_timestamp - $start_timestamp;
@@ -88,5 +97,8 @@ foreach($store_data as $data){
 }
 
 print("Total Records :".$count)."\n";
-	
+$end_timestamp = microtime(true);
+$duration=$end_timestamp-start_timestamp;
+print("ffsp_update_new file End : ".$end_timestamp." milliseconds.")."\n";
+print("ffsp_update_new file total Duration : ".$duration." milliseconds.")."\n";
 ?>
