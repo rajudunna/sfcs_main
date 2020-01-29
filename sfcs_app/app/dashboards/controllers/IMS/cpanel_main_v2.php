@@ -669,7 +669,8 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   //Checking recut qty
                   $diff = array_intersect($ims_jobs, $rej_jobs);
                   $jobs = "'" . implode ( "', '", $diff ) . "'";
-
+                  $rejection_border='';
+                  $value='';
                   $check_pac_stat="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random in ($jobs)";
                  // echo $check_pac_stat;
                   $result_pac_stat=mysqli_query($link, $check_pac_stat) or exit("Sql Errorrecut111".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -683,8 +684,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                           $recut = $recut_row['recut'];
                           $replace = $recut_row['replaced'];
                         }
-                        $rejection_border='';
-                        $value='';
+                       
                         if($rejected > 0)
                         {
                           if($recut >0)
