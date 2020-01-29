@@ -106,7 +106,7 @@ if(isset($_POST['submit']))
 							<!-- <div class="row"> -->
 								
 								<div class="form-group">
-                                    <b>Appilication<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
+                                    <b>Application<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 									<select class="form-control" id="apn" name="apn" required>
 										<option value="">Select</option>
 										<option value="IPS">IPS</option>
@@ -152,7 +152,7 @@ if(isset($_POST['submit']))
 	$res_do_num=mysqli_query($link,$query_select);
 	echo "<div class='container'><div class='panel panel-primary'><div class='panel-heading'>Operations List</div><div class='panel-body'>";
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table_one'>";
-	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Appilication Name</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Controllers</th></tr></thead><tbody>";
+	echo "<thead><tr><th style='text-align:  center;'>S.No</th><th style='text-align:  center;'>Application Name</th><th style='text-align:  center;'>Operation Name</th><th style='text-align:  center;'>Operation Code</th><th style='text-align:  center;'>Controllers</th></tr></thead><tbody>";
 	$i=1;
 	while($res_result = mysqli_fetch_array($res_do_num))
 	{
