@@ -398,7 +398,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                                     <th rowspan="2">Inspected %</th>
                                     <th rowspan="2">Inspected Qty</th>
                                     <th rowspan="2">Ticket Length</th>
-                                    <th style=text-align:center colspan=3>Width(cm)</th>
+                                    <th style=text-align:center colspan=3>Width(<?php echo $fab_uom; ?>)</th>
                                     <th rowspan="2">Actual Weight</th>
                                     <th rowspan="2">Actual Repeat Length</th>
                                     <th rowspan="2">SKW</th>

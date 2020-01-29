@@ -1847,7 +1847,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl8519758 width=64 style='border-bottom:.5pt solid black;
   width:48pt'>Actual Length (<?php echo $fab_uom;?>)</td>
   <td colspan=3 class=xl7019758 style='border-right:.5pt solid black;
-  border-left:none'>Usable Width (cm)</td>
+  border-left:none'>Usable Width (<?php echo $fab_uom;?>)</td>
   <td colspan=4 class=xl7019758 style='border-right:.5pt solid black;
   border-left:none'>Total Point</td>
   <td rowspan=2 class=xl8719758 width=53 style='width:40pt'>Total Points</td>
