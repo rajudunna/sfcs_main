@@ -1,6 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
-
+print("\n Schedules_Operation__Masters_Capturing file start : ".$start_timestamp." milliseconds.")."\n";
+$total_api_calls_duration=0;
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
@@ -12,10 +13,11 @@ $basic_auth = base64_encode($api_username.':'.$api_password);
 $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status=0 group by mo_num,product_sku";
 echo "</br>".$qry_modetails."<br>";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-print("job started\n");
+//print("job started\n");
+$call_count=0;
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
-
+    $call_count++;$call_sub_count=0;
     $mo_num=trim($sql_row['mo_num']);
     $FG_code=rawurlencode($sql_row['product_sku']);
 
@@ -28,9 +30,15 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
     //$url = str_replace(' ', '%20', $url);
-    echo "</br>".$url."</br>";
-
+    //echo "</br>".$url."</br>";
+    $moac1=microtime(true);
+    print("result obj $call_count API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+       
     $result = $obj->getCurlAuthRequest($url);
+    $moac2=microtime(true);
+    print("result obj $call_count API call End : ".$moac2."milliseconds")."\n";
+    $total_api_calls_duration+=$mosc2-$mosc1;
+    print("result obj $call_count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
     $decoded = json_decode($result,true);
     
     if($decoded['@type'])
@@ -62,8 +70,17 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
         //==========call api for INTO value for validating =========
         $url_INTO = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMPDWCT00?CONO=$comp_no&FACI=$facility_code&PLGR=$WorkCenterId";
-        echo "</br>".$url_INTO."</br>";
+        //echo "</br>".$url_INTO."</br>";
+            $moac3=microtime(true);
+            $call_sub_count++;
+            print("response_INTO ".$call_count*$call_sub_count." API Call Start: ".$moac3." milliseconds. Parameters: ".$url_INTO."; ")."\n";
             $response_INTO = getCurlAuthRequestLocal($url_INTO,$basic_auth);
+            
+            $moac4=microtime(true);
+            print("response_INTO ".$call_count*$call_sub_count." API call End : ".$moac4."milliseconds")."\n";
+            $total_api_calls_duration+=$mosc4-$mosc3;
+            print("response_INTO ".$call_count*$call_sub_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+
             $into_value = '';
             if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
@@ -124,7 +141,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }  
     echo "</br>***********************************************************************</br>";    
 }
-print("job successfully completed\n");
+//print("job successfully completed\n");
 //construct key values and 
 function conctruct_array($req){
     $return_ar = [];
@@ -159,8 +176,9 @@ function getCurlAuthRequestLocal($url,$basic_auth){
     
 }
 
-
+print("\n Schedules_Operation__Masters_Capturing file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
-$duration = $end_timestamp - $start_timestamp;
-print("Execution took ".$duration." seconds.");
+$duration=$end_timestamp-start_timestamp;
+print("Schedules_Operation__Masters_Capturing file End : ".$end_timestamp." milliseconds.")."\n";
+print("Schedules_Operation__Masters_Capturing file total Duration : ".$duration." milliseconds.")."\n";
 ?>
