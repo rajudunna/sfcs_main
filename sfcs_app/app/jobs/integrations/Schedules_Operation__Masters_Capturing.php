@@ -32,13 +32,13 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     //$url = str_replace(' ', '%20', $url);
     //echo "</br>".$url."</br>";
     $moac1=microtime(true);
-    print("result obj $call_count API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+    print("result obj ".$call_count."  API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
        
     $result = $obj->getCurlAuthRequest($url);
     $moac2=microtime(true);
-    print("result obj $call_count API call End : ".$moac2."milliseconds")."\n";
+    print("result obj ".$call_count."  API call End : ".$moac2."milliseconds")."\n";
     $total_api_calls_duration+=$mosc2-$mosc1;
-    print("result obj $call_count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+    print("result obj ".$call_count."  API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
     $decoded = json_decode($result,true);
     
     if($decoded['@type'])
@@ -178,7 +178,7 @@ function getCurlAuthRequestLocal($url,$basic_auth){
 
 print("\n Schedules_Operation__Masters_Capturing file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
-$duration=$end_timestamp-start_timestamp;
+$duration=$end_timestamp-$start_timestamp;
 print("Schedules_Operation__Masters_Capturing file End : ".$end_timestamp." milliseconds.")."\n";
 print("Schedules_Operation__Masters_Capturing file total Duration : ".$duration." milliseconds.")."\n";
 ?>

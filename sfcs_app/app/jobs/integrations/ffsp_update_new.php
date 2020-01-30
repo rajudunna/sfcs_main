@@ -30,12 +30,12 @@ foreach($store_data as $data){
     $start_timestamp = microtime(true);
     
     $moac1=microtime(true);
-    print("ffsp result $count API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+    print("ffsp result ".$count."  API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
     $result = $obj->getCurlRequest($url);	
     $moac2=microtime(true);
-    print("ffsp result $count API call End : ".$moac2."milliseconds")."\n";
+    print("ffsp result ".$count."  API call End : ".$moac2."milliseconds")."\n";
     $total_api_calls_duration+=$mosc2-$mosc1;
-    print("ffsp result $count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+    print("ffsp result ".$count."  API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
 
 	$resultObj = json_decode($result);
 	
@@ -98,7 +98,7 @@ foreach($store_data as $data){
 print("Total Records :".$count)."\n";
 print("\n ffsp_update_new file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
-$duration=$end_timestamp-start_timestamp;
+$duration=$end_timestamp-$start_timestamp;
 print("ffsp_update_new file End : ".$end_timestamp." milliseconds.")."\n";
 print("ffsp_update_new file total Duration : ".$duration." milliseconds.")."\n";
 ?>
