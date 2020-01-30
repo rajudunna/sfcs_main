@@ -1,6 +1,7 @@
 <?php
 $start_timestamp = microtime(true);
 print("\n ffsp_update_new file start : ".$start_timestamp." milliseconds.")."\n";
+$total_api_calls_duration=0;
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -18,7 +19,7 @@ while($row = mysqli_fetch_array($result))
     $details['color'] = $row['order_col_des'];
     array_push($store_data,$details);
 }
-$count=0;
+$count=1;
 //looping the data to send it in API
 foreach($store_data as $data){
 
@@ -29,16 +30,14 @@ foreach($store_data as $data){
     $start_timestamp = microtime(true);
     
     $moac1=microtime(true);
-    print("ffsp result API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+    print("ffsp result $count API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
     $result = $obj->getCurlRequest($url);	
     $moac2=microtime(true);
-    print("ffsp result API call End : ".$moac2."milliseconds")."\n";
-    print("ffsp result API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+    print("ffsp result $count API call End : ".$moac2."milliseconds")."\n";
+    $total_api_calls_duration+=$mosc2-$mosc1;
+    print("ffsp result $count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
 
 	$resultObj = json_decode($result);
-	$end_timestamp = microtime(true);
-	$duration = $end_timestamp - $start_timestamp;
-	print("Execution took ".$duration." milliseconds.")."\n";
 	
 	$style = $data['style'];
 	$schedule = $data['schedule'];
@@ -97,6 +96,7 @@ foreach($store_data as $data){
 }
 
 print("Total Records :".$count)."\n";
+print("\n ffsp_update_new file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
 $duration=$end_timestamp-start_timestamp;
 print("ffsp_update_new file End : ".$end_timestamp." milliseconds.")."\n";
