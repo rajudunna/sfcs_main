@@ -657,7 +657,7 @@ if(isset($_POST['allocate_new']))
                             // $condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
                             // if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 				            {
-                                $sql22="update $bai_rm_pj1.store_in set qty_issued=$qty_iss, status=$status, allotment_status=$status where tid=\"$code\"";
+                                $sql22="update $bai_rm_pj1.store_in set qty_issued=$qty_iss, status=$status, qty_allocated=0, allotment_status=$status where tid=\"$code\"";
                                 mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 // $sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";

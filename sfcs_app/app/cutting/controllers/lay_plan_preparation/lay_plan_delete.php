@@ -358,6 +358,13 @@ if(isset($_POST["submit"]))
                     $sql3="delete from $bai_pro3.excess_cuts_log where schedule_no='$schedule' and color='$color'";
                     mysqli_query($link, $sql3) or die("Error=8".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     // echo $sql3."<br>"; 
+
+                    // deleting binding consumption tables
+                    $sql11="delete from $bai_pro3.binding_consumption where schedule='$schedule' and color='$color'";
+                    mysqli_query($link, $sq11) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
+                    $sql12="delete from $bai_pro3.binding_consumption_items where doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\")";
+                    mysqli_query($link, $sq11) or die("Error=12".mysqli_error($GLOBALS["___mysqli_ston"])); 
                      
                     // deleting sewing job tables
                     if($schedule_id!=0) 
@@ -390,6 +397,8 @@ if(isset($_POST["submit"]))
                             $sql101="delete from $brandix_bts.tbl_orders_sizes_master where parent_id=".$schedule_id." and order_col_des='".$col_desc[$i]."'"; 
                             // echo $sql101."<br>"; 
                             mysqli_query($link, $sql101) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                            //Deleteion for binding dockets
+
                         }
                     }
                     //echo gethostname."<br>"; 
