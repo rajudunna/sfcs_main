@@ -365,10 +365,10 @@ if(isset($_POST["submit"]))
 
                     // deleting binding consumption tables
                     $sql11="delete from $bai_pro3.binding_consumption where schedule='$schedule' and color='$color'";
-                    mysqli_query($link, $sq11) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    mysqli_query($link, $sql11) or die("Error=11".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
                     $sql12="delete from $bai_pro3.binding_consumption_items where doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\")";
-                    mysqli_query($link, $sq11) or die("Error=12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    mysqli_query($link, $sql12) or die("Error=12".mysqli_error($GLOBALS["___mysqli_ston"])); 
                      
                     // deleting sewing job tables
                     if($schedule_id!=0) 
