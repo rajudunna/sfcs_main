@@ -280,6 +280,7 @@ if(isset($_POST['formIssue']))
                 foreach($job_no as $key=>$array) {
                     $doc_no = $doc_no_ref;
                     foreach($size as $category=>$size_array) {
+                        $size_new = $size_array[$key];
                         $plan_jobcount = $issueval[$category][$key];
                         if($plan_jobcount > 0) {
 
