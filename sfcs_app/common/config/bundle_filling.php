@@ -305,7 +305,6 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 					$bundle_seq=1;
 					$input_job_no=$input_job_num;
 					$input_job_num_rand=$schedule.date("ymd").$input_job_no;
-					echo $input_job_no."---".$input_job_num_rand."---".$bundle_seq."<br>";					
 					for($jj=0;$jj<sizeof($plan_ids);$jj++)
 					{
 						if($fill_qty[$plan_ids[$jj]][$j]>0)
