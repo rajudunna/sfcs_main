@@ -198,8 +198,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		do{
 			for($ii=$hour_from;$ii<=$hour_to;$ii++)
 			{
-				$number = str_pad($ii, 2, '0', STR_PAD_LEFT);
-				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$number'"; 
+				//$number = str_pad($ii, 2, '0', STR_PAD_LEFT);
+				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
 				$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rows12=mysqli_fetch_array($sql_result2212))
 				{
