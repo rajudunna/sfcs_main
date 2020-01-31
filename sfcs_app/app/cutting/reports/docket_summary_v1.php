@@ -127,7 +127,7 @@ th
 			
 			$sql="SELECT b.order_style_no,b.order_del_no,b.order_col_des,p.order_tid,p.doc_no,p.pcutno,p.act_cut_status,p.print_status,
 			p.docket_printed_person,p.fabric_status,p.log_update,
-			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time,p.order_tid,cat.category
+			f.log_user AS req_user,f.log_time,f.req_time,l.date_n_time AS fab_ready_time,f.issued_time,p.order_tid,cat.category,cat.seperate_docket,cat.binding_consumption
 			FROM $bai_pro3.plandoc_stat_log p 
 			JOIN $bai_pro3.fabric_priorities f
 			ON p.doc_no=f.doc_ref
@@ -151,7 +151,9 @@ th
 		';
 			
 			echo "<table class=\"table table-bordered\" id=\"table_one\" >";
-			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Fabric Category</th><th>Docket#</th><th>Cut#</th><th>Fabric requested user</th>
+			echo "<thead><tr class=\"info\"><th>Style</th><th>Schedule</th><th>Color</th><th>Fabric Category</th><th>Docket#</th>
+			<th>Fabric Requirement</th><th>UOM</th>
+			<th>Cut#</th><th>Fabric requested user</th>
 			<th>CPS status</th><th>CPS status log time</th>
 			<th>User log time</th><th>Fab. requested time</th><th>Fab. Ready time</th><th>Fab. Issued time</th><th>Docket print status</th><th>Docket printed user</th><th>Actual cut status</th></tr></thead>";
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -164,7 +166,7 @@ th
 					{
 						$color_code=$sql_row33['color_code']; //Color Code
 					}
-			
+				
 				$order_style_no=$sql_row['order_style_no'];
 				$order_del_no=$sql_row['order_del_no'];
 				$order_col_des=$sql_row['order_col_des'];
@@ -178,6 +180,23 @@ th
 				$req_user=$sql_row['req_user'];
 				$log_time=$sql_row['log_time'];
 				$category=$sql_row['category'];
+				$seperate_docket=$sql_row5['seperate_docket'];
+				$binding_consumption=$sql_row5['binding_consumption'];
+				
+				$sql2="SELECT order_cat_doc_mk_mix.material_req,(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix WHERE doc_no=".$sql_row['doc_no']."";
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row2=mysqli_fetch_array($sql_result2))
+				{
+					$p_qty=$sql_row2['qty'];
+					$binding_consumption_qty = $binding_consumption * $p_qty;
+					if($seperate_docket=='No'){
+						$material_requirement_orig=$sql_row2['material_req'];
+					}else{
+						$material_requirement_orig=$sql_row2['material_req']-$binding_consumption_qty;
+					}
+					$extra=0;
+					{ $extra=round(($material_requirement_orig*$sql_row2['savings']),2); }
+				}
 				
 				$req_time=$sql_row['req_time'];
 				$fab_ready_time=$sql_row['fab_ready_time'];
@@ -204,6 +223,8 @@ th
 					echo "<td>$order_col_des</td>";
 					echo "<td>$category</td>";
 					echo "<td>$doc_no</td>";
+					echo "<td>".($material_requirement_orig+$extra)."</td>";
+					echo "<td>".$fab_uom."</td>";
 					echo "<td>".chr($color_code).leading_zeros($pcutno,3)."</td>";
 					echo "<td>$req_user</td>";
 					if($fabric_status=="5") { 
