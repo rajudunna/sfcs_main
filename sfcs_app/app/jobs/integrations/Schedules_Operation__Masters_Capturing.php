@@ -32,13 +32,13 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     //$url = str_replace(' ', '%20', $url);
     //echo "</br>".$url."</br>";
     $moac1=microtime(true);
-    print("result obj $call_count API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
+    print("result obj ".$call_count."  API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
        
     $result = $obj->getCurlAuthRequest($url);
     $moac2=microtime(true);
-    print("result obj $call_count API call End : ".$moac2."milliseconds")."\n";
-    $total_api_calls_duration+=$mosc2-$mosc1;
-    print("result obj $call_count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+    print("result obj ".$call_count."  API call End : ".$moac2."milliseconds")."\n";
+    $total_api_calls_duration+=$moac2-$moac1;
+    print("result obj ".$call_count."  API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
     $decoded = json_decode($result,true);
     
     if($decoded['@type'])
@@ -78,7 +78,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
             
             $moac4=microtime(true);
             print("response_INTO ".$call_count*$call_sub_count." API call End : ".$moac4."milliseconds")."\n";
-            $total_api_calls_duration+=$mosc4-$mosc3;
+            $total_api_calls_duration+=$moac4-$moac3;
             print("response_INTO ".$call_count*$call_sub_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
 
             $into_value = '';
@@ -108,7 +108,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $ZFeatureId=$sql_row['zfeature'];
         //GETTING SFCS OPERATION ID FROM OPERATION MASTER BASED ON M3 Operation Type
         $selecting_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$into_value'";
-        echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
+        //echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
         $res_selecting_qry = mysqli_query($link,$selecting_qry);
         while($rew_res_selecting_qry = mysqli_fetch_array($res_selecting_qry))
         {
@@ -122,7 +122,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }
 
     if($workcenter_status_valid){
-        echo $sql1 . implode(', ', $values);
+       // echo $sql1 . implode(', ', $values);
         var_dump($values);
         //insertion query for schedule_oprations_master table
         $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values));
@@ -178,7 +178,7 @@ function getCurlAuthRequestLocal($url,$basic_auth){
 
 print("\n Schedules_Operation__Masters_Capturing file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
-$duration=$end_timestamp-start_timestamp;
+$duration=$end_timestamp-$start_timestamp;
 print("Schedules_Operation__Masters_Capturing file End : ".$end_timestamp." milliseconds.")."\n";
 print("Schedules_Operation__Masters_Capturing file total Duration : ".$duration." milliseconds.")."\n";
 ?>

@@ -31,14 +31,14 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
     //echo $api_url."<br/>";
     $call_count++;$call_sub_count=0;
     $moac1=microtime(true);
-    print("response1 $call_count API Call Start: ".$moac1." milliseconds. Parameters: ".$api_url."; ")."\n";
+    print("response1 ".$call_count." API Call Start: ".$moac1." milliseconds. Parameters: ".$api_url."; ")."\n";
             
     $response1 = getCurlAuthRequestLocal1($api_url,$basic_auth);
     
     $moac2=microtime(true);
-    print("response1 $call_count API call End : ".$moac2."milliseconds")."\n";
+    print("response1 ".$call_count." API call End : ".$moac2."milliseconds")."\n";
     $total_api_calls_duration+=$moac2-$moac1;
-    print("response1 $call_count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+    print("response1 ".$call_count." API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
 
     if($response1['status'] && isset($response1['response'][0]['PRNO'])){
         foreach($response1['response'] as $resp_resp){
@@ -230,7 +230,7 @@ function getCurlAuthRequestLocal1($url,$basic_auth){
 
 print("\n mo_api_order_details_orig file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 $end_timestamp = microtime(true);
-$duration=$end_timestamp-start_timestamp;
+$duration=$end_timestamp-$start_timestamp;
 print("mo_api_order_details_orig file End : ".$end_timestamp." milliseconds.")."\n";
 print("mo_api_order_details_orig file total Duration : ".$duration." milliseconds.")."\n";
 ?>

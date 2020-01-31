@@ -29,7 +29,7 @@ set_time_limit(6000000);
 		print("Soap Call  End :".$mosc2." Milliseconds")."\n";
 		$total_api_calls_duration+=$mosc2-$mosc1;
 		print("Soap Call Duration:".($mosc2-$mosc1)." Milliseconds")."\n";
-		$call_count=1;
+		$call_count=0;
 	 //	$new_ids = [];
 		//echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
 		//echo "<table>";
@@ -68,14 +68,15 @@ set_time_limit(6000000);
 			
 			$moac1=microtime(true);
 			$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE.'&PONR='.$value->REFORDLINE.','.$basic_auth;
-			print("rest_call $call_count API Call Start: ".$moac1." milliseconds. Parameters: ".$args."; ")."\n";
+			$call_count++;
+			print("rest_call ".$call_count." API Call Start: ".$moac1." milliseconds. Parameters: ".$args."; ")."\n";
 			
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
 			
 			$moac2=microtime(true);
-			print("rest_call $call_count API call End : ".$moac2."milliseconds")."\n";
+			print("rest_call ".$call_count." API call End : ".$moac2."milliseconds")."\n";
 			$total_api_calls_duration+=$moac2-$moac1;
-			print("rest_call $call_count API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+			print("rest_call ".$call_count." API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
 
 				//1940 exclude mo's whcih are having status 99
 				if($rest_call['response']['ORST'] !='99'){
@@ -84,28 +85,28 @@ set_time_limit(6000000);
 							
 							$moac3=microtime(true);
 							$args1=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']).','.$basic_auth;
-							print("get_buyer_details $call_count API Call Start: ".$moac3." milliseconds. Parameters: ".$args1."; ")."\n";
+							print("get_buyer_details ".$call_count." API Call Start: ".$moac3." milliseconds. Parameters: ".$args1."; ")."\n";
 							
 							$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
 							
 							$moac4=microtime(true);
-							print("get_buyer_details $call_count API call End : ".$moac4."milliseconds")."\n";
+							print("get_buyer_details ".$call_count." API call End : ".$moac4."milliseconds")."\n";
 							$total_api_calls_duration+=$moac4-$moac3;
-							print("get_buyer_details $call_count API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+							print("get_buyer_details ".$call_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
 
 							$last_buyer_details = ['status'=>false];
 							if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
 								
 								$moac5=microtime(true);
 								$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'].','.$basic_auth;
-								print("last_buyer_details $call_count API Call Start: ".$moac5." milliseconds. Parameters: ".$args."; ")."\n";
+								print("last_buyer_details ".$call_count." API Call Start: ".$moac5." milliseconds. Parameters: ".$args."; ")."\n";
 							
 								$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
 
 								$moac6=microtime(true);
-								print("last_buyer_details $call_count API call End : ".$moac6."milliseconds")."\n";
+								print("last_buyer_details ".$call_count." API call End : ".$moac6."milliseconds")."\n";
 								$total_api_calls_duration+=$moac6-$moac5;
-								print("last_buyer_details $call_count API call Duration : ".($moac6-$moac5)."milliseconds")."\n";
+								print("last_buyer_details ".$call_count." API call Duration : ".($moac6-$moac5)."milliseconds")."\n";
 
 							}
 							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!='')
@@ -177,7 +178,7 @@ set_time_limit(6000000);
 	}
 	print("\n mo_soad_api_call file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
 	$end_timestamp = microtime(true);
-	$duration=$end_timestamp-start_timestamp;
+	$duration=$end_timestamp-$start_timestamp;
 	print("mo_soad_api_call file End : ".$end_timestamp." milliseconds.")."\n";
 	print("mo_soad_api_call file total Duration : ".$duration." milliseconds.")."\n";
 ?>
