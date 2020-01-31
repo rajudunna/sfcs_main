@@ -5,6 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 if($_POST['modal_submit'])
 {    
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
     $jobcount = $_POST['jobcount'];
     $bundle_qty = $_POST['bundleqty'];
     $docs = $_POST['docs'];
@@ -19,6 +20,7 @@ if($_POST['modal_submit'])
     $plan_logical_bundles = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
     if($plan_logical_bundles)
 	{
+		insertMOQuantitiesSewing($schedule,$inserted_id);		
 		return true;
     } else {
 		return false;
@@ -222,8 +224,8 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
     $ratio_query = "SELECT * FROM bai_pro3.bai_orders_db_confirm bd
    LEFT JOIN bai_pro3.cat_stat_log csl ON bd.order_tid = csl.order_tid 
    LEFT JOIN bai_pro3.plandoc_stat_log psl ON csl.tid = psl.cat_ref AND psl.order_tid = bd.order_tid 
-   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal' ";
-    $doc_nos = [];
+   WHERE csl.category IN ('Body','Front') AND bd.order_del_no='".$schedule."' AND TRIM(bd.order_col_des) =trim('".$color."') AND psl.order_tid <> '' AND psl.remarks='Normal'  ORDER BY ratio";
+   $doc_nos = [];
     $view_shows=[];
     $ratio_result = mysqli_query($link, $ratio_query) or exit("Sql Error : ratio_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     $i=0;
