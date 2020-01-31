@@ -29,7 +29,7 @@ set_time_limit(6000000);
 		print("Soap Call  End :".$mosc2." Milliseconds")."\n";
 		$total_api_calls_duration+=$mosc2-$mosc1;
 		print("Soap Call Duration:".($mosc2-$mosc1)." Milliseconds")."\n";
-		$call_count=1;
+		$call_count=0;
 	 //	$new_ids = [];
 		//echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
 		//echo "<table>";
@@ -68,6 +68,7 @@ set_time_limit(6000000);
 			
 			$moac1=microtime(true);
 			$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE.'&PONR='.$value->REFORDLINE.','.$basic_auth;
+			$call_count++;
 			print("rest_call ".$call_count." API Call Start: ".$moac1." milliseconds. Parameters: ".$args."; ")."\n";
 			
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
