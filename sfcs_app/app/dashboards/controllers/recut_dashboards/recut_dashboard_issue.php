@@ -274,6 +274,42 @@ if(isset($_POST['formIssue']))
                     }
                 }
             } 
+            $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$doc_no_ref";
+            $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+            if(mysqli_num_rows($plan_cut_bundle_res)>0) {
+                foreach($job_no as $key=>$array) {
+                    $doc_no = $doc_no_ref;
+                    foreach($size as $category=>$size_array) {
+                        $plan_jobcount = $issueval[$category][$key];
+                        if($plan_jobcount > 0) {
+                            //get input job number for each schedule
+                            $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
+                            $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            if(mysqli_num_rows($old_jobs_count_res)>0)
+                            {
+                                while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+                                {
+                                    if($max_oldqty_jobcount['result'] > 0) 
+                                    {
+                                        $job=$max_oldqty_jobcount['result'];
+                                    } 
+                                    else 
+                                    {
+                                        $job=1;
+                                    }
+                                }
+                            } 
+                            else 
+                            {
+                                $job=1;
+                            }
+                            $job_new=$schedule.date("ymd").$job;
+
+                            $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
+                        }
+                    }
+                }
+            }
         }
     }
     $url = '?r='.$_GET['r'];
