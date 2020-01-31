@@ -156,7 +156,7 @@ if(isset($_POST['approve']))
                                 
                                 
                                 //retreaving operations from operation mapping for style and color
-                                $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+                                $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name,tm.m3_smv AS smv FROM `$brandix_bts`.`tbl_style_ops_master` tm 
                                 LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
                                 WHERE style = '$style' AND color = '$color'
                                 AND category = 'sewing'";
@@ -165,6 +165,25 @@ if(isset($_POST['approve']))
                                 {
                                     $ops = $ops_row['operation_code'];
                                     $ops_name = $ops_row['operation_name'];
+                                    $smv[$ops_row['operation_code']] = $ops_row['smv'];				
+                                    if($ops_row['operation_code'] == '15'){
+                                        $send_qty = $logic_qty;
+                                    } else {
+                                        $send_qty = '0';
+                                    }
+                                    $assigned_module_query = "select assigned_module from $brandix_bts.bundle_creation_data where input_job_no_random_ref ='".$act_input_job_no_random."'";
+                                    $assigned_module_query_res = mysqli_query($link, $assigned_module_query) or exit("issue in excess doc query".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    while($assigned_module_query_res_row = mysqli_fetch_array($assigned_module_query_res))
+                                    {
+                                        $assigned_module = $assigned_module_query_res_row['assigned_module'];
+                                    }
+
+                                    $b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_title_ind."','".$size."','". $smv[$ops]."',".$bundle_number.",".$logic_qty.",".$send_qty.",0,0,0,".$ops.",'".$doc_nos."','".date('Y-m-d H:i:s')."', '".$username."','".$doc_nos."','".$act_input_job_no."','".$act_input_job_no_random."','".$assigned_module."','Normal','".$color."',".$i.",'".$barcode."')";
+                                    // echo $b_query.'<br/>';
+                                    mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            
+
+
                                     $mo_operations_insertion="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$excess_qty."', '".$ops."', '".$ops_name."')";
                                     $result1=mysqli_query($link, $mo_operations_insertion) or die("Error while mo_operations_insertion".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 }
