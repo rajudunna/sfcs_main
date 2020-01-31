@@ -28,7 +28,7 @@ function getOperationsInfo($style, $color, $operation) {
     $first_sewing_operation = $first_sewing_operation_info;
     if($operation_order) {
         $next_immediate_cut_operations = getNextCuttingOperations($style, $color, $operation, $operation_order, $first_sewing_operation);
-        $last_cut_operations = getLastCutOperations($style, $color, $operation, $operation_order, $first_sewing_operation);
+        $last_cut_operations = getLastCutOperations($style, $color, $operation_order, $first_sewing_operation);
         if(in_array($operation, $last_cut_operations)) {
             $is_last_cut_operation = true;
         }
@@ -86,10 +86,23 @@ function getLastCutOperations($style, $color, $operation_order, $first_sewing_op
             $last_operations[] = $row['operation_code'];
         }
     } else {
+		$sewing_cat = 'sewing';
+	
+		$first_sewing_operation_query = "Select som.operation_code , som.operation_order
+			from $brandix_bts.tbl_style_ops_master som 
+			left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
+			where category = '$sewing_cat' and som.style = '$style' and som.color = '$color'
+			and display_operations='yes' 
+			order by operation_order ASC limit 1";
+		$first_sewing_operation_result =  mysqli_query($link, $first_sewing_operation_query) or exit("error first_sewing_operation_query $first_sewing_operation_query");
+		while($row = mysqli_fetch_array($first_sewing_operation_result)) {
+			$sewing_operation_order = $row['operation_order'];
+		}
+	
         $last_cut_operations_query2 = "Select som.operation_code from $brandix_bts.tbl_style_ops_master som
         left join $brandix_bts.tbl_orders_ops_ref tor On som.operation_code = tor.operation_code
         where category IN ($cutting_category) and style = '$style' and color = '$color'
-        and operation_order > '$operation_order' order by operation_order DESC limit 1";
+        and operation_order < '$sewing_operation_order' order by operation_order DESC limit 1";
         $last_cut_operations_result2 = mysqli_query($link, $last_cut_operations_query2) or exit("error last_cut_operations_query2 $last_cut_operations_query2");
         while($row = mysqli_fetch_array($last_cut_operations_result2)) {
             $last_operations[] = $row['operation_code'];
