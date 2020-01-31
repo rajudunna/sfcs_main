@@ -12,12 +12,17 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 	{
 		if($date_maker[$i][19]=='0')
 		{
-			$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$date_maker[$i][3]."','".$date_maker[$i][6]."', '".$date_maker[$i][7]."', '".$date_maker[$i][8]."', '".$date_maker[$i][9]."', '".$date_maker[$i][10]."', '".$date_maker[$i][11]."', '".$date_maker[$i][12]."', '".$date_maker[$i][13]."', '".$date_maker[$i][14]."',  '".$date_maker[$i][15]."',  '".$date_maker[$i][16]."',  '".$date_maker[$i][17]."',  '".$date_maker[$i][18]."')";
-			// echo $sql."<br>";
-			$sql_marker_result=mysqli_query($link, $sql) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$mk_id=mysqli_insert_id($link);
+			$sql_check="select parent_id from $bai_pro3.maker_details where parent_id='".$date_maker[$i][3]."'";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$sql="insert into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$date_maker[$i][3]."','".$date_maker[$i][6]."', '".$date_maker[$i][7]."', '".$date_maker[$i][8]."', '".$date_maker[$i][9]."', '".$date_maker[$i][10]."', '".$date_maker[$i][11]."', '".$date_maker[$i][12]."', '".$date_maker[$i][13]."', '".$date_maker[$i][14]."',  '".$date_maker[$i][15]."',  '".$date_maker[$i][16]."',  '".$date_maker[$i][17]."',  '".$date_maker[$i][18]."')";
+				// echo $sql."<br>";
+				$sql_marker_result=mysqli_query($link, $sql) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$mk_id=mysqli_insert_id($link);
+		    }
 			
-			$sql_marker = "insert ignore into $bai_pro3.maker_stat_log (cat_ref, cuttable_ref, allocate_ref,order_tid, mklength,mkeff, lastup, remarks,mk_ver,remark1,remark2,remark3,remark4) SELECT cat_ref, cuttable_ref, allocate_ref,order_tid, mklength,mkeff, lastup, remarks,mk_ver,remark1,remark2,remark3,remark4 FROM $bai_pro3.maker_stat_log  where allocate_ref=".$date_maker[$i][3]." limit 1";
+			$sql_marker = "insert into $bai_pro3.maker_stat_log (cat_ref, cuttable_ref, allocate_ref,order_tid, mklength,mkeff, lastup, remarks,mk_ver,remark1,remark2,remark3,remark4) SELECT cat_ref, cuttable_ref, allocate_ref,order_tid, mklength,mkeff, lastup, remarks,mk_ver,remark1,remark2,remark3,remark4 FROM $bai_pro3.maker_stat_log  where allocate_ref=".$date_maker[$i][3]." limit 1";
 			// echo $sql_marker."<br>";
 			$sql_marker_result=mysqli_query($link, $sql_marker) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$mk_ref_id=mysqli_insert_id($link);
@@ -92,9 +97,14 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 		}				
 	}
 	elseif($date_maker[$i][16]=='0' && $date_maker[$i][0]=='no')
-	{			
-		$sql="insert ignore into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$date_maker[$i][3]."','".$date_maker[$i][6]."', '".$date_maker[$i][7]."', '".$date_maker[$i][8]."', '".$date_maker[$i][9]."', '".$date_maker[$i][10]."', '".$date_maker[$i][11]."', '".$date_maker[$i][12]."', '".$date_maker[$i][13]."', '".$date_maker[$i][14]."',  '".$date_maker[$i][15]."',  '".$date_maker[$i][16]."',  '".$date_maker[$i][17]."',  '".$date_maker[$i][18]."')";
-		mysqli_query($link, $sql) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	{	
+	    $sql_check="select parent_id from $bai_pro3.maker_details where parent_id='".$date_maker[$i][3]."'";
+		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res)==0)
+		{		
+			$sql="insert into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$date_maker[$i][3]."','".$date_maker[$i][6]."', '".$date_maker[$i][7]."', '".$date_maker[$i][8]."', '".$date_maker[$i][9]."', '".$date_maker[$i][10]."', '".$date_maker[$i][11]."', '".$date_maker[$i][12]."', '".$date_maker[$i][13]."', '".$date_maker[$i][14]."',  '".$date_maker[$i][15]."',  '".$date_maker[$i][16]."',  '".$date_maker[$i][17]."',  '".$date_maker[$i][18]."')";
+			mysqli_query($link, $sql) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	    }
 	}		
 }
 die();

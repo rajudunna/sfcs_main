@@ -494,9 +494,14 @@ $b_op_id = 15;
 									$total = $total-$capacity;
 								}
 							}
-
-							$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
-							mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            
+                            $sql_check="select doc_no from $bai_pro3.act_cut_status where doc_no=$input_doc_no";
+							$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_check_res)==0)
+							{
+								$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
+								mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}	
 							
 							$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", leader_name='$leader_name',bundle_loc=concat(bundle_loc,'$','$bun_loc') where doc_no=$input_doc_no";					
 							mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));				
@@ -601,9 +606,14 @@ $b_op_id = 15;
 										$total = $total-$capacity;
 									}
 								}
-
-								$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
-								mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                
+                                $sql_check1="select doc_no from $bai_pro3.act_cut_status where doc_no=$input_doc_no";
+								$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error1121".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($sql_check_res1)==0)
+								{
+									$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
+									mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}	
 
 								$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", leader_name='$leader_name',bundle_loc=\"$bun_loc\" where doc_no=$input_doc_no";					
 								mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));					
@@ -739,9 +749,13 @@ $b_op_id = 15;
 								}
 							}
 							
-
-							$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
-							mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			                $sql_check2="select doc_no from $bai_pro3.act_cut_status where doc_no=$input_doc_no";
+							$sql_check_res2=mysqli_query($link, $sql_check2) or exit("Sql Error112121".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_check_res2)==0)
+							{
+								$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";				
+								mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}	
 
 							$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", leader_name='$leader_name',bundle_loc=\"$bun_loc\" where doc_no=$input_doc_no";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

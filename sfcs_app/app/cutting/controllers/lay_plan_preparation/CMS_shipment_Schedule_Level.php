@@ -121,8 +121,13 @@ function isNumber($c)
 					$buyer_id_new=$sql_row44['buyer_code'];
 				}
 				
-				$sql22="insert ignore into $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
-				mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_check="select movex_style,style_id,buyer_id from $bai_pro2.movex_styles where movex_style=\"".$style."\" and style_id=\"".$style_id."\" and buyer_id=\"".$buyer_id_new."\"";
+				$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res)==0)
+				{
+					$sql22="insert into $bai_pro2.movex_styles (movex_style, style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
+					mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+			    }
 				
 				$size_ref=0;	
 				$flag=0;
@@ -295,9 +300,14 @@ function isNumber($c)
 					// echo $ssc_code."-".$order_qty."<br>";	
 					// if($order_qty>=0)
 					{
-						$sql3="insert ignore into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
-						// echo $sql3."<br>";
-						mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_check="select order_tid from $bai_pro3.bai_orders_db where order_tid=\"$ssc_code\"";
+						$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_check_res)==0)
+						{
+							$sql3="insert into $bai_pro3.bai_orders_db (order_tid) values (\"$ssc_code\")";
+							// echo $sql3."<br>";
+							mysqli_query($link, $sql3) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}	
 						
 						$sql3="update $bai_pro3.bai_orders_db set order_embl_a=$order_embl_a,order_embl_b=$order_embl_b,order_embl_c=$order_embl_c,order_embl_d=$order_embl_d,order_embl_e=$order_embl_e,order_embl_f=$order_embl_f,order_embl_g=$order_embl_g,order_embl_h=$order_embl_h where order_tid=\"$ssc_code\" and (order_embl_a+order_embl_b+order_embl_c+order_embl_d+order_embl_e+order_embl_f+order_embl_g+order_embl_h)=0";
 						// echo $sql3."<br>";

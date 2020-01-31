@@ -281,10 +281,16 @@ if(isset($_POST['update']))
 			if($ret=="TRUE")
 			{
 				// echo "<script>alert('into return function')</script>";
-				$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";
-				//echo $sql;
-				mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				//echo $sql;
+				$sql_check="select doc_no from $bai_pro3.act_cut_status where doc_no=$input_doc_no";
+				$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res)==0)
+				{
+                    $sql="insert into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";
+					//echo $sql;
+					mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					//echo $sql;
+				}
+				
 				
 				$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$input_doc_no";
 				//echo $sql;
@@ -324,10 +330,15 @@ if(isset($_POST['update']))
 		$input_damages+=$old_input_damages;
 		$input_shortages+=$old_input_shortages;
 		
-		$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($doc_no_ref)";
-		//echo $sql."<br>";
-		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//echo $sql;
+		$sql_check1="select doc_no from $bai_pro3.act_cut_status where doc_no=$doc_no_ref";
+		$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error1121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res1)==0)
+		{
+			$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($doc_no_ref)";
+			//echo $sql."<br>";
+			mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//echo $sql;
+	    } 
 		
 		$sql1="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received='$input_fab_rec', fab_returned='$input_fab_ret', damages='$input_damages', shortages='$input_shortages', remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\",leader_name=\"$leader_name\" where doc_no='$doc_no_ref'";
 		//echo $sql1."<br>";
@@ -477,10 +488,15 @@ if(isset($_POST['update']))
 			
 		}
 		for($kl=0;$kl<sizeof($doc_no_ref2);$kl++)
-		{				
-			$sql12="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($doc_no_ref2[$kl])";
-			//echo $sql12."<br>";
-			mysqli_query($link, $sql12) or exit("Sql Error1122".mysqli_error($GLOBALS["___mysqli_ston"]));
+		{	
+			$sql_check2="select doc_no from $bai_pro3.act_cut_status where doc_no=$doc_no_ref2[$kl]";
+			$sql_check_res2=mysqli_query($link, $sql_check2) or exit("Sql Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res2)==0)
+			{			
+				$sql12="insert into $bai_pro3.act_cut_status (doc_no) values ($doc_no_ref2[$kl])";
+				//echo $sql12."<br>";
+				mysqli_query($link, $sql12) or exit("Sql Error1122".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}
 		
 			$sql14="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received='0', fab_returned='0', damages='0', shortages='0', remarks='', bundle_loc=\"$bun_loc\",leader_name=\"$leader_name\" where doc_no='$doc_no_ref2[$kl]'";
 			//echo $sql14."<br>";
@@ -536,10 +552,15 @@ if(isset($_POST['update']))
 		{
 			// echo "<script>alert('till return function')</script>";
 			// echo "<script>alert('into return function')</script>";
-			$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";
-			//echo $sql;
-			mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			//echo $sql;
+			$sql_check3="select doc_no from $bai_pro3.act_cut_status where doc_no=$input_doc_no";
+			$sql_check_res3=mysqli_query($link, $sql_check3) or exit("Sql Error1122".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res3)==0)
+			{
+				$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($input_doc_no)";
+				//echo $sql;
+				mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				//echo $sql;
+			}	
 			
 			$sql="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=$input_fab_rec, fab_returned=$input_fab_ret, damages=$input_damages, shortages=$input_shortages, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$input_doc_no";
 			//echo $sql;
@@ -565,8 +586,13 @@ if(isset($_POST['update']))
 								where doc_no = '$docket' ";
 				$update_result = mysqli_query($link,$update_query);
 
-				$sql="insert ignore into $bai_pro3.act_cut_status (doc_no) values ($docket)";
-				mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_check4="select doc_no from $bai_pro3.act_cut_status where doc_no=$docket";
+				$sql_check_res4=mysqli_query($link, $sql_check4) or exit("Sql Error11224".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res4)==0)
+				{
+					$sql="insert into $bai_pro3.act_cut_status (doc_no) values ($docket)";
+					mysqli_query($link, $sql) or exit("Sql Error1 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 			
 				$sql1="update $bai_pro3.act_cut_status set date=\"$input_date\", section=\"$input_section\", shift=\"$input_shift\", fab_received=0, fab_returned=0, damages=$input_damages, shortages=0, remarks=\"$input_remarks\", bundle_loc=\"$bun_loc\" ,leader_name=\"$leader_name\" where doc_no=$docket";
 				mysqli_query($link,$sql1) or exit("Sql Error2  $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -47,10 +47,14 @@ if(isset($_POST['submit']))
 	$o_tid=$_POST['o_tid'];
 	$bind_con=$_POST['bind_con'];
 	
-
-	$sql="insert ignore into $bai_pro3.bai_orders_db_remarks (order_tid) values (\"$o_tid\")";
-	//echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_check="select order_tid from $bai_pro3.bai_orders_db_remarks where order_tid=\"$o_tid\"";
+	$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error112111".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_check_res)==0)
+	{
+		$sql="insert into $bai_pro3.bai_orders_db_remarks (order_tid) values (\"$o_tid\")";
+		//echo $sql;
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    }
 	
 	$sql="update $bai_pro3.bai_orders_db_remarks set remarks=\"$rem\", binding_con=\"$bind_con\" where order_tid=\"$o_tid\"";
 	//echo $sql;
