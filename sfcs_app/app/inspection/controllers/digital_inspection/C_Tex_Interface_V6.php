@@ -1758,7 +1758,7 @@ table
 		$parent_id=$_GET['parent_id'];
 
 		$lot = array();
-		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id ";
+		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
 	    //echo $get_details;
 	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -1817,7 +1817,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $bai_rm_pj1.inspection_db where batch_ref=\"".trim($lot_no)."\"";
+$sql="select * from $bai_rm_pj1.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
