@@ -355,7 +355,7 @@
 				
 				if($rec_qty==0)
 				{
-					$result_array['status'] = 'There is no available quantity to Report';
+					$result_array['status'] = 'There is no available quantity to Report/Previous Operation Not Done';
 					echo json_encode($result_array);
 					die();
 				}
@@ -1140,7 +1140,7 @@
 		
 		if($rec_qty==0)
 		{
-			$result_array['status'] = 'There is no available quantity to Report';
+			$result_array['status'] = 'There is no available quantity to Report/Previous Operation Not Done';
 			echo json_encode($result_array);
 			die();
 		}
