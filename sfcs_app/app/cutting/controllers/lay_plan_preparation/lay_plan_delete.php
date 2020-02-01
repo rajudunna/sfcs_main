@@ -252,8 +252,20 @@ if(isset($_POST["submit"]))
                 $row74=mysqli_num_rows($result74);     
                 //echo $sql74."<br>"; 
                 //echo $row74."<br>"; 
+               
+                $sql_get="SELECT parent_id from $bai_pro3.binding_consumption_items where doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\")"; 
+                $result75=mysqli_query($link, $sql_get) or die("Error=756".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                while($result7=mysqli_fetch_array($result75)) 
+                {
+                    $id= 'B'.$result7['parent_id'];
+                } 
 
-                if($row71 == 0 and $row72==0 and $row74==0) 
+                $sql75="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$id."'"; 
+                $result75=mysqli_query($link, $sql75) or die("Error=747".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                $row75=mysqli_num_rows($result75);   
+                
+
+                if($row71 == 0 and $row72==0 and $row74==0 and $row75==0) 
                 { 
                     $docket_number[]=-1;
                     $sql33="select doc_no,acutno from $bai_pro3.plandoc_stat_log where order_tid='".$order_tid[$i]."'"; 
@@ -474,9 +486,10 @@ if(isset($_POST["submit"]))
             { 
                 echo "<h2>Can you Please Check Below Criterias for Lay Plan Not Deleted.</h2>"; 
                 echo "<h3>1.Fabric Issued To Production.</h3>"; 
-                echo "<h3>2.Cutting Completed.</h3>"; 
-                echo "<h3>3.Output Reported.</h3>"; 
-                echo "<h3>4.Carton's Scanned.</h3>"; 
+                echo "<h3>2.Fabric Allocated To Binding Docket.</h3>";
+                echo "<h3>3.Cutting Completed.</h3>"; 
+                echo "<h3>4.Output Reported.</h3>"; 
+                echo "<h3>5.Carton's Scanned.</h3>"; 
                  
                 for($k=0;$k<sizeof($order_det);$k++) 
                 { 
