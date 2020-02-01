@@ -763,8 +763,8 @@ if(isset($_POST['allocate_new']))
 	// }
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 
-	// echo"<script>swal('Successfully Updated.','','success')</script>";
-	// echo"<script>location.href =  '".$url1."';</script>"; 
+	echo"<script>swal('Successfully Updated.','','success')</script>";
+	echo"<script>location.href =  '".$url1."';</script>"; 
 
 
 }
