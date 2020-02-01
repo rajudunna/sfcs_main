@@ -631,7 +631,7 @@ if(isset($_POST['allocate_new']))
 
 
 
-                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$row_id_new1."'";
+                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where roll_id='".$tid_ref[$j]."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0)
@@ -763,8 +763,8 @@ if(isset($_POST['allocate_new']))
 	// }
 	//this is for after allocating article redirect to cps dashboard.removed sfcsui
 
-	echo"<script>swal('Successfully Updated.','','success')</script>";
-	echo"<script>location.href =  '".$url1."';</script>"; 
+	// echo"<script>swal('Successfully Updated.','','success')</script>";
+	// echo"<script>location.href =  '".$url1."';</script>"; 
 
 
 }
