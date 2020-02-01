@@ -353,12 +353,12 @@
 					}
 				}
 				
-				if($rec_qty==0)
-				{
-					$result_array['status'] = 'There is no available quantity to Report';
-					echo json_encode($result_array);
-					die();
-				}
+				// if($rec_qty==0)
+				// {
+					// $result_array['status'] = 'There is no available quantity to Report';
+					// echo json_encode($result_array);
+					// die();
+				// }
 				
 				
 				if($rec_qty>0)
@@ -840,7 +840,7 @@
 				}
 				else
 				{
-					$result_array['status'] = 'Previous Operation Not Yet Done';
+					$result_array['status'] = 'Previous Operation Not Yet Done/There is no available quantity to Report';
 					echo json_encode($result_array);
 					die();
 				}
@@ -1138,7 +1138,12 @@
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
 		
-		
+		// if($rec_qty==0)
+		// {
+			// $result_array['status'] = 'There is no available quantity to Report';
+			// echo json_encode($result_array);
+			// die();
+		// }
 		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
@@ -1446,13 +1451,7 @@
 			}
 			else
 			{
-				$result_array['status'] = 'Previous Operation Not Yet Done';
-				echo json_encode($result_array);
-				die();
-			}
-			if($rec_qty==0)
-			{
-				$result_array['status'] = 'There is no available quantity to Report';
+				$result_array['status'] = 'Previous Operation Not Yet Done/There is no available Qty to report';
 				echo json_encode($result_array);
 				die();
 			}
