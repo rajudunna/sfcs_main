@@ -622,11 +622,11 @@
         {
             $sequnce = $row['ops_sequence'];
             $is_m3 = $row['default_operration'];
-            $sfcs_smv = $row['smv'];
-			if($sfcs_smv=='0.0000')
-			{
-				$sfcs_smv = $row_ops['manual_smv'];	
-			}
+   //          $sfcs_smv = $row['smv'];
+			// if($sfcs_smv=='0.0000')
+			// {
+			// 	$sfcs_smv = $row_ops['manual_smv'];	
+			// }
         }
         
         $ops_dep_qry = "SELECT ops_dependency,operation_code,ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and ops_sequence='$sequnce' AND ops_dependency != 200 AND ops_dependency != 0 group by ops_dependency";
@@ -729,7 +729,7 @@
             {
                 if($b_tid[$key] == $bundle_no)
                 {
-                  $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                  $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
                         $result_smv_query = $link->query($smv_query);
                         while($row_ops = $result_smv_query->fetch_assoc()) 
                         {
@@ -830,7 +830,7 @@
 
                 foreach ($b_tid as $key => $tid)
                 {
-                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
                     $result_smv_query = $link->query($smv_query);
                     while($row_ops = $result_smv_query->fetch_assoc()) 
                     {
@@ -973,7 +973,7 @@
                     if($b_tid[$key] == $bundle_no){
                         if($concurrent_flag == 0)
                         {
-                            $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+                            $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
                             $result_smv_query = $link->query($smv_query);
                             while($row_ops = $result_smv_query->fetch_assoc()) 
                             {
@@ -1154,8 +1154,10 @@
 						$hout_insert_result = $link->query($hout_insert_qry);
 						// insert
 					}
-				}
-			}
+                }  
+            }
+            
+            
             $appilication = 'IMS_OUT';
 			$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
             $result_checking_output_ops_code = $link->query($checking_output_ops_code);
@@ -1467,6 +1469,23 @@
                             }
                         }
                     }
+                    
+                    //3017 new 
+                    $hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$i]' and operation_code=$b_op_id";
+                    $hout_ops_result = $link->query($hout_ops_qry);
+                    if($hout_ops_result->num_rows > 0)
+                    {
+                        while($hout_ops_result_data = $hout_ops_result->fetch_assoc()) 
+                        {
+                            $smv = $hout_ops_result_data['smv'];
+                        }
+                        
+                        if($smv>0 && $b_rep_qty[$i] > 0)
+                        {
+                            $hout_insert_qry = "insert into $bai_pro2.hout2(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id, style,color,smv,bcd_id) values('$tod_date','$cur_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id','$b_style','$b_colors[$i]','$smv','$b_tid[$i]')";
+                            $hout_insert_result = $link->query($hout_insert_qry);						
+                        }
+                    }
                     //inserting bai_log and bai_log_buff
                     $sizevalue="size_".$b_size_code[$i];
                     $sections_qry="select section FROM $bai_pro3.module_master WHERE module_name='$b_module[$i]'";
@@ -1509,6 +1528,17 @@
                     else
                     {
                     $output_ops_code_out = 130;
+                    }
+                    //To get SMV
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$i]' and operation_code = $b_op_id";
+                    $result_smv_query = $link->query($smv_query);
+                    while($row_ops = $result_smv_query->fetch_assoc()) 
+                    {
+                        $sfcs_smv = $row_ops['smv'];
+                        if($sfcs_smv=='0.0000')
+                        {
+                            $sfcs_smv = $row_ops['manual_smv']; 
+                        }
                     }
                     if($b_op_id == $output_ops_code_out)
                     {

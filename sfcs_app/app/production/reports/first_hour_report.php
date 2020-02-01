@@ -234,6 +234,7 @@ if(isset($_POST['submit']))
 	echo "<th>Module</th>";
 	//echo "<th>Responsible</th>";
 	echo "<th>Style</th>";
+	echo "<th>Schedule</th>";
 	echo "<th>SMO</th>";
 	echo "<th>Plan Eff%</th>";
 	echo "<th>Actual Eff%</th>";
@@ -242,7 +243,33 @@ if(isset($_POST['submit']))
 	echo "<th>SAH</th>";
 	echo "</tr>";
 	
-	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style, ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh  FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND HOUR(bac_lastup) IN (6,14) AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no";
+	
+    //get last hour
+    $get_end_hour="SELECT HOUR(end_time) as last_time FROM $bai_pro3.tbl_plant_timings ORDER BY time_id DESC LIMIT 1";
+    $sql_result123=mysqli_query($link, $get_end_hour) or exit("Sql Error2.1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows123=mysqli_fetch_array($sql_result123))
+    {
+        $last_time = $rows123['last_time'];
+    }
+    
+    $time_value_pm = $last_time - 8;
+
+	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings LIMIT 1"; 
+	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows1231=mysqli_fetch_array($sql_result22121))
+	{
+		$start_time_am=$rows1231['start_time'];
+		$end_time_am=$rows1231['end_time'];
+	}
+	$sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$time_value_pm'"; 
+	$sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows125=mysqli_fetch_array($sql_result25))
+	{
+		$start_time_pm=$rows125['start_time'];
+		$end_time_pm=$rows125['end_time'];
+	}
+
+	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) OR (TIME(bac_lastup) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no;";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -254,6 +281,7 @@ if(isset($_POST['submit']))
 		echo "<td>".$sql_row['bac_no']."</td>";
 		//echo "<td>".$resp_list[$sql_row['bac_no'].$sql_row['bac_shift']]."</td>";
 		echo "<td>".$sql_row['bac_style']."</td>";
+		echo "<td>".$sql_row['delivery']."</td>";
 		echo "<td>".$sql_row['nop']."</td>";
 		
 		

@@ -939,11 +939,11 @@ else if($concurrent_flag == 0)
 	{
 		$sequnce = $row['ops_sequence'];
 		$is_m3 = $row['default_operration'];
-		$sfcs_smv = $row['smv'];
-		if($sfcs_smv=='0.0000')
-		{
-			$sfcs_smv = $row['manual_smv'];	
-		}
+		// $sfcs_smv = $row['smv'];
+		// if($sfcs_smv=='0.0000')
+		// {
+		// 	$sfcs_smv = $row['manual_smv'];	
+		// }
 	}
 	
 	$ops_dep_qry = "SELECT tm.ops_dependency,tm.operation_code,tm.ops_sequence FROM brandix_bts.tbl_style_ops_master tm LEFT JOIN brandix_bts.`tbl_orders_ops_ref` tr ON tr.id=tm.operation_name WHERE tm.style='$b_style' AND tm.color = '$mapped_color' AND tm.ops_dependency != 200 AND tm.ops_dependency != 0  and tr.category = 'sewing' and ops_sequence='$sequnce' group by ops_dependency";
@@ -1254,16 +1254,16 @@ else if($concurrent_flag == 0)
 		$query = '';
 		if($table_name == 'bundle_creation_data')
 		{
-			$smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
-			$result_smv_query = $link->query($smv_query);
-			while($row_ops = $result_smv_query->fetch_assoc()) 
-			{
-				$sfcs_smv = $row_ops['smv'];
-				if($sfcs_smv=='0.0000')
-				{
-					$sfcs_smv = $row_ops['manual_smv'];	
-				}
-			}
+			// $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$mapped_color' and operation_code = $b_op_id";
+			// $result_smv_query = $link->query($smv_query);
+			// while($row_ops = $result_smv_query->fetch_assoc()) 
+			// {
+			// 	$sfcs_smv = $row_ops['smv'];
+			// 	if($sfcs_smv=='0.0000')
+			// 	{
+			// 		$sfcs_smv = $row_ops['manual_smv'];	
+			// 	}
+			// }
 			
 			$bulk_insert_post_temp = "INSERT INTO $brandix_bts.bundle_creation_data_temp(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`,`scanned_user`,`sync_status`) VALUES";
 			$schedule_count = true;
@@ -1319,6 +1319,17 @@ else if($concurrent_flag == 0)
                         $status_result_query = $link->query($status_update_query) or exit('query error in updating status');
                     //}
 					
+					//To get SMV
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$key]' and operation_code = $b_op_id";
+					$result_smv_query = $link->query($smv_query);
+					while($row_ops = $result_smv_query->fetch_assoc()) 
+					{
+						$sfcs_smv = $row_ops['smv'];
+						if($sfcs_smv=='0.0000')
+						{
+							$sfcs_smv = $row_ops['manual_smv'];	
+						}
+					}
 					//m3 operations............. 
 					if($b_rep_qty[$key] > 0){
 						$flag_decision = true;
@@ -1567,6 +1578,23 @@ else if($concurrent_flag == 0)
 							// insert
 						}
 					}
+
+
+				}
+				$hout_ops_qry = "SELECT smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$b_colors[$i]' and operation_code=$b_op_id";
+				// echo $hout_ops_qry;
+				$hout_ops_result = $link->query($hout_ops_qry);
+
+				if($hout_ops_result->num_rows > 0)
+				{
+					while($hout_ops_result_data = $hout_ops_result->fetch_assoc()) 
+					{
+						$smv = $hout_ops_result_data['smv'];
+					}
+					if($smv>0){
+						$hout_insert_qry_new = "insert into $bai_pro2.hout2(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id, style,color,smv,bcd_id) values('$tod_date','$plant_time_hour','$b_module[$i]','$b_rep_qty[$i]', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id','$b_style','$b_colors[$i]','$smv','$b_tid[$i]')";
+							$hout_insert_result = $link->query($hout_insert_qry_new);
+					}
 				}
                   
                   //To get Sewing In operation From Operation Routing
@@ -1798,6 +1826,17 @@ else if($concurrent_flag == 0)
 						$nop=$avail;
 					}else{
 						$nop=0;
+					}
+					//To get SMV
+                    $smv_query = "select smv,manual_smv from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors[$i]' and operation_code = $b_op_id";
+					$result_smv_query = $link->query($smv_query);
+					while($row_ops = $result_smv_query->fetch_assoc()) 
+					{
+						$sfcs_smv = $row_ops['smv'];
+						if($sfcs_smv=='0.0000')
+						{
+							$sfcs_smv = $row_ops['manual_smv'];	
+						}
 					}
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
 					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,

@@ -55,6 +55,7 @@
 			$cutno=$barcode_rslt['acutno'];
 			$quantity=$barcode_rslt['carton_act_qty'];
 			$size=$barcode_rslt['size_code'];
+			$length=strlen($size);
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
 			
 			//sequence number logic based on size and colors
@@ -87,7 +88,7 @@
 								<td colspan=3 style="border: 4px solid black;width:50px; height:40px; text-align:center;"><p style= "font-size: 15px;"><b>'.$seq_num.'</b></p></td>
 							</tr>	
 							<tr><td><b>Style:</b></td><td>'.$barcode_rslt['order_style_no'].'</td><td><b>Schedule:</b></td><td>'.$schedule.'</td></tr>
-							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td>'.$barcode_rslt['size_code'].'</td></tr>
+							<tr><td><b>Job Number:</b></td><td>'.$display1.'</td><td><b>Size:</b></td><td colspan='.$length.'>'.$barcode_rslt['size_code'].'</td></tr>
 							<tr><td><b>Barcode ID:</b></td><td>'.$barcode.'</td><td><b>Cut No:</b></td><td>'.chr($color_code).leading_zeros($cutno, 3).'</td></tr>
 							<tr><td><b>Color:</b></td><td colspan=3>'.substr($barcode_rslt['order_col_des'],0,35).'</td></tr>
 							<tr><td><b>Country Code:</b></td><td>'.$destination.'</td><td><b>Qty:</b></td><td>'.$quantity.'</td></tr>

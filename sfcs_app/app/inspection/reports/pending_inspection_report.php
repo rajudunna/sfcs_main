@@ -161,7 +161,7 @@
 									$main_points = round($main_points,2);
 								}
 								
-								if($point>0 && $rows>0)
+								if($rows>0)
 								{	
 									if($main_points<28)
 									{
