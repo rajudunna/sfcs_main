@@ -1138,12 +1138,7 @@
 			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
 		}
 		
-		if($rec_qty==0)
-		{
-			$result_array['status'] = 'There is no available quantity to Report';
-			echo json_encode($result_array);
-			die();
-		}
+		
 		if($rec_qty==$good_qty+$rejection_qty)
 		{
 			$result_array['status'] = 'Already Scanned';
@@ -1452,6 +1447,12 @@
 			else
 			{
 				$result_array['status'] = 'Previous Operation Not Yet Done';
+				echo json_encode($result_array);
+				die();
+			}
+			if($rec_qty==0)
+			{
+				$result_array['status'] = 'There is no available quantity to Report';
 				echo json_encode($result_array);
 				die();
 			}
