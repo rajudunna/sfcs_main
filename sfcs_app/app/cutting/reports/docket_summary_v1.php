@@ -179,7 +179,6 @@ th
 				$log_update=$sql_row['log_update'];
 				$req_user=$sql_row['req_user'];
 				$log_time=$sql_row['log_time'];
-				$category=$sql_row['category'];
 				$seperate_docket=$sql_row5['seperate_docket'];
 				$binding_consumption=$sql_row5['binding_consumption'];
 				
@@ -215,7 +214,12 @@ th
 				$xxl=$sql_row['size_xxl'];
 				$xxxl=$sql_row['size_xxxl'];
 									
-							
+				$get_category = "select category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\"";
+				$sql_result44=mysqli_query($link, $get_category) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row44=mysqli_fetch_array($sql_result44))
+				{
+                   $category=$sql_row44['category'];
+
 					echo "<tr style=\"color: #000000\">";
 					
 					echo "<td>$order_style_no</td>";
@@ -244,7 +248,7 @@ th
 					echo "<td>$docket_printed_person</td>";					
 					echo "<td>$act_cut_status</td>";
 					// echo "<td></td>";
-					
+				}	
 					
 
 					
