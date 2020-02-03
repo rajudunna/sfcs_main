@@ -281,7 +281,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sah_loss1=(number_format(round($sah_loss/100,2),2,".",""));
 	
 	echo "<td>".(number_format(round($sah_loss/100,2),2,".",""))."</td>";
+	
+	if($sah_loss == 0 || $sah_loss1 == 0 )
+	{
+		echo "<td>".'0'."</td>";
+	}
+	else
+	{
 	echo "<td>".(number_format(round(($sah_loss1*60)/$smv,0),0,".",""))."</td>";
+	}
 	//old code
 	//if($username=="senthoorans" or $username=="kirang" or $username=="arunag" or $username=="pavanir" or $username=="kirang" or $username=="kirang")
 	//Date:04-04-2016/kirang/code changed to get access from central administration machanism

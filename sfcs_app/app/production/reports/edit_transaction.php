@@ -577,7 +577,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<tr>";
 	// add the popup window for the edit transation against the department wise.
-	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly=readonly size=3><span onclick=\"box(0)\">Select</sapn></td>";
+	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly=readonly size=3><span onclick=\"box(0)\"></sapn></td>";
 	
 	echo "</tr>";
 	
