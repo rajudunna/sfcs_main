@@ -274,58 +274,68 @@ if(isset($_POST['formIssue']))
                     }
                 }
             } 
+           
             $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$doc_no_ref";
             $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($plan_cut_bundle_res)>0) {
-                foreach($job_no as $key=>$array) {
+                // var_dump($_POST,'<br/>');
+                // var_dump($size,'<br/>');
+                // foreach($job_no as $key=>$array) {
                     $doc_no = $doc_no_ref;
                     foreach($size as $category=>$size_array) {
-                        $size_new = $size_array[$key];
-                        $plan_jobcount = $issueval[$category][$key];
-                        if($plan_jobcount > 0) {
-
-                            $get_schedule = "SELECT order_del_no AS SCHEDULE,acutno FROM `bai_pro3`.`plan_doc_summ` WHERE doc_no = '$doc_no'";
-                            $get_schedule_res = mysqli_query($link, $get_schedule) or exit("Sql Error : get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($row = $get_schedule_res->fetch_assoc()) 
-                            {
-                                $schedule = $row['SCHEDULE'];
-                                $cut = $row['acutno'];
-                            }
+                        foreach($size_array as $key2=>$value2){
+                            $size_new = $size_array[$key2];
+                            $plan_jobcount = $issueval[$category][$key2];
+                            //considering same bundle max qty
+                            $plan_bundleqty = $issueval[$category][$key2];
+                            if($plan_jobcount > 0) {
                             
-                            $pre_send_qty_qry = "select input_job_no,max(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job_new' and size_code= '$size_new'";
-                            $result_pre_send_qty = $link->query($pre_send_qty_qry);
-                            while($row = $result_pre_send_qty->fetch_assoc()) 
-                            {
-                                $plan_bundleqty = $row['bundle_qty'];
-                            }
-
-                            //get input job number for each schedule
-                            $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
-                            $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            if(mysqli_num_rows($old_jobs_count_res)>0)
-                            {
-                                while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+                                $get_schedule = "SELECT order_del_no AS SCHEDULE,acutno FROM `bai_pro3`.`plan_doc_summ` WHERE doc_no = '$doc_no'";
+                                $get_schedule_res = mysqli_query($link, $get_schedule) or exit("Sql Error : get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                while($row = $get_schedule_res->fetch_assoc()) 
                                 {
-                                    if($max_oldqty_jobcount['result'] > 0) 
-                                    {
-                                        $job=$max_oldqty_jobcount['result'];
-                                    } 
-                                    else 
-                                    {
-                                        $job=1;
-                                    }
+                                    $schedule = $row['SCHEDULE'];
+                                    $cut = $row['acutno'];
                                 }
-                            } 
-                            else 
-                            {
-                                $job=1;
+                                
+                                // $pre_send_qty_qry = "select input_job_no,max(carton_act_qty) as bundle_qty from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job_new' and size_code= '$size_new'";
+                                // $result_pre_send_qty = $link->query($pre_send_qty_qry);
+                                // while($row = $result_pre_send_qty->fetch_assoc()) 
+                                // {
+                                //     $plan_bundleqty = $row['bundle_qty'];
+                                // }
+    
+                                //get input job number for each schedule
+                                $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
+                                $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                if(mysqli_num_rows($old_jobs_count_res)>0)
+                                {
+                                    while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+                                    {
+                                        if($max_oldqty_jobcount['result'] > 0) 
+                                        {
+                                            $job=$max_oldqty_jobcount['result'];
+                                        } 
+                                        else 
+                                        {
+                                            $job=1;
+                                        }
+                                    }
+                                } 
+                                else 
+                                {
+                                    $job=1;
+                                }
+                                $job_new=$schedule.date("ymd").$job;
+                                // echo $doc_no_ref.",".$plan_jobcount.",".$plan_bundleqty.",".$job.",".$job_new.",".$schedule.",".$size_new;
+                                // die();
+                                $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
                             }
-                            $job_new=$schedule.date("ymd").$job;
-
-                            $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
                         }
+                        
+                        
                     }
-                }
+                // }
             }
         }
     }

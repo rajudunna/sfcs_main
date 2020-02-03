@@ -152,7 +152,18 @@
                                                 {
                                                     $color_code=$sql_row4["color_code"];
                                                 }
-                                                $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+                                                $sql11="select remarks from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and acutno=".$arr[1];
+                                                // echo $sql11;
+                                                $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                while($sql_row11=mysqli_fetch_array($sql_result11))
+                                                {
+                                                    if($sql_row11['remarks'] == 'Recut'){
+                                                        $cut_str = 'R';
+                                                    }else {
+                                                        $cut_str = chr($color_code);
+                                                    }
+                                                }
+                                                $cut_jobs_new .= $cut_str.leading_zeros($arr[1], 3)."<br>";
                                                 unset($arr);
                                             }
                                             $doc_tag=$sql_row["doc_no"];
@@ -405,7 +416,18 @@
                                                 {
                                                     $color_code=$sql_row4["color_code"];
                                                 }
-                                                $cut_jobs_new .= chr($color_code).leading_zeros($arr[1], 3)."<br>";
+                                                $sql11="select remarks from $bai_pro3.order_cat_doc_mk_mix where order_del_no='$schedule' and acutno=".$arr[1];
+                                                // echo $sql11;
+                                                $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                                while($sql_row11=mysqli_fetch_array($sql_result11))
+                                                {
+                                                    if($sql_row11['remarks'] == 'Recut'){
+                                                        $cut_str = 'R';
+                                                    }else {
+                                                        $cut_str = chr($color_code);
+                                                    }
+                                                }
+                                                $cut_jobs_new .= chr($cut_str).leading_zeros($arr[1], 3)."<br>";
                                                 unset($arr);
                                             }
                                             $doc_tag=$sql_row["doc_no"];

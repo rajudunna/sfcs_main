@@ -167,7 +167,7 @@ else
 echo "</select></div>";
 
 $code="";
-$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and org_doc_no<2 and doc_no not in (select doc_no from $bai_pro3.embellishment_plan_dashboard) order by doc_no";
+$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref,remarks from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and org_doc_no<2 and doc_no not in (select doc_no from $bai_pro3.embellishment_plan_dashboard) order by doc_no";
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -179,7 +179,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if(mysqli_num_rows(mysqli_query($link,$club_docket_childs_verify)) > 0){
 		//do nothing
 	}else{	
-		$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
+		$remarks = $sql_row['remarks'];
+		if($remarks=='Recut'){
+			$cut_str = 'R';
+		}else {
+			$cut_str = chr($sql_row['color_code']);
+		}
+		$code.=$sql_row['doc_no']."-".$cut_str.leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
 		$cat_ref= $sql_row['cat_ref'];
 	}
 }
