@@ -559,7 +559,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row11=mysqli_fetch_array($sql_result11))
             {
-              if($remarks == 'Recut'){
+              if($sql_row11['remarks'] == 'Recut'){
                 $cut_str = 'R';
               }else {
                 $cut_str = chr($sql_row11['color_code']);
@@ -573,7 +573,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
           else
           {
-            if($remarks == 'Recut'){
+            if($sql_row1['remarks'] == 'Recut'){
               $cut_str = 'R';
             }else {
               $cut_str = chr($sql_row1['color_code']);
