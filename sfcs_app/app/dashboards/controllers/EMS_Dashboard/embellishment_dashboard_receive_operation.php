@@ -572,7 +572,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             if($sql_row1['remarks'] == 'Recut'){
               $cut_str = 'R';
             }else {
-              $cut_str = chr($sql_row11['color_code']);
+              $cut_str = chr($sql_row1['color_code']);
             }
             $colors_db[]=$color;
             $club_c_code[]=$cut_str.''.leading_zeros($sql_row1['acutno'],3);
