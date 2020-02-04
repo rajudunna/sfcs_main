@@ -282,8 +282,10 @@ if(isset($_POST['formIssue']))
                 // var_dump($size,'<br/>');
                 // foreach($job_no as $key=>$array) {
                     $doc_no = $doc_no_ref;
+                    $temp=0;
                     foreach($size as $category=>$size_array) {
                         foreach($size_array as $key2=>$value2){
+
                             $size_new = $size_array[$key2];
                             $plan_jobcount = $issueval[$category][$key2];
                             //considering same bundle max qty
@@ -304,32 +306,36 @@ if(isset($_POST['formIssue']))
                                 // {
                                 //     $plan_bundleqty = $row['bundle_qty'];
                                 // }
-    
+                                    
                                 //get input job number for each schedule
-                                $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
-                                $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                if(mysqli_num_rows($old_jobs_count_res)>0)
-                                {
-                                    while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+                                if($temp==0){
+                                    $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE schedule='".$schedule."'";
+                                    $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    if(mysqli_num_rows($old_jobs_count_res)>0)
                                     {
-                                        if($max_oldqty_jobcount['result'] > 0) 
+                                        while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
                                         {
-                                            $job=$max_oldqty_jobcount['result'];
-                                        } 
-                                        else 
-                                        {
-                                            $job=1;
+                                            if($max_oldqty_jobcount['result'] > 0) 
+                                            {
+                                                $job=$max_oldqty_jobcount['result'];
+                                            } 
+                                            else 
+                                            {
+                                                $job=1;
+                                            }
                                         }
+                                    } 
+                                    else 
+                                    {
+                                        $job=1;
                                     }
-                                } 
-                                else 
-                                {
-                                    $job=1;
                                 }
+                                
                                 $job_new=$schedule.date("ymd").$job;
-                                // echo $doc_no_ref.",".$plan_jobcount.",".$plan_bundleqty.",".$job.",".$job_new.",".$schedule.",".$size_new;
-                                // die();
+                               
                                 $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
+                                $temp=1;
+                                
                             }
                         }
                         
@@ -445,10 +451,10 @@ function issued_to_module($bcd_id,$qty,$ref)
             $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
             if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
             {   
-                $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
-                SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
-                WHERE input_job_no_random_ref = '$input_job_no_random_ref' order by input_trims_status desc limit 1";
-                mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
+                // SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
+                // WHERE input_job_no_random_ref = '$input_job_no_random_ref' order by input_trims_status desc limit 1";
+                // mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
             }            
             $qry_ops_mapping_after = "SELECT of.operation_code FROM `$brandix_bts`.`tbl_style_ops_master` tm 
             LEFT JOIN brandix_bts.`tbl_orders_ops_ref` of ON of.`operation_code`=tm.`operation_code`
