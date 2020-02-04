@@ -57,8 +57,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php'
 			$sql="delete from $bai_pro3.plan_dashboard where doc_no=".$items[1];
 			mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 			
-			$sql="insert ignore into $bai_pro3.fabric_priorities_backup select * from $bai_pro3.fabric_priorities where doc_ref=".$items[1];
-			mysql_query($link,$sql) or exit("Sql Error".mysqli_error());
+			$sql_check="select * from $bai_pro3.fabric_priorities_backup where doc_ref=".$items[1];
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$sql="insert into $bai_pro3.fabric_priorities_backup select * from $bai_pro3.fabric_priorities where doc_ref=".$items[1];
+				mysql_query($link,$sql) or exit("Sql Error".mysqli_error());
+			}	
 
 			//Date : 2014-03-21
 			//Due to color changing from yellow to green due to removing the job from fabric_priorities
@@ -72,8 +77,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php'
 		}
 		else
 		{
-			$sql="insert ignore into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
-			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			$sql_check="select * from $bai_pro3.plan_dashboard where doc_no=".$items[1];
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$sql="insert into $bai_pro3.plan_dashboard (doc_no) values (".$items[1].")";
+				mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+			}	
 			
 			if(mysql_insert_id($link)>0)
 			{
@@ -140,8 +150,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php'
 		$sqlx="delete from $bai_pro3.plan_dashboard where doc_no in (".implode(",",$remove_docs).")";
 		mysql_query($sqlx,$link) or exit("Sql Error".mysql_error());
 		
-		$sql="insert ignore into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
-		mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+		$sql_check1="select * from $bai_pro3.fabric_priorities_backup where doc_ref=".$items[1];
+		$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error112121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res1)==0)
+		{
+			$sql="insert into $bai_pro3.fabric_priorities_backup select * from fabric_priorities where doc_ref=".$items[1];
+			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
+		}	
 		
 		$sqlx="delete from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$remove_docs).")";
 		mysql_query($sqlx,$link) or exit("Sql Error".mysql_error());

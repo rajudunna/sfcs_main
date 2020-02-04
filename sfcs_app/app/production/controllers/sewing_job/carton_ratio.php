@@ -356,9 +356,14 @@
 				}
 				else
 				{
-					$sql1="insert ignore into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
-					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					$sql_check="select carton_barcode,carton_tot_quantity,ref_order_num,style_code from $brandix_bts.tbl_carton_ref where carton_barcode='".$barcode."' and carton_tot_quantity='".$carton_tot."' and ref_order_num='".$schedule_id."' and style_code='".$style_id."'";
+					$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_check_res)==0)
+					{
+						$sql1="insert into $brandix_bts.tbl_carton_ref (carton_barcode,carton_tot_quantity,ref_order_num,style_code) values('".$barcode."','".$carton_tot."','".$schedule_id."','".$style_id."')";
+						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					}	
 				}
 				//echo sizeof($color);
 				for($i=0;$i<sizeof($color);$i++)
@@ -371,8 +376,13 @@
 					}
 					else
 					{
-						$sql4="insert ignore into $brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
-						$sql_result2=mysqli_query($link, $sql4) or exit("Sql Error--2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_check1="select parent_id,color,ref_size_name,quantity from $brandix_bts.tbl_carton_size_ref where parent_id='".$id."' and color='".$color[$i]."' and ref_size_name='".$size[$i]."' and quantity='".$ratio[$i]."'";
+						$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_check_res1)==0)
+						{
+							$sql4="insert into $brandix_bts.tbl_carton_size_ref (parent_id,color,ref_size_name,quantity) values('".$id."','".$color[$i]."','".$size[$i]."','".$ratio[$i]."')";
+							$sql_result2=mysqli_query($link, $sql4) or exit("Sql Error--2".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}	
 					}
 				}
 

@@ -138,8 +138,13 @@ if(isset($_POST['submit']))
                         $ips_tms_jobs[]="'".$ips_chck_row['ips_tms_jobs']."'";
                     }
                     if(sizeof($ips_tms_jobs)>0){
-                        $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
-                        $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_check="select * from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                        $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_check_res)==0)
+                        {
+                            $backup_ips_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                            $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }    
                         $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$status' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
                         $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $del_ips_sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
@@ -157,8 +162,13 @@ if(isset($_POST['submit']))
                         $ims_jobs[]="'".$ims_chck_row['ims_jobs']."'";
                     }
                     if(sizeof($ims_jobs)>0){
-                        $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log_backup SELECT * FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
-                        mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $sql_check1="select * from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
+                        $sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error1121211".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_check_res1)==0)
+                        {
+                            $backup_ims_query="INSERT INTO $bai_pro3.ims_log_backup SELECT * FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
+                            mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }    
                         $update_ims_qry = "update $bai_pro3.ims_log_backup set short_shipment_status = '$status' where input_job_rand_no_ref in (".implode(",",$ims_jobs).") and ims_status <> 'DONE'";
                         $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $del_ims_sqlx = "delete from $bai_pro3.ims_log where input_job_rand_no_ref in (".implode(",",$ims_jobs).")";

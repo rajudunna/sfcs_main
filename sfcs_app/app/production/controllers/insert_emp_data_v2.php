@@ -10,8 +10,13 @@ $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shif
 $sql_res=mysqli_query($link, $sql) or exit("Sql Errora $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count=mysqli_num_rows($sql_res);
 if($count == 0){
-	$sql1="insert ignore INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
-	mysqli_query($link, $sql1) or exit("Sql Errorb $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_check="select date,shift,start_time,end_time from $bai_pro.pro_atten_hours where date='".$date."' and shift='".$shift."' and start_time='".$shift_start_time."' and end_time='".$shift_end_time."'";
+	$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_check_res)==0)
+	{
+		$sql1="insert INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
+		mysqli_query($link, $sql1) or exit("Sql Errorb $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}	
 }else{
 	$sql2="update $bai_pro.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."' where date='".$date."' and shift='".$shift."' ";
 	mysqli_query($link, $sql2) or exit("Sql Errorc $sql".mysqli_error($GLOBALS["___mysqli_ston"]));

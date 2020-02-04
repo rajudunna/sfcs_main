@@ -1388,8 +1388,13 @@ else if($concurrent_flag == 0)
 		// }
 		if(($orginal_qty+$replace_in_qty)==($rec_qty1+$rej_qty1)) 
 		{
-			$backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
-			mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+			$sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$b_job_no."'";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
+				mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+			}	
 
 			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
 			mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
@@ -1580,8 +1585,14 @@ else if($concurrent_flag == 0)
 						{
 							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
 							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+							$sql_check1="select tid from $bai_pro3.ims_log where tid=$updatable_id";
+							$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if(mysqli_num_rows($sql_check_res1)==0)
+							{
+								$ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+								mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}	
 							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
 							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}

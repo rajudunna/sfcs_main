@@ -98,9 +98,15 @@
 				}
 				for($ii=0;$ii<sizeof($doc_nos);$ii++)
 				{
-					$sql="insert ignore into $bai_pro3.embellishment_plan_dashboard (doc_no,send_op_code,receive_op_code) values ('".$doc_nos[$ii]."','".$send_operation."','".$receive_operation."')";
-					// echo "<br>2=".$sql."<br>";
-					mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
+					$sql_check="select doc_no,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_nos[$ii]."' and send_op_code='".$send_operation."' and receive_op_code='".$receive_operation."'";
+					$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_check_res)==0)
+					{
+
+						$sql="insert into $bai_pro3.embellishment_plan_dashboard (doc_no,send_op_code,receive_op_code) values ('".$doc_nos[$ii]."','".$send_operation."','".$receive_operation."')";
+						// echo "<br>2=".$sql."<br>";
+						mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
+				    }
 
 					if(mysqli_insert_id($link)>0)
 					{
