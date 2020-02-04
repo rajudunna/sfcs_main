@@ -506,22 +506,6 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
       $module_col_lab = mysqli_fetch_array($module_sql_result);
       // print_r($module_col_lab['color']);
       //include("mod_rep_recon.php");
-      //get inputjobs from rejection_log_child
-      $get_rejection_jobs="select distinct(input_job_no_random_ref) as input_job from $bai_pro3.rejection_log_child where assigned_module='$module'";
-      $rejection_job_result = mysqli_query($link,$get_rejection_jobs);
-      while($job_res=mysqli_fetch_array($rejection_job_result))
-      {
-          $rej_jobs[] = $job_res['input_job'];
-      }
-
-      //get inputjobs from ims_log
-      $get_ims_jobs= "select distinct(input_job_rand_no_ref) as input_rand_job from $bai_pro3.ims_log where ims_mod_no='$module'";
-      $ims_job_result = mysqli_query($link,$get_ims_jobs);
-      while($ims_res=mysqli_fetch_array($ims_job_result))
-      {
-          $ims_jobs[] = $ims_res['input_rand_job'];
-      }
-
       ?>
 
       <?php
@@ -666,60 +650,31 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $input_qty=$input_qty1+$input_qty2;      // input qty
                   $output_qty=$output_qty1+$output_qty2;
 
-                  //Checking recut qty
-                  $diff = array_intersect($ims_jobs, $rej_jobs);
-                  $jobs = "'" . implode ( "', '", $diff ) . "'";
+                 
                   $rejection_border='';
                   $value='';
-                  $check_pac_stat="select * from $bai_pro3.pac_stat_log_input_job where input_job_no_random in ($jobs)";
-                 // echo $check_pac_stat;
-                  $result_pac_stat=mysqli_query($link, $check_pac_stat) or exit("Sql Errorrecut111".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($pac_row=mysqli_fetch_array($result_pac_stat))
-                    {
-                        $get_recut_qty="select sum(rejected_qty) as rejected,sum(recut_qty) as recut,sum(replaced_qty) as replaced from $bai_pro3.rejection_log_child where input_job_no_random_ref='".$sql_rowred['inputjobnorand']."'";
-                        $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($recut_row=mysqli_fetch_array($recut_result))
-                        {
-                          $rejected = $recut_row['rejected'];
-                          $recut = $recut_row['recut'];
-                          $replace = $recut_row['replaced'];
-                        }
-                       
-                        if($rejected > 0)
-                        {
-                          if($recut >0)
-                          {
-                            $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
-                            $value=''; 
-                          }
-                          else
-                          {
-                            if($rejected > 0)
-                            {
-                              $rejection_border = "";
-                              $value='R';
-                            }
-                          }  
-                          
-                          // if(($rejected) - ($recut) >0)
-                          // {
-                          //   $rejection_border = "";
-                          //   $value='R';
-                          // }
-                          // else 
-                          // {
-                          //   $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
-                          //   $value=''; 
-                          // }
-                          if($replace > 0)
-                          {
-                            $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
-                            $value='';
-                          }
-                        }
-                    } 
-                     
 
+                  $get_recut_qty="select sum(rejected_qty) as rejected,sum(recut_qty) as recut,sum(replaced_qty) as replaced from $bai_pro3.rejection_log_child where input_job_no_random_ref='".$sql_rowred['inputjobnorand']."'";
+                  $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($recut_row=mysqli_fetch_array($recut_result))
+                  {
+                    $rejected = $recut_row['rejected'];
+                    $recut = $recut_row['recut'];
+                    $replace = $recut_row['replaced'];
+                  }
+                 
+                  if($rejected > 0)
+                  {
+                    $rejection_border = "";
+                    $value='R';   
+                  } 
+                   
+                  if($replace > 0)
+                  {
+                    $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
+                    $value='';
+                  }
+                     
                   $sidemenu=true;
                   $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
                 ?>
