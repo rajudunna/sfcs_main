@@ -1300,7 +1300,6 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 							// echo $b_query.'<br/>';
 							mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	
 							$moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$pac_tid."','".$logic_qty."', '".$op_code."', '".$operation_names[$index]."')";
 							// echo $moq_qry.'<br/>';
 							mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1318,6 +1317,7 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 					}
 				} else{
 					$size_plies = 0;
+					$plan_jobcount1= $plan_jobcount;
 				}
 			}while ($size_plies > 0);   
         }			
