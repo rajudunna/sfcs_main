@@ -1,11 +1,13 @@
 <?php
 $start_timestamp = microtime(true);
-print("\n Schedules_Operation__Masters_Capturing file start : ".$start_timestamp." milliseconds.")."\n";
-$total_api_calls_duration=0;
+
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\rest_api_calls.php');
 set_time_limit(1000000);
+
+$log="";
+$log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';	
 $basic_auth = base64_encode($api_username.':'.$api_password);
 
 
@@ -13,11 +15,12 @@ $basic_auth = base64_encode($api_username.':'.$api_password);
 $qry_modetails="SELECT mo_no AS mo_num,item_code,style,SCHEDULE,color,size,zfeature,product_sku  FROM $bai_pro3.mo_details WHERE ops_master_status=0 group by mo_num,product_sku";
 echo "</br>".$qry_modetails."<br>";
 $result_qry_modetails=mysqli_query($link, $qry_modetails) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-//print("job started\n");
-$call_count=0;
+print("job started\n");
+$i=0;
 while($sql_row=mysqli_fetch_array($result_qry_modetails))
 {
-    $call_count++;$call_sub_count=0;
+    $i++;
+
     $mo_num=trim($sql_row['mo_num']);
     $FG_code=rawurlencode($sql_row['product_sku']);
 
@@ -30,16 +33,19 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     
     $url=$api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelOperations?CONO=".$company_no."&FACI=".$facility_code."&MFNO=".$mo_num."&PRNO=".$FG_code;
     //$url = str_replace(' ', '%20', $url);
-    //echo "</br>".$url."</br>";
-    $moac1=microtime(true);
-    print("result obj ".$call_count."  API Call Start: ".$moac1." milliseconds. Parameters: ".$url."; ")."\n";
-       
+    // echo "</br>".$url."</br>";
+
+    $log.="<tr><th>".$i."</th><th>".$url."</th>";
+    $msc7=microtime(true);
+    $log.="<th>".$msc7."</th>";
+
     $result = $obj->getCurlAuthRequest($url);
-    $moac2=microtime(true);
-    print("result obj ".$call_count."  API call End : ".$moac2."milliseconds")."\n";
-    $total_api_calls_duration+=$moac2-$moac1;
-    print("result obj ".$call_count."  API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
     $decoded = json_decode($result,true);
+
+    $msc8=microtime(true);
+    $log.="<th>".$msc8."</th>";
+    $msc9=$msc8-$msc7;
+    $log.="<th>".$msc9."</th></tr>";
     
     if($decoded['@type'])
     {
@@ -50,9 +56,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     $sql1 = "insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId,m3_operation_type) values";
     $values = array();
     $workcenter_status_valid=true;
+    $j=0;
     foreach ($vals as $value) 
     {
-        
+        $j++;
         //getting values from api call
         $MONumber=$value['MFNO'];
         $SMV=$value['PITI'];
@@ -66,26 +73,29 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $WorkCenterId=trim($value['PLGR'],' ');
         $WorkCenterId_parent=trim($value['PLG1'],' ');
 
-        echo "</br>PLGR : ".$WorkCenterId."</br>";
+        // echo "</br>PLGR : ".$WorkCenterId."</br>";
 
         //==========call api for INTO value for validating =========
         $url_INTO = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMPDWCT00?CONO=$comp_no&FACI=$facility_code&PLGR=$WorkCenterId";
-        //echo "</br>".$url_INTO."</br>";
-            $moac3=microtime(true);
-            $call_sub_count++;
-            print("response_INTO ".$call_count*$call_sub_count." API Call Start: ".$moac3." milliseconds. Parameters: ".$url_INTO."; ")."\n";
+
+
+        $log.="<tr><th>".$i."--".$j."</th><th>".$url_INTO."</th>";
+        $msc10=microtime(true);
+        $log.="<th>".$msc10."</th>";
+
+        // echo "</br>".$url_INTO."</br>";
             $response_INTO = getCurlAuthRequestLocal($url_INTO,$basic_auth);
-            
-            $moac4=microtime(true);
-            print("response_INTO ".$call_count*$call_sub_count." API call End : ".$moac4."milliseconds")."\n";
-            $total_api_calls_duration+=$moac4-$moac3;
-            print("response_INTO ".$call_count*$call_sub_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+
+            $msc11=microtime(true);
+            $log.="<th>".$msc11."</th>";
+            $msc12=$msc11-$msc10;
+            $log.="<th>".$msc12."</th></tr>";
 
             $into_value = '';
             if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
             }
-            echo "</br> INTO value : ".$into_value."</br>";
+            // echo "</br> INTO value : ".$into_value."</br>";
          
         //validating m3 workcenter with sfcs
         if (!in_array($into_value,$m3_operation_type_array,true)) {
@@ -108,7 +118,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $ZFeatureId=$sql_row['zfeature'];
         //GETTING SFCS OPERATION ID FROM OPERATION MASTER BASED ON M3 Operation Type
         $selecting_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$into_value'";
-        //echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
+        echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
         $res_selecting_qry = mysqli_query($link,$selecting_qry);
         while($rew_res_selecting_qry = mysqli_fetch_array($res_selecting_qry))
         {
@@ -122,13 +132,13 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }
 
     if($workcenter_status_valid){
-       // echo $sql1 . implode(', ', $values);
-        var_dump($values);
+        // echo $sql1 . implode(', ', $values);
+        // var_dump($values);
         //insertion query for schedule_oprations_master table
         $sql_result1=mysqli_query($link, $sql1 . implode(', ', $values));
         if($sql_result1){
             
-            echo "</br>successfully Inserted : ".$mo_num."</br>";   
+            // echo "</br>successfully Inserted : ".$mo_num."</br>";   
             //Update status for updated mo's and FG_codes
             $update_mo_details="UPDATE $bai_pro3.mo_details SET ops_master_status=1 WHERE mo_no='$mo_num'";
             $result = mysqli_query($link, $update_mo_details);
@@ -141,7 +151,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
     }  
     echo "</br>***********************************************************************</br>";    
 }
-//print("job successfully completed\n");
+print("job successfully completed\n");
 //construct key values and 
 function conctruct_array($req){
     $return_ar = [];
@@ -176,9 +186,28 @@ function getCurlAuthRequestLocal($url,$basic_auth){
     
 }
 
-print("\n Schedules_Operation__Masters_Capturing file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
+$log.="<tr><th>".$i."</th><th>Total Job execution Time</th>";
+
 $end_timestamp = microtime(true);
-$duration=$end_timestamp-$start_timestamp;
-print("Schedules_Operation__Masters_Capturing file End : ".$end_timestamp." milliseconds.")."\n";
-print("Schedules_Operation__Masters_Capturing file total Duration : ".$duration." milliseconds.")."\n";
+$duration = $end_timestamp - $start_timestamp;
+ print("Execution took ".$duration." seconds.");
+$log.="<th>".$start_timestamp."</th>";
+$log.="<th>".$end_timestamp."</th>";
+$log.="<th>".$duration."</th></tr>";
+
+//$include_path=getenv('config_job_path');
+//$directory = $include_path.'\sfcs_app\app\jobs\log\\'.'log_schedule_operation_master';
+$directory = $include_path.'\sfcs_app\app\jobs\\'.'log';
+if (!file_exists($directory)) {
+    mkdir($directory, 0777, true);
+}
+$fileName="schedule_operation_master_capturing";
+$file_name_string = $fileName.'_'.date("Y-m-d-H-i-s").'.html';
+//$my_file=$include_path.'\sfcs_app\app\jobs\log\\'.'log_schedule_operation_master\\'.$file_name_string;
+$my_file=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_name_string;
+$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
+$file_data_request = $log;
+fwrite($handle,"\n".$file_data_request); 
+
+fclose($handle); 
 ?>

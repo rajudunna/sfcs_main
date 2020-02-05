@@ -7,13 +7,20 @@
 	Output : Save the response in mo_details,order_details&shipment_plan tables in m3_inputs database.
 */
 $start_timestamp = microtime(true);
-print("\n mo_soad_api_call file start : ".$start_timestamp." milliseconds.")."\n";
-$total_api_calls_duration=0;
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+
+$log="";
+$log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';	
 set_time_limit(6000000);
 
+	// include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
 	error_reporting(E_ALL);
+	//var_dump($link);
+	$log.="<tr><th></th><th>SOAP CALL</th>";
+	$msc1=microtime(true);
+	$log.="<th>".$msc1."</th>";
+	
 	$headerbody = array("user"=>$api_username,"password"=>$api_password,"company"=>$company_no);
 	$header = new SOAPHeader("http://lawson.com/ws/credentials", "lws", $headerbody);
 	$soap_client = new SoapClient( $api_hostname.":".$api_port_no.$mo_soap_api,array("login" => $api_username,"password" => $api_password));
@@ -21,19 +28,18 @@ set_time_limit(6000000);
 	try{
 		$to = date('Ymd',  strtotime('+3 month'));
 		$from = date('Ymd',  strtotime('-1 month'));
-
-		$mosc1=microtime(true);
-		print("Soap Call  Start :".$mosc1." Milliseconds. Parameters: (Facility->".$global_facility_code.";FromDate->".$from.";ToDate->".$to.")")."\n";
+		// $from="20181215";
+		// $to="20181231";
 		$result2 = $soap_client->MOData(array('Facility'=>$global_facility_code,'FromDate'=>$from,'ToDate'=>$to));
-		$mosc2=microtime(true);
-		print("Soap Call  End :".$mosc2." Milliseconds")."\n";
-		$total_api_calls_duration+=$mosc2-$mosc1;
-		print("Soap Call Duration:".($mosc2-$mosc1)." Milliseconds")."\n";
-		$call_count=0;
-	 //	$new_ids = [];
-		//echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
-		//echo "<table>";
-		//echo "<tr><th>S.NO</th><th>MONUMBER</th><th>MOQTY</th><th>STARTDATE</th><th>VPO</th><th>COLORNAME</th><th>COLOURDESC</th><th>SIZENAME</th><th>SIZEDESC</th><th>ZNAME</th><th>ZDESC</th><th>SCHEDULE</th><th>STYLE</th><th>PRODUCT</th><th>PRDNAME</th><th>PRDDESC</th><th>REFERENCEORDER</th><th>REFORDLINE</th><th>MOSTS</th><th>MAXOPERATIONSTS</th><th>COPLANDELDATE</th><th>COREQUESTEDDELDATE</th><th>SIZECODE</th><th>COLORCODE</th><th>ZCODE</th></tr>";
+		$msc2=microtime(true);
+		$log.="<th>".$msc2."</th>";
+		$msc3=$msc2-$msc1;
+		$log.="<th>".$msc3."</th></tr>";
+		$i=1;
+		$new_ids = [];
+		echo "From Date:<b>".date('Y-m-d',strtotime($from))."</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To date:<b>".date('Y-m-d',strtotime($to))."</b><br/>";
+		// echo "<table>";
+		// echo "<tr><th>S.NO</th><th>MONUMBER</th><th>MOQTY</th><th>STARTDATE</th><th>VPO</th><th>COLORNAME</th><th>COLOURDESC</th><th>SIZENAME</th><th>SIZEDESC</th><th>ZNAME</th><th>ZDESC</th><th>SCHEDULE</th><th>STYLE</th><th>PRODUCT</th><th>PRDNAME</th><th>PRDDESC</th><th>REFERENCEORDER</th><th>REFORDLINE</th><th>MOSTS</th><th>MAXOPERATIONSTS</th><th>COPLANDELDATE</th><th>COREQUESTEDDELDATE</th><th>SIZECODE</th><th>COLORCODE</th><th>ZCODE</th></tr>";
 		foreach(($result2->new1Collection)->new1Item as $value){
 			// echo "<tr>";
 			// 	echo "<td>".$i++."</td>";
@@ -65,61 +71,56 @@ set_time_limit(6000000);
 
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
-			
-			$moac1=microtime(true);
-			$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE.'&PONR='.$value->REFORDLINE.','.$basic_auth;
-			$call_count++;
-			print("rest_call ".$call_count." API Call Start: ".$moac1." milliseconds. Parameters: ".$args."; ")."\n";
-			
+			$log.="<tr><th>".$i."</th><th>".($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE)."--To get ORST</th>";
+			$msc4=microtime(true);
+			$log.="<th>".$msc4."</th>";
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
-			
-			$moac2=microtime(true);
-			print("rest_call ".$call_count." API call End : ".$moac2."milliseconds")."\n";
-			$total_api_calls_duration+=$moac2-$moac1;
-			print("rest_call ".$call_count." API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
+			$msc5=microtime(true);
+			$log.="<th>".$msc5."</th>";
+			$msc6=$msc5-$msc4;
+			$log.="<th>".$msc6."</th></tr>";
 
+			
 				//1940 exclude mo's whcih are having status 99
 				if($rest_call['response']['ORST'] !='99'){
 
 						if($rest_call['status'] && isset($rest_call['response']['ITNO']) && $rest_call['response']['ITNO']!=''){
-							
-							$moac3=microtime(true);
-							$args1=$api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']).','.$basic_auth;
-							print("get_buyer_details ".$call_count." API Call Start: ".$moac3." milliseconds. Parameters: ".$args1."; ")."\n";
-							
+
+							$log.="<tr><th>".$i."</th><th>".($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']))."--To  get_buyer_details</th>";
+							$msc7=microtime(true);
+							$log.="<th>".$msc7."</th>";
+
 							$get_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/MDBREADMI/GetMITMASX1?CONO='.$company_no.'&ITNO='.urlencode($rest_call['response']['ITNO']),$basic_auth);
-							
-							$moac4=microtime(true);
-							print("get_buyer_details ".$call_count." API call End : ".$moac4."milliseconds")."\n";
-							$total_api_calls_duration+=$moac4-$moac3;
-							print("get_buyer_details ".$call_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
+							$msc8=microtime(true);
+							$log.="<th>".$msc8."</th>";
+							$msc9=$msc8-$msc7;
+							$log.="<th>".$msc9."</th></tr>";
 
 							$last_buyer_details = ['status'=>false];
 							if($get_buyer_details['status'] && isset($get_buyer_details['response']['BUAR']) && $get_buyer_details['response']['BUAR']!=''){
-								
-								$moac5=microtime(true);
-								$args=$api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'].','.$basic_auth;
-								print("last_buyer_details ".$call_count." API Call Start: ".$moac5." milliseconds. Parameters: ".$args."; ")."\n";
-							
+
+								$log.="<tr><th>".$i."</th><th>".($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'])."--To  last_buyer_details</th>";
+								$msc10=microtime(true);
+								$log.="<th>".$msc10."</th>";
+
 								$last_buyer_details = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/CRS036MI/LstBusinessArea?CONO='.$company_no.'&FRBU='.$get_buyer_details['response']['BUAR'].'&TOBU='.$get_buyer_details['response']['BUAR'],$basic_auth);
 
-								$moac6=microtime(true);
-								print("last_buyer_details ".$call_count." API call End : ".$moac6."milliseconds")."\n";
-								$total_api_calls_duration+=$moac6-$moac5;
-								print("last_buyer_details ".$call_count." API call Duration : ".($moac6-$moac5)."milliseconds")."\n";
+								$msc11=microtime(true);
+								$log.="<th>".$msc11."</th>";
+								$msc12=$msc11-$msc10;
+								$log.="<th>".$msc12."</th></tr>";
 
 							}
-							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!='')
-							{
-
-								$sql_mo_check_qry="select MONUMBER FROM $m3_inputs.mo_details WHERE MONUMBER ='$mo_number'";
-								$result_check_mo = $link->query($sql_mo_check_qry);
-								if(($result_check_mo->num_rows) == 0)
-								{
-									$ins_qry = "INSERT  INTO `m3_inputs`.`mo_details` (`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `COLORCODE`, `SIZENAME`, `SIZEDESC`, `SIZECODE`, `ZNAME`, `ZDESC`, `ZCODE`,`SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`,`packing_method`,`destination`,`cpo`,`buyer_id`) VALUES ('".$mo_number."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".trim($value->COLORNAME)."','".trim($value->COLOURDESC)."','".trim($value->COLORCODE)."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->SIZECODE."','".$value->ZNAME."','".$value->ZDESC."','".$value->ZCODE."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."','".$rest_call['response']['TEPA']."','".$rest_call['response']['ADID']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."')";
-									$ins_qry1 = "INSERT  INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`,packing_method,cpo,buyer_id,material_master_status,shipment_master_status) VALUES ('".date('Y-m-d H:i:s')."','".$mo_number."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".trim($value->COLOURDESC)."','".$value->SIZENAME."','".$rest_call['response']['ADID']."','".$value->ZNAME."','','','".$value->PRODUCT."','".$rest_call['response']['TEPA']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."',0,0)";
-									$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							if($last_buyer_details['status'] && isset($last_buyer_details['response']['TX40']) && $last_buyer_details['response']['TX40']!=''){
+								$ins_qry = "
+								INSERT IGNORE INTO `m3_inputs`.`mo_details` 
+								(`MONUMBER`, `MOQTY`, `STARTDATE`, `VPO`, `COLORNAME`, `COLOURDESC`, `COLORCODE`, `SIZENAME`, `SIZEDESC`, `SIZECODE`, `ZNAME`, `ZDESC`, `ZCODE`,`SCHEDULE`, `STYLE`, `PRODUCT`, `PRDNAME`, `PRDDESC`, `REFERENCEORDER`, `REFORDLINE`, `MOSTS`, `MAXOPERATIONSTS`, `COPLANDELDATE`, `COREQUESTEDDELDATE`,`packing_method`,`destination`,`cpo`,`buyer_id`) VALUES ('".$mo_number."','".$value->MOQTY."','".date('Y-m-d',strtotime($value->STARTDATE))."','".$value->VPO."','".trim($value->COLORNAME)."','".trim($value->COLOURDESC)."','".trim($value->COLORCODE)."','".$value->SIZENAME."','".$value->SIZEDESC."','".$value->SIZECODE."','".$value->ZNAME."','".$value->ZDESC."','".$value->ZCODE."','".$value->SCHEDULE."','".$value->STYLE."','".$value->PRODUCT."','".$value->PRDNAME."','".$value->PRDDESC."','".$value->REFERENCEORDER."','".$value->REFORDLINE."','".$value->MOSTS."','".$value->MAXOPERATIONSTS."','".date('Y-m-d',strtotime($value->COPLANDELDATE))."','".date('Y-m-d',strtotime($value->COREQUESTEDDELDATE))."','".$rest_call['response']['TEPA']."','".$rest_call['response']['ADID']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."')";
+								
+								$ins_qry1 = "INSERT IGNORE INTO bai_pro3.`mo_details`(`date_time`, `mo_no`, `mo_quantity`, `style`, `schedule`, `color`, `size`, `destination`, `zfeature`, `item_code`, `ops_master_status`, `product_sku`,packing_method,cpo,buyer_id,material_master_status,shipment_master_status) VALUES ('".date('Y-m-d H:i:s')."','".$mo_number."','".$value->MOQTY."','".$value->STYLE."','".$value->SCHEDULE."','".trim($value->COLOURDESC)."','".$value->SIZENAME."','".$rest_call['response']['ADID']."','".$value->ZNAME."','','','".$value->PRODUCT."','".$rest_call['response']['TEPA']."','".$rest_call['response']['CUOR']."','".$last_buyer_details['response']['TX40']."',0,0)";
+								$result = mysqli_query($link, $ins_qry) or exit("Sql Error Insert m3_inputs.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$result1 = mysqli_query($link, $ins_qry1) or exit("Sql Error Insert bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if($result){
+									//$new_ids[] = mysqli_insert_id($link);
 								}
 							}
 						}
@@ -148,7 +149,8 @@ set_time_limit(6000000);
 
 			}
 		}
-		echo "</table>";
+		// echo "</table>";
+		
 	}
 	catch(Exception $e){
 		var_dump($e->getMessage());
@@ -176,10 +178,24 @@ set_time_limit(6000000);
 		}
 		
 	}
-	print("\n mo_soad_api_call file Total Api Calls Duration : ".$total_api_calls_duration." milliseconds.")."\n";
-	$end_timestamp = microtime(true);
-	$duration=$end_timestamp-$start_timestamp;
-	print("mo_soad_api_call file End : ".$end_timestamp." milliseconds.")."\n";
-	print("mo_soad_api_call file total Duration : ".$duration." milliseconds.")."\n";
+	$log.="<tr><th>".$i."</th><th>total job execution</th>";
+	$log.="<th>".$start_timestamp."</th>";
+	$end_timestamp=microtime(true);
+	$log.="<th>".$end_timestamp."</th>";
+	$rerer=$end_timestamp-$start_timestamp;
+	$log.="<th>".$rerer."</th></tr>";
+	//$include_path=getenv('config_job_path');
+	$directory = $include_path.'\sfcs_app\app\jobs\\'.'log';
+	if (!file_exists($directory)) {
+		mkdir($directory, 0777, true);
+	}
+	$fileName="mo_soap_api_call";
+	$file_name_string = $fileName.'_'.date("Y-m-d-H-i-s").'.html';
+	$my_file=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_name_string;
+	$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
+	$file_data_request = $log;
+	fwrite($handle,"\n".$file_data_request); 
+
+	fclose($handle); 
 ?>
 
