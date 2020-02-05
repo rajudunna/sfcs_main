@@ -400,128 +400,321 @@ if(isset($_POST['reverse']))
 			}
 			$flag='parallel_scanning';
 		}
-	   if($flag == 'parallel_scanning')
-	   {
-		   //getting next operation from emb_bundles
-		   if($prev_operation>0)
-		   {
-				$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
-				$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
-				$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row=mysqli_fetch_array($get_qry_result))
-				{
-					$nextopgoodqty=$row['good_qty'];
-				}
-		   }
-		   else
-		   {
-			$nextopgoodqty=='';   
-		   }
-		   if($nextopgoodqty==0 || $nextopgoodqty=='')
-		   {
-			   $get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
-			   $quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
-				{
-					$remqty=$quant_qry_result_row['remaining_qty'];
-				}
-				if($remqty>=$reverseqty)
-				{
-					foreach($normdoc as $child_doc)
-					{
-						$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
-						$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		
+		
+		
+		
+		
+		//getting plan_cut_bundle_id
+		$parent_barcode=$barcode;
+		$get_plan_ids_qry="select plan_cut_bundle_trn_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
+		$rslt_plan_ids = $link->query($get_plan_ids_qry);
+		while($rows = $rslt_plan_ids->fetch_assoc())
+		{
+			$planids=$rows['plan_cut_bundle_trn_id'];
+		}
+		
+		//getting operation code
+		$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
+		$rslt_get_cur_ops = $link->query($get_curr_ops_code);
+		while($row_rslt = $rslt_get_cur_ops->fetch_assoc())
+		{
+			$ops_code=$row_rslt['ops_code'];
+			$rec_qty=$row_rslt['send_qty'];
+			$report_qty=$row_rslt['send_qty'];
+			$good_qty=$row_rslt['good_qty'];
+			$rejection_qty=$row_rslt['rejection_qty'];
+			$act_cut_bundle_id=$row_rslt['act_cut_bundle_id'];
+		}
+		
+		//getting plan bundle ids
+		$get_planbun_id_qry="select id from $bai_pro3.plan_cut_bundle where parent_plan_cut_bundle_id=".$planids." order by id";
+		$rslt_planbun_id = $link->query($get_planbun_id_qry);
+		if(mysqli_num_rows($rslt_planbun_id)>0)
+		{
+			while($rows_rslt = $rslt_planbun_id->fetch_assoc())
+			{
+				$planbunid[]=$rows_rslt['id'];
+			}
+			//getting act_cut_bundle_id
+			$get_act_cut_ids_qry="select id,act_qty,docket from $bai_pro3.act_cut_bundle where plan_cut_bundle_id in (".implode(',',$planbunid).") order by id";
+			$rslt_act_ids = $link->query($get_act_cut_ids_qry);
+			while($rowsss = $rslt_act_ids->fetch_assoc())
+			{
+				$actcutids[]=$rowsss['id'];
+				$actcut_qty[$rowsss['id']]=$rowsss['act_qty'];
+				$clubdoc[]=$rowsss['docket'];
+			}
+			
+			foreach($actcut_qty as $act_cut_id => $act_qty) 
+			{
+				//updating good qty to act_cut_bundle_trn
+				$update_qry_good_qty = "update $bai_pro3.act_cut_bundle_trn set good_qty=0,status=0 where act_cut_bundle_id=".$act_cut_id." and ops_code=".$ops_code."";
+				$update_rslt_good_qty = $link->query($update_qry_good_qty);
+			}
+			
+			   if($flag == 'parallel_scanning')
+			   {
+				   //getting next operation from emb_bundles
+				   if($prev_operation>0)
+				   {
+						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
+						$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
+						$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($get_qry_result))
+						{
+							$nextopgoodqty=$row['good_qty'];
+						}
+				   }
+				   else
+				   {
+					$nextopgoodqty=='';   
+				   }
+				   if($nextopgoodqty==0 || $nextopgoodqty=='')
+				   {
+					   $get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$clubdoc).") and ops_code=$op_no and size='$sizes'";
+					   $quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 						{
-							$chdocno=$child_doc;
-							$bundleno=$quant_qry_result_row['id'];
-							$reaminqty=$quant_qry_result_row['remaining_qty'];
+							$remqty=$quant_qry_result_row['remaining_qty'];
 						}
-						if($reverseqty>0)
+						if($remqty>=$reverseqty)
 						{
-							$dockdet[$child_doc]=$reverseqty;
-							// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+							foreach($clubdoc as $child_doc)
+							{
+								$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$clubdoc).") and ops_code=$op_no and size='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$chdocno=$child_doc;
+									$bundleno=$quant_qry_result_row['id'];
+									$reaminqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($reverseqty>0)
+								{
+									$dockdet[$child_doc]=$reverseqty;
+									// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+								}
+								else
+								{
+									break;
+								}
+								
+							}
 						}
 						else
 						{
-							break;
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
 						}
-						
-					}
-				}
-				else
-				{
-					echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
-				}
-		   }
-		   else
-		   {
-			   echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
-		   }
-	   }
-	   else
-	   {
-			//getting next operation from emb_bundles
-			$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
-			$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
+				   }
+				   else
+				   {
+					   echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+				   }
+			   }
+			   else
+			   {
+					//getting next operation from emb_bundles
+					$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
+					$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
 
-			$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row=mysqli_fetch_array($get_qry_result))
-			{
-				$nextopgoodqty=$row['good_qty'];
-			}
-			if($nextopgoodqty==0 || $nextopgoodqty=='')
-			{
-				$get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
-				$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from act_cut_bundle_trn for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
-				{
-					$remqty=$quant_qry_result_row['remaining_qty'];
-				}
-				if($remqty>=$reverseqty)
-				{
-					foreach($normdoc as $child_doc)
+					$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row=mysqli_fetch_array($get_qry_result))
 					{
-						$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
+						$nextopgoodqty=$row['good_qty'];
+					}
+					if($nextopgoodqty==0 || $nextopgoodqty=='')
+					{
+						$get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$clubdoc).") and ops_code=$op_no and size='$sizes'";
 						$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from act_cut_bundle_trn for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
 						{
-							$chdocno=$child_doc;
-							$bundleno=$quant_qry_result_row['id'];
-							$reaminqty=$quant_qry_result_row['remaining_qty'];
+							$remqty=$quant_qry_result_row['remaining_qty'];
 						}
-						if($reverseqty>0)
+						if($remqty>=$reverseqty)
 						{
-							$dockdet[$child_doc]=$reverseqty;
-							// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+							foreach($clubdoc as $child_doc)
+							{
+								$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$clubdoc).") and ops_code=$op_no and size='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from act_cut_bundle_trn for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$chdocno=$child_doc;
+									$bundleno=$quant_qry_result_row['id'];
+									$reaminqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($reverseqty>0)
+								{
+									$dockdet[$child_doc]=$reverseqty;
+									// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+								}
+								else
+								{
+									break;
+								}
+								
+							}
 						}
 						else
 						{
-							break;
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
 						}
-						
+					}
+					else
+					{
+						echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+					}
+			   }
+			   
+			   foreach($dockdet as $x => $x_value) 
+				{
+					$updatedoc=$x;
+					$updatequant=$x_value;
+					if($updatequant>0)
+					{
+						foreach($actcut_qty as $act_cut_id => $act_qty) 
+						{
+							//getting barcodes from act_cut_bundle_trn
+							$get_barcodes_qry="select barcode from $bai_pro3.act_cut_bundle_trn where act_cut_bundle_id=".$act_cut_id." and ops_code=".$op_no."";
+							$rslt_barcode = $link->query($get_barcodes_qry);
+							while($rowrslt = $rslt_barcode->fetch_assoc())
+							{
+								$barcode=$rowrslt['barcode'];
+							}
+							updatedata($updatedoc,$updatequant,$sizes,$op_no,$barcode);
+						}
 					}
 				}
-				else
-				{
-					echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
-				}
-			}
-			else
-			{
-				echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
-			}
-	   }
-	   
-	    foreach($dockdet as $x => $x_value) 
-		{
-			$updatedoc=$x;
-			$updatequant=$x_value;
-			if($updatequant>0)
-			{
-				updatedata($updatedoc,$updatequant,$sizes,$op_no,$barcode);
-			}
 		}
+		else
+		{
+			   if($flag == 'parallel_scanning')
+			   {
+				   //getting next operation from emb_bundles
+				   if($prev_operation>0)
+				   {
+						$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
+						$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
+						$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($get_qry_result))
+						{
+							$nextopgoodqty=$row['good_qty'];
+						}
+				   }
+				   else
+				   {
+					$nextopgoodqty=='';   
+				   }
+				   if($nextopgoodqty==0 || $nextopgoodqty=='')
+				   {
+					   $get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
+					   $quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+						{
+							$remqty=$quant_qry_result_row['remaining_qty'];
+						}
+						if($remqty>=$reverseqty)
+						{
+							foreach($normdoc as $child_doc)
+							{
+								$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from bundle_creation_data for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$chdocno=$child_doc;
+									$bundleno=$quant_qry_result_row['id'];
+									$reaminqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($reverseqty>0)
+								{
+									$dockdet[$child_doc]=$reverseqty;
+									// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+								}
+								else
+								{
+									break;
+								}
+								
+							}
+						}
+						else
+						{
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+						}
+				   }
+				   else
+				   {
+					   echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+				   }
+			   }
+			   else
+			   {
+					//getting next operation from emb_bundles
+					$post_ops_barcode="ACB-".$docket_no."-".$bun_no."-".$post_ops_code;
+					$get_next_op_qry="SELECT good_qty+rejection_qty as good_qty FROM $bai_pro3.act_cut_bundle_trn WHERE barcode='".$post_ops_barcode."'";
+
+					$get_qry_result=mysqli_query($link,$get_next_op_qry) or exit("error while retriving next ops qty from emb_bundles".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row=mysqli_fetch_array($get_qry_result))
+					{
+						$nextopgoodqty=$row['good_qty'];
+					}
+					if($nextopgoodqty==0 || $nextopgoodqty=='')
+					{
+						$get_quant_qry="select sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
+						$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from act_cut_bundle_trn for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+						{
+							$remqty=$quant_qry_result_row['remaining_qty'];
+						}
+						if($remqty>=$reverseqty)
+						{
+							foreach($normdoc as $child_doc)
+							{
+								$get_quant_qry="select act.id as id,sum(good_qty) as remaining_qty from $bai_pro3.act_cut_bundle_trn act left join $bai_pro3.act_cut_bundle acb on acb.id=act.act_cut_bundle_id where docket IN (".implode(',',$normdoc).") and ops_code=$op_no and size='$sizes'";
+								$quant_qry_result=mysqli_query($link,$get_quant_qry) or exit("error retriving quantities from act_cut_bundle_trn for child docs".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($quant_qry_result_row=mysqli_fetch_array($quant_qry_result))
+								{
+									$chdocno=$child_doc;
+									$bundleno=$quant_qry_result_row['id'];
+									$reaminqty=$quant_qry_result_row['remaining_qty'];
+								}
+								if($reverseqty>0)
+								{
+									$dockdet[$child_doc]=$reverseqty;
+									// $dockdet[$child_doc]['rem_qty']=$quant_qry_result_row['remaining_qty'];
+								}
+								else
+								{
+									break;
+								}
+								
+							}
+						}
+						else
+						{
+							echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+						}
+					}
+					else
+					{
+						echo "<script>swal('Next Operation Already Scanned','','warning');</script>";
+					}
+			   }
+			   
+			    foreach($dockdet as $x => $x_value) 
+				{
+					$updatedoc=$x;
+					$updatequant=$x_value;
+					if($updatequant>0)
+					{
+						updatedata($updatedoc,$updatequant,$sizes,$op_no,$barcode);
+					}
+				}
+			   
+		}
+		
+	    
 	}
 	else
 	{
