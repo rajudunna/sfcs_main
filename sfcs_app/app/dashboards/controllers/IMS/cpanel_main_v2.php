@@ -662,11 +662,16 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                     $recut = $recut_row['recut'];
                     $replace = $recut_row['replaced'];
                   }
-                 
-                  if($rejected > 0)
+                  
+                  $check_rej = $rejected - ($recut + $replace);
+                  if($check_rej > 0)
                   {
                     $rejection_border = "";
                     $value='R';   
+                  }else
+                  {
+                    $rejection_border='';
+                    $value='';
                   } 
                    
                   if($replace > 0)
