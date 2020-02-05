@@ -658,12 +658,12 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($recut_row=mysqli_fetch_array($recut_result))
                   {
-                    $rejected = $recut_row['rejected'];
+                    $rejected_qty = $recut_row['rejected'];
                     $recut = $recut_row['recut'];
                     $replace = $recut_row['replaced'];
                   }
                   
-                  $check_rej = $rejected - ($recut + $replace);
+                  $check_rej = $rejected_qty - ($recut + $replace);
                   if($check_rej > 0)
                   {
                     $rejection_border = "";
