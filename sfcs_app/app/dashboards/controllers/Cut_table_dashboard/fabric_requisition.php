@@ -38,9 +38,13 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_POST["group_docs"];
 		$section=$_POST["secs"];
 		$module=$_POST["mods"];
-		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select count(*) as cnt from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows2=mysqli_num_rows($result2x);	
+		// $rows2=mysqli_num_rows($result2x);
+		while($sql_res_cnt=mysqli_fetch_array($result2x))
+		{
+			$rows2=$sql_res_cnt['cnt'];
+		}	
 	} 
 	else
 	{
@@ -48,9 +52,13 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_GET["group_docs"];
 		$section=$_GET["section"];
 		$module=$_GET["module"];
-		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select count(*) as cnt from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows2=mysqli_num_rows($result2x);	
+		// $rows2=mysqli_num_rows($result2x);	
+		while($sql_res_cnt=mysqli_fetch_array($result2x))
+		{
+			$rows2=$sql_res_cnt['cnt'];
+		}
 	}	
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
@@ -158,7 +166,7 @@ function GetSelectedItem()
 
 <tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th><th>Control</th></tr>
 <?php
-	$sql11x1="select order_tid,acutno,mk_ref_id,cuttable_ref from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
+	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
@@ -183,8 +191,9 @@ function GetSelectedItem()
 		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
 		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
-		
-		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$cat_tid = $row111x["cat_ref"];
+		// $sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid=$cat_tid";
 		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
@@ -575,7 +584,11 @@ if(isset($_POST["submit1"]))
 	{
 		$sql1="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows=mysqli_num_rows($result);
+		// $rows=mysqli_num_rows($result);
+		while($sql_res_cnt1=mysqli_fetch_array($result))
+		{
+			$rows=$sql_res_cnt1['cnt'];
+		}
 		//Date: 2013-10-09
 		//Time difference is grater than or equel to 3
 		//Then only system will accept the fabric request
