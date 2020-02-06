@@ -98,7 +98,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}	
 	}
 	echo "<table id=\"table1\" border=1 class=\"mytable\" style=\"width:1000px\">";
-echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
+echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th>$color</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
 
 echo "<tr><th>Description</th>";
 for($s=0;$s<sizeof($sizes_code);$s++)
