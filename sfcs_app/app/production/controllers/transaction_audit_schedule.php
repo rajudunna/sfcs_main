@@ -80,19 +80,25 @@ $sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
 $count_val1=0;
 while($sql_row=mysqli_fetch_array($sql_result))
 {
+	$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
+mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error());
+$sql_result=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
+$count_val2=0;
+while($sql_row=mysqli_fetch_array($sql_result))
+{ 
 	$color=$sql_row['order_col_des'];
 	for($s=0;$s<sizeof($sizes_code);$s++)
 	{
 		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
-			$count_val1++;
+			$count_val2++;
 			$s_tit=$sql_row["title_size_s".$sizes_code[$s].""];
 			
 			
 		}	
 	}
 	echo "<table id=\"table1\" border=1 class=\"mytable\" style=\"width:1000px\">";
-echo "<tr><th>$color</th><th colspan=\"$count_val1\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val1\" style=\"background-color:black;\">Order Quantities</th></tr>";
+echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
 
 echo "<tr><th>Description</th>";
 for($s=0;$s<sizeof($sizes_code);$s++)
@@ -164,7 +170,7 @@ echo"</tr>";
 	
 				
 		echo "<tr>";
-		echo "<td style='text-align:center;'>Order Quantities</td>";
+		echo "<td style='text-align:center;'>Order Quantities2222</td>";
 		// echo "<td>$order_xs</td>
 		// <td>$order_s</td>
 		// <td>$order_m</td>
@@ -185,7 +191,7 @@ echo"</tr>";
 		// <td>$order_s26</td>
 		// <td>$order_s28</td>
 		// <td>$order_s30</td>
-		for($s=0;$s<$count_val1;$s++){
+		for($s=0;$s<$count_val2;$s++){
 			echo "<td style='text-align:center;'>".$sql_row["order_s_s".$sizes_code[$s].""]."</td>";
 			
 			
@@ -193,7 +199,7 @@ echo"</tr>";
 
 		echo"<td style=\"background-color:red;\"></td>";
 
-		for($s=0;$s<$count_val1;$s++){
+		for($s=0;$s<$count_val2;$s++){
 			echo "<td style='text-align:center;'>".$sql_row["old_order_s_s".$sizes_code[$s].""]."</td>";
 			
 		}
@@ -209,12 +215,12 @@ echo"</tr>";
 			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error4".mysqli_error());
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				for($s=0;$s<$count_val1;$s++){
+				for($s=0;$s<$count_val2;$s++){
 					echo "<td style='text-align:center;'>".$sql_row1["size_s".$sizes_code[$s].""]."</td>";
 				}
 				echo"<td style=\"background-color:red;\"></td>";
 		
-				for($s=0;$s<$count_val1;$s++){
+				for($s=0;$s<$count_val2;$s++){
 					echo "<td style='text-align:center;'>".$sql_row1["size_s".$sizes_code[$s].""]."</td>";
 				}
 
@@ -246,7 +252,7 @@ echo"</tr>";
 		// <td class=\"colorme\">".($order_s26-$s26)."</td>
 		// <td class=\"colorme\">".($order_s28-$s28)."</td>
 		// <td class=\"colorme\">".($order_s30-$s30)."</td>
-		for($s=0;$s<$count_val1;$s++){
+		for($s=0;$s<$count_val2;$s++){
 			echo "<td style='text-align:center;'>".($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
 			//echo ($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""]);
 			
@@ -254,8 +260,8 @@ echo"</tr>";
 		}
 	
 		echo"<td style=\"background-color:red;\"></td>";
-		for($s=0;$s<$count_val1;$s++){
-			echo "<td style='text-align:center;'>".($sql_row["old_order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
+		for($s=0;$s<$count_val2;$s++){
+			echo "<td style='text-align:center;'>".($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
 			//echo ($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""]);
 			
 			
@@ -283,9 +289,10 @@ echo"</tr>";
 		// <td class=\"colorme\">".($old_order_s30-$s30)."</td>
 		
 		echo "</tr>";
-		$count_val1=0;
+		$count_val2=0;
 		echo "</table>";
 
+}
 }
 }
 
