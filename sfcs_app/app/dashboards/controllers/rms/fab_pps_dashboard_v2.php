@@ -680,13 +680,9 @@
                             
                             echo "<tr class=\"bottom\">";
                             $url5=getFullURL($_GET['r'],'module_wise_summary.php','N');
-                            $sql_count="select count(*) as cnt from $bai_pro3.plan_dash_doc_summ where act_cut_status!=\"DONE\" and module='$module'";
+                            $sql_count="select * from $bai_pro3.plan_dash_doc_summ where act_cut_status!=\"DONE\" and module='$module'";
                             $sql_count_result=mysqli_query($link, $sql_count) or exit("Sql Error2".mysqli_error($GLOBALS["$___mysqli_ston"]));
-                            while($sql_row_cnt_res=mysqli_fetch_array($sql_count_result))
-                            {
-                                $rows5=$sql_row_cnt_res['cnt'];
-                            } 
-                            // $rows5=mysqli_num_rows($sql_count_result);
+                            $rows5=mysqli_num_rows($sql_count_result);
                             //echo $rows5;
                             if($rows5!=''or $rows5!='0')
                             {
