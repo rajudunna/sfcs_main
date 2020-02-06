@@ -654,16 +654,16 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $rejection_border='';
                   $value='';
 
-                  $get_recut_qty="select sum(rejected_qty) as rejected,sum(recut_qty) as recut,sum(replaced_qty) as replaced from $bai_pro3.rejection_log_child where input_job_no_random_ref='".$sql_rowred['inputjobnorand']."'";
+                  $get_recut_qty="select sum(rejected_qty) as rejected,sum(issued_qty) as issued,sum(replaced_qty) as replaced from $bai_pro3.rejection_log_child where input_job_no_random_ref='".$sql_rowred['inputjobnorand']."'";
                   $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($recut_row=mysqli_fetch_array($recut_result))
                   {
                     $rejected_qty = $recut_row['rejected'];
-                    $recut = $recut_row['recut'];
+                    $issued = $recut_row['issued'];
                     $replace = $recut_row['replaced'];
                   }
                   
-                  $check_rej = $rejected_qty - ($recut + $replace);
+                  $check_rej = $rejected_qty - ($replace + $issued);
                   if($check_rej > 0)
                   {
                     $rejection_border = "";
@@ -674,11 +674,11 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                     $value='';
                   } 
                    
-                  if($replace > 0)
-                  {
-                    $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
-                    $value='';
-                  }
+                  // if($replace > 0)
+                  // {
+                  //   $rejection_border = "border-style: solid;border-color: Magenta ;border-width: 3px;";
+                  //   $value='';
+                  // }
                      
                   $sidemenu=true;
                   $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
