@@ -170,7 +170,7 @@ echo"</tr>";
 	
 				
 		echo "<tr>";
-		echo "<td style='text-align:center;'>Order Quantities2222</td>";
+		echo "<td style='text-align:center;'>Order Quantities</td>";
 		// echo "<td>$order_xs</td>
 		// <td>$order_s</td>
 		// <td>$order_m</td>
