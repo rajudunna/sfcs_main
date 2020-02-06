@@ -38,13 +38,9 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_POST["group_docs"];
 		$section=$_POST["secs"];
 		$module=$_POST["mods"];
-		$sql2x="select count(*) as cnt from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $rows2=mysqli_num_rows($result2x);
-		while($sql_res_cnt=mysqli_fetch_array($result2x))
-		{
-			$rows2=$sql_res_cnt['cnt'];
-		}	
+		$rows2=mysqli_num_rows($result2x);
 	} 
 	else
 	{
@@ -52,13 +48,9 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_GET["group_docs"];
 		$section=$_GET["section"];
 		$module=$_GET["module"];
-		$sql2x="select count(*) as cnt from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $rows2=mysqli_num_rows($result2x);	
-		while($sql_res_cnt=mysqli_fetch_array($result2x))
-		{
-			$rows2=$sql_res_cnt['cnt'];
-		}
+		$rows2=mysqli_num_rows($result2x);	
 	}	
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
@@ -584,11 +576,7 @@ if(isset($_POST["submit1"]))
 	{
 		$sql1="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\"";
 		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// $rows=mysqli_num_rows($result);
-		while($sql_res_cnt1=mysqli_fetch_array($result))
-		{
-			$rows=$sql_res_cnt1['cnt'];
-		}
+		$rows=mysqli_num_rows($result);
 		//Date: 2013-10-09
 		//Time difference is grater than or equel to 3
 		//Then only system will accept the fabric request
