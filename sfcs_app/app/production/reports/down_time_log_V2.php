@@ -233,7 +233,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//$sql22="select smv FROM $bai_pro.bai_log_buf where delivery=\"$schedule\" and bac_no=\"$module\" and bac_shift=\"$shift\" limit 1";
 	if($style!="")
 	{
-			$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' and bac_no=\"$module\" and bac_shift=\"$shift\"  limit 1";
+			$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' and bac_no=\"$module\" and bac_shift=\"$shift\"  limit 1";
 			//echo $sql22."<br/>"; 
 			$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result22)>0)
@@ -244,7 +244,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 				if($smv=='' || $smv==0)
 				{
-					$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' limit 1";
+					$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' limit 1";
 					//echo $sql22."<br/>"; 
 					$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result22)>0)
@@ -259,7 +259,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			else
 			{
 				$smv=0;
-				$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' limit 1";
+				$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' limit 1";
 				//echo $sql22."<br/>"; 
 				$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result22)>0)
