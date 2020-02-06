@@ -190,7 +190,6 @@ $log.="<tr><th>".$i."</th><th>Total Job execution Time</th>";
 
 $end_timestamp = microtime(true);
 $duration = $end_timestamp - $start_timestamp;
- print("Execution took ".$duration." seconds.");
 $log.="<th>".$start_timestamp."</th>";
 $log.="<th>".$end_timestamp."</th>";
 $log.="<th>".$duration."</th></tr>";
@@ -210,4 +209,7 @@ $file_data_request = $log;
 fwrite($handle,"\n".$file_data_request); 
 
 fclose($handle); 
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+ print("Schedules_Operation_Masters_Capturing file Execution took ".$duration." seconds.");
 ?>

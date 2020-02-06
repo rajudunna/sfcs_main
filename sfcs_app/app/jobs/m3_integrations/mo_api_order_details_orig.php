@@ -151,7 +151,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                         //================ insert order_details_original =========================
                         $Required_Qty=(($order_yy*$result_data['mo_quantity'])+($order_yy*$result_data['mo_quantity']*$wastage/100));
 
-                        $log.="<tr><th>".$i."--".$j."</th><th>To get Item description</th>";
+                        $log.="<tr><th>".$i."--".$j."</th><th>To get Item description (club of 2 API calls) </th>";
                         $msc31=microtime(true);
                         $log.="<th>".$msc31."</th>";
 
@@ -269,4 +269,7 @@ $file_data_request = $log;
 fwrite($handle,"\n".$file_data_request); 
 
 fclose($handle); 
+$end_timestamp = microtime(true);
+$duration = $end_timestamp - $start_timestamp;
+print("mo_api_order_details_orig file Execution took ".$duration." seconds.");
 ?>
