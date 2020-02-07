@@ -799,7 +799,7 @@
 															if($remarks == 'Recut'){
 																$color_code = 'R';
 															} else {
-																$color_code = $sql_row['color_code'];
+																$color_code = chr($sql_row['color_code']);
 															}
 														}
 														
@@ -815,7 +815,7 @@
 														}
 																										
 														
-														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($act_cut_no,3),50)."\n".str_pad("Qty:".$total_qty1,50);
+														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$color_code.leading_zeros($act_cut_no,3),50)."\n".str_pad("Qty:".$total_qty1,50);
                                                         
                                                         $emb_category = 'Send PF';
                                                         $get_operations = " SELECT tor.operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tsm.style='$style_new' AND tsm.color='$color_new' AND tor.category='$emb_category' order by tsm.operation_code LIMIT 1;";
@@ -836,6 +836,7 @@
 														
 														if($total_qty1<>$send_qty)
 														{
+														//   echo $color_code;
                                                           echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$color_code.leading_zeros($act_cut_no,3).'</strong></li>';
 														  //echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
 														}
