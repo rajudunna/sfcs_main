@@ -185,7 +185,7 @@ function getjobdetails($job_number)
         die();
     }
 
-    $get_ops_query = "SELECT DISTINCT tm.operation_code,tr.operation_name,tr.operation_code as opcode FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' and display_operations='yes' ORDER BY operation_order";
+    $get_ops_query = "SELECT DISTINCT tm.operation_code,tr.operation_code as opcode,tr.operation_name FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' and display_operations='yes' ORDER BY operation_order";
 
     $ops_query_result=mysqli_query($link,$get_ops_query);
     while ($row = mysqli_fetch_array($ops_query_result))

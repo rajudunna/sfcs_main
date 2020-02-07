@@ -631,7 +631,7 @@ if(isset($_POST['allocate_new']))
 
 
 
-                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$row_id_new1."'";
+                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where roll_id='".$tid_ref[$j]."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0)
@@ -653,11 +653,19 @@ if(isset($_POST['allocate_new']))
                             //echo "Qty Issued :".$qty_iss."</br>";
                             // $balance=$qty_rec-$qty_issued+$qty_ret;	
                             // $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
-                            $status=2;
+                            $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
+							if($balance1==0)
+							{
+								$status=2;
+							}
+							else
+							{
+								$status=0;
+							}	
                             // $condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
-                            // if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
+                             //if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 				            {
-                                $sql22="update $bai_rm_pj1.store_in set qty_issued=$qty_iss, status=$status, allotment_status=$status where tid=\"$code\"";
+                                $sql22="update $bai_rm_pj1.store_in set qty_issued=$qty_iss, status=$status, qty_allocated=0, allotment_status=$status where tid=\"$code\"";
                                 mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 // $sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
