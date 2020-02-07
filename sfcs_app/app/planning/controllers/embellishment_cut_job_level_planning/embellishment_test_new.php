@@ -185,7 +185,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}else {
 			$cut_str = chr($sql_row['color_code']);
 		}
-		$code.=$sql_row['doc_no']."-".$cut_str.leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
+		$code.=$sql_row['doc_no']."-".$cut_str."$".$sql_row['acutno']."-".$sql_row['act_cut_status']."*";
+		// echo $code;
 		$cat_ref= $sql_row['cat_ref'];
 	}
 }

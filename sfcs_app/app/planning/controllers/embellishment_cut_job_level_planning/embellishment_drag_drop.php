@@ -11,68 +11,69 @@
 	{
 		$ret_str="<table><tr><th>Size</th><th>Qty</th></tr>";
 		//New Extra Shipment Order Quantities
-		$sql1="select p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,p_plies from plandoc_stat_log where doc_no=$doc_no";
-		$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysqli_error());
-		while($sql_row1=mysqli_fetch_array($sql_result1))
+		$sql12="select p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,p_plies from plandoc_stat_log where doc_no=$doc_no";
+		// echo $sql1;
+		$sql_result12=mysqli_query($link,$sql12) or exit("Sql Error11".mysqli_error());
+		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{
-			$ret_str.=($sql_row1['p_xs']>0?'<tr><td>XS</td><td>'.($sql_row1['p_xs']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_s']>0?'<tr><td>S</td><td>'.($sql_row1['p_s']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_m']>0?'<tr><td>M</td><td>'.($sql_row1['p_m']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_l']>0?'<tr><td>L</td><td>'.($sql_row1['p_l']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xl']>0?'<tr><td>XL</td><td>'.($sql_row1['p_xl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xxl']>0?'<tr><td>XXL</td><td>'.($sql_row1['p_xxl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xxxl']>0?'<tr><td>XXXL</td><td>'.($sql_row1['p_xxxl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s01"']>0?'<tr><td>"s01"</td><td>'.($sql_row1['p_"s01"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s02"']>0?'<tr><td>"s02"</td><td>'.($sql_row1['p_"s02"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s03"']>0?'<tr><td>"s03"</td><td>'.($sql_row1['p_"s03"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s04"']>0?'<tr><td>"s04"</td><td>'.($sql_row1['p_"s04"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s05"']>0?'<tr><td>"s05"</td><td>'.($sql_row1['p_"s05"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s06"']>0?'<tr><td>"s06"</td><td>'.($sql_row1['p_"s06"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s07"']>0?'<tr><td>"s07"</td><td>'.($sql_row1['p_"s07"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s08"']>0?'<tr><td>"s08"</td><td>'.($sql_row1['p_"s08"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s09"']>0?'<tr><td>"s09"</td><td>'.($sql_row1['p_"s09"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s10"']>0?'<tr><td>"s10"</td><td>'.($sql_row1['p_"s10"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s11"']>0?'<tr><td>"s11"</td><td>'.($sql_row1['p_"s11"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s12"']>0?'<tr><td>"s12"</td><td>'.($sql_row1['p_"s12"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s13"']>0?'<tr><td>"s13"</td><td>'.($sql_row1['p_"s13"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s14"']>0?'<tr><td>"s14"</td><td>'.($sql_row1['p_"s14"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s15"']>0?'<tr><td>"s15"</td><td>'.($sql_row1['p_"s15"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s16"']>0?'<tr><td>"s16"</td><td>'.($sql_row1['p_"s16"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s17"']>0?'<tr><td>"s17"</td><td>'.($sql_row1['p_"s17"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s18"']>0?'<tr><td>"s18"</td><td>'.($sql_row1['p_"s18"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s19"']>0?'<tr><td>"s19"</td><td>'.($sql_row1['p_"s19"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s20"']>0?'<tr><td>"s20"</td><td>'.($sql_row1['p_"s20"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s21"']>0?'<tr><td>"s21"</td><td>'.($sql_row1['p_"s21"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s22"']>0?'<tr><td>"s22"</td><td>'.($sql_row1['p_"s22"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s23"']>0?'<tr><td>"s23"</td><td>'.($sql_row1['p_"s23"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s24"']>0?'<tr><td>"s24"</td><td>'.($sql_row1['p_"s24"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s25"']>0?'<tr><td>"s25"</td><td>'.($sql_row1['p_"s25"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s26"']>0?'<tr><td>"s26"</td><td>'.($sql_row1['p_"s26"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s27"']>0?'<tr><td>"s27"</td><td>'.($sql_row1['p_"s27"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s28"']>0?'<tr><td>"s28"</td><td>'.($sql_row1['p_"s28"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s29"']>0?'<tr><td>"s29"</td><td>'.($sql_row1['p_"s29"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s30"']>0?'<tr><td>"s30"</td><td>'.($sql_row1['p_"s30"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s31"']>0?'<tr><td>"s31"</td><td>'.($sql_row1['p_"s31"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s32"']>0?'<tr><td>"s32"</td><td>'.($sql_row1['p_"s32"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s33"']>0?'<tr><td>"s33"</td><td>'.($sql_row1['p_"s33"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s34"']>0?'<tr><td>"s34"</td><td>'.($sql_row1['p_"s34"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s35"']>0?'<tr><td>"s35"</td><td>'.($sql_row1['p_"s35"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s36"']>0?'<tr><td>"s36"</td><td>'.($sql_row1['p_"s36"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s37"']>0?'<tr><td>"s37"</td><td>'.($sql_row1['p_"s37"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s38"']>0?'<tr><td>"s38"</td><td>'.($sql_row1['p_"s38"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s39"']>0?'<tr><td>"s39"</td><td>'.($sql_row1['p_"s39"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s40"']>0?'<tr><td>"s40"</td><td>'.($sql_row1['p_"s40"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s41"']>0?'<tr><td>"s41"</td><td>'.($sql_row1['p_"s41"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s42"']>0?'<tr><td>"s42"</td><td>'.($sql_row1['p_"s42"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s43"']>0?'<tr><td>"s43"</td><td>'.($sql_row1['p_"s43"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s44"']>0?'<tr><td>"s44"</td><td>'.($sql_row1['p_"s44"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s45"']>0?'<tr><td>"s45"</td><td>'.($sql_row1['p_"s45"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s46"']>0?'<tr><td>"s46"</td><td>'.($sql_row1['p_"s46"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s47"']>0?'<tr><td>"s47"</td><td>'.($sql_row1['p_"s47"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s48"']>0?'<tr><td>"s48"</td><td>'.($sql_row1['p_"s48"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s49"']>0?'<tr><td>"s49"</td><td>'.($sql_row1['p_"s49"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s50"']>0?'<tr><td>"s50"</td><td>'.($sql_row1['p_"s50"']*$sql_row1['p_plies']).'</td></tr>':'');
-
+			$ret_str.=($sql_row12['p_xs']>0?'<tr><td>XS</td><td>'.($sql_row12['p_xs']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s']>0?'<tr><td>S</td><td>'.($sql_row12['p_s']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_m']>0?'<tr><td>M</td><td>'.($sql_row12['p_m']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_l']>0?'<tr><td>L</td><td>'.($sql_row12['p_l']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_xl']>0?'<tr><td>XL</td><td>'.($sql_row12['p_xl']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_xxl']>0?'<tr><td>XXL</td><td>'.($sql_row12['p_xxl']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_xxxl']>0?'<tr><td>XXXL</td><td>'.($sql_row12['p_xxxl']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s01']>0?'<tr><td>"s01"</td><td>'.($sql_row12['p_s01']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s02']>0?'<tr><td>"s02"</td><td>'.($sql_row12['p_s02']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s03']>0?'<tr><td>"s03"</td><td>'.($sql_row12['p_s03']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s04']>0?'<tr><td>"s04"</td><td>'.($sql_row12['p_s04']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s05']>0?'<tr><td>"s05"</td><td>'.($sql_row12['p_s05']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s06']>0?'<tr><td>"s06"</td><td>'.($sql_row12['p_s06']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s07']>0?'<tr><td>"s07"</td><td>'.($sql_row12['p_s07']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s08']>0?'<tr><td>"s08"</td><td>'.($sql_row12['p_s08']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s09']>0?'<tr><td>"s09"</td><td>'.($sql_row12['p_s09']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s10']>0?'<tr><td>"s10"</td><td>'.($sql_row12['p_s10']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s11']>0?'<tr><td>"s11"</td><td>'.($sql_row12['p_s11']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s12']>0?'<tr><td>"s12"</td><td>'.($sql_row12['p_s12']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s13']>0?'<tr><td>"s13"</td><td>'.($sql_row12['p_s13']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s14']>0?'<tr><td>"s14"</td><td>'.($sql_row12['p_s14']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s15']>0?'<tr><td>"s15"</td><td>'.($sql_row12['p_s15']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s16']>0?'<tr><td>"s16"</td><td>'.($sql_row12['p_s16']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s17']>0?'<tr><td>"s17"</td><td>'.($sql_row12['p_s17']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s18']>0?'<tr><td>"s18"</td><td>'.($sql_row12['p_s18']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s19']>0?'<tr><td>"s19"</td><td>'.($sql_row12['p_s19']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s20']>0?'<tr><td>"s20"</td><td>'.($sql_row12['p_s20']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s21']>0?'<tr><td>"s21"</td><td>'.($sql_row12['p_s21']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s22']>0?'<tr><td>"s22"</td><td>'.($sql_row12['p_s22']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s23']>0?'<tr><td>"s23"</td><td>'.($sql_row12['p_s23']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s24']>0?'<tr><td>"s24"</td><td>'.($sql_row12['p_s24']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s25']>0?'<tr><td>"s25"</td><td>'.($sql_row12['p_s25']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s26']>0?'<tr><td>"s26"</td><td>'.($sql_row12['p_s26']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s27']>0?'<tr><td>"s27"</td><td>'.($sql_row12['p_s27']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s28']>0?'<tr><td>"s28"</td><td>'.($sql_row12['p_s28']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s29']>0?'<tr><td>"s29"</td><td>'.($sql_row12['p_s29']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s30']>0?'<tr><td>"s30"</td><td>'.($sql_row12['p_s30']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s31']>0?'<tr><td>"s31"</td><td>'.($sql_row12['p_s31']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s32']>0?'<tr><td>"s32"</td><td>'.($sql_row12['p_s32']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s33']>0?'<tr><td>"s33"</td><td>'.($sql_row12['p_s33']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s34']>0?'<tr><td>"s34"</td><td>'.($sql_row12['p_s34']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s35']>0?'<tr><td>"s35"</td><td>'.($sql_row12['p_s35']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s36']>0?'<tr><td>"s36"</td><td>'.($sql_row12['p_s36']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s37']>0?'<tr><td>"s37"</td><td>'.($sql_row12['p_s37']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s38']>0?'<tr><td>"s38"</td><td>'.($sql_row12['p_s38']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s39']>0?'<tr><td>"s39"</td><td>'.($sql_row12['p_s39']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s40']>0?'<tr><td>"s40"</td><td>'.($sql_row12['p_s40']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s41']>0?'<tr><td>"s41"</td><td>'.($sql_row12['p_s41']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s42']>0?'<tr><td>"s42"</td><td>'.($sql_row12['p_s42']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s43']>0?'<tr><td>"s43"</td><td>'.($sql_row12['p_s43']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s44']>0?'<tr><td>"s44"</td><td>'.($sql_row12['p_s44']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s45']>0?'<tr><td>"s45"</td><td>'.($sql_row12['p_s45']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s46']>0?'<tr><td>"s46"</td><td>'.($sql_row12['p_s46']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s47']>0?'<tr><td>"s47"</td><td>'.($sql_row12['p_s47']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s48']>0?'<tr><td>"s48"</td><td>'.($sql_row12['p_s48']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s49']>0?'<tr><td>"s49"</td><td>'.($sql_row12['p_s49']*$sql_row12['p_plies']).'</td></tr>':'');
+			$ret_str.=($sql_row12['p_s50']>0?'<tr><td>"s50"</td><td>'.($sql_row12['p_s50']*$sql_row12['p_plies']).'</td></tr>':'');
+		
 
 		}
 		
@@ -703,10 +704,12 @@
 											{
 												$check="blue"; // red
 											}
+											$code1=explode("$",$code_db_new[1]);
 											
-											$title=title_des($link,$code_db_new[0]);
+											// $title=title_des($link,$code_db_new[0]);
+											// echo $title;
 											// <li data-color="green" style="background-color:green; color:white;">
-											echo "<li  class='apply-remove' id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\"><strong>".$code_db_new[1]."</strong></li>";
+											echo "<li  class='apply-remove' id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue'><strong>".$code1[0].leading_zeros($code1[1],3)."</strong></li>";
 										}
 									?>
 								
@@ -753,7 +756,7 @@
 													//<li id="node16">Student P</li>
 													
 													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 and remarks != 'Recut' order by priority"; //KK223422
+													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 order by priority"; //KK223422
 
 													// echo $sql1;
 													// die();
@@ -776,7 +779,7 @@
 														$cut_no1=$sql_row1['acutno'];
 														$color_code1=$sql_row1['color_code'];
 														
-														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
+														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des,remarks from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
 														// echo $sql."<br>";
 														// mysql_query($sql,$link) or exit("Sql Error".mysqli_error());
 														$sql_result=mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
@@ -791,6 +794,13 @@
 															$style_new=$sql_row['order_style_no'];
 															$schedule_new=$sql_row['order_del_no'];
 															$color_new=$sql_row['order_col_des'];
+															$remarks=$sql_row['remarks'];
+															// echo $remarks;
+															if($remarks == 'Recut'){
+																$color_code = 'R';
+															} else {
+																$color_code = $sql_row['color_code'];
+															}
 														}
 														
 														$id="#33AADD"; //default existing color
@@ -805,7 +815,7 @@
 														}
 																										
 														
-														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
+														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($act_cut_no,3),50)."\n".str_pad("Qty:".$total_qty1,50);
                                                         
                                                         $emb_category = 'Send PF';
                                                         $get_operations = " SELECT tor.operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tsm.style='$style_new' AND tsm.color='$color_new' AND tor.category='$emb_category' order by tsm.operation_code LIMIT 1;";
@@ -826,7 +836,7 @@
 														
 														if($total_qty1<>$send_qty)
 														{
-                                                          echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
+                                                          echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$color_code.leading_zeros($act_cut_no,3).'</strong></li>';
 														  //echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
 														}
 														else
