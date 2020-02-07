@@ -10,9 +10,9 @@ $module=$_GET['module'];
 $section=$_GET['section'];
 $date=date("Y-m-d H:i:s");
 
-        $sql2x="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND act_cut_status<>'DONE' GROUP BY doc_no order by priority";
+        $sql2x="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND act_cut_status<>'DONE' GROUP BY doc_no order by priority";
        // echo $sql2x;
-		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
         $rows2=mysqli_num_rows($result2x);	
         echo"<div class='panel-body'>";
         echo "<table class='table table-bordered'>
