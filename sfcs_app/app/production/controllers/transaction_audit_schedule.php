@@ -74,34 +74,33 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	
 
 	
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
-mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
-$count_val1=0;
-while($sql_row=mysqli_fetch_array($sql_result))
-{
+	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
+	mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
+	$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
+	$count_val1=0;
+	while($sql_row=mysqli_fetch_array($sql_result))
+ {
 	$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
-mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error());
-$sql_result=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
-$count_val2=0;
-while($sql_row=mysqli_fetch_array($sql_result))
-{ 
+	mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error());
+	$sql_result=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
+	$count_val2=0;
+	while($sql_row=mysqli_fetch_array($sql_result))
+  { 
+	
 	$color=$sql_row['order_col_des'];
 	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
-			$count_val2++;
-			$s_tit=$sql_row["title_size_s".$sizes_code[$s].""];
-			
-			
-		}	
-	}
+			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+			{
+				$count_val2++;
+				$s_tit=$sql_row["title_size_s".$sizes_code[$s].""];		
+			}	
+		}
 	echo "<table id=\"table1\" border=1 class=\"mytable\" style=\"width:1000px\">";
-echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th>$color</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
+	echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
 
-echo "<tr><th>Description</th>";
-for($s=0;$s<sizeof($sizes_code);$s++)
+	echo "<tr><th>Description</th>";
+	for($s=0;$s<sizeof($sizes_code);$s++)
 	{
 		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
@@ -111,8 +110,8 @@ for($s=0;$s<sizeof($sizes_code);$s++)
 			
 		}	
 	}
-echo"<th style=\"background-color:red;\">&nbsp;</th>";
-for($s=0;$s<sizeof($sizes_code);$s++)
+	echo"<th style=\"background-color:red;\">&nbsp;</th>";
+	for($s=0;$s<sizeof($sizes_code);$s++)
 	{
 		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
@@ -122,7 +121,7 @@ for($s=0;$s<sizeof($sizes_code);$s++)
 			
 		}	
 	}	
-echo"</tr>";
+	echo"</tr>";
 	
 	// $order_xs=$sql_row['order_s_xs'];
 	// $order_s=$sql_row['order_s_s'];
@@ -192,6 +191,10 @@ echo"</tr>";
 		// <td>$order_s28</td>
 		// <td>$order_s30</td>
 		for($s=0;$s<$count_val2;$s++){
+			// echo $count_val2;
+			// echo $sizes_code[$s];
+			// var_dump($sizes_code[$s]);
+
 			echo "<td style='text-align:center;'>".$sql_row["order_s_s".$sizes_code[$s].""]."</td>";
 			
 			
