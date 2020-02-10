@@ -113,7 +113,7 @@ function isNumber($c)
 				}
 				$sizes = '"'.implode('","',$size_code).'"';
 
-                $check_mo_status = "select * from $m3_inputs.mo_details where STYLE=\"$style\" AND SCHEDULE=\"$sch_no\" AND COLOURDESC=\"$color\" AND SIZEDESC in ($sizes) AND REFORDLINE !='99'";
+                $check_mo_status = "select * from $m3_inputs.mo_details where STYLE=\"$style\" AND SCHEDULE=\"$sch_no\" AND COLOURDESC=\"$color\" AND SIZENAME in ($sizes) AND REFORDLINE !='99'";
                 // echo $check_mo_status;
                 $mo_status_result=mysqli_query($link, $check_mo_status) or exit("Sql Error Mo".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if (mysqli_num_rows($mo_status_result) > 0) 
