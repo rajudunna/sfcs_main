@@ -64,9 +64,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $url_INTO = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMPDWCT00?CONO=$comp_no&FACI=$facility_code&PLGR=$WorkCenterId";
         echo "</br>".$url_INTO."</br>";
             $response_INTO = getCurlAuthRequestLocal($url_INTO,$basic_auth);
-
-            $doid_value=$response_INTO['response']['DOID']);
+            
             $into_value = '';
+            $doid_value=$response_INTO['response']['DOID'];
+            
             if($response_INTO['status'] && isset($response_INTO['response']['INTO']) && $doid_value !='SFCS_Exclude'){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
             }
