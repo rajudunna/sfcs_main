@@ -83,9 +83,14 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 		
 		if(mysqli_affected_rows($link)>0)
 		{
-			$sql="insert ignore into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
-			//echo $sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_check="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$qms_tid";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$sql="insert into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
+				//echo $sql."<br/>";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}	
 			
 			$sql="delete from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
 			//echo $sql."<br/>";

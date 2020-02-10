@@ -338,7 +338,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
             if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
             {   
-                $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
+                $insert_qry_ips = "INSERT INTO `$bai_pro3`.`plan_dashboard_input` 
                 SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref' order by input_trims_status desc limit 1";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));

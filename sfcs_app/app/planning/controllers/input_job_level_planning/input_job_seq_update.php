@@ -65,11 +65,14 @@ $userName = getrbac_user()['uname'];
         }
         
         
-
-        $sql="insert ignore into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
-        ///echo $sql.";<br>";
-        mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
+        $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$items[1]."'";
+        $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($sql_check_res)==0)
+        {
+            $sql="insert into $bai_pro3.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
+            ///echo $sql.";<br>";
+            mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }   
         //echo mysql_insert_id($link);
         
         if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
@@ -162,9 +165,14 @@ $userName = getrbac_user()['uname'];
                     }	
                 }				
                 
-                $sqlx="insert ignore into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
-                ///echo $sqlx.";<br>";
-                mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_check1="select doc_no from $bai_pro3.plan_dashboard where doc_no='".$org_doc_no."'";
+                $sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($sql_check_res1)==0)
+                {
+                    $sqlx="insert into $bai_pro3.plan_dashboard(doc_no) values ('".$org_doc_no."')";
+                    ///echo $sqlx.";<br>";
+                    mysqli_query($link, $sqlx) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+                }    
                 
                 //echo mysql_insert_id($link);
                 
