@@ -58,27 +58,35 @@ $message.= '
 
 $sec_mods=array();
 $sec_nos=array();
-$sql="SELECT sec_id,group_concat(sec_mods order by sec_mods*1) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1,4) group by sec_id ORDER BY sec_id";
-
+// $sql="SELECT sec_id,group_concat(sec_mods order by sec_mods*1) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1,4) group by sec_id ORDER BY sec_id";
+$sql="SELECT sections_master.section_display_name,sections_db.sec_id,group_concat(sec_mods order by sec_mods*1) as mods FROM $bai_pro3.sections_db LEFT JOIN $bai_pro3.`sections_master` ON sections_master.sec_name = sections_db.sec_id group by sections_db.sec_id ORDER BY sections_db.sec_id ";
+// echo $sql;
 $result7=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result7))
 {
-	$sec_nos[]=$sql_row["sec_id"];
-	$sec_mods[]=$sql_row["mods"];	
+	if($sql_row["mods"] != '')
+	{
+		//$sec_nos[]=$sql_row["sec_id"];
+		$sec_nos[]=$sql_row["section_display_name"];
+		$sec_mods[]=$sql_row["mods"];	
+	}
 }
+$sec_mod_val = implode(",",$sec_mods);
+$sec_mod = "'" . str_replace(',',"','",$sec_mod_val) . "'";
 for($i=0;$i<sizeof($sec_nos);$i++)
 {
+	$sec_mod1 = "'" . str_replace(',',"','",$sec_mods[$i]) . "'";
 	$sql11="SELECT ims_style AS style,COUNT(DISTINCT rand_track) AS box, GROUP_CONCAT(DISTINCT ims_mod_no ORDER BY ims_mod_no*1) AS module, 
-		SUM(ims_qty-ims_pro_qty) AS wip FROM $bai_pro3.ims_log WHERE ims_mod_no IN (".$sec_mods[$i].") AND ims_status!=\"DONE\" GROUP BY 
+		SUM(ims_qty-ims_pro_qty) AS wip FROM $bai_pro3.ims_log WHERE ims_mod_no IN (".$sec_mod1.") AND ims_status!=\"DONE\" GROUP BY 
 		style ORDER BY style";
-	//echo $sql."<br>";
+	//echo $sql11."<br>";
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error-11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row11=mysqli_fetch_array($sql_result11))
 	{
 		$message.= "<tr><td align=\"center\">".$sql_row11['style']."</td><td align=\"center\">".$sql_row11['box']."</td><td align=\"right\">".$sql_row11['wip']."</td><td align=\"left\">".$sql_row11['module']."</td></tr>";
 	}
 	
-	$sql12="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\" FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\"";
+	$sql12="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\" FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mod1.") and ims_status!=\"DONE\"";
 	//echo $sql1."<br>";
 	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error-12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -86,7 +94,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 		$message.= "<tr style='background-color:#29759C;'><td align=\"center\" style='color: WHITE;'>Section-".$sec_nos[$i]."</td><td align=\"center\" style='color: WHITE;'>".$sql_row12['boxs']."</td><td align=\"right\" style='color: WHITE;'>".$sql_row12['wip']."</td><td align=\"left\" style='color: WHITE;'></td></tr>";
 	}
 }
-$sql13="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
+$sql13="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mod.") and ims_status!=\"DONE\" ";
 //echo $sql1."<br>";
 $sql_result13=mysqli_query($link, $sql13) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row13=mysqli_fetch_array($sql_result13))
@@ -103,7 +111,8 @@ $message.= '
 
 for($i=0;$i<sizeof($sec_nos);$i++)
 {
-	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" GROUP BY ims_mod_no order by ims_mod_no*1";
+	$sec_mod2 = "'" . str_replace(',',"','",$sec_mods[$i]) . "'";
+	$sql="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mod2.") and ims_status!=\"DONE\" GROUP BY ims_mod_no order by ims_mod_no*1";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -111,7 +120,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 		$message.= "<tr><td align=\"center\">".$sql_row['ims_mod_no']."</td><td align=\"center\">".$sql_row['boxs']."</td><td align=\"right\">".$sql_row['wip']."</td><td align=\"left\">".$sql_row['schedules']."</td></tr>";
 	}
 	
-	$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mods[$i].") and ims_status!=\"DONE\" ";
+	$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mod2.") and ims_status!=\"DONE\" ";
 	//echo $sql1."<br>";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -120,7 +129,7 @@ for($i=0;$i<sizeof($sec_nos);$i++)
 	}
 }
 
-$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".implode(",",$sec_mods).") and ims_status!=\"DONE\" ";
+$sql1="SELECT COUNT(DISTINCT rand_track) AS \"boxs\", ims_mod_no, SUM(ims_qty-ims_pro_qty) AS \"wip\", GROUP_CONCAT(DISTINCT ims_schedule ORDER BY ims_schedule) AS \"schedules\"  FROM $bai_pro3.ims_log where ims_mod_no in (".$sec_mod.") and ims_status!=\"DONE\" ";
 //echo $sql1."<br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -131,7 +140,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 $message.="</table>";
 $message.='<br/>Message Sent Via: '.$plant_name;
 $message.="</body></html>";
-// echo $message."<br>";
+echo $message."<br>";
 
 //To Track KPI
 
