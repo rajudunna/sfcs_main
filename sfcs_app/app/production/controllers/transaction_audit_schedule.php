@@ -74,33 +74,28 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	
 
 	
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
-	mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
-	$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
-	$count_val1=0;
-	while($sql_row=mysqli_fetch_array($sql_result))
- {
-	$sql2="select * from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
-	mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error());
-	$sql_result=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
-	$count_val2=0;
-	while($sql_row=mysqli_fetch_array($sql_result))
-  { 
-	
+$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
+mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
+$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
+$count_val1=0;
+while($sql_row=mysqli_fetch_array($sql_result))
+{
 	$color=$sql_row['order_col_des'];
 	for($s=0;$s<sizeof($sizes_code);$s++)
+	{
+		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
-			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-			{
-				$count_val2++;
-				$s_tit=$sql_row["title_size_s".$sizes_code[$s].""];		
-			}	
-		}
+			$count_val1++;
+			$s_tit=$sql_row["title_size_s".$sizes_code[$s].""];
+			
+			
+		}	
+	}
 	echo "<table id=\"table1\" border=1 class=\"mytable\" style=\"width:1000px\">";
-	echo "<tr><th>$color</th><th colspan=\"$count_val2\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val2\" style=\"background-color:black;\">Order Quantities</th></tr>";
+echo "<tr><th>$color</th><th colspan=\"$count_val1\">Extra Shippable Quantities</th><th style=\"background-color:red;\">&nbsp;</th><th colspan=\"$count_val1\" style=\"background-color:black;\">Order Quantities</th></tr>";
 
-	echo "<tr><th>Description</th>";
-	for($s=0;$s<sizeof($sizes_code);$s++)
+echo "<tr><th>Description</th>";
+for($s=0;$s<sizeof($sizes_code);$s++)
 	{
 		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
@@ -110,8 +105,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 			
 		}	
 	}
-	echo"<th style=\"background-color:red;\">&nbsp;</th>";
-	for($s=0;$s<sizeof($sizes_code);$s++)
+echo"<th style=\"background-color:red;\">&nbsp;</th>";
+for($s=0;$s<sizeof($sizes_code);$s++)
 	{
 		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
 		{
@@ -121,7 +116,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 			
 		}	
 	}	
-	echo"</tr>";
+echo"</tr>";
 	
 	// $order_xs=$sql_row['order_s_xs'];
 	// $order_s=$sql_row['order_s_s'];
@@ -190,11 +185,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		// <td>$order_s26</td>
 		// <td>$order_s28</td>
 		// <td>$order_s30</td>
-		for($s=0;$s<$count_val2;$s++){
-			// echo $count_val2;
-			// echo $sizes_code[$s];
-			// var_dump($sizes_code[$s]);
-
+		for($s=0;$s<$count_val1;$s++){
 			echo "<td style='text-align:center;'>".$sql_row["order_s_s".$sizes_code[$s].""]."</td>";
 			
 			
@@ -202,7 +193,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 		echo"<td style=\"background-color:red;\"></td>";
 
-		for($s=0;$s<$count_val2;$s++){
+		for($s=0;$s<$count_val1;$s++){
 			echo "<td style='text-align:center;'>".$sql_row["old_order_s_s".$sizes_code[$s].""]."</td>";
 			
 		}
@@ -213,17 +204,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		
 		echo "<tr>";
 		echo "<td style='text-align:center;'>Output Quantities</td>";
-		$sql1="select sum(size_xs) as \"size_xs\", sum(size_s) as \"size_s\", sum(size_m) as \"size_m\", sum(size_l) as \"size_l\", sum(size_xl) as \"size_xl\", sum(size_xxl) as \"size_xxl\", sum(size_xxxl) as \"size_xxxl\", sum(size_s06) as \"size_s06\",sum(size_s08) as \"size_s08\", sum(size_s10) as \"size_s10\", sum(size_s12) as \"size_s12\", sum(size_s14) as \"size_s14\", sum(size_s16) as \"size_s16\", sum(size_s18) as \"size_s18\", sum(size_s20) as \"size_s20\", sum(size_s22) as \"size_s22\", sum(size_s24) as \"size_s24\", sum(size_s26) as \"size_s26\", sum(size_s28) as \"size_s28\",sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\"  from $bai_pro.bai_log_buf where delivery=$schedule and color='$color'";
+		$sql1="select sum(size_xs) as \"size_xs\", sum(size_s) as \"size_s\", sum(size_m) as \"size_m\", sum(size_l) as \"size_l\", sum(size_xl) as \"size_xl\", sum(size_xxl) as \"size_xxl\", sum(size_xxxl) as \"size_xxxl\", sum(size_s01) as \"size_s01\",sum(size_s02) as \"size_s02\",sum(size_s03) as \"size_s03\",sum(size_s04) as \"size_s04\",sum(size_s05) as \"size_s05\",sum(size_s06) as \"size_s06\",sum(size_s08) as \"size_s08\", sum(size_s10) as \"size_s10\", sum(size_s12) as \"size_s12\", sum(size_s14) as \"size_s14\", sum(size_s16) as \"size_s16\", sum(size_s18) as \"size_s18\", sum(size_s20) as \"size_s20\", sum(size_s22) as \"size_s22\", sum(size_s24) as \"size_s24\", sum(size_s26) as \"size_s26\", sum(size_s28) as \"size_s28\",sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\"  from $bai_pro.bai_log_buf where delivery=$schedule and color='$color'";
+		// echo $sql1;
 			mysqli_query($link,$sql1) or exit("Sql Error3".mysqli_error());
 			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error4".mysqli_error());
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				for($s=0;$s<$count_val2;$s++){
+				
+				for($s=0;$s<$count_val1;$s++){
 					echo "<td style='text-align:center;'>".$sql_row1["size_s".$sizes_code[$s].""]."</td>";
+				// var_dump ($sizes_code[$s]);
 				}
 				echo"<td style=\"background-color:red;\"></td>";
 		
-				for($s=0;$s<$count_val2;$s++){
+				for($s=0;$s<$count_val1;$s++){
 					echo "<td style='text-align:center;'>".$sql_row1["size_s".$sizes_code[$s].""]."</td>";
 				}
 
@@ -255,7 +249,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		// <td class=\"colorme\">".($order_s26-$s26)."</td>
 		// <td class=\"colorme\">".($order_s28-$s28)."</td>
 		// <td class=\"colorme\">".($order_s30-$s30)."</td>
-		for($s=0;$s<$count_val2;$s++){
+		for($s=0;$s<$count_val1;$s++){
 			echo "<td style='text-align:center;'>".($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
 			//echo ($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""]);
 			
@@ -263,8 +257,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		}
 	
 		echo"<td style=\"background-color:red;\"></td>";
-		for($s=0;$s<$count_val2;$s++){
-			echo "<td style='text-align:center;'>".($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
+		for($s=0;$s<$count_val1;$s++){
+			echo "<td style='text-align:center;'>".($sql_row["old_order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""])."</td>";
 			//echo ($sql_row["order_s_s".$sizes_code[$s].""]-$sql_row1["size_s".$sizes_code[$s].""]);
 			
 			
@@ -292,10 +286,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 		// <td class=\"colorme\">".($old_order_s30-$s30)."</td>
 		
 		echo "</tr>";
-		$count_val2=0;
+		$count_val1=0;
 		echo "</table>";
 
-}
 }
 }
 
