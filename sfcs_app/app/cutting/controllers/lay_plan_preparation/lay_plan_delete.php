@@ -411,6 +411,14 @@ if(isset($_POST["submit"]))
                             mysqli_query($link, $sql101) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             //Deleteion for binding dockets
 
+                            $sql104="delete from $bai_pro3.plan_cut_bundle_trn where plan_cut_bundle_id in (select id from $bai_pro3.plan_cut_bundle where doc_no in (".$dockets."))"; 
+                            // echo $sql102."<br>"; 
+                            mysqli_query($link, $sql104) or die("Error=1212".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                           
+                            $sql105="delete from $bai_pro3.plan_cut_bundle where doc_no in (".$dockets.")"; 
+                            // echo $sql103."<br>";
+                            mysqli_query($link, $sql105) or die("Error=1212".mysqli_error($GLOBALS["___mysqli_ston"]));
+
                         }
                     }
                     //echo gethostname."<br>"; 

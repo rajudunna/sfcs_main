@@ -231,6 +231,11 @@
                             $sql3="DELETE FROM $bai_pro3.`pac_stat_log_input_job` WHERE tid IN ($tid)";
                             // echo $sql3."<br>"; 
                             mysqli_query($link, $sql3) or exit("Sql Error91".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
+
+                            $sql4="DELETE FROM $brandix_bts.`bundle_creation_data` WHERE bundle_number IN ($tid)";
+                            // echo $sql4."<br>"; 
+                            mysqli_query($link, $sql4) or exit("Sql Error922".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             
                             $insert_log="INSERT INTO $bai_pro3.inputjob_delete_log (user_name,date_time,reason,SCHEDULE) VALUES ('$username',now(),'$reason','$schedule')"; 
                             // echo $insert_log."</br>"; 
@@ -248,7 +253,6 @@
                         $sql2="delete from $brandix_bts.tbl_carton_ref where ref_order_num='".$sch_ref."'"; 
                         //echo $sql2."<br>"; 
                         mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-
                         echo "<script>sweetAlert('Packing Ratio Successfully Deleted','','success')</script>";
                     } 
                     else 
@@ -361,6 +365,11 @@
                 $delete_pac_stat_log_ij="DELETE FROM $bai_pro3.pac_stat_log_input_job WHERE tid IN ($get_tids)"; 
                 // echo $delete_pac_stat_log_ij."<br>"; 
                 mysqli_query($link, $delete_pac_stat_log_ij) or exit("while Deleting pac_stat_log_input_job");
+
+                $sql4="DELETE FROM $brandix_bts.`bundle_creation_data` WHERE bundle_number IN ($get_tids)";
+                // echo $sql4."<br>"; 
+                mysqli_query($link, $sql4) or exit("Sql Error922".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
 
                 $sql_check_docs="select doc_no FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no in ($get_docs) group by doc_no";
                 // echo $sql_check_docs."<br>"; 

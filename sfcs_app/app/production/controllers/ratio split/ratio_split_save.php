@@ -27,6 +27,7 @@ $response_data = [];
 // exit();
 
 // var_dump($shades);
+// die();
 //Local Storables
 //$input_jobs = array([]);
 $tids   = [];
@@ -35,13 +36,15 @@ $sizes  = [];
 $inserted_tids = [];
 $jobs = [];
 //Concurrent Verification
-$bcd_verify = "SELECT * from $brandix_bts.bundle_creation_data where docket_number = '$doc_no' 
-            and operation_id IN ($SEWIN,$SEWOUT)";
-if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
-    $response_data['exist'] = 'yes';
-    echo json_encode($response_data);
-    exit();
-}else{
+// $bcd_verify = "SELECT * from $brandix_bts.bundle_creation_data where docket_number = '$doc_no' 
+//             and operation_id IN ($SEWIN,$SEWOUT)";
+// if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
+//     $response_data['exist'] = 'yes';
+//     echo json_encode($response_data);
+//     exit();
+// }
+// else
+{
     if(sizeof($shades) == 1){
         $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
                 values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."',
@@ -49,6 +52,9 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
         mysqli_query($link,$insert_query) or exit('Problem in inserting into shade split');  
         
         $update_psl_query = "UPDATE $bai_pro3.pac_stat_log_input_job set shade_group = '".$ashades[0]."' where doc_no = $doc_no ";
+        mysqli_query($link,$update_psl_query);
+
+        $update_psl_query = "UPDATE $brandix_bts.bundle_creation_data set shade = '".$ashades[0]."' where docket_number = $doc_no ";
         mysqli_query($link,$update_psl_query);
 
         $response_data['save'] = 'success';
@@ -162,23 +168,75 @@ while($row = mysqli_fetch_array($jobs_result1)){
 
 //echo $insert_query;                
 // var_dump($to_insert_jobs);
+// die();
+$get_pcb = "SELECT input_job_no_random,old_size,plan_cut_bundle_id,pac_seq_no FROM $bai_pro3.pac_stat_log_input_job WHERE tid IN (".implode(',',$tids).")";
+
+$get_pcb_result = mysqli_query($link,$get_pcb) or exit('Getting PCB Erorr');             
+while($row_pcb=mysqli_fetch_array($get_pcb_result))
+{
+    $old_ij = $row_pcb['input_job_no_random'];
+    $size = $row_pcb['old_size'];
+    $pac_seq_no = $row_pcb['pac_seq_no'];
+    $plan_cut_bundle_id[$old_ij][$size][$pac_seq_no] = $row_pcb['plan_cut_bundle_id'];
+}
+//operation details
+$category='sewing';
+$operation_codes = array();
+$fetching_ops_with_category1 = "SELECT tsm.operation_code AS operation_code,tsm.m3_smv AS smv FROM $brandix_bts.tbl_style_ops_master tsm 
+LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category='".$category."' GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
+$result_fetching_ops_with_cat1 = mysqli_query($link,$fetching_ops_with_category1) or exit("Issue while Selecting Operaitons");
+while($row1=mysqli_fetch_array($result_fetching_ops_with_cat1))
+{
+    $operation_codes[] = $row1['operation_code'];				
+    $smv[$row1['operation_code']] = $row1['smv'];				
+}
+
 foreach($to_insert_jobs as $shade => $ij){
     foreach($ij as $ijob => $size_qty){
         foreach($size_qty as $size => $qtys){
             foreach($qtys as $qty){
                 $type_of_sew = $type_of_sewing[$ijob];    
                 $seq_no = $pac_seq[$ijob] != '' ? $pac_seq[$ijob] : 0;
-                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group) 
+                $pcb_id = $plan_cut_bundle_id[$ijob][$size][$seq_no];
+                $date = date('Y-m-d H:i:s');
+                $barcode="SPB-".$doc_no."-".$job_map[$ijob]."-".$seq_no."";
+                $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group,plan_cut_bundle_id,tran_ts,tran_user,barcode,style,color,schedule) 
                 values 
-                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade')";
+                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade','$pcb_id','$date','$username','$barcode','$style','$schedule','$color')";
                 mysqli_query($link,$insert_query) or exit("Problem while inserting new jobs job - $ijob - $size_map[$size] - $size - $qty - $type_of_sew");
                 $inserted_tids[] = mysqli_insert_id($link);
+                $pac_tid = mysqli_insert_id($link);
                 //echo "$ijob - $size_map[$size] - $size - $qty - $type_of_sew <br/>";
+
+                $assigned_module_query = "select assigned_module from $brandix_bts.bundle_creation_data where input_job_no_random_ref ='".$ijob."'";
+                $assigned_module_query_res = mysqli_query($link, $assigned_module_query) or exit("issue in excess doc query".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($assigned_module_query_res_row = mysqli_fetch_array($assigned_module_query_res))
+                {
+                    $assigned_module = $assigned_module_query_res_row['assigned_module'];
+                }
+
+                foreach($operation_codes as $index => $op_code)
+                {
+                    $send_qty = 0;
+                    if($index == 0) {
+                        $send_qty = $qty;
+                    }
+                    //Plan Logical Bundle Trn
+                    $b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size."','".$size_map[$size]."','". $smv[$op_code]."',".$pac_tid.",".$qty.",".$send_qty.",0,0,0,".$op_code.",'".$doc_no."','".date('Y-m-d H:i:s')."', '".$username."','','".$job_map[$ijob]."','".$ijob."','".$shift."','".$assigned_module."','Normal','".$color."',".$seq_no.",'".$barcode."')";
+                    // echo $b_query;
+                    mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+                }
             }
         }
     }
 }
 array_unique($inserted_tids);
+
+//Deleting from bcd 
+$delete_bcd = "DELETE from $brandix_bts.bundle_creation_data where bundle_number IN (".implode(',',$tids).")";
+mysqli_query($link,$delete_bcd);
+
+
 //Deleting from pac_stat_log_input_job 
 $delete_pacs = "DELETE from $bai_pro3.pac_stat_log_input_job where tid IN (".implode(',',$tids).")";
 mysqli_query($link,$delete_pacs);

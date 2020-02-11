@@ -123,10 +123,35 @@
 						$nqty=$carton_act_qty-$qty;
 						if($nqty>0)
 						{
-							$sql1="INSERT into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,pac_seq_no,sref_id,plan_cut_bundle_id,tran_user,style,color,schedule,tran_ts) VALUES ('$doc_no','$size_code',$qty,'$input_job_no','".$doc_no_ref."','".$ninput_job_no."','".$ninput_job_no_random."','$destination',$packing_mode,'$old_size',$type_of_sewing,$pac_seq_no,$sref_id,'".$plan_cut_bundle_id."','".$username."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+							$sql1="INSERT into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,carton_act_qty,status,doc_no_ref,input_job_no,input_job_no_random,destination,packing_mode,old_size,type_of_sewing,pac_seq_no,sref_id,plan_cut_bundle_id,tran_user,style,color,schedule,tran_ts,barcode_sequence,barcode) VALUES ('$doc_no','$size_code',$qty,'$input_job_no','".$doc_no_ref."','".$ninput_job_no."','".$ninput_job_no_random."','$destination',$packing_mode,'$old_size',$type_of_sewing,$pac_seq_no,$sref_id,'".$plan_cut_bundle_id."','".$username."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."','".$bundle_seq."','".$barcode."')";
 							// echo $sql1.'<br>';
 							mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							$inserted_tid = mysqli_insert_id($link);
+
+							$bcds = "Select operation_id,sfcs_smv,cut_number from $brandix_bts.bundle_creation_data where bundle_number = $tid group by operation_id";
+							// echo $bcds;
+							$bcds_result = mysqli_query($link,$bcds); 
+							$operation_codes = array();
+							while($row_bcd = mysqli_fetch_array($bcds_result)){
+								$cut_number = $row_bcd['cut_number'];
+								$operation_codes[] = $row_bcd['operation_id'];
+								$smv[$operation_codes] = $row_bcd['sfcs_smv'];
+							}
+							// var_dump($operation_codes);
+							// die();
+							foreach($operation_codes as $index => $op_code)
+							{
+								$send_qty = 0;
+								if($index == 0) {
+									$send_qty = $qty;
+								}
+								//Plan Logical Bundle Trn
+								$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `shift`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $old_size."','".$size_code."','". $smv[$op_code]."',".$inserted_tid.",".$qty.",".$send_qty.",0,0,0,".$op_code.",'".$doc_no."','".date('Y-m-d H:i:s')."', '".$username."','".$cut_number."','".$ninput_job_no."','".$ninput_job_no_random."','','','Normal','".$color."',".$bundle_seq.",'".$barcode."')";
+								mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+							// $barcode='';
+							// $bundle_seq++;
+
 							$sql2="UPDATE $bai_pro3.pac_stat_log_input_job SET carton_act_qty='$nqty' WHERE tid='$tid'";
 							// echo $sql2.'<br>'; 
 							mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -152,7 +177,21 @@
 							where bundle_no = '$tid' and input_job_random = '$temp_input_job_no_random' 
 							and input_job_no = '$temp_input_job_no'";
 						*/
-						$update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty'
+						$update_orig_bcd = "Update $brandix_bts.bundle_creation_data set original_qty='$nqty'
+									  where bundle_number = $tid "; 
+						$update_orig_bcd_result = mysqli_query($link,$update_orig_bcd) or exit('An error While Updating BCD');  
+
+						$get_send_bcd = "Select * 
+						from $brandix_bts.bundle_creation_data where bundle_number = $tid and send_qty>0";
+						$get_send_bcd_result = mysqli_query($link,$get_send_bcd); 
+						while($row = mysqli_fetch_array($get_send_bcd_result)){
+							$update_bcd = "Update $brandix_bts.bundle_creation_data set send_qty='$nqty'
+							where bundle_number = $tid "; 
+			  				$update_bcd_result = mysqli_query($link,$update_bcd) or exit('An error While Updating BCD'); 
+						}
+
+
+						$update_mo = "Update $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty'
 									  where ref_no = $tid "; 
 									// ref_no='$inserted_tid'             
 						$update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
@@ -169,6 +208,8 @@
 						}
 						//Inserting the new bundle quantity
 						foreach(array_unique($ops) as $op_code=>$op_desc){
+							       
+							
 							$insert_mo = "Insert into $bai_pro3.mo_operation_quantites
 										(date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
 										('".date('Y-m-d H:i:s')."','$mo_no',$inserted_tid,$qty,$op_code,'$op_desc')";          

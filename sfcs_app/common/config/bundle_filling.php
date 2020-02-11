@@ -561,7 +561,7 @@ function plan_logical_bundles_pac_based($inserted_id){
 				
 						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$pac_tid= mysqli_insert_id($link);
-						
+						$spb_barcode_sequence++;
 		
 						//operation details
 						$category='sewing';
