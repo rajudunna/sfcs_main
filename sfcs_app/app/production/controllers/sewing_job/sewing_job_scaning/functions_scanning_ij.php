@@ -1714,6 +1714,10 @@ function validating_with_module($pre_array_module)
             else
             {
                 $response_flag = 0; // To allow block priorities for remaining operations
+				if($module == '' || $module == null || $module == 0)
+				{
+					$response_flag = 4;
+				}
             }   
             
         }

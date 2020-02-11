@@ -279,7 +279,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Joints</th>
                             <th>Endbits</th>
                             <th>Shortages</th>
-                            <!-- <th>Rejection Pieces</th> -->
+                            <th>Rejection Pieces</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -310,7 +310,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control float' value='0' id='shortages'>
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             
-                            <input type='button' style='display : none' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
+                            <td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
                             </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
