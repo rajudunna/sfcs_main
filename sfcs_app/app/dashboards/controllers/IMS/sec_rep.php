@@ -323,6 +323,7 @@ if(isset($_GET['val']))
 							echo "</tr>";
 		$toggle=0;
 		$j=1;
+
 		for($i=0; $i<sizeof($modules); $i++)
 		{
 			$module_ref=$modules[$i];
@@ -344,7 +345,6 @@ if(isset($_GET['val']))
 				// 	$wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
 				// } 
 				//unset($bundle_numbers);
-		
 
 			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module_ref' and  send_qty > 0";
 			//echo $sql12;
