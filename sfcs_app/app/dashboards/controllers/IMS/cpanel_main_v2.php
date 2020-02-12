@@ -706,7 +706,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 					  Rejected:<?php echo $rejected."<br/>"; ?>
 					  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
 					  " rel="tooltip">
-					  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo $value;?></h6>
+					  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<b>".$value."</b>"?></h6>
 					  </div></a>
 					<?php 
 					  }
@@ -759,7 +759,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 						  Rejected:<?php echo $rejected."<br/>"; ?>
 						  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
 						  " rel="tooltip">
-						  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo $value;?></h6>
+						  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<b>".$value."</b>"?></h6>
 						  </div></a>
 						  <?php
 						}
