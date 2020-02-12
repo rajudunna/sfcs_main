@@ -324,48 +324,11 @@ if(isset($_GET['val']))
 		$toggle=0;
 		$j=1;
 
-		$operation_codes=array();
-		$ops_code="select operation_code from $brandix_bts.tbl_orders_ops_ref where category='sewing'";
-		$ops_code_result=mysqli_query($link, $ops_code)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($ops_row=mysqli_fetch_array($ops_code_result))
-		{
-		  $operation_codes[]=$ops_row['operation_code'];
-		}
 		for($i=0; $i<sizeof($modules); $i++)
 		{
 			$module_ref=$modules[$i];
 			$new_module = $module_ref;
 			$rowcount_check=0;
-			$input_job= array();
-			$bcd_id= array();
-			$bcd_bundles= array();
-
-			  $get_recut_qty="select distinct(input_job_no_random_ref) as input_job from $bai_pro3.rejection_log_child where assigned_module='$module_ref' and operation_id in (".implode(",",$operation_codes).")";
-			  $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
-			  while($recut_row=mysqli_fetch_array($recut_result))
-			  {
-			  	  $input_job[] = $recut_row['input_job'];
-			  }	
-	          
-	          for($i=0;$i<sizeof($input_job);$i++)
-	          {
-
-	          	$get_qtys="SELECT SUM(replaced_qty) AS replaced_qty,SUM(rejected_qty) AS rejected_qty,sum(issued_qty) as issued_qty,bcd_id FROM $bai_pro3.rejection_log_child WHERE  input_job_no_random_ref ='".$input_job[$i]."' and assigned_module='$module_ref' group by input_job_no_random_ref HAVING (rejected_qty - (replaced_qty+issued_qty) > 0)";
-	          	//echo $get_qtys;
-	          	$qty_result=mysqli_query($link, $get_qtys) or exit("Sql Errorqty".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($qty_row=mysqli_fetch_array($qty_result))
-				{
-	               $bcd_id[] = $qty_row['bcd_id'];
-				}
-
-			  }
-
-			  $get_bundles="select distinct(bundle_number) as bundles from $brandix_bts.bundle_creation_data where id in (".implode(",",$bcd_id).")";
-			  $bundle_result=mysqli_query($link, $get_bundles) or exit("Sql Errorqty".mysqli_error($GLOBALS["___mysqli_ston"]));
-			  while($bundle_row=mysqli_fetch_array($bundle_result))
-			  {
-                 $bcd_bundles[] = $bundle_row['bundles'];
-			  }
 
 			$sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
 			$sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -373,7 +336,7 @@ if(isset($_GET['val']))
 			{
 				while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
 				{
-						$bundle_numbers_main[]=$sql_rowwip['pac_tid'];
+						$bundle_numbers[]=$sql_rowwip['pac_tid'];
 				}
 				// $sqlwip12="SELECT sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".explode(",",$bundle_numbers).") assigned_module='$module'";
 				// $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -382,8 +345,7 @@ if(isset($_GET['val']))
 				// 	$wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
 				// } 
 				//unset($bundle_numbers);
-		
-            $bundle_numbers = array_merge($bundle_numbers_main,$bcd_bundles);
+
 			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module_ref' and  send_qty > 0";
 			//echo $sql12;
 			if(isset($_POST['submit']))

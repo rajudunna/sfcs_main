@@ -145,7 +145,9 @@ padding-top:10px;
   width:20px;height:20px;float:left;margin-right:5px;background-color:#15a5f2;line-height:0px;font-size:0px;
   margin-bottom:5px;border:1px;
 }
-
+.blue_box h6{
+  color:#000;
+}
 .yellow_box
 {
   width:30px;height:20px;float:left;margin-right:5px;background-color:#FFFF00;line-height:0px;font-size:12px;
@@ -521,8 +523,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 	  $issued=array();
 	  $replace=array();
 	  $recut_job=array();
-	//  if($module==23)
-	  {
+
 	  $get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $bai_pro3.rejection_log_child where assigned_module='$module'";
 	  $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
 	  while($recut_row=mysqli_fetch_array($recut_result))
@@ -544,8 +545,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 			  $recut_job[]=$input_jobs_rand[$k];
 			  $recut_job_val[$input_jobs_rand[$k]]='R';
 		  }
-	  }	 
-	  }	  
+	  }	   
 	  $rejection_border='';
 
       ?>
@@ -706,7 +706,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 					  Rejected:<?php echo $rejected."<br/>"; ?>
 					  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
 					  " rel="tooltip">
-					  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<b>".$value."</b>"?></h6>
+					  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<strong>".$value."</strong>"?></h6>
 					  </div></a>
 					<?php 
 					  }
@@ -759,7 +759,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
 						  Rejected:<?php echo $rejected."<br/>"; ?>
 						  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
 						  " rel="tooltip">
-						  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<b>".$value."</b>"?></h6>
+						  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<strong>".$value."</strong>"?></h6>
 						  </div></a>
 						  <?php
 						}
