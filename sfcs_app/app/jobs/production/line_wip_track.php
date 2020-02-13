@@ -140,7 +140,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 $message.="</table>";
 $message.='<br/>Message Sent Via: '.$plant_name;
 $message.="</body></html>";
-echo $message."<br>";
+// echo $message."<br>";
 
 //To Track KPI
 
