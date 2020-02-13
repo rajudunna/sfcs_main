@@ -130,6 +130,50 @@ function GetValueFromChild(tmp)
 				} */
 			} 
 		}
+		
+			// For start and end time validation
+		
+function calculate() 
+{
+   
+   var nop = document.getElementById("nop1").value;
+	var stime = document.getElementById("s1").value;
+	var etime = document.getElementById("r1").value;
+	// var ltime = document.getElementById("l_" + i).value;
+	var extime = document.getElementById("ex1").value;	
+	stimesplit=stime.split(":");
+	etimesplit=etime.split(":");
+	stimeval=parseInt(parseInt((stimesplit[0]*60))+parseInt(stimesplit[1]));
+	etimeval=parseInt(parseInt((etimesplit[0]*60))+parseInt(etimesplit[1]));
+	
+	diff=parseInt(etimeval)-parseInt(stimeval);
+	//alert(etime);
+	if(parseInt(diff)>=0)
+	{
+		document.getElementById("l1").value=parseInt(0);
+		document.getElementById("l1").value=parseInt(diff*nop)-parseInt(nop*extime);	
+			
+	}
+	else
+	{
+		if(etime != 0)
+		{
+			sweetAlert("Please Enter Correct Time.","","info");
+		}	
+		document.getElementById("r1").value="";
+		// document.getElementById("l_" + i).value=parseInt(0);
+		document.getElementById("ex1").value=parseInt(0);
+	}
+	
+	if(parseInt(diff)<parseInt(extime))
+	{
+		//alert("Please Enter Correct Time.");
+		document.getElementById("l1").value=parseInt(0);
+		document.getElementById("ex1").value=parseInt(0);
+	}
+	
+	
+}
 </script>		
 
 <?php 
@@ -415,7 +459,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"GetSelectedItem('s1');\">
+	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"calculate();\">
 
 			<option value=\"0\" name=\"s1\"></option>";
 
@@ -476,7 +520,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"GetSelectedItem('r1');\">
+	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"calculate();\" required>
 
 			<option value=\"0\" name=\"r1\"></option>";
 
@@ -533,13 +577,13 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Downtime</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"l1\" value=\"".$row["dtime"]."\" size=\"3\" /></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"l1\" id=\"l1\" value=\"".$row["dtime"]."\" size=\"3\" /></td>";
 	
 	echo "</tr>";
 	
 	echo "<th>Exception Time</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" onkeyup=\"GetSelectedItem('ex1');\" value=\"0\" size=\"3\" /></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" id=\"ex1\" onkeyup=\"GetSelectedItem('ex1');\" value=\"0\" size=\"3\" /></td>";
 	
 	echo "</tr>";
 	
