@@ -631,7 +631,7 @@ if(isset($_POST['allocate_new']))
 
 
 
-                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where roll_id='".$tid_ref[$j]."'";
+                    $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$row_id_new1."' and roll_id='".$tid_ref[$j]."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0)
@@ -665,7 +665,7 @@ if(isset($_POST['allocate_new']))
                             // $condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
                              //if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 				            {
-                                $sql22="update $bai_rm_pj1.store_in set qty_issued=$qty_iss, status=$status, qty_allocated=0, allotment_status=$status where tid=\"$code\"";
+                                $sql22="update $bai_rm_pj1.store_in set qty_issued=qty_issued+$qty_iss where tid=\"$code\"";
                                 mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 // $sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
@@ -673,7 +673,7 @@ if(isset($_POST['allocate_new']))
                                 // $sql_num_check=mysqli_num_rows($sql_result211);
                                 // if($sql_num_check==0)
                                 // {
-                                    $sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."')";
+                                    $sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp,cut_no) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."','".$row_id_new1."')";
                                     mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // }
 
