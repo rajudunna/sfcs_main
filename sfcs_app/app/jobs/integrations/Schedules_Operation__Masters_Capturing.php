@@ -82,7 +82,9 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
             print("response_INTO ".$call_count*$call_sub_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
 
             $into_value = '';
-            if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
+            $doid_value=$response_INTO['response']['DOID'];
+            
+            if($response_INTO['status'] && isset($response_INTO['response']['INTO']) && $doid_value !='SFCS_Exclude'){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
             }
             echo "</br> INTO value : ".$into_value."</br>";

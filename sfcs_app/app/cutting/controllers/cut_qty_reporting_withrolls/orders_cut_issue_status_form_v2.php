@@ -670,7 +670,7 @@ $club_status=0;$a_plies_qty=0;
 <?php 
 $rollwisedata = array(); 
 $rolltabeldata = array();  
-$sql="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no=$doc_no"; 
+$sql="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no'"; 
 //echo $sql."<br>"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
