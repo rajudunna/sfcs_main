@@ -105,7 +105,7 @@ $has_permission=haspermission($_GET['r']);
 									if($sno==1){
 											$ops_sequence=$operation_order[$operation_counter];
 											$docket_number=$result[doc_no];
-											$fab_cad_query="SELECT shade,SUM(plies) AS plies FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$docket_number AND (plies<>'NULL' OR shade<>'NULL') GROUP BY shade";
+											$fab_cad_query="SELECT shade,SUM(plies) AS plies FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$docket_number' AND (plies<>'NULL' OR shade<>'NULL') GROUP BY shade";
 											// echo $fab_cad_query."</br>";
 											// die();
 											$fab_cad_qry_result= mysqli_query($link,$fab_cad_query);

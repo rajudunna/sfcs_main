@@ -31,7 +31,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$allocate_ref=$sql_row['allocate_ref'];
 		}
 		$min_width=0;
-		$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$_GET['doc_no']."";
+		$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$_GET['doc_no']."' ";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1x=mysqli_fetch_array($sql_result))
 		{
@@ -341,7 +341,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$mk_ref=$sql_row['mk_ref'];
 					}
 					$min_width=0;
-					$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." and doc_type=\"normal\"";
+					$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."' and doc_type=\"normal\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1x=mysqli_fetch_array($sql_result))
 					{
