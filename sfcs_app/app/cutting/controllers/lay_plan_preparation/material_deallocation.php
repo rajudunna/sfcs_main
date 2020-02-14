@@ -327,7 +327,7 @@ if(isset($_POST['formSubmit']))
                 $allocate_ref = $sql_row0['allocate_ref'];
             }
         
-            $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+            $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
             $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($fab_qry_result)>0)
             {     
@@ -338,7 +338,7 @@ if(isset($_POST['formSubmit']))
 
                     if(mysqli_num_rows($is_requested_result)==0)
                     {
-                        $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+                        $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
                         $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $allocated_qty=0;
                         while($sql_row1=mysqli_fetch_array($fab_qry_result))

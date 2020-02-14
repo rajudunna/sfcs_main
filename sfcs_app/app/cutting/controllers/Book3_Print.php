@@ -361,7 +361,7 @@ $a_s50=$sql_row['a_s50'];
 	$savings=$sql_row['savings'];
 }
 
-	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
+	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_id."' and doc_type=\"normal\"";
  //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
