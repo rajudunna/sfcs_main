@@ -220,9 +220,9 @@ else
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued +".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued +".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued +".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued +".$actual_quentity_present." where tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
@@ -297,9 +297,9 @@ else
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued + ".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued + ".$actual_quentity_present." where tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
