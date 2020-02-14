@@ -310,6 +310,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td><input type='text' class='form-control float' value='0' id='shortages' readonly>
                             <!-- nothing to do any changes in this file,bcoz of last committ merge conflicts it is not merged to UAT-->
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
+                            <!--no changes but roll backed then hard push-->
                             
                             <td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
                             </td>
