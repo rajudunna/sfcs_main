@@ -340,7 +340,7 @@ $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
 
-/*get mark length */
+/*get mark length for #3111 (No changes done but this branch roll backed So hard committed for UAT push*/
 $mlength="SELECT mklength FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
 $mlengthresult = mysqli_query($link,$mlength);
 $marklength = mysqli_fetch_array($mlengthresult);
