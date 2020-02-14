@@ -129,7 +129,7 @@ else
 					if(count($barcode_data)>0)
 					{
 						
-						$actual_quentity_present = ($barcode_data['qty_rec']-$barcode_data['qty_issued'])+$barcode_data['qty_ret'];
+						$actual_quentity_present = ($barcode_data['qty_rec']+$barcode_data['qty_ret']) - ($barcode_data['qty_issued'] + $barcode_data['qty_allocated']) ;
 						//$actual_quentity_present = $barcode_data['qty_rec']-$barcode_data['qty_issued'];
 						// echo $actual_quentity_present.'if';
 						if (is_numeric($barcode_data['ref5'])) {
@@ -167,7 +167,7 @@ else
 									$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 									
 									
-									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."'";
 									//echo $sticker_report."<br/>";
 									$res_sticker_report_cwh = $link_new->query($sticker_report);
 									while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
@@ -176,7 +176,7 @@ else
 										break;
 									}
 									
-									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."'";
 									//echo $sticker_report1."<br/>";
 									$res_sticker_report_cwh1 = $link->query($sticker_report1);
 									while($row12 = $res_sticker_report_cwh1->fetch_assoc()) 
@@ -220,9 +220,9 @@ else
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued +".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued +".$actual_quentity_present." where tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
@@ -242,7 +242,7 @@ else
 									
 										$res_insert_update_rmwh_data1 = $link->query($qry_insert_update_rmwh_data1);
 									
-									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."' ";
 									//echo $sticker_report."<br/>";
 									$res_sticker_report_cwh = $link_new->query($sticker_report);
 									while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
@@ -251,7 +251,7 @@ else
 										break;
 									}
 									
-									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no=".$barcode_data['lot_no']."";
+									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."' ";
 									//echo $sticker_report1."<br/>";
 									$res_sticker_report_cwh1 = $link->query($sticker_report1);
 									while($row12 = $res_sticker_report_cwh1->fetch_assoc()) 
@@ -297,9 +297,9 @@ else
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_ret=0,qty_issued=qty_issued + ".$actual_quentity_present." where tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
