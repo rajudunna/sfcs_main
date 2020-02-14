@@ -32,7 +32,7 @@ while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
 {
 	$module=$sql_row_sec['sec_mods'];
 	$sec_id=$sql_row_sec['sec_id'];
-	$update_sec="Update bai_pro.bai_log set bac_sec=$sec_id where bac_no in ($module)";
+	$update_sec="Update bai_pro.bai_log set bac_sec=$sec_id where bac_no in ("."'".str_replace(",","','",$module)."'".")";
 	// echo $update_sec."<br>";
 	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 }

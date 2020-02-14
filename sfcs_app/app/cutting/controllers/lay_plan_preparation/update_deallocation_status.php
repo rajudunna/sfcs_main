@@ -20,7 +20,7 @@
 		
 		if($fstatus<5)
 		{
-			$fab_qry="SELECT allocated_qty,roll_id FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+			$fab_qry="SELECT allocated_qty,roll_id FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
 			// echo $fab_qry."<br>";
 			$fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($fab_qry_result)>0)
@@ -65,7 +65,7 @@
 							mysqli_query($link, $sql) or exit("Sql Error2: delete fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				// die();
-				$delete_fab="delete from $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+				$delete_fab="delete from $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
 				$delete_fab_result=mysqli_query($link, $delete_fab) or exit("Sql Error2: delete fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$update_plan_qry="update $bai_pro3.plandoc_stat_log set plan_lot_ref='',print_status='',fabric_status=0 where doc_no=".$doc_no;
