@@ -34,7 +34,7 @@ if(isset($_GET['doc_no']) && isset($_GET['order_tid'])){
 				}			
 			}
 			//Shade info details..
-			$get_shade_details="select shade,sum(plies) as plies from $bai_rm_pj1.fabric_cad_allocation where doc_no=$doc_no group by shade";
+			$get_shade_details="select shade,sum(plies) as plies from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no' group by shade";
 			$shade_details_result=mysqli_query($link, $get_shade_details) or exit("Error at getting Shade information".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$shade_cnt=mysqli_num_rows($shade_details_result);
 			$shade_details = array();

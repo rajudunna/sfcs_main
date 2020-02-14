@@ -50,7 +50,7 @@ if(isset($_GET['doc_no'])){
     </script>";
     
 
-$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = '".$doc_no."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 }
