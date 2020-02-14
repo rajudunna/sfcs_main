@@ -673,7 +673,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#damages').attr('readonly', false);
                 $('#joints').attr('readonly', false);
                 $('#endbits').attr('readonly', false);
-                $('#shortages').attr('readonly', false);
+                //$('#shortages').attr('readonly', false);
         }
             enable_report = 0;
            //$("#cut_report"). prop("checked", false);     
@@ -1836,7 +1836,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#damages').attr('readonly', false);
                 $('#joints').attr('readonly', false);
                 $('#endbits').attr('readonly', false);
-                $('#shortages').attr('readonly', false);
+                //$('#shortages').attr('readonly', false);
+                calculatecutreport();
         }).fail(function(){
             swal('Network Error while getting Details','','error');
             return;
