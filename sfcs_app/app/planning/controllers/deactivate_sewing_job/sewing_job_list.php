@@ -229,6 +229,8 @@ if(isset($_POST['Save']))
             }
         }
     }
+    // echo $module;
+    // die();
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000);
         function Redirect() {
             sweetAlert('success','','success');
