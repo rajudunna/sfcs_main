@@ -310,107 +310,112 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 <script>
 $(document).ready(function() 
 {
-    //$('#rejec_reasons').select2();
-    // $('#reason_drop').select2();
-    var display_reporting_qty = document.getElementById('display_reporting_qty').value; 
-    var operation_code_routing = document.getElementById('operation_code_routing').value;
-    $('#job_number').focus();
-    $('#loading-image').hide();
-    <?php if ($_POST['operation_name']) {?>
-    $("#job_number").change(function()
-    {
-    <?php }?>
-        $('#dynamic_table1').html('');
-        $('#loading-image').show();
-        var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
-        var barcode_generation = "<?php echo $barcode_generation?>";
-        var job_number = $('#job_number').val();
-        var operation_id = $('#operation_id').val();
-        var assign_module = $('#module').val();
-        var current = "<?php echo $operation_name; ?>";
-        var module_flag = null; var restrict_msg = '';
-        var pre_array_module = [assign_module,job_number,operation_id,'scan',barcode_generation];
-        $.ajax({
-            type: "POST",
-            url: function_text+"?pre_array_module="+pre_array_module,
-            dataType: "json",
-            success: function (response) 
-            {
-                
-                if (response == 8)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'Invalid Input. Please Check And Try Again !!!';
-                }
-                else if (response == 7)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'Short shipment done Permanently';
-                }
-                else if (response == 6)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'Short shipment done Temporarily';
-                }
-                else if (response == 5)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'Trims Not Issued';
-                }
-                else if (response == 4)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'No Module Assigned';
-                }
-                else if (response == 3)
-                {
-                    module_flag = 1; // block
-                    restrict_msg = 'No Valid Block Priorities';
-                }
-                else if (response == 2)
-                {
-                    var authorize_check = $('#user_permission').val();
-                    if (authorize_check == 'authorized')
-                    {
-                        module_flag = 0; // allow
-                    }
-                    else
-                    {
-                        module_flag = 1; // block
-                        restrict_msg = 'You are Not Authorized to report more than Block Priorities';
-                    }
-                }
-                else if (response == 0)
-                {
-                    module_flag = 0; // allow
-                }
-                // if (barcode_generation == 0)
-                // {
-                //  module_flag = 0; // allow
-                // }
-                if(module_flag == 0)
-                {
-                    var array = [job_number,operation_id,barcode_generation,assign_module];
-                    $.ajax
-                    ({
-                            type: "POST",
-                            url: function_text+"?job_number="+array,
-                            dataType: "json",
-                            success: function (response) 
-                            {
-                                var sewing_rejection = document.getElementById('sewing_rejection').value;
-                                console.log(response);
-                                console.log(sewing_rejection);
-                                s_no = 0;
-                                var data = response['table_data'];
-                                var flag = response['flag'];
-                                var op_codes = response['ops_get_code'];
-                                var emb_ops = response['emb_cut_check_flag'];
-                                if(response['status'])
-                                {
-                                    sweetAlert('',response['status'],'error');
-                                    $('#dynamic_table1').html('No Data Found');
-                                    document.getElementById('job_number').value = '';
+	//$('#rejec_reasons').select2();
+	// $('#reason_drop').select2();
+	var display_reporting_qty = document.getElementById('display_reporting_qty').value;	
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
+	$('#job_number').focus();
+	$('#loading-image').hide();
+	<?php if ($_POST['operation_name']) {?>
+	$("#job_number").change(function()
+	{
+	<?php }?>
+		$('#dynamic_table1').html('');
+		$('#loading-image').show();
+		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
+		var barcode_generation = "<?php echo $barcode_generation?>";
+		var job_number = $('#job_number').val();
+		var operation_id = $('#operation_id').val();
+		var assign_module = $('#module').val();
+		var current = "<?php echo $operation_name; ?>";
+		var module_flag = null;	var restrict_msg = '';
+		var pre_array_module = [assign_module,job_number,operation_id,'scan',barcode_generation];
+		$.ajax({
+			type: "POST",
+			url: function_text+"?pre_array_module="+pre_array_module,
+			dataType: "json",
+			success: function (response) 
+			{
+				
+				if (response == 9)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Invalid Input. Please Check And Try Again !!!';
+				}
+				else if (response == 8)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Sewing Job Deactivated';
+				}
+				else if (response == 7)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Short shipment done Permanently';
+				}
+				else if (response == 6)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Short shipment done Temporarily';
+				}
+				else if (response == 5)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Trims Not Issued';
+				}
+				else if (response == 4)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Module Assigned';
+				}
+				else if (response == 3)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'No Valid Block Priorities';
+				}
+				else if (response == 2)
+				{
+					var authorize_check = $('#user_permission').val();
+					if (authorize_check == 'authorized')
+					{
+						module_flag = 0; // allow
+					}
+					else
+					{
+						module_flag = 1; // block
+						restrict_msg = 'You are Not Authorized to report more than Block Priorities';
+					}
+				}
+				else if (response == 0)
+				{
+					module_flag = 0; // allow
+				}
+				// if (barcode_generation == 0)
+				// {
+				// 	module_flag = 0; // allow
+				// }
+				if(module_flag == 0)
+				{
+					var array = [job_number,operation_id,barcode_generation,assign_module];
+					$.ajax
+					({
+							type: "POST",
+							url: function_text+"?job_number="+array,
+							dataType: "json",
+							success: function (response) 
+							{
+								var sewing_rejection = document.getElementById('sewing_rejection').value;
+								console.log(response);
+								console.log(sewing_rejection);
+								s_no = 0;
+								var data = response['table_data'];
+								var flag = response['flag'];
+								var op_codes = response['ops_get_code'];
+								var emb_ops = response['emb_cut_check_flag'];
+								if(response['status'])
+								{
+									sweetAlert('',response['status'],'error');
+									$('#dynamic_table1').html('No Data Found');
+									document.getElementById('job_number').value = '';
 
                                 }
                                 else if(data)
