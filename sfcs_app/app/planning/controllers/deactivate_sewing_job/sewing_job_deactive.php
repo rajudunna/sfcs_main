@@ -72,6 +72,7 @@ if(isset($_POST['submit']) || $module)
 
         if ($norows > 0) {
             ?>
+            <div class='col-sm-12' style='max-height:600px;overflow-y:scroll'>
             <form name='list' method='post' action="<?php echo getFullURLLevel($_GET['r'],'sewing_job_list.php','0','N'); ?>">
             <?php
             // echo "<div class='pull-right'><input type='hidden' name='module' value=$module>
@@ -189,6 +190,7 @@ if(isset($_POST['submit']) || $module)
                     $selected1='';
                     $selected='';
                 }
+                unset($remove_type);
                 echo "</tr>";
 
             }

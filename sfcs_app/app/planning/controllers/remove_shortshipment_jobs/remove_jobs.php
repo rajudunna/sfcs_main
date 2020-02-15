@@ -285,7 +285,14 @@ if(isset($_POST['submit']))
                 echo "<script>swal('Short Shipment Jobs as Already Allocated','','warning');</script>";
             }
         }else{
-            echo "<script>swal('Sewing Jobs For This Schedule is On Hold','Short Shipment is not Done. Please Reactivate them!','warning');</script>";
+            // $is_jobs_deactivated_result
+            while($row=mysqli_fetch_array($is_jobs_deactivated_result))
+            {
+                $input_job_no[] = $row['input_job_no'];
+            }
+            $array_list = array_unique($input_job_no);
+            $list = implode(",",$array_list);
+            echo "<script>swal('Sewing Jobs * $list * For This Schedule is On Hold','Short Shipment is not Done. Please Reactivate them!','warning');</script>";
         }
     } else {
         echo "<script>swal('Enter Style Schedule and Color','','error');</script>";
