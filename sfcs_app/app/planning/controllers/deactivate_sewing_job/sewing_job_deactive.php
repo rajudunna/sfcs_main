@@ -79,7 +79,7 @@ if(isset($_POST['submit']) || $module)
             // <input type='submit' class='btn btn-success btn-sm' name='Save' value='Save' >
             // </div>";
             echo "<br/><table id='deactive_sewing_job' class='table table-responsive'>";
-            echo "<thead><tr><th>S.<br/>No</th><th>Input Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Sewing<br/>Job No</th><th>Job Qty</th><th>Output</th><th>Rejected</th><th>WIP</th><th>Remarks</th><th width='20%'>Status</th></tr></thead><tbody>";
+            echo "<thead><tr><th>S.<br/>No</th><th>Input Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Module</th><th>Sewing<br/>Job No</th><th>Job Qty</th><th>Output</th><th>Rejected</th><th>WIP</th><th>Remarks</th><th width='20%'>Status</th></tr></thead><tbody>";
             while($row=mysqli_fetch_array($get_module_data_result)) {
                 $ims_date = $row["ims_date"];
                 $style = $row['ims_style'];
@@ -131,11 +131,14 @@ if(isset($_POST['submit']) || $module)
                     $rejected_qty=$sql_row33['rejected']; 
                 } 
 
-                $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in ('".$color."') and order_del_no",$schedule,$link);
-                // echo $color_code;
+               
+                $qry="select prefix from $brandix_bts.tbl_sewing_job_prefix where prefix_name='$ims_remarks'";
+                $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_row123=mysqli_fetch_array($res))
+                {
+                    $sewing_prefi=$sql_row123['prefix'];
+                }
 
-                $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",'"'.$ims_remarks.'"',$link);
-                // echo $sewing_prefi;
                 $display = $sewing_prefi.leading_zeros($input_job_no,3);
 
                 echo "<tr>";
@@ -150,7 +153,7 @@ if(isset($_POST['submit']) || $module)
                 echo "<input type='hidden' name='ims_remarks[]' value=$ims_remarks>";
                 echo "<input type='hidden' name='wip[]' value=$wip>";
                 echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
-                echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".chr($color_code).leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>".$ims_remarks."</td>";
+                echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>".$ims_remarks."</td>";
 
                 $short_shipment_query = "SELECT * FROM $bai_pro3.`short_shipment_job_track` where schedule = '$schedule' and (remove_type in ('1','2'))";
                 $short_shipment_query_result=mysqli_query($link, $short_shipment_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -195,12 +198,12 @@ if(isset($_POST['submit']) || $module)
 
             }
             echo "</tbody>";
-            echo "<thead><tr><td colspan='11' align='right'></td><td>
+            echo "<thead><tr><td colspan='12' align='right'></td><td>
             <input type='submit' class='btn btn-success btn-sm pull-right' name='Save' value='Save' ></td>
             </tr></thead>";
             echo "</table></form>";
         } else {
-            echo "0 results";
+            echo "<br/><table class='table table-responsive'><tr class='label label-sm label-danger'><td><center>No Data Found</center></td></tr></table>";
         }
 
     }else {
