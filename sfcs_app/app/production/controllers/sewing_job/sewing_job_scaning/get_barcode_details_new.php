@@ -63,7 +63,7 @@
         $bundle_no = explode('-', $barcode)[0];
     }
 
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE tid=$bundle_no ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE tid=$bundle_no ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -71,6 +71,7 @@
         {
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
+            $input_job_no= $row['input_job_no'];
         }
     }
     else
@@ -90,6 +91,17 @@
                 $short_ship_status=1;
             }else{
                 $short_ship_status=2;
+            }
+        }
+    }
+    $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no='".$input_job_no."'";
+    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    if($count_jobs_deactive >0) {
+        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+        {
+            if($row_set1['remove_type']==3) {
+                $short_ship_status=3;
             }
         }
     }
@@ -130,6 +142,11 @@
         }
         else if ($short_ship_status==2) {
             $result_array['status'] = 'Short Shipment Done Permanently';
+            echo json_encode($result_array);
+            die();
+        }
+        else if ($short_ship_status==3) {
+            $result_array['status'] = 'Sewing Job is Deactivated';
             echo json_encode($result_array);
             die();
         }

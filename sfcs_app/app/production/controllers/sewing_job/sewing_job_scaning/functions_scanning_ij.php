@@ -576,7 +576,7 @@ function getjobreversaldetails($job_rev_no)
     }
     
     $check_short_ship_status=0;
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -585,6 +585,7 @@ function getjobreversaldetails($job_rev_no)
         {
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
+            $input_job_no= $row['input_job_no'];
         }
     }
     else
@@ -604,6 +605,18 @@ function getjobreversaldetails($job_rev_no)
             }else{
                 $short_ship_status=2;
                 $json1['short_shipment_status'] = 'Short Shipment Done Permanently';
+            }
+        }
+    }
+    $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
+    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    if($count_jobs_deactive >0) {
+        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+        {
+            if($row_set1['remove_type']==3) {
+                $short_ship_status=3;
+                $json1['short_shipment_status'] = 'Sewing Job is Deactivated';
             }
         }
     }
@@ -1493,7 +1506,7 @@ function validating_with_module($pre_array_module)
     {
         $column_in_pack_summary = 'input_job_no_random';
     }
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -1501,11 +1514,12 @@ function validating_with_module($pre_array_module)
         {
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
+            $input_job_no= $row['input_job_no'];
         }
     }
     else
     {
-        $result=8;
+        $result=9;
         echo $result;
         die();
     }
@@ -1523,7 +1537,17 @@ function validating_with_module($pre_array_module)
             }
         }
     }
-		
+	$query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
+    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    if($count_jobs_deactive >0) {
+        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+        {
+            if($row_set1['remove_type']==3) {
+                $short_ship_status=3;
+            }
+        }
+    }	
     $application='IPS';
     $get_routing_query="SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
     $routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
@@ -1710,6 +1734,9 @@ function validating_with_module($pre_array_module)
         $response_flag = 6;
     }else if($short_ship_status== 2){
         $response_flag = 7;
+    }
+    else if($short_ship_status== 3){
+        $response_flag = 8;
     }
     // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
     if ($screen == 'wout_keystroke')
