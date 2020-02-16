@@ -192,7 +192,7 @@ if(isset($_POST['delete']))
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
 		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW() where barcode_number=".$id;
-		echo  "<br/>".$sql3;	 
+		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
 		
@@ -394,7 +394,7 @@ if(isset($_POST['put']))
 			$num2=mysqli_affected_rows($link);
 		
 			$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW() where lot_no='$lot_no'";
-			echo  "<br/>".$sql3;
+			// echo  "<br/>".$sql3;
 		 
 			$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num3=mysqli_affected_rows($link);
