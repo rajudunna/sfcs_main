@@ -100,7 +100,7 @@ if(isset($_POST['submit']) || $module)
 
                 // $input_qty=0;
                 // $output_qty=0;
-                $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = 100,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no = $input_job_no and schedule=$schedule";
+                $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no = $input_job_no and schedule=$schedule";
                 // echo $ip_op_qty;
                 $ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row_ip_op=mysqli_fetch_array($ip_op_qty_res))
