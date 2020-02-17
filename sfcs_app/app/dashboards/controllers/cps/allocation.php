@@ -673,7 +673,7 @@ if(isset($_POST['allocate_new']))
                                 // $sql_num_check=mysqli_num_rows($sql_result211);
                                 // if($sql_num_check==0)
                                 // {
-                                    $sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp,cut_no) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."','".$row_id_new1."')";
+                                    $sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp,cutno) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."','".$row_id_new1."')";
                                     mysqli_query($link, $sql23) or exit("Sql Error----4".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // }
 
