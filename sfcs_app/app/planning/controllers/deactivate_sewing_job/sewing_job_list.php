@@ -34,7 +34,7 @@ if(isset($_POST['Save']))
                 while($sql_row=mysqli_fetch_array($job_deacive_result))
                 {
                     $reverse_deactive_job_id = $sql_row['id'];
-                    $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='$remove_type' where id=".$reverse_deactive_job_id;
+                    $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='$remove_type',input_qty='$input_qty',out_qty='$output_qty',rejected_qty='$rejected_qty',wip='$wip' where id=".$reverse_deactive_job_id;
                     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $deactive_job_id = $reverse_deactive_job_id;
                 }
