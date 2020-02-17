@@ -10,13 +10,13 @@
         $cat = $_POST['cat'];
         $bcd_id = $_POST['bcd_ids'];
         $size = $_POST['size'];
+       
         $sizes_val_array = array();
         $sizes = '';
         $values = '';
         $sizes_a = '';
         $bcd = $bcd_id[0];
         
-       
         //retrieving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
         $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE rc.`bcd_id` in ($bcd) ";
@@ -29,85 +29,131 @@
             
 
         }
-        //getting order tid
-        $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
-        $res_qry_order_tid = $link->query($qry_order_tid);
-        while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
-        {
-            $order_tid = $row_row_row['order_tid'];
+        $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
+        // echo $job_deactivated;
+        $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($job_deactivated_result) > 0){
+            $job_deactivated = 0;
+        } else {
+            $job_deactivated = 1;
         }
-        //$old_order_tid = $order_tid;
-        $recutval_sizes = array();
-        //getting main cat ref for clubbing dockets
-        $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and org_doc_no > 1 limit 1";
-        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row2=mysqli_fetch_array($sql_result2))
-        {
-            $org_doc=$sql_row2['org_doc_no'];
-        }
-        if($org_doc > 1){
-            $doc_no_org = $org_doc;
-        }else{
-            $doc_no_org = 0;
-        }
-
-        foreach($recutval as $key=>$value)
-        {
-            $size_act = $size[$key];
-            $recutval_sizes[$size_act][] = $recutval[$key];
-        }
-        foreach($recutval_sizes as $key=>$value)
-        {
-            foreach($value as $val)
+        // var_dump($scheule);
+        // die();
+        if($job_deactivated==1){
+            //getting order tid
+            $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
+            $res_qry_order_tid = $link->query($qry_order_tid);
+            while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
             {
-                $sizes_val_array[$key] += $val;
+                $order_tid = $row_row_row['order_tid'];
             }
-        }
-        // var_dump($sizes_val_array);
-        foreach($sizes_val_array as $key=>$value)
-        {
-            $sizes .= 'cuttable_s_'.$key.',';
-            // $sizes_a .= 'a_'.$key.',';
-            $values .= $value.','; 
-        }
-        $sizes_p = rtrim($sizes,",");
-        // $sizes_a = rtrim($sizes_a,",");
-        $values = rtrim($values,",");
-        $insert_id_act = array();
-        $category_ref_ids = array();
-
-        $insert_id_b_or_f=0;
-        //getting cat stat log
-        $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
-        $it_query = "select max(serial_no) as serial_no from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$order_tid\"";
-            $res_it_query = $link->query($it_query);
-            if($res_it_query->num_rows > 0){
-                while($it_row = $res_it_query->fetch_assoc()) 
+            //$old_order_tid = $order_tid;
+            $recutval_sizes = array();
+            //getting main cat ref for clubbing dockets
+            $sql2="select org_doc_no from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and org_doc_no > 1 limit 1";
+            $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row2=mysqli_fetch_array($sql_result2))
+            {
+                $org_doc=$sql_row2['org_doc_no'];
+            }
+            if($org_doc > 1){
+                $doc_no_org = $org_doc;
+            }else{
+                $doc_no_org = 0;
+            }
+    
+            foreach($recutval as $key=>$value)
+            {
+                $size_act = $size[$key];
+                $recutval_sizes[$size_act][] = $recutval[$key];
+            }
+            foreach($recutval_sizes as $key=>$value)
+            {
+                foreach($value as $val)
                 {
-                    $max_val = ($it_row['serial_no']+1);
+                    $sizes_val_array[$key] += $val;
                 }
-            } else {
-                $max_val=1;
             }
-        foreach($cat as $key=>$value)
-        {
-          
-     
-            $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = '$order_tid' and category = '$value'";
-            // echo $qry_to_get.'</br>';
-            $res_qry_to_get = $link->query($qry_to_get);
-            while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+            // var_dump($sizes_val_array);
+            foreach($sizes_val_array as $key=>$value)
             {
-                $cat_ref =$row_cat_ref['tid'];
-
+                $sizes .= 'p_'.$key.',';
+                $sizes_a .= 'a_'.$key.',';
+                $values .= $value.','; 
             }
-            $remarks = 'Recut';
-            
-            $sql_cuttable_stat_log_recut="insert into $bai_pro3.cuttable_stat_log_recut( order_tid,date,cat_id,remarks,$sizes_p,serial_no)values  (\"$order_tid\", \"$date\", $cat_ref,\"$remarks\",$values,$max_val)";
-            // echo $sql_plandoc;
-            mysqli_query($link,$sql_cuttable_stat_log_recut) or exit("While inserting into the cuttable_stat_log_recut".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $insert_id=mysqli_insert_id($link);
-       
+            $sizes_p = rtrim($sizes,",");
+            $sizes_a = rtrim($sizes_a,",");
+            $values = rtrim($values,",");
+            $insert_id_act = array();
+            //getting cat stat log
+            $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
+            foreach($cat as $key=>$value)
+            {
+                $parent_cat_ref = 0;
+                /*
+                if($doc_no_org > 0){
+                    $qry_to_get = "SELECT order_tid as tid FROM  `$bai_pro3`.`plandoc_stat_log` WHERE  doc_no = '$doc_no_org'";
+                    $res_qry_to_get = $link->query($qry_to_get);
+                    while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+                    {
+                        $order_tid = $row_cat_ref['tid'];
+                    }       
+                }
+                */
+                $qry_to_get = "SELECT * FROM  `$bai_pro3`.`cat_stat_log` WHERE  order_tid = '$order_tid' and category = '$value'";
+                // echo $qry_to_get.'</br>';
+                $res_qry_to_get = $link->query($qry_to_get);
+                while($row_cat_ref = $res_qry_to_get->fetch_assoc()) 
+                {
+                    $cat_ref =$row_cat_ref['tid'];
+                }
+                //$order_tid = $old_order_tid;
+                $sql2="select max(pcutno) as count from $bai_pro3.plandoc_stat_log where order_tid='$order_tid' and cat_ref=$cat_ref";
+                mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_row2=mysqli_fetch_array($sql_result2))
+                {
+                    $count=$sql_row2['count'];
+                }
+                if($count==NULL)
+                {
+                    $count=0;
+                }
+                $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and mk_status!=9 ORDER BY tid DESC LIMIT 0,1";
+                $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // var_dump($sql_result);
+                while($sql_row=mysqli_fetch_array($sql_result))
+                {
+                    $cuttable_ref=$sql_row['cuttable_ref'];
+                    $allocate_ref = $sql_row['tid'];
+                    $ratio  = $sql_row['ratio'];
+                }
+                $mk_ref = '0';
+                $ratio = 1;
+                $pliespercut = 1;
+                $remarks = 'Recut';
+                $count = $count+1;
+                $pcutdocid=$order_tid."/".$allocate_ref."/".$count;
+                //if($parent_cat_ref > 0)
+                    //$cat_ref = $parent_cat_ref;
+                $sql_plandoc="insert into $bai_pro3.plandoc_stat_log(pcutdocid, date, cat_ref, cuttable_ref, allocate_ref, mk_ref, order_tid, pcutno,acutno,ratio,a_plies,p_plies,remarks,$sizes_p,$sizes_a)values  (\"$pcutdocid\", \"$date\", $cat_ref, $cuttable_ref, $allocate_ref, $mk_ref, \"$order_tid\", $count,$count, $ratio,$pliespercut,$pliespercut,\"$remarks\",$values,$values)";
+                // echo $sql_plandoc;
+                mysqli_query($link,$sql_plandoc) or exit("While inserting into the plan doc stat log".mysqli_error($GLOBALS["___mysqli_ston"]));
+               $insert_id=mysqli_insert_id($link);
+                if(strtolower($value) == 'body' || strtolower($value) == 'front')
+                {
+                   $insert_id_b_or_f=mysqli_insert_id($link);
+                }
+                $insert_id_act[]=mysqli_insert_id($link);
+                $sql_recut_v2="insert into $bai_pro3.recut_v2 (date,cat_ref,order_tid,pcutno,acutno,remarks,$sizes_p,$sizes_a,a_plies,p_plies,doc_no) values (\"".date("Y-m-d")."\",".$cat_ref.",\"$order_tid\",$count,$count,\"".$value."\",$values,$values,$pliespercut,$pliespercut,$insert_id)";
+                mysqli_query($link,$sql_recut_v2) or exit("While inserting into the recut v2".mysqli_error($GLOBALS["___mysqli_ston"]));
+                 // calling the function to insert to bundle craetion data and cps log
+                $inserted = doc_size_wise_bundle_insertion($insert_id,1);
+                if($inserted){
+                    //Inserted Successfully
+                }
+            }
+            $insert_id = $insert_id_b_or_f;
             foreach($bcd_id as $key=>$act_id)
             {
                 $recut_allowing_qty = $recutval[$key];
@@ -138,21 +184,104 @@
                             $to_add = $recut_allowing_qty;
                             $recut_allowing_qty = 0;
                         }
-                  
-                        if($to_add > 0)
+                        foreach ($insert_id_act as $key_insert => $val_insert) 
+                        { 
+                        
+                        $category_new = "SELECT * FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$val_insert)";
+                        
+                        $category_new_res = $link->query($category_new);
+                        while($category_new_res1 = $category_new_res->fetch_assoc()) 
                         {
-                            $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`lay_plan_recut_track` (`allocated_id`,`tran_id`,`cat_ref`,`bcd_id`,`operation_id`,`recut_raised_qty`,`recut_allocated_qty`,`remaining_qty`,`size_id`)
-                            VALUES($insert_id,'$ids[$bcd_act_id]','$cat_ref',$bcd_act_id,$operation_id,$to_add,0,$to_add,'$size_id')";
-                            // echo $inserting_into_recut_v2_child;
-                            mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            //retreaving bundle_number of recut docket from bcd and inserting into moq
+                            $cty =$category_new_res1['category'];
+                        }
+                         if($to_add > 0)
+                        {
+                             $inserting_into_recut_v2_child = "INSERT INTO `$bai_pro3`.`recut_v2_child` (`parent_id`,`bcd_id`,`operation_id`,`rejected_qty`,`recut_qty`,`recut_reported_qty`,`issued_qty`,`size_id`)
+                                VALUES($val_insert,$bcd_act_id,$operation_id,$actual_allowing_to_recut,$to_add,0,0,'$size_id')";
+                                mysqli_query($link,$inserting_into_recut_v2_child) or exit("While inserting into the recut v2 child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                //retreaving bundle_number of recut docket from bcd and inserting into moq
+                                $retreaving_qry="select bundle_number from $brandix_bts.bundle_creation_data where docket_number='$val_insert' and operation_id ='15' and size_id = '$size_id'";
+                                $retreaving_qry_res = $link->query($retreaving_qry);
+                                while($row_bcd_recut = $retreaving_qry_res->fetch_assoc()) 
+                                {
+                                    $bundle_number_recut = $row_bcd_recut['bundle_number'];
+                                }
+                        if(strtolower($cty) == 'body' || strtolower($cty) == 'front')
+                            {
+                            
+                           
+                               
+                                $multiple_mos_tot_qty = $to_add;
+                                $array_mos = array();
+                                //retreaving mo_number which is related to that bcd_act_id
+                                $moq_qry = "SELECT mo_no,bundle_quantity,`rejected_quantity` FROM $bai_pro3.`mo_operation_quantites` WHERE ref_no=$bundle_number AND op_code=$operation_id AND `rejected_quantity`>0 ORDER BY mo_no";
+                                // echo $moq_qry.'</br>';
+                                // die();
+                                $moq_qry_res = $link->query($moq_qry);
+                                while($row_moq = $moq_qry_res->fetch_assoc()) 
+                                {
+                                    $max_mo_no = $row_moq['mo_no'];
+                                    // echo $row_moq['rejected_quantity'].'-'.$array_mos[$max_mo_no].'</br>';
+                                    $bundle_quantity_mo = $row_moq['rejected_quantity'] - $array_mos[$max_mo_no];
+                                    // echo $bundle_quantity_mo.'-'.$multiple_mos_tot_qty.'</br>';
+                                    if($bundle_quantity_mo < $multiple_mos_tot_qty)
+                                    {
+                                        $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
+                                        $to_add_mo = $bundle_quantity_mo;
+                                        $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                                    }
+                                    else
+                                    {
+                                        $to_add_mo = $multiple_mos_tot_qty;
+                                        $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
+                                        $multiple_mos_tot_qty = 0;
+                                    }
+                                    // echo $to_add_mo.'</br>';
+                                    if($to_add_mo > 0)
+                                    {
+                                        $checking_moq_qry = "SELECT * FROM $bai_pro3.mo_operation_quantites WHERE ref_no = $bundle_number_recut AND op_code = 15";
+                                        // echo $checking_moq_qry.'</br>';
+                                        $checking_moq_qry_res = $link->query($checking_moq_qry);
+                                        if(mysqli_num_rows($checking_moq_qry_res) > 0)
+                                        {
+                                            //update qry
+                                            while($row_moq_bcd = $checking_moq_qry_res->fetch_assoc()) 
+                                            {
+                                                $id_moq = $row_moq_bcd['id'];
+                                            }
+                                            $updae_moq_qry = "update $bai_pro3.mo_operation_quantites set bundle_quantity = bundle_quantity+$to_add_mo where id=$id_moq";
+                                        }
+                                        else
+                                        {
+                                            //insert qry
+                                            $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number_recut."','".$to_add_mo."', '15', 'Cutting')";
+                                        }
+                                        // echo $updae_moq_qry.'</br>';
+                                        mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    }
+                                }
+                                $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
+                                mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $to_add_mo += $to_add;
+                                $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$scheule' and color = '$color'";
+                                mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            }
+                        }
+                            if($val_insert == $insert_id)
+                            {
+                                $mo_changes = mofillingforrecutreplace($to_add_mo,$bcd_act_id);
+                            }
                         }
                     }
                 }
             }
+            $url = '?r='.$_GET['r'];
+           echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
+        } else {
+            $url = '?r='.$_GET['r'];
+        //    echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
+           echo "<script>sweetAlert('Sewing Job is Deactivated! ','Recut Process is unsuccessfull','Error');window.location = '".$url."'</script>";  
         }
-        $url = '?r='.$_GET['r'];
-       echo "<script>sweetAlert('recut raised successfully','','success');window.location = '".$url."'</script>";   
     }
     if(isset($_POST['formSubmit1']))
     {
