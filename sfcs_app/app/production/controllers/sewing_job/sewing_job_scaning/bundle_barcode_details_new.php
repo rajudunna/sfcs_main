@@ -310,10 +310,10 @@
 		// include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3Updations.php");
 		
 		// checking for emblishment Planning done or not
-		$check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
-		$check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if($check_qry_result->num_rows > 0)
-		{	
+		// $check_plan_qry="select doc_no from $bai_pro3.embellishment_plan_dashboard where doc_no in ($docket_no)";
+		// $check_qry_result=mysqli_query($link,$check_plan_qry) or exit("error while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// if($check_qry_result->num_rows > 0)
+		// {	
 			//getting operation code
 			$get_curr_ops_code="select ops_code,send_qty,good_qty,rejection_qty,act_cut_bundle_id from $bai_pro3.act_cut_bundle_trn where barcode='".$barcode."'";
 			$rslt_get_cur_ops = $link->query($get_curr_ops_code);
@@ -360,6 +360,12 @@
 					die();
 				}
 				
+				if($rejctedqty>$rec_qty)
+				{
+					$result_array['status'] = 'Rejected Qty is more than Good Qty';
+					echo json_encode($result_array);
+					die();
+				}
 				
 				if($rec_qty>0)
 				{
@@ -851,13 +857,13 @@
 				echo json_encode($result_array);
 				die();
 			}
-		}
-		else
-		{
-			$result_array['status'] = 'Please Plan Embellishment For This Dockets';
-			echo json_encode($result_array);
-			die();
-		}
+		// }
+		// else
+		// {
+			// $result_array['status'] = 'Please Plan Embellishment For This Dockets';
+			// echo json_encode($result_array);
+			// die();
+		// }
 	}
 	
 
@@ -1141,6 +1147,12 @@
 		if($rec_qty==0)
 		{
 			$result_array['status'] = 'There is no available quantity to Report/Previous Operation Not Done';
+			echo json_encode($result_array);
+			die();
+		}
+		if($rejctedqty>$rec_qty)
+		{
+			$result_array['status'] = 'Rejected Qty is more than Good Qty';
 			echo json_encode($result_array);
 			die();
 		}
