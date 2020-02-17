@@ -91,45 +91,53 @@ if(isset($_POST['submit']) || $module)
                 $short_shipment_status = $row['short_shipment_status'];
                 $sizes_explode=array();
                 $sizes_explode=explode(",",$ims_size);
+                // echo $sizes_explode;
                 $sizes_implode1="'".implode("','",$sizes_explode)."'"; 
+                // echo  $sizes_implode1;
+
+                // $temp = strchr($sizes_implode1,"a_");
+                // echo $temp;
 
                 // $input_qty=0;
                 // $output_qty=0;
-                // $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE input_job_no = $input_job_no";
-                // $ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-                // while($sql_row_ip_op=mysqli_fetch_array($ip_op_qty_res))
+                $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = 100,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no = $input_job_no and schedule=$schedule";
+                // echo $ip_op_qty;
+                $ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_row_ip_op=mysqli_fetch_array($ip_op_qty_res))
+                {
+                    $input_qty = $sql_row_ip_op['input'];
+                    $output_qty = $sql_row_ip_op['output'];
+                    $rejected_qty = $sql_row_ip_op['rejected'];
+                    $wip=$input_qty-$output_qty;
+                }
+                // $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_no_ref='$input_job_no' and ims_mod_no='$module' ";
+                // $sql_result1=mysqli_query($link, $ims_tool) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // while($sql_row1=mysqli_fetch_array($sql_result1))
                 // {
-                //     $input_qty = $sql_row_ip_op['input'];
-                //     $output_qty = $sql_row_ip_op['output'];
-                //     $wip=$input_qty-$output_qty;
+                // $input_qty1=$sql_row1['Input'];      // input qty
+                // $output_qty1=$sql_row1['Output'];      // output qty
                 // }
-                $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_no_ref='$input_job_no' and ims_mod_no='$module' ";
-                $sql_result1=mysqli_query($link, $ims_tool) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_row1=mysqli_fetch_array($sql_result1))
-                {
-                $input_qty1=$sql_row1['Input'];      // input qty
-                $output_qty1=$sql_row1['Output'];      // output qty
-                }
 
 
-                $ims_tool1="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log_backup where  input_job_no_ref='$input_job_no' and ims_mod_no='$module' ";
-                $sql_result2=mysqli_query($link, $ims_tool1) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_row2=mysqli_fetch_array($sql_result2))
-                {
-                $input_qty2=$sql_row2['Input'];      // input qty
-                $output_qty2=$sql_row2['Output'];      // output qty
-                }
+                // $ims_tool1="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log_backup where  input_job_no_ref='$input_job_no' and ims_mod_no='$module' ";
+                // $sql_result2=mysqli_query($link, $ims_tool1) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // while($sql_row2=mysqli_fetch_array($sql_result2))
+                // {
+                // $input_qty2=$sql_row2['Input'];      // input qty
+                // $output_qty2=$sql_row2['Output'];      // output qty
+                // }
 				
-                $input_qty=$input_qty1+$input_qty2;      // input qty
-                $output_qty=$output_qty1+$output_qty2;
-                $wip=$input_qty-$output_qty;
-                $rejected_qty=0;
-                $rejected_qry="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$schedule."' and qms_color in (".$color.") and qms_size in ($sizes_implode1) and input_job_no='".$input_job_no."' and qms_style='".$style."' and operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
-                $rejected_qry_result =mysqli_query($link, $rejected_qry) ;
-                while($sql_row33=mysqli_fetch_array($rejected_qry_result))
-                {
-                    $rejected_qty=$sql_row33['rejected']; 
-                } 
+                // $input_qty=$input_qty1+$input_qty2;      // input qty
+                // $output_qty=$output_qty1+$output_qty2;
+                // $wip=$input_qty-$output_qty;
+                // $rejected_qty=0;
+                // $rejected_qry="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$schedule."' and qms_color in (".$color.") and qms_size in ($sizes_implode1) and input_job_no='".$input_job_no."' and qms_style='".$style."' and operation_id=$operation_in_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
+                // // echo $rejected_qry;
+                // $rejected_qry_result =mysqli_query($link, $rejected_qry) ;
+                // while($sql_row33=mysqli_fetch_array($rejected_qry_result))
+                // {
+                //     $rejected_qty=$sql_row33['rejected']; 
+                // } 
 
                
                 $qry="select prefix from $brandix_bts.tbl_sewing_job_prefix where prefix_name='$ims_remarks'";
