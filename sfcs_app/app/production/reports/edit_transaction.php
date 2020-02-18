@@ -28,7 +28,7 @@ function GetValueFromChild(tmp)
 }
  
  
-		function GetSelectedItem(name_attr) 
+		/*function GetSelectedItem(name_attr) 
 		{			
 			var x=Array(name_attr,"1","2");			
 			var i = 0;
@@ -73,7 +73,7 @@ function GetValueFromChild(tmp)
 				
 				dif=chosen4-chosen3;
 				dif1=(((chosen6split[0]-chosen5split[0])*60)+(chosen6split[1]-chosen5split[1])-time)*nop;
-				document.f1.l1.value=dif1;
+				document.f1.l1.value=dif1; */
 				//alert(dif1);
 				//alert(dif);
 				/*var total=parseInt(chosen2)-parseInt(chosen1);
@@ -128,8 +128,8 @@ function GetValueFromChild(tmp)
 				{ 
 					alert("Please check the Selected Timings."); 
 				} */
-			} 
-		}
+			//} 
+		//} 
 		
 			// For start and end time validation
 		
@@ -442,7 +442,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>NOP</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"nop1\" size=\"5\" id=\"nop1\" onkeyup=\"GetSelectedItem('nop1');\" value=\"16\"></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"nop1\" size=\"5\" id=\"nop1\" onkeyup=\"calculate('nop1');\" value=".$row["nop"]."></td>";
 	
 	echo "</tr>";
 	
@@ -459,15 +459,23 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"calculate();\">
+	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"calculate();\">";
 
-			<option value=\"0\" name=\"s1\"></option>";
-
-
+		echo "<option value=\"0\" name=\"r1\"></option>";
+	
 	for($l=6;$l<=22;$l++)
 	{
 		for($k=0;$k<sizeof($mins);$k++)
 		{
+			if($row["start_time"]==$l.":".$mins[$k])
+			{
+				echo "<option value=".$row["start_time"]." name=\"r1\" selected>".$row["start_time"]."</option>";
+			}
+			else
+			{			
+			echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." </option>";
+			}
+			/*
 			if($l<13)
 			{
 				if($l==12)
@@ -505,7 +513,8 @@ while($row=mysqli_fetch_array($result))
 				{
 					echo "<option value=\"".$l.":".$mins[$k]."\" name=\"s1\">".$l.":".$mins[$k]." PM</option>";
 				}
-			}
+			}*/
+			
 		}
 		
 	}
@@ -520,15 +529,26 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"calculate();\" required>
-
-			<option value=\"0\" name=\"r1\"></option>";
-
+	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"calculate();\" required>";
+	
+	
+		echo "<option value=\"0\" name=\"r1\"></option>";
+	
 
 	for($l=6;$l<=22;$l++)
 	{
 		for($k=0;$k<sizeof($mins);$k++)
 		{
+			
+				if($row["end_time"]==$l.":".$mins[$k])
+			{
+              echo "<option value=\"".$row["end_time"]."\" name=\"r1\" selected>".$row["end_time"]." </option>";
+			}
+			else
+			{
+			  echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." </option>";
+			}
+			/*
 			if($l<13)
 			{
 				if($l==12)
@@ -565,7 +585,7 @@ while($row=mysqli_fetch_array($result))
 				{
 					echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." PM</option>";
 				}
-			}
+			}*/
 		}
 		
 	}
@@ -583,7 +603,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Exception Time</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" id=\"ex1\" onkeyup=\"GetSelectedItem('ex1');\" value=\"0\" size=\"3\" /></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" id=\"ex1\" onkeyup=\"calculate('ex1');\" value=\"0\" size=\"3\" /></td>";
 	
 	echo "</tr>";
 	
@@ -706,7 +726,7 @@ if(isset($_POST["submit"]))
 	mod_no=\"".$module."\",date=\"".$date."\",department=\"".$dep_no."\",remarks=\"".$remarks."\",
 	style=\"".$style."\",dtime=\"".$dtime."\",shift=\"".$shift."\",section=\"".$section."\",
 	customer=\"".$buyer."\",schedule=\"".$schedule_no."\",source=\"".$sources."\",plan_eff=\"".$plan_eff."\",
-	nop='$nop',start_time='$s1',end_time='$r1',reason_code='$reason_code',flag=0 where tid=\"".$tids."\" ";
+	nop='$nop1',start_time='$s1',end_time='$r1',reason_code='$reason_code',flag=0 where tid=\"".$tids."\" ";
 	
 	//echo "<br/>".$update;
 
