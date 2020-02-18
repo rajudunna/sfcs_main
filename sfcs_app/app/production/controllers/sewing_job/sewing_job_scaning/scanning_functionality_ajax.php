@@ -1689,6 +1689,7 @@ else if($concurrent_flag == 0)
 							if($line_out_ops_code != $output_ops_code)
                             {
                                 //For 900 Operation
+                                $line_out_removal_flag = 0;
                                 $get_qty_details1="select sum(if(operation_id = $line_out_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
                                 //echo $get_qty_details1;
                                $get_qty_result1=mysqli_query($link,$get_qty_details1) or exit("barcode status Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
