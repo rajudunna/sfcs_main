@@ -285,12 +285,24 @@ if(isset($_POST['submit']))
                 echo "<script>swal('Short Shipment Jobs as Already Allocated','','warning');</script>";
             }
         }else{
-            // $is_jobs_deactivated_result
             while($row=mysqli_fetch_array($is_jobs_deactivated_result))
             {
-                $input_job_no[] = $row['input_job_no'];
+                $remarks = $row['remarks'];
+                $qry="select prefix from $brandix_bts.tbl_sewing_job_prefix where prefix_name='$remarks'";
+                $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($sql_row123=mysqli_fetch_array($res))
+                {
+                    $sewing_prefi=$sql_row123['prefix'];
+                }
+
+                $ij_no = $sewing_prefi.leading_zeros($row['input_job_no'],3);
+                $input_job_no[] = $row['module_no'].'-'.$ij_no;
             }
-            $array_list = array_unique($input_job_no);
+
+            foreach($input_job_no as $key=>$value){
+                $input_job_no1[] = $value;
+            }
+            $array_list = array_unique($input_job_no1);
             $list = implode(",",$array_list);
             echo "<script>swal('Sewing Jobs * $list * For This Schedule is On Hold','Short Shipment is not Done. Please Reactivate them!','warning');</script>";
         }
