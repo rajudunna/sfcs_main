@@ -68,7 +68,7 @@ set_time_limit(6000000);
 			// 	echo "<td>".$value->COLORCODE."</td>";
 			// 	echo "<td>".$value->ZCODE."</td>";
 			// echo "</tr>";
-
+			$i++;
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
 			$log.="<tr><th>".$i."</th><th>".($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE)."--To get ORST</th>";
