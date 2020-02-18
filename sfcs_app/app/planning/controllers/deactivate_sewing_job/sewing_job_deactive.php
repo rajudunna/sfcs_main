@@ -155,6 +155,7 @@ if(isset($_POST['submit']) || $module)
                 echo "<input type='hidden' name='schedule[]' value=$schedule>";
                 echo "<input type='hidden' name='color[]' value=$color>";
                 echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
+                echo "<input type='hidden' name='module[]' value=$module>";
                 echo "<input type='hidden' name='input_qty[]' value=$input_qty>";
                 echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
                 echo "<input type='hidden' name='rejected_qty[]' value=$rejected_qty>";
@@ -211,13 +212,12 @@ if(isset($_POST['submit']) || $module)
             </tr></thead>";
             echo "</table></form>";
         } else {
-            echo "<br/><table class='table table-responsive'><tr class='label label-sm label-danger'><td><center>No Data Found</center></td></tr></table>";
+            echo "<br/><table class='table table-responsive'><tr class='label label-sm label-danger'><td colspan='12' align='right'><center>No Data Found</center></td></tr></table>";
         }
 
     }else {
         echo "<script>swal('Please Select Module','','error');</script>";
     }
-
 }
 ?>
 </div>

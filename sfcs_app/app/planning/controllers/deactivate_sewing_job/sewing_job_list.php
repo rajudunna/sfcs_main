@@ -9,9 +9,10 @@ if(isset($_POST['Save']))
 {
     
     $status = 0;
-    $module = $_POST['module'];
-
-    // var_dump($_POST['style']);
+    $module1 = array_unique($_POST['module']);
+    $module = implode(",",$module1);
+    // var_dump($_POST);
+    // die();
     foreach($_POST['style'] as $key => $value){
         if($_POST['remove_type'][$key] == '3'){
 
@@ -25,7 +26,7 @@ if(isset($_POST['Save']))
             $wip = $_POST['wip'][$key];
             $rejected_qty = $_POST['rejected_qty'][$key];
             $ims_remarks = $_POST['ims_remarks'][$key];
-            $module = $_POST['module'];
+            // $module = $_POST['module'];
             $remove_type=3;
             $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '0'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -39,10 +40,15 @@ if(isset($_POST['Save']))
                     $deactive_job_id = $reverse_deactive_job_id;
                 }
             } else {
-                $insert_qry = "insert into $bai_pro3.job_deactive_log(input_date,style,schedule,color,module_no,input_job_no,input_qty,out_qty,rejected_qty,wip,remarks,remove_type,tran_user) values('$ims_date','$style','$schedule','$color','$module','$input_job_no','$input_qty','$output_qty','$rejected_qty','$wip','$ims_remarks','$remove_type','$username')";
-                // echo $insert_qry;
-                $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                $deactive_job_id = mysqli_insert_id($link);
+                $job_deacive_hold = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+                $job_deacive_hold_result=mysqli_query($link, $job_deacive_hold) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $sql_num_check_hold=mysqli_num_rows($job_deacive_hold_result);
+                if($sql_num_check_hold == 0 ){
+                    $insert_qry = "insert into $bai_pro3.job_deactive_log(input_date,style,schedule,color,module_no,input_job_no,input_qty,out_qty,rejected_qty,wip,remarks,remove_type,tran_user) values('$ims_date','$style','$schedule','$color','$module','$input_job_no','$input_qty','$output_qty','$rejected_qty','$wip','$ims_remarks','$remove_type','$username')";
+                    // echo $insert_qry;
+                    $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $deactive_job_id = mysqli_insert_id($link);
+                }
             }
             if($deactive_job_id){
                 
@@ -124,7 +130,7 @@ if(isset($_POST['Save']))
             $style = $_POST['style'][$key];
             $schedule = $_POST['schedule'][$key];
             $input_job_no = $_POST['input_job_no'][$key];
-            $module = $_POST['module'];
+            // $module = $_POST['module'];
 
             $remove_type='0';
             $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
