@@ -378,7 +378,7 @@ function ReplaceProcess($replace_id_edit)
     $excess_table .= "</tbody></table></div></div></div>";
     $html .= $excess_table;
     $s_no = 0;
-    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$schedule and remove_type='3'";
+    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
     // echo $job_deactivated;
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($job_deactivated_result) > 0){
