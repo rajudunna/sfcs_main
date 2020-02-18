@@ -197,6 +197,7 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 							btn_reset: true,
 							col_1: "select",
 							col_2: "select",
+							display_all_text: " [ Show all ] ",
 							// btn_reset_text: "Clear",
 							loader: true,
 							loader_text: "Filtering data..."
