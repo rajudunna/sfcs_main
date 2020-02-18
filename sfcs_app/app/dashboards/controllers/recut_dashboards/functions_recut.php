@@ -202,11 +202,11 @@ function RecutProcess($recut_id_edit)
             $html .= '</div></div></div>';
             
         }
+        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     }
     else {
         $html = "<h2 style='color:red'>Sewing Job is Deactivated for this schedule, So Recut is not Possible</h2>";
     }
-    $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     echo $html;
     
 }
@@ -466,11 +466,11 @@ function ReplaceProcess($replace_id_edit)
         {
             $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
         }
+        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     }
     else {
         $html = "<h2 style='color:red'>Sewing Job is Deactivated for this schedule, So Replace is not Possible</h2>";
     }
-        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
         echo $html;
 }
 if(isset($_GET['recut_doc_id']))
