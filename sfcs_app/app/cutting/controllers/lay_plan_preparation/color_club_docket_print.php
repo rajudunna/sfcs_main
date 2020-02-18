@@ -3898,8 +3898,16 @@ tags will be replaced.-->
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Inspection Comments:
   <?php
-   if(sizeof($batch_det) > 0)
-   {
+  	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
+
+	$sql_batch="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_2) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+	$sql_result_batch=mysqli_query($link, $sql_batch) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_batch=mysqli_fetch_array($sql_result_batch))
+	{
+		$batch_det[]=trim($sql_row_batch['batch_no']);
+	}
+	if(sizeof($batch_det) > 0)
+	{
    	    $rem="";
 		$batchs=array();
 	   	for($i=0;$i<sizeof($batch_det);$i++)
