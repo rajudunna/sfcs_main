@@ -92,16 +92,18 @@ function RecutProcess($recut_id_edit)
         $scheule = $row_row['SCHEDULE'];
         $color = $row_row['color'];
     }
-    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
-    // echo $job_deactivated;
+    $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($job_deactivated_result) > 0){
-        $job_deactivated = 0;
-    } else {
-        $job_deactivated = 1;
+    while($sql_row=mysqli_fetch_array($job_deactivated_result))
+    {
+        $count = $sql_row['count1'];
     }
-    
-    if($job_deactivated == 1)
+    if($count == 0){
+        $job_deactivated_status = 1;
+    } else {
+        $job_deactivated_status = 0;
+    }
+    if($job_deactivated_status == 1)
     {
         //getting order tid
         $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
@@ -378,16 +380,19 @@ function ReplaceProcess($replace_id_edit)
     $excess_table .= "</tbody></table></div></div></div>";
     $html .= $excess_table;
     $s_no = 0;
-    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
-    // echo $job_deactivated;
+    $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if(mysqli_num_rows($job_deactivated_result) > 0){
-        $job_deactivated = 0;
+    while($sql_row=mysqli_fetch_array($job_deactivated_result))
+    {
+        $count = $sql_row['count1'];
+    }
+    if($count == 0){
+        $job_deactivated_status = 1;
     } else {
-        $job_deactivated = 1;
+        $job_deactivated_status = 0;
     }
     
-    if($job_deactivated == 1)
+    if($job_deactivated_status == 1)
     {
         if($count > 0)
         {
