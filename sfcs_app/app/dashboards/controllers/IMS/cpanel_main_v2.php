@@ -145,8 +145,13 @@ padding-top:10px;
   width:20px;height:20px;float:left;margin-right:5px;background-color:#15a5f2;line-height:0px;font-size:0px;
   margin-bottom:5px;border:1px;
 }
-.blue_box h6{
-  color:#000;
+.blue_box{
+  color: #000;
+  font-weight: 800;
+  font-size: 14px;
+  text-align: center;
+  vertical-align: middle;
+   padding-top: 10px;
 }
 .yellow_box
 {
@@ -514,39 +519,39 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
       $module_sql = "SELECT * FROM $bai_pro3.module_master WHERE module_name='$module'";
       $module_sql_result = mysqli_query($link,$module_sql);
       $module_col_lab = mysqli_fetch_array($module_sql_result);
-	  
-	  $rejection_border='';
-	  $value='';
-	  $input_jobs_rand_tmp=array();
-	  $input_jobs_rand=array();
-	  $rejected_qty=array();
-	  $issued=array();
-	  $replace=array();
-	  $recut_job=array();
+    
+    $rejection_border='';
+    $value='';
+    $input_jobs_rand_tmp=array();
+    $input_jobs_rand=array();
+    $rejected_qty=array();
+    $issued=array();
+    $replace=array();
+    $recut_job=array();
 
-	  $get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $bai_pro3.rejection_log_child where assigned_module='$module'";
-	  $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
-	  while($recut_row=mysqli_fetch_array($recut_result))
-	  {
-			if(in_array($recut_row['operation_id'],$operation_codes))
-			{			
-				$rejected_qty[$recut_row['input_job_no_random_ref']] += $recut_row['rejected_qty'];
-				$issued[$recut_row['input_job_no_random_ref']] += $recut_row['issued_qty'];
-				$replace[$recut_row['input_job_no_random_ref']] += $recut_row['replaced_qty'];
-			}
-			$input_jobs_rand_tmp[]=$recut_row['input_job_no_random_ref'];
-	  }
-	  $input_jobs_rand=array_values(array_unique($input_jobs_rand_tmp));
-	  
-	  for($k=0;$k<sizeof($input_jobs_rand);$k++)
-	  {
-		  if(($rejected_qty[$input_jobs_rand[$k]]-($issued[$input_jobs_rand[$k]]+$replace[$input_jobs_rand[$k]]))>0)
-		  {
-			  $recut_job[]=$input_jobs_rand[$k];
-			  $recut_job_val[$input_jobs_rand[$k]]='R';
-		  }
-	  }	   
-	  $rejection_border='';
+    $get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $bai_pro3.rejection_log_child where assigned_module='$module'";
+    $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($recut_row=mysqli_fetch_array($recut_result))
+    {
+      if(in_array($recut_row['operation_id'],$operation_codes))
+      {     
+        $rejected_qty[$recut_row['input_job_no_random_ref']] += $recut_row['rejected_qty'];
+        $issued[$recut_row['input_job_no_random_ref']] += $recut_row['issued_qty'];
+        $replace[$recut_row['input_job_no_random_ref']] += $recut_row['replaced_qty'];
+      }
+      $input_jobs_rand_tmp[]=$recut_row['input_job_no_random_ref'];
+    }
+    $input_jobs_rand=array_values(array_unique($input_jobs_rand_tmp));
+    
+    for($k=0;$k<sizeof($input_jobs_rand);$k++)
+    {
+      if(($rejected_qty[$input_jobs_rand[$k]]-($issued[$input_jobs_rand[$k]]+$replace[$input_jobs_rand[$k]]))>0)
+      {
+        $recut_job[]=$input_jobs_rand[$k];
+        $recut_job_val[$input_jobs_rand[$k]]='R';
+      }
+    }    
+    $rejection_border='';
 
       ?>
 
@@ -592,179 +597,183 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 $sql_resultred=mysqli_query($link, $sqlred) or exit("Sql Error11111".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $total_qty="0";
                 $total_out="0";
-				$available_job=array();
+        $available_job=array();
                 //docket boxes Loop -start
-				if(mysqli_num_rows($sql_resultred)>0)
-				{
-					while($sql_rowred=mysqli_fetch_array($sql_resultred))     
-					{               
-					 
-						$docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
-					  $style_no=$sql_rowred['ims_style'];     // style
-					  $color_name=$sql_rowred['ims_color'];  
-					  $colors_modal[] = $sql_rowred['ims_color']; // color
-					  $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
-					  $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
-					  $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
-					  $rand_track=$sql_rowred['rand_track'];
-					  $ims_remarks=$sql_rowred['ims_remarks'];
-					  //$ims_size=$sql_rowred['ims_size'];
-					  $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
-					  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
-					  
-					  $cut_no=$sql_rowred['acutno'];
-					  $inputno=$sql_rowred['inputjobno'];
-					  $inputjobnorand=$sql_rowred['inputjobnorand'];
-					  $pac_tid=$sql_rowred['pac_tid'];
-					  $total_qty=$total_qty+$input_qty;
-					  $total_out=$total_out+$output_qty;
-					  $input_date=$sql_rowred['ims_date'];
-					  $ijrs[] = $inputjobnorand;
-					  $value='';
-					  if(in_array($inputjobnorand,$recut_job))
-					  {					
-						$value=$recut_job_val[$inputjobnorand];
-						$available_job[]=$inputjobnorand;
-					  }
-					  
-							
-					  $sql22="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
-					  $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-					  while($sql_row22=mysqli_fetch_array($sql_result22))
-					  {
-						$order_tid=$sql_row22['order_tid'];
-					  } 
-					  
-					  $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid='$order_tid'";
-					  $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-					  while($sql_row33=mysqli_fetch_array($sql_result33))
-					  {
-						$ims_color=$sql_row33['order_col_des'];
-					  }
-					  $sql331="select type_of_sewing,group_concat(distinct size_code) as size_tit, group_concat(distinct old_size) as size_ref from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$inputjobnorand'";
-					  $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-					  while($sql_row331=mysqli_fetch_array($sql_result331))
-					  {
-						$size_tit=$sql_row331['size_tit'];
-						$ims_size=$sql_row331['size_ref'];
-						$type_of_sewing=$sql_row331['type_of_sewing'];
-					  }
-							  $sizes_explode=array();
-					  $sizes_explode=explode(",",$ims_size);
-					  //$size_value=explode(",",$size_tit);
-							  $sizes_implode1="'".implode("','",$sizes_explode)."'"; 				  
-					  $rejected=0;
-					  unset($sizes_explode);
-					  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
-					  $sql_result33=mysqli_query($link, $sql33) ;
-					  //echo  $sql33;
-					  while($sql_row33=mysqli_fetch_array($sql_result33))
-					  {
-						$rejected=$sql_row33['rejected']; 
-					  }   
-					  $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
-					  $display = $sewing_prefi.leading_zeros($inputno,3);
-				   
-					  //To get tool-tip values
-					  $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
-					  $sql_result1=mysqli_query($link, $ims_tool) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
-					  while($sql_row1=mysqli_fetch_array($sql_result1))
-					  {
-						$input_qty1=$sql_row1['Input'];      // input qty
-						$output_qty1=$sql_row1['Output'];      // output qty
-					  }
+        if(mysqli_num_rows($sql_resultred)>0)
+        {
+          while($sql_rowred=mysqli_fetch_array($sql_resultred))     
+          {               
+           
+            $docket_no=$sql_rowred['ims_doc_no'];   // capturing docket number
+            $style_no=$sql_rowred['ims_style'];     // style
+            $color_name=$sql_rowred['ims_color'];  
+            $colors_modal[] = $sql_rowred['ims_color']; // color
+            $color_ref="'".str_replace(",","','",$sql_rowred['ims_color'])."'"; 
+            $remarks_ref="'".str_replace(",","','",$sql_rowred['ims_remarks'])."'"; 
+            $schedul_no=$sql_rowred['ims_schedule'];  // schedul no
+            $rand_track=$sql_rowred['rand_track'];
+            $ims_remarks=$sql_rowred['ims_remarks'];
+            //$ims_size=$sql_rowred['ims_size'];
+            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedul_no,$link);
+            $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);
+            
+            $cut_no=$sql_rowred['acutno'];
+            $inputno=$sql_rowred['inputjobno'];
+            $inputjobnorand=$sql_rowred['inputjobnorand'];
+            $pac_tid=$sql_rowred['pac_tid'];
+            $total_qty=$total_qty+$input_qty;
+            $total_out=$total_out+$output_qty;
+            $input_date=$sql_rowred['ims_date'];
+            $ijrs[] = $inputjobnorand;
+            $value='';
+            if(in_array($inputjobnorand,$recut_job))
+            {         
+            $value=$recut_job_val[$inputjobnorand];
+            $available_job[]=$inputjobnorand;
+            }
+            
+              
+            $sql22="select order_tid from $bai_pro3.plandoc_stat_log where doc_no=$docket_no and a_plies>0";
+            $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+            while($sql_row22=mysqli_fetch_array($sql_result22))
+            {
+            $order_tid=$sql_row22['order_tid'];
+            } 
+            
+            $sql33="select order_col_des from $bai_pro3.bai_orders_db where order_tid='$order_tid'";
+            $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+            while($sql_row33=mysqli_fetch_array($sql_result33))
+            {
+            $ims_color=$sql_row33['order_col_des'];
+            }
+            $sql331="select type_of_sewing,group_concat(distinct size_code) as size_tit, group_concat(distinct old_size) as size_ref from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$inputjobnorand'";
+            $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+            while($sql_row331=mysqli_fetch_array($sql_result331))
+            {
+            $size_tit=$sql_row331['size_tit'];
+            $ims_size=$sql_row331['size_ref'];
+            $type_of_sewing=$sql_row331['type_of_sewing'];
+            }
+                $sizes_explode=array();
+            $sizes_explode=explode(",",$ims_size);
+            //$size_value=explode(",",$size_tit);
+                $sizes_implode1="'".implode("','",$sizes_explode)."'";          
+            $rejected=0;
+            unset($sizes_explode);
+            $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  qms_schedule='".$sql_rowred['ims_schedule']."' and qms_color in (".$color_ref.") and qms_size in ($sizes_implode1) and input_job_no='".$sql_rowred['inputjobnorand']."' and qms_style='".$sql_rowred['ims_style']."' and operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' and qms_remarks in ('".$ims_remarks."')";
+            $sql_result33=mysqli_query($link, $sql33) ;
+            //echo  $sql33;
+            while($sql_row33=mysqli_fetch_array($sql_result33))
+            {
+            $rejected=$sql_row33['rejected']; 
+            }   
+            $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+            $display = $sewing_prefi.leading_zeros($inputno,3);
+           
+            //To get tool-tip values
+            $ims_tool="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
+            $sql_result1=mysqli_query($link, $ims_tool) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row1=mysqli_fetch_array($sql_result1))
+            {
+            $input_qty1=$sql_row1['Input'];      // input qty
+            $output_qty1=$sql_row1['Output'];      // output qty
+            }
 
 
-					  $ims_tool1="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log_backup where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
-					  $sql_result2=mysqli_query($link, $ims_tool1) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
-					  while($sql_row2=mysqli_fetch_array($sql_result2))
-					  {
-						$input_qty2=$sql_row2['Input'];      // input qty
-						$output_qty2=$sql_row2['Output'];      // output qty
-					  }
-					  
-					  
-					
-					  $input_qty=$input_qty1+$input_qty2;      // input qty
-					  $output_qty=$output_qty1+$output_qty2;
+            $ims_tool1="SELECT SUM(ims_qty) AS Input,SUM(ims_pro_qty) AS Output from bai_pro3.ims_log_backup where  input_job_rand_no_ref='".$sql_rowred['inputjobnorand']."' and ims_mod_no='$module' ";
+            $sql_result2=mysqli_query($link, $ims_tool1) or exit("Sql Errorims_tool".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row2=mysqli_fetch_array($sql_result2))
+            {
+            $input_qty2=$sql_row2['Input'];      // input qty
+            $output_qty2=$sql_row2['Output'];      // output qty
+            }
+            
+            
+          
+            $input_qty=$input_qty1+$input_qty2;      // input qty
+            $output_qty=$output_qty1+$output_qty2;
 
-					 
-					  $sidemenu=true;
-					  $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
-					?>
-					  <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
-					  Style No : <?php echo $style_no."<br/>"; ?>
-					  Co No : <?php echo $co_no."<br/>"; ?>
-					  Schedul No :<?php echo $schedul_no."<br/>"; ?>
-					  Color : <?php echo $color_name."<br/>"; ?>
-					  Docket No : <?php echo $docket_no."<br/>"; ?>
-					  Job No : <?php echo $display."<br/>"; ?>
-					  Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
-					  Input Date : <?php echo $input_date."<br/>"; ?>
-					  Total Input :<?php echo $input_qty."<br/>"; ?>
-					  Total Output:<?php echo $output_qty."<br/>"; ?>
-					  Rejected:<?php echo $rejected."<br/>"; ?>
-					  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
-					  " rel="tooltip">
-					  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<strong>".$value."</strong>"?></h6>
-					  </div></a>
-					<?php 
-					  }
-				}
-				  $pending=array();
-				  $pending=array_diff($recut_job,$available_job);
-				  if(sizeof($pending)>0)
-				  {						
-						for($kk=0;$kk<sizeof($pending);$kk++)
-						{	
-							$value=$recut_job_val[$pending[$kk]];							
-							$sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
-							$sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
-							{
-								$style_no=$sql_rowwip12['style'];
-								$schedul_no=$sql_rowwip12['schedule'];
-								$color_name=$sql_rowwip12['color'];
-								$docket_no=$sql_rowwip12['docket_number'];
-								$input_qty=$sql_rowwip12['input'];
-								$output_qty=$sql_rowwip12['output'];
-								$cut_no=$sql_rowwip12['cut_number'];
-								$type_of_sewing=$sql_rowwip12['remarks'];
-								$inputno=$sql_rowwip12['input_job_no'];
-							}
-							$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
-							$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);							
-							$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
-							$display = $sewing_prefi.leading_zeros($inputno,3);
-							  $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
-							  $sql_result33=mysqli_query($link, $sql33) ;
-							 while($sql_row33=mysqli_fetch_array($sql_result33))
-							  {
-								$rejected=$sql_row33['rejected']; 
-							  }
-							  $sidemenu=true;
-							$ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
-							?>
-						  <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
-						  Style No : <?php echo $style_no."<br/>"; ?>
-						  Co No : <?php echo $co_no."<br/>"; ?>
-						  Schedul No :<?php echo $schedul_no."<br/>"; ?>
-						  Color : <?php echo $color_name."<br/>"; ?>
-						  Docket No : <?php echo $docket_no."<br/>"; ?>
-						  Job No : <?php echo $display."<br/>"; ?>
-						  Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
-						  Input Date : <?php echo $input_date."<br/>"; ?>
-						  Total Input :<?php echo $input_qty."<br/>"; ?>
-						  Total Output:<?php echo $output_qty."<br/>"; ?>
-						  Rejected:<?php echo $rejected."<br/>"; ?>
-						  <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
-						  " rel="tooltip">
-						  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?><h6 style="text-align: center;margin-top: 5px;"><?php echo "<strong>".$value."</strong>"?></h6>
-						  </div></a>
-						  <?php
-						}
-				  }
-				 /*docket boxes Loop -End 
+           
+            $sidemenu=true;
+            $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
+          ?>
+            <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
+            Style No : <?php echo $style_no."<br/>"; ?>
+            Co No : <?php echo $co_no."<br/>"; ?>
+            Schedul No :<?php echo $schedul_no."<br/>"; ?>
+            Color : <?php echo $color_name."<br/>"; ?>
+            Docket No : <?php echo $docket_no."<br/>"; ?>
+            Job No : <?php echo $display."<br/>"; ?>
+            Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
+            Input Date : <?php echo $input_date."<br/>"; ?>
+            Total Input :<?php echo $input_qty."<br/>"; ?>
+            Total Output:<?php echo $output_qty."<br/>"; ?>
+            Rejected:<?php echo $rejected."<br/>"; ?>
+            <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
+            " rel="tooltip">
+            <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
+              <?php echo $value; ?>
+            </div></a>
+          <?php 
+            }
+        }
+          $pending=array();
+          $pending=array_diff($recut_job,$available_job);
+          if(sizeof($pending)>0)
+          {           
+            for($kk=0;$kk<sizeof($pending);$kk++)
+            { 
+              $value=$recut_job_val[$pending[$kk]];             
+              $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+              $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+              while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
+              {
+                $style_no=$sql_rowwip12['style'];
+                $schedul_no=$sql_rowwip12['schedule'];
+                $color_name=$sql_rowwip12['color'];
+                $docket_no=$sql_rowwip12['docket_number'];
+                $input_qty=$sql_rowwip12['input'];
+                $output_qty=$sql_rowwip12['output'];
+                $cut_no=$sql_rowwip12['cut_number'];
+                $type_of_sewing=$sql_rowwip12['remarks'];
+                $inputno=$sql_rowwip12['input_job_no'];
+              }
+              $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
+              $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
+              $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
+              $display = $sewing_prefi.leading_zeros($inputno,3);
+                $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
+                $sql_result33=mysqli_query($link, $sql33) ;
+               while($sql_row33=mysqli_fetch_array($sql_result33))
+                {
+                $rejected=$sql_row33['rejected']; 
+                }
+                $sidemenu=true;
+              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
+              ?>
+              <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  
+                  title="
+                    Style No : <?php echo $style_no."<br/>"; ?>
+                    Co No : <?php echo $co_no."<br/>"; ?>
+                    Schedul No :<?php echo $schedul_no."<br/>"; ?>
+                    Color : <?php echo $color_name."<br/>"; ?>
+                    Docket No : <?php echo $docket_no."<br/>"; ?>
+                    Job No : <?php echo $display."<br/>"; ?>
+                    Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
+                    Input Date : <?php echo $input_date."<br/>"; ?>
+                    Total Input :<?php echo $input_qty."<br/>"; ?>
+                    Total Output:<?php echo $output_qty."<br/>"; ?>
+                    Rejected:<?php echo $rejected."<br/>"; ?>
+                    <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
+                 " 
+              rel="tooltip">
+              <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
+                  <?php echo $value; ?>
+              </div></a>
+              <?php
+            }
+          }
+         /*docket boxes Loop -End 
                     closing while for red blocks
                   */
                   $rev_qty=0;
