@@ -370,22 +370,18 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	
 	
-	echo "<th>Style</th>";
-	
+	echo "<th>Style</th><td><input type=\"text\" class='form-control' name=\"style\" id=\"style\" value=\"".$row['style']."\" readonly=readonly size=3></td>"; 
 	
 	//$sql1="select distinct(style) from pro_style";
 	
 	//26-04-2017 changed the source for fetching styles
-	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
-	
-	//echo $sql1;
+/*	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
 	$result2=mysqli_query($link, $sql1) or die("2Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result2))
 	{
 		$styles[]=$row1["style"];
 		//echo $row1["style"];
 	}
-	//echo "style= ".sizeof($styles);
 	echo "<td>";
 	echo "<select name=\"style\" class='form-control'>";
 	for($i=0;$i<=sizeof($styles);$i++)
@@ -399,34 +395,31 @@ while($row=mysqli_fetch_array($result))
 		{
 			$status="";
 		}
+		
 		echo "<option value=\"$styles[$i]\" $status>".$styles[$i]."</option>";
-	}
-	echo "</select></td>";
+	} 
+	echo "</select></td>"; */
 	
 	echo "</tr>";
 	
 	echo "<tr>";
 	
-	echo "<th>Schedule</th>";
+	echo "<th>Schedule</th><td><input type=\"text\" class='form-control' name=\"schedule\" id=\"schedule\" value=\"".$row['schedule']."\" readonly=readonly size=3></td>";
 	
-	$sql2="select distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db";
-	//echo $sql2;
+	/* $sql2="select * from $bai_pro3.bai_orders_db_confirm where order_style_no ='".$row["style"]."'";
 	$result3=mysqli_query($link, $sql2) or die("3Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result3))
 	{
 		$schedule[]=$row2["schedule"];
-		//echo $row1["style"];
 	}
 	
 	echo "<td>";
 	echo "<select name=\"schedule\" class='form-control'>";
-	//echo "<option value='0' $status>0</option>";
 	for($i=0;$i<=sizeof($schedule);$i++)
 	{
 		if($schedule[$i]==$row["schedule"])
 		{
 			$status="selected='selected'";
-			//$style_id=$row["style"];
 		}
 		else
 		{
@@ -434,7 +427,7 @@ while($row=mysqli_fetch_array($result))
 		}
 		echo "<option value=\"$schedule[$i]\" $status>".$schedule[$i]."</option>";
 	}
-	echo "</select></td>";
+	echo "</select></td>"; */
 	
 	echo "</tr>";
 	
