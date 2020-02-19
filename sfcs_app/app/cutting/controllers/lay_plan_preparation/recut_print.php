@@ -337,7 +337,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	$mklength=$sql_row2['mklength'];
 	$mk_remarks=$sql_row2['remarks'];
 }
-	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_id." and doc_type=\"normal\"";
+	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_id."' and doc_type=\"normal\"";
  //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))

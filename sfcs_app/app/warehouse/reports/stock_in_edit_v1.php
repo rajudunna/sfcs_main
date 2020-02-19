@@ -256,7 +256,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 
 			echo "<table class='table table-striped table-bordered'>";
 			echo "<thead><tr class=''><th>date</th><th>Qty</th><th>Box/Roll Number</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr></thead>";
-			$sql="select store_out.date as date1,store_out.qty_issued as qty,store_in.ref2 as ref2,store_out.style as style,store_out.schedule as schedule,store_out.cutno as jobno, store_out.remarks as remarks,store_out.updated_by as user from $bai_rm_pj1.store_out left join $bai_rm_pj1.store_in on store_out.tran_tid = store_in.tid where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=".trim($lot_no).") order by store_in.date";
+			$sql="select store_out.date as date1,store_out.qty_issued as qty,store_in.ref2 as ref2,store_out.style as style,store_out.schedule as schedule,store_out.cutno as jobno, store_out.remarks as remarks,store_out.updated_by as user from $bai_rm_pj1.store_out left join $bai_rm_pj1.store_in on store_out.tran_tid = store_in.tid where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no='".trim($lot_no)."') order by store_in.date";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			echo "<tbody>";
 			while($sql_row=mysqli_fetch_array($sql_result))
