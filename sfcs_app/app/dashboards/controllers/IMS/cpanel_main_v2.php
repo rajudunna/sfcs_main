@@ -414,6 +414,20 @@ while($ops_row=mysqli_fetch_array($ops_code_result))
   $operation_codes[]=$ops_row['operation_code'];
 }
 
+$operation_codes=array();
+$short_qry="select schedule from $bai_pro3.short_shipment_job_track where remove_type>0";
+$short_qry_result=mysqli_query($link, $short_qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($short_qry_row=mysqli_fetch_array($short_qry_result))
+{
+  $scheudles[]=$short_qry_row['schedule'];
+}
+
+$jobs_qry="select input_job_no_random from $bai_pro3.job_deactive_log where remove_type=3";
+$jobs_qry_result=mysqli_query($link, $jobs_qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($jobs_qry_row=mysqli_fetch_array($jobs_qry_result))
+{
+  $jobs_not_consider[]=$jobs_qry_row['input_job_no_random'];
+}
 
 $application2='IPS';
 
@@ -718,7 +732,9 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
             }
         }
           $pending=array();
-          $pending=array_diff($recut_job,$available_job);
+          $pending_tmp=array();
+          $pending_tmp=array_diff($recut_job,$available_job);
+		  $pending=array_diff($pending_tmp,$jobs_not_consider);
           if(sizeof($pending)>0)
           {           
             for($kk=0;$kk<sizeof($pending);$kk++)
@@ -738,6 +754,8 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 $type_of_sewing=$sql_rowwip12['remarks'];
                 $inputno=$sql_rowwip12['input_job_no'];
               }
+			  if(!in_array($schedul_no,$scheudles))
+			  {
               $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
               $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
               $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
@@ -771,6 +789,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   <?php echo $value; ?>
               </div></a>
               <?php
+			  }
             }
           }
          /*docket boxes Loop -End 
