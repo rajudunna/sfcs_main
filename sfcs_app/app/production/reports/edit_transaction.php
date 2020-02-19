@@ -370,7 +370,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	
 	
-	echo "<th>Style</th><td><input type=\"text\" class='form-control' name=\"style\" id=\"style\" value=\"".$row['style']."\" readonly=readonly size=3></td>"; 
+	echo "<th>Style</th><td><input type=\"text\" class='form-control' name=\"style\" id=\"style\" value=\"".$row['style']."\" readonly></td>"; 
 	
 	//$sql1="select distinct(style) from pro_style";
 	
@@ -404,7 +404,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<tr>";
 	
-	echo "<th>Schedule</th><td><input type=\"text\" class='form-control' name=\"schedule\" id=\"schedule\" value=\"".$row['schedule']."\" readonly=readonly size=3></td>";
+	echo "<th>Schedule</th><td><input type=\"text\" class='form-control' name=\"schedule\" id=\"schedule\" value=\"".$row['schedule']."\" readonly></td>";
 	
 	/* $sql2="select * from $bai_pro3.bai_orders_db_confirm where order_style_no ='".$row["style"]."'";
 	$result3=mysqli_query($link, $sql2) or die("3Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -634,7 +634,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<tr>";
 	// add the popup window for the edit transation against the department wise.
-	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly=readonly size=3><span onclick=\"box(0)\"></sapn></td>";
+	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly><span onclick=\"box(0)\"></sapn></td>";
 	
 	echo "</tr>";
 	
