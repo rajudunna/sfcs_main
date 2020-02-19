@@ -42,10 +42,10 @@ $has_permission = haspermission($_GET['r']);
 		{
 		  $date=$_POST['date'];	
 		  if($date==date('Y-m-d')){
-			$sql_query="select * from `bai_pro`.`pro_plan_today` where date='$date' group by mod_no,shift";
+			$sql_query="select * from `bai_pro`.`pro_plan_today` where date='$date' group by mod_no,shift ORDER BY mod_no*1";
 			$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
 		}else{
-		$sql_query="select * from `bai_pro`.`pro_plan` where date='$date' group by mod_no,shift";
+		$sql_query="select * from `bai_pro`.`pro_plan` where date='$date' group by mod_no,shift ORDER BY mod_no*1";
 		$selectRes=mysqli_query($link,$sql_query) or exit($sql_query."Error at something");
 		}
 		$count=mysqli_num_rows($selectRes);

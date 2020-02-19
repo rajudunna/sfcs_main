@@ -952,20 +952,20 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
       //$sql11="select sum(ims_pro_qty) as 'bac_qty' from (SELECT * FROM ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT * FROM ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
       
-      $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
-      mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+      // $sql11="select sum(ims_pro_qty) as 'bac_qty', sum(emb) as 'emb_sum' from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as 'emb' FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
+      // mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       
-      $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-      $input_count=mysqli_num_rows($sql_result11);
-      while($sql_row11=mysqli_fetch_array($sql_result11))
-      {
-        $output=$sql_row11['bac_qty'];
-        $emb_sum=$sql_row11['emb_sum'];
-        if($emb_sum==NULL)
-        {
-          $input_count=0;
-        }
-      } 
+      // $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+      // $input_count=mysqli_num_rows($sql_result11);
+      // while($sql_row11=mysqli_fetch_array($sql_result11))
+      // {
+      //   $output=$sql_row11['bac_qty'];
+      //   $emb_sum=$sql_row11['emb_sum'];
+      //   if($emb_sum==NULL)
+      //   {
+      //     $input_count=0;
+      //   }
+      // } 
       
       if($cut_new=="DONE"){ $cut_new="T";} else { $cut_new="F"; }
       if($rm_update_new==""){ $rm_update_new="F"; } else { $rm_update_new="T"; }
@@ -1194,7 +1194,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
       
     //getting allocated qty;
-      $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+      $sql_fabcadallow="SELECT COALESCE(SUM(allocated_qty),0) as allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
       mysqli_query($link, $sql_fabcadallow) or exit("Sql Error fab cad".mysqli_error($GLOBALS["___mysqli_ston"]));
       $sql_fabcadallow_result=mysqli_query($link, $sql_fabcadallow) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
       $sql_num_check=mysqli_num_rows($sql_fabcadallow_result);
@@ -1228,38 +1228,38 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 
       //Embellishment Tracking
-      if($emb_sum=="")
-      {
-        $emb_sum=0;
-      }
-      if($input_count=="")
-      {
-        $input_count=0;
-      }
-      $emb_stat_title="";
-      $iustyle="IU";
-      //echo $emb_stat."-".$emb_sum."-".$input_count."$";
-      if(($emb_stat==1 or $emb_stat==3) and $emb_sum>0)
-      {
-        $emb_stat_title="<font color=black size=2>X</font>";
-        $iustyle="I";
-      }
-      else
-      {
-        if(($emb_stat==1 or $emb_stat==3) and $emb_sum==0 and $input_count>0)
-        {
-          $emb_stat_title="<font color=black size=2>&#8730;</font>";
-          $iustyle="I";
-        }
-        else
-        {
-          if(($emb_stat==1 or $emb_stat==3))
-          {
-            $emb_stat_title="<font color=black size=2>X</font>";
-            $iustyle="I";
-          }
-        }
-      }
+      // if($emb_sum=="")
+      // {
+      //   $emb_sum=0;
+      // }
+      // if($input_count=="")
+      // {
+      //   $input_count=0;
+      // }
+       $emb_stat_title="";
+      // $iustyle="IU";
+      // //echo $emb_stat."-".$emb_sum."-".$input_count."$";
+      // if(($emb_stat==1 or $emb_stat==3) and $emb_sum>0)
+      // {
+      //   $emb_stat_title="<font color=black size=2>X</font>";
+      //   $iustyle="I";
+      // }
+      // else
+      // {
+      //   if(($emb_stat==1 or $emb_stat==3) and $emb_sum==0 and $input_count>0)
+      //   {
+      //     $emb_stat_title="<font color=black size=2>&#8730;</font>";
+      //     $iustyle="I";
+      //   }
+      //   else
+      //   {
+      //     if(($emb_stat==1 or $emb_stat==3))
+      //     {
+      //       $emb_stat_title="<font color=black size=2>X</font>";
+      //       $iustyle="I";
+      //     }
+      //   }
+      // }
       //echo $emb_sum;
       //Embellishment Tracking
     //unset($sel_sty);
@@ -1280,7 +1280,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //echo "&nbsp;&nbsp;schedules:".$sel_sch."-".$sel_sty."-".$ord_style."<br/>"; 
     //echo "<br>".$ord_style."-".$sel_sty."<br>";
 
-    $fab_pop_details = getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'R');
+  $fab_pop_details = getFullURLLevel($_GET['r'],'fab_pop_details.php',0,'R');
 	$fab_pop_details1 = getFullURLLevel($_GET['r'],'fab_pop_alert.php',0,'R');
   if($check_num_rows>0 && $ord_style==$sel_sty)
   {

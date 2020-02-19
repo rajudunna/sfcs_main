@@ -68,8 +68,10 @@ else if($short_ship_status==2){
     echo json_encode($response_data);
     exit();
 }
+$manual_flag = 0;
 $doc_status_query  = "SELECT manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
+                    // echo $doc_status_query;
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
     $row = mysqli_fetch_array($doc_status_result);
@@ -77,7 +79,12 @@ if(mysqli_num_rows($doc_status_result)>0){
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
     $manual_flag = $row['manual_flag'];
-   
+    $cmnt = '';
+    if($manual_flag == '1')
+    {
+        $cmnt = 'Confirmed Manually';
+    }
+    $response_data['reported'] = $cmnt;
     $order_tid = $row['order_tid'];
     $org_doc_no = $row['org_doc_no'];
     $ratio   = $row['ratio'];
@@ -300,7 +307,7 @@ if(!in_array($category,$fabric_categories_array) ){
         $response_data['cut_done']  = 1;
     }
 }
-$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = ".$doc_no."";
+$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = '".$doc_no."' ";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 
@@ -333,9 +340,11 @@ $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
 
-
-
-
+/*get mark length for #3111 (No changes done but this branch roll backed So hard committed for UAT push*/
+$mlength="SELECT mklength FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
+$mlengthresult = mysqli_query($link,$mlength);
+$marklength = mysqli_fetch_array($mlengthresult);
+$response_data['marklength']=$marklength['mklength'];
 
 echo json_encode($response_data);
 exit();

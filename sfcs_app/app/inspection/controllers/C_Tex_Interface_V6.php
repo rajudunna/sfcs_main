@@ -1813,7 +1813,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBAL
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+	$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["qty_issued"];
 //tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 	
 	$scount_temp[]=$sql_row['ref4'];
@@ -1839,16 +1839,16 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"];
+		$values[]=$sql_row1['tid']."~".$sql_row1['ref2']."~".$sql_row1['ref4']."~".$sql_row1['qty_rec']."~".$sql_row1['ref5']."~".$sql_row1['ref6']."~".$sql_row1['ref3']."~".$sql_row1['lot_no']."~".$sql_row1["roll_joins"]."~".$sql_row1["partial_appr_qty"]."~".$sql_row1["roll_status"]."~".$sql_row1["shrinkage_length"]."~".$sql_row1["shrinkage_width"]."~".$sql_row1["shrinkage_group"]."~".$sql_row1["roll_remarks"]."~".$sql_row1["rejection_reason"]."~".$sql_row1["qty_allocated"]."~".$sql_row1["qty_issued"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
 		$scount_temp[]=$sql_row1['ref4'];
 		// $ctex_sum+=$sql_row['ref5'];
-		$ctex_sum+= ((int)$sql_row['ref5']);
+		$ctex_sum+= ((int)$sql_row1['ref5']);
 		// $avg_t_width+=$sql_row['ref6'];
-		$avg_t_width+= ((int)$sql_row['ref6']);
+		$avg_t_width+= ((int)$sql_row1['ref6']);
 		// $avg_c_width+=$sql_row['ref3'];
-		$avg_c_width+= ((int)$sql_row['ref3']);
+		$avg_c_width+= ((int)$sql_row1['ref3']);
 			
 		if($sql_row1['print_check']==1)
 		{
@@ -2295,7 +2295,8 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	//for shade wise category
 	if(in_array($authorized,$has_permission))
 	{
-		if ($temp[16] > 0) 
+
+		if ($temp[16] > 0 && $temp[4] > 0) 
 		{
 			$readonly = 'readonly';
 			$dropdown_read = 'disabled';
@@ -2390,6 +2391,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$style = '';
 	}else{
 		$style = 'style=display:none'; 
+		// $style = '';
 	}
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
@@ -2417,14 +2419,14 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  <td class=xl12824082 style='border-left:none'><input class='textbox float par_rej' ".$readonly."  type='text' min='0' name='ele_par_length[$i]' id='ele_par_length[$i]' value='".$temp[9]."' onchange='change_body(2,this.name,$i)'></td>";
 	  if($shrinkage_inspection == 'yes')
 	  {
-	  echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+	  echo "<td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float_negitive shr_len' ".$readonly."  type='text' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
 	  <td class=xl12824082  colspan=2 style='border-left:none'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
 	  }
 	  else
 	  {
-		echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_len' ".$readonly."  type='text' min='0' id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
-		<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float shr_wid' ".$readonly."  type='text' min='0' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
+		echo "<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float_negitive shr_len' ".$readonly."  type='text'  id='shrinkage_length[$i]' name='shrinkage_length[$i]' value='".$temp[11]."' onchange='change_body(2,this.name,$i)'></td>
+		<td class=xl12824082  colspan=2 style='border-left:none;display: none;'><input class='textbox float_negitive shr_wid' ".$readonly."  type='text' id='shrinkage_width[$i]' name='shrinkage_width[$i]' value='".$temp[12]."' onchange='change_body(2,this.name,$i)'></td>
 		<td class=xl12824082  colspan=2 style='border-left:none; display: none;'><input class='textbox alpha shr_grp' ".$readonly." type='text' min='0' id='shrinkage_group[$i]'  name='shrinkage_group[$i]' value='".$sgroup."' onchange='change_body(2,this.name,$i)'></td>";
 	  }
 	 echo "<td class=xl12824082 colspan=3 style='border-left:none'><input class='textbox' ".$readonly." type='text' id='roll_remarks[$i]' name='roll_remarks[$i]' value='".$temp[14]."' onchange='change_body(2,this.name,$i)'></td>
@@ -2715,7 +2717,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 					   //
 				  	   
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				  $sql1="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			}

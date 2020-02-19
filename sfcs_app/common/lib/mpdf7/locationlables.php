@@ -61,14 +61,15 @@ $sql="SELECT * FROM $bai_rm_pj1.location_db where status=1 order by sno ASC";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);
-$x=1;
+$x=0;
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
+
 	$html.='<table><tr><td><center><barcode code="'.$sql_row['location_id'].'" type="C39"/ class="barcode" height="2.5"></center></td></tr></table>';
 	//$html.="</br></br>";
 	$html.='<table style="font-size: 52px"><tr><td><b><center>'.$sql_row['location_id']."</center></b></td></tr></table>";
 	$x++;
-	if($tot_labels==$x){
+	if($tot_labels!=$x){
 		$html.='<pagebreak />';
 	}
 }

@@ -182,7 +182,7 @@ function getjobdetails($job_number)
         die();
     }
 
-    $get_ops_query = "SELECT DISTINCT tm.operation_code FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' ORDER BY operation_order";
+    $get_ops_query = "SELECT DISTINCT tm.operation_code,tr.operation_code as opcode,tr.operation_name FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' and display_operations='yes' ORDER BY operation_order";
 
     $ops_query_result=mysqli_query($link,$get_ops_query);
     while ($row = mysqli_fetch_array($ops_query_result))
@@ -190,6 +190,7 @@ function getjobdetails($job_number)
         
         $ops_get_code[] = $row['operation_code'];
         //$result_array['ops_get_code'][] = $row['operation_code'];
+		$result_array['ops_get_code'][$row['operation_name']] = $row['opcode'];
 
     }
 
@@ -200,7 +201,7 @@ function getjobdetails($job_number)
     $ops_query_result1=$link->query($to_display_values);
     while ($row1 = $ops_query_result1->fetch_assoc())
     {
- $result_array['ops_get_code'][$row1['operation_name']] = $row1['operation_code'];
+ // $result_array['ops_get_code'][$row1['operation_name']] = $row1['operation_code'];
     }
     // echo $display_code;
 
@@ -1617,7 +1618,7 @@ function validating_with_module($pre_array_module)
     }
         
 
-    if ($tms_status > 1)
+    if ($tms_status > 2)
     {
         $check_result = $link->query($check_if_ij_is_scanned);
         while ($row = mysqli_fetch_array($check_result))
@@ -1645,51 +1646,63 @@ function validating_with_module($pre_array_module)
 
         if ($go_here == 1)
         {
-            if ($module != '' && $module != null && $module > 0)
+            if($operation == $opn_routing_code)
             {
-                $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
-                $result_validating_qry = $link->query($validating_qry);
-                while($row = $result_validating_qry->fetch_assoc()) 
+                if ($module != '' && $module != null && $module > 0)
                 {
-                    $input_job_array[] = $row['input_job_rand_no_ref'];
-                }
-
-                $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
-                $result_block_prio = $link->query($block_prio_qry);
-                while($sql_row = $result_block_prio->fetch_assoc())
-                {
-                    $block_priorities = $sql_row['block_priorities'];
-                }
-
-                if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
-                {
-                    $response_flag = 3;
-                }
-                else
-                {
-                    if(!in_array($job_no,$input_job_array))
+                    $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
+                    $result_validating_qry = $link->query($validating_qry);
+                    while($row = $result_validating_qry->fetch_assoc()) 
                     {
-                        // job not in module (adding new job to module)
-                        if (sizeof($input_job_array) < $block_priorities)
-                        {
-                            $response_flag = 0; // allow
-                        }
-                        else
-                        {
-                            $response_flag = 2; // check for user acces (block priorities)
-                        }
+                        $input_job_array[] = $row['input_job_rand_no_ref'];
+                    }
+
+                    $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
+                    $result_block_prio = $link->query($block_prio_qry);
+                    while($sql_row = $result_block_prio->fetch_assoc())
+                    {
+                        $block_priorities = $sql_row['block_priorities'];
+                    }
+
+                    if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
+                    {
+                        $response_flag = 3;
                     }
                     else
                     {
-                        // job already in module
-                        $response_flag = 0; // allow
+                        if(!in_array($job_no,$input_job_array))
+                        {
+                            // job not in module (adding new job to module)
+                            if (sizeof($input_job_array) < $block_priorities)
+                            {
+                                $response_flag = 0; // allow
+                            }
+                            else
+                            {
+                                $response_flag = 2; // check for user acces (block priorities)
+                            }
+                        }
+                        else
+                        {
+                            // job already in module
+                            $response_flag = 0; // allow
+                        }
                     }
+                }
+                else
+                {
+                    $response_flag = 4;
                 }
             }
             else
             {
-                $response_flag = 4;
-            }
+                $response_flag = 0; // To allow block priorities for remaining operations
+				if($module == '' || $module == null || $module == 0)
+				{
+					$response_flag = 4;
+				}
+            }   
+            
         }
     }
     else

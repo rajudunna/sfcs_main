@@ -91,7 +91,8 @@ while(($data=fgetcsv($handle,1000,","))!==FALSE)
 						if($data[$k]>0)
 						{					
 							$temp_val[$k]=$data[$k];
-							$sag_val[$k]=round_or_not($data[$k],$teamcount);
+							//$sag_val[$k]=round_or_not($data[$k],$teamcount);
+							$sag_val[$k]=round(($data[$k]/$teamcount),2);
 						}
 						else
 						{
@@ -226,7 +227,16 @@ for($i=1;$i<=31;$i++)
 		
 		$section=$sql_row['section'];
 		
-		$date_new=substr($date,0,8).$i;
+		//$date_new=substr($date,0,8).$i;
+		if(strlen($i) == 1)
+		{
+			$date_new=substr($date,0,8)."0".$i;
+		}
+		else 
+		{
+			$date_new=substr($date,0,8).$i;
+		}
+		
 		$ref_code=$date_new."-".$module."-".$shift;
 		
 		$sql="insert into $bai_pro.tbl_freez_plan_tmp (plan_tag,date,mod_no,shift,plan_eff,plan_pro,sec_no,plan_clh,plan_sah,nop) values ('$ref_code','$date_new','$module','$shift','$eff','$pcs','$section','$clh','$sah',$nop)";

@@ -136,7 +136,7 @@ if(count($colors)>0){
                     $size_name = $row['size_code'];
                     $size_qty = $row['carton_act_qty'];
             
-                    $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."'";
+                    $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."' LIMIT 1";
                     
                     $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                     $mo_numrows=mysqli_num_rows($mo_sql_result);
@@ -192,7 +192,7 @@ if(count($colors)>0){
                             $prno = urlencode($value1['PRNO']);
                             $mseq = $value1['MSEQ'];
 
-                            $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                            $api_url_wastage = $host.":".$port."/m3api-rest/execute/PMS100MI/GetMatLine;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                             $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                             $api_data_result = json_decode($api_data_wastage, true);
                               
@@ -221,7 +221,7 @@ if(count($colors)>0){
                             $prno = urlencode($value1['PRNO']);
                             $mseq = $value1['MSEQ'];
 
-                            $api_url_wastage = $host.":".$port."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
+                            $api_url_wastage = $host.":".$port."/m3api-rest/execute/PMS100MI/GetMatLine;returncols=WAPC,PEUN?CONO=$company_num&FACI=$plant_code&MFNO=$mfno&PRNO=$prno&MSEQ=$mseq";
                             $api_data_wastage = $obj->getCurlAuthRequest($api_url_wastage);                                 
                             $api_data_result = json_decode($api_data_wastage, true);
                               

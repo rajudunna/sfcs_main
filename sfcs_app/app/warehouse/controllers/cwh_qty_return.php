@@ -97,7 +97,7 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 						break;
 					}
 
-					$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no=".$barcode_data['lot_no']."";
+					$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no='".$barcode_data['lot_no']."'";
 				//echo $qty_rec_store_report."<br/>";
 					$qty_rec_store_report1 = $cwh_link->query($qty_rec_store_report);
 					while($row2 = $qty_rec_store_report1->fetch_assoc()) 
@@ -132,7 +132,7 @@ if(isset($_POST['barcode']) && $_POST['barcode']!=''){
 					echo "<h3>Status: <font color=Green>Quantity ".$actual_quentity_present." Transferred successfully for Item ID : ".$_POST['barcode']." and Lot Number : ".$barcode_data['lot_no']."</font></h3>";
 					
 					}
-					$qty_rec_store_report8 = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no=".$barcode_data['lot_no']."";
+					$qty_rec_store_report8 = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no='".$barcode_data['lot_no']."'";
 					
 						$qty_rec_store_report18 = $link->query($qty_rec_store_report8);
 						while($row8 = $qty_rec_store_report18->fetch_assoc()) 

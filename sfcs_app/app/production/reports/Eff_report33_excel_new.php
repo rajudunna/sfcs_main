@@ -281,8 +281,8 @@ $offsthb_sum=$offsthb_sum+$offsthb;
 $pclha_total=$pclha_total+$pclha; 
 $pclhb_total=$pclhb_total+$pclhb; 
 
-$pstha_total=$pstha_total+round($pstha,0); 
-$psthb_total=$psthb_total+round($psthb,0); 
+$pstha_total=$pstha_total+round($pstha,2); 
+$psthb_total=$psthb_total+round($psthb,2); 
 
 $peff_a_total=$peff_a_total+$peff_a; 
 $peff_b_total=$peff_b_total+$peff_b; 
