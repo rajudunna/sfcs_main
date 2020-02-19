@@ -11,16 +11,15 @@ if(isset($_POST['Save']))
     $status = 0;
     $module1 = array_unique($_POST['module']);
     $module = implode(",",$module1);
-    // var_dump($_POST);
-    // die();
+   
     foreach($_POST['style'] as $key => $value){
         if($_POST['remove_type'][$key] == '3'){
-
             $ims_date = $_POST['ims_date'][$key];
             $style = $_POST['style'][$key];
             $schedule = $_POST['schedule'][$key];
             $color = $_POST['color'][$key];
             $input_job_no = $_POST['input_job_no'][$key];
+            $input_rand_ref = $_POST['input_rand_ref'][$key];
             $input_qty = $_POST['input_qty'][$key];
             $output_qty = $_POST['output_qty'][$key];
             $wip = $_POST['wip'][$key];
@@ -44,7 +43,7 @@ if(isset($_POST['Save']))
                 $job_deacive_hold_result=mysqli_query($link, $job_deacive_hold) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $sql_num_check_hold=mysqli_num_rows($job_deacive_hold_result);
                 if($sql_num_check_hold == 0 ){
-                    $insert_qry = "insert into $bai_pro3.job_deactive_log(input_date,style,schedule,color,module_no,input_job_no,input_qty,out_qty,rejected_qty,wip,remarks,remove_type,tran_user) values('$ims_date','$style','$schedule','$color','$module','$input_job_no','$input_qty','$output_qty','$rejected_qty','$wip','$ims_remarks','$remove_type','$username')";
+                    $insert_qry = "insert into $bai_pro3.job_deactive_log(input_date,style,schedule,color,module_no,input_job_no,input_job_no_random,input_qty,out_qty,rejected_qty,wip,remarks,remove_type,tran_user) values('$ims_date','$style','$schedule','$color','$module','$input_job_no','$input_rand_ref','$input_qty','$output_qty','$rejected_qty','$wip','$ims_remarks','$remove_type','$username')";
                     // echo $insert_qry;
                     $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $deactive_job_id = mysqli_insert_id($link);
@@ -130,6 +129,7 @@ if(isset($_POST['Save']))
             $style = $_POST['style'][$key];
             $schedule = $_POST['schedule'][$key];
             $input_job_no = $_POST['input_job_no'][$key];
+            $input_rand_ref = $_POST['input_rand_ref'][$key];
             // $module = $_POST['module'];
 
             $remove_type='0';

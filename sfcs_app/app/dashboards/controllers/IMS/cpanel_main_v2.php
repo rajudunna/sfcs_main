@@ -413,15 +413,14 @@ while($ops_row=mysqli_fetch_array($ops_code_result))
 {
   $operation_codes[]=$ops_row['operation_code'];
 }
-
-$operation_codes=array();
+$scheudles=array();
 $short_qry="select schedule from $bai_pro3.short_shipment_job_track where remove_type>0";
 $short_qry_result=mysqli_query($link, $short_qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($short_qry_row=mysqli_fetch_array($short_qry_result))
 {
   $scheudles[]=$short_qry_row['schedule'];
 }
-
+$jobs_not_consider=array();
 $jobs_qry="select input_job_no_random from $bai_pro3.job_deactive_log where remove_type=3";
 $jobs_qry_result=mysqli_query($link, $jobs_qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($jobs_qry_row=mysqli_fetch_array($jobs_qry_result))
@@ -556,15 +555,16 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
       $input_jobs_rand_tmp[]=$recut_row['input_job_no_random_ref'];
     }
     $input_jobs_rand=array_values(array_unique($input_jobs_rand_tmp));
-    
+     
     for($k=0;$k<sizeof($input_jobs_rand);$k++)
     {
       if(($rejected_qty[$input_jobs_rand[$k]]-($issued[$input_jobs_rand[$k]]+$replace[$input_jobs_rand[$k]]))>0)
       {
+        
         $recut_job[]=$input_jobs_rand[$k];
         $recut_job_val[$input_jobs_rand[$k]]='R';
       }
-    }    
+    }   
     $rejection_border='';
 
       ?>
@@ -734,7 +734,8 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
           $pending=array();
           $pending_tmp=array();
           $pending_tmp=array_diff($recut_job,$available_job);
-		  $pending=array_diff($pending_tmp,$jobs_not_consider);
+       $pending=array_diff($pending_tmp,$jobs_not_consider);
+     
           if(sizeof($pending)>0)
           {           
             for($kk=0;$kk<sizeof($pending);$kk++)

@@ -157,6 +157,7 @@ if(isset($_POST['submit']) || $module)
                 echo "<input type='hidden' name='schedule[]' value=$schedule>";
                 echo "<input type='hidden' name='color[]' value=$color>";
                 echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
+                echo "<input type='hidden' name='input_rand_ref[]' value=$input_rand_ref>";
                 echo "<input type='hidden' name='module[]' value=$module>";
                 echo "<input type='hidden' name='input_qty[]' value=$input_qty>";
                 echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
@@ -210,10 +211,12 @@ if(isset($_POST['submit']) || $module)
 				{ 
 				
 				// REEJECTION//
-				 $ip_op_qty="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+                 $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+                //  echo $ip_op_qty;
 					$ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowwip12=mysqli_fetch_array($ip_op_qty_res))
 					{
+						$ims_date1=$sql_rowwip12['date1'];
 						$style=$sql_rowwip12['style'];
 						$schedule=$sql_rowwip12['schedule'];
 						$color=$sql_rowwip12['color'];
@@ -223,10 +226,15 @@ if(isset($_POST['submit']) || $module)
 						$cut_no=$sql_rowwip12['cut_number'];
 						$type_of_sewing=$sql_rowwip12['remarks'];
 						$input_job_no=$sql_rowwip12['input_job_no'];
+						$input_rand_ref=$sql_rowwip12['input_job_no_random_ref'];
 						$rejected_qty=$sql_rowwip12['rejected'];
 						$wip=$input_qty-$output_qty;
 					}
-					$ims_date=echo_title("$bai_pro3.ims_log_backup","min(ims_date)","input_job_rand_no_ref",$pending[$kk],$link);			
+                    $ims_date=echo_title("$bai_pro3.ims_log_backup","min(ims_date)","input_job_rand_no_ref",$pending[$kk],$link);
+                    // echo $ims_date1;
+                    if($ims_date==''){
+                        $ims_date=$ims_date1;
+                    }			
 					$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
 					$display = $sewing_prefi.leading_zeros($input_job_no,3);
 					echo "<tr>";
@@ -234,7 +242,8 @@ if(isset($_POST['submit']) || $module)
 					echo "<input type='hidden' name='style[]' value=$style>";
 					echo "<input type='hidden' name='schedule[]' value=$schedule>";
 					echo "<input type='hidden' name='color[]' value=$color>";
-					echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
+                    echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
+                    echo "<input type='hidden' name='input_rand_ref[]' value=$input_rand_ref>";
 					echo "<input type='hidden' name='module[]' value=$module>";
 					echo "<input type='hidden' name='input_qty[]' value=$input_qty>";
 					echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
@@ -252,11 +261,12 @@ if(isset($_POST['submit']) || $module)
 						
 					}
 
-					$job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+                    $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+                    // echo $job_deacive;
 					$job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row=mysqli_fetch_array($job_deacive_result))
 					{
-						$remove_type = $row['remove_type'];
+                        $remove_type = $row['remove_type'];
 					}
 					if($remove_type == '1'){
 						$edit_url = getFullURLLevel($_GET['r'],'remove_shortshipment_jobs/remove_jobs.php',1,'N');
@@ -266,7 +276,7 @@ if(isset($_POST['submit']) || $module)
 						echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label></td>"; 
 					}
 					 else {
-					   if($short_shipment_status==3){
+					   if($remove_type==3){
 							$selected1 = 'selected';
 						} else {
 							$selected = 'selected';
