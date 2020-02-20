@@ -134,12 +134,20 @@ if(isset($_POST['submit']))
                     if(sizeof($remove_ref_nums)>0)
                     {
                         //To remove Jobs in IPS and TMS
-                        $ips_chck_qry = "select distinct input_job_no_random_ref as ips_tms_jobs  from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $ips_chck_qry = "select distinct input_job_no_random_ref as ips_tms_jobs from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
                         $ips_chck_qry_res = mysqli_query($link, $ips_chck_qry) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($ips_chck_row=mysqli_fetch_array($ips_chck_qry_res))
                         {
                             $ips_tms_jobs[]="'".$ips_chck_row['ips_tms_jobs']."'";
                         }
+                        $ips_chck_qry1 = "select distinct input_job_no_random_ref as ips_tms_jobs from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        
+                        $ips_chck_qry1_res = mysqli_query($link, $ips_chck_qry1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($ips_chck_row=mysqli_fetch_array($ips_chck_qry1_res))
+                        {
+                            $ips_tms_jobs1[]="'".$ips_chck_row['ips_tms_jobs']."'";
+                        }
+                        
                         if(sizeof($ips_tms_jobs)>0){
                             $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
                             $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -150,8 +158,11 @@ if(isset($_POST['submit']))
                             if($backup_ips_query_result && $update_ips_qry_result && $del_ips_sqlx_result) {
                                 $remarks .="IPS,TMS,";
                             }
+                        } else if(sizeof($ips_tms_jobs1)>0){
+                            $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$status' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs1).")";
+                            // echo $update_ips_qry;
+                            $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
-    
                         //To remove Jobs in IMS
                         $ims_chck_qry = "select distinct input_job_rand_no_ref as ims_jobs from $bai_pro3.ims_log where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
                         $ims_chck_qry_res = mysqli_query($link, $ims_chck_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
