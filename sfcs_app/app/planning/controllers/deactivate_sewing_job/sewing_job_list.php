@@ -79,6 +79,9 @@ if(isset($_POST['Save']))
                         if($backup_ips_query_result && $update_ips_qry_result && $del_ips_sqlx_result) {
                             $remarks .="IPS,TMS,";
                         }
+                    } else {
+                        $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                     // die();
 
@@ -169,10 +172,10 @@ if(isset($_POST['Save']))
                             }
                           
                             if(sizeof($ips_tms_jobs)>0){
-                                $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                                $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
                                 $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $backup_ips_query.'<br/>';
-                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
                                 $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $update_ips_qry.'<br/>';
 
