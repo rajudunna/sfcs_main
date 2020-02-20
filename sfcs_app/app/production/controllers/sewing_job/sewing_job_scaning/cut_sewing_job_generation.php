@@ -75,7 +75,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
             } 
             else
             {
-                 $old_jobs_count_qry = "SELECT max(input_job_no*1) as max_job FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
+                 $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL)) as max_job FROM $bai_pro3.packing_summary_input WHERE order_del_no=$schedule";
                  //echo $old_jobs_count_qry;
                  $old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Sql Error : old_jobs_count_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                  while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
