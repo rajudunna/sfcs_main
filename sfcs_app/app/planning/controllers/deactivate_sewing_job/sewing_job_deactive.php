@@ -183,10 +183,10 @@ if(isset($_POST['submit']) || $module)
                 }
                 if($remove_type == '1'){
                     $edit_url = getFullURLLevel($_GET['r'],'remove_shortshipment_jobs/remove_jobs.php',1,'N');
-                    echo "<td>Short Shipment Done Temporarly <br/><span><a href='$edit_url&schedule=$schedule' class='btn btn-warning btn-xs editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></span></td>";
+                    echo "<td>Short Shipment Done Temporarly <br/><span><a href='$edit_url&schedule=$schedule' class='btn btn-warning btn-xs editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></span><input type='hidden' name='remove_type[]' value='1'></td>";
                 }
                 else if($remove_type == '2'){
-                    echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label></td>"; 
+                    echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label><input type='hidden' name='remove_type[]' value='2'></td>"; 
                 }
                  else {
                    if($short_shipment_status==3){
@@ -251,15 +251,14 @@ if(isset($_POST['submit']) || $module)
 					echo "<input type='hidden' name='ims_remarks[]' value='Reject'>";
 					echo "<input type='hidden' name='wip[]' value=$wip>";
 					echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
-					echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>Rejection</td>";
-
+                    
 					$short_shipment_query = "SELECT * FROM $bai_pro3.`short_shipment_job_track` where schedule = '$schedule' and (remove_type in ('1','2'))";
 					$short_shipment_query_result=mysqli_query($link, $short_shipment_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row=mysqli_fetch_array($short_shipment_query_result))
 					{
-						$remove_type = $row['remove_type'];
-						
+                        $remove_type = $row['remove_type'];
 					}
+                    echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>Rejection</td>";
 
                     $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
                     // echo $job_deacive;
@@ -270,10 +269,10 @@ if(isset($_POST['submit']) || $module)
 					}
 					if($remove_type == '1'){
 						$edit_url = getFullURLLevel($_GET['r'],'remove_shortshipment_jobs/remove_jobs.php',1,'N');
-						echo "<td>Short Shipment Done Temporarly <br/><span><a href='$edit_url&schedule=$schedule' class='btn btn-warning btn-xs editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></span></td>";
+						echo "<td>Short Shipment Done Temporarly <br/><span><a href='$edit_url&schedule=$schedule' class='btn btn-warning btn-xs editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></span><input type='hidden' name='remove_type[]' value='1'></td>";
 					}
 					else if($remove_type == '2'){
-						echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label></td>"; 
+						echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label><input type='hidden' name='remove_type[]' value='2'></td>"; 
 					}
 					 else {
 					   if($remove_type==3){
@@ -281,7 +280,6 @@ if(isset($_POST['submit']) || $module)
 						} else {
 							$selected = 'selected';
 						}
-
 						echo '<td><select id="remove_type" class="form-control" data-role="select" selected="selected" name="remove_type[]"  data-parsley-errors-container="#errId3" required><option value="0" '.$selected.'>Active</option><option value="3" '.$selected1.'>Hold</option></select></td>';
 						$selected1='';
 						$selected='';
@@ -290,14 +288,13 @@ if(isset($_POST['submit']) || $module)
 					echo "</tr>";
 				}
 			}	
-				// rEJECTIONS//
             echo "</tbody>";
             echo "<thead><tr><td colspan='12' align='right'></td><td>
             <input type='submit' class='btn btn-success btn-sm pull-right' name='Save' value='Save' ></td>
             </tr></thead>";
             echo "</table></form>";
         } else {
-            echo "<br/><table class='table table-responsive'><tr class='label label-sm label-danger'><td colspan='12' align='right'><center>No Data Found</center></td></tr></table>";
+            echo "<br/><div class='alert alert-danger'><span>No Data Found.</span></div>";
         }
 
     }else {
