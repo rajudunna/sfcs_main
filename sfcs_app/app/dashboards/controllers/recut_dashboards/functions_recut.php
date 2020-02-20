@@ -92,17 +92,14 @@ function RecutProcess($recut_id_edit)
         $scheule = $row_row['SCHEDULE'];
         $color = $row_row['color'];
     }
-    $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
+    $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row=mysqli_fetch_array($job_deactivated_result))
-    {
-        $count = $sql_row['count1'];
-    }
-    if($count == 0){
+    if(mysqli_num_rows($job_deactivated_result) == 0){
         $job_deactivated_status = 1;
     } else {
         $job_deactivated_status = 0;
     }
+    // echo $job_deactivated_status;
     if($job_deactivated_status == 1)
     {
         //getting order tid
