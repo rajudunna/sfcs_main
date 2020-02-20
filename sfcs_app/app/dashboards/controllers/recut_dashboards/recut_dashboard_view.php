@@ -29,17 +29,17 @@
             
 
         }
-        $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
-        // echo $job_deactivated;
+        $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
+       
         $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($job_deactivated_result) > 0){
-            $job_deactivated = 0;
+        if(mysqli_num_rows($job_deactivated_result) == 0){
+            $job_deactivated1 = 1;
         } else {
-            $job_deactivated = 1;
+            $job_deactivated1 = 0;
         }
-        // var_dump($scheule);
+        // var_dump($job_deactivated1);
         // die();
-        if($job_deactivated==1){
+        if($job_deactivated1==1){
             //getting order tid
             $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
             $res_qry_order_tid = $link->query($qry_order_tid);
