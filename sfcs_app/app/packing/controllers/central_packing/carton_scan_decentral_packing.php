@@ -162,7 +162,7 @@
 							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
 							document.getElementById('original_size').innerHTML = response['original_size'];
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
-							$('#status').css("background-color", "limegreen");
+							$('#status').css("background-color", "red");
 							$('#'+id).val('');
 							$("#carton_id").attr("disabled", false);
 							$("#manual_carton_id").attr("disabled", false);
