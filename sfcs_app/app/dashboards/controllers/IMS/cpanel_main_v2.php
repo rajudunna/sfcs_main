@@ -733,8 +733,15 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
         }
           $pending=array();
           $pending_tmp=array();
-          $pending_tmp=array_diff($recut_job,$available_job);
-       $pending=array_diff($pending_tmp,$jobs_not_consider);
+          $recut_job1 = array_values($recut_job);
+          $available_job1 = array_values($available_job);
+          
+          $pending_tmp=array_diff($recut_job1,$available_job1);
+
+          $pending_tmp1 = array_values($pending_tmp);
+
+          $jobs_not_consider1 = array_values($jobs_not_consider);
+          $pending=array_diff($pending_tmp1,$jobs_not_consider1);
      
           if(sizeof($pending)>0)
           {           
@@ -755,42 +762,42 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 $type_of_sewing=$sql_rowwip12['remarks'];
                 $inputno=$sql_rowwip12['input_job_no'];
               }
-			  if(!in_array($schedul_no,$scheudles))
-			  {
-              $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
-              $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
-              $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
-              $display = $sewing_prefi.leading_zeros($inputno,3);
-                $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
-                $sql_result33=mysqli_query($link, $sql33) ;
-               while($sql_row33=mysqli_fetch_array($sql_result33))
-                {
-                $rejected=$sql_row33['rejected']; 
-                }
-                $sidemenu=true;
-              $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
-              ?>
-              <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  
-                  title="
-                    Style No : <?php echo $style_no."<br/>"; ?>
-                    Co No : <?php echo $co_no."<br/>"; ?>
-                    Schedul No :<?php echo $schedul_no."<br/>"; ?>
-                    Color : <?php echo $color_name."<br/>"; ?>
-                    Docket No : <?php echo $docket_no."<br/>"; ?>
-                    Job No : <?php echo $display."<br/>"; ?>
-                    Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
-                    Input Date : <?php echo $input_date."<br/>"; ?>
-                    Total Input :<?php echo $input_qty."<br/>"; ?>
-                    Total Output:<?php echo $output_qty."<br/>"; ?>
-                    Rejected:<?php echo $rejected."<br/>"; ?>
-                    <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
-                 " 
-              rel="tooltip">
-              <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
-                  <?php echo $value; ?>
-              </div></a>
-              <?php
-			  }
+            if(!in_array($schedul_no,$scheudles))
+            {
+                  $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
+                  $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
+                  $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
+                  $display = $sewing_prefi.leading_zeros($inputno,3);
+                    $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
+                    $sql_result33=mysqli_query($link, $sql33) ;
+                  while($sql_row33=mysqli_fetch_array($sql_result33))
+                    {
+                    $rejected=$sql_row33['rejected']; 
+                    }
+                    $sidemenu=true;
+                  $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
+                  ?>
+                  <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  
+                      title="
+                        Style No : <?php echo $style_no."<br/>"; ?>
+                        Co No : <?php echo $co_no."<br/>"; ?>
+                        Schedul No :<?php echo $schedul_no."<br/>"; ?>
+                        Color : <?php echo $color_name."<br/>"; ?>
+                        Docket No : <?php echo $docket_no."<br/>"; ?>
+                        Job No : <?php echo $display."<br/>"; ?>
+                        Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
+                        Input Date : <?php echo $input_date."<br/>"; ?>
+                        Total Input :<?php echo $input_qty."<br/>"; ?>
+                        Total Output:<?php echo $output_qty."<br/>"; ?>
+                        Rejected:<?php echo $rejected."<br/>"; ?>
+                        <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
+                    " 
+                  rel="tooltip">
+                  <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
+                      <?php echo $value; ?>
+                  </div></a>
+                  <?php
+            }
             }
           }
          /*docket boxes Loop -End 
