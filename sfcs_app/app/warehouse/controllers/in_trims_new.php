@@ -27,7 +27,7 @@ body
 
 <?php
 
-
+//gettinh location here
 if(isset($_GET['location']))
 {
 	$location=$_GET['location'];
