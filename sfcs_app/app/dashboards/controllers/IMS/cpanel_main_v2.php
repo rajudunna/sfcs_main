@@ -733,22 +733,20 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
         }
           $pending=array();
           $pending_tmp=array();
-          $recut_job1 = array_values($recut_job);
-          $available_job1 = array_values($available_job);
-          
-          $pending_tmp=array_diff($recut_job1,$available_job1);
+        //  $recut_job1 = array_values($recut_job);
+         // $available_job1 = array_values($available_job);
 
-          $pending_tmp1 = array_values($pending_tmp);
+          $pending_tmp=array_values(array_diff($recut_job,$available_job));
+         // $pending_tmp1 = array_values($pending_tmp);
 
-          $jobs_not_consider1 = array_values($jobs_not_consider);
-          $pending=array_diff($pending_tmp1,$jobs_not_consider1);
-     
+         // $jobs_not_consider1 = array_values($jobs_not_consider);
+          $pending=array_values(array_diff($pending_tmp,$jobs_not_consider));
           if(sizeof($pending)>0)
           {           
             for($kk=0;$kk<sizeof($pending);$kk++)
             { 
               $value=$recut_job_val[$pending[$kk]];             
-              $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+              $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,sum(rejected_qty)  as rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
               $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
               {
@@ -761,6 +759,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                 $cut_no=$sql_rowwip12['cut_number'];
                 $type_of_sewing=$sql_rowwip12['remarks'];
                 $inputno=$sql_rowwip12['input_job_no'];
+                $rejected=$sql_rowwip12['rejected'];
               }
             if(!in_array($schedul_no,$scheudles))
             {
@@ -768,12 +767,12 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
                   $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
                   $display = $sewing_prefi.leading_zeros($inputno,3);
-                    $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
-                    $sql_result33=mysqli_query($link, $sql33) ;
-                  while($sql_row33=mysqli_fetch_array($sql_result33))
-                    {
-                    $rejected=$sql_row33['rejected']; 
-                    }
+                  //   $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
+                  //   $sql_result33=mysqli_query($link, $sql33) ;
+                  // while($sql_row33=mysqli_fetch_array($sql_result33))
+                  //   {
+                  //   $rejected=$sql_row33['rejected']; 
+                  //   }
                     $sidemenu=true;
                   $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
                   ?>

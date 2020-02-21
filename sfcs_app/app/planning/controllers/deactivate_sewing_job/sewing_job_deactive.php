@@ -132,11 +132,12 @@ if(isset($_POST['submit']) || $module)
 					$available_job[]=$input_rand_ref;
 				}
 				
-                 $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$input_rand_ref."'";
+                 $ip_op_qty="SELECT sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$input_rand_ref."'";
                 $ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row_ip_op=mysqli_fetch_array($ip_op_qty_res))
                 {
                     $input_qty = $sql_row_ip_op['input'];
+                    $job_qty = $sql_row_ip_op['job_qty'];
                     $output_qty = $sql_row_ip_op['output'];
                     $rejected_qty = $sql_row_ip_op['rejected'];
                     $wip=$input_qty-$output_qty;
@@ -159,13 +160,13 @@ if(isset($_POST['submit']) || $module)
                 echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
                 echo "<input type='hidden' name='input_rand_ref[]' value=$input_rand_ref>";
                 echo "<input type='hidden' name='module[]' value=$module>";
-                echo "<input type='hidden' name='input_qty[]' value=$input_qty>";
+                echo "<input type='hidden' name='input_qty[]' value=$job_qty>";
                 echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
                 echo "<input type='hidden' name='rejected_qty[]' value=$rejected_qty>";
                 echo "<input type='hidden' name='ims_remarks[]' value=$ims_remarks>";
                 echo "<input type='hidden' name='wip[]' value=$wip>";
                 echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
-                echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>".$ims_remarks."</td>";
+                echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$job_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>".$ims_remarks."</td>";
 
                 $short_shipment_query = "SELECT * FROM $bai_pro3.`short_shipment_job_track` where schedule = '$schedule' and (remove_type in ('1','2'))";
                 $short_shipment_query_result=mysqli_query($link, $short_shipment_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -204,14 +205,14 @@ if(isset($_POST['submit']) || $module)
 
             }
 			$pending=array();
-			$pending=array_diff($recut_job,$available_job);
+			$pending=array_values(array_diff($recut_job,$available_job));
 			if(sizeof($pending)>0)
 			{           
 				for($kk=0;$kk<sizeof($pending);$kk++)
 				{ 
 				
 				// REEJECTION//
-                 $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+                 $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
                 //  echo $ip_op_qty;
 					$ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowwip12=mysqli_fetch_array($ip_op_qty_res))
@@ -227,7 +228,8 @@ if(isset($_POST['submit']) || $module)
 						$type_of_sewing=$sql_rowwip12['remarks'];
 						$input_job_no=$sql_rowwip12['input_job_no'];
 						$input_rand_ref=$sql_rowwip12['input_job_no_random_ref'];
-						$rejected_qty=$sql_rowwip12['rejected'];
+                        $job_qty=$sql_rowwip12['job_qty'];
+                        $rejected_qty=$sql_rowwip12['rejected'];
 						$wip=$input_qty-$output_qty;
 					}
                     $ims_date=echo_title("$bai_pro3.ims_log_backup","min(ims_date)","input_job_rand_no_ref",$pending[$kk],$link);
@@ -245,7 +247,7 @@ if(isset($_POST['submit']) || $module)
                     echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
                     echo "<input type='hidden' name='input_rand_ref[]' value=$input_rand_ref>";
 					echo "<input type='hidden' name='module[]' value=$module>";
-					echo "<input type='hidden' name='input_qty[]' value=$input_qty>";
+					echo "<input type='hidden' name='input_qty[]' value=$job_qty>";
 					echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
 					echo "<input type='hidden' name='rejected_qty[]' value=$rejected_qty>";
 					echo "<input type='hidden' name='ims_remarks[]' value='Reject'>";
@@ -258,7 +260,7 @@ if(isset($_POST['submit']) || $module)
 					{
                         $remove_type = $row['remove_type'];
 					}
-                    echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$input_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>Rejection</td>";
+                    echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$job_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>Rejection</td>";
 
                     $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
                     // echo $job_deacive;
