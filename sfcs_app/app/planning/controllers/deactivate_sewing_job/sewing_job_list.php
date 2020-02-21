@@ -80,9 +80,18 @@ if(isset($_POST['Save']))
                         if($backup_ips_query_result && $update_ips_qry_result && $del_ips_sqlx_result) {
                             $remarks .="IPS,TMS,";
                         }
-                    } else {
+                    } 
+                    $ips_chck_qry_bkp = "select distinct input_job_no_random_ref as ips_tms_jobs from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=0";
+                    // echo $ips_chck_qry_bkp;
+                    $ips_chck_qry_bkp_res = mysqli_query($link, $ips_chck_qry_bkp) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($ips_chck_row_bkp=mysqli_fetch_array($ips_chck_qry_bkp_res))
+                    {
+                        $ips_tms_jobs1[]="'".$ips_chck_row_bkp['ips_tms_jobs']."'";
+                    }
+                    if(sizeof($ips_tms_jobs1)>0)
+                    {
                         //MAINTAINING 4 STATUS FOR BACKUP ONLY
-                        $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '4' where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                        $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '4' where input_job_no_random_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=0";
                         $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                     // die();
@@ -94,7 +103,8 @@ if(isset($_POST['Save']))
                     while($ims_chck_row=mysqli_fetch_array($ims_chck_qry_res))
                     {
                         $ims_jobs[]="'".$ims_chck_row['ims_jobs']."'";
-                    }
+                    }  
+                   
                     if(sizeof($ims_jobs)>0){
                         $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log_backup SELECT * FROM $bai_pro3.ims_log WHERE input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
                         mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -106,6 +116,20 @@ if(isset($_POST['Save']))
                             $remarks .="IMS,";
                         }
                     }
+                    $ims_chck_qry_bkp = "select distinct input_job_rand_no_ref as ims_jobs from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=0";
+                    $ims_chck_qry_bkp_res = mysqli_query($link, $ims_chck_qry_bkp) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($ims_chck_row_bkp=mysqli_fetch_array($ims_chck_qry_bkp_res))
+                    {
+                        $ims_jobs_bkp[]="'".$ims_chck_row_bkp['ims_jobs']."'";
+                    }
+                    if(sizeof($ims_jobs_bkp)>0) {
+                        //MAINTAINING 4 STATUS FOR BACKUP ONLY
+                        $update_ips_qry = "update $bai_pro3.ims_log_backup set short_shipment_status = '4' where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=0";
+                        $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
+                    unset($ims_jobs);
+                    unset($ims_jobs_bkp);
+                    unset($ips_tms_jobs);
                 }
 
                 //to remove jobs in WIP Dashboard
@@ -172,16 +196,16 @@ if(isset($_POST['Save']))
                             {
                                 $ips_tms_jobs[]="'".$ips_chck_row['ips_tms_jobs']."'";
                             }
-                          
+                            
                             if(sizeof($ips_tms_jobs)>0){
-                                $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                                $backup_ips_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")  and short_shipment_status=3";
                                 $backup_ips_query_result = mysqli_query($link, $backup_ips_query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $backup_ips_query.'<br/>';
                                 $update_ips_qry = "update $bai_pro3.plan_dashboard_input set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
                                 $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $update_ips_qry.'<br/>';
 
-                                $del_ips_sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")";
+                                $del_ips_sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$ips_tms_jobs).")  and short_shipment_status=3";
                                 $del_ips_sqlx_result = mysqli_query($link, $del_ips_sqlx) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 // echo $del_ips_sqlx.'<br/>';
 
@@ -189,21 +213,20 @@ if(isset($_POST['Save']))
                                     $remarks .="IPS,TMS,";
                                 }
                             }
-
-                            $ips_chck_qry = "select distinct input_job_no_random_ref as ips_tms_jobs  from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=4";
-                            // echo $ips_chck_qry.'<br/>';
-                            $ips_chck_qry_res = mysqli_query($link, $ips_chck_qry) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($ips_chck_row=mysqli_fetch_array($ips_chck_qry_res))
+                            $ips_chck_qry_bkp = "select distinct input_job_no_random_ref as ips_tms_jobs  from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=4";
+                            // echo $ips_chck_qry_bkp.'<br/>';
+                            $ips_chck_qry_bkp_res = mysqli_query($link, $ips_chck_qry_bkp) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($ips_chck_row_bkp=mysqli_fetch_array($ips_chck_qry_bkp_res))
                             {
-                                $ips_tms_jobs1[]="'".$ips_chck_row['ips_tms_jobs']."'";
+                                $ips_tms_jobs1[]="'".$ips_chck_row_bkp['ips_tms_jobs']."'";
                             }
                             if(sizeof($ips_tms_jobs1)>0){
-                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = 0 where input_job_no_random_ref in (".implode(",",$remove_ref_nums).")";
+                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobs1).")  and short_shipment_status=0";
                                 $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
         
                             //To remove Jobs in IMS
-                            $ims_chck_qry = "select distinct input_job_rand_no_ref as ims_jobs from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).")";
+                            $ims_chck_qry = "select distinct input_job_rand_no_ref as ims_jobs from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=3";
                             // echo $ims_chck_qry.'<br/>';
                             $ims_chck_qry_res = mysqli_query($link, $ims_chck_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($ims_chck_row=mysqli_fetch_array($ims_chck_qry_res))
@@ -211,18 +234,31 @@ if(isset($_POST['Save']))
                                 $ims_jobs[]="'".$ims_chck_row['ims_jobs']."'";
                             }
                             if(sizeof($ims_jobs)>0){
-                                $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log SELECT * FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
+                                $backup_ims_query="INSERT IGNORE INTO $bai_pro3.ims_log SELECT * FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref in (".implode(",",$ims_jobs).") and short_shipment_status=3";
                                 // echo $backup_ims_query.'<br/>';
                                 mysqli_query($link, $backup_ims_query) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $update_ims_qry = "update $bai_pro3.ims_log set short_shipment_status = '$remove_type' where input_job_rand_no_ref in (".implode(",",$ims_jobs).") and ims_status <> 'DONE'";
                                 // echo $update_ims_qry.'<br/>';
                                 $update_ims_qry_res =mysqli_query($link, $update_ims_qry) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                $del_ims_sqlx = "delete from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$ims_jobs).")";
+                                $del_ims_sqlx = "delete from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$ims_jobs).") and short_shipment_status=3";
                                 // echo $del_ims_sqlx.'<br/>';
                                 $del_ims_sqlx_res =mysqli_query($link, $del_ims_sqlx) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if($update_ims_qry_res && $del_ims_sqlx_res) {
                                     $remarks .="IMS,";
                                 }
+                            }
+
+                            $ims_chck_qry_bkp = "select distinct input_job_rand_no_ref as ims_jobs from $bai_pro3.ims_log_backup where input_job_rand_no_ref in (".implode(",",$remove_ref_nums).") and short_shipment_status=4";
+                            // echo $ims_chck_qry_bkp.'<br/>';
+                            $ims_chck_qry_bkp_res = mysqli_query($link, $ims_chck_qry_bkp) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($ims_chck_row_bkp=mysqli_fetch_array($ims_chck_qry_bkp_res))
+                            {
+                                $ims_jobs1[]="'".$ims_chck_row_bkp['ims_jobs']."'";
+                            }
+                            if(sizeof($ims_jobs1)>0) {
+                                //MAINTAINING 4 STATUS FOR BACKUP ONLY
+                                $update_ips_qry = "update $bai_pro3.ims_log_backup set short_shipment_status = '$remove_type' where input_job_rand_no_ref in (".implode(",",$ims_jobs1).") and short_shipment_status=0";
+                                $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
                         }
         
