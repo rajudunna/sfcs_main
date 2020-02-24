@@ -183,13 +183,19 @@ else
 {	
 	if($plies>0)
 	{
-		$values=explode("^",$joints_endbits);
+        $values=explode("^",$joints_endbits);
+        if($value[0]==''){
+            $value[0]=0;
+        }
+        if($value[1]==''){
+            $value[1]=0;
+        }
 		$exec1 ="INSERT INTO $bai_pro3.`docket_roll_alloc` (docket,lay_seq,roll_no,shade,width,fabric_recv_qty,plies,damages,joints,endbits,shortages,fabric_return,tran_user,status,color)
 		VALUES (".$doc_no.",1,0,'None',0,'".$f_rec."','".$plies."','".$damages."','".$value[0]."','".$value[1]."','".$shortages."','".$f_ret."','".$username."',0,'".$color."')";
-		$result= mysqli_query($link,$exec1);	
+        $result= mysqli_query($link,$exec1);	
+        // echo $exec1;
 	}	
 }
-
 $size_update_string = '';
 $p_sizes_str   = '';
 $a_sizes_str   = '';
@@ -492,14 +498,14 @@ if($target == 'schedule_clubbed' || $target == 'style_clubbed'){
         unset($size_update_string);
         unset($reported);		
     }   
-
+   
      iquit : if($status === 'fail'){
         $response_data['pass'] = 0;
         echo json_encode($response_data);
         exit();
     }else{
 		$call_status=2;
-		act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
+        act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
         $response_data['pass'] = 1;
         $response_data['m3_updated'] = $status;
         echo json_encode($response_data);
