@@ -30,7 +30,7 @@
         $schedule_split=explode(",",$schedule);
         if($schedule!='')
         {
-            $sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+            $sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' ";
             $result=mysqli_query($link, $sql) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
             $rowcount=mysqli_num_rows($result);
             if($rowcount>0)
@@ -45,7 +45,7 @@
 
             <div>
                     <?php
-                        $sql="select distinct order_del_no as sch from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+                        $sql="select distinct order_del_no as sch from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' ";
                         $result=mysqli_query($link, $sql) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($row=mysqli_fetch_array($result))
                         {
@@ -54,7 +54,7 @@
                         
                         if (sizeof($schs_array1)>1)
                         {
-                            $sql="select distinct order_joins from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+                            $sql="select distinct order_joins from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule' ";
                             //echo $sql;
                             $result=mysqli_query($link, $sql) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($row=mysqli_fetch_array($result))
@@ -100,7 +100,7 @@
 
             <?php
                 // Display Sample QTY - 05-11-2014 - ChathurangaD
-                $sqlr="SELECT remarks from $bai_pro3.bai_orders_db_remarks where order_tid in (SELECT order_tid from bai_orders_db where order_del_no in (".$schedule.")) ";
+                $sqlr="SELECT remarks from $bai_pro3.bai_orders_db_remarks where order_tid in (SELECT order_tid from bai_orders_db where order_del_no='$schedule') ";
                 //echo $sqlr;
                 $resultr=mysqli_query($link, $sqlr) or die("Errorr = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row=mysqli_fetch_array($resultr))
@@ -117,31 +117,24 @@
                 }
                 
                         //To get operations
-                        $get_operations_sql="select DISTINCT(operation_code) from $brandix_bts.tbl_style_ops_master where style='$disStyle'";
-                       // echo $get_operations_sql;
-                        $ops_result=mysqli_query($link, $get_operations_sql) or die("Error-".$get_operations_sql."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                         while($row1=mysqli_fetch_array($ops_result))
-                         {
-                            $operation_code[]=$row1['operation_code'];
-                         }
-                          
-                         $opertions = implode(',',$operation_code);
-
-                        $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) AND category ='sewing' AND display_operations='yes'";
-                        //echo $get_ops_query;
-                        $ops_query_result=$link->query($get_ops_query);
+                        // $operation_code=array();
+                        // $ops_get_code=array();
+                        $get_ops_query = "SELECT tsm.operation_code AS operation_code, tor.operation_name as operation_name FROM $brandix_bts.tbl_style_ops_master tsm 
+                        LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$disStyle' AND tor.display_operations='yes' and tor.category='sewing' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+                         $ops_query_result=$link->query($get_ops_query);
                         while ($row2 = $ops_query_result->fetch_assoc())
                         {
+                           $operation_code[]= $row2['operation_code'];
                           $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
                         }
-                        $col_span = count($ops_get_code);
+                         $col_span = count($ops_get_code);
 
                 //$sizes_array=array("xs","s","m","l","xl","xxl","xxxl","s06","s08","s10","s12","s14","s16","s18","s20","s22","s24","s26","s28","s30");
 
 
                 
 
-                $sql="select distinct order_del_no as sch,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") ";
+                $sql="select distinct order_del_no as sch,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no='$schedule'";
                 $result=mysqli_query($link, $sql) or die("Error4 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row=mysqli_fetch_array($result))
                 {
@@ -299,7 +292,7 @@
                 //         }
                 //     }
                 // }
-                $sql6="SELECT DISTINCT size_code FROM $bai_pro3.`packing_summary_input` WHERE order_del_no in (".$schedule.")  ORDER BY old_size";
+                $sql6="SELECT DISTINCT size_code FROM $bai_pro3.`packing_summary_input` WHERE order_del_no='$schedule'  ORDER BY old_size";
                 // echo $sql6;
                 $result612=mysqli_query($link, $sql6) or die("Error3 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row6=mysqli_fetch_array($result612))
@@ -326,14 +319,14 @@
                 echo "<th>Input/Output details</th>";
                 echo "</tr>";
                 $overall_qty = 0;
-                $sql="select distinct input_job_no as job from  $bai_pro3.packing_summary_input where order_del_no in ($schedule) order by input_job_no*1";
+                $sql="select distinct input_job_no as job , input_job_no_random from  $bai_pro3.packing_summary_input where order_del_no= '$schedule' order by input_job_no*1";
                 // echo $sql."</br>";
                 $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
                 while($sql_row=mysqli_fetch_array($result))
                 {
                     
                     //$sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' group by order_del_no,acutno";
-                    $sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from  $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."' group by order_del_no";
+                    $sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct doc_no) as doc_nos from  $bai_pro3.packing_summary_input where order_del_no='$schedule' and input_job_no='".$sql_row["job"]."' group by order_del_no";
                     //echo $sql1;
                     $result1=mysqli_query($link, $sql1) or die("Error-".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));            
                     while($sql_row1=mysqli_fetch_array($result1))
@@ -366,7 +359,7 @@
 
                         
                         
-                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and input_job_no='".$sql_row["job"]."'";
+                        $sql_cut="select GROUP_CONCAT(DISTINCT order_col_des) AS color, GROUP_CONCAT(DISTINCT acutno) AS cut, SUM(carton_act_qty) AS totqty from $bai_pro3.packing_summary_input where order_del_no='$schedule' and input_job_no='".$sql_row["job"]."'";
                         // echo $sql_cut.'<br>';
                         $result_cut=mysqli_query($link, $sql_cut) or die("Error9-".$sql_cut."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row_cut=mysqli_fetch_array($result_cut))
@@ -405,6 +398,7 @@
                         $display_colors=str_replace(',','<br>',$color);
                         $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
                         $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
+                        // echo $sql_row["job"];
                         
                         $total_qty1=0;
                         echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;''>";
@@ -471,13 +465,23 @@
                         
                         foreach ($operation_code as $op_code) 
                         {
-                            if(strlen($ops_get_code[$op_code]) > 0)
-                                echo "<th>$ops_get_code[$op_code]</th>";
+                                 echo "<th>$ops_get_code[$op_code]</th>";
                         }
                         echo "</tr>"; 
                         // var_dump($operation_code);
                         // var_dump($ops_get_code);
+                        // $rej_qty=array();
+                        $rej_sql="select COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."'";
+                        // echo $rej_sql;
+                        $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($row3=mysqli_fetch_array($rej_result))
+                        {
+                          $rej_qty[$row3['operation_id']] = $row3['qms_qty'];
+                          $rej_qty1+=$row3['qms_qty'];
+                         
+                        }
 
+                        // var_dump($rej_qty);
                         $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,input_job_rand_no_ref FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
                         //echo $sql5."<br>";
                         $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"]));         
@@ -488,22 +492,14 @@
                             // echo $style."<br>";
 							$order_tid='';
                             $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);
-
+                           
                             unset($rej_qty);
-                            $rej_sql="select COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_schedule='".$sql_row1["del_no"]."' and qms_color='".$sql_row55["ims_color"]."' and qms_size='".trim($sql_row55["ims_size"],"a_")."' and SUBSTR(remarks,1,POSITION('-' IN remarks)-1)='".$sql_row55["ims_mod_no"]."' and qms_tran_type=3 and input_job_no='".$sql_row55["input_job_rand_no_ref"]."' group by operation_id";
-                            //echo $rej_sql;
-                            $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($row3=mysqli_fetch_array($rej_result))
-                            {
-                              $rej_qty[$row3['operation_id']] = $row3['qms_qty'];
-                              $rej_qty1+=$row3['qms_qty'];
-                             
-                            }
-                            
+                           
+                           
                             ?>
 
                            
-                            
+                           
                             <tr>
                             <td><?php echo $sql_row55["ims_date"]; ?></td>
                             <td><?php echo $sql_row55["ims_mod_no"]; ?></td>
@@ -512,15 +508,16 @@
                             <td><?php echo strtoupper($size_values); ?></td>
                             <td><?php echo $sql_row55["ims_qty"]; ?></td>
                             <td><?php echo $sql_row55["ims_pro_qty"]; ?></td>
+                            <!-- <td><?php echo $sql_rej_sql["qms_qty"]; ?></td> -->
+                            
                             <?php  
                             foreach ($operation_code as $key => $value) 
                             {
-                                if(strlen($ops_get_code[$value]) > 0){
-                                    if($rej_qty[$value] == '')
+                                   if($rej_qty[$value] == '')
                                         echo "<td>0</td>";
                                     else    
                                        echo"<td>".$rej_qty[$value]."</td>";
-                                }
+                               
                             }  ?> 
                             </tr>
                             
@@ -535,7 +532,8 @@
 
                         
                         }
-                        
+                        // echo $tot_input."--".$tot_outout."---".$tot_rej;
+
                         if ($total_qty1>$tot_outout)
                         {
                             echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
@@ -550,7 +548,7 @@
                         $temp_jobno=$sql_row["job"];
                         if ($temp_module=="0")
                         {
-                            $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no IN ($temp_schedule) AND input_job_no='$temp_jobno' )";
+                            $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no='$temp_schedule' AND input_job_no='$temp_jobno' )";
                             //echo $sql5."<br>";
                             $result5555=mysqli_query($link, $sql5555) or die("Error-".$sql5555."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
                             while($sql_row5555=mysqli_fetch_array($result5555))
@@ -672,5 +670,5 @@ else
 {
     echo '<div class="alert alert-danger">Enter Valid Schedule Number</div>';
     echo '<a href="'.getFullURLLevel($_GET['r'],'job_summary_view.php',0,'N').'" class="btn btn-primary">Click Here to Back</a>';
-}
+} 
 ?>
