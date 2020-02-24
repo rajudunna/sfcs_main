@@ -95,15 +95,15 @@ if(isset($_POST['formIssue']))
     // var_dump($bcd_id1);
     // die();
     $job_list = implode(",",$job_no);
-    $get_schedule="SELECT distinct(SCHEDULE),input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random in (".$job_list.")";
-    $get_schedule_result=mysqli_query($link, $get_schedule)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($row = mysqli_fetch_array($get_schedule_result))
-    {
-        $schedule = $row['SCHEDULE'];
-        $input_job_no = $row['input_job_no'];
-    }
-    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE input_job_no=$input_job_no and schedule=$schedule and remove_type='3'";
-    echo $job_deactivated;
+    // $get_schedule="SELECT distinct(SCHEDULE),input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random in (".$job_list.")";
+    // $get_schedule_result=mysqli_query($link, $get_schedule)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($row = mysqli_fetch_array($get_schedule_result))
+    // {
+    //     $schedule = $row['SCHEDULE'];
+    //     $input_job_no = $row['input_job_no'];
+    // }
+    $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE input_job_no_random in (".$job_list.") and remove_type='3'";
+    //echo $job_deactivated;
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($job_deactivated_result) > 0){
         $job_deactivated = 0;
@@ -111,7 +111,8 @@ if(isset($_POST['formIssue']))
         $job_deactivated = 1;
     }
     
-    if($job_deactivated == 1){
+    if($job_deactivated == 1)
+    {
     
         $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
         $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
