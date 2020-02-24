@@ -421,7 +421,7 @@ while($short_qry_row=mysqli_fetch_array($short_qry_result))
   $scheudles[]=$short_qry_row['schedule'];
 }
 $jobs_not_consider=array();
-$jobs_qry="select input_job_no_random from $bai_pro3.job_deactive_log where remove_type=3";
+$jobs_qry="select input_job_no_random from $bai_pro3.job_deactive_log where remove_type='3'";
 $jobs_qry_result=mysqli_query($link, $jobs_qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($jobs_qry_row=mysqli_fetch_array($jobs_qry_result))
 {
