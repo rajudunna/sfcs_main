@@ -190,7 +190,7 @@ if(isset($_POST['submit']) || $module)
                     echo "<td>Short Shipment Done Permanently<br/><label class='label label-sm label-danger'>Can't Reverse</label><input type='hidden' name='remove_type[]' value='2'></td>"; 
                 }
                  else {
-                   if($short_shipment_status==3){
+                   if($remove_type==3){
                         $selected1 = 'selected';
                     } else {
                         $selected = 'selected';
