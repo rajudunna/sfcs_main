@@ -44,10 +44,10 @@ if(isset($_GET['location']))
 				echo "<h3>Previous Scanned Status :<font color=green>-Already Scanned</font></h3>";
 				break;
 			case "1":
-				echo "<h3>Previous Scanned Status :<font color=green>-Successfull</font></h3>";
+				echo "<h3>Previous Scanned Status :<font color=green>-Successful</font></h3>";
 				break;
 			case "2":
-				echo "<h3>Previous Scanned Status :<font color=green>-UnSuccessfull</font></h3>";
+				echo "<h3>Previous Scanned Status :<font color=green>-UnSuccessful</font></h3>";
 				break;
 			default :
 			    echo "<h3>Previous Scanned Status :<font color=green>-Barcode Invalid</font></h3>";
