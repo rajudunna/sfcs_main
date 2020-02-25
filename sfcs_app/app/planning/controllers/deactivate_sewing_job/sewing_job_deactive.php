@@ -105,7 +105,7 @@ if(isset($_POST['submit']) || $module)
 
         $sno = 1;
 
-        if ($norows > 0) {
+        if ($norows > 0 || sizeof($recut_job)) {
             ?>
             <div class='col-sm-12' style='max-height:600px;overflow-y:scroll'>
             <form name='list' method='post' action="<?php echo getFullURLLevel($_GET['r'],'sewing_job_list.php','0','N'); ?>">
