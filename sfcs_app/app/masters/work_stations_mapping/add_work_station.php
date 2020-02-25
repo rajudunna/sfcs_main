@@ -118,7 +118,7 @@
                 <label class="control-label control-label-left col-sm-3" for="work_station_id" id="required" name="workstat">Work Station Id</label>
                 <div class="controls col-sm-9">
                     
-                <input id="work_station_id" type="text"  maxlength="8" size="8" class="form-control k-textbox" data-role="text" placeholder="Work Station Id" name="work_station_id" 
+                <input id="work_station_id" type="text"  maxlength="8" size="8" class="form-control k-textbox" data-role="text" placeholder="Enter max 8 characters" name="work_station_id" 
                
                 value="<?php echo $work_station_id; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 </div>
