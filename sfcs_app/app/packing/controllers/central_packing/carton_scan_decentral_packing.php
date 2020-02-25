@@ -164,6 +164,7 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
 							$('#status').css("background-color", "red");
 							$('#'+id).val('');
+							swal("warning","Tried Carton is already Scanned","warning");
 							$("#carton_id").attr("disabled", false);
 							$("#manual_carton_id").attr("disabled", false);
 							$("#submit_btn").attr("disabled", true);
@@ -171,10 +172,11 @@
 						}
 						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6)
 						{
+
 							$("#loading_img").hide();
 							if (response['status']==0)
 							{
-								var msg = "Enter a Valid Carton Number";
+								var msg = "Carton is Not Available";
 							}
 							else if (response['status']==3)
 							{
@@ -191,6 +193,7 @@
 								var msg = "Short shipment done Permanently" ;
 
 							}
+							swal("error",msg,"error");
 							
 							$("#error_msg").show();
 							document.getElementById('error').innerHTML = msg;
