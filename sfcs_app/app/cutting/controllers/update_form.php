@@ -64,7 +64,10 @@ function closepopup()
          alert('Window already closed!');
       }
    }
-
+function disableButton()
+{
+	$('#issueid').hide();
+}
 function DataCheck()
 {   $('#issueid').hide();
 	var chks = document.getElementsByName('issqty[]');  
@@ -545,7 +548,7 @@ switch($level)
 	{
 		// if(strlen($_GET["lots"]) > 0)
 		// {
-			echo "<input type=\"submit\" style='display:none' class='btn btn-success' name=\"issue\" id=\"issueid\" value=\"Allocate\">";
+			echo "<input type=\"submit\" style='display:none' class='btn btn-success' name=\"issue\" id=\"issueid\" onclick='return disableButton();' value=\"Allocate\">";
 			break;
 		// }
 	}
