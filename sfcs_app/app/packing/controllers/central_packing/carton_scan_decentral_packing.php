@@ -186,12 +186,16 @@
 							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
 							$('#status').css("background-color", "red");
 							$('#'+id).val('');
-							swal("Tried Carton is already Scanned.")
+							swal("warning","Tried Carton is already Scanned.","warning")
 							.then((value) => {
 								$("#carton_id").attr("disabled", false);
 								$("#manual_carton_id").attr("disabled", false);
 								$("#submit_btn").attr("disabled", true);
-								$("#carton_id").focus();
+								if(id=='manual_carton_id'){
+									$("#manual_carton_id").focus();
+								}else if(id=='carton_id'){
+									$("#carton_id").focus();
+								}
 							});							
 						}
 						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6)
@@ -219,12 +223,16 @@
 
 							}
 							$('#'+id).val('');
-							swal(msg)
+							swal("error",msg,"error")
 							.then((value) => {
 								$("#carton_id").attr("disabled", false);
 								$("#manual_carton_id").attr("disabled", false);
 								$("#submit_btn").attr("disabled", true);
-								$("#carton_id").focus();
+								if(id=='manual_carton_id'){
+									$("#manual_carton_id").focus();
+								}else if(id=='carton_id'){
+									$("#carton_id").focus();
+								}
 							});
 							
 							
