@@ -92,106 +92,120 @@ function RecutProcess($recut_id_edit)
         $scheule = $row_row['SCHEDULE'];
         $color = $row_row['color'];
     }
-    //getting order tid
-    $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
-    $res_qry_order_tid = $link->query($qry_order_tid);
-    while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
-    {
-        $order_tid = $row_row_row['order_tid'];
+    $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
+    $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($job_deactivated_result) == 0){
+        $job_deactivated_status = 1;
+    } else {
+        $job_deactivated_status = 0;
     }
-   $sql="select tid,category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and length(category)>0";
-    $y=0;
-    $categories='';
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row=mysqli_fetch_array($sql_result))
+    // echo $job_deactivated_status;
+    if($job_deactivated_status == 1)
     {
-        $cat = $sql_row['category'];
-        $categories .= "<b>$cat</b>"."<input type='checkbox' name='cat[]' value='$cat' onclick='checks()'>";
-    }
-    $html .= $categories;
-    $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by rc.`operation_id`";
-    //    echo $get_details_qry;
-    $result_get_details_qry = $link->query($get_details_qry);
-    $s_no = 0;
-    while($row = $result_get_details_qry->fetch_assoc()) 
-    {
-        // var_dump($row);\
-        $cat = $row['category'];
-        $category=['cutting','Send PF','Receive PF'];
-        if(in_array($cat,$category))
+        //getting order tid
+        $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
+        $res_qry_order_tid = $link->query($qry_order_tid);
+        while($row_row_row = $res_qry_order_tid->fetch_assoc()) 
         {
-            $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id  FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-            ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by doc_no,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
-            // echo $getting_full_cut_details;
-           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+            $order_tid = $row_row_row['order_tid'];
         }
-        else
+    $sql="select tid,category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and length(category)>0";
+        $y=0;
+        $categories='';
+        $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row=mysqli_fetch_array($sql_result))
         {
-            $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-            ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
-            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
+            $cat = $sql_row['category'];
+            $categories .= "<b>$cat</b>"."<input type='checkbox' name='cat[]' value='$cat' onclick='checks()'>";
         }
-        // echo $getting_full_cut_details.'</br>';
-        //set and reset processs
-
-
-        $result_getting_full_cut_details = $link->query($getting_full_cut_details);
-        if($row['category'] == 'Send PF')
+        $html .= $categories;
+        $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+        ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id order by rc.`operation_id`";
+        //    echo $get_details_qry;
+        $result_get_details_qry = $link->query($get_details_qry);
+        $s_no = 0;
+        while($row = $result_get_details_qry->fetch_assoc()) 
         {
-            $cat_emb = 'Embellishment Send';
-        }
-        else if($row['category'] == 'Receive PF')
-        {
-            $cat_emb = 'Embellishment Recevie';
-        }
-        else
-        {
-            $cat_emb = $row['category'];
-        }
-        $html .= '<div class="panel-group">
-                    <div class="panel panel-success">
-                        <div class="panel-heading">'.$cat_emb.'</div>
-                        <div class="panel-body">';
-        while($row_cat = $result_getting_full_cut_details->fetch_assoc()) 
-        {
-            $s_no++;
+            // var_dump($row);\
+            $cat = $row['category'];
+            $category=['cutting','Send PF','Receive PF'];
             if(in_array($cat,$category))
             {
-                $table_data .= "<tr><td>".$row_cat['doc_no']."</td>";
-                $table_data .= "<td>".$row_cat['size_title']."</td>";
+                $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id  FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+                ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by doc_no,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
+                // echo $getting_full_cut_details;
+            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
             }
             else
             {
-                $table_data .= "<tr><td>".$row_cat['input_job_no_random_ref']."</td>";
-                $table_data .= "<td>".$row_cat['assigned_module']."</td>";
-                $table_data .= "<td>".$row_cat['size_title']."</td>";
+                $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+                ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $recut_id and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
+                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to recut Qty</th><th>Recut Qty</th></tr></thead><tbody>";
             }
-            $rej_qty = $row_cat['rejected_qty'];
-            $recut_qty = $row_cat['recut_qty'];
-            $replace_qty = $row_cat['replaced_qty'];
-            $ids=$row_cat['ids'];
-            $size = $row_cat['size_id'];
-            $bcd_id = $row_cat['bcd_id'];
-            $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
-            $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
-            $table_data .= "<td>".$row_cat['recut_qty']."</td>";
-            $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
-            $rem_string = $s_no.'rems';
-            $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-            $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' min='0' id='$s_no' onchange='validationrecutindividual($s_no)' onkeyup='return  isInt(this);' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
-            $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
-            $table_data .= "<input type='hidden' name='size[]' value='$size'>";
-            $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+            // echo $getting_full_cut_details.'</br>';
+            //set and reset processs
+
+
+            $result_getting_full_cut_details = $link->query($getting_full_cut_details);
+            if($row['category'] == 'Send PF')
+            {
+                $cat_emb = 'Embellishment Send';
+            }
+            else if($row['category'] == 'Receive PF')
+            {
+                $cat_emb = 'Embellishment Recevie';
+            }
+            else
+            {
+                $cat_emb = $row['category'];
+            }
+            $html .= '<div class="panel-group">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">'.$cat_emb.'</div>
+                            <div class="panel-body">';
+            while($row_cat = $result_getting_full_cut_details->fetch_assoc()) 
+            {
+                $s_no++;
+                if(in_array($cat,$category))
+                {
+                    $table_data .= "<tr><td>".$row_cat['doc_no']."</td>";
+                    $table_data .= "<td>".$row_cat['size_title']."</td>";
+                }
+                else
+                {
+                    $table_data .= "<tr><td>".$row_cat['input_job_no_random_ref']."</td>";
+                    $table_data .= "<td>".$row_cat['assigned_module']."</td>";
+                    $table_data .= "<td>".$row_cat['size_title']."</td>";
+                }
+                $rej_qty = $row_cat['rejected_qty'];
+                $recut_qty = $row_cat['recut_qty'];
+                $replace_qty = $row_cat['replaced_qty'];
+                $ids=$row_cat['ids'];
+                $size = $row_cat['size_id'];
+                $bcd_id = $row_cat['bcd_id'];
+                $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
+                $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
+                $table_data .= "<td>".$row_cat['recut_qty']."</td>";
+                $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
+                $rem_string = $s_no.'rems';
+                $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
+                $table_data .= "<td><input class='form-control integer' type = 'Number' name='recutval[]' value='0' min='0' id='$s_no' onchange='validationrecutindividual($s_no)' onkeyup='return  isInt(this);' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'></td>";
+                $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
+                $table_data .= "<input type='hidden' name='size[]' value='$size'>";
+                $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+            }
+            //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
+        // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";
+            $table_data .= "</tr></tbody></table>";
+            $html .= $table_data;
+            $html .= '</div></div></div>';
+            
         }
-        //$table_data .= "<input type='hidden' id='total_rows' value='$s_no'>";
-       // $table_data .= "<td style='display:none' id='total_rows'>$s_no</td>";
-        $table_data .= "</tr></tbody></table>";
-        $html .= $table_data;
-        $html .= '</div></div></div>';
-        
+        $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     }
-    $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
+    else {
+        $html = "<h2 style='color:red'>Sewing Job is Deactivated for this schedule, So Recut is not Possible</h2>";
+    }
     echo $html;
     
 }
@@ -363,84 +377,102 @@ function ReplaceProcess($replace_id_edit)
     $excess_table .= "</tbody></table></div></div></div>";
     $html .= $excess_table;
     $s_no = 0;
-    if($count > 0)
+    $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
+    $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row=mysqli_fetch_array($job_deactivated_result))
     {
-        $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-        ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit order by rc.`operation_id`";
-        $result_get_details_qry = $link->query($get_details_qry);
-        while($row = $result_get_details_qry->fetch_assoc()) 
+        $count = $sql_row['count1'];
+    }
+    if($count == 0){
+        $job_deactivated_status = 1;
+    } else {
+        $job_deactivated_status = 0;
+    }
+    
+    if($job_deactivated_status == 1)
+    {
+        if($count > 0)
         {
-            $cat = $row['category'];
-            $category=['cutting','Send PF','Receive PF'];
-            if(in_array($cat,$category))
+            $get_details_qry = "SELECT DISTINCT category FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+            ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit order by rc.`operation_id`";
+            $result_get_details_qry = $link->query($get_details_qry);
+            while($row = $result_get_details_qry->fetch_assoc()) 
             {
-                $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id  FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-                ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by doc_no,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
-                // echo $getting_full_cut_details;
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
-            }
-            else
-            {
-                $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
-                ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
-                $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
-            }
-            // echo $getting_full_cut_details.'</br>';
-            $result_getting_full_cut_details = $link->query($getting_full_cut_details);
-            $html .= '<div class="panel-group">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">'.$row['category'].'</div>
-                            <div class="panel-body">';
-                        
-            while($row_cat = $result_getting_full_cut_details->fetch_assoc()) 
-            {
-                $s_no ++;
+                $cat = $row['category'];
+                $category=['cutting','Send PF','Receive PF'];
                 if(in_array($cat,$category))
                 {
-                    $table_data .= "<tr><td>".$row_cat['doc_no']."</td>";
-                    $size_html_id = $s_no.'size';
-                    $table_data .= "<td id ='$size_html_id'>".$row_cat['size_title']."</td>";
+                    $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id  FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+                    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by doc_no,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
+                    // echo $getting_full_cut_details;
+                    $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
                 }
                 else
                 {
-                    $size_html_id = $s_no.'size';
-                    $table_data .= "<tr><td>".$row_cat['input_job_no_random_ref']."</td>";
-                    $table_data .= "<td>".$row_cat['assigned_module']."</td>";
-                    $table_data .= "<td id ='$size_html_id'>".$row_cat['size_title']."</td>";
+                    $getting_full_cut_details = "SELECT sum(recut_qty)as recut_qty,sum(rejected_qty)as rejected_qty,sum(replaced_qty)as replaced_qty,doc_no,size_title,size_id,assigned_module,input_job_no_random_ref,group_concat(rc.id)as ids,group_concat(bcd_id)as bcd_id,operation_id FROM `$bai_pro3`.`rejection_log_child` rc LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops
+                    ON ops.operation_code = rc.`operation_id`  WHERE parent_id = $replace_id_edit and category = '$cat' group by input_job_no_random_ref,assigned_module,size_title having  (rejected_qty-(replaced_qty+recut_qty)) > 0 > 0";
+                    $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Replaced Qty</th><th>Eligible to Replace</th><th>Replace Qty</th></tr></thead><tbody>";
                 }
-                $rej_qty = $row_cat['rejected_qty'];
-                $recut_qty = $row_cat['recut_qty'];
-                $replace_qty = $row_cat['replaced_qty'];
-                $ids=$row_cat['ids'];
-                $size = $row_cat['size_id'];
-                $bcd_id = $row_cat['bcd_id'];
-                $size_title = $row_cat['size_title'];
-                $operation_id = $row_cat['operation_id'];
-                $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
-                $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
-                $table_data .= "<td>".$row_cat['recut_qty']."</td>";
-                $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
-                $rem_string = $s_no.'rems';
-                $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
-                $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' min='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'  onkeyup='return  isInt(this);'></td>";
-                $table_data .= "<input type='hidden' id = '$s_no' value='$remaining_qty'>";
-                $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
-                $table_data .= "<input type='hidden' name='size[]' value='$size_title'>";
-                $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
-                $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+                // echo $getting_full_cut_details.'</br>';
+                $result_getting_full_cut_details = $link->query($getting_full_cut_details);
+                $html .= '<div class="panel-group">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">'.$row['category'].'</div>
+                                <div class="panel-body">';
+                            
+                while($row_cat = $result_getting_full_cut_details->fetch_assoc()) 
+                {
+                    $s_no ++;
+                    if(in_array($cat,$category))
+                    {
+                        $table_data .= "<tr><td>".$row_cat['doc_no']."</td>";
+                        $size_html_id = $s_no.'size';
+                        $table_data .= "<td id ='$size_html_id'>".$row_cat['size_title']."</td>";
+                    }
+                    else
+                    {
+                        $size_html_id = $s_no.'size';
+                        $table_data .= "<tr><td>".$row_cat['input_job_no_random_ref']."</td>";
+                        $table_data .= "<td>".$row_cat['assigned_module']."</td>";
+                        $table_data .= "<td id ='$size_html_id'>".$row_cat['size_title']."</td>";
+                    }
+                    $rej_qty = $row_cat['rejected_qty'];
+                    $recut_qty = $row_cat['recut_qty'];
+                    $replace_qty = $row_cat['replaced_qty'];
+                    $ids=$row_cat['ids'];
+                    $size = $row_cat['size_id'];
+                    $bcd_id = $row_cat['bcd_id'];
+                    $size_title = $row_cat['size_title'];
+                    $operation_id = $row_cat['operation_id'];
+                    $remaining_qty =  $rej_qty- ($recut_qty + $replace_qty);
+                    $table_data .= "<td>".$row_cat['rejected_qty']."</td>";
+                    $table_data .= "<td>".$row_cat['recut_qty']."</td>";
+                    $table_data .= "<td>".$row_cat['replaced_qty']."</td>";
+                    $rem_string = $s_no.'rems';
+                    $table_data .= "<td id='$rem_string'>".$remaining_qty."</td>";
+                    $table_data .= "<td><input class='form-control integer' type='Number' id='$s_no' name='replaceval[]' value='0' min='0' onchange='validationreplaceindividual($s_no)' onfocus='focus_validate($s_no);' onfocusout='focus_out_validation($s_no)'  onkeyup='return  isInt(this);'></td>";
+                    $table_data .= "<input type='hidden' id = '$s_no' value='$remaining_qty'>";
+                    $table_data .= "<input type='hidden' name='ids[$bcd_id]' value='$ids'>";
+                    $table_data .= "<input type='hidden' name='size[]' value='$size_title'>";
+                    $table_data .= "<input type='hidden' name='operation_id[]' value='$operation_id'>";
+                    $table_data .= "<input type='hidden' name='bcd_ids[]' value='$bcd_id'>";
+                }
+                $table_data .= "</tr></tbody></table>";
+                $html .= $table_data;
+                $html .= '</div></div></div>';
             }
-            $table_data .= "</tr></tbody></table>";
-            $html .= $table_data;
-            $html .= '</div></div></div>';
+            $html .= '
+            <div class="pull-right"><input type="submit" id="replace" class="btn btn-primary" value="Submit" name="formSubmit1"></div>';
         }
-        $html .= '
-        <div class="pull-right"><input type="submit" id="replace" class="btn btn-primary" value="Submit" name="formSubmit1"></div>';
-    }
-    else
-    {
-        $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
-    }
+        else
+        {
+            $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
+        }
         $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
+    }
+    else {
+        $html = "<h2 style='color:red'>Sewing Job is Deactivated for this schedule, So Replace is not Possible</h2>";
+    }
         echo $html;
 }
 if(isset($_GET['recut_doc_id']))
