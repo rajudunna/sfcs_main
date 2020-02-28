@@ -648,7 +648,7 @@ if(isset($_POST['allocate_new']))
 									//Uncheck this
 									mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}
-								$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=qty_allocated+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+								$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j]." where tid=".$tid_ref[$j];
 								//Uncheck this
 								mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
