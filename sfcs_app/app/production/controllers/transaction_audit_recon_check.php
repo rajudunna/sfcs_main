@@ -100,14 +100,20 @@ echo "<tr>
 $in_modules=array();
 $sizes_db=array("a_xs","a_s","a_m","a_l","a_xl","a_xxl","a_xxxl","a_s06","a_s08","a_s10","a_s12","a_s14","a_s16","a_s18","a_s20","a_s22","a_s24","a_s26","a_s28","a_s30");
 
+// $sql="select ims_style,ims_color,ims_mod_no,ims_size,sum(ims_qty) as ims_qty,sum(ims_pro_qty) as ims_pro_qty from (select ims_style,ims_mod_no,ims_size,ims_qty,ims_pro_qty,ims_color from $bai_pro3.ims_log where ims_mod_no>0 and ims_schedule=$schedule and ims_remarks not in ('SAMPLE','SHIPMENT_SAMPLE')
+// UNION ALL
+// select ims_style,ims_mod_no,ims_size,ims_qty,ims_pro_qty,ims_color from $bai_pro3.ims_log_backup where ims_mod_no>0  and ims_schedule=$schedule and ims_remarks not in ('SAMPLE','SHIPMENT_SAMPLE')
+// UNION ALL
+// SELECT sfcs_style,sfcs_mod_no,CONCAT('a_',sfcs_size),0,0,sfcs_color FROM $m3_bulk_ops_rep_db.`m3_sfcs_tran_log` WHERE sfcs_schedule=$schedule AND m3_op_des IN ('SIN','SOT')
+
+// ) t group by ims_color,ims_size,ims_mod_no order by ims_mod_no,ims_size
+// ";
 $sql="select ims_style,ims_color,ims_mod_no,ims_size,sum(ims_qty) as ims_qty,sum(ims_pro_qty) as ims_pro_qty from (select ims_style,ims_mod_no,ims_size,ims_qty,ims_pro_qty,ims_color from $bai_pro3.ims_log where ims_mod_no>0 and ims_schedule=$schedule and ims_remarks not in ('SAMPLE','SHIPMENT_SAMPLE')
 UNION ALL
 select ims_style,ims_mod_no,ims_size,ims_qty,ims_pro_qty,ims_color from $bai_pro3.ims_log_backup where ims_mod_no>0  and ims_schedule=$schedule and ims_remarks not in ('SAMPLE','SHIPMENT_SAMPLE')
-UNION ALL
-SELECT sfcs_style,sfcs_mod_no,CONCAT('a_',sfcs_size),0,0,sfcs_color FROM $m3_bulk_ops_rep_db.`m3_sfcs_tran_log` WHERE sfcs_schedule=$schedule AND m3_op_des IN ('SIN','SOT')
-
 ) t group by ims_color,ims_size,ims_mod_no order by ims_mod_no,ims_size
 ";
+
 mysqli_query($link,$sql) or exit("Sql Error4".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
  $count=mysqli_num_rows($sql_result); 
@@ -201,13 +207,26 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$sample_out_qty=$sql_row12["out_qty"];
 		}
-		
-		$sql_sample="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0";
-		$sql_result12=mysqli_query($link,$sql_sample) or exit("Sql Error12=".$sql_sample."-".mysqli_error());
-		while($sql_row12=mysqli_fetch_array($sql_result12))
+		$output1 =0;$output2=0;
+		$sql_sample1="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0 ";
+		$sql_result_buf1=mysqli_query($link,$sql_sample1) or exit("Sql Error12=".$sql_sample1."-".mysqli_error());
+		while($sql_row_buf1=mysqli_fetch_array($sql_result_buf1))
 		{
-			$output=$sql_row12["sout"];
+			if($sql_row_buf1["sout"] != '')
+			{
+				$output1=$sql_row_buf1["sout"];
+			}
 		}
+		$sql_sample2="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size'])."< 0";
+		$sql_result_buf2=mysqli_query($link,$sql_sample2) or exit("Sql Error12=".$sql_sample2."-".mysqli_error());
+		while($sql_row_buf2=mysqli_fetch_array($sql_result_buf2))
+		{
+			if($sql_row_buf2["sout"] != '')
+			{
+				$output2=$sql_row_buf2["sout"];
+			}
+		}
+		$output = $output1 + $output2;
 		$sql_size = "select * from $bai_pro3.bai_orders_db_confirm where order_style_no='".$sql_row['ims_style']."' and order_del_no='".$schedule."' and order_col_des='".$sql_row['ims_color']."'";
 			
 		$sql_size_result =mysqli_query($link,$sql_size) or exit("Sql Error123".mysqli_error());

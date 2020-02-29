@@ -215,7 +215,7 @@ function getRollsData($doc_no){
 
     $rollwisedata = array(); 
     $rolltabeldata = array();  
-    $lot_details_query="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no=$doc_no"; 
+    $lot_details_query="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no'"; 
     //echo $sql."<br>"; 
     $lot_details_result=mysqli_query($link,$lot_details_query); 
     while($row=mysqli_fetch_array($lot_details_result)) 

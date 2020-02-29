@@ -305,7 +305,7 @@ switch($level)
 $updurl = getFullURL($_GET['r'],'update_form.php','N');
 echo "<form name=\"test\" method=\"post\" action=".$updurl.">";
 
-if($_GET["lots"] > 0)
+if(sizeof($_GET["lots"]) > 0)
 {
 	//echo "Hello";
 	$ref_tid=$_GET["tid"];
@@ -320,13 +320,13 @@ if($_GET["lots"] > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ($lots_no) order by shrinkage_group,ref3,ref4,lot_no";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($result1)>0){
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th>LableId</th><th>Barcode</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Return Qty</th><th>Balance</th><th>Issue Qty</th></tr>";
+		echo "<tr><th>LableId</th><th>Barcode</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Allocated Qty</th><th>Return Qty</th><th>Balance Qty</th><th>Issue Qty</th></tr>";
 	}else{
 		echo "<script>sweetAlert('Inavlid Lot Number','','warning')</script>";
 	}
@@ -361,8 +361,9 @@ if($_GET["lots"] > 0)
 			$bgcolor="#dgffdf";
 		}
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]."</td>";
+		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_allocated"]."</td>";
 		echo "<td>".$sql_row1["qty_ret"]."</td>";
-		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"])."\"  />".($sql_row1["qty_rec"]+$sql_row1["qty_ret"]-$sql_row1["qty_issued"])."</td>";
+		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."</td>";
 		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
