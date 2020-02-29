@@ -949,6 +949,7 @@ echo "<input type=\"hidden\" name=\"group_docs\" value=".implode(",",$docket_num
 
 if(isset($_POST['submit']))
 {
+	
 	$alloc_docket=$_POST['alloc_doc'];
 	$doc_tot=$_POST['doc_tot'];
 	$issue_status=$_POST['issue_status'];
@@ -965,6 +966,7 @@ if(isset($_POST['submit']))
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
 		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
+		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_no_loc="D".$doc_num[$i];
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
