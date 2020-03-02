@@ -427,7 +427,7 @@
                         
                         for ($i=0; $i < $cols_size; $i++)
                         { 
-                            $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM packing_summary_input where size_code='".$size_array_final[$i]."' and order_del_no='".$sql_row1["del_no"]."' and input_job_no='".$sql_row["job"]."' ";
+                            $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$size_array_final[$i]."' and order_del_no='".$sql_row1["del_no"]."' and input_job_no='".$sql_row["job"]."' ";
                             $result5=mysqli_query($link,$sql5) or die("Error-".$sql5);  
                             if(mysqli_num_rows($result5)>0)
                             {       
