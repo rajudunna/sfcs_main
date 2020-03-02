@@ -63,7 +63,7 @@ if($enable_api_call == 'YES')
             $message=$decoded['Message'];
         
             //validating response pass/fail and inserting log
-            if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
+            if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
             {
                 //updating response status in m3_bulk_transactions
                 $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
@@ -115,7 +115,7 @@ if($enable_api_call == 'YES')
                     $message=$decoded['Message'];
                 
                     //validating response pass/fail and inserting log
-                    if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
+                    if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
                     {
                         //updating response status in m3_bulk_transactions
                         $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
@@ -169,7 +169,7 @@ if($enable_api_call == 'YES')
                     $message=$decoded['Message'];
                     
                     //validating response pass/fail and inserting log
-                    if($type!='ServerReturnedNOK' && $type!='BackendInternalError')
+                    if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
                     {
                         //updating response status in m3_bulk_transactions
                         $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;

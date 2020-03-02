@@ -404,7 +404,7 @@ function button_disable()
 			if(strlen($doc_no) > 0)
 			{
 				//$sql_doc="SELECT group_concat(tran_pin) as tid FROM bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." group by doc_no";
-				$sql_doc="SELECT group_concat(roll_id) as tid FROM $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." group by doc_no";
+				$sql_doc="SELECT group_concat(roll_id) as tid FROM $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."' group by doc_no";
 				//echo "<option value=\"0\" selected>".$sql_doc."</option>";
 				$sql_result_doc=mysqli_query($link, $sql_doc) or die("Error".$sql_doc.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_doc=mysqli_fetch_array($sql_result_doc))

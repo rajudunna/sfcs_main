@@ -182,7 +182,7 @@ function getjobdetails($job_number)
         die();
     }
 
-    $get_ops_query = "SELECT DISTINCT tm.operation_code FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' ORDER BY operation_order";
+    $get_ops_query = "SELECT DISTINCT tm.operation_code,tr.operation_code as opcode,tr.operation_name FROM $brandix_bts.tbl_style_ops_master tm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tr ON tr.id=tm.operation_name WHERE tm.style ='$job_number[1]' AND tm.color='$maped_color' AND tr.category = 'sewing' and display_operations='yes' ORDER BY operation_order";
 
     $ops_query_result=mysqli_query($link,$get_ops_query);
     while ($row = mysqli_fetch_array($ops_query_result))
@@ -190,6 +190,7 @@ function getjobdetails($job_number)
         
         $ops_get_code[] = $row['operation_code'];
         //$result_array['ops_get_code'][] = $row['operation_code'];
+		$result_array['ops_get_code'][$row['operation_name']] = $row['opcode'];
 
     }
 
@@ -200,7 +201,7 @@ function getjobdetails($job_number)
     $ops_query_result1=$link->query($to_display_values);
     while ($row1 = $ops_query_result1->fetch_assoc())
     {
- $result_array['ops_get_code'][$row1['operation_name']] = $row1['operation_code'];
+ // $result_array['ops_get_code'][$row1['operation_name']] = $row1['operation_code'];
     }
     // echo $display_code;
 
@@ -575,7 +576,7 @@ function getjobreversaldetails($job_rev_no)
     }
     
     $check_short_ship_status=0;
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -584,6 +585,7 @@ function getjobreversaldetails($job_rev_no)
         {
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
+            $input_job_no= $row['input_job_no'];
         }
     }
     else
@@ -603,6 +605,18 @@ function getjobreversaldetails($job_rev_no)
             }else{
                 $short_ship_status=2;
                 $json1['short_shipment_status'] = 'Short Shipment Done Permanently';
+            }
+        }
+    }
+    $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
+    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    if($count_jobs_deactive >0) {
+        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+        {
+            if($row_set1['remove_type']==3) {
+                $short_ship_status=3;
+                $json1['short_shipment_status'] = 'Sewing Job is Deactivated';
             }
         }
     }
@@ -1492,7 +1506,7 @@ function validating_with_module($pre_array_module)
     {
         $column_in_pack_summary = 'input_job_no_random';
     }
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -1500,11 +1514,12 @@ function validating_with_module($pre_array_module)
         {
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
+            $input_job_no= $row['input_job_no'];
         }
     }
     else
     {
-        $result=8;
+        $result=9;
         echo $result;
         die();
     }
@@ -1522,7 +1537,17 @@ function validating_with_module($pre_array_module)
             }
         }
     }
-		
+	$query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
+    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    if($count_jobs_deactive >0) {
+        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+        {
+            if($row_set1['remove_type']==3) {
+                $short_ship_status=3;
+            }
+        }
+    }	
     $application='IPS';
     $get_routing_query="SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
     $routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
@@ -1645,51 +1670,63 @@ function validating_with_module($pre_array_module)
 
         if ($go_here == 1)
         {
-            if ($module != '' && $module != null && $module > 0)
+            if($operation == $opn_routing_code)
             {
-                $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
-                $result_validating_qry = $link->query($validating_qry);
-                while($row = $result_validating_qry->fetch_assoc()) 
+                if ($module != '' && $module != null && $module > 0)
                 {
-                    $input_job_array[] = $row['input_job_rand_no_ref'];
-                }
-
-                $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
-                $result_block_prio = $link->query($block_prio_qry);
-                while($sql_row = $result_block_prio->fetch_assoc())
-                {
-                    $block_priorities = $sql_row['block_priorities'];
-                }
-
-                if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
-                {
-                    $response_flag = 3;
-                }
-                else
-                {
-                    if(!in_array($job_no,$input_job_array))
+                    $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$module'";
+                    $result_validating_qry = $link->query($validating_qry);
+                    while($row = $result_validating_qry->fetch_assoc()) 
                     {
-                        // job not in module (adding new job to module)
-                        if (sizeof($input_job_array) < $block_priorities)
-                        {
-                            $response_flag = 0; // allow
-                        }
-                        else
-                        {
-                            $response_flag = 2; // check for user acces (block priorities)
-                        }
+                        $input_job_array[] = $row['input_job_rand_no_ref'];
+                    }
+
+                    $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$module'";
+                    $result_block_prio = $link->query($block_prio_qry);
+                    while($sql_row = $result_block_prio->fetch_assoc())
+                    {
+                        $block_priorities = $sql_row['block_priorities'];
+                    }
+
+                    if ($block_priorities == '' || $block_priorities == null || $block_priorities == 0 || $block_priorities == '0')
+                    {
+                        $response_flag = 3;
                     }
                     else
                     {
-                        // job already in module
-                        $response_flag = 0; // allow
+                        if(!in_array($job_no,$input_job_array))
+                        {
+                            // job not in module (adding new job to module)
+                            if (sizeof($input_job_array) < $block_priorities)
+                            {
+                                $response_flag = 0; // allow
+                            }
+                            else
+                            {
+                                $response_flag = 2; // check for user acces (block priorities)
+                            }
+                        }
+                        else
+                        {
+                            // job already in module
+                            $response_flag = 0; // allow
+                        }
                     }
+                }
+                else
+                {
+                    $response_flag = 4;
                 }
             }
             else
             {
-                $response_flag = 4;
-            }
+                $response_flag = 0; // To allow block priorities for remaining operations
+				if($module == '' || $module == null || $module == 0)
+				{
+					$response_flag = 4;
+				}
+            }   
+            
         }
     }
     else
@@ -1701,6 +1738,9 @@ function validating_with_module($pre_array_module)
         $response_flag = 6;
     }else if($short_ship_status== 2){
         $response_flag = 7;
+    }
+    else if($short_ship_status== 3){
+        $response_flag = 8;
     }
     // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
     if ($screen == 'wout_keystroke')

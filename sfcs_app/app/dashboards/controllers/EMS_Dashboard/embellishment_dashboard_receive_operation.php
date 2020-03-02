@@ -401,7 +401,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       $req_date_time[]=0;
       $track_ids = [];
 
-      $sql2="select doc_no,module,track_id from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and send_qty>receive_qty and short_shipment_status=0 order by log_time,module";
+      $sql2="select doc_no,module,track_id from $bai_pro3.embellishment_plan_dashboard where module in ($section_mods) and send_qty > 0 and send_qty>receive_qty and receive_op_code>0 and short_shipment_status=0 order by log_time,module";
       $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($row2=mysqli_fetch_array($result2))
       {
@@ -492,7 +492,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $co_no=$sql_row112['co_no'];
           }
 
-          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."' and track_id=$track_id";
+          $sql21="select orginal_qty,send_qty,receive_qty,send_op_code,receive_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no='".$doc_no."' and track_id=$track_id and receive_op_code>0";
           // echo $sql2;
           $result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($row21=mysqli_fetch_array($result21))
@@ -579,7 +579,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           
           if($send_qty > 0)
           {            
-            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")</span></div></div><br>"; 
+            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:$receive_op_code</span></div></div><br>"; 
           }          
         }
 		}
