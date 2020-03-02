@@ -273,14 +273,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                     }
                 }
             }
-        }
-        $url = '?r='.$_GET['r'];
-       echo "<script>sweetAlert('recut raised successfully','','success');window.location = '".$url."'</script>";
+            $url = '?r='.$_GET['r'];
+           echo "<script>sweetAlert('recut raised successfully','','success');window.location = '".$url."'</script>";
        } else {
             $url = '?r='.$_GET['r'];
         //    echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
            echo "<script>sweetAlert('Sewing Job is Deactivated! ','Recut Process is unsuccessfull','Error');window.location = '".$url."'</script>";  
         }
+    }
     if(isset($_POST['formSubmit1']))
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/dashboards/controllers/recut_dashboards/recut_dashboard_issue.php');
