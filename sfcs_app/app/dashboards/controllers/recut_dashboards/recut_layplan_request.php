@@ -81,8 +81,9 @@ $html1 .= "<div class='panel panel-primary'>
         }
 
         $html1 .= "<td class=\"sizes\">".$o_total12."</td>";
-        $plndoc_qry = "select * from  `$bai_pro3`.`plandoc_stat_log` where cuttable_ref=".$sql_row1_recut2['tid'];
+        $plndoc_qry = "select * from  `$bai_pro3`.`plandoc_stat_log` where order_tid=\"$tran_order_tid\" and cuttable_ref=".$sql_row1_recut2['tid'];
         $plndoc_qry_res = mysqli_query($link,$plndoc_qry);
+        // echo $plndoc_qry;
         if(mysqli_num_rows($plndoc_qry_res)>0)
         {
             $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Generated</a></th>";
