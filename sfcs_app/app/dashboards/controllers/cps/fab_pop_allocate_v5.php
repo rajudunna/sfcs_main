@@ -792,8 +792,8 @@ if(isset($_POST['allocate_new']))
     				{
 						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 					} else {
-						$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$qty_issued[$j].",status=0,allotment_status=1 where tid=".$tid_ref[$j];
-						mysqli_query($link, $sql121) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=0,allotment_status=1 where tid=".$tid_ref[$j];
+						mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 
 				}
@@ -1189,11 +1189,12 @@ if(isset($_POST['allocate']))
 
 
 			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1'";
-				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row5=mysqli_fetch_array($sql_result5))
-				{
-					$fab_cad_allocated_qty=$sql_row5['allocated_qty'];
-				}
+		
+			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row5=mysqli_fetch_array($sql_result5))
+			{
+				$fab_cad_allocated_qty= round($sql_row5['allocated_qty'],2);
+			}
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
 			echo "<td id='col1'>".$sql_row['item']."</td>";
