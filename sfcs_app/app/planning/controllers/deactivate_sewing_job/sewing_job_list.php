@@ -257,7 +257,7 @@ if(isset($_POST['Save']))
                             }
                             if(sizeof($ims_jobs11)>0) {
                                 //MAINTAINING 4 STATUS FOR BACKUP ONLY
-                                $update_ips_qry = "update $bai_pro3.ims_log_backup set short_shipment_status = '$remove_type' where input_job_rand_no_ref in (".implode(",",$ims_jobs11).") and short_shipment_status=0";
+                                $update_ips_qry = "update $bai_pro3.ims_log_backup set short_shipment_status = '$remove_type' where input_job_rand_no_ref in (".implode(",",$ims_jobs11).") and short_shipment_status=4";
                                 $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
                         }
