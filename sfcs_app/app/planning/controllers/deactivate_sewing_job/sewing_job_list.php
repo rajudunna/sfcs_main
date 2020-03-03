@@ -138,7 +138,7 @@ if(isset($_POST['Save']))
                 } else {
                     $change_status = 2;
                 }
-                $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no=$input_job_no and bundle_qty_status=0";
+                $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no='$input_job_no' and bundle_qty_status=0";
                 $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
                 {
@@ -268,7 +268,7 @@ if(isset($_POST['Save']))
                         } else {
                             $change_status = 2;
                         }
-                        $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no=$input_job_no and bundle_qty_status=0";
+                        $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no='$input_job_no' and bundle_qty_status=0";
                         $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
                         {
