@@ -702,22 +702,41 @@ $(document).ready(function(){
 				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\")";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-
+				unset($qty_issued);
+				unset($qty_ret);
+				unset($qty_allocated);
+				unset($total_qty);
+				$total_qty[$j]=0;
+				$qty_issued=array();
+				$qty_ret=array();
+				$qty_allocated=array();
+				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row3=mysqli_fetch_array($sql_result3))
+					{
+						$width_ref[$j]=$sql_row3['qty_rec'];
+						$qty_issued[$j]=$sql_row3['qty_issued'];
+						$qty_ret[$j]=$sql_row3['qty_ret'];
+						$qty_allocated[$j]=$sql_row3['qty_allocated'];
+						// echo $total_qty[$j].'='.$qty_issued[$j].'+'.$qty_ret[$j].'+'.$qty_allocated[$j].'<br/>';
+						$total_qty[$j] = $qty_issued[$j]+$qty_ret[$j]+$qty_allocated[$j];
+					}
 			
 					$issued_ref[$j]=$issued_qty[$j];
-					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-
+					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
+    				{
+						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					} 
 				}
 
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 			}
-			
 		}
 		
 		$sql1="insert into $bai_rm_pj2.remarks_log (tid,remarks,username,date,level)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Allocate\")";
