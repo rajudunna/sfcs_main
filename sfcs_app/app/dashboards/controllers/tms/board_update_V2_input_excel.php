@@ -41,7 +41,7 @@
 
             array_push($mod_ary,$row2x['module_id']);
         }
-        $mod = implode(", ",$mod_ary);
+        $mod = "'".implode("', '",$mod_ary)."'";
         $mod_qry = "SELECT input_job_no_random_ref as input_job_random FROM $bai_pro3.plan_dashboard_input WHERE 
         input_module IN ($mod) order by  input_module*1,input_priority*1";
         // echo  $mod_qry;
@@ -52,7 +52,7 @@
             
 			
 			   
-                $count_qry = "SELECT ps.input_job_no,pd.input_module,ps.order_style_no,ps.order_del_no,ps.order_col_des,ps.acutno,ps.doc_no,pd.input_trims_request_time,pd.log_time,pd.input_trims_status FROM $bai_pro3.packing_summary_input ps, plan_dashboard_input pd where ps.input_job_no_random = pd.input_job_no_random_ref  and pd.input_job_no_random_ref= $job_ref_no group by ps.input_job_no_random ";
+                $count_qry = "SELECT ps.input_job_no,pd.input_module,ps.order_style_no,ps.order_del_no,ps.order_col_des,ps.acutno,ps.doc_no,pd.input_trims_request_time,pd.log_time,pd.input_trims_status FROM $bai_pro3.packing_summary_input ps, plan_dashboard_input pd where ps.input_job_no_random = pd.input_job_no_random_ref  and pd.input_job_no_random_ref='$job_ref_no' group by ps.input_job_no_random ";
                 //  echo $count_qry."<br>";
                 $doc_result1=mysqli_query($link, $count_qry) ;
                 while($jobsresult=mysqli_fetch_array($doc_result1)){
