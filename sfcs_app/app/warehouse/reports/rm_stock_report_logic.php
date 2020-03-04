@@ -77,7 +77,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	}
 	
 	
-	$sql1x="select qty_rec,qty_issued,qty_return,ref4,qty_ret,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
+	$sql1x="select qty_rec,qty_issued,qty_ret,ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
 	$sql_result1x =$link->query($sql1x);
 	if(mysqli_num_rows($sql_result1x)> 0) {
 		while ($row = $sql_result1x->fetch_assoc())
