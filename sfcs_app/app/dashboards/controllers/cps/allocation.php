@@ -605,6 +605,8 @@ if(isset($_POST['allocate_new']))
 			{
 				if($tid_ref[$j]>0)
 				{	
+					$total_qty[$j]=0;
+
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
 						//getting recieved qty from store_in
 						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
@@ -664,8 +666,7 @@ if(isset($_POST['allocate_new']))
                             $qty_iss=$row2['allocated_qty'];
                             //echo "Qty Issued :".$qty_iss."</br>";
                             // $balance=$qty_rec-$qty_issued+$qty_ret;	
-                            // $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
-                            $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
+                            $balance1=$qty_rec+$qty_ret-($qty_issued);
 							if($balance1==0)
 							{
 								$status=2;
