@@ -396,7 +396,7 @@ function ReplaceProcess($replace_id_edit)
         $job_deactivated_status1 = 0;
     }
     
-    if($job_deactivated_status == 1)
+    if($job_deactivated_status1 == 1)
     {
         if($count > 0)
         {
