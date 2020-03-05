@@ -654,19 +654,20 @@ if(isset($_POST['allocate_new']))
                         {
                             $code=$row2['roll_id'];
                             $tran_pin=$row2['tran_pin'];
-                            $sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+                            $sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
                             $sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 $qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
                                 $qty_issued=$sql_row['qty_issued'];
                                 $qty_ret=$sql_row['qty_ret'];
+                                $qty_allocated=$sql_row['qty_allocated'];
                             }
 
                             $qty_iss=$row2['allocated_qty'];
                             //echo "Qty Issued :".$qty_iss."</br>";
                             // $balance=$qty_rec-$qty_issued+$qty_ret;	
-                            $balance1=$qty_rec+$qty_ret-($qty_issued);
+                            $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_allocated);
 							if($balance1==0)
 							{
 								$status=2;
