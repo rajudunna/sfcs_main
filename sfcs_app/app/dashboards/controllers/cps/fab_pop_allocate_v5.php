@@ -675,11 +675,19 @@ if(isset($_POST['allocate_new']))
 		$chk_ref=$_POST[$temp];
 		unset($tid_ref);
 		unset($width_ref);
+		unset($qty_issued);
+		unset($qty_ret);
+		unset($qty_allocated);
+		unset($total_qty);
 		unset($val_ref);
 		unset($issued_ref);
 		
 		$tid_ref=array();
 		$width_ref=array();
+		$qty_issued=array();
+		$qty_ret=array();
+		$qty_allocated=array();
+		$total_qty=array();
 		$val_ref=array();
 		$issued_ref=array();
 		
@@ -751,18 +759,25 @@ if(isset($_POST['allocate_new']))
 			{
 				if($tid_ref[$j]>0)
 				{	
+					// echo $tid_ref[$j].'tid_ref<br/>';
 					//if there is no ctex width we will take ticket width as ctex
+					$total_qty[$j]=0;
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
 						//$width_ref[$j]=$issued_ref[$j];
 						//getting recieved qty from store_in
-						$query3="SELECT qty_rec FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+						// echo $query3.'<br/>';
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$width_ref[$j]=$sql_row3['qty_rec'];
+							$qty_issued[$j]=$sql_row3['qty_issued'];
+							$qty_ret[$j]=$sql_row3['qty_ret'];
+							$qty_allocated[$j]=$sql_row3['qty_allocated'];
+							// echo $total_qty[$j].'='.$qty_issued[$j].'+'.$qty_ret[$j].'+'.$qty_allocated[$j].'<br/>';
+
+							$total_qty[$j] = $qty_issued[$j]+$qty_ret[$j]+$qty_allocated[$j];
 						}
-
-
 					}
 					if($process_cat==1)
 					{
@@ -773,12 +788,33 @@ if(isset($_POST['allocate_new']))
 						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
 					}
 					
-					//Uncheck this
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					//Removing for #1305 ticket and adding this functionality into a separate function
-					if($issued_ref[$j] > 0)
-					{
+					// echo $roll_splitting.'split<br/>';
+					// echo $total_qty[$j].'tot<br/>';
+					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
+    				{
 						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+					} else {
+						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$tid_ref[$j]\"";
+						$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row=mysqli_fetch_array($sql_result))
+						{
+							$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
+							$qty_issued=$sql_row['qty_issued'];
+							$qty_ret=$sql_row['qty_ret'];
+							$qty_allocated=$sql_row['qty_allocated'];
+						}
+						$balance1=$qty_rec+$qty_ret-($qty_issued+$qty_allocated);
+						if($balance1==0)
+						{
+							$status=2;
+						}
+						else
+						{
+							$status=1;
+						}
+						$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status where tid=".$tid_ref[$j];
+						mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 
 				}
@@ -1174,11 +1210,12 @@ if(isset($_POST['allocate']))
 
 
 			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1'";
-				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row5=mysqli_fetch_array($sql_result5))
-				{
-					$fab_cad_allocated_qty=$sql_row5['allocated_qty'];
-				}
+		
+			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row5=mysqli_fetch_array($sql_result5))
+			{
+				$fab_cad_allocated_qty= round($sql_row5['allocated_qty'],2);
+			}
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
 			echo "<td id='col1'>".$sql_row['item']."</td>";

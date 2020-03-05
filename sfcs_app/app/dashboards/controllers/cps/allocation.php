@@ -519,11 +519,19 @@ if(isset($_POST['allocate_new']))
 		$chk_ref=$_POST[$temp];
 		unset($tid_ref);
 		unset($width_ref);
+		unset($qty_issued);
+		unset($qty_ret);
+		unset($qty_allocated);
+		unset($total_qty);
 		unset($val_ref);
 		unset($issued_ref);
 		
 		$tid_ref=array();
 		$width_ref=array();
+		$qty_issued=array();
+		$qty_ret=array();
+		$qty_allocated=array();
+		$total_qty=array();
 		$val_ref=array();
 		$issued_ref=array();
         
@@ -597,13 +605,19 @@ if(isset($_POST['allocate_new']))
 			{
 				if($tid_ref[$j]>0)
 				{	
+					$total_qty[$j]=0;
+
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
 						//getting recieved qty from store_in
-						$query3="SELECT qty_rec FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$width_ref[$j]=$sql_row3['qty_rec'];
+							$qty_issued[$j]=$sql_row3['qty_issued'];
+							$qty_ret[$j]=$sql_row3['qty_ret'];
+							$qty_allocated[$j]=$sql_row3['qty_allocated'];
+							$total_qty[$j] = $qty_issued[$j]+$qty_ret[$j]+$qty_allocated[$j];
 						}
 
 
@@ -620,52 +634,16 @@ if(isset($_POST['allocate_new']))
 					
 					//Uncheck this
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					//Removing for #1305 ticket and adding this functionality into a separate function
-					if($issued_ref[$j] > 0)
+				
+					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
 					{
-						// $roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql111="update bai_rm_pj1.store_in set allotment_status=1 where tid=".$tid_ref[$j];
-    					mysqli_query($link, $sql111) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(strtolower($roll_splitting) == 'yes')
-						{
-							
-							if($val_ref[$j]>=$issued_ref[$j])
-							{ 
-								//balanced qty
-								$balance_qty=(($val_ref[$j])-($issued_ref[$j]));
-								//current date in php
-								$current_date=date("Y-m-d");
-
-								if($balance_qty>0){
-									//getting new rolls details
-									$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=".$tid_ref[$j];
-									$result__rolldetials=mysqli_query($link, $qry_rolldetails);
-									$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
-									$qry_newroll="insert into $bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number,qty_allocated,allotment_status) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".($row_rolldetials["ref5"]-$issued_ref[$j])."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$tid_ref[$j]."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."','".$row_rolldetials["qty_allocated"]."','".$row_rolldetials["allotment_status"]."')";
-									mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$new_tid=mysqli_insert_id($link);
-									$sql22="update $bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
-									//Uncheck this
-									mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-									$sql22="update $bai_rm_pj1.fabric_cad_allocation set roll_id='".$new_tid."' where roll_id=".$tid_ref[$j];
-									//Uncheck this
-									mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-								}
-								$sql="update $bai_rm_pj1.store_in set qty_rec=".$issued_ref[$j].",qty_allocated=0 where tid=".$tid_ref[$j];
-								//Uncheck this
-								mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-							}
-
-							$sql="update $bai_rm_pj1.store_in set status=2,allotment_status=2 where tid=".$tid_ref[$j];
-							$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
-						}
-                    }
+						$roll_splitting = binding_roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+                    }else {
+						$sql121="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j];
+						// echo $sql121;
+						mysqli_query($link, $sql121) or exit("Sql Error344: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
+					}
                     
-
-
-
-
 
                     $sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$row_id_new1."' and roll_id='".$tid_ref[$j]."'";
                     //echo $sql111."</br>";
@@ -676,20 +654,20 @@ if(isset($_POST['allocate_new']))
                         {
                             $code=$row2['roll_id'];
                             $tran_pin=$row2['tran_pin'];
-                            $sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+                            $sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
                             $sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 $qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
                                 $qty_issued=$sql_row['qty_issued'];
                                 $qty_ret=$sql_row['qty_ret'];
+                                $qty_allocated=$sql_row['qty_allocated'];
                             }
 
                             $qty_iss=$row2['allocated_qty'];
                             //echo "Qty Issued :".$qty_iss."</br>";
                             // $balance=$qty_rec-$qty_issued+$qty_ret;	
-                            // $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
-                            $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
+                            $balance1=$qty_rec+$qty_ret-($qty_issued+$qty_allocated);
 							if($balance1==0)
 							{
 								$status=2;
@@ -697,12 +675,13 @@ if(isset($_POST['allocate_new']))
 							else
 							{
 								$status=0;
-							}	
+							}
+							$sql121="update bai_rm_pj1.store_in set status=$status,allotment_status=$status where tid=".$tid_ref[$j];
+							mysqli_query($link, $sql121) or exit("Sql Error355: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));	
                             // $condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
                              //if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 				            {
-                                $sql22="update $bai_rm_pj1.store_in set qty_issued=qty_issued+$qty_iss where tid=\"$code\"";
-                                mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                               
 
                                 // $sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
                                 // $sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1086,7 +1065,7 @@ if(isset($_POST['allocate']))
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row5=mysqli_fetch_array($sql_result5))
 				{
-					$fab_cad_allocated_qty=$sql_row5['allocated_qty'];
+					$fab_cad_allocated_qty=round($sql_row5['allocated_qty'],2);
 				}
 			echo "<td>".$sql_row['grn_date']."</td>";
 			echo "<td>".$sql_row['batch_no']."</td>";
