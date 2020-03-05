@@ -762,6 +762,18 @@ if(isset($_POST['allocate_new']))
 							$total_qty= $qty_issued[$j]+$qty_ret[$j]+$qty_allocated[$j];
 						}
 					}
+					else
+					{
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
+						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row3=mysqli_fetch_array($sql_result3))
+						{
+							$total_qty = $sql_row3["qty_issued"]+$sql_row3["qty_ret"]+$sql_row3["qty_allocated"];
+						}
+					}
+					
+					
+					
 					if($process_cat==1)
 					{
 						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
