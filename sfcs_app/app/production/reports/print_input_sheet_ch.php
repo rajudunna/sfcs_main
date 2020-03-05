@@ -480,7 +480,7 @@
                             echo "</tr>"; 
                             $rej_qty=array();
                             $rej_qty1=0;
-                            $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."'";
+                            $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size";
                             // echo $rej_sql;
                             $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($row3=mysqli_fetch_array($rej_result))
@@ -555,13 +555,14 @@
                                     <td><?php echo $sql_rowwip12["output"]; ?></td>
                                     
                                     <?php  
-                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."'";
+                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size";
                                     // echo $rej_sql;
                                     $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($row3=mysqli_fetch_array($rej_result))
                                     {
                                         $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] = $row3['qms_qty'];
                                         $rej_qty1=$row3['qms_qty'];  
+                                        
                                                                       
                                     }  
                                                                 
@@ -572,11 +573,15 @@
                                             echo "<td>0</td>";
                                         }
                                         else    
-                                        {
+                                        { 
                                             echo "<td>".$rej_qty[$sql_rowwip12["color"]][$sql_rowwip12["size_id"]][$value]."</td>";
                                         }
+                                        $tot+=$rej_qty[$sql_rowwip12["color"]][$sql_rowwip12["size_id"]][$value];
+
                                     }
-                                }   
+                    
+                                }
+                                 
                             }  
                             
                             ?> 
@@ -592,15 +597,17 @@
 
                             if ($total_qty1>$tot_outout)
                             {
-                                echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                                echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot</td></tr>";
                             }
                             
                             else
                             {
-                                echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot_rej</td></tr>";
+                                echo "<tr><td colspan=4 style=\"background-color:#3399ff;\"> </td><td style=\"background-color:#3399ff;color:white\">$tot_input</td><td style=\"background-color:#3399ff;color:white\">$tot_outout</td><td colspan=".count($operation_code)." style=\"background-color:#ff8396;color:white\">$tot</td></tr>";
+                                
                             }
                             echo "</table>";
                             echo "</div>";
+                            $tot=0;  
                             //echo "Testing".$temp_module;
                             $temp_jobno=$sql_row["job"];
                             if ($temp_module=="0")
