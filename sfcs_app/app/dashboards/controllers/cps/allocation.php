@@ -459,6 +459,11 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 		<div class="panel-body">
 
 <?php
+
+if((in_array($authorized,$has_permission)))
+{
+	header($_GET['r'],'restrict.php','N');
+}
 echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing data...</font></h1></center></div>";
 	
 	ob_end_flush();
