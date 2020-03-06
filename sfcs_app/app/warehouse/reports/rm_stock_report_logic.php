@@ -31,9 +31,9 @@ $stock_report_inventory_result =$link->query($stock_report_inventory);
 while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 {
     $lot_no=trim($sql_row1['lot_no']);
-	$qty_rec=$sql_row1['qty_rec'];
-	$qty_issued=$sql_row1['qty_issued'];
-	$qty_return=$sql_row1['qty_ret'];
+	// $qty_rec=$sql_row1['qty_rec'];
+	// $qty_issued=$sql_row1['qty_issued'];
+	// $qty_return=$sql_row1['qty_ret'];
 	$style_no=$sql_row1['style_no'];
 	$qty_balance=$sql_row1['balance'];
 	$status=trim($sql_row1['status']);
@@ -77,11 +77,14 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	}
 	
 	
-	$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
+	$sql1x="select qty_rec,qty_issued,qty_ret,ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
 	$sql_result1x =$link->query($sql1x);
 	if(mysqli_num_rows($sql_result1x)> 0) {
 		while ($row = $sql_result1x->fetch_assoc())
 		{
+			$qty_rec=$row['qty_rec'];
+			$qty_issued=$row['qty_issued'];
+			$qty_return=$row['qty_ret'];
 			$shade=$row["ref4"];
 			$invoice=$row["inv_no"];
 			$location=trim($row['ref1']);
@@ -119,10 +122,16 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
     }
 	$qty_balance=round($qty_balance,2);
-    $single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+	
+	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+    if($qty_balance > 0)
+	{
+		array_push($main_data,array_map('utf8_encode', $single_data));
+	    unset($single_data);
+	}
+    
 
-    array_push($main_data,array_map('utf8_encode', $single_data));
-    unset($single_data);
+   
 	
 
 
