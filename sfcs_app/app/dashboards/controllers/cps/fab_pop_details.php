@@ -963,11 +963,6 @@ if(isset($_POST['submit']))
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
-	//echo "Issue Status : ".$issue_status;exit;
-	// echo $reason."<br>";
-	// echo $group_docs."<br>";
-	// echo sizeof($group_docs)."<br>";
-	//echo "Alloc_docketd--".$alloc_docket."--total allocted--".$doc_tot."--issue_status--".$issue_status."--total_docket--".$group_docs."--reasno---".$reason."--style--".$style."--scheudle--".$schedule."<br>";
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
@@ -1006,15 +1001,6 @@ if(isset($_POST['submit']))
 				{
 					$status=0;
 				}
-				//cardid,ename,tzstr,apply,dob,cid,fpimage1,fpimage2,empid,cmpcode,deptid,Flag,AccsMode,WoXsGrp,HoXsGrp
-				//insert into tcp_emp(cardid,ename,tzstr,apply,dob,cid,empid,cmpcode,deptid,Flag,AccsMode,WoXsGrp,HoXsGrp) values('5298915','P Lavanya','1000000000000000000000000000000
-				//','','0','1','455','BAI3','NA','E',0,'1','1');
-				//echo "Test"."<br>";
-				//echo $qty_rec."-".$qty_iss."+".$qty_issued."))+".$qty_ret.")>=0 && ".$qty_iss." > 0"."<br>";
-				//$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
-					//echo $sql1."<br>";
-				//$sql2="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,cutno,date,updated_by,remarks,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".$doc_no_loc."','".date("Y-m-d")."','".$username."','".$reason."','".date("Y-m-d h:i:sa")."')";
-					//echo $sql2."<br>";
 				$condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
 				//echo "BAl:".$condi1."</br>";
 				if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
@@ -1022,19 +1008,12 @@ if(isset($_POST['submit']))
 					
 					if($issue_status==5)
 					{	
-						//echo "2";
-						//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-						//quantity should be issued after stockout
 						$sql22="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).",qty_allocated=qty_allocated-".$qty_iss.", status=$status, allotment_status=$status where tid=\"$code\"";
-						//echo "</br>".$sql22."</br>";
-						//Uncheck this
 						mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						$sql211="select * from $bai_rm_pj1.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' ";
-						//echo $sql211."<br>"; 
 						$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error--211: $sql211".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result211);
-						//echo "No's".$sql_num_check."</br>";
 						if($sql_num_check==0)
 						{
 							$sql23="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,Style,Schedule,cutno,date,updated_by,remarks,log_stamp) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".$doc_no_loc."','".date("Y-m-d")."','".$username."','".$reason."','".date("Y-m-d H:i:s")."')";
@@ -1044,13 +1023,8 @@ if(isset($_POST['submit']))
 						}
 
 						$sql24="update $bai_rm_pj1.fabric_cad_allocation set status=2 where tran_pin=\"$tran_pin\"";
-						//Uncheck this
 						mysqli_query($link, $sql24) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
-					
-					//echo "<h3>Status: <font color=green>Success!</font> $code</h3>";
-					//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"out.php?location=$location\"; }</script>";
-					//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"out.php?location=$location&code=$code&bal=$balance\"; }</script>";
 					
 				}
 			
@@ -1058,76 +1032,46 @@ if(isset($_POST['submit']))
 		}	
 	
 	}
-	// exit;
-	/*	if(in_array($username,$authorized_check_out))
-		{
-			//echo "Test---11"."<br>";
-			if($issue_status==5)
-			{
-				echo "Test---12"."<br>";
-				//$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no='";
-				$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
-				echo $sql1."<br>";	
-				//mysql_query($sql1,$link) or exit("Sql Error---5".mysql_error());
-			
-				//$sql1="update plandoc_stat_log set fabric_status=$issue_status where doc_no=$doc_no";
-				$sql2="update plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
-				echo $sql2."<br>";	
-				//mysql_query($sql2,$link) or exit("Sql Error----6".mysql_error());
-				//if($issue_status==5)
-				//{
-				$sql3="update fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
-				echo $sql3."<br>";	
-					//mysql_query($sql3,$link) or exit("Sql Error----7".mysql_error());
-			}
-		}
-		else
-		{  */
-			//echo "Test---22"."<br>";
-			if($issue_status==5)
-			{
-				//echo "Test---21"."<br>";
-				//$sql1="update plan_dashboard set fabric_status=$issue_status where doc_no='";
-				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
-				//Uncheck this
-				mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-				$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
-				//Uncheck this
-				mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				//if($issue_status==5)
-				//{
-				$sql3="update $bai_pro3.fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
-				//Uncheck this	
-				mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				$sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
-				// echo $sql1;
-				mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
-			}
+	if($issue_status==5)
+	{
+		$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+		//Uncheck this
+		mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+		$sql1="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no in ($group_docs)";
+		//Uncheck this
+		mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		//if($issue_status==5)
+		//{
+		$sql3="update $bai_pro3.fabric_priorities set issued_time='".date("Y-m-d H:i:s")."' where doc_ref in ($group_docs)";
+		//Uncheck this	
+		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+		$sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
+		// echo $sql1;
+		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
+	}
 
-			if($issue_status==1)
-			{
-				$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
-				//Uncheck this
-				mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
-		//}
-		//this is for after allocating article redirect to cps dashboard.removed sfcsui
-		if($dash==1){
-			$php_self = explode('/',$_SERVER['PHP_SELF']);
-			$ctd =array_slice($php_self, 0, -2);
-			$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-			$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
-		}
-		else{
-			$php_self = explode('/',$_SERVER['PHP_SELF']);
-			array_pop($php_self);
-			$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-			$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
-		}
-		echo"<script>location.href = '".$url1."';</script>"; 
+	if($issue_status==1)
+	{
+		$sql1="update $bai_pro3.plan_dashboard set fabric_status=$issue_status where doc_no in ($group_docs)";
+		//Uncheck this
+		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
+	if($dash==1){
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		$ctd =array_slice($php_self, 0, -2);
+		$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+	}
+	else{
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		array_pop($php_self);
+		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	}
+	echo"<script>location.href = '".$url1."';</script>"; 
 		
 }
 ?>
