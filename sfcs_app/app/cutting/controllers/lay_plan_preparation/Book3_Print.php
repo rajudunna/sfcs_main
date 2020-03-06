@@ -2319,8 +2319,10 @@ tags will be replaced.-->
   <td colspan=2 class=xl1214118><?php 
   if($remarks=="Normal") { 
 	echo chr($color_code).leading_zeros($cutno, 3); 
+	$doc_type='normal';
   }elseif(strtolower($remarks)=="recut"){ 
 	echo "R".leading_zeros($cutno, 3);
+	$doc_type='recut';
   }elseif($remarks=="Pilot"){ 
 	echo "Pilot";
   }
@@ -2653,7 +2655,7 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
- $sql1="select ref4,sum(qty_rec) as qty from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal' group by ref4 order by qty desc";
+ $sql1="select ref4,sum(qty_rec) as qty from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' group by ref4 order by qty desc";
 //echo $sql;
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -2664,7 +2666,7 @@ if(sizeof($shades)>0)
 { 
 	for($i=0;$i<sizeof($shades);$i++)
 	{ 
-		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
+		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -2737,7 +2739,7 @@ if(sizeof($shades)>0)
  <?php
  $roll_length = array();
 //  $roll_det = array();
- $sql123="SELECT batch_no as batch,ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='normal' GROUP BY ref4 order by batch,ref2 asc";
+ $sql123="SELECT batch_no as batch,ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=$doc_id AND doc_type='$doc_type' GROUP BY ref4 order by batch,ref2 asc";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
 {
@@ -2916,7 +2918,7 @@ if(sizeof($roll_det)>0)
 		}
 		?>
 		<?php
-		$sql8="SELECT SUM(allocated_qty) AS shade_lengt FROM bai_rm_pj1.docket_ref WHERE doc_no='' AND doc_type='normal' ";
+		$sql8="SELECT SUM(allocated_qty) AS shade_lengt FROM bai_rm_pj1.docket_ref WHERE doc_no='' AND doc_type='$doc_type' ";
 		mysqli_query($link, $sql8) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$previouse=$shade_det[$i]; 
 				

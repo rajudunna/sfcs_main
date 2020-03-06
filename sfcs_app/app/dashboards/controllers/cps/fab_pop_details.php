@@ -440,7 +440,13 @@ echo "</table>";
 echo "<h2>Cut Docket Print</h2>";
 
 echo "<form name=\"ins\" method=\"post\" action=\"fab_pop_allocate_v5.php\">"; //new_Version
-echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
+if(strtolower($docket_remarks) == 'recut')
+{
+	echo "<input type=\"hidden\" value=\"2\" name=\"process_cat\">";
+}else {
+	echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">";
+}
+ //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 
