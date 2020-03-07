@@ -892,7 +892,6 @@ function packingReversal($data)
 			}
 
 			//To check whether scanned or not
-			//To check whether scanned or not
 			$checking_temp =0;
 			$imploded_id = implode(",",$b_tid);
 
@@ -989,7 +988,10 @@ function packingReversal($data)
             	$go_here = 1;
             }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3332-fabric-lot-qty-different-allocate-docket-fd-id-18689
 			if ($go_here == 0)
 			{
 				$result_array['status'] = 2;

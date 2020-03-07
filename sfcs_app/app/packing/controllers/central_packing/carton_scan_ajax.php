@@ -127,7 +127,7 @@
 			//To check whether scanned or not
 			$checking_temp =0;
 			$imploded_id = implode(",",$b_tid);
-			$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in (".$imploded_id.") and operation_id=$b_op_id";
+			$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in ($imploded_id) and operation_id=$b_op_id";
             $temp_result = mysqli_query($link,$check_temp);
 			$count_temp = mysqli_num_rows($temp_result);
 			if($count_temp >0) {
