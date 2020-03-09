@@ -360,10 +360,19 @@ if(sizeof($_GET["lots"]) > 0)
 		{
 			$bgcolor="#dgffdf";
 		}
+		$sql1="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where tid='".$sql_row1["tid"]."'";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{	
+			$mrn_iss_qty=$sql_row1['iss_qty1'];
+		}
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]."</td>";
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_allocated"]."</td>";
 		echo "<td>".$sql_row1["qty_ret"]."</td>";
-		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."</td>";
+		
+
+
+		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"])+$mrn_iss_qty)."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"])+$mrn_iss_qty)."</td>";
 		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
