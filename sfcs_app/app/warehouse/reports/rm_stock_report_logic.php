@@ -198,7 +198,7 @@ if($max_id>0){
 			if(mysqli_num_rows($sql_result1y)> 0) {
 				while ($rowy = $sql_result1y->fetch_assoc())
 				{
-					$qty_issued=$qty_issued+$rowy["qty"];
+					// $qty_issued=$qty_issued+$rowy["qty"];
 					$qty_balance=$qty_rec+$qty_return- $qty_issued;
 				}
 			}
