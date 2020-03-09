@@ -713,7 +713,7 @@ function getreversalscanningdetails($job_number)
             $size_code = $row['size_title'];
             $color = $row['color'];
             $assigned_module = $row['assigned_module'];
-            $post_ops_qry_to_find_rec_qty = "select SUM(recevied_qty) AS recevied_qty,size_title from $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
+            $post_ops_qry_to_find_rec_qty = "select (sum(recevied_qty)+sum(rejected_qty)) AS recevied_qty,size_title from $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref ='$job_number[1]' AND operation_id = $post_ops_code and remarks='$job_number[2]' and size_title='$size_code' and color='$color' and assigned_module = '$assigned_module' GROUP BY size_title,color,assigned_module order by bundle_number";
             //echo $post_ops_qry_to_find_rec_qty;
             $result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
             if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
