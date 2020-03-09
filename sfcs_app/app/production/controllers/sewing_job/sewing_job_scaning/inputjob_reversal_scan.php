@@ -619,7 +619,7 @@
 						$rec_qty = $row['recevied_qty'];
 					}
 					$act_rec_qty = $rec_qty - $reversalval[$key];
-					$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty where id = $id";
+					$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty, `bundle_qty_status`= '0' where id = $id";
 					$result_query = $link->query($update_present_qry) or exit(message_sql($b_shift));
 					if($post_code)
 					{
