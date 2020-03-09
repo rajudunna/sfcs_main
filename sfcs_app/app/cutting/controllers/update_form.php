@@ -360,13 +360,13 @@ if(sizeof($_GET["lots"]) > 0)
 		{
 			$bgcolor="#dgffdf";
 		}
-		$sql1="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where tid='".$sql_row1["tid"]."'";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
+		$sql111="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where tid='".$sql_row1["tid"]."'";
+		$sql_result221=mysqli_query($link, $sql111) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row221=mysqli_fetch_array($sql_result221))
 		{	
-			$mrn_iss_qty=$sql_row1['iss_qty1'];
+			$mrn_iss_qty=$sql_row221['iss_qty1'];
 		}
-		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]."</td>";
+		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]+$mrn_iss_qty."</td>";
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_allocated"]."</td>";
 		echo "<td>".$sql_row1["qty_ret"]."</td>";
 		
