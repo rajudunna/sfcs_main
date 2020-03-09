@@ -1206,7 +1206,15 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['ref3']."</td>";
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
-			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret']-$fab_cad_allocated_qty-$sql_row['partial_appr_qty'])."</td>";
+			$mrn_iss_qty=0;
+			$sql111="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where lable_id='".$sql_row["tid"]."'";
+			$sql_result221=mysqli_query($link, $sql111) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row221=mysqli_fetch_array($sql_result221))
+			{	
+				$mrn_iss_qty=$sql_row221['iss_qty1'];
+			}
+
+			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret']-$fab_cad_allocated_qty-$sql_row['partial_appr_qty']-$mrn_iss_qty)."</td>";
 			echo "<td><input class='form-control float' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j,$i);' readonly></input></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";
