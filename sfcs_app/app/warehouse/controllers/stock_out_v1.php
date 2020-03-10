@@ -213,12 +213,25 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $location=$sql_row['ref1'];
   $box=$sql_row['ref2'];
   $qty_rec=$sql_row['qty_rec'];
+  $qty_return=$sql_row['qty_ret'];
   $barcode_number=$sql_row['barcode_number'];
   $status=$sql_row['status'];
   $available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty'];
   $available2=$sql_row['ref5']-$sql_row['qty_issued']+$sql_row['qty_ret']-$sql_row['partial_appr_qty']; //Ctex Length
   $lot_ref=$sql_row['lot_no'];
-  
+  $current_date=date('Y-m-d');
+
+  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\"  GROUP BY lable_id";
+//   echo $sql_mrn;
+	$sql_result_mrn =$link->query($sql_mrn);
+	if(mysqli_num_rows($sql_result_mrn)> 0) {
+		while ($row_mrn = $sql_result_mrn->fetch_assoc())
+		{
+			// $qty_issued=$available+$row_mrn["mrn_qty"];
+			$available=round(($available-$row_mrn["mrn_qty"]),2);
+			$available2 = round(($available2- $row_mrn["mrn_qty"]),2);
+		}
+	}
   echo "<tr>";
   if($status==0)
   {
@@ -273,30 +286,30 @@ $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $ba
 else{
   $sql="select * from $bai_rm_pj1.store_out where tran_tid in (select tid from $bai_rm_pj1.store_in where ref1 in ('".trim($lot_no)."')) order by date";
 }
-//echo $sql;
+// echo $sql;
 //mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
 {
   $date=$sql_row['date'];
-  $qty_issued=$sql_row['qty_issued'];
-  $qty_rec=$sql_row['qty_rec'];
-  $qty_return=$sql_row['qty_ret'];
-  $qty=round($qty_rec+$qty_return-$qty_issued);
+//   $qty_issued=$sql_row['qty_issued'];
+//   $qty_rec=$sql_row['qty_rec'];
+//   $qty_return=$sql_row['qty_ret'];
+//   echo $qty_rec.'+'.$qty_return.'-'.$qty_issued;
+  $qty=$sql_row['qty_issued'];
   $style=$sql_row['Style'];
   $schedule=$sql_row['Schedule'];
   $tran_tid=$sql_row['tran_tid'];
   $cutno=$sql_row['cutno'];
 
   $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tran_tid\" and DATE(log_time)=\"$date\" GROUP BY lable_id";
-	$sql_result_mrn =$link->query($sql_mrn);
-	if(mysqli_num_rows($sql_result_mrn)> 0) {
-		while ($row_mrn = $sql_result_mrn->fetch_assoc())
-		{
-			$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
-			$qty=round(($qty_rec+$qty_return-$qty_issued),2);
-		}
-	}
+  $sql_result_mrn =$link->query($sql_mrn);
+  if(mysqli_num_rows($sql_result_mrn)> 0) {
+	  while ($row_mrn = $sql_result_mrn->fetch_assoc())
+	  {
+			$qty=$qty+$row_mrn["mrn_qty"];
+	  }
+  }
 
   $d=0;
   if(strpos($cutno,"T") !== FALSE)
