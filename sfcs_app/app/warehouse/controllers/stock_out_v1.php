@@ -302,15 +302,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $tran_tid=$sql_row['tran_tid'];
   $cutno=$sql_row['cutno'];
 
-  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tran_tid\" and DATE(log_time)=\"$date\" GROUP BY lable_id";
-  $sql_result_mrn =$link->query($sql_mrn);
-  if(mysqli_num_rows($sql_result_mrn)> 0) {
-	  while ($row_mrn = $sql_result_mrn->fetch_assoc())
-	  {
-			$qty=$qty+$row_mrn["mrn_qty"];
-	  }
-  }
-
   $d=0;
   if(strpos($cutno,"T") !== FALSE)
   {
