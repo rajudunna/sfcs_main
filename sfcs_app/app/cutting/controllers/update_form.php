@@ -704,7 +704,7 @@ $(document).ready(function(){
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
-		$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
+		$host_name=$username;
 		for($j=0;$j<sizeof($issued_qty);$j++)
 		{
 			if($issued_qty[$j]>0)
