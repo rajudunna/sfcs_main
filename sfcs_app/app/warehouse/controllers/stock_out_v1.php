@@ -349,12 +349,36 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
   }
   
+  
+
+  
   /*$remarks=$sql_row['remarks'];
   $user=$sql_row['updated_by'];
   
   echo "<tr><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";*/
 }
+$sql_mrn="SELECT * FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id in (select tid from $bai_rm_pj1.store_in where lot_no in ('".trim($lot_no)."')) order by log_time";
+//   echo $sql_mrn ;
 
+  $sql_result_mrn =$link->query($sql_mrn);
+  if(mysqli_num_rows($sql_result_mrn)> 0) {
+	  while ($row_mrn = $sql_result_mrn->fetch_assoc())
+	  {
+			$qty = $row_mrn['iss_qty'];
+			$updated_user = $row_mrn['updated_user'];
+			$tran_tid1 = $row_mrn['lable_id'];
+			$log_time = date($row_mrn['log_time']);
+			
+			$sql121 = "select ref2,barcode_number from $bai_rm_pj1.store_in where tid=$tran_tid1";
+			$result121=mysqli_query($link,$sql121) or die("Error = ".mysqli_error());
+			while ($row121 = mysqli_fetch_array($result121))
+			{
+				$ref2=$row121["ref2"];
+				$barcode_number=$row121["barcode_number"];
+			}
+			echo "<tr style='background-color:white;'><td>$log_time</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td></td><td>MRN Log</td><td>$updated_user</td></tr>";
+	  }
+  }
 echo "</table>";
 echo "</div>";
 
