@@ -279,11 +279,25 @@ $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
 {
   $date=$sql_row['date'];
-  $qty=$sql_row['qty_issued'];
+  $qty_issued=$sql_row['qty_issued'];
+  $qty_rec=$sql_row['qty_rec'];
+  $qty_return=$sql_row['qty_ret'];
+  $qty=round($qty_rec+$qty_return-$qty_issued);
   $style=$sql_row['Style'];
   $schedule=$sql_row['Schedule'];
   $tran_tid=$sql_row['tran_tid'];
   $cutno=$sql_row['cutno'];
+
+  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tran_tid\" and DATE(log_time)=\"$date\" GROUP BY lable_id";
+	$sql_result_mrn =$link->query($sql_mrn);
+	if(mysqli_num_rows($sql_result_mrn)> 0) {
+		while ($row_mrn = $sql_result_mrn->fetch_assoc())
+		{
+			$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
+			$qty=round(($qty_rec+$qty_return-$qty_issued),2);
+		}
+	}
+
   $d=0;
   if(strpos($cutno,"T") !== FALSE)
   {
