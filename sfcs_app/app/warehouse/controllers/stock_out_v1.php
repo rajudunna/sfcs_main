@@ -279,7 +279,7 @@ $sql_result=mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))
 {
   $date=$sql_row['date'];
-  $qty_issued=$sql_row['qty_issued'];
+//   $qty_issued=$sql_row['qty_issued'];
   $qty_rec=$sql_row['qty_rec'];
   $qty_return=$sql_row['qty_ret'];
   $qty=round($qty_rec+$qty_return-$qty_issued);
@@ -293,7 +293,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	if(mysqli_num_rows($sql_result_mrn)> 0) {
 		while ($row_mrn = $sql_result_mrn->fetch_assoc())
 		{
-			$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
+			$qty_issued=$qty+$row_mrn["mrn_qty"];
 			$qty=round(($qty_rec+$qty_return-$qty_issued),2);
 		}
 	}
