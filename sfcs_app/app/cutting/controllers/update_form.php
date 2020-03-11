@@ -64,7 +64,10 @@ function closepopup()
          alert('Window already closed!');
       }
    }
-
+function disableButton()
+{
+	$('#issueid').hide();
+}
 function DataCheck()
 {   $('#issueid').hide();
 	var chks = document.getElementsByName('issqty[]');  
@@ -357,10 +360,20 @@ if(sizeof($_GET["lots"]) > 0)
 		{
 			$bgcolor="#dgffdf";
 		}
-		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_issued"]."</td>";
+		$mrn_iss_qty = 0;
+		$sql111="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where lable_id='".$sql_row1["tid"]."'";
+		$sql_result221=mysqli_query($link, $sql111) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row221=mysqli_fetch_array($sql_result221))
+		{	
+			$mrn_iss_qty=$sql_row221['iss_qty1'];
+		}
+		echo "<td bgcolor=\"$bgcolor\">".($sql_row1["qty_issued"]+$mrn_iss_qty)."</td>";
 		echo "<td bgcolor=\"$bgcolor\">".$sql_row1["qty_allocated"]."</td>";
 		echo "<td>".$sql_row1["qty_ret"]."</td>";
-		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]))."</td>";
+		
+
+
+		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."</td>";
 		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
@@ -546,7 +559,7 @@ switch($level)
 	{
 		// if(strlen($_GET["lots"]) > 0)
 		// {
-			echo "<input type=\"submit\" style='display:none' class='btn btn-success' name=\"issue\" id=\"issueid\" value=\"Allocate\">";
+			echo "<input type=\"submit\" style='display:none' class='btn btn-success' name=\"issue\" id=\"issueid\" onclick='return disableButton();' value=\"Allocate\">";
 			break;
 		// }
 	}
@@ -691,7 +704,7 @@ $(document).ready(function(){
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
-		$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
+		$host_name=$username;
 		for($j=0;$j<sizeof($issued_qty);$j++)
 		{
 			if($issued_qty[$j]>0)
@@ -699,22 +712,40 @@ $(document).ready(function(){
 				$sql1="insert into $bai_rm_pj2.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\")";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-
+				unset($qty_issued);
+				unset($qty_ret);
+				unset($qty_allocated);
+				unset($total_qty);
+				$total_qty[$j]=0;
+				$qty_issued=array();
+				$qty_ret=array();
+				$qty_allocated=array();
+				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row3=mysqli_fetch_array($sql_result3))
+					{
+						$width_ref[$j]=$sql_row3['qty_rec'];
+						$qty_issued[$j]=$sql_row3['qty_issued'];
+						$qty_ret[$j]=$sql_row3['qty_ret'];
+						$qty_allocated[$j]=$sql_row3['qty_allocated'];
+						$total_qty[$j] = $qty_issued[$j]+$qty_ret[$j]+$qty_allocated[$j];
+					}
 			
 					$issued_ref[$j]=$issued_qty[$j];
-					$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-
+					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
+    				{
+						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					} 
 				}
 
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocation=qty_allocation-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 			}
-			
 		}
 		
 		$sql1="insert into $bai_rm_pj2.remarks_log (tid,remarks,username,date,level)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Allocate\")";

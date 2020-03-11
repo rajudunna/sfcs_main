@@ -1,14 +1,9 @@
 <?php 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_splitting_function.php',3,'R'));  
 $has_permission = haspermission($_GET['r']);
 error_reporting(0);
-// $username="sfcsproject1";
-// $authorized_to_change=array("sfcsproject1");
-// $authorized_docket_change=array("sfcsproject1");
-// $authorized_recut_docket_change=array("sfcsproject1");
+
 ?>
 <script>
 	function edit(c)
@@ -252,7 +247,7 @@ if(isset($_POST["submit"]) or $flag==1)
 				}
 			}
 			
-			$sqlw="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no=\"".$docket."\"";
+			$sqlw="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$docket."'";
 			$result1w=mysqli_query($link, $sqlw) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rowsw=mysqli_num_rows($result1w);
 			$allocated_qty_fab=0;
@@ -261,19 +256,15 @@ if(isset($_POST["submit"]) or $flag==1)
 				$allocated_qty_fab=$allocated_qty_fab+$sql_row['allocated_qty'];
 			
 			}
-			echo '<div>';
-			// if($rowsw > 0)
-			{
+			echo '<div>';			
 			echo "<div class='panel panel-primary'>";	
 			echo "<div class='panel-heading'>New Entry</div>";
 			echo "<div class='panel-body'>";
 			echo "<table class='table table-bordered table-striped'>";
-			echo "<tr><th>Docket No</th><th>Label ID<i style='color:red'>*</i></th><th>Docket Type</th><th>Allocated Qty<i style='color:red'>*</i></th><th>Control</th></tr>";
-			//echo "<tr><th>Docet No</th><th>Label ID</th><th>Roll Width</th><th>Docet Type</th><th>Allocated Qty</th><th>Control</th></tr>";
+			echo "<tr><th>Docket No</th><th>Barcode ID<i style='color:red'>*</i></th><th>Docket Type</th><th>Allocated Qty<i style='color:red'>*</i></th><th>Control</th></tr>";
 			echo '<form method="POST" name="form" action="'.getFullURL($_GET['r'],'fab_issue_track_V2.php','N').'">';
 			echo "<tr><td><input type='hidden' name='doc_no'  value='".$docket."' size=4>".$docket."</td>";
 			echo "<td><input type='text' name='roll_id2'  id='label_id' value='' size=4 class='form-control'  required/></td>";
-			//echo "<td><input type='text' name='roll_width' value='' size=6 class='input'></td>"; 
 			echo '<td><select name="cat" class="form-control">';
 			if($cat=='D')
 			{
@@ -285,78 +276,11 @@ if(isset($_POST["submit"]) or $flag==1)
 			}
 			
 			echo "<td><input type='text' name='alloc_qty' id='alloc_qty' value='' size=10 class='form-control float'></td>"; 
-
-				if($cat=='D')
-				{
-					$sql="select doc_no,material_req,order_tid,order_del_no,fabric_status from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$docket."\"";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						$material_req=$sql_row['material_req'];
-						$fabric_status_ref=$sql_row['fabric_status'];
+			echo "<td><input type='submit' value='New Entry' name='new_entry' id='new_entry' class='btn btn-success btn-xs' ></td>";
 					
-					}
-				}else
-				{
-					$sql="select doc_no,material_req,order_tid,order_del_no,fabric_status from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no=\"".$docket."\"";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						$material_req=$sql_row['material_req'];
-						$fabric_status_ref=$sql_row['fabric_status'];
-						
-					}
-				}
-				$sql121="select store_out.log_stamp,store_out.qty_issued,sticker_ref.inv_no,sticker_ref.batch_no,sticker_ref.ref2 as rollno,sticker_ref.ref4 as shade,store_out.updated_by from $bai_rm_pj1.store_out left join $bai_rm_pj1.sticker_ref on store_out.tran_tid=sticker_ref.tid where cutno='".$cat.$docket."' order by tran_tid ";
-				// echo $sql121."<br>";
-				$result121=mysqli_query($link, $sql121) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_num_check=mysqli_num_rows($result121);
-				while($sql_row=mysqli_fetch_array($result121))
-				{
-					$qty_issued=$qty_issued+$sql_row['qty_issued'];
-					
-				}
-
-
-				// echo round($qty_issued,2)."<br>";
-			
-				if((in_array($authorized,$has_permission)))
-				{
-					if(($lastup=="0000-00-00 00:00:00")  and (round($qty_issued,2) < round($material_req,2)))
-					{
-						echo "<td><input type='submit' value='New Entry' name='new_entry' id='new_entry' class='btn btn-success btn-xs' ></td>";
-					}
-					else if($lastup!="0000-00-00 00:00:00" and (round($qty_issued,2) < round($material_req,2)))
-					{
-						if($cat=='D' and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
-						{
-							echo "<td><input type='submit' value='New Entry' name='new_entry' id='new_entry' class='btn btn-success btn-xs' ></td>";
-						}
-						else if($cat=='R' and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 or $fabric_status_ref!=5))
-						{
-							echo "<td><input type='submit' value='New Entry' class='btn btn-success btn-xs' name='new_entry' id='new_entry' ></td>";
-						}
-						else
-						{
-							echo "<td>N/A : Plot Job Completed</td>";
-						}
-					}
-					else
-					{
-						echo "<td>N/A : Plot Job Completed</td>";
-					}
-				}
-				else
-				{
-						echo "<td>N/A </td>"; 
-				}
-			echo "</tr>";
-			
-			echo "</table><br/><br/>";
-			}
-			//else
-				echo "</div></div>";
-			// $total_quantity=0;
+			echo "</tr>";			
+			echo "</table><br/><br/>";			
+			echo "</div></div>";			
 			$sql1="select allocated_qty as qty from $bai_rm_pj1.docket_ref where doc_no=\"".$docket."\" and doc_type=\"".$docket_type."\" order by tid ";
 			$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_rows=mysqli_num_rows($result1);
@@ -376,8 +300,7 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<div class='panel-body'>";
 			
 			echo "<table class='table table-bordered table-striped'>";
-			echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll No</th><th>Label ID</th><th>Roll Width</th><th>Allocated Qty</th><th>Time</th><th>Control</th></tr>";
-		
+			echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll No</th><th>Barcode ID</th><th>Roll Width</th><th>Allocated Qty</th><th>Time</th><th>Control</th></tr>";		
 			$sql1="select tran_pin,inv_no,batch_no,lot_no,roll_id,ref2 as rollno,ref4 as shade,roll_width,allocated_qty as qty,log_time,barcode_number from $bai_rm_pj1.docket_ref where doc_no=\"".$docket."\" and doc_type=\"".$docket_type."\" order by tid ";
 			$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
@@ -399,73 +322,26 @@ if(isset($_POST["submit"]) or $flag==1)
 				$result121=mysqli_query($link, $sql121) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($result121);
 				echo "<tr><td>$inv_no</td><td>$batch_no_no</td><td>$shade</td><td>$rollno</td><td>$barcode_number</td><td>$roll_width</td><td>$qty</td><td>".$row1['log_time']."</td>";
-				if((in_array($authorized,$has_permission)))
-				{
-					if(($tran_pin!="") and ($lastup=="0000-00-00 00:00:00") and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
-					{
-						echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
-						$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
-						$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";			
-					}
-					else if($tran_pin!="" and $lastup!="0000-00-00 00:00:00" and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
-					{
-						if($cat=='D' and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
-						{
-							echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs" href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
-							$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
-							$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
-							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";
-						}
-						else if($cat=='R'  and (in_array($authorized,$has_permission)) and ($fabric_status_ref!=1 and $fabric_status_ref!=5))
-						{
-
-							echo '<td><input type="hidden" value="'.$roll_id.'"  name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
-							$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
-							$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
-							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin'class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";
-						}
-						else
-						{
-							echo "<td>N/A : Plot Job Completed</td>";
-						}
-					}
-					else
-					{
-						echo "<td>N/A : Plot Job Completed</td>";
-					}				
-									
-				}
-				else
-				{
-					echo "<td>N/A</td>";
-				}
+				echo '<td><input type="hidden" value="'.$roll_id.'" name="roll_id" id="roll_id"><a class="btn btn-warning btn-xs href="#" value="'.$tran_pin.'" onclick="edit('.$tran_pin.')">Edit</a>';
+				$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
+				$path="$url&doc_no=".$docket."&doc_type=".$docket_type."&tran_pin=".$tran_pin."&delete=1";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id='del_$tran_pin' class='btn btn-danger btn-xs confirm-submit'  href='$path'  value='".$tran_pin."'>Delete</a></td>";				
 			}	
 			
-			echo "<tr><td colspan=6 align='center' style='color:#FFFFFF;background:#11569b;font-size:14;font-weight: bold;
-	'>Total Qty</td><td>$total_qty</td><td colspan=2></td>";
-			
-				
+			echo "<tr><td colspan=6 align='center' style='color:#FFFFFF;background:#11569b;font-size:14;font-weight: bold;'>Total Qty</td><td>$total_qty</td><td colspan=2></td>";				
 			echo "</table></form>";	
 			echo "</div></div>";			
 			echo "<div id=\"shead\">";
 			echo "<span id=\"txtHint2\">";	
 			echo '<b></b></span></div>';
-			
-
-		
 			echo "<div>";
-			
 			echo "<div class='panel panel-primary'>";
 			echo "<div class='panel-heading'>Actual Issued</div>";
 			echo "<div class='panel-body'>";
-			
 			echo "<table class='table table-bordered table-striped'>";
 			echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll No</th><th>Issued Qty</th><th>Time</th><th>Issued by</th></tr>";
-		
 			$total_qty=0;
 			$sql1="select store_out.log_stamp,store_out.qty_issued,sticker_ref.inv_no,sticker_ref.batch_no,sticker_ref.ref2 as rollno,sticker_ref.ref4 as shade,store_out.updated_by from $bai_rm_pj1.store_out left join $bai_rm_pj1.sticker_ref on store_out.tran_tid=sticker_ref.tid where cutno='".$cat.$docket."' order by tran_tid ";
-			// echo $sql1."<br>";
 			$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
 			{
@@ -473,7 +349,6 @@ if(isset($_POST["submit"]) or $flag==1)
 				$batch_no_no=$row1["batch_no"];
 				$lot_no=$row1["lot_no"];
 				$rollno=$row1["rollno"];
-				//$roll_id=$row1['roll_id'];
 				$shade=$row1["shade"];
 				$qty=$row1["qty_issued"];
 				$updated_by=$row1['updated_by'];
@@ -484,16 +359,9 @@ if(isset($_POST["submit"]) or $flag==1)
 				$total_qty=$total_qty+$qty;
 				echo "<tr><td>$inv_no</td><td>$batch_no_no</td><td>$shade</td><td>$rollno</td><td>$qty</td><td>".$row1['log_stamp']."</td><td>".$updated_by."</td></tr>";		
 			}	
-			
-			//echo "<tr><td colspan=2></td><th colspan=2>Total Qty</th><td>$total_qty</td></tr>";
-			echo "<tr><td colspan=4 align='center' style='color:#FFFFFF;background:#11569b;font-size:14;font-weight: bold;
-	'>Total Qty</td><td>$total_qty</td><td colspan=2></td>";
-			
-			echo "</table><br/><br/>";
-			
-			echo "</div></div>";
-			
-			
+			echo "<tr><td colspan=4 align='center' style='color:#FFFFFF;background:#11569b;font-size:14;font-weight: bold;'>Total Qty</td><td>$total_qty</td><td colspan=2></td>";			
+			echo "</table><br/><br/>";			
+			echo "</div></div>";			
 			echo "<div>";
 			echo "</div>";
 			echo "<div class='panel panel-primary'><div class='panel-heading'>M3 Update Track</div>";
@@ -502,7 +370,6 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<tr><th>Section</th><th>Picking List</th><th>Delivery</th><th>Issued By</th><th>M3 Update</th> <th>Manual Tran</th></tr>";
 		
 			$sql1="select * from $bai_rm_pj1.m3_fab_issue_track where doc_ref='".$cat.$docket."'";
-			//echo $sql1."<br>";
 			$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
 			{
@@ -517,11 +384,10 @@ if(isset($_POST["submit"]) or $flag==1)
 			}
 			echo "</table>";
 			
-			// echo "</div>";
 			echo "</div>";
 			echo "</div>";
 			
-			//echo "<table width=100%><tr><td width=50%>1</td><td>2</td><td>3</td></tr></table>";
+			echo "<table width=100%><tr><td width=50%>1</td><td>2</td><td>3</td></tr></table>";
 			echo "<table width=100%><tr><td width=40%><div>";
 			echo "<div style='float:top;margin-top:-196.5pt;position:static; clear:both;'>";
 			echo "<div class='panel panel-primary'>";
@@ -538,24 +404,14 @@ if(isset($_POST["submit"]) or $flag==1)
 			echo "<div class='panel-body'>";
 			echo "<form name='update' id='delete_form' method='post' action='".getURL(getBASE($_GET['r'])['path'])['url']."'>";
 			echo "<table class='table table-bordered table-striped'>";
-			// echo "<tr><th>Section</th>
-			// 	<td><select name='section' class='form-control' required>
-			// 	<option value='1'>Section-1</option>
-			// 	<option value='2'>Section-2</option>
-			// 	<option value='3'>Section-3</option>
-			// 	</select>
-			// 	</td></tr>";
-			 	echo "<tr><th>Section</th> <td><select name='section' class='form-control' required >";
-			    $section_query="select sec_id,sec_head FROM $bai_pro3.sections_db";
-			   $result4=mysqli_query($link, $section_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			   while($row4=mysqli_fetch_array($result4))
-			  {
-			 	echo "<option value=\"".$row4['sec_head']."\">".$row4['sec_head']."</option>";
-				
-			  }
-			   echo "</select></td></tr>";
-
-
+			echo "<tr><th>Section</th> <td><select name='section' class='form-control' required >";
+			$section_query="select sec_id,sec_head FROM $bai_pro3.sections_db";
+			$result4=mysqli_query($link, $section_query) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row4=mysqli_fetch_array($result4))
+			{
+				echo "<option value=\"".$row4['sec_head']."\">".$row4['sec_head']."</option>";
+			}
+			echo "</select></td></tr>";
 			echo "<tr><th>Picking List</th><td><input type='text'  name='picking_list' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Delivery No</th><td><input type='text' name='delivery_no' value='' class='form-control alpha' required></td></tr>";
 			echo "<tr><th>Issued By</th><td><input type='text'  name='issued_by' value='' class='form-control alpha' required></td></tr>";
@@ -598,9 +454,6 @@ if(isset($_POST["submit"]) or $flag==1)
 		echo "Please enter valid details.";
 	}
 }
-
-
-
 
 
 if(isset($_POST['update_ajax']))
@@ -714,70 +567,61 @@ if(isset($_POST['new_entry']))
 	{
 		while($row12=mysqli_fetch_array($result1))
 		{
-			if($row12['allotment_status']==0)
-			{				
-				$balance=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']);
-			}
-			// else
-			// {
-			// 	$balance=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']+$row12['qty_allocated']);
-			// }
-			
+			$balance=$row12['qty_rec']+$row12['qty_ret']-($row12['qty_issued']+$row12['partial_appr_qty']+$row12['qty_allocated']);			
 		}
 	
 		if($temp_status==0) 
 		{
 			if($alloc_qty <= $balance)
-			{
-				if($doc_type=='normal')
+			{			
+				$sql="SELECT (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty,cat_ref,doc_no,material_req,order_tid,order_del_no,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings FROM $bai_pro3.order_cat_doc_mk_mix_v2 WHERE DOC_NO=\"".$doc_no."\"";
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					$sql="SELECT doc_no,material_req,order_tid,order_del_no FROM $bai_pro3.order_cat_doc_mk_mix_v2 WHERE DOC_NO=\"".$doc_no."\"";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
+					$p_qty=$sql_row['qty'];
+					$sql5="SELECT binding_consumption,seperate_docket,purwidth from $bai_pro3.cat_stat_log where tid=".$sql_row['cat_ref']."";
+					$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row5=mysqli_fetch_array($sql_result5))
 					{
-						$material_req=$sql_row['material_req'];
-						$order_style=substr($sql_row['order_tid'],0,10);
-						$order_schedule=$sql_row['order_del_no'];
+						$binding_consumption=$sql_row5['binding_consumption'];
+						$seperate_docket=$sql_row5['seperate_docket'];
+						$purwidth=$sql_row5['purwidth'];
+						if($mwidt=='N/A'){
+							$mwidt= $purwidth;
+						}
 					}
-
-
-					$sql="select COALESCE(sum(qty_issued),0) as qty_issued_sofar from $bai_rm_pj1.store_out where cutno='".$cat.$doc_no."'";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						$qty_issued_sofar=$sql_row['qty_issued_sofar'];
+					$binding_consumption_qty = $binding_consumption * $p_qty;	
+					if($seperate_docket=='No'){
+						$material_requirement_orig=$sql_row['material_req'];
+					}else{
+						$material_requirement_orig=$sql_row['material_req']-$binding_consumption_qty;
 					}
+					$extra=0;
 
-					$ref_table="$bai_pro3.plandoc_stat_log";
+					{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
+					$material_req=$material_requirement_orig+$extra;
+					$order_style=substr($sql_row['order_tid'],0,10);
+					$order_schedule=$sql_row['order_del_no'];
 				}
-				else
+				$sql="select COALESCE(sum(qty_issued),0) as qty_issued_sofar from $bai_rm_pj1.store_out where cutno='".$cat.$doc_no."'";
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					$sql="select doc_no,material_req,order_tid,order_del_no from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no=\"".$doc_no."\"";
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						$material_req=$sql_row['material_req'];
-						$order_style=substr($sql_row['order_tid'],0,10);
-						$order_schedule=$sql_row['order_del_no'];
-					}
-
-					$qty_issued_sofar=0;
-					$sql="select COALESCE(sum(qty_issued),0) as qty_issued_sofar from $bai_rm_pj1.store_out where cutno='".$cat.$doc_no."'";
-
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						$qty_issued_sofar=$sql_row['qty_issued_sofar'];
-					}
-
-					$ref_table="$bai_pro3.recut_v2";
-
+					$qty_is=$sql_row['qty_issued_sofar'];
 				}
-				$remaining_qty=	$material_req -$qty_issued_sofar;	
-				if(($material_req-($qty_issued_sofar+$alloc_qty)) >= 0)
+				
+				$sql12="select COALESCE(sum(allocated_qty),0) as qty_allocated from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."'";
+				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row12=mysqli_fetch_array($sql_result12))
 				{
-
-
+					$qty_al=$sql_row12['qty_allocated'];
+				}
+				$qty_issued_sofar=$qty_is+$qty_al;
+				
+				$ref_table="$bai_pro3.plandoc_stat_log";		
+				$remaining_qty = $material_req - $qty_issued_sofar;	
+				if(($material_req - ($qty_issued_sofar+$alloc_qty)) >= 0)
+				{
 					$sql="select doc_no from $ref_table where doc_no=\"".$doc_no."\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result)>0)
@@ -789,22 +633,18 @@ if(isset($_POST['new_entry']))
 						{
 							$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
 							$qty_issued=$sql_row['qty_issued'];
+							$qty_A=$sql_row['qty_issued'];
 							$qty_ret=$sql_row['qty_ret'];
 							$primary_roll_id=$sql_row["tid"];
 						}
-							
-						$balance=$qty_rec-$qty_issued+$qty_ret;	
-						$balance1=$qty_rec+$qty_ret-($qty_issued+$alloc_qty);
-
-						
+						$total_qty=0;	
+						$balance1=$balance;	
 						if((($qty_rec-($alloc_qty+$qty_issued))+$qty_ret)>=0 && $alloc_qty > 0)
 						{
-
 							$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,doc_type,allocated_qty,status) values (\"$doc_no\",\"".$primary_roll_id."\",\"$doc_type\",\"$alloc_qty\",'1')";
-							// echo $sql."<br>";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
-							$sql="select ref3,ref6,qty_rec from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
+							$tran_pin=mysqli_insert_id($link);
+							$sql="select ref3,ref6,qty_rec,qty_issued,qty_ret,qty_allocated from $bai_rm_pj1.store_in where barcode_number='$roll_id'";
 							$result1=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row1=mysqli_fetch_array($result1))
 							{
@@ -812,6 +652,7 @@ if(isset($_POST['new_entry']))
 								$act_width=$row1["ref6"];
 								$tid_new=$row1["tid"];
 								$qty_rec=$row1["qty_rec"];
+								$total_qty= $row1["qty_issued"]+$row1["qty_ret"]+$row1["qty_allocated"];
 							}
 
 							if($ctx_width == 0)
@@ -819,73 +660,55 @@ if(isset($_POST['new_entry']))
 								$ctx_width=$qty_rec;
 							}
 							
-							$sql="update $bai_rm_pj1.fabric_cad_allocation set roll_width=\"$ctx_width\" where roll_id=\"$primary_roll_id\"";
+							$sql="update $bai_rm_pj1.fabric_cad_allocation set roll_width=\"$ctx_width\" where tran_pin=".$tran_pin."";
 							mysqli_query($link, $sql) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
 							if($balance1==0)
 							{
-								$sql1="update $bai_rm_pj1.store_in set qty_allocated=".$alloc_qty.", status='2', allotment_status='2' where barcode_number=\"$roll_id\"";
+								$sql1="update $bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$alloc_qty.", status='2', allotment_status='2' where tid='".$roll_id."'";
 								$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							else
 							{	
-								//Removing for #1305 ticket and adding this functionality into a separate function 
-								//$roll_splitting = roll_splitting_function($primary_roll_id,$balance,$alloc_qty);
 								$roll_id = $primary_roll_id;
 								$total_roll_qty = $balance;
 								$issued_qty = $alloc_qty;
 								$sql="update bai_rm_pj1.store_in set allotment_status=1 where tid=".$roll_id;
 								mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-								if(strtolower($roll_splitting) == 'yes')
-								{
-									
-									if($total_roll_qty>=$issued_qty)
-									{ 
-										//balanced qty
-										$balance_qty=(($total_roll_qty)-($issued_qty));
-										//current date in php
-										$current_date=date("Y-m-d");
-							
-										if($balance_qty>0){
-											//getting new rolls details
-											$qry_rolldetails="SELECT lot_no,ref1,ref2,ref3,remarks,log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason,barcode_number,ref_tid FROM $bai_rm_pj1.store_in WHERE tid=".$roll_id;
-											$result__rolldetials=mysqli_query($link, $qry_rolldetails);
-											$row_rolldetials=mysqli_fetch_assoc($result__rolldetials);
-											$qry_newroll="insert into bai_rm_pj1.store_in(lot_no,ref1,ref2,ref3,qty_rec, date, remarks, log_user, status, ref4, ref5, ref6, roll_status, shrinkage_length, shrinkage_width, shrinkage_group, rejection_reason, split_roll,ref_tid,barcode_number) values('".$row_rolldetials["lot_no"]."','".$row_rolldetials["ref1"]."','".$row_rolldetials["ref2"]."','".$row_rolldetials["ref3"]."','".$balance_qty."','".$current_date."','".$row_rolldetials["remarks"]."','".$row_rolldetials["log_user"]."','".$row_rolldetials["status"]."','".$row_rolldetials["ref4"]."','".$row_rolldetials["ref5"]."','".$row_rolldetials["ref6"]."','".$row_rolldetials["roll_status"]."','".$row_rolldetials["shrinkage_length"]."','".$row_rolldetials["shrinkage_width"]."','".$row_rolldetials["shrinkage_group"]."','".$row_rolldetials["rejection_reason"]."','".$roll_id."','".$row_rolldetials["ref_tid"]."','".$row_rolldetials["barcode_number"]."')";
-											mysqli_query($link, $qry_newroll) or exit("Sql Error3: $qry_newroll".mysqli_error($GLOBALS["___mysqli_ston"]));
-											$new_tid=mysqli_insert_id($link);
-											$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
-											//Uncheck this
-											mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-										}
-										$sql="update bai_rm_pj1.store_in set qty_rec=".$issued_qty.",qty_allocated=".$issued_qty." where tid=".$roll_id;
-										//Uncheck this
-										mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-									}
-							
-									$sql="update $bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$roll_id;
-										  $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
+								if(strtolower($roll_splitting) == 'yes' && $total_qty==0)
+								{									
+									$roll_splitting = roll_splitting_function($roll_id,$total_roll_qty,$issued_qty);									
 								}
 								else
-								{
-								   
-									if($total_roll_qty==$issued_qty)
+								{								   
+									$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=".$roll_id."";
+									$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
+									while($sql_row=mysqli_fetch_array($sql_result))
 									{
-									   
-										$sql="update bai_rm_pj1.store_in set qty_allocated=".$issued_qty.",status=2,allotment_status=2 where tid=".$roll_id;
+										$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
+										$qty_issued=$sql_row['qty_issued'];
+										$qty_ret=$sql_row['qty_ret'];
+										$qty_allocated=$sql_row['qty_allocated'];
 									}
-									else{
-									
-										$sql="update bai_rm_pj1.store_in set qty_allocated=".$issued_qty.",status=0,allotment_status=1 where tid=".$roll_id;
+									$balance1=$qty_rec+$qty_ret-($qty_issued+$qty_allocated);
+									if($balance1==0)
+									{
+										$status=2;
 									}
-									
-									//Uncheck this
-									mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+									else
+									{
+										$status=1;
+									}
+									$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status where tid=".$roll_id;
+									mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}	
 							}
-
+							echo "<script>sweetAlert('Successfully Updated','','info')</script>";
 						}
-						echo "<script>sweetAlert('Successfully Updated','','info')</script>";
+						else
+						{
+							echo "<script>sweetAlert('Please Check and try Again','','info')</script>";
+						}	
 					}
 				}
 				else
@@ -909,7 +732,6 @@ if(isset($_POST['new_entry']))
 	$url=getFullURL($_GET['r'],'fab_issue_track_V2.php','N');
 	
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1200); function Redirect() {  location.href = \"$url&doc_no=$doc_no&doc_type=$doc_type\"; }</script>";
-
 
 }
 
