@@ -141,7 +141,6 @@ $diff=$rec_qty-$qty;
 if($sql_num_check1>0)
 {
   // echo"<input type='button' name='back' value='Back' class='btn btn-success' style='margin-left:2px;'></div>";
-
   echo "<div class='table-responsive'>";
   echo "<table class='table table-bordered' style='width:70%'>";
   echo "<tr  style='background-color:white;'><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
@@ -158,7 +157,7 @@ if($sql_num_check1>0)
 echo "<form id='myForm' name='input' action='?r=".$_GET['r']."' method='post'>";
 echo "<div>";
 echo "<table class='table table-bordered col-sm-2' style='margin-top: 23px;'>";
-echo "<tr  style='background-color:white;'><th>Location</th><th>Lot #</th><th>Label ID</th><th>Box/Roll No</th><th>Available Qty</th><th>Date</th>";
+echo "<tr  style='background-color:white;'><th>Location</th><th>Lot #</th><th>Label ID</th><th>Box/Roll No</th><th>Available to Issue Qty</th><th>Date</th>";
 
 switch (trim($product_group))
 {
