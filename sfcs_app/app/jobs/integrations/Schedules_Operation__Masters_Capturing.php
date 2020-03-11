@@ -82,9 +82,9 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
             print("response_INTO ".$call_count*$call_sub_count." API call Duration : ".($moac4-$moac3)."milliseconds")."\n";
 
             $into_value = '';
-            $doid_value=$response_INTO['response']['DOID'];
+            $doid_value=trim($response_INTO['response']['DOID'],' ');
             
-            if($response_INTO['status'] && isset($response_INTO['response']['INTO']) && $doid_value !='SFCS_Exclude'){
+            if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
             }
             echo "</br> INTO value : ".$into_value."</br>";
@@ -119,8 +119,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
         //insertion query for schedule_oprations_master table
         // $sql1="insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')";
-
-        array_push($values, "('" . $Style . "','" . $ScheduleNumber . "','" . $ColorId . "','" . $Description . "','" . $SizeId . "','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."','".$into_value."')");
+        if($doid_value !='SFCS_EXCLUDE'){
+            array_push($values, "('" . $Style . "','" . $ScheduleNumber . "','" . $ColorId . "','" . $Description . "','" . $SizeId . "','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."','".$into_value."')");
+        }
+        
     }
 
     if($workcenter_status_valid){
