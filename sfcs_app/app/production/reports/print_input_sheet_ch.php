@@ -480,66 +480,66 @@
                             echo "</tr>"; 
                             $rej_qty=array();
                             $rej_qty1=0;
-                            $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size";
+                            $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
                             // echo $rej_sql;
                             $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($row3=mysqli_fetch_array($rej_result))
                             {
-                            $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] = $row3['qms_qty'];
-                            $rej_qty1=$row3['qms_qty'];
+                              $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] = $row3['qms_qty'];
+                              $rej_qty1=$row3['qms_qty'];
                             
                             }
                             // var_dump($rej_qty);
-                            $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,input_job_rand_no_ref FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
-                            // echo $sql55."<br>";
-                            $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            $count_rows=mysqli_num_rows($result55);                         
-                            if($count_rows>0)
-                            {
-                                while($sql_row55=mysqli_fetch_array($result55))
-                                {
-                                    $order_tid='';
-                                    $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);                            
-                                    unset($rej_qty);
-                                    ?>
-                                    <tr>
-                                    <td><?php echo $sql_row55["ims_date"]; ?></td>
-                                    <td><?php echo $sql_row55["ims_mod_no"]; ?></td>
-                                    <?php $temp_module=$sql_row55["ims_mod_no"]; ?>
-                                    <td><?php echo $sql_row55["ims_color"]; ?></td>
-                                    <td><?php echo strtoupper($size_values); ?></td>
-                                    <td><?php echo $sql_row55["ims_qty"]; ?></td>
-                                    <td><?php echo $sql_row55["ims_pro_qty"]; ?></td>
+                            // $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,input_job_rand_no_ref FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
+                            // // echo $sql55."<br>";
+                            // $result55=mysqli_query($link, $sql55) or die("Error-".$sql55."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                            // $count_rows=mysqli_num_rows($result55);                         
+                            // if($count_rows>0)
+                            // {
+                            //     while($sql_row55=mysqli_fetch_array($result55))
+                            //     {
+                            //         $order_tid='';
+                            //         $size_values=ims_sizes($order_tid,$order_del,$style,$sql_row55["ims_color"],str_replace("a_","",$sql_row55["ims_size"]),$link);                            
+                            //         //unset($rej_qty);
+                            //         ?>
+                                    <!--  <tr>
+                            //         <td><?php echo $sql_row55["ims_date"]; ?></td>
+                            //         <td><?php echo $sql_row55["ims_mod_no"]; ?></td>
+                            //         <?php $temp_module=$sql_row55["ims_mod_no"]; ?>
+                            //         <td><?php echo $sql_row55["ims_color"]; ?></td>
+                            //         <td><?php echo strtoupper($size_values); ?></td>
+                            //         <td><?php echo $sql_row55["ims_qty"]; ?></td>
+                            //         <td><?php echo $sql_row55["ims_pro_qty"]; ?></td> -->
                                    
                                     <?php  
-                                    //  echo $sql_row55["ims_qty"];
-                                    // $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."'";
-                                    // // echo $rej_sql;
-                                    // $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                    // while($row3=mysqli_fetch_array($rej_result))
-                                    // {
-                                    //     $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] += $row3['qms_qty'];
-                                    //     $rej_qty1+=$row3['qms_qty'];                                
-                                    // }                                
-                                    foreach ($operation_code as $key => $value) 
-                                    {
-                                        if($rej_qty[$sql_row55["ims_color"]][str_replace("a_","",$sql_row55["ims_size"])][$value] == '')
-                                        {
-                                            echo "<td>0</td>";
-                                        }
-                                        else    
-                                        {
-                                            echo "<td>".$rej_qty[$sql_row55["ims_color"]][str_replace("a_","",$sql_row55["ims_size"])][$value]."</td>";
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
+                            //         //  echo $sql_row55["ims_qty"];
+                            //         // $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."'";
+                            //         // // echo $rej_sql;
+                            //         // $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            //         // while($row3=mysqli_fetch_array($rej_result))
+                            //         // {
+                            //         //     $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] += $row3['qms_qty'];
+                            //         //     $rej_qty1+=$row3['qms_qty'];                                
+                            //         // }                                
+                            //         foreach ($operation_code as $key => $value) 
+                            //         {
+                            //             if($rej_qty[$sql_row55["ims_color"]][str_replace("a_","",$sql_row55["ims_size"])][$value] == '')
+                            //             {
+                            //                 echo "<td>0</td>";
+                            //             }
+                            //             else    
+                            //             {
+                            //                 echo "<td>".$rej_qty[$sql_row55["ims_color"]][str_replace("a_","",$sql_row55["ims_size"])][$value]."</td>";
+                            //             }
+                            //         }
+                            //     }
+                            // }
+                            // else
+                            // {
                                 $sqlwip12="SELECT color,size_title,size_id,assigned_module,DATE(MIN(date_time)) AS input_date,
-                                SUM(IF(operation_id = $operation_in_code,rejected_qty,0)) AS input,
+                                SUM(IF(operation_id = $operation_in_code,recevied_qty,0)) AS input,
                                 SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS output FROM 
-                                brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."' GROUP BY color,size_title";
+                                $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."' GROUP BY color,size_title";
                                 // echo $sqlwip12;
                                 $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
@@ -582,7 +582,7 @@
                     
                                 }
                                  
-                            }  
+                            //}  
                             
                             ?> 
                             </tr>                            
