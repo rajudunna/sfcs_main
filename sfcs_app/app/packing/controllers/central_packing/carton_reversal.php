@@ -38,11 +38,11 @@
 					while($row15=mysqli_fetch_array($carton_details))
 					{
 						$style = $row15['style'];	
-						$schedule = $row15['schedule'];		
-
-					}
+						$schedule = $row15['schedule'];
+						$opn_status = $row15['opn_status'];		
+                    }
 					
-					if (mysqli_num_rows($carton_details) > 0)
+					if(mysqli_num_rows($carton_details) > 0)
 					{
 						$get_carton_type=mysqli_fetch_array($carton_details);
 						$opn_status = $get_carton_type['opn_status'];
@@ -53,8 +53,8 @@
 						}
 						else
 						{
-							$get_carton_type=mysqli_fetch_array($carton_details);
-							$opn_status = $get_carton_type['opn_status'];
+							// $get_carton_type=mysqli_fetch_array($carton_details);
+							// $opn_status = $get_carton_type['opn_status'];
 
 							if ($opn_status == null)
 							{
