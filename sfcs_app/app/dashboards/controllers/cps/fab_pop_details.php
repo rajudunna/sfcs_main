@@ -966,7 +966,7 @@ if(isset($_POST['submit']))
 			{
 				$code=$row2['roll_id'];
 				$tran_pin=$row2['tran_pin'];
-				$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+				$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated,status from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
 				//echo "Qry :".$sql1."</br>";
 				$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -974,19 +974,29 @@ if(isset($_POST['submit']))
 					$qty_rec=$sql_row['qty_rec']-$sql_row['partial_appr_qty'];
 					$qty_issued=$sql_row['qty_issued'];
 					$qty_ret=$sql_row['qty_ret'];
+					$qty_allocate=$sql_row['qty_allocated'];
+					$status_exist=$sql_row['status'];
 				}
 				//echo "</br>Qty Rec from store:".$qty_rec."</br>";
 				$qty_iss=$row2['allocated_qty'];
+				$validate_qty_status=$qty_allocate-$qty_iss;
 				//echo "Qty Issued :".$qty_iss."</br>";
 				$balance=$qty_rec-$qty_issued+$qty_ret;	
 				$balance1=$qty_rec+$qty_ret-($qty_issued+$qty_iss);
-				if($balance1==0)
+				if($validate_qty_status>0)
 				{
-					$status=2;
+					$status=$status_exist;
 				}
 				else
-				{
-					$status=0;
+				{	
+					if($balance1==0)
+					{
+						$status=2;
+					}
+					else
+					{
+						$status=0;
+					}
 				}
 				$condi1=(($qty_rec+$qty_ret)-($qty_iss+$qty_issued));
 				//echo "BAl:".$condi1."</br>";
