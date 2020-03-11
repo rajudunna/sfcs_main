@@ -27,30 +27,47 @@ body
 
 <?php
 
-
+//gettinh location here
 if(isset($_GET['location']))
 {
 	$location=$_GET['location'];
-	$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0  and status=1";
-	$sql_result=mysqli_query($link, $sql);
-	if(mysqli_num_rows($sql_result)>0)
-	{
+	$result_status=$_GET['status'];
+	if($result_status<4)
+	{		
 		echo "<h3>Location: <font color=green>$location</font></h3>";
+		$code=$_GET['code'];
+		if($code){
+			echo "<h3>Previous Scanned Barcode:<font color=green>".$code."</font></h3>";
+		}
+		switch($result_status){
+			case "0":
+				echo "<h3>Previous Scanned Status :<font color=green>-Already Scanned</font></h3>";
+				break;
+			case "1":
+				echo "<h3>Previous Scanned Status :<font color=green>-Successful</font></h3>";
+				break;
+			case "2":
+				echo "<h3>Previous Scanned Status :<font color=green>-UnSuccessful</font></h3>";
+				break;
+			default :
+			    echo "<h3>Previous Scanned Status :<font color=green>-Barcode Invalid</font></h3>";
+			
+		}
+		//var_dump($_GET);
 	}
 	else
 	{
-		echo "<h3>Location: <font color=red>Unknown Scan Location!</font></h3>";
-		$location="";
+		if($result_status==4)
+		{
+			echo "<h3>Location: <font color=green>$location</font></h3>";
+		}
+		else
+		{
+			echo "<h3>Location: <font color=red>Unknown Scan Location!</font></h3>";
+			$location="";
+		}			
 	}
-	
-	// die();
 }
-else
-{
-	echo "<h3>Location: <font color=red>Scan Location!</font></h3>";
-	$location="";
-}
-
 
 ?>
 
@@ -58,8 +75,13 @@ else
 <form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
 <!-- <input type="text" value="" name="cartonid"> -->
 <textarea name="cartonid" id='cartonid' rows="2" cols="15" onkeydown="document.input.submit();" value=""></textarea>
-<br/>Enter Lable ID:<br/><input type="text" size="19" value="" name="cartonid2"><br/><input type="submit" name="check2" value="Check In">
+<br/>Enter Barcode:<br/>
+<input type="text" size="19" value="" name="cartonid2" placeholder="manual entry..">
+<input type="submit" name="check2" value="Scan" >
+
+<input type="hidden" name="barcode" value="<?php echo $code; ?>">
 <input type="hidden" name="location" value="<?php echo $location; ?>">
+<input type="hidden" name="status" value="<?php echo $status; ?>">
 <input type="hidden" name="check4" value="check">
 </form>
 
@@ -68,104 +90,125 @@ else
 //Normal Process
 if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
+
 	$code=$_POST['cartonid'];
 	$location=$_POST['location'];
-	//echo "Location :".$code;
-	//if(is_numeric(substr($code,0,1)))
-		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$code\" and sno>0";
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error3".mysqli_error());
-		if(mysqli_num_rows($sql_result)<=0)
+	if($location=='')
+	{
+		$location=$code;
+		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+		$sql_result=mysqli_query($link, $sql);
+		if(mysqli_num_rows($sql_result)>0)
 		{
-			//$code=ltrim($code,"0");
-			$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where barcode_number=\"$code\"";
-			//echo $sql1;
-			$sql_result1=mysqli_query($link,$sql1);
-			if(mysqli_affected_rows($link)>0)
-			{
-				echo "<h3>Status: <font color=green>Success!</font> $code</h3>";
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"in_trims_new.php?location=$location\"; }</script>";
-			}
-			else
-			{
-				echo "<h3>Status: <font color=orange>Failed (or) already updated</font> $code</h3>";
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"in_trims_new.php?location=$location\"; }</script>";
-				
-			}
-			
+			$status=4;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status\"; }</script>";
+
 		}
 		else
 		{
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"in_trims_new.php?location=$code\"; }</script>";
+			$status=5;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status\"; }</script>";
+		}	
+	}
+	else
+	{		
+		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+		$sql_result=mysqli_query($link, $sql);
+		$sql2="select * from $bai_rm_pj1.store_in where barcode_number=\"$code\"";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+		if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
+		{ 
+			while($row=mysqli_fetch_array($sql_result2)){
+				$existing_location=$row['ref1'];
+			}
+			$code=ltrim($code,"0");
+			if($location==$existing_location){
+				$status=0;
+			}else{
+				$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\" where barcode_number=\"$code\"";
+				$sql_result1=mysqli_query($link, $sql1);
+				
+				if(mysqli_affected_rows($link)>0)
+				{
+					$status=1;
+				} else {
+					$status=2;
+				}
+			}
+			
+				
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+			
 		}
+	else
+		{
+			$status=3;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+		}
+	}
 	
 }
-
 //Manual Lable Entry
 if(isset($_POST['check2']))
 {
 	$code=$_POST['cartonid2'];
 	$location=$_POST['location'];
-	$qry_validateloc="select * from $bai_rm_pj1.location_db where location_id=\"$code\" and sno>0";
-	$qry_validateloc=mysqli_query($link, $qry_validateloc);
-	if(mysqli_num_rows($qry_validateloc)<=0)
+	if($location=='')
 	{
-				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
-				//echo "<br/>".$sql."<br/>";
-				$sql_result=mysqli_query($link, $sql);
-				if(mysqli_num_rows($sql_result)>0)
-				{
-					$code=ltrim($code,"0");
-					$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where barcode_number=\"$code\"";
-					
-					$sql_result1=mysqli_query($link, $sql1);
-					if(mysqli_affected_rows($link)>0)
-					{
-						echo "<h3>Status: <font color=green>Success!</font> $code</h3>";
-						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"in_trims_new.php?location=$location\"; }</script>";
-					}else{
-						$sql1="select * from $bai_rm_pj1.store_in_deleted where barcode_number=\"$code\"";
-						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
-						if(mysqli_num_rows($sql_result1)>0)
-						{
-						echo "<h3>Status  : $code-<span class='label label-warning'>Label Deleted</span> </h3>";
+		$location=$code;
+		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+		$sql_result=mysqli_query($link, $sql);
+		if(mysqli_num_rows($sql_result)>0)
+		{
+			$status=4;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status\"; }</script>";
 
-						}
-						else
-						{
-							$sql2="select * from $bai_rm_pj1.store_in where barcode_number=\"$code\"";
-							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							if(mysqli_num_rows($sql_result2)>0)
-							{
-								echo "<h3>Status  : $code-<span class='label label-info'>Label Already Scanned</span> </h3>";
-							}
-							else
-							{
-
-							echo "<h3>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h3>";
-
-							}
-						}
-						// echo "<h2>Status: <span class='label label-warning'>Failed (or) already updated</span> $code</h2>";
-						//echo "<button id='back' onclick='back()' class='btn btn-warning'><< Go back</button>";
-						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code\"; }</script>";
-						
-					}
-					
-				}
-				else
-				{
-					echo "<h3>Status: <span class='label label-danger'>Scan Location!</span></h3>";
-				}
+		}
+		else
+		{
+			$status=5;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status\"; }</script>";
+		}	
 	}
 	else
-	{
-		echo "<h3>Status  :$code- <span class='label label-warning'>Label Not Found</span> </h3>";
-		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"in_trims_new.php?location=$code\"; }</script>";
+	{		
+		$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+		$sql_result=mysqli_query($link, $sql);
+		$sql2="select * from $bai_rm_pj1.store_in where barcode_number=\"$code\"";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+		if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
+		{ 
+			while($row=mysqli_fetch_array($sql_result2)){
+				$existing_location=$row['ref1'];
+			}
+			$code=ltrim($code,"0");
+			if($location==$existing_location){
+				$status=0;
+			}else{
+				$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\" where barcode_number=\"$code\"";
+				$sql_result1=mysqli_query($link, $sql1);
+				
+				if(mysqli_affected_rows($link)>0)
+				{
+					$status=1;
+				} else {
+					$status=2;
+				}
+			}
+			
+				
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+			
+		}
+	else
+		{
+			$status=3;
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+		}
 	}
 }
-
-echo "<div style=\"position: absolute; top:0px;right:5px; text-align:right;\"><h2><!--<font color=\"gree\">In</font></h2>--><br/><h2><a href=\"in_trims_new.php\">In</a> <Br/><a href=\"out_trims_scanner.php\">T-Out</a> </h2></div>";
 
 ?>
 
