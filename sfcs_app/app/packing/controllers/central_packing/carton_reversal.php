@@ -44,8 +44,8 @@
 					
 					if(mysqli_num_rows($carton_details) > 0)
 					{
-						$get_carton_type=mysqli_fetch_array($carton_details);
-						$opn_status = $get_carton_type['opn_status'];
+						// $get_carton_type=mysqli_fetch_array($carton_details);
+						// $opn_status = $get_carton_type['opn_status'];
 
 						if ($opn_status == null)
 						{
