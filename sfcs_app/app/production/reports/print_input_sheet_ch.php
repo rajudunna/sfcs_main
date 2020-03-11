@@ -538,13 +538,15 @@
                             // {
                                 $sqlwip12="SELECT color,size_title,size_id,assigned_module,DATE(MIN(date_time)) AS input_date,
                                 SUM(IF(operation_id = $operation_in_code,recevied_qty,0)) AS input,
-                                SUM(IF(operation_id = $operation_out_code,rejected_qty,0)) AS output FROM 
+                                SUM(IF(operation_id = $operation_out_code,recevied_qty,0)) AS output FROM 
                                 $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."' GROUP BY color,size_title";
                                 // echo $sqlwip12;
                                 $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
                                 {
                                 ?>
+
+
                                     <tr>
                                     <td><?php echo $sql_rowwip12["input_date"]; ?></td>
                                     <td><?php echo $sql_rowwip12["assigned_module"]; ?></td>
@@ -579,6 +581,8 @@
                                         $tot+=$rej_qty[$sql_rowwip12["color"]][$sql_rowwip12["size_id"]][$value];
 
                                     }
+                                     $tot_input=$tot_input+$sql_rowwip12["input"];
+                                     $tot_outout=$tot_outout+$sql_rowwip12["output"];
                     
                                 }
                                  
@@ -589,8 +593,7 @@
                             <?php                            
                             $tot_rej=$rej_qty1;
                             // echo $rej_qty1;
-                            $tot_input=$tot_input+$sql_row55["ims_qty"];
-                            $tot_outout=$tot_outout+$sql_row55["ims_pro_qty"];
+                           
                             // echo $tot_outout;
                              if($tot_outout < 0)
                                 $tot_outout=0;
