@@ -480,15 +480,15 @@
                             echo "</tr>"; 
                             $rej_qty=array();
                             $rej_qty1=0;
-                            $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
-                            // echo $rej_sql;
-                            $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($row3=mysqli_fetch_array($rej_result))
-                            {
-                              $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] = $row3['qms_qty'];
-                              $rej_qty1=$row3['qms_qty'];
+                            // $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id,qms_color,qms_size from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
+                            // // echo $rej_sql;
+                            // $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            // while($row3=mysqli_fetch_array($rej_result))
+                            // {
+                            //   $rej_qty[$row3['qms_color']][$row3['qms_size']][$row3['operation_id']] = $row3['qms_qty'];
+                            //   $rej_qty1=$row3['qms_qty'];
                             
-                            }
+                            // }
                             // var_dump($rej_qty);
                             // $sql55="SELECT ims_date,ims_doc_no,ims_color,ims_mod_no,ims_size,pac_tid,SUM(ims_qty) AS ims_qty,SUM(ims_pro_qty) AS ims_pro_qty,input_job_rand_no_ref FROM  $bai_pro3.ims_combine WHERE ims_schedule=".$sql_row1["del_no"]." AND input_job_no_ref='".$sql_row["job"]."' GROUP BY ims_date,ims_doc_no,ims_color,ims_size ORDER BY ims_date,ims_mod_no,ims_color";
                             // // echo $sql55."<br>";
@@ -555,7 +555,7 @@
                                     <td><?php echo $sql_rowwip12["output"]; ?></td>
                                     
                                     <?php  
-                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size";
+                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
                                     // echo $rej_sql;
                                     $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($row3=mysqli_fetch_array($rej_result))
