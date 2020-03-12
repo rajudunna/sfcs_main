@@ -142,13 +142,15 @@ function getsewingJobsData($section,$module,$get_operation)
         $previous_operation = $pre_ops_code;
         $present_operation = $get_operation;
         $inputno ="";
-        $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,COALESCE(SUM(rejected_qty),0) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
+		$previous_output=0;
+		$present_output=0;
+        $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
         // echo $get_jobs;
         $get_jobs_result = $link->query($get_jobs);
         while($row4 = mysqli_fetch_array($get_jobs_result))
         {
-          $previous_output = $row4['previous_output'];
-          $present_output = $row4['present_output'];   
+          $previous_output = $previous_output+$row4['previous_output'];
+          $present_output = $present_output+$row4['present_output'];   
           $job_no1 = $row4['input_job_no_random_ref'];
           $docket_number = $row4['docket_number'];
           $remarks = $row4['remarks'];
@@ -224,6 +226,7 @@ function getsewingJobsData($section,$module,$get_operation)
             </span>
           </span>"; 
         }
+		unset($job_no1);
     }
 
         $docs_data.="<span class='block'>
