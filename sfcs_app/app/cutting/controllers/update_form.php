@@ -326,7 +326,7 @@ if(sizeof($_GET["lots"]) > 0)
 
 	if(mysqli_num_rows($result1)>0){
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th>LableId</th><th>Barcode</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Allocated Qty</th><th>Return Qty</th><th>Balance Qty</th><th>Issue Qty</th></tr>";
+		echo "<tr><th>LableId</th><th>Barcode</th><th>Roll Id</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Allocated Qty</th><th>Return Qty</th><th>Balance Qty</th><th>Issue Qty</th></tr>";
 	}else{
 		echo "<script>sweetAlert('Inavlid Lot Number','','warning')</script>";
 	}
@@ -349,6 +349,7 @@ if(sizeof($_GET["lots"]) > 0)
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
 		echo "<td>".$sql_row1["barcode_number"]."</td>";
+		echo "<td>".$sql_row1["tid"]."</td>";
 		echo "<td>".$sql_row1["shrinkage_group"]."</td>";
 		echo "<td>".$sql_row1["ref3"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
