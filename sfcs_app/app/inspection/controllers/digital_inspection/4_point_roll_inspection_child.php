@@ -1101,7 +1101,7 @@ $(document).ready(function() {
 			$('#inspected_qty').change(function(){
 				
 				var invoice_q= $("#invoice_qty").val();
-				if (parseInt(invoice_q) < $(this).val()){
+				if (invoice_q < $(this).val()){
 					swal('warning','Inspected Qty Should be less than Ticket Length','warning');
 					$(this).val('');
 				 }
