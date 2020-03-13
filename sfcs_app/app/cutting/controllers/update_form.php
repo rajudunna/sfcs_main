@@ -433,11 +433,11 @@ echo "</tr>";
 
 if($level==3)
 {
-	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=\"$ref\" and tid=\"$ref_tid\" and status=5";
+	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5";
 }
 else
 {
-	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=\"$ref\" and tid=\"$ref_tid\"";
+	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid;
 }
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -464,7 +464,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$item_desc."</td>";
 	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
 	$reason_code = $sql_row['reason_code'];
-	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid =$reason_code;
 	$result_reason = mysqli_query($link,$sql_reason);
 	$reason_row = mysqli_fetch_assoc($result_reason);
 	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
@@ -723,7 +723,7 @@ $(document).ready(function(){
 				$qty_allocated=array();
 				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
 					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{
