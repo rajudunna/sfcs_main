@@ -437,9 +437,9 @@ if($level==3)
 }
 else
 {
-	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid;
+	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid";
 }
-// echo $sql;
+
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
