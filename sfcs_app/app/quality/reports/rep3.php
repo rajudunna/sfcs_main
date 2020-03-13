@@ -344,12 +344,12 @@ function verify_date()
 				
 				if($choice==1)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_size=\"$size1\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\",\"general\") $query_add and qms_size=\"$size1\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
 				}
 
 				if($choice==2)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size1\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\",\"general\") $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size1\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
 				}
 
 				//echo $sql."<br>";
