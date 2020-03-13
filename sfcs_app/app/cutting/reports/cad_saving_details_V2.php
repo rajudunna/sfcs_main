@@ -380,7 +380,7 @@ if(isset($_POST["submit"]))
 					}	
 				}
 
-				$sql="SELECT plan_start_date FROM $bai_pro4.week_delivery_plan WHERE shipment_plan_id='$ship_tid'";
+				$sql="SELECT PCD AS plan_start_date FROM $m3_inputs.order_details WHERE schedule='$schedule' and GMT_color=\"".$color."\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
