@@ -320,7 +320,7 @@ if(sizeof($_GET["lots"]) > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3,ref2 from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -349,7 +349,7 @@ if(sizeof($_GET["lots"]) > 0)
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
 		echo "<td>".$sql_row1["barcode_number"]."</td>";
-		echo "<td>".$sql_row1["tid"]."</td>";
+		echo "<td>".$sql_row1["ref2"]."</td>";
 		echo "<td>".$sql_row1["shrinkage_group"]."</td>";
 		echo "<td>".$sql_row1["ref3"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
