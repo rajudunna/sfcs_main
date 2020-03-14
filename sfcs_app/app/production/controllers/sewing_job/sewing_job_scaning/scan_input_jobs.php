@@ -4,6 +4,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 
 
@@ -83,7 +84,11 @@
 	{
 		$operation_code_routing=$sql_row['operation_code'];
 	}
-
+	if($operation_code_routing == 'Auto'){
+		$get_ips_op = get_ips_operation_code($link,$style,$color);
+		$operation_code_routing=$get_ips_op['operation_code'];
+		$operation_name=$get_ips_op['operation_name'];
+	}
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';

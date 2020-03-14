@@ -1492,6 +1492,7 @@ if(isset($_GET['pre_array_module']))
 function validating_with_module($pre_array_module)
 {
     include("../../../../../common/config/config_ajax.php");
+    include("../../../../../common/config/functions_dashboard.php");
     $block_priorities = null;
     $pre_array_module = explode(",",$pre_array_module);
     $module = $pre_array_module[0];
@@ -1506,7 +1507,7 @@ function validating_with_module($pre_array_module)
     {
         $column_in_pack_summary = 'input_job_no_random';
     }
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
+    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no,order_col_des from $bai_pro3.packing_summary_input WHERE $column_in_pack_summary = '$column_to_search' ORDER BY tid";
     $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
     if($result_selecting_style_schedule_color_qry->num_rows > 0)
     {
@@ -1515,6 +1516,7 @@ function validating_with_module($pre_array_module)
             $style= $row['order_style_no'];
             $schedule= $row['order_del_no'];
             $input_job_no= $row['input_job_no'];
+            $color= $row['order_col_des'];
         }
     }
     else
@@ -1553,7 +1555,10 @@ function validating_with_module($pre_array_module)
     $routing_result=mysqli_query($link, $get_routing_query) or exit("error while fetching opn routing");
     $opn_routing=mysqli_fetch_array($routing_result);
     $opn_routing_code = $opn_routing['operation_code'];
-
+    if($opn_routing_code == 'Auto'){
+		$get_ips_op = get_ips_operation_code($link,$style,$color);
+		$opn_routing_code=$get_ips_op['operation_code'];
+	}
     $input_job_array = array();
     $response_flag = 0; $go_here = 0;
     

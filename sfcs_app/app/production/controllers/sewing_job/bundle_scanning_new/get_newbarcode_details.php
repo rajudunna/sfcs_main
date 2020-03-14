@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
 
 if (isset($_POST["barcode_info"])){
@@ -1393,6 +1394,11 @@ if(isset($_POST["trans_action"])){
                                 $operation_name=$sql_row['operation_name'];
                                 $operation_code=$sql_row['operation_code'];
                                 }
+                                if($operation_code == 'Auto'){
+                                    $get_ips_op = get_ips_operation_code($link,$style,$color);
+                                    $operation_code=$get_ips_op['operation_code'];
+                                    $operation_name=$get_ips_op['operation_name'];
+                                }
                                 $sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1474,6 +1480,11 @@ if(isset($_POST["trans_action"])){
                                             {
                                             $operation_name=$sql_row['operation_name'];
                                             $operation_code=$sql_row['operation_code'];
+                                            }
+                                            if($operation_code == 'Auto'){
+                                                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                                                $operation_code=$get_ips_op['operation_code'];
+                                                $operation_name=$get_ips_op['operation_name'];
                                             }
                                             if($operation_code == 100 || $operation_code == 129)
                                             {
