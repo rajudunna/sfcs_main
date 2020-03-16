@@ -169,7 +169,7 @@ function getsewingJobsData($section,$module,$get_operation)
         }
 
         $prefix="";
-        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
         // echo $sql."<br>";
         $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row=mysqli_fetch_array($sql_result))
@@ -186,7 +186,7 @@ function getsewingJobsData($section,$module,$get_operation)
          $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
 
 
-        $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule=$schedule";
+        $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule='$schedule'";
         $sql_result =   $link->query($sql44);
         while($row44 = mysqli_fetch_array($sql_result))
         {
