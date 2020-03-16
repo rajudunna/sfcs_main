@@ -39,14 +39,13 @@ From Date: <input type="text" data-toggle='datepicker' class="form-control" name
 
 <?php
 // due to buyer division issue ,we ara taking buyers from sticker report
-$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report ";
+$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report";
 // $sql="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$buyer_name[]=$sql_row["buyer"];
 }
-
 ?>
 			
 			
@@ -82,12 +81,12 @@ if(isset($_POST['submit']))
 		$buyer_select=$_POST['buyer'];
 		$batch_search=$_POST['batch'];
 	
-		if($buyer_select=='All'){
+		if($buyer_select=='All' || $buyer_select==''){
 			$selected_buyer = $all_buyers;
 		}else{
 			$selected_buyer = array($buyer_select);
 		}
-	
+
 	if(strlen($batch_search)>0)
 	{	
 		$sqlx="select * from $bai_rm_pj1.inspection_db where batch_ref=\"$batch_search\"";
@@ -188,6 +187,7 @@ if(isset($_POST['submit']))
 					$rec_qty=$sql_row['rec_qty1'];
 					$batch_no=$sql_row['batch_no'];
 					$buyer=$sql_row['buyer'];
+					$buyers[]=$sql_row['buyer'];
 					$pkg_no=$sql_row['pkg_no'];
 					$grn_date=$sql_row['grn_date'];
 					$lot_ref_batch=$sql_row['lot_ref_batch'];
