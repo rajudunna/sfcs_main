@@ -4,6 +4,7 @@
     if(isset($_POST['formSubmit']))
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
         $ids=$_POST['ids'];
         $recutval = $_POST['recutval'];
         $cat = $_POST['cat'];
@@ -309,7 +310,10 @@
             {
                 $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
             }
-    
+            if($input_ops_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $input_ops_code=$get_ips_op['operation_code'];
+            }
         }
         $ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$input_ops_code";
         // echo $ops_seq_check;
