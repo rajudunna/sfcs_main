@@ -146,7 +146,7 @@
 											}
 											else
 											{
-												$sql223="UPDATE $bai_pro3.mo_operation_quantites SET ref_no='$new_ref_id' WHERE ref_no='$tid' and op_code='$ops_id[$i]'";
+												$sql223="UPDATE $bai_pro3.mo_operation_quantites SET ref_no='$new_ref_id' WHERE ref_no='$tid' and op_code='$ops_id[$i]' and mo_no='".$row23['mo_no']."'";
 												//echo $sql223.'<br>'; 
 												mysqli_query($link, $sql223) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 												$qty=$qty-$row23['bundle_quantity'];
