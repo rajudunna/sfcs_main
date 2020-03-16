@@ -526,6 +526,37 @@ $userName = getrbac_user()['uname'];
 			unset($dockets_ref);		
 		}		
 	}
+
+	//new changes added here for removing jobs because jobs not removed from IPS concern.
+	//new change started here
+	$application='IPS';			
+	$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
+	// echo $scanning_query;
+	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row=mysqli_fetch_array($scanning_result))
+	{
+		$operation_name=$sql_row['operation_name'];
+		$operation_code=$sql_row['operation_code'];
+	}
+	// remove docs
+	$remove_docs=array();
+	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
+	input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+	//echo $sqlx;
+	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_rowx=mysqli_fetch_array($sql_resultx))
+	{
+		$remove_docs[]="'".$sql_rowx['doc_no']."'";
+	}
+	
+	if(sizeof($remove_docs)>0)
+	{
+		$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
+		mysqli_query($link, $sqlx) or exit("Sql Error11.2");
+	}
+
+	//new change ended here
+
 	echo '<div class="alert alert-success"><h2>Sucessfully Updated... <br/> Please wait while we redirect to IPS Dashboard....</h2></div>';
 	
 

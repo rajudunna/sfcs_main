@@ -24,6 +24,8 @@ if (isset($_POST["barcode_info"])){
         $result_qry_barcode = $link->query($qry_barcode);
         if($result_qry_barcode->num_rows > 0){
             while($row = $result_qry_barcode->fetch_assoc()){
+                $input_job_no= $row['input_job_no'];
+
                 //getting operation name by using operation code
                 $qry_operationname="SELECT * FROM $brandix_bts.tbl_orders_ops_ref WHERE operation_code='".$op_code."'";
                 $result_qry_operationname = $link->query($qry_operationname);
@@ -68,6 +70,17 @@ if (isset($_POST["barcode_info"])){
                             $short_ship_status=1;
                         }else{
                             $short_ship_status=2;
+                        }
+                    }
+                }
+                $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$row['order_style_no']."' and schedule ='".$row['order_del_no']."'  and input_job_no = '".$input_job_no."'";
+                $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+                $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+                if($count_jobs_deactive >0) {
+                    while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+                    {
+                        if($row_set1['remove_type']==3) {
+                            $short_ship_status=3;
                         }
                     }
                 }
@@ -127,6 +140,12 @@ if(isset($_POST["trans_action"])){
             else if ($short_ship_validation==2) {
                 $result_array['color_code'] = "#f31c06";
                 $result_array['status'] = 'Short Shipment Done Permanently';
+                echo json_encode($result_array);                  
+                die();
+            }
+            else if ($short_ship_validation==3) {
+                $result_array['color_code'] = "#f31c06";
+                $result_array['status'] = 'Sewing Job Deactivated';
                 echo json_encode($result_array);                  
                 die();
             }else{

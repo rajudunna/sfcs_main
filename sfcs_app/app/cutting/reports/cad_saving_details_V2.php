@@ -216,13 +216,18 @@ if(isset($_POST["submit"]))
 		while($row3=mysqli_fetch_array($result3))
 		{
 			$schedule=$row3["sch"];
-			$color=$row3["col"];
-			$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category <> 'NULL' ";
+			$color=rtrim($row3["col"]);
+			$sql4="select category,compo_no,tid,catyy,gmtway,purwidth from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category <> 'NULL' ";
 			// echo $sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
 			{
 				$category=$row4["category"];
+				$compo_no=$row4["compo_no"];
+				$cat_ref=$row4["tid"];
+				$order_yy=$row4["catyy"];
+				$gmtway=$row4["gmtway"];
+				$purchase_width=$row4["purwidth"];
 				$cut_comp_iss_qty=0;
 				$cut_comp_qty=0;
 				$order_total_qty=0;
@@ -250,17 +255,17 @@ if(isset($_POST["submit"]))
 				{
 					$old_order_total=$order_total_qty;
 				}
-				$sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
-				//echo $sql;
-				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row=mysqli_fetch_array($result))
-				{
-					$compo_no=$row["compo_no"];
-					$cat_ref=$row["tid"];
-					$order_yy=$row["catyy"];
-					$gmtway=$row["gmtway"];
-					$purchase_width=$row["purwidth"];
-				}
+				// $sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
+				// //echo $sql;
+				// $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($row=mysqli_fetch_array($result))
+				// {
+				// 	$compo_no=$row["compo_no"];
+				// 	$cat_ref=$row["tid"];
+				// 	$order_yy=$row["catyy"];
+				// 	$gmtway=$row["gmtway"];
+				// 	$purchase_width=$row["purwidth"];
+				// }
 
 				if($gmtway=="Y")
 				{
