@@ -1267,42 +1267,20 @@
             }
 
             //To remove bundles from ims_log for fully rejected_qty
-            if($b_op_id == $output_ops_code)
+            $get_rejected_bundles= "select bundle_number from $brandix_bts.bundle_creation_data where input_job_no_random_ref='".$b_job_no."' and operation_id=$b_op_id and send_qty = rejected_qty and bundle_qty_status=1";
+            $result_rejected_bundles = $link->query($get_rejected_bundles);
+            if($result_rejected_bundles->num_rows > 0)
             {
-                $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
-                //echo $ops_sequence_check;
-                $result_ops_sequence_check = $link->query($ops_sequence_check);
-                while($row2 = $result_ops_sequence_check->fetch_assoc()) 
+                while($row231 = $result_rejected_bundles->fetch_assoc()) 
                 {
-                    $ops_seq = $row2['ops_sequence'];
-                    $seq_id = $row2['id'];
-                    $ops_order = $row2['operation_order'];
+                    $bundle_number = $row231['bundle_number'];
 
-                }
-
-                $pre_operation_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
-               // echo  $pre_operation_check;
-                $result_pre_operation_check = $link->query($pre_operation_check);
-                while($row23 = $result_pre_operation_check->fetch_assoc()) 
-                {
-                    $previous_operation = $row23['operation_code'];
-                }
-
-                $get_rejected_bundles= "select bundle_number from $brandix_bts.bundle_creation_data where input_job_no_random_ref='".$b_job_no."' and operation_id=$previous_operation and send_qty = rejected_qty and bundle_qty_status=1";
-                $result_rejected_bundles = $link->query($get_rejected_bundles);
-                if($result_rejected_bundles->num_rows > 0)
-                {
-                    while($row231 = $result_rejected_bundles->fetch_assoc()) 
-                    {
-                        $bundle_number = $row231['bundle_number'];
-
-                        $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = $bundle_number";
-                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = $bundle_number";
-                        mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $ims_delete="delete from $bai_pro3.ims_log where pac_tid = $bundle_number";
-                        mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    }
+                    $update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = $bundle_number";
+                    mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = $bundle_number";
+                    mysqli_query($link,$ims_backup) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $ims_delete="delete from $bai_pro3.ims_log where pac_tid = $bundle_number";
+                    mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
                 }
             }
 
@@ -1397,6 +1375,16 @@
                         {
                           $operation_name=$sql_row['operation_name'];
                           $operation_code=$sql_row['operation_code'];
+                        }
+
+                        //To get Line Out Operation
+                        $application1 = 'IMS';
+                        $scanning_query1="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+                        //echo $scanning_query;
+                        $scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row1=mysqli_fetch_array($scanning_result1))
+                        {
+                          $line_out_ops_code=$sql_row1['operation_code'];
                         }
                         //*To get previous Operation
                        $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
