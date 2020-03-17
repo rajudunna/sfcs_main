@@ -1371,9 +1371,9 @@ else if($concurrent_flag == 0)
 		  $operation_name=$sql_row['operation_name'];
 		  $operation_code=$sql_row['operation_code'];
 		}
-		if($operation_code_routing == 'Auto'){
+		if($operation_code == 'Auto'){
 			$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
-			$operation_code_routing=$get_ips_op['operation_code'];
+			$operation_code=$get_ips_op['operation_code'];
 			$operation_name=$get_ips_op['operation_name'];
 		}
 		$sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,COALESCE(SUM(original_qty),0) AS org_qty,COALESCE(SUM(replace_in),0) AS replace_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
