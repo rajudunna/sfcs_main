@@ -1,6 +1,7 @@
 
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'/common/config/functions_dashboard.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 	$has_permission=haspermission($_GET['r']);
@@ -782,11 +783,10 @@
 								$input_ops_code = $sewing_ops_id['operation_code'];
 							}
 						}
-						else
-						{
-							$input_ops_code =100;
+						if($input_ops_code == 'Auto'){
+							$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
+							$input_ops_code=$get_ips_op['operation_code'];
 						}
-					
 					
 						//echo "PAC TID = $b_tid + $value";
 						if($input_ops_code == 100 || $input_ops_code == 129)

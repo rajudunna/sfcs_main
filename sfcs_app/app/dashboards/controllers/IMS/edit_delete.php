@@ -4,9 +4,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
-	<!--<link rel="stylesheet" href="cssjs/bootstrap.min.css">
-	<script src="js/jquery-3.2.1.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>-->
 	<style>
 		.pull{    
 			float: right!important;
@@ -38,46 +35,87 @@ function validateQty(event)
 		$id = $_GET['id'];
 	
 		$qry = "select * from $brandix_bts.tbl_ims_ops where appilication='".$id."'";
-		//echo $qry;	
 		$res_do_num = mysqli_query($link,$qry);
-		//$row=[];
 		while($res_result = mysqli_fetch_array($res_do_num))
 		{
 			$row[] = $res_result;
 	    }
-
-
-	    
-
  	}		
-		if(isset($_POST['submit']))
-	    {
-	    	$details=explode('|',$_POST['opn']);
-			//var_dump($details);
-			$operation_name=$details[1];
-			$operation_code=$details[0];
-			$id = $_POST['app'];
-	  
-				$qry_insert1 = "update $brandix_bts.tbl_ims_ops set operation_name='$operation_name',operation_code='$operation_code' where appilication='$id'";
-				//echo $qry_insert1;
-				$res_do_num1 = mysqli_query($link,$qry_insert1);
-				echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
-				//$sql_message = 'Operation Updated Successfully...';
-				//echo '<script>$(".sql_message").html("'.$sql_message.'");$(".alert").show();</script>';
-				// echo "<script>sweetAlert('Operation Updated Successfully','','success')</script>";
+	if(isset($_POST['submit']))
+	{
+		$details=explode('|',$_POST['opn']);
+		$operation_name=$details[1];
+		$operation_code=$details[0];
+		$id = $_POST['app'];
+		$is_valid = 1;
+
+		if($id=='IMS'){
+			$ims_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =$operation_code";
+			$ress_ims = mysqli_query($link,$ims_operation);
+			while ($ims_row = mysqli_fetch_array($ress_ims))
+			{
+				$ims = $ims_row['operation_order'];
+			}
+		} else {
+			$ims_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =(select operation_code from  $brandix_bts.tbl_ims_ops where appilication = 'IMS')";
+			$ress_ims = mysqli_query($link,$ims_operation);
+			while ($ims_row = mysqli_fetch_array($ress_ims))
+			{
+				$ims = $ims_row['operation_order'];
+			}
+		}
+		if($id=='IMS_OUT'){
+			$ims_out_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =$operation_code";
+			$ress_ims_out = mysqli_query($link,$ims_out_operation);
+			while ($ims_out_row = mysqli_fetch_array($ress_ims_out))
+			{
+				$ims_out = $ims_out_row['operation_order'];
+			}
+		} else {
+			$ims_out_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =(select operation_code from  $brandix_bts.tbl_ims_ops where appilication = 'IMS_OUT')";
+			$ress_ims_out = mysqli_query($link,$ims_out_operation);
+			while ($ims_out_row = mysqli_fetch_array($ress_ims_out))
+			{
+				$ims_out = $ims_out_row['operation_order'];
+			}
+		}
+		// echo $ims.'<br/>';
+		// echo $ims_out.'<br/>';
+		// echo $id.'<br/>';
+		
+		if($id=='IMS' || $id=='IMS_OUT'){
+			$is_valid = 0;
+			if(strlen($ims) > strlen($ims_out)){
+				$is_valid = 0;
 				$hurl = getFullURLLevel($_GET['r'],'master.php',0,'N');
-				// header('location:'.$hurl);
 				echo "<script type=\"text/javascript\"> 
-					setTimeout(\"Redirect()\",0); 
+					setTimeout(\"Redirect()\",1000); 
 					function Redirect() {  
-						sweetAlert('Operation Updated Successfully','','success');
+						sweetAlert('Operation Code is not valid','IMS operation is greater than IMS OUT','error');
 						location.href = '$hurl'; 
 					}
 				</script>";
-	
-     	}	
-	
-		//var_dump($row);
+			} else {
+				$is_valid = 1;
+			}
+		}
+		// echo $is_valid.'<br/>';
+		// die();
+		if($is_valid=='1'){
+			$qry_insert1 = "update $brandix_bts.tbl_ims_ops set operation_name='$operation_name',operation_code='$operation_code' where appilication='$id'";
+			$res_do_num1 = mysqli_query($link,$qry_insert1);
+			echo "<h3 style='color:red;text-align:center;'>Please Wait!!!  While Redirecting to page !!!</h3>";
+			$hurl = getFullURLLevel($_GET['r'],'master.php',0,'N');
+			echo "<script type=\"text/javascript\"> 
+				setTimeout(\"Redirect()\",0); 
+				function Redirect() {  
+					sweetAlert('Operation Updated Successfully','','success');
+					location.href = '$hurl'; 
+				}
+			</script>";
+		}
+
+	}	
 		?>
 		
 			<div class="container">
@@ -97,20 +135,17 @@ function validateQty(event)
 					</div>
 					<div class="form-group">
 						<form name="test" class="form-inline" action="index.php?r=<?php echo $_GET['r']; ?>" method="POST" id='form_submt'>
-							<!-- <div class="row"> -->
 								
 								<div class="form-group">
-                                    <!-- <b>Appilication<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
-									<select class="form-control" id="apn" name="apn" required>
-										<option value="">Select</option>
-										<option value="IPS">IPS</option>
-										<option value="IMS">IMS</option>
-									</select> -->
 
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 									<select class="form-control" id="opn" name="opn" required>
 										<option value="">Select</option>
-									
+										<?php
+										if($_GET['id'] == 'IPS'){
+											echo '<option value="Auto|Auto">Auto</option>';
+										}
+										?>
 									<?php
 										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15) group by operation_code order by operation_code*1";
 										$result=mysqli_query($link,$get_operations);
@@ -122,15 +157,9 @@ function validateQty(event)
 									</select>
 									<input type="hidden" class="form-control" id="app" name="app" value="<?=$_GET['id']?>">
 								</div> 
-								<!-- <div class="col-sm-2">
-									<b>Operation code<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
-									<input type="text" onkeypress="return validateQty(event);" class="form-control integer" id="opc" name="opc" required>
-								</div> -->
 								<div class="form-group">
-									<!-- <br> -->
 									<input type="submit" name="submit" id="submit" class="btn btn-success" value="Update">
 								</div>		
-							<!-- </div> -->
 						</form>
 					</div>	
 				</div>

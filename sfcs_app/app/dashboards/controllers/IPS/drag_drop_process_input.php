@@ -4,6 +4,7 @@
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));	
 
 	$list=$_POST['listOfItems'];
 	////echo $list."<br>";
@@ -194,14 +195,26 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			
 		}
+		$sqlxx="select order_style_no,order_col_des from $bai_pro3.packing_summary_input where input_job_no_random = '".$items[1]."'";
+		//echo $sqlx.";<br>";
+		$sql_resultxx=mysqli_query($link, $sqlxx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowxx=mysqli_fetch_array($sql_resultxx))
+		{
+			$style=$sql_rowxx['order_style_no'];
+			$color=$sql_rowxx['order_col_des'];
+		}
 		$application='IPS';			
 		$scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-		// echo $scanning_query;
 		$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($scanning_result))
 		{
 			$operation_name=$sql_row['operation_name'];
 			$operation_code=$sql_row['operation_code'];
+		}
+		if($operation_code == 'Auto'){
+			$get_ips_op = get_ips_operation_code($link,$style,$color);
+			$operation_code=$get_ips_op['operation_code'];
+			$operation_name=$get_ips_op['operation_name'];
 		}
 		$remove_docs=array();
 		$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where input_job_input_status('".$items[1]."',$operation_code)=\"DONE\"";

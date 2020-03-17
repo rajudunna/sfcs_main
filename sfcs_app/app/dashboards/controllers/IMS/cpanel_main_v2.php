@@ -398,6 +398,7 @@ $dashboard_name="IMS";
 $start_timestamp = microtime(true);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 $application='IMS_OUT';
 
 $scanning_query="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -428,14 +429,6 @@ while($jobs_qry_row=mysqli_fetch_array($jobs_qry_result))
   $jobs_not_consider[]=$jobs_qry_row['input_job_no_random'];
 }
 
-$application2='IPS';
-
-$scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
-$scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row123=mysqli_fetch_array($scanning_result12))
-{
-  $operation_in_code=$sql_row123['operation_code'];
-}
 
 $application1='IMS';
 
@@ -576,16 +569,29 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
               <?php 
                
                $wip='0';  
-                $sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
+                $sqlwip="SELECT ims_style,ims_color,pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
                 $sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
                 if(mysqli_num_rows($sql_resultwip)>0)
                 {
                   while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
                   {
                       $bundle_numbers[]=$sql_rowwip['pac_tid'];
+                      $style=$sql_rowwip['ims_style'];
+                      $color=$sql_rowwip['ims_color'];
+                  }
+                  $application2='IPS';
+                  $scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+                  $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($sql_row123=mysqli_fetch_array($scanning_result12))
+                  {
+                    $operation_in_code=$sql_row123['operation_code'];
+                  }
+                  if($operation_in_code == 'Auto'){
+                    $get_ips_op = get_ips_operation_code($link,$style,$color);
+                    $operation_in_code=$get_ips_op['operation_code'];
                   }
                   $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).")";
-                 // echo $sqlwip12."<br>";
+                //  echo $sqlwip12."<br>";
                   $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
                   {
@@ -745,8 +751,28 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
           {           
             for($kk=0;$kk<sizeof($pending);$kk++)
             { 
+              $sqlwip122="SELECT style,color FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+              $sql_resultwip122=mysqli_query($link, $sqlwip122) or exit("Sql Error1225".mysqli_error($GLOBALS["___mysqli_ston"]));
+              while($sql_rowwip122=mysqli_fetch_array($sql_resultwip122))
+              {
+                $style=$sql_rowwip122['style'];
+                $color=$sql_rowwip122['color'];
+              }
+              $application2='IPS';
+
+              $scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+              $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+              while($sql_row123=mysqli_fetch_array($scanning_result12))
+              {
+                $operation_in_code=$sql_row123['operation_code'];
+              }
+              if($operation_in_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $operation_in_code=$get_ips_op['operation_code'];
+              }
               $value=$recut_job_val[$pending[$kk]];             
               $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,sum(rejected_qty)  as rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+              // echo $sqlwip12;
               $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
               {
