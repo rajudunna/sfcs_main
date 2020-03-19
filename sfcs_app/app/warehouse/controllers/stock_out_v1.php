@@ -319,7 +319,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   if($d==1)
   {
 	  $dockets=explode("T",$cutno);
-	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=\".$dockets[1].\"";
+	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
 	  echo $sql1;
 	  $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
 	  while($row1=mysqli_fetch_array($result1))
@@ -455,7 +455,7 @@ if(isset($_POST['put']))
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=\".$tid_ref[$j].\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
