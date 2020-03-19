@@ -441,6 +441,7 @@ $old_order1[]=$sql_rowxx['old_order_s_s47'];
 $old_order1[]=$sql_rowxx['old_order_s_s48'];
 $old_order1[]=$sql_rowxx['old_order_s_s49'];
 $old_order1[]=$sql_rowxx['old_order_s_s50'];
+$order_div=$sql_rowxx['order_div'];
 				
 				$order_total+=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
 			
@@ -586,11 +587,11 @@ $old_order1[]=$sql_rowxx['old_order_s_s50'];
 						
 				echo "</tr>";
 			}
-			$order_div=$sql_row['order_div'];
-			$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$order_div'";
+			//$order_div=$sql_row['order_div'];
+			$sql_new="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$order_div'";
 // echo $sql;
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_rowa=mysqli_fetch_array($sql_result))
+			$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowa=mysqli_fetch_array($sql_result_new))
 			{
 				$buyer_code=$sql_rowa["buyer_div"];
 				// $buyer_name[]=$sql_row1["buyer_name"];
