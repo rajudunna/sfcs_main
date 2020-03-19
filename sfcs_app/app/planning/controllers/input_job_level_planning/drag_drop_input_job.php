@@ -666,7 +666,7 @@ $module_limit=14;
 		$job_status=job_rec_status($sql_row['input_job_no_random'],$operation_code);
 		if($job_status=='')
 		{
-			$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$job_status."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-A".$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
+			$code.=$sql_row['input_job_no_random']."-".$display_prefix1."-".$job_status."-".$sql_row["carton_qty"]."-".$sql_row["doc_no"]."-".$sql_row["color_code"].$sql_row["acutno"]."-".$module."-".$sql_row['type_of_sewing']."*";
 		  $style=$sql_row['order_style_no'];
 		}
 	}
