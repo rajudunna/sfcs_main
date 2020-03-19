@@ -1564,7 +1564,10 @@ else if($concurrent_flag == 0)
 	              {
 	                $operation_out_code=$sql_row1111['operation_code'];
 	              }
-
+				  if($operation_out_code == 'Auto'){
+					$get_ips_op = get_ips_operation_code($link,$b_style,$b_colors[$i]);
+					$operation_out_code=$get_ips_op['operation_code'];
+					}
 				if($b_op_id == $operation_out_code || $b_op_id == $operation_out_code)
 				{
 					$searching_query_in_imslog = "SELECT tid,ims_qty FROM $bai_pro3.ims_log_backup WHERE pac_tid = $b_tid[$i] AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref='$b_job_no' AND operation_id=$b_op_id AND ims_remarks = '$b_remarks[$i]'";
@@ -1657,6 +1660,10 @@ else if($concurrent_flag == 0)
 					// {
 						// $input_ops_code = 100;
 						$input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);
+						if($input_ops_code == 'Auto'){
+							$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
+							$input_ops_code=$get_ips_op['operation_code'];
+						}
 					//}
 					//echo 'input_ops_code'.$input_ops_code;
 						
@@ -1668,7 +1675,11 @@ else if($concurrent_flag == 0)
 	                  while($sql_row11111=mysqli_fetch_array($scanning_result))
 	                  {
 	                    $operation_out_code=$sql_row11111['operation_code'];
-	                  }
+					  }
+					  if($operation_out_code == 'Auto'){
+						$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
+						$operation_out_code=$get_ips_op['operation_code'];
+					}
 	                  //*To get previous Operation
 					   $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
 				        //echo $ops_sequence_check;
