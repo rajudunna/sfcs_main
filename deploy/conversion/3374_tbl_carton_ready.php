@@ -1,5 +1,7 @@
 <?php
 
+ini_set('max_execution_time', '50000');
+
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 $get_code51 = "TRUNCATE `bai_pro3`.`tbl_carton_ready`";
