@@ -216,13 +216,18 @@ if(isset($_POST["submit"]))
 		while($row3=mysqli_fetch_array($result3))
 		{
 			$schedule=$row3["sch"];
-			$color=$row3["col"];
-			$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category <> 'NULL' ";
+			$color=rtrim($row3["col"]);
+			$sql4="select category,compo_no,tid,catyy,gmtway,purwidth from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category <> 'NULL' ";
 			// echo $sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
 			{
 				$category=$row4["category"];
+				$compo_no=$row4["compo_no"];
+				$cat_ref=$row4["tid"];
+				$order_yy=$row4["catyy"];
+				$gmtway=$row4["gmtway"];
+				$purchase_width=$row4["purwidth"];
 				$cut_comp_iss_qty=0;
 				$cut_comp_qty=0;
 				$order_total_qty=0;
@@ -250,17 +255,17 @@ if(isset($_POST["submit"]))
 				{
 					$old_order_total=$order_total_qty;
 				}
-				$sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
-				//echo $sql;
-				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row=mysqli_fetch_array($result))
-				{
-					$compo_no=$row["compo_no"];
-					$cat_ref=$row["tid"];
-					$order_yy=$row["catyy"];
-					$gmtway=$row["gmtway"];
-					$purchase_width=$row["purwidth"];
-				}
+				// $sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
+				// //echo $sql;
+				// $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($row=mysqli_fetch_array($result))
+				// {
+				// 	$compo_no=$row["compo_no"];
+				// 	$cat_ref=$row["tid"];
+				// 	$order_yy=$row["catyy"];
+				// 	$gmtway=$row["gmtway"];
+				// 	$purchase_width=$row["purwidth"];
+				// }
 
 				if($gmtway=="Y")
 				{
@@ -279,7 +284,7 @@ if(isset($_POST["submit"]))
 					$cut_total_qty=$row["cuttable_s_xs"]+$row["cuttable_s_s"]+$row["cuttable_s_m"]+$row["cuttable_s_l"]+$row["cuttable_s_xl"]+$row["cuttable_s_xxl"]+$row["cuttable_s_xxxl"]+$row["cuttable_s_s06"]+$row["cuttable_s_s08"]+$row["cuttable_s_s10"]+$row["cuttable_s_s12"]+$row["cuttable_s_s14"]+$row["cuttable_s_s16"]+$row["cuttable_s_s18"]+$row["cuttable_s_s20"]+$row["cuttable_s_s22"]+$row["cuttable_s_s24"]+$row["cuttable_s_s26"]+$row["cuttable_s_s28"]+$row["cuttable_s_s30"];
 				}*/
 
-				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" GROUP BY doc_no";
+				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=$cat_ref GROUP BY doc_no";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -288,7 +293,7 @@ if(isset($_POST["submit"]))
 				}
 
 
-				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\" GROUP BY doc_no";
+				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=$cat_ref and fabric_status=\"5\" GROUP BY doc_no";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -297,19 +302,19 @@ if(isset($_POST["submit"]))
 				}
 
 
-				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
+				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=$cat_ref and act_cut_status=\"DONE\" GROUP BY doc_no";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$cut_comp_iss_qty=$cut_comp_iss_qty+$row["doc_qty"];
 				}
 
-				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
+				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=$cat_ref";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$ratios_no_count=mysqli_num_rows($result);
 				$docketnos[]=-1;
 				$docketno[]=-1;
-				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
+				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=$cat_ref and fabric_status=\"5\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$cut_no_count=mysqli_num_rows($result);
 				while($row=mysqli_fetch_array($result))
@@ -341,7 +346,7 @@ if(isset($_POST["submit"]))
 
 				$newyy=0;
 				$new_order_qty=0;
-				$sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=\"$cat_ref\" and allocate_ref>0"; 
+				$sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and allocate_ref>0"; 
 				// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -375,7 +380,7 @@ if(isset($_POST["submit"]))
 					}	
 				}
 
-				$sql="SELECT plan_start_date FROM $bai_pro4.week_delivery_plan WHERE shipment_plan_id='$ship_tid'";
+				$sql="SELECT PCD AS plan_start_date FROM $m3_inputs.order_details WHERE schedule='$schedule' and GMT_color=\"".$color."\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{

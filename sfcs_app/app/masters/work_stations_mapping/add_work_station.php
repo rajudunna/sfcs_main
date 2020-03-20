@@ -3,11 +3,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
 
     <meta charset="utf-8">
@@ -15,11 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-   
-	<?php include('/template/header.php'); ?>
+            
+
 
 </head>
-
+<?php include('/template/header.php'); ?>
 <body>
      <?php
      if(isset($_REQUEST['rowid']))
@@ -41,7 +36,7 @@
 	</div>
 	<div class='panel-body'>
 
-            <form action="<?= $action_url ?>" id="formentry" class="form-horizontal" role="form" method="POST" data-parsley-validate novalidate>
+            <form  id="formentry" name="formentry" class="form-horizontal" role="form"  method="POST" action="<?= $action_url ?>">
                 <input type='hidden' id='id' name='id' value="<?php echo $id; ?>" >
                 <div class="container-fluid shadow">
                     <div class="row">
@@ -70,7 +65,7 @@
 		if($id!=''){
 			echo "<option value='".$short_cut_code1."' ".$selected.">$short_cut_code1</option>";
 		}else{
-		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
+		echo "<option value=''>Please Select</option><br/>\r\n";
 		}
 		$query = "SELECT id,operation_name,operation_code,short_cut_code FROM $brandix_bts.tbl_orders_ops_ref where work_center_id IS NULL or LENGTH(work_center_id)=0 ";
 		$result = $conn->query($query);
@@ -103,7 +98,7 @@
 		if($id!=''){
 			echo "<option value='".$module."' ".$selected.">$module</option>";
 		}else{
-		echo "<option value='Please Select'>Please Select</option><br/>\r\n";
+		echo "<option value=''>Please Select</option><br/>\r\n";
 		}
 		$query = "SELECT id,module_name FROM $bai_pro3.module_master";
 		$result = $conn->query($query);
@@ -111,7 +106,7 @@
 		{
 			$module_id=$row['id'];
 			$module_name=$row['module_name'];
-			echo "<option value='".$module_name."' ".$selected.">$module_name</option>";
+			echo "<option value='$module_name' $selected>$module_name</option>";
 		}
 		echo "</select>";
 	?>      </div>
@@ -120,14 +115,15 @@
 				
 				
 		<div class="col-md-4"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="work_station_id">Work Station Id</label>
+                <label class="control-label control-label-left col-sm-3" for="work_station_id" id="required" name="workstat">Work Station Id</label>
                 <div class="controls col-sm-9">
                     
-                <input id="work_station_id" type="text" class="form-control k-textbox" data-role="text" placeholder="Work Station Id" name="work_station_id"  value="<?php echo $work_station_id; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="work_station_id" type="text"  maxlength="8" size="8" class="form-control k-textbox" data-role="text" placeholder="Enter max 8 characters" name="work_station_id" 
+               
+                value="<?php echo $work_station_id; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 </div>
 </div>				
-				
-				
+            
 		    <div class="col-md-4" style="visibility:hidden;"><div class="form-group">
        
             <div class='input-group date'  >
@@ -151,7 +147,7 @@
 		</br>					
 							
 		<div class="col-md-4"><div class="form-group">      
-		<button id="btn_save"  style="margin-left: -300px;" type="submit" class="btn btn-primary btn-lg" name="btn_save">Save</button></div></div></div></div>
+		<input type="submit" id="btn_save"  style="margin-left: -300px;"  class="btn btn-primary btn-lg" name="btn_save" value="Save" onclick="return validateInputs()"></div></div></div></div>
                                     </div>
                                 
 
@@ -172,3 +168,22 @@ label#required:after {content: " *"; color: red;}
 
 </style>
 
+<script>
+    $('formentry').on('submit', function() { 
+        alert("ringing");
+     });
+            
+
+    function validateInputs() {
+        var input_module = $('#module_name').val();
+        var workstation = $('#work_station_id').val();
+        var operation = $('#operation_code').val();
+
+        if ( input_module == '' || workstation == '' || operation == '') {
+            swal('Warning', 'Please provide required information to proceed', 'warning');
+            return false;
+        }
+        return true;
+    }
+
+</script>
