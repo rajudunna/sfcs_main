@@ -77,7 +77,7 @@ function DataCheck()
 	{         
 			if(parseFloat(chks1[i].value) < parseFloat(chks[i].value))
 			{
-				swal('Please Enter Correct Value','','warning');
+				// swal('Please Enter Correct Value','','warning');
 				chks[i].value=0;
 			}
 			if(chks[i].value=="")
@@ -95,6 +95,8 @@ function DataCheck()
 		document.getElementById("tot").value=0;
 		for (var i = 0; i < chks.length; i++) 
 		{
+
+			swal('Please Enter Correct Value','','warning');
 			chks[i].value=0;
 		}
 		document.getElementById("#issueid").disabled = true;
