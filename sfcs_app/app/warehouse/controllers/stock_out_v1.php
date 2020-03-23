@@ -455,7 +455,7 @@ if(isset($_POST['put']))
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j].",qty_allocated=qty_allocated-".$issued_ref[$j]."  where tid=".$tid_ref[$j]."";
 				//echo $ssql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
