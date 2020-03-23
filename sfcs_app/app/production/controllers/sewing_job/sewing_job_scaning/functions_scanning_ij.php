@@ -80,6 +80,7 @@ function getjobdetails($job_number)
     $emb_cut_check_flag = 0;
     $job_number[4]=$job_number[1];
     include("../../../../../common/config/config_ajax.php");
+    include("../../../../../common/config/functions_dashboard.php");
     $column_to_search = $job_number[0];
     $column_in_where_condition = 'bundle_number';
     $column_in_pack_summary = 'tid';
@@ -116,6 +117,19 @@ function getjobdetails($job_number)
     $result_array['schedule'] = $job_number[2];
     $result_array['color_dis'] = $job_number[3];
     $ops_dep_flag = 0;
+
+    $application='IPS';
+    $scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+    $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row=mysqli_fetch_array($scanning_result))
+    {
+        $operation_code_routing=$sql_row['operation_code'];
+    }
+    if($operation_code_routing == 'Auto'){
+        $get_ips_op = get_ips_operation_code($link,$job_number[1],$job_number[3]);
+        $operation_code_routing=$get_ips_op['operation_code'];
+    }
+    $result_array['operation_code_routing'] = $operation_code_routing;
     
     $ops_dep_qry = "SELECT ops_dependency,operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='$job_number[1]' AND color = '$maped_color' AND ops_dependency != 200 AND ops_dependency != 0";
     $result_ops_dep_qry = $link->query($ops_dep_qry);
@@ -533,6 +547,8 @@ function getjobdetails($job_number)
         $result_array['flag'] = $flag;
     }
     $result_array['no_of_rows'] = $s_no;
+
+    
     echo json_encode($result_array);    
 }
 if(isset($_GET['job_rev_no']))
