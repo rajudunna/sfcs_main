@@ -456,7 +456,7 @@ if(isset($_POST['put']))
 					} 
 				}
 				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
-				//echo $sql3."</br>";
+				//echo $ssql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 
