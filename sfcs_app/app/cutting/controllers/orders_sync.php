@@ -13,6 +13,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     $style=$_GET['style'];
     $schedule=$_GET['schedule'];
     $club_status=$_GET['club_status'];
+	
+	
+	mysqli_begin_transaction($link);
+	try{
+		function message_sql()
+		{ 
+			echo "<script>swal('Splitting not completed......please split again','','warning');</script>";
+		}
+	
+	
+	
+	
     // Schedule Clubbing with in the schedule
     if($club_status=='1')
     {
@@ -37,7 +49,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$url_back = getFullURLLevel($_GET['r'], "schedule_club_style/mix_jobs.php", "0", "N");
 		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join'";
 	}		
-	$result1=mysqli_query($link, $sql1) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result1=mysqli_query($link, $sql1) or exit(message_sql());
 	while($ss=mysqli_fetch_array($result1))
 	{
 		$order_tid_new[]=$ss["order_tid"];
@@ -50,11 +62,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	{
 		$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.$order_joins_not_in AND bai_orders_db_confirm.order_tid='".$order_tid_new[$kk]."' and bai_orders_db_confirm.order_del_no='".$order_tid_schs[$kk]."' and bai_orders_db_confirm.order_col_des='".$order_tid_cols[$kk]."' GROUP BY bai_orders_db_confirm.order_col_des";
 		//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
-		$result=mysqli_query($link, $sql) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result=mysqli_query($link, $sql) or exit(message_sql());
 		//echo $result_3."ads";
 		//$check1=mysqli_num_rows($result);
 		$sizesMasterQuery="select id,upper(size_name) as size_name from $brandix_bts.tbl_orders_size_ref order by size_name";
-		$result2=mysqli_query($link, $sizesMasterQuery) or ("Sql error778".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result2=mysqli_query($link, $sizesMasterQuery) or exit(message_sql());
 		$sizes_tmp=array();
 		while($s=mysqli_fetch_array($result2))
 		{
@@ -85,6 +97,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			else
 			{
+<<<<<<< HEAD
 				$sql1111="select product_style from $brandix_bts.tbl_orders_style_ref where product_style='$style_code'";
 				$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1111_result)==0)
@@ -93,6 +106,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 				}
+=======
+				$insertStyleCode="INSERT IGNORE INTO $brandix_bts.tbl_orders_style_ref(product_style) VALUES ('$style_code')";
+				$result3=mysqli_query($link, $insertStyleCode) or exit(message_sql());
+				$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+>>>>>>> 3406-it-s-getting-some-error-while-doing-the-schedule-splitting-fd-18966
 			}
 			//get Schedule code from product Master
 			$productsQuery=echo_title("$brandix_bts.tbl_orders_master","id","ref_product_style='".$style_id."' and product_schedule",$product_schedule,$link);
@@ -103,7 +121,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			else
 			{
 				$insertOrdersMaster="INSERT INTO $brandix_bts.tbl_orders_master(ref_product_style, product_schedule,order_status) VALUES ('".$style_id."','".$product_schedule."', 'OPEN')";
-				$result6=mysqli_query($link, $insertOrdersMaster) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result6=mysqli_query($link, $insertOrdersMaster) or exit(message_sql());
 				$order_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 			}
 			for ($i=0; $i < sizeof($sizes_array); $i++)
@@ -113,6 +131,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$test= 'title_size_'.$sizes_array[$i].'';
 				if($r["order_s_".$sizes_array[$i].""]>0)
 				{
+<<<<<<< HEAD
 					$sql1112="select parent_id,order_col_des,size_title from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and order_col_des='".$color_code."' and size_title='".$r["title_size_".$sizes_array[$i].""]."'";
 					$sql1112_result=mysqli_query($link, $sql1112) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql1112_result)==0)
@@ -122,6 +141,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 						//$sql11="insert ignore into $bai3_finishing.order_db (style_no, schedule_no, size_code, color, order_qty, output, c_block, ex_date) values ('".$style_code."', '".$product_schedule."', '".$r["title_size".$sizes_array[$i].""]."', '".$color_code."', '".$r["order_s_".$sizes_array[$i].""]."', '0', '".$c_block."', '".$r['order_date']."')";
 						// echo $insertSizesQuery."</br>".$sql11;
 					}
+=======
+					$insertSizesQuery="INSERT IGNORE INTO $brandix_bts.tbl_orders_sizes_master(parent_id, ref_size_name, size_title, order_quantity, order_act_quantity,order_col_des) VALUES ($order_id,'".$sizes_tmp[$i]."','".$r["title_size_".$sizes_array[$i].""]."','".$r["order_s_".$sizes_array[$i].""]."',".$r["order_s_".$sizes_array[$i].""].",'".$color_code."')";
+					$result6=mysqli_query($link, $insertSizesQuery) or exit(message_sql());
+					//$sql11="insert ignore into $bai3_finishing.order_db (style_no, schedule_no, size_code, color, order_qty, output, c_block, ex_date) values ('".$style_code."', '".$product_schedule."', '".$r["title_size".$sizes_array[$i].""]."', '".$color_code."', '".$r["order_s_".$sizes_array[$i].""]."', '0', '".$c_block."', '".$r['order_date']."')";
+					// echo $insertSizesQuery."</br>".$sql11;
+>>>>>>> 3406-it-s-getting-some-error-while-doing-the-schedule-splitting-fd-18966
 				}
 			}			
 		}	
@@ -130,7 +155,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		LEFT JOIN $bai_pro3.cat_stat_log as cat_stat_log ON plandoc_stat_log.cat_ref = cat_stat_log.tid
 		WHERE cat_stat_log.category IN ($in_categories) AND  plandoc_stat_log.order_tid='$order_tid_new[$kk]'";
 		//echo $layPlanQuery."<br>";
-		$result7=mysqli_query($link, $layPlanQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result7=mysqli_query($link, $layPlanQuery) or exit(message_sql());
 		while($l=mysqli_fetch_array($result7))
 		{
 			$doc_num=$l['doc_no'];
@@ -151,13 +176,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$cuttable_ref=$l['cuttable_ref'];
 			//Insert data into layplan(tbl_cut_master) table
 			$inserted_id_query1 = "select count(id) as id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
-			$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or ("Sql error1111");
+			$inserted_id_result1=mysqli_query($link, $inserted_id_query1) or exit(message_sql());
 			while($inserted_id_details1=mysqli_fetch_array($inserted_id_result1))
 			{
 				$layplan_id1=$inserted_id_details1['id'];
 			}
 			if($layplan_id1==0)
 			{
+<<<<<<< HEAD
 				$sql1113="select doc_num from $brandix_bts.tbl_cut_master where doc_num='$doc_num'";
 				$sql1113_result=mysqli_query($link, $sql1113) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql1113_result)==0)
@@ -166,8 +192,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					// echo $insertLayPlanQuery."</br>";
 					$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error999".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
+=======
+				$insertLayPlanQuery="INSERT IGNORE INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+				// echo $insertLayPlanQuery."</br>";
+				$result8=mysqli_query($link, $insertLayPlanQuery) or exit(message_sql());
+>>>>>>> 3406-it-s-getting-some-error-while-doing-the-schedule-splitting-fd-18966
 				$inserted_id_query = "select id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
-				$inserted_id_result=mysqli_query($link, $inserted_id_query) or ("Sql error1111");
+				$inserted_id_result=mysqli_query($link, $inserted_id_query) or exit(message_sql());
 				while($inserted_id_details=mysqli_fetch_array($inserted_id_result))
 				{
 					$layplan_id=$inserted_id_details['id'];
@@ -177,6 +208,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				{
 					if($l["p_".$sizes_array[$i].""]>0)
 					{
+<<<<<<< HEAD
 						$sql1114="select color,parent_id,quantity from $brandix_bts.tbl_cut_size_master where color='".$color_code."' and parent_id=".$layplan_id." and quantity=".$l["p_".$sizes_array[$i].""]."";
 						$sql1114_result=mysqli_query($link, $sql1114) or exit("Sql Error1114".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql1114_result)==0)
@@ -185,13 +217,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 							// echo $insertLayplanItemsQuery."</br>";
 							$result9=mysqli_query($link, $insertLayplanItemsQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						}
+=======
+					 	$insertLayplanItemsQuery="INSERT IGNORE INTO $brandix_bts.tbl_cut_size_master(color,parent_id,ref_size_name,quantity) VALUES ('".$color_code."','".$layplan_id."','".$sizes_tmp[$i]."','".$l["p_".$sizes_array[$i].""]."')";
+						 // echo $insertLayplanItemsQuery."</br>";
+					 	$result9=mysqli_query($link, $insertLayplanItemsQuery) or exit(message_sql());
+>>>>>>> 3406-it-s-getting-some-error-while-doing-the-schedule-splitting-fd-18966
 
 					}
 				}
 			}
 		}
 		$update_query="update $bai_pro3.bai_orders_db_confirm set bts_status=2 where order_tid='".$order_tid_new[$kk]."'";
-		$result10=mysqli_query($link, $update_query) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result10=mysqli_query($link, $update_query) or exit(message_sql());
 	}
 	
 	//----------------Logic to insert into  bundle creation data and mo operation quantities
@@ -216,7 +253,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 	}
 	//exit();
-
+	mysqli_commit($link);
+}
+	catch(Exception $e)
+	{
+		mysqli_rollback($link);
+	}
 	/*
 	$inserted = insertMoQuantitiesClub($impdata);
 	if($inserted){
