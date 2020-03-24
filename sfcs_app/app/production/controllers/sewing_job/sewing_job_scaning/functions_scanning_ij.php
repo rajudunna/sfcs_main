@@ -1508,7 +1508,6 @@ if(isset($_GET['pre_array_module']))
 function validating_with_module($pre_array_module)
 {
     include("../../../../../common/config/config_ajax.php");
-    include("../../../../../common/config/functions_dashboard.php");
     $block_priorities = null;
     $pre_array_module = explode(",",$pre_array_module);
     $module = $pre_array_module[0];
