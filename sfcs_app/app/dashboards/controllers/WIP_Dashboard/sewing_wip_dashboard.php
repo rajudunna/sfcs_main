@@ -63,6 +63,8 @@
         </div>
    
         <?php
+
+        $popup_url = getFullURLLevel($_GET['r'],'sections_report.php',0,'R');
             foreach($sections as $section)
             {
                 $id1 = "sec-load-$section";
@@ -75,11 +77,26 @@
                     $section_display_name=$sql_rowx1['section_display_name'];
                 }
         ?>    
-
+         
+       <!--  <script type="text/javascript">
+            var operations = $('#operations').val();
+            //alert(operations);
+        </script> -->
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
-                            <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
+                            <center><span class='section-heading'>
+                               <?= "<a href=\"javascript:void(0)\" 
+                               onclick=\"
+                                var op = $('#operations').val();
+                                Popup = window.open('$popup_url?section=$section&section_name=$section_display_name&operations='+op+'"."','Popup'); 
+                                if (window.focus){
+                                    Popup.focus()
+                                }
+                                return false;\"
+                            >
+                            $section_display_name</a>" ?>
+                            </b></span></center>
                             <span style='height:50px'>
                             &nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
