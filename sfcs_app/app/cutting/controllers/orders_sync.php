@@ -13,18 +13,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     $style=$_GET['style'];
     $schedule=$_GET['schedule'];
     $club_status=$_GET['club_status'];
-	
-	
+
 	mysqli_begin_transaction($link);
 	try{
 		function message_sql()
 		{ 
 			echo "<script>swal('Splitting not completed......please split again','','warning');</script>";
 		}
-	
-	
-	
-	
+
     // Schedule Clubbing with in the schedule
     if($club_status=='1')
     {
