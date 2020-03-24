@@ -80,7 +80,7 @@ function getjobdetails($job_number)
     $emb_cut_check_flag = 0;
     $job_number[4]=$job_number[1];
     include("../../../../../common/config/config_ajax.php");
-    include("../../../../../common/config/functions_dashboard.php");
+    include_once("../../../../../common/config/functions_dashboard.php");
     $column_to_search = $job_number[0];
     $column_in_where_condition = 'bundle_number';
     $column_in_pack_summary = 'tid';
@@ -1508,6 +1508,7 @@ if(isset($_GET['pre_array_module']))
 function validating_with_module($pre_array_module)
 {
     include("../../../../../common/config/config_ajax.php");
+    include_once("../../../../../common/config/functions_dashboard.php");
     $block_priorities = null;
     $pre_array_module = explode(",",$pre_array_module);
     $module = $pre_array_module[0];
