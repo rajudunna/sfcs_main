@@ -811,7 +811,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     sumofendbits+=parseFloat(endbits);
                     $('#endbits').val(Number(sumofendbits).toFixed(2));
                     sumofshortages+=parseFloat(shortages);
-                    alert("Rollwise :"+sumofshortages);
+                    //alert("Rollwise :"+sumofshortages);
                     $('#shortages').val(Number(sumofshortages).toFixed(2));
                 
                     sumoffabricrecieved+=parseFloat(receivedqty);
@@ -927,6 +927,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             var tot_mlength = Number($('#mk_length').val());
             var binding_consum = Number($('#binding_consum').val());
             var seperat_dock = $('#seperat_dock').val();
+            alert(seperat_dock);
             var ratio = $('#ratio').val();
             if(seperat_dock!='Yes'){ 
                 var binding_consum_qty=Number(c_plies*binding_consum*ratio);
@@ -934,7 +935,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 var binding_consum_qty=0;
             }  
                 var shortag_qty = parseFloat(Number(fab_received) -(Number(c_plies*tot_mlength)+Number(damages)+Number(joints)+Number(endbits)+Number(fab_returned)+binding_consum_qty)).toFixed(2);
-                // alert(shortag_qty);
                 $('#shortages').val(Number(shortag_qty).toFixed(2));
             
                        
@@ -1111,7 +1111,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         sumofendbits+=parseFloat(endbits);
         $('#endbits').val(sumofendbits);
         sumofshortages+=parseFloat(shortages);
-        alert("For Bulk :"+sumofshortages);
+        //alert("For Bulk :"+sumofshortages);
         $('#shortages').val(sumofshortages);
         sumoffabricreturn+=parseFloat(fabricreturn);
         $('#fab_returned').val(sumoffabricreturn);
