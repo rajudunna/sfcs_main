@@ -77,7 +77,7 @@ function DataCheck()
 	{         
 			if(parseFloat(chks1[i].value) < parseFloat(chks[i].value))
 			{
-				swal('Please Enter Correct Value','','warning');
+				// swal('Please Enter Correct Value','','warning');
 				chks[i].value=0;
 			}
 			if(chks[i].value=="")
@@ -95,6 +95,8 @@ function DataCheck()
 		document.getElementById("tot").value=0;
 		for (var i = 0; i < chks.length; i++) 
 		{
+
+			swal('Please Enter Correct Value','','warning');
 			chks[i].value=0;
 		}
 		document.getElementById("#issueid").disabled = true;
@@ -375,7 +377,7 @@ if(sizeof($_GET["lots"]) > 0)
 
 
 		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."</td>";
-		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
+		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
 	}
@@ -743,7 +745,7 @@ $(document).ready(function(){
 					} 
 				}
 
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocation=qty_allocation-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
