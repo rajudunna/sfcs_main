@@ -927,7 +927,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             var tot_mlength = Number($('#mk_length').val());
             var binding_consum = Number($('#binding_consum').val());
             var seperat_dock = $('#seperat_dock').val();
-            alert(seperat_dock);
             var ratio = $('#ratio').val();
             if(seperat_dock!='Yes'){ 
                 var binding_consum_qty=Number(c_plies*binding_consum*ratio);
