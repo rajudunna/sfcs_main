@@ -1432,7 +1432,7 @@
                            $previous_operation = $row23['operation_code'];
                        }
                         
-                        if($operation_code == 100 || $operation_code == 129)
+                        if($b_op_id == $operation_code)
                         {
                             //updating ims_pro_qty against the input
                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";
