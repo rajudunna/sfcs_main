@@ -24,6 +24,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 <script type="text/javascript" src="../../common/js/tablefilter_1.js"></script>
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+<script src="../../../../common/js/jquery.min.js"></script>
 <script src="../../../../common/js/sweetalert.min.js"></script>
 
 <style type="text/css">
@@ -244,21 +245,6 @@ if(isset($_POST['submit']))
 							                $pre_ops_code = $row3['operation_code'];
 							            }
 						           }
-
-						           // $get_current_ops_data= "select bundle_number,recevied_qty,operation_id from brandix_bts.bundle_creation_data where style='$style' and color='$color' and operation_id=$operation_code and bundle_number = $bundle_number and bundle_qty_status=0 and send_qty > 0";
-					            //    // echo $get_current_ops_data;
-						           //  $result_get_current_ops_data = $link->query($get_current_ops_data);
-						           //  while($row_main = $result_get_current_ops_data->fetch_assoc())
-						           //  {
-						           //  	$current_ops_qty[$row_main['bundle_number']['operation_id']] = $row_main['recevied_qty'];
-						           //  }
-                                    
-						           //  $get_previous_ops_data= "select bundle_number,recevied_qty,operation_id from brandix_bts.bundle_creation_data where style='$style' and color='$color' and operation_id=$pre_ops_code and bundle_number = $bundle_number and bundle_qty_status=0 and send_qty > 0 and send_qty != recevied_qty";
-						           //  $result_get_previous_ops_data = $link->query($get_previous_ops_data);
-						           //  while($row_main1 = $result_get_previous_ops_data->fetch_assoc())
-						           //  {
-						           //  	$previous_ops_qty[$row_main1['bundle_number']['operation_id']] = $row_main['recevied_qty'];
-						           //  }
 
 						           $get_jobs_data="select *,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
 						            $result_get_jobs_data = $link->query($get_jobs_data);

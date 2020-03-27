@@ -84,78 +84,34 @@ select{
 
 <body>
 
-
 <?php
 
-$section=$_GET['section'];
-$section_name=$_GET['section_name'];
 $operation=$_GET['operations'];
 
 ?>
 
 <?php
-		if(isset($_POST['submit']))
-		{
-			$input_selection=$_POST['input_selection'];
-			if($input_selection=='bundle_wise'){
-				$bundlenum_header="<th>Bundle No</th>";
-				$report_header="BundleWise";
-			}else{
-				$bundlenum_header="";
-				$report_header="Sewing Job Wise";
-			}
-			
-		}
-		else
-		{
-			$bundlenum_header="<th>Bundle No</th>";
-			$report_header="BundleWise";
-		}
-
-		echo "<div class='panel panel-primary'>
-				<div class='panel-heading'>Summary of <b>" .$section_name." ( ".$report_header." )</b>
-				</div>
-				</br>
-				<table>
-					<tr>
-						<th>Select Your Choice : </th>
-						<td>
-							<div class='form-inline'>
-								<form method='post'>
-									<select name='input_selection' id='input_selection' class=\"form-control\">
-										<option value='bundle_wise' selected>Bundle Wise</option>
-										<option value='input_wise'>Sewing Job Wise</option>
-									</select>
-							</div></div>
-						</td>";
-						echo '
-						<td>.
-							<input type="submit" id="submit" class="btn btn-primary" name="submit" value="Submit" />
-						</td>
-					</tr>
-				</table>';
-		echo "</form>";
-
-		echo "<div class='panel-body'>";
-				$sql="SELECT GROUP_CONCAT(quote(`module_name`) ORDER BY module_name+0 ASC ) AS sec_mods, GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC ) AS sec_mod_val,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section GROUP BY section ORDER BY section + 0";
+		
+            echo "<div class='panel-body'>";
+				$sql="SELECT GROUP_CONCAT(quote(`module_name`) ORDER BY module_name+0 ASC ) AS sec_mods, GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC ) AS sec_mod_val,section AS sec_id FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0";
 				//echo  $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					$sec_mods1=$sql_row['sec_mods'];
-					$sec_mods=$sql_row['sec_mod_val'];
+					$sec_mods1[]=$sql_row['sec_mods'];
+					$sec_mods[]=$sql_row['sec_mod_val'];
 				}
 
 
 				$modules=array();
 				$modules=explode(",",$sec_mods);
-				echo "<input id='excel' type='button'  class='btn btn-success' value='Export To Excel' onclick='getCSVData()'>";
+				 var_dump($sec_mods1);
+				// die();
 				echo "<div class='table-responsive'>
 						<table class=\"table table-bordered\" id=\"table1\"> 
 							<tr>
-								<th>Module</th>";
-								echo $bundlenum_header;
-								echo "<th>Style</th>
+								<th>Module</th>
+								<th>Style</th>
 								<th>Schedule</th>
 								<th>Color</th>
 								<th>Input Job No</th>
@@ -170,10 +126,10 @@ $operation=$_GET['operations'];
 		$toggle=0;
 		$j=1;
 
-		for($i=0; $i<sizeof($modules); $i++)
+		for($i=0; $i<sizeof($sec_mods1); $i++)
 		{
-
-			$module = $modules[$i];
+            var_dump($modules);
+			$module = $sec_mods1[$i];
 			$rowcount_check=0;
 
 			$get_bcd_data= "select distinct input_job_no_random_ref,schedule,style,color,GROUP_CONCAT(bundle_number) as bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation and assigned_module='$module' and bundle_qty_status = 0 GROUP BY input_job_no_random_ref";
@@ -208,22 +164,7 @@ $operation=$_GET['operations'];
 		            }
 	           }
 
-				$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module'";
-				//echo $sql12;
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$sql12.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
-					}
-					if($input_selection=='bundle_wise'){
-						$sql12.=" GROUP BY bundle_number,operation_id ";
-					}
-				}
-				else
-				{
-					$sql12.=" GROUP BY bundle_number,operation_id ";
-				}
+				$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module' GROUP BY bundle_number,operation_id";
 				//echo $sql12;
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=0;
@@ -256,22 +197,7 @@ $operation=$_GET['operations'];
 
 				
 				$row_counter = 0;
-                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
-
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
-					}
-
-					if($input_selection=='bundle_wise'){
-						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
-					}
-				}else{
-					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
-				}  
-				$get_details.="  order by schedule, size_id DESC";
+                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0)) order by schedule, size_id DESC";	
 				//echo $get_details;
 				$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -309,21 +235,8 @@ $operation=$_GET['operations'];
 					$rejected1=array();
 					$rejected=array();
 					$size_title=array();
-	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation";
+	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and bundle_number= $bundle_number group by operation_id,size_title";
 	                //getting selection and apend result to query
-					if(isset($_POST['submit']))
-					{
-						$input_selection=$_POST['input_selection'];
-						if($input_selection=='input_wise'){
-							$get_rejected_qty.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
-						}
-
-						if($input_selection=='bundle_wise'){
-							$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
-						}
-					}else{
-						$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
-					}
 					//echo  $get_rejected_qty;
 					$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33=mysqli_fetch_array($sql_result33))
