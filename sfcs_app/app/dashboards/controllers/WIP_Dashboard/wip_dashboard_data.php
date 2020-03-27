@@ -3,6 +3,9 @@ error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
+ $v_r = explode('/',$_SERVER['REQUEST_URI']);
+array_pop($v_r);
+$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/modules_report.php";
 
 function leading_zeros($value, $places)
 {
@@ -46,6 +49,7 @@ function echo_title($table_name,$field,$compare,$key,$link)
 }
 
 
+
 $data = '';
 $jquery_data = '';
 $line_breaker = 0;
@@ -69,7 +73,11 @@ if($section > 0){
             $sewing_wip = '';
             $jobs_wip ='';
             $data.= "<tr rowspan=2>";
-            $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>$module</b></span></td>";
+            $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
+            <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module=$module&operation_code=$get_operation\",\"Popup\");'>
+                            $module</a>
+        
+            </b></span></td>";
 
 
              /*  BLOCK - 1 */
@@ -142,13 +150,15 @@ function getsewingJobsData($section,$module,$get_operation)
         $previous_operation = $pre_ops_code;
         $present_operation = $get_operation;
         $inputno ="";
-        $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,COALESCE(SUM(rejected_qty),0) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) != SUM(IF(operation_id = $present_operation,recevied_qty,0))";
+        $previous_output=0;
+        $present_output=0;
+        $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
         // echo $get_jobs;
         $get_jobs_result = $link->query($get_jobs);
         while($row4 = mysqli_fetch_array($get_jobs_result))
         {
-          $previous_output = $row4['previous_output'];
-          $present_output = $row4['present_output'];   
+          $previous_output = $previous_output+$row4['previous_output'];
+          $present_output = $present_output+$row4['present_output'];   
           $job_no1 = $row4['input_job_no_random_ref'];
           $docket_number = $row4['docket_number'];
           $remarks = $row4['remarks'];
@@ -167,7 +177,7 @@ function getsewingJobsData($section,$module,$get_operation)
         }
 
         $prefix="";
-        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
         // echo $sql."<br>";
         $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row=mysqli_fetch_array($sql_result))
@@ -184,7 +194,7 @@ function getsewingJobsData($section,$module,$get_operation)
          $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
 
 
-        $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule=$schedule";
+        $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule='$schedule'";
         $sql_result =   $link->query($sql44);
         while($row44 = mysqli_fetch_array($sql_result))
         {
@@ -224,6 +234,7 @@ function getsewingJobsData($section,$module,$get_operation)
             </span>
           </span>"; 
         }
+        unset($job_no1);
     }
 
         $docs_data.="<span class='block'>
