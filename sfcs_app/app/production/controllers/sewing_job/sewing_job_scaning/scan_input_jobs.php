@@ -337,10 +337,15 @@ $(document).ready(function()
 			success: function (response) 
 			{
 				
-				if (response == 8)
+				if (response == 9)
 				{
 					module_flag = 1; // block
 					restrict_msg = 'Invalid Input. Please Check And Try Again !!!';
+				}
+				else if (response == 8)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Sewing Job Deactivated';
 				}
 				else if (response == 7)
 				{

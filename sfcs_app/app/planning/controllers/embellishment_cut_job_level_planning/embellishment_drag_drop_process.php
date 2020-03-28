@@ -73,9 +73,10 @@
 				$send_operation=$sql_row2["operation_code"];
 				$operation_order=$sql_row2["operation_order"];
 				// echo $send_operation."-".$operation_order."<br>";
-				$sql3="select operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND color='".$color."' AND operation_order> '".$operation_order."' ORDER BY operation_order*1 LIMIT 1";
+				$sql3="select operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND color='".$color."' AND operation_order> '".$operation_order."' AND operation_code IN (SELECT operation_code FROM brandix_bts.tbl_orders_ops_ref WHERE category IN ('Receive PF')) ORDER BY operation_order*1 LIMIT 1";
 				// echo "<br>4=".$sql3."<br>";
 				$sql_result3=mysqli_query($link,$sql3) or exit("Sql Error3".mysql_error());
+				$receive_operation="";
 				while($sql_row3=mysqli_fetch_array($sql_result3))
 				{
 					$receive_operation=$sql_row3["operation_code"];

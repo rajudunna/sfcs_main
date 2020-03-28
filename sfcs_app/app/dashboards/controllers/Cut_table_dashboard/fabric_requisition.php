@@ -40,7 +40,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$module=$_POST["mods"];
 		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows2=mysqli_num_rows($result2x);	
+		$rows2=mysqli_num_rows($result2x);
 	} 
 	else
 	{
@@ -158,7 +158,7 @@ function GetSelectedItem()
 
 <tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th><th>Control</th></tr>
 <?php
-	$sql11x1="select order_tid,acutno,mk_ref_id,cuttable_ref from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
+	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
@@ -183,8 +183,9 @@ function GetSelectedItem()
 		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
 		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
-		
-		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$cat_tid = $row111x["cat_ref"];
+		// $sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid=$cat_tid";
 		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
@@ -798,7 +799,7 @@ function add_Newmklen(doc_no)
 		return false;
 	}
 	var table_body = $("#rejections_table_body"+doc_no);
-	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
+	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+mk_eff+"</td><td>"+permts+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
 	
 	// $('#delete_row'+rows_valu).on('click',function(){
 	// alert(rows_valu);

@@ -28,7 +28,7 @@ function GetValueFromChild(tmp)
 }
  
  
-		function GetSelectedItem(name_attr) 
+		/*function GetSelectedItem(name_attr) 
 		{			
 			var x=Array(name_attr,"1","2");			
 			var i = 0;
@@ -73,7 +73,7 @@ function GetValueFromChild(tmp)
 				
 				dif=chosen4-chosen3;
 				dif1=(((chosen6split[0]-chosen5split[0])*60)+(chosen6split[1]-chosen5split[1])-time)*nop;
-				document.f1.l1.value=dif1;
+				document.f1.l1.value=dif1; */
 				//alert(dif1);
 				//alert(dif);
 				/*var total=parseInt(chosen2)-parseInt(chosen1);
@@ -128,8 +128,52 @@ function GetValueFromChild(tmp)
 				{ 
 					alert("Please check the Selected Timings."); 
 				} */
-			} 
-		}
+			//} 
+		//} 
+		
+			// For start and end time validation
+		
+function calculate() 
+{
+   
+   var nop = document.getElementById("nop1").value;
+	var stime = document.getElementById("s1").value;
+	var etime = document.getElementById("r1").value;
+	// var ltime = document.getElementById("l_" + i).value;
+	var extime = document.getElementById("ex1").value;	
+	stimesplit=stime.split(":");
+	etimesplit=etime.split(":");
+	stimeval=parseInt(parseInt((stimesplit[0]*60))+parseInt(stimesplit[1]));
+	etimeval=parseInt(parseInt((etimesplit[0]*60))+parseInt(etimesplit[1]));
+	
+	diff=parseInt(etimeval)-parseInt(stimeval);
+	//alert(etime);
+	if(parseInt(diff)>=0)
+	{
+		document.getElementById("l1").value=parseInt(0);
+		document.getElementById("l1").value=parseInt(diff*nop)-parseInt(nop*extime);	
+			
+	}
+	else
+	{
+		if(etime != 0)
+		{
+			sweetAlert("Please Enter Correct Time.","","info");
+		}	
+		document.getElementById("r1").value="";
+		// document.getElementById("l_" + i).value=parseInt(0);
+		document.getElementById("ex1").value=parseInt(0);
+	}
+	
+	if(parseInt(diff)<parseInt(extime))
+	{
+		//alert("Please Enter Correct Time.");
+		document.getElementById("l1").value=parseInt(0);
+		document.getElementById("ex1").value=parseInt(0);
+	}
+	
+	
+}
 </script>		
 
 <?php 
@@ -326,22 +370,18 @@ while($row=mysqli_fetch_array($result))
 	echo "<tr>";
 	
 	
-	echo "<th>Style</th>";
-	
+	echo "<th>Style</th><td><input type=\"text\" class='form-control' name=\"style\" id=\"style\" value=\"".$row['style']."\" readonly></td>"; 
 	
 	//$sql1="select distinct(style) from pro_style";
 	
 	//26-04-2017 changed the source for fetching styles
-	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
-	
-	//echo $sql1;
+/*	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
 	$result2=mysqli_query($link, $sql1) or die("2Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result2))
 	{
 		$styles[]=$row1["style"];
 		//echo $row1["style"];
 	}
-	//echo "style= ".sizeof($styles);
 	echo "<td>";
 	echo "<select name=\"style\" class='form-control'>";
 	for($i=0;$i<=sizeof($styles);$i++)
@@ -355,34 +395,31 @@ while($row=mysqli_fetch_array($result))
 		{
 			$status="";
 		}
+		
 		echo "<option value=\"$styles[$i]\" $status>".$styles[$i]."</option>";
-	}
-	echo "</select></td>";
+	} 
+	echo "</select></td>"; */
 	
 	echo "</tr>";
 	
 	echo "<tr>";
 	
-	echo "<th>Schedule</th>";
+	echo "<th>Schedule</th><td><input type=\"text\" class='form-control' name=\"schedule\" id=\"schedule\" value=\"".$row['schedule']."\" readonly></td>";
 	
-	$sql2="select distinct(order_del_no) as schedule from $bai_pro3.bai_orders_db";
-	//echo $sql2;
+	/* $sql2="select * from $bai_pro3.bai_orders_db_confirm where order_style_no ='".$row["style"]."'";
 	$result3=mysqli_query($link, $sql2) or die("3Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result3))
 	{
 		$schedule[]=$row2["schedule"];
-		//echo $row1["style"];
 	}
 	
 	echo "<td>";
 	echo "<select name=\"schedule\" class='form-control'>";
-	//echo "<option value='0' $status>0</option>";
 	for($i=0;$i<=sizeof($schedule);$i++)
 	{
 		if($schedule[$i]==$row["schedule"])
 		{
 			$status="selected='selected'";
-			//$style_id=$row["style"];
 		}
 		else
 		{
@@ -390,7 +427,7 @@ while($row=mysqli_fetch_array($result))
 		}
 		echo "<option value=\"$schedule[$i]\" $status>".$schedule[$i]."</option>";
 	}
-	echo "</select></td>";
+	echo "</select></td>"; */
 	
 	echo "</tr>";
 	
@@ -398,7 +435,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>NOP</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"nop1\" size=\"5\" id=\"nop1\" onkeyup=\"GetSelectedItem('nop1');\" value=\"16\"></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"nop1\" size=\"5\" id=\"nop1\" onkeyup=\"calculate('nop1');\" value=".$row["nop"]."></td>";
 	
 	echo "</tr>";
 	
@@ -415,15 +452,23 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"GetSelectedItem('s1');\">
+	echo "<SELECT name=\"s1\" class='form-control' id=\"s1\" onchange=\"calculate();\">";
 
-			<option value=\"0\" name=\"s1\"></option>";
-
-
+		echo "<option value=\"0\" name=\"r1\"></option>";
+	
 	for($l=6;$l<=22;$l++)
 	{
 		for($k=0;$k<sizeof($mins);$k++)
 		{
+			if($row["start_time"]==$l.":".$mins[$k])
+			{
+				echo "<option value=".$row["start_time"]." name=\"r1\" selected>".$row["start_time"]."</option>";
+			}
+			else
+			{			
+			echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." </option>";
+			}
+			/*
 			if($l<13)
 			{
 				if($l==12)
@@ -461,7 +506,8 @@ while($row=mysqli_fetch_array($result))
 				{
 					echo "<option value=\"".$l.":".$mins[$k]."\" name=\"s1\">".$l.":".$mins[$k]." PM</option>";
 				}
-			}
+			}*/
+			
 		}
 		
 	}
@@ -476,15 +522,26 @@ while($row=mysqli_fetch_array($result))
 	echo "<td><div><p>";
 
 
-	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"GetSelectedItem('r1');\">
-
-			<option value=\"0\" name=\"r1\"></option>";
-
+	echo "<SELECT name=\"e1\" class='form-control' id=\"r1\" onchange=\"calculate();\" required>";
+	
+	
+		echo "<option value=\"0\" name=\"r1\"></option>";
+	
 
 	for($l=6;$l<=22;$l++)
 	{
 		for($k=0;$k<sizeof($mins);$k++)
 		{
+			
+				if($row["end_time"]==$l.":".$mins[$k])
+			{
+              echo "<option value=\"".$row["end_time"]."\" name=\"r1\" selected>".$row["end_time"]." </option>";
+			}
+			else
+			{
+			  echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." </option>";
+			}
+			/*
 			if($l<13)
 			{
 				if($l==12)
@@ -521,7 +578,7 @@ while($row=mysqli_fetch_array($result))
 				{
 					echo "<option value=\"".$l.":".$mins[$k]."\" name=\"r1\">".$l.":".$mins[$k]." PM</option>";
 				}
-			}
+			}*/
 		}
 		
 	}
@@ -533,13 +590,13 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Downtime</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"l1\" value=\"".$row["dtime"]."\" size=\"3\" /></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"l1\" id=\"l1\" value=\"".$row["dtime"]."\" size=\"3\" /></td>";
 	
 	echo "</tr>";
 	
 	echo "<th>Exception Time</th>";
 	
-	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" onkeyup=\"GetSelectedItem('ex1');\" value=\"0\" size=\"3\" /></td>";
+	echo "<td><input type=\"text\" class='form-control' name=\"ex1\" id=\"ex1\" onkeyup=\"calculate('ex1');\" value=\"0\" size=\"3\" /></td>";
 	
 	echo "</tr>";
 	
@@ -577,7 +634,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<tr>";
 	// add the popup window for the edit transation against the department wise.
-	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly=readonly size=3><span onclick=\"box(0)\">Select</sapn></td>";
+	echo "<th>Reason</th><td><input type=\"text\" class='form-control' name=\"reason_code\" id=\"reason_code\" value=\"".$row['reason_code']."\" readonly><span onclick=\"box(0)\"></sapn></td>";
 	
 	echo "</tr>";
 	
@@ -662,7 +719,7 @@ if(isset($_POST["submit"]))
 	mod_no=\"".$module."\",date=\"".$date."\",department=\"".$dep_no."\",remarks=\"".$remarks."\",
 	style=\"".$style."\",dtime=\"".$dtime."\",shift=\"".$shift."\",section=\"".$section."\",
 	customer=\"".$buyer."\",schedule=\"".$schedule_no."\",source=\"".$sources."\",plan_eff=\"".$plan_eff."\",
-	nop='$nop',start_time='$s1',end_time='$r1',reason_code='$reason_code',flag=0 where tid=\"".$tids."\" ";
+	nop='$nop1',start_time='$s1',end_time='$r1',reason_code='$reason_code',flag=0 where tid=\"".$tids."\" ";
 	
 	//echo "<br/>".$update;
 

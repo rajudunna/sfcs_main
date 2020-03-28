@@ -1839,16 +1839,16 @@ if(mysqli_num_rows($sql_result1) > 0)
 {
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
-		$values[]=$sql_row['tid']."~".$sql_row['ref2']."~".$sql_row['ref4']."~".$sql_row['qty_rec']."~".$sql_row['ref5']."~".$sql_row['ref6']."~".$sql_row['ref3']."~".$sql_row['lot_no']."~".$sql_row["roll_joins"]."~".$sql_row["partial_appr_qty"]."~".$sql_row["roll_status"]."~".$sql_row["shrinkage_length"]."~".$sql_row["shrinkage_width"]."~".$sql_row["shrinkage_group"]."~".$sql_row["roll_remarks"]."~".$sql_row["rejection_reason"]."~".$sql_row["qty_allocated"]."~".$sql_row["qty_issued"];
+		$values[]=$sql_row1['tid']."~".$sql_row1['ref2']."~".$sql_row1['ref4']."~".$sql_row1['qty_rec']."~".$sql_row1['ref5']."~".$sql_row1['ref6']."~".$sql_row1['ref3']."~".$sql_row1['lot_no']."~".$sql_row1["roll_joins"]."~".$sql_row1["partial_appr_qty"]."~".$sql_row1["roll_status"]."~".$sql_row1["shrinkage_length"]."~".$sql_row1["shrinkage_width"]."~".$sql_row1["shrinkage_group"]."~".$sql_row1["roll_remarks"]."~".$sql_row1["rejection_reason"]."~".$sql_row1["qty_allocated"]."~".$sql_row1["qty_issued"];
 	//tid,rollno,shade,tlenght,clenght,twidth,cwidth,lot_no
 		
 		$scount_temp[]=$sql_row1['ref4'];
 		// $ctex_sum+=$sql_row['ref5'];
-		$ctex_sum+= ((int)$sql_row['ref5']);
+		$ctex_sum+= ((int)$sql_row1['ref5']);
 		// $avg_t_width+=$sql_row['ref6'];
-		$avg_t_width+= ((int)$sql_row['ref6']);
+		$avg_t_width+= ((int)$sql_row1['ref6']);
 		// $avg_c_width+=$sql_row['ref3'];
-		$avg_c_width+= ((int)$sql_row['ref3']);
+		$avg_c_width+= ((int)$sql_row1['ref3']);
 			
 		if($sql_row1['print_check']==1)
 		{
@@ -2713,18 +2713,17 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
-			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
-				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason)
-				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\"
-				  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
+				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid)
+				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
-					   //
-				  	   
+					$new_tid=mysqli_insert_id($link);  
+					$sql22="update bai_rm_pj1.store_in set barcode_number='".$facility_code."-".$new_tid."' where tid=".$new_tid;
+					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
 				  $sql1="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
-				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
 			{

@@ -32,7 +32,7 @@ if(isset($_GET['doc_no']))
 		$allocate_ref=$sql_row['allocate_ref'];
 	}
 	$min_width=0;
-	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$_GET['doc_no']."";
+	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$_GET['doc_no']."'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{
@@ -333,7 +333,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$mk_ref=$sql_row['mk_ref'];
 	}
 	$min_width=0;
-	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." and doc_type=\"normal\"";
+	$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."' and doc_type=\"normal\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{

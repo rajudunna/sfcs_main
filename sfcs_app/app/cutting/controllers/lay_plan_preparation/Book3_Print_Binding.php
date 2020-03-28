@@ -472,8 +472,9 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 	$remark4=$sql_row2['remark4'];
 	$patt_ver=$sql_row2['mk_ver'];
 }	
-	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no in ($doc_id) and doc_type=\"normal\"";
- //echo $sql;
+$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
+	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
+//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{
@@ -2397,7 +2398,7 @@ tags will be replaced.-->
 		$color_code=$sql_row33['color_code']; //Color Code
 	}
   
-	$docsqry="select doc_no,cutno from $bai_pro3.binding_consumption_items where parent_id='$bindid'";
+	$docsqry="select doc_no,cutno from $bai_pro3.binding_consumption_items where parent_id=$bindid";
 	$sql_result_doc=mysqli_query($link, $docsqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result_doc))
 	{
@@ -3157,16 +3158,16 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-if($print==1)
-{
-	if($print_status=="0000-00-00" || $print_status == "")
-    {
-	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	    //echo $sql;
-	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if($print==1)
+// {
+// 	if($print_status=="0000-00-00" || $print_status == "")
+//     {
+// 	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+//  	    //echo $sql;
+// 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-    }
-}
+//     }
+// }
 
 //Refresh Parent Page After this Print Out 
 echo"<script>
