@@ -3,6 +3,9 @@ error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
+ $v_r = explode('/',$_SERVER['REQUEST_URI']);
+array_pop($v_r);
+$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/modules_report.php";
 
 function leading_zeros($value, $places)
 {
@@ -46,6 +49,7 @@ function echo_title($table_name,$field,$compare,$key,$link)
 }
 
 
+
 $data = '';
 $jquery_data = '';
 $line_breaker = 0;
@@ -69,7 +73,11 @@ if($section > 0){
             $sewing_wip = '';
             $jobs_wip ='';
             $data.= "<tr rowspan=2>";
-            $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>$module</b></span></td>";
+            $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
+            <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module=$module&operation_code=$get_operation\",\"Popup\");'>
+                            $module</a>
+        
+            </b></span></td>";
 
 
              /*  BLOCK - 1 */
