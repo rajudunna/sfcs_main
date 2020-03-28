@@ -65,6 +65,7 @@
         <?php
 
         $popup_url = getFullURLLevel($_GET['r'],'sections_report.php',0,'R');
+        $popup_url1 =  getFullURLLevel($_GET['r'],'main_sections_report.php',0,'R');
             foreach($sections as $section)
             {
                 $id1 = "sec-load-$section";
@@ -178,9 +179,13 @@
                 }
             }
         });
+
         $("select").change(function(){
             var val = $(this).find('option:selected').attr("name");
-            document.getElementById("demo").innerHTML= "SELECTED SEWING OPERATION : "+val;
+            var val1 = $(this).find('option:selected').attr("value");
+            document.getElementById("demo").innerHTML = 
+            "<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "\",\"Popup\");'>\
+                SELECTED SEWING OPERATION : " + val + "</a>";
         });
     }
      

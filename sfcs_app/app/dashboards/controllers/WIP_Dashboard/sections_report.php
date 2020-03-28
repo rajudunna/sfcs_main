@@ -161,10 +161,11 @@ $operation=$_GET['operations'];
 								<th>Input Job No</th>
 								<th>Cut No</th>
 								<th>Size</th>
-								<th>Input</th>
-								<th>Output</th>
+								<th>Previous Operation Quantity</th>
+								<th>Current Operation Quantity</th>
 								<th>Rejected Qty</th>
 								<th>Balance</th>
+								<th>Remarks</th>
 								<th>WIP</th>
 							</tr>";
 		$toggle=0;
@@ -233,30 +234,10 @@ $operation=$_GET['operations'];
 				  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
 				  $sql_num_check=$sql_num_check+1;
 				}
-				//echo $balance;
-				// echo "</br>num : ".$sql_num_check."</br>";
 				
-				if($sql_num_check>0)
-				{
-					if($toggle==0)
-					{
-						// $tr_color="#66DDAA";
-						$tr_color="blue";
-						$toggle=1;
-					}
-					else if($toggle==1)
-					{
-						$tr_color="white";
-						$toggle=0;
-					}
-		
-					//echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
-					$rowcount_check=1;
-				}
-
-				
-				$row_counter = 0;
-                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
+				$rowcount_check=1;
+		        $row_counter = 0;
+                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
 
 				if(isset($_POST['submit']))
 				{
@@ -274,6 +255,19 @@ $operation=$_GET['operations'];
 				$get_details.="  order by schedule, size_id DESC";
 				//echo $get_details;
 				$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                
+				if(mysqli_num_rows($sql_result12) > 0){
+					if($toggle==0)
+					{
+						// $tr_color="#66DDAA";
+						$tr_color="blue";
+						$toggle=1;
+					} else if($toggle==1){
+						$tr_color="white";
+						$toggle=0;
+					}
+				}
+				
 
 				//echo  $get_details;
 				while($row12=mysqli_fetch_array($sql_result12))
@@ -285,6 +279,7 @@ $operation=$_GET['operations'];
                     $sizes=$row12['size_title'];
                     $job_no1 = $row12['input_job_no'];
                     $cut_number = $row12['cut_number'];
+                    $remarks = $row12['remarks'];
 
                      $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no1,$link);
 
@@ -309,7 +304,7 @@ $operation=$_GET['operations'];
 					$rejected1=array();
 					$rejected=array();
 					$size_title=array();
-	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation";
+	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
 	                //getting selection and apend result to query
 					if(isset($_POST['submit']))
 					{
@@ -328,10 +323,9 @@ $operation=$_GET['operations'];
 					$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33=mysqli_fetch_array($sql_result33))
 					{
-						$size_title[] = $sql_row33['size_title'];
-						$rejected1[$sql_row33['size_title']] = $sql_row33['rejected'];
 						$rejected = $sql_row33['rejected'];
 					}
+					//var_dump($size_title);
 		    
 					if($rowcount_check==1)
 					{	
@@ -362,18 +356,18 @@ $operation=$_GET['operations'];
 						<td>$sizes</td>
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
-						//echo "<td>0</td>";
+						echo "<td>$rejected</td>";
 					
-						foreach ($size_title as $key => $value) 
-						{
-							if($rejected1[$size_title][$key] == '')
-								echo "<td>0</td>";
-							else    
-								echo"<td>".$rejected1[$size_title][$key]."</td>";
-						}  
+						// foreach ($size_title as $key => $value) 
+						// {
+						// 	if($rejected1[$size_title][$key] == '')
+						// 		echo "<td>0</td>";
+						// 	else    
+						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
+						// }  
 	                          			
-						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>";
-						//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
+						<td>$remarks</td>";
 						
 						if($rowcount_check==1)
 						{
@@ -414,17 +408,18 @@ $operation=$_GET['operations'];
 						<td>$sizes</td>
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
-						//echo "<td>0</td>";
+						echo "<td>$rejected</td>";
 					
-						foreach ($size_title as $key => $value) 
-						{
-							if($rejected1[$size_title][$key] == '')
-								echo "<td>0</td>";
-							else    
-								echo"<td>".$rejected1[$size_title][$key]."</td>";
-						}  
+						// foreach ($size_title as $key => $value) 
+						// {
+						// 	if($rejected1[$size_title][$key] == '')
+						// 		echo "<td>0</td>";
+						// 	else    
+						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
+						// }  
 	                          			
-						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>";
+						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
+						<td>$remarks</td>";
 						//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 						//if($row_counter > 0)
 							echo "<td class=\"$tr_color\" ></td>";
