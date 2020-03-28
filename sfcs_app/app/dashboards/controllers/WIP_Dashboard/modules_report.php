@@ -1,6 +1,12 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+$php_self = explode('/',$_SERVER['PHP_SELF']);
+array_pop($php_self);
+$url_r = base64_encode(implode('/',$php_self)."/sections_report.php");
+$has_permission=haspermission($url_r);
+error_reporting(0);
 
     if($_GET['module'])
 	{
@@ -39,7 +45,7 @@ if(isset($_POST['submit']))
     $tid=array();   $selected_sewing_jobs = array();
     $tid=$_POST['log_tid'];
     $operation=$_POST['operation_code'];
-    // var_dump($tid);
+     var_dump($tid);
     // echo $operation;
     // die();
     //To get Operation from Operation Routing For IPS
@@ -104,7 +110,7 @@ if(isset($_POST['submit']))
 	            if (sizeof($selected_sewing_jobs) > $allowable_jobs)
 	            {
 	                echo "<script>sweetAlert('You are Not Authorized to report more than Block Priorities','','warning');</script>";
-	                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+	                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module&operation_code=$operation\"; }</script>";
 	            }
 	            else
 	            {
@@ -114,66 +120,53 @@ if(isset($_POST['submit']))
 
 	        if ($flag == 1)
 	        {
-	            $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles,operation_id) values ('$user_name',".$module.",".$to_module.",".sizeof($tid).",".$operation.")";
-	            $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	            $insert_id=mysqli_insert_id($link);
 	            foreach($tid as $selected)
 	            {
 	                $sql33="update $bai_pro3.ims_log set ims_mod_no = '$to_module' where pac_tid= '$selected'";
 	                //echo $sql33;
 	                $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	                $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$tid";
+	                $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected";
+	                //echo $bund_update;
 	                $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-	                $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where pac_tid='$selected'"; 
+	                $sql="select send_qty,input_job_no,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$selected and operation_id=$operation"; 
 	                //echo $sql."<br>";
 	                $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	                while($sql_row=mysqli_fetch_array($sql_result)) 
 	                { 
-	                    $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no,operation_id) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $to_module.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\",,".$operation.")";
+	                   $sql331="insert into $brandix_bts.wip_dash_bund_track (bundle_number,input_module,transfer_module,quantity,job_no,operation_id) values (\"".$sql_row['bundle_number']."\",". $module.",". $to_module.",\"".$sql_row['send_qty']."\",\"".$sql_row['input_job_no']."\",".$operation.")";
 	                    //echo $sql331;
 	                    mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                } 
 	            }
 	            echo "<script>sweetAlert('Sewing Job Transfered Successfully','','success');</script>";
-	            echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=operation\"; }</script>";
+	            echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=$operation\"; }</script>";
 	        }
     	}
     	else
     	{
     		$implode_tids = implode(",",$tid);
-	        $get_ip_jobs_selected_tids = "SELECT DISTINCT input_job_rand_no_ref FROM $brandix_bts.bundle_creation_data WHERE bundle_number in ($implode_tids)";
-	        // echo $get_ip_jobs_selected_tids;
-	        $slected_ij_result = $link->query($get_ip_jobs_selected_tids);
-	        while($row1 = $slected_ij_result->fetch_assoc()) 
-	        {
-	            $selected_sewing_jobs[] = $row1['input_job_rand_no_ref'];
-	        }
-
-	        $module= $_POST['module'];
+            $module= $_POST['module'];
 	        $to_module= $_POST['module_ref'];
 
-	        $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles,operation_id) values ('$user_name',".$module.",".$to_module.",".sizeof($tid).",".$operation.")";
-            $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            $insert_id=mysqli_insert_id($link);
             foreach($tid as $selected)
             {
                $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected";
                 $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-                $sql="select send_qty,input_job_no,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$selected"; 
+                $sql="select send_qty,input_job_no,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$selected and operation_id=$operation"; 
                 //echo $sql."<br>";
                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 while($sql_row=mysqli_fetch_array($sql_result)) 
                 { 
-                    $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no,operation_id) values (".$insert_id.",\"".$sql_row['bundle_number']."\",". $to_module.",  \"".$sql_row['send_qty']."\",\"".$sql_row['input_job_no']."\",,".$operation.")";
+                    $sql331="insert into $brandix_bts.wip_dash_bund_track (bundle_number,input_module,transfer_module,quantity,job_no,operation_id) values (\"".$sql_row['bundle_number']."\",". $module.",". $to_module.",\"".$sql_row['send_qty']."\",\"".$sql_row['input_job_no']."\",".$operation.")";
                     //echo $sql331;
                     mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                 } 
             }
             echo "<script>sweetAlert('Sewing Job Transfered Successfully','','success');</script>";
-            echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=operation\"; }</script>";
+            echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=$operation\"; }</script>";
 
     	}	
         
@@ -181,7 +174,7 @@ if(isset($_POST['submit']))
     else
     {
         echo "<script>sweetAlert('Please Select Atleast One Sewing Job','','warning');</script>";
-        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php??module=$module&operation_code=operation\"; }</script>";
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=$operation\"; }</script>";
     }   
 }    
 
@@ -197,25 +190,27 @@ if(isset($_POST['submit']))
                     <table class="table table-bordered table-striped" id="table1">
                         <tr class="info">
                             <th>Select</th>
-                            <th>Bundle Number</th>
-                            <th style="max-width: 80px">Input Date</th>
-                            <th>Style</th>
-                            <th>Schedule</th>
-                            <th style="min-width: 150px">Color</th>
-                            <th>Sewing<br>Job No</th>
-                            <th style="max-width: 30px">Cut No</th>
-                            <th>Size</th>
-                            <th>Previous Operation Quantity</th>
-                            <th>Current Operation Quantity</th>
-                            <th>Rejected</th>
-                            <th>Balance</th>
-                            <th>Input<br>Remarks</th>
-                            <th>WIP</th>
+                               
+	                            <th>Bundle Number</th>
+	                            <th style="max-width: 80px">Input Date</th>
+	                            <th>Style</th>
+	                            <th>Schedule</th>
+	                            <th style="min-width: 150px">Color</th>
+	                            <th>Sewing<br>Job No</th>
+	                            <th style="max-width: 30px">Cut No</th>
+	                            <th>Size</th>
+	                            <th>Previous Operation Quantity</th>
+	                            <th>Current Operation Quantity</th>
+	                            <th>Rejected</th>
+	                            <th>Balance</th>
+	                            <th>Input<br>Remarks</th>
+	                            <th>WIP</th>
+                        </container>
                         </tr>
                         <?php
                             $toggle=0;
                             //get styles data for particular operation
-                            $get_bcd_data= "select distinct(schedule),style,color,bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation_code and assigned_module='$module'";
+                            $get_bcd_data= "select distinct(schedule),style,color,bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation_code and assigned_module='$module' and bundle_qty_status=0";
 					           // echo $get_bcd_data;
 					            $result_get_bcd_data = $link->query($get_bcd_data);
 					            while($row = $result_get_bcd_data->fetch_assoc())
@@ -246,7 +241,7 @@ if(isset($_POST['submit']))
 							            }
 						           }
 
-						           $get_jobs_data="select *,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
+						           $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
 						            $result_get_jobs_data = $link->query($get_jobs_data);
 						           // echo  $get_jobs_data;
 						            while($row3 = $result_get_jobs_data->fetch_assoc()) 
@@ -296,7 +291,7 @@ if(isset($_POST['submit']))
                                             <td>"; 
                                                 if($original_qty == $recevied_qty)   
                                                 { 
-                                                    if($recevied_qty1 == 0)
+                                                    if($recevied_qty1 == 0 && $rejected != $recevied_qty)
                                                     {    
                                                         echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$bundle."\">"; 
                                                     }
@@ -380,12 +375,12 @@ if(isset($_POST['submit']))
                     </select>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php
-                        // if(in_array($authorized,$has_permission))
-                        // { 
+                        if(in_array($authorized,$has_permission))
+                        { 
                             echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer"> 
                                 <input type="hidden" value="'.$module.'" name="module"> 
                                 <input type="hidden" value="'.$operation_code.'" name="operation_code">'; 
-                        // }
+                        }
                     ?>
                 </form>
             </div>
@@ -423,18 +418,27 @@ if(isset($_POST['submit']))
     };
     setFilterGrid( "table1", table2_Props);
 </script>
+
 <script language="javascript">
 
 function getCSVData() {
+
+$("table tr").each(function(){
+   $(this).find("td:first").remove();
+   $(this).find("th:first").remove();
+});
+// $('table').autoFilter.remove();
+// $('table').find('td,th').first().remove();
   $('table').attr('border', '1');
   $('table').removeClass('table-bordered');
+  // $('table').removeClass('setFilterGrid("table1", table2_Props)');
   var uri = 'data:application/vnd.ms-excel;base64,'
     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
     , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
   
-    var table = document.getElementById('table1').innerHTML;
-    // $('thead').css({"background-color": "blue"});
+    var table = document.getElementById('table1').innerHTML
+   // $('thead').css({"background-color": "blue"});
     var ctx = {worksheet: name || 'Module Report', table : table}
     //window.location.href = uri + base64(format(template, ctx))
     var link = document.createElement("a");
@@ -443,6 +447,10 @@ function getCSVData() {
     link.click();
     $('table').attr('border', '0');
     $('table').addClass('table-bordered');
+   //  $("table tr").each(function(){
+	  //  $(this).find("td:first").add();
+	  //  $(this).find("th:first").add();
+   // });
 }
 </script>
 

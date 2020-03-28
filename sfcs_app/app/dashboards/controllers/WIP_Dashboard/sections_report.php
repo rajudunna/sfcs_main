@@ -301,9 +301,6 @@ $operation=$_GET['operations'];
 						}
 					}
 
-					$rejected1=array();
-					$rejected=array();
-					$size_title=array();
 	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
 	                //getting selection and apend result to query
 					if(isset($_POST['submit']))
@@ -325,8 +322,7 @@ $operation=$_GET['operations'];
 					{
 						$rejected = $sql_row33['rejected'];
 					}
-					//var_dump($size_title);
-		    
+					
 					if($rowcount_check==1)
 					{	
 						if($row_counter == 0)
@@ -334,9 +330,6 @@ $operation=$_GET['operations'];
 							<td style='border-top:1.5pt solid #fff;'>$module</td>";
 						else 
 							echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
-						
-						// if($new_module == $old_module)
-						//     echo "<td></td>";
 						
 						if(isset($_POST['submit']))
 						{
@@ -357,14 +350,6 @@ $operation=$_GET['operations'];
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
 						echo "<td>$rejected</td>";
-					
-						// foreach ($size_title as $key => $value) 
-						// {
-						// 	if($rejected1[$size_title][$key] == '')
-						// 		echo "<td>0</td>";
-						// 	else    
-						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
-						// }  
 	                          			
 						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
 						<td>$remarks</td>";
@@ -384,8 +369,6 @@ $operation=$_GET['operations'];
 						else 
 							echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
 						$row_counter++;
-						// if($new_module == $old_module)
-					    //     echo "<td></td>";
 
 						if(isset($_POST['submit']))
 						{
@@ -409,21 +392,10 @@ $operation=$_GET['operations'];
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
 						echo "<td>$rejected</td>";
-					
-						// foreach ($size_title as $key => $value) 
-						// {
-						// 	if($rejected1[$size_title][$key] == '')
-						// 		echo "<td>0</td>";
-						// 	else    
-						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
-						// }  
 	                          			
 						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
 						<td>$remarks</td>";
-						//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
-						//if($row_counter > 0)
-							echo "<td class=\"$tr_color\" ></td>";
-						
+						echo "<td class=\"$tr_color\" ></td>";
 						echo "</tr>";
 					}
 						
@@ -455,7 +427,7 @@ function getCSVData() {
     link.click();
     $('table').attr('border', '0');
     $('table').addClass('table-bordered');
-    $('.blue').css("background-color", "blue");
+    $('.blue').css("background-color", "#66DDAA");
     $('.blue').css("border", "0px solid black");	
 }
 </script>

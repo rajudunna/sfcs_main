@@ -80,12 +80,12 @@ select{
 <script type="text/javascript" src="../../../../common/js/jquery.js"></script> 
 <script src="../../../../common/js/jquery.min.js"></script>
 
+
 </head>
 
 <body>
 
 <?php
-
 $operation=$_GET['operations'];
 
 ?>
@@ -108,8 +108,9 @@ $operation=$_GET['operations'];
 				$modules=implode(",",$sec_mods);
 				
 				// die();
-				echo "<div class='table-responsive'>
-						<table class=\"table table-bordered\" id=\"table1\"> 
+				echo "<div class='table-responsive'>";
+				echo "<input id='excel' type='button'  class='btn btn-success' value='Export To Excel' onclick='getCSVData()'>";
+						echo "<table class=\"table table-bordered\" id=\"table1\"> 
 							<tr>
 								<th>Module</th>
 								<th>Bundle No</th>
@@ -227,17 +228,12 @@ $operation=$_GET['operations'];
 						}
 					}
 
-					$rejected1=array();
-					$rejected=array();
-					$size_title=array();
 	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes' and bundle_number= $bundle_number group by operation_id,size_title";
 	                //getting selection and apend result to query
 					//echo  $get_rejected_qty;
 					$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row33=mysqli_fetch_array($sql_result33))
 					{
-						$size_title[] = $sql_row33['size_title'];
-						$rejected1[$sql_row33['size_title']] = $sql_row33['rejected'];
 						$rejected = $sql_row33['rejected'];
 					}
 		    
@@ -271,14 +267,6 @@ $operation=$_GET['operations'];
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
 						echo "<td>$rejected</td>";
-					
-						// foreach ($size_title as $key => $value) 
-						// {
-						// 	if($rejected1[$size_title][$key] == '')
-						// 		echo "<td>0</td>";
-						// 	else    
-						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
-						// }  
 	                          			
 						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
 						<td>$remarks</td>";
@@ -299,8 +287,6 @@ $operation=$_GET['operations'];
 						else 
 							echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
 						$row_counter++;
-						// if($new_module == $old_module)
-					    //     echo "<td></td>";
 
 						if(isset($_POST['submit']))
 						{
@@ -324,14 +310,6 @@ $operation=$_GET['operations'];
 						<td>$previous_ops_qty</td>
 						<td>$current_ops_qty</td>";
 						echo "<td>$rejected</td>";
-					
-						// foreach ($size_title as $key => $value) 
-						// {
-						// 	if($rejected1[$size_title][$key] == '')
-						// 		echo "<td>0</td>";
-						// 	else    
-						// 		echo"<td>".$rejected1[$size_title][$key]."</td>";
-						// }  
 	                          			
 						echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
 						<td>$remarks</td>";
@@ -347,6 +325,11 @@ $operation=$_GET['operations'];
 			}
 		}
 	    echo "</table></div></div>";
+	    // echo '<script type="text/javascript">getCSVData();</script>';
+	    // echo"<script>alert(143);</script>";
+
+	    
+
 ?>
 <script language="javascript">
 
@@ -362,18 +345,18 @@ function getCSVData() {
   
     var table = document.getElementById('table1').innerHTML;
     // $('thead').css({"background-color": "blue"});
-    var ctx = {worksheet: name || 'Module Report', table : table}
+    var ctx = {worksheet: name || 'Sections Report', table : table}
     //window.location.href = uri + base64(format(template, ctx))
     var link = document.createElement("a");
-    link.download = "Module Report.xls";
+    link.download = "Sections Report.xls";
     link.href = uri + base64(format(template, ctx));
     link.click();
     $('table').attr('border', '0');
     $('table').addClass('table-bordered');
-    $('.blue').css("background-color", "blue");
-    $('.blue').css("border", "0px solid black");	
+    $('.blue').css("background-color", "#66DDAA");
+    $('.blue').css("border", "0px solid black");
+    // window.close ();	
 }
 </script>
-
 </body>
 </html>
