@@ -112,29 +112,29 @@ $operation=$_GET['operations'];
 			$report_header="BundleWise";
 		}
 
+
 		echo "<div class='panel panel-primary'>
 				<div class='panel-heading'>Summary of <b>" .$section_name." ( ".$report_header." )</b>
 				</div>
 				</br>
-				<table>
-					<tr>
-						<th>Select Your Choice : </th>
-						<td>
-							<div class='form-inline'>
-								<form method='post'>
-									<select name='input_selection' id='input_selection' class=\"form-control\">
-										<option value='bundle_wise' selected>Bundle Wise</option>
-										<option value='input_wise'>Sewing Job Wise</option>
-									</select>
-							</div></div>
-						</td>";
-						echo '
-						<td>.
-							<input type="submit" id="submit" class="btn btn-primary" name="submit" value="Submit" />
-						</td>
-					</tr>
-				</table>';
-		echo "</form>";
+					<form method='post'>
+						<div class='col-sm-1'>
+							<br/>
+							<b>Select Your Choice : </b>
+						</div>
+						<div class='col-sm-3'>
+							<select name='input_selection' id='input_selection' class=\"form-control\">
+								<option value='bundle_wise' selected>Bundle Wise</option>
+								<option value='input_wise'>Sewing Job Wise</option>
+							</select>
+						</div>
+						<div class='col-sm-1'>  
+							<br/>        
+                            <input type='submit' id='submit' class='btn btn-primary' name='submit' value='Submit' />
+						</div>
+					</form>
+					<br/><br/>
+			";
 
 		echo "<div class='panel-body'>";
 				$sql="SELECT GROUP_CONCAT(quote(`module_name`) ORDER BY module_name+0 ASC ) AS sec_mods, GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC ) AS sec_mod_val,section AS sec_id FROM $bai_pro3.`module_master` WHERE section=$section GROUP BY section ORDER BY section + 0";
