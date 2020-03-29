@@ -385,6 +385,7 @@ if(isset($_POST['submit']))
                 </form>
             </div>
         </div>
+        <span id='hiddenTable' style="display: none"></span>
     </div>
 	
 <script language="javascript" type="text/javascript">
@@ -419,34 +420,46 @@ if(isset($_POST['submit']))
     setFilterGrid( "table1", table2_Props);
 </script>
 
+
 <script language="javascript">
 
 function getCSVData() {
 
-$("table tr").each(function(){
-   $(this).find("td:first").remove();
-   $(this).find("th:first").remove();
-});
-// $('table').autoFilter.remove();
-// $('table').find('td,th').first().remove();
-  $('table').attr('border', '1');
-  $('table').removeClass('table-bordered');
+	var copiedTable = document.getElementById('table1').innerHTML;
+	$('#hiddenTable').html(copiedTable);
+  	$("#hiddenTable tbody tr:first-child").remove();
+	$("#hiddenTable tbody tr").each(function(){
+	   $(this).find("td:first").remove();
+	   $(this).find("th:first").remove();
+	});
+	var printableTable = $('#hiddenTable tbody').html();
+	console.log(printableTable);
+  // $('table').attr('border', '1');
+  // $('table').removeClass('table-bordered');
   // $('table').removeClass('setFilterGrid("table1", table2_Props)');
   var uri = 'data:application/vnd.ms-excel;base64,'
     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
     , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
   
-    var table = document.getElementById('table1').innerHTML
+    // var table = document.getElementById('table1').innerHTML;
+    // console.log(table);
    // $('thead').css({"background-color": "blue"});
-    var ctx = {worksheet: name || 'Module Report', table : table}
+    var ctx = {worksheet: name || 'Module Report', table : printableTable}
     //window.location.href = uri + base64(format(template, ctx))
     var link = document.createElement("a");
     link.download = "Module Report.xls";
     link.href = uri + base64(format(template, ctx));
     link.click();
-    $('table').attr('border', '0');
-    $('table').addClass('table-bordered');
+
+    // $('table').attr('border', '0');
+    // $('table').addClass('table-bordered');
+
+
+	// $("table tr").each(function(){
+	//    $(this).find("td:first").removeClass("hide");
+	//    $(this).find("th:first").removeClass("hide");
+	// });
    //  $("table tr").each(function(){
 	  //  $(this).find("td:first").add();
 	  //  $(this).find("th:first").add();
