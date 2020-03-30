@@ -6,10 +6,6 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-$php_self = explode('/',$_SERVER['PHP_SELF']);
-array_pop($php_self);
-$url_r = base64_encode(implode('/',$php_self)."/sections_report.php");
-$has_permission=haspermission($url_r);
 error_reporting(0);
 ?>
 

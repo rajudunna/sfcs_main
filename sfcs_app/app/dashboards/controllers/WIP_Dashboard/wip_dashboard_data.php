@@ -160,6 +160,7 @@ function getsewingJobsData($section,$module,$get_operation)
             $inputno ="";
             $previous_output=0;
             $present_output=0;
+            $rejected=0;
             $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
             // echo $get_jobs;
             $get_jobs_result = $link->query($get_jobs);
@@ -171,7 +172,7 @@ function getsewingJobsData($section,$module,$get_operation)
               $docket_number = $row4['docket_number'];
               $remarks = $row4['remarks'];
               $cut_no = $row4['cut_number'];
-              $rejected = $row4['rejected_qty'];
+              $rejected = $rejected+$row4['rejected_qty'];
               $inputno = $row4['input_job_no'];
 
             //   var_dump($job_no1);
