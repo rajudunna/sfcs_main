@@ -241,88 +241,97 @@ if(isset($_POST['submit']))
 							            }
 						           }
 
-						           $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
-						            $result_get_jobs_data = $link->query($get_jobs_data);
-						           // echo  $get_jobs_data;
-						            while($row3 = $result_get_jobs_data->fetch_assoc()) 
-						            {
-                                       $size = $row3['size_title'];
-                                       $input_date = $row3['input_date'];
-                                       $job_no = $row3['input_job_no'];
-                                       $bundle = $row3['bundle_number'];
-                                       $docket_number = $row3['docket_number'];
-                                       $input_qty = $row3['input'];
-                                       $output_qty = $row3['output'];
-                                       $remarks = $row3['remarks'];
+						            $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
+							        $result_checking_qry = $link->query($checking_qry);
+							        while($row_cat = $result_checking_qry->fetch_assoc()) 
+							        {
+							            $category_act = $row_cat['category'];
+							        }
+                                    if($category_act == 'sewing')
+                                    {
+                                       $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
+							            $result_get_jobs_data = $link->query($get_jobs_data);
+							           // echo  $get_jobs_data;
+							            while($row3 = $result_get_jobs_data->fetch_assoc()) 
+							            {
+	                                       $size = $row3['size_title'];
+	                                       $input_date = $row3['input_date'];
+	                                       $job_no = $row3['input_job_no'];
+	                                       $bundle = $row3['bundle_number'];
+	                                       $docket_number = $row3['docket_number'];
+	                                       $input_qty = $row3['input'];
+	                                       $output_qty = $row3['output'];
+	                                       $remarks = $row3['remarks'];
 
-                                        $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no,$link);
+	                                        $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no,$link);
 
-                                        $sql22="SELECT plandoc_stat_log.order_tid, plandoc_stat_log.acutno, bai_orders_db_confirm.color_code FROM bai_pro3.plandoc_stat_log LEFT JOIN bai_pro3.bai_orders_db_confirm ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid where doc_no=$docket_number and a_plies>0";
-	                                    // echo $sql22.'<br>';
-	                                    $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	                                    while($sql_row22=mysqli_fetch_array($sql_result22)) 
-	                                    { 
-	                                        $order_tid=$sql_row22['order_tid']; 
-	                                        $cutno=$sql_row22['acutno']; 
-	                                        $color_code=$sql_row22['color_code']; 
+	                                        $sql22="SELECT plandoc_stat_log.order_tid, plandoc_stat_log.acutno, bai_orders_db_confirm.color_code FROM bai_pro3.plandoc_stat_log LEFT JOIN bai_pro3.bai_orders_db_confirm ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid where doc_no=$docket_number and a_plies>0";
+		                                    // echo $sql22.'<br>';
+		                                    $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2.4".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		                                    while($sql_row22=mysqli_fetch_array($sql_result22)) 
+		                                    { 
+		                                        $order_tid=$sql_row22['order_tid']; 
+		                                        $cutno=$sql_row22['acutno']; 
+		                                        $color_code=$sql_row22['color_code']; 
+		                                    }
+
+	                                       
+	                                       //Previous operation qty check
+	                                       $bundle_check_qty="select original_qty,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$pre_ops_code";
+		                                    $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+		                                    while($sql_row=mysqli_fetch_array($sql_result56))
+		                                    {
+		                                        $original_qty=$sql_row['original_qty'];
+		                                        $recevied_qty=$sql_row['recevied_qty'];
+		                                    }
+
+		                                    //Current operation qty check
+		                                    $bundle_qty="select recevied_qty,rejected_qty from $brandix_bts.bundle_creation_data where bundle_number = $bundle and operation_id=$operation_code";
+		                                    // echo $bundle_qty;
+		                                    $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+		                                    while($sql_row1=mysqli_fetch_array($sql_result561))
+		                                    {
+		                                        $recevied_qty1=$sql_row1['recevied_qty'];
+		                                        $rejected=$sql_row1['rejected_qty'];
+		                                    }
+
+		                                        echo "<tr>
+	                                            <td>"; 
+	                                                if($original_qty == $recevied_qty)   
+	                                                { 
+	                                                    if($recevied_qty1 == 0 && $rejected != $recevied_qty)
+	                                                    {    
+	                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$bundle."\">"; 
+	                                                    }
+	                                                    else 
+	                                                    { 
+	                                                        echo "N/A"; 
+	                                                    } 
+	                                                } 
+	                                                else 
+	                                                { 
+	                                                    echo "N/A"; 
+	                                                }
+	                                                
+	                                            echo "</td>
+	                                                <td>".$bundle."</td>
+	                                                <td>".$input_date."</td>";
+	                                            echo "<td>".$style."</td>
+	                                                <td>".$schedule."</td>
+	                                                <td>".$color."</td>
+	                                                <td>".$display_prefix1."</td>
+	                                                <td>".chr($color_code).leading_zeros($cutno,3)."</td>
+	                                                <td>".$size."</td>
+	                                                <td>".$input_qty."</td>
+	                                                <td>".$output_qty."</td>
+	                                                <td>".$rejected."</td>
+	                                                <td>".($input_qty-($output_qty+$rejected))."</td>
+	                                                <td>".$remarks."</td>
+	                                                <td>".($input_qty-($output_qty+$rejected))."</td>
+	                                            </tr>"; 
 	                                    }
-
-                                       
-                                       //Previous operation qty check
-                                       $bundle_check_qty="select original_qty,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$pre_ops_code";
-	                                    $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                                    while($sql_row=mysqli_fetch_array($sql_result56))
-	                                    {
-	                                        $original_qty=$sql_row['original_qty'];
-	                                        $recevied_qty=$sql_row['recevied_qty'];
-	                                    }
-
-	                                    //Current operation qty check
-	                                    $bundle_qty="select recevied_qty,rejected_qty from $brandix_bts.bundle_creation_data where bundle_number = $bundle and operation_id=$operation_code";
-	                                    // echo $bundle_qty;
-	                                    $sql_result561=mysqli_query($link, $bundle_qty) or exit("Sql bundle_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                                    while($sql_row1=mysqli_fetch_array($sql_result561))
-	                                    {
-	                                        $recevied_qty1=$sql_row1['recevied_qty'];
-	                                        $rejected=$sql_row1['rejected_qty'];
-	                                    }
-
-	                                        echo "<tr>
-                                            <td>"; 
-                                                if($original_qty == $recevied_qty)   
-                                                { 
-                                                    if($recevied_qty1 == 0 && $rejected != $recevied_qty)
-                                                    {    
-                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$bundle."\">"; 
-                                                    }
-                                                    else 
-                                                    { 
-                                                        echo "N/A"; 
-                                                    } 
-                                                } 
-                                                else 
-                                                { 
-                                                    echo "N/A"; 
-                                                }
-                                                
-                                            echo "</td>
-                                                <td>".$bundle."</td>
-                                                <td>".$input_date."</td>";
-                                            echo "<td>".$style."</td>
-                                                <td>".$schedule."</td>
-                                                <td>".$color."</td>
-                                                <td>".$display_prefix1."</td>
-                                                <td>".chr($color_code).leading_zeros($cutno,3)."</td>
-                                                <td>".$size."</td>
-                                                <td>".$input_qty."</td>
-                                                <td>".$output_qty."</td>
-                                                <td>".$rejected."</td>
-                                                <td>".($input_qty-($output_qty+$rejected))."</td>
-                                                <td>".$remarks."</td>
-                                                <td>".($input_qty-($output_qty+$rejected))."</td>
-                                        </tr>"; 
-                                }
-                            }  
+                                    }
+                                }  
                            ?>
                     </table>
                     </div>
@@ -376,7 +385,7 @@ if(isset($_POST['submit']))
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php
                         if(in_array($authorized,$has_permission))
-                        { 
+                        {
                             echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer"> 
                                 <input type="hidden" value="'.$module.'" name="module"> 
                                 <input type="hidden" value="'.$operation_code.'" name="operation_code">'; 
