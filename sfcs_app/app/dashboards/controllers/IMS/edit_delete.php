@@ -99,6 +99,19 @@ function validateQty(event)
 				$is_valid = 1;
 			}
 		}
+		if($id=='IPS'){
+			$get_count_ims_log="select count(*) as ims_count from $bai_pro3.ims_log";
+			$res_ims_log_count = mysqli_query($link,$get_count_ims_log);
+			$get_count_ims_log_bkp="select count(*) as ims_bkp_count from $bai_pro3.ims_log_backup";
+			$res_ims_log_bkp_count = mysqli_query($link,$get_count_ims_log_bkp);
+			if(mysqli_num_rows($res_ims_log_count)==0 && mysqli_num_rows($res_ims_log_bkp_count)==0){
+				$is_valid= 1;
+			}
+			else {
+				$is_valid= 0;
+				echo "<script>sweetAlert('Cant edit for IPS Application','','error')</script>";
+			}
+		}
 		// echo $is_valid.'<br/>';
 		// die();
 		if($is_valid=='1'){

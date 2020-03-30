@@ -58,6 +58,7 @@ if (isset($_GET['del_id']))
 <?php
 if(isset($_POST['submit']))
 {
+	
 	//var_dump($_POST['opn']);
 	$details=explode('|',$_POST['opn']);
 	//var_dump($details);
@@ -109,6 +110,19 @@ if(isset($_POST['submit']))
 		}
 	}
 	
+	if($application=='IPS'){
+		$get_count_ims_log="select count(*) as ims_count from $bai_pro3.ims_log";
+		$res_ims_log_count = mysqli_query($link,$get_count_ims_log);
+		$get_count_ims_log_bkp="select count(*) as ims_bkp_count from $bai_pro3.ims_log_backup";
+		$res_ims_log_bkp_count = mysqli_query($link,$get_count_ims_log_bkp);
+		if(mysqli_num_rows($res_ims_log_count)==0 && mysqli_num_rows($res_ims_log_bkp_count)==0){
+			$is_valid= 1;
+		}
+		else {
+			$is_valid= 0;
+			echo "<script>sweetAlert('Cant edit for IPS Application','','error')</script>";
+		}
+	}
 	if($is_valid == '1'){
 		$already_query = "select * from $brandix_bts.tbl_ims_ops where appilication = '$application'";
 		$already_result = mysqli_query($link,$already_query);

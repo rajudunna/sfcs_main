@@ -1658,6 +1658,15 @@ else if($concurrent_flag == 0)
 						$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
 						$operation_out_code=$get_ips_op['operation_code'];
 					}
+						//To get Line Out Operation
+						$application1 = 'IMS';
+						$scanning_query1="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+					   // echo $scanning_query1;
+						$scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row1=mysqli_fetch_array($scanning_result1))
+						{
+						  $line_out_ops_code=$sql_row1['operation_code'];
+						}
 	                  //*To get previous Operation
 					   $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
 				        //echo $ops_sequence_check;

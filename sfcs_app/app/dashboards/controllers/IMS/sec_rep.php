@@ -269,15 +269,7 @@ if(isset($_GET['val']))
 				$col_span = count($ops_get_code);
 
 				//To get input operation
-				$application='IPS';
-
-				$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-				$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1111=mysqli_fetch_array($scanning_result))
-				{
-				  $operation_name=$sql_row1111['operation_name'];
-				  $input_code=$sql_row1111['operation_code'];
-				} 
+				
 				
 				//To get output operation
 				$application='IMS_OUT';
@@ -336,7 +328,7 @@ if(isset($_GET['val']))
 			{
 				while($sql_rowwip1=mysqli_fetch_array($sql_resultwip1))
 				{
-					$bundle_numbers[]=$sql_rowwip1['pac_tid']
+					$bundle_numbers[]=$sql_rowwip1['pac_tid'];
 				}					
 			}
 			$sqlwip="SELECT sum(ims_qty) as input,sum(ims_pro_qty) as output FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
@@ -363,7 +355,6 @@ if(isset($_GET['val']))
 					$balance=$sql_rowwip['input']-$sql_rowwip['output'];
 					$sql_num_check=$sql_num_check+1;
 				}			
-				$sql_num_check
 				if($sql_num_check>0)
 				{
 					if($toggle==0)
@@ -382,14 +373,23 @@ if(isset($_GET['val']))
 				}		
 			
 				$row_counter = 0;
-				$get_job="select input_job_no_random_ref,,style,color from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).")  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations) group by input_job_no_random_ref";
-				//echo $get_job;
+				$get_job="select input_job_no_random_ref,style,color from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).")  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations) group by input_job_no_random_ref";
+				// echo $get_job;
 				$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$input_job=$sql_row['input_job_no_random_ref'];
 					$style=$sql_row['style'];
 					$color=$sql_row['color'];
+					$application='IPS';
+
+					$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+					$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row1111=mysqli_fetch_array($scanning_result))
+					{
+					$operation_name=$sql_row1111['operation_name'];
+					$input_code=$sql_row1111['operation_code'];
+					} 
 					if($input_code=='Auto')
 					{
 						$get_ips_op = get_ips_operation_code($link,$style,$color);
@@ -412,7 +412,7 @@ if(isset($_GET['val']))
 						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 					}  
 					$get_details.="  order by schedule, size_id DESC";
-					//echo $get_details;
+					// echo $get_details;
 					$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row12=mysqli_fetch_array($sql_result12))
 					{
