@@ -35,7 +35,6 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                         while($row = mysqli_fetch_array($docketrollsresult))
                         {
                             $response_data[] = $row;
-                            
                         }
                     $result['totalreportedplie']=$totalreportedplie;
                     $result['response_data']=$response_data;
@@ -62,23 +61,68 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                                 $mlengthresult = mysqli_query($link,$mlength);
                                 $marklength = mysqli_fetch_array($mlengthresult);
 
-                                $docketrolls="SELECT * FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id AND `bai_pro3`.`docket_roll_info`.docket=`bai_rm_pj1`.`fabric_cad_allocation`.doc_no WHERE doc_no='".$doc_no ."' order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty"; 
+                                $docketrolls="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,allocated_qty,ref2,ref4 AS shade,roll_width,roll_id FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id AND `bai_pro3`.`docket_roll_info`.docket=`bai_rm_pj1`.`fabric_cad_allocation`.doc_no WHERE doc_no='".$doc_no ."' order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty"; 
                                 $docketrollsresult = mysqli_query($link,$docketrolls);
                                 $response_data=array();
                                 if(mysqli_num_rows($docketrollsresult) > 0)
                                 {
                                 $i=0;
-                                    while($row = mysqli_fetch_array($docketrollsresult))
+                                while($row = mysqli_fetch_array($docketrollsresult))
+                                {
+                                    $row['bgcolor'] = 'white';
+                                    $response_data[] = $row;
+                                }
+                                $get_cut_number_query="SELECT pcutno,order_tid FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=".$doc_no;
+                                $get_cut_number_query_result = mysqli_query($link,$get_cut_number_query);
+                                if(mysqli_num_rows($get_cut_number_query_result) > 0)
+                                { 
+                                    while($cut_row = mysqli_fetch_array($get_cut_number_query_result))
                                     {
-
-                                        $response_data[] = $row;
-                                        
+                                        $pcut_no=$cut_row['pcutno'];
+                                        $order_tid=$cut_row['order_tid'];
+                                        $get_style_schedule_color_qry="select order_style_no as style,order_del_no as schedule,order_col_des as color from $bai_pro3.bai_orders_db where order_tid ='".$order_tid."'";
+                                        $get_style_schedule_color_qry_res=mysqli_query($link, $get_style_schedule_color_qry) OR EXIT("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        while($sql_rowx121=mysqli_fetch_array($get_style_schedule_color_qry_res))
+                                        {
+                                            $style=$sql_rowx121['style'];
+                                            $schedule=$sql_rowx121['schedule'];
+                                            $color=$sql_rowx121['color'];
+                                        }
+                                        $new_color=$color.'^'.$pcut_no;
                                     }
-                                    $result['response_data']=$response_data;
-                                    $result['marklength']=$marklength['mklength'];
-                
-                                    echo json_encode($result);
-                                    exit(0);
+                                    if($pcut_no){
+                                        $mrn_request_qry="SELECT tid FROM $bai_rm_pj2.`mrn_track` WHERE style='".$style."' and schedule='".$schedule."' and color = '".$new_color."'";
+                                        // echo $mrn_request_qry
+                                        $mrn_request_qry_result = mysqli_query($link,$mrn_request_qry);
+                                        if(mysqli_num_rows($mrn_request_qry_result) > 0)
+                                        {
+                                            while($mrn_track_row=mysqli_fetch_array($mrn_request_qry_result))
+                                            {
+                                                $tid=$mrn_track_row['tid'];
+                                                $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,roll_width,roll_id FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_rm_pj1`.`fabric_cad_allocation` ON `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj2`.`mrn_out_allocation`.lable_id LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id  
+                                                WHERE mrn_tid='".$tid."' ORDER BY `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj2.mrn_out_allocation.iss_qty"; 
+                                                // echo $mrn_details;
+                                                $mrn_detailsresult = mysqli_query($link,$mrn_details);
+                                                if(mysqli_num_rows($mrn_detailsresult) > 0)
+                                                {
+                                                    while($mrn_row=mysqli_fetch_array($mrn_detailsresult))
+                                                    {
+                                                        $mrn_row['bgcolor'] = 'pink';
+                                                        $response_data[] = $mrn_row;
+                                                    }
+                                                }
+                                                // var_dump($response_data);
+                                                // $result['response_data']=$mrn_data;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $result['response_data']=$response_data;
+                                $result['marklength']=$marklength['mklength'];
+            
+                                echo json_encode($result);
+                                exit(0);
                                 }
                         }else if($row1['plan_lot_ref']=="Stock")
                         {
