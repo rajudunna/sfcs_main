@@ -147,94 +147,103 @@ function getsewingJobsData($section,$module,$get_operation)
                 $pre_ops_code = $row3['operation_code'];
             }
         }
-        $previous_operation = $pre_ops_code;
-        $present_operation = $get_operation;
-        $inputno ="";
-        $previous_output=0;
-        $present_output=0;
-        $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
-        // echo $get_jobs;
-        $get_jobs_result = $link->query($get_jobs);
-        while($row4 = mysqli_fetch_array($get_jobs_result))
+        $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
+        $result_checking_qry = $link->query($checking_qry);
+        while($row_cat = $result_checking_qry->fetch_assoc()) 
         {
-          $previous_output = $previous_output+$row4['previous_output'];
-          $present_output = $present_output+$row4['present_output'];   
-          $job_no1 = $row4['input_job_no_random_ref'];
-          $docket_number = $row4['docket_number'];
-          $remarks = $row4['remarks'];
-          $cut_no = $row4['cut_number'];
-          $rejected = $row4['rejected_qty'];
-          $inputno = $row4['input_job_no'];
-
-        //   var_dump($job_no1);
+            $category_act = $row_cat['category'];
         }
-        $sql331="select type_of_sewing from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$job_no'";
-        //echo $sql331;
-        $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
-        while($sql_row331=mysqli_fetch_array($sql_result331))
+        if($category_act == 'sewing')
         {
-            $type_of_sewing=$sql_row331['type_of_sewing'];
-        }
+            $previous_operation = $pre_ops_code;
+            $present_operation = $get_operation;
+            $inputno ="";
+            $previous_output=0;
+            $present_output=0;
+            $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
+            // echo $get_jobs;
+            $get_jobs_result = $link->query($get_jobs);
+            while($row4 = mysqli_fetch_array($get_jobs_result))
+            {
+              $previous_output = $previous_output+$row4['previous_output'];
+              $present_output = $present_output+$row4['present_output'];   
+              $job_no1 = $row4['input_job_no_random_ref'];
+              $docket_number = $row4['docket_number'];
+              $remarks = $row4['remarks'];
+              $cut_no = $row4['cut_number'];
+              $rejected = $row4['rejected_qty'];
+              $inputno = $row4['input_job_no'];
 
-        $prefix="";
-        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
-        // echo $sql."<br>";
-        $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row=mysqli_fetch_array($sql_result))
-        {
-            $prefix = $sql_row['result'];
-        }
-        $display_prefix1=$prefix.leading_zeros($inputno,3);
+            //   var_dump($job_no1);
+            }
+            $sql331="select type_of_sewing from $bai_pro3.pac_stat_log_input_job where input_job_no_random='$job_no'";
+            //echo $sql331;
+            $sql_result331=mysqli_query($link, $sql331) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));      
+            while($sql_row331=mysqli_fetch_array($sql_result331))
+            {
+                $type_of_sewing=$sql_row331['type_of_sewing'];
+            }
 
-        // $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
-        // $display = $sewing_prefi.leading_zeros($inputno,3);
+            $prefix="";
+            $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
+            // echo $sql."<br>";
+            $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sql_row=mysqli_fetch_array($sql_result))
+            {
+                $prefix = $sql_row['result'];
+            }
+            $display_prefix1=$prefix.leading_zeros($inputno,3);
 
-        $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedule,$link);
-        $display1=chr($color_code).leading_zeros($cut_no,3); 
-         $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
+            // $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+            // $display = $sewing_prefi.leading_zeros($inputno,3);
+
+            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedule,$link);
+            $display1=chr($color_code).leading_zeros($cut_no,3); 
+             $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);
 
 
-        $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule='$schedule'";
-        $sql_result =   $link->query($sql44);
-        while($row44 = mysqli_fetch_array($sql_result))
-        {
-            $input_date = $row44['ims_date'];
-        }
-        $wip = $previous_output - $present_output;
+            $sql44="select ims_date from $bai_pro3.ims_log where ims_schedule='$schedule'";
+            $sql_result =   $link->query($sql44);
+            while($row44 = mysqli_fetch_array($sql_result))
+            {
+                $input_date = $row44['ims_date'];
+            }
+            $wip = $previous_output - $present_output;
+            
+            $totalwip = $totalwip+$wip;
         
-        $totalwip = $totalwip+$wip;
-    
-     
-        for($x=0;$x<sizeof($job_no1);$x++)
-        {
-            $tool_tip_text = "<p style=\"width : 500px \">
-            <v><c>Style </c> : $style </v>
-            <v><c>Schedule </c> : $schedule</v>
-            <v><c>Color </c> : $color</v>
-            <v><c>Co No </c> : $co_no</v>
-            <v><c>Input_date </c> : $input_date</v>
-            <v><c>Wip </c> : $wip</v>
-            <v><c>Job No </c> : $display_prefix1</v>
-            <v><c>Cut No </c> :$cut_no</v>
-            <v><c>Doc_no </c> : $docket_number</v>
-            <v><c>Rejected </c> : $rejected</v>
-            <v><c>Remarks </c> : $remarks</v>
-          
-           </p>";
-           $href= "$url&module=$module&section=$section&operations=$get_operation";
-            $docs_data.="<span class='block'>
-            <span class='cut-block blue'>
-                <span class='mytooltip'>
-                    <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-                    onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
-                    data-html='true'>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    </a>
+         
+            for($x=0;$x<sizeof($job_no1);$x++)
+            {
+                $tool_tip_text = "<p style=\"width : 500px \">
+                <v><c>Style </c> : $style </v>
+                <v><c>Schedule </c> : $schedule</v>
+                <v><c>Color </c> : $color</v>
+                <v><c>Co No </c> : $co_no</v>
+                <v><c>Input_date </c> : $input_date</v>
+                <v><c>Wip </c> : $wip</v>
+                <v><c>Job No </c> : $display_prefix1</v>
+                <v><c>Cut No </c> :$cut_no</v>
+                <v><c>Doc_no </c> : $docket_number</v>
+                <v><c>Rejected </c> : $rejected</v>
+                <v><c>Remarks </c> : $remarks</v>
+              
+               </p>";
+               $href= "$url&module=$module&section=$section&operations=$get_operation";
+                $docs_data.="<span class='block'>
+                <span class='cut-block blue'>
+                    <span class='mytooltip'>
+                        <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
+                        onclick=\"window.open('index.php?r=$href','yourWindowName','width=800,height=600')\"
+                        data-html='true'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </a>
+                    </span>
                 </span>
-            </span>
-          </span>"; 
+              </span>"; 
+            }
+            unset($job_no1);
         }
-        unset($job_no1);
     }
 
         $docs_data.="<span class='block'>
