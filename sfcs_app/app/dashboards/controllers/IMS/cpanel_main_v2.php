@@ -589,14 +589,26 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                   if($operation_in_code == 'Auto'){
                     $get_ips_op = get_ips_operation_code($link,$style,$color);
                     $operation_in_code=$get_ips_op['operation_code'];
+					
+					 $sqlwip12="SELECT sum(ims_qty) as in $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
+					//  echo $sqlwip12."<br>";
+					  $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					  while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
+					  {
+						$wip=$sql_rowwip12['in'];
+					  } 
                   }
-                  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).")";
-                //  echo $sqlwip12."<br>";
-                  $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-                  while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
-                  {
-                    $wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
-                  } 
+				  else
+				  { 
+				  
+					  $sqlwip12="SELECT sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".implode(",",$bundle_numbers).")";
+					//  echo $sqlwip12."<br>";
+					  $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					  while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
+					  {
+						$wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
+					  } 
+				  }
                   unset($bundle_numbers);
                 }
                 ?>

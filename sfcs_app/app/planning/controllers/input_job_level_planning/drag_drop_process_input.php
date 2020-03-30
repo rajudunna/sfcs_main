@@ -543,29 +543,35 @@ $userName = getrbac_user()['uname'];
 		while($sql_row=mysqli_fetch_array($scanning_result))
 		{
 			$operation_name=$sql_row['operation_name'];
-			$operation_code=$sql_row['operation_code'];
+			$operation_code=$sql_row['operation_code'];			
 		}
+		
+		
 		if($operation_code == 'Auto'){
 			$get_ips_op = get_ips_operation_code($link,$style,$color);
 			$operation_code=$get_ips_op['operation_code'];
 			$operation_name=$get_ips_op['operation_name'];
 		}
+		else
+		{
+			$remove_docs=array();
+			$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
+			input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
+			//echo $sqlx;
+			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowx=mysqli_fetch_array($sql_resultx))
+			{
+				$remove_docs[]="'".$sql_rowx['doc_no']."'";
+			}
+			
+			if(sizeof($remove_docs)>0)
+			{
+				$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
+				mysqli_query($link, $sqlx) or exit("Sql Error11.2");
+			}
+		}	
 		// remove docs
-		$remove_docs=array();
-		$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where
-		input_job_input_status(input_job_no_random,$operation_code)=\"DONE\"";
-		//echo $sqlx;
-		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11.1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_rowx=mysqli_fetch_array($sql_resultx))
-		{
-			$remove_docs[]="'".$sql_rowx['doc_no']."'";
-		}
 		
-		if(sizeof($remove_docs)>0)
-		{
-			$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref in (".implode(",",$remove_docs).")";
-			mysqli_query($link, $sqlx) or exit("Sql Error11.2");
-		}
 		
 	}
 	//new change ended here
