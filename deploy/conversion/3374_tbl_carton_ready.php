@@ -4,6 +4,19 @@ ini_set('max_execution_time', '50000');
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
+$get_del_mos="SELECT DISTINCT mo_no,operation_id FROM `bai_pro3`.`tbl_carton_ready` WHERE mo_no IN (SELECT mo_number FROM `m3_inputs`.deleted_mos GROUP BY mo_number) GROUP BY mo_no";
+$del_mo_result = mysqli_query($link,$get_del_mos);
+$sql_num=mysqli_num_rows($del_mo_result);
+if($sql_num>0)
+{				
+	while($row_mo = mysqli_fetch_array($del_mo_result))
+	{
+
+		$deleted_mo=$row_mo['mo_no'];
+		$op_code=$row_mo['operation_id'];
+		$deleted_mos[$op_code][]= $deleted_mo;
+	}
+}
 $get_code51 = "TRUNCATE `bai_pro3`.`tbl_carton_ready`";
 $bcd_result51 = mysqli_query($link,$get_code51);
 $count_val = 0;$count_value=0;
@@ -73,12 +86,68 @@ while($row1 = mysqli_fetch_array($style_result))
 					if($qty_inserting)
 					{
 						$count_val++;
-						echo "<h4 style='color:blue;'>successfully updated : </h4>".$count_val."-".$insert_qry."</br>";
+						echo "<h4 style='color:green;'>successfully inserted : </h4>".$count_val."-".$insert_qry."</br>";
+						if($count_val == 1)
+						{
+							foreach ($deleted_mos as $op_code1 => $value1) 
+							{
+								foreach ($value1 as $value) 
+								{
+									$mo_no_val .= "'".$value."',";
+								}
+								$del_mo_val = rtrim($mo_no_val, ",");
+								$moq_query_del = "SELECT mo_no,sum(if(op_code=$op_code1,good_quantity,0)) as output,sum(if(op_code=200,good_quantity,0)) as carton from bai_pro3.mo_operation_quantites where mo_no in ($del_mo_val) and mo_no != '' group by mo_no";
+								echo $moq_query_del;
+								$moq_res_del = mysqli_query($link,$moq_query_del);
+								while($row_del = mysqli_fetch_array($moq_res_del))
+								{
+									$mo_no1 = $row_del['mo_no'];
+									$output1 = $row_del['output'];
+									$carton1 = $row_del['carton'];
+									$code1 = $op_code1;
+
+									if($carton1==0)
+									{
+										$remain1=$output1;
+									}
+									else
+									{
+										$remain1 = $output1-$carton1;
+									}
+									
+									if($output1 > 0)
+									{
+										if($remain1 < 0 )
+										{
+											//to insert negative values
+											$mo_val1 = $mo_no1."//".$remain1;
+											$mo_num_qry1 = "INSERT INTO `bai_pro3`.`bai_mod_db` (`mod_id`) VALUES ('$mo_val1');";
+											mysqli_query($link,$mo_num_qry1);
+											$remain1 = 0;
+										}
+										$insert_qry1 = "INSERT INTO `bai_pro3`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`) VALUES ($code1, '$mo_no1', $remain1, $output1); ";
+										$qty_inserting1 = mysqli_query($link,$insert_qry1);
+										if($qty_inserting1)
+										{
+											$count_val++;
+											echo "<h4 style='color:blue;'>successfully inserted : deleted mo's</h4>".$count_val."-".$insert_qry1."</br>";
+										}
+										else
+										{
+											$count_value++;
+											echo "<h4 style='color:brown;'>Failed to insert : deleted mo's</h4>".$count_value."-".$insert_qry1."</br>";
+										}
+									}
+								}
+								unset($del_mo_val);
+								unset($op_code1);
+							}
+						}
 					}
 					else
 					{
 						$count_value++;
-						echo "<h4 style='color:red;'>Failed to updated : </h4>".$count_value."-".$insert_qry."</br>";
+						echo "<h4 style='color:red;'>Failed to insert : </h4>".$count_value."-".$insert_qry."</br>";
 					}	
 				}
 
