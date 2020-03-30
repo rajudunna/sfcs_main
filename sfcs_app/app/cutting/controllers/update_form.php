@@ -77,7 +77,7 @@ function DataCheck()
 	{         
 			if(parseFloat(chks1[i].value) < parseFloat(chks[i].value))
 			{
-				swal('Please Enter Correct Value','','warning');
+				// swal('Please Enter Correct Value','','warning');
 				chks[i].value=0;
 			}
 			if(chks[i].value=="")
@@ -95,6 +95,8 @@ function DataCheck()
 		document.getElementById("tot").value=0;
 		for (var i = 0; i < chks.length; i++) 
 		{
+
+			swal('Please Enter Correct Value','','warning');
 			chks[i].value=0;
 		}
 		document.getElementById("#issueid").disabled = true;
@@ -320,13 +322,13 @@ if(sizeof($_GET["lots"]) > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3 from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3,ref2 from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($result1)>0){
 		echo "<table class='table table-bordered'>";
-		echo "<tr><th>LableId</th><th>Barcode</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Allocated Qty</th><th>Return Qty</th><th>Balance Qty</th><th>Issue Qty</th></tr>";
+		echo "<tr><th>LableId</th><th>Barcode</th><th>Roll Id</th><th>Shrinkage</th><th>Width</th><th>Shade</th><th>LotNo</th><th>Received Qty</th><th>Issued Qty</th><th>Allocated Qty</th><th>Return Qty</th><th>Balance Qty</th><th>Issue Qty</th></tr>";
 	}else{
 		echo "<script>sweetAlert('Inavlid Lot Number','','warning')</script>";
 	}
@@ -349,6 +351,7 @@ if(sizeof($_GET["lots"]) > 0)
 		echo "<tr>";
 		echo "<td><input type=\"hidden\" name=\"ref_tid[]\" value=\"".$ref_tid."\" /><input type=\"hidden\" name=\"lblids[]\" value=\"".$sql_row1["tid"]."\" >".$ref_tid."-".$sql_row1["tid"]."</td>";
 		echo "<td>".$sql_row1["barcode_number"]."</td>";
+		echo "<td>".$sql_row1["ref2"]."</td>";
 		echo "<td>".$sql_row1["shrinkage_group"]."</td>";
 		echo "<td>".$sql_row1["ref3"]."</td>";
 		echo "<td>".$sql_row1["ref4"]."</td>";
@@ -374,7 +377,7 @@ if(sizeof($_GET["lots"]) > 0)
 
 
 		echo "<td><input type=\"hidden\" name=\"lotbal[]\" value=\"".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."\"  />".(($sql_row1["qty_rec"]+$sql_row1["qty_ret"])-($sql_row1["qty_issued"]+$sql_row1["qty_allocated"]+$mrn_iss_qty))."</td>";
-		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
+		echo "<td><input type=\"text\"  name=\"issqty[]\" class='float' onfocus=if(this.value==0){this.value=''} onblur=if(this.value==''){this.value=0;} value=\"0\" $readonly onkeyup=\"DataCheck();\"/></td>";
 		echo "</tr>";
 		}
 	}
@@ -432,13 +435,13 @@ echo "</tr>";
 
 if($level==3)
 {
-	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=\"$ref\" and tid=\"$ref_tid\" and status=5";
+	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5";
 }
 else
 {
-	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=\"$ref\" and tid=\"$ref_tid\"";
+	$sql="select * from $bai_rm_pj2.mrn_track where rand_track_id=$ref and tid=$ref_tid";
 }
-// echo $sql;
+
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
@@ -463,7 +466,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$item_desc."</td>";
 	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
 	$reason_code = $sql_row['reason_code'];
-	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+	$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid =$reason_code";
 	$result_reason = mysqli_query($link,$sql_reason);
 	$reason_row = mysqli_fetch_assoc($result_reason);
 	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
@@ -722,7 +725,7 @@ $(document).ready(function(){
 				$qty_allocated=array();
 				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
 					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{
@@ -742,7 +745,7 @@ $(document).ready(function(){
 					} 
 				}
 
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocation=qty_allocation-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j].",qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
