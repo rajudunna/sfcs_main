@@ -10,6 +10,7 @@
 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
     include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
@@ -216,33 +217,57 @@
                             $bundles_new=array();
                             $input_qty=array();
                             	//To get input operation
-                                $application='IPS';
+							$application='IPS';
 
-                                $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-                                $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                while($sql_row1111=mysqli_fetch_array($scanning_result))
-                                {
-                                    $operation_name=$sql_row1111['operation_name'];
-                                    $input_code=$sql_row1111['operation_code'];
-                                } 
-
-                            $sql12="select pac_tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
-                            $sql12_result=mysqli_query($link, $sql12) or exit("Sql Error2.1");
-                            while($sql_row12=mysqli_fetch_array($sql12_result)) 
-                            {
-                                $bundles_new[]=$sql_row12['pac_tid']; 
-                            }
-                            
-                            if(sizeof($bundles_new)>0)
-                            {
-                                $sql123="select bundle_number,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
-                                //echo $sql123."<br>";
-                                $sql12_result123=mysqli_query($link, $sql123) or exit("Sql Error2ww.1");
-                                while($sql_row123=mysqli_fetch_array($sql12_result123)) 
-                                {
-                                    $input_qty[$sql_row123['bundle_number']]=$sql_row123['recevied_qty']; 
-                                }
-                            }
+							$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+							$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row1111=mysqli_fetch_array($scanning_result))
+							{
+								$operation_name=$sql_row1111['operation_name'];
+								$input_code=$sql_row1111['operation_code'];
+							} 
+							if($input_code=='Auto')
+							{
+								$sql12="select pac_tid,ims_qty from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
+								$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error2.1");
+								while($sql_row12=mysqli_fetch_array($sql12_result)) 
+								{
+									$bundles_new[]=$sql_row12['pac_tid'];
+									$input_qty[$sql_row12['pac_tid']]=$sql_row123['ims_qty']; 
+								}
+								
+								// if(sizeof($bundles_new)>0)
+								// {
+									// $sql123="select bundle_number,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
+									//echo $sql123."<br>";
+									// $sql12_result123=mysqli_query($link, $sql123) or exit("Sql Error2ww.1");
+									// while($sql_row123=mysqli_fetch_array($sql12_result123)) 
+									// {
+										// $input_qty[$sql_row123['bundle_number']]=$sql_row123['recevied_qty']; 
+									// }
+								// }	
+								
+							}
+							else
+							{	
+								$sql12="select pac_tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
+								$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error2.1");
+								while($sql_row12=mysqli_fetch_array($sql12_result)) 
+								{
+									$bundles_new[]=$sql_row12['pac_tid']; 
+								}
+								
+								if(sizeof($bundles_new)>0)
+								{
+									$sql123="select bundle_number,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
+									//echo $sql123."<br>";
+									$sql12_result123=mysqli_query($link, $sql123) or exit("Sql Error2ww.1");
+									while($sql_row123=mysqli_fetch_array($sql12_result123)) 
+									{
+										$input_qty[$sql_row123['bundle_number']]=$sql_row123['recevied_qty']; 
+									}
+								}
+							}
                             $sql="select distinct rand_track,ims_size,ims_schedule,ims_style,ims_color,ims_remarks,input_job_rand_no_ref,pac_tid,tid from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by tid";
                             $sql_result=mysqli_query($link, $sql) or exit("Sql Error2.1");
                             while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -285,6 +310,9 @@
                                 { 
                                     $flag++;
                                     $ims_doc_no=$sql_row12['ims_doc_no']; 
+                                    $style=$sql_row12['ims_style']; 
+                                    $color=$sql_row12['ims_color']; 
+                                    $ims_doc_no=$sql_row12['ims_doc_no']; 
                                     $ims_size=$sql_row12['ims_size'];
                                     $ims_size2=substr($ims_size,2);
                                     $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
@@ -321,7 +349,15 @@
                                     {
                                         $operation_name=$sql_row['operation_name'];
                                         $operation_code=$sql_row['operation_code'];
-                                    } 
+                                    }
+									
+									if($operation_code=='Auto')
+									{
+										$get_ips_op = get_ips_operation_code($link,$style,$color);
+										$operation_code=$get_ips_op['operation_code'];
+										$operation_name=$get_ips_op['operation_name'];
+
+									}
 
                                     $bundle_check_qty="select * from $brandix_bts.bundle_creation_data where bundle_number=".$pac_tid." and operation_id=".$operation_code."";
                                     $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
