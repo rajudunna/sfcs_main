@@ -139,6 +139,7 @@ while($row1 = mysqli_fetch_array($style_result))
 										}
 									}
 								}
+								unset($mo_no_val);
 								unset($del_mo_val);
 								unset($op_code1);
 							}
