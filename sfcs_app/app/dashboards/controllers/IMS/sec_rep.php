@@ -322,6 +322,7 @@ if(isset($_GET['val']))
 			$module_ref=$modules[$i];
 			$new_module = $module_ref;
 			$rowcount_check=0;
+			$bundle_numbers = [];
 			$sqlwip1="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
 			$sql_resultwip1=mysqli_query($link, $sqlwip1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_resultwip1)>0)
@@ -350,9 +351,10 @@ if(isset($_GET['val']))
 			if(mysqli_num_rows($sql_resultwip1)>0)
 			{
 				$sql_num_check=0;
+				$balance=0;
 				while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
 				{
-					$balance=$sql_rowwip['input']-$sql_rowwip['output'];
+					$balance = $balance + $sql_rowwip['input']-$sql_rowwip['output'];
 					$sql_num_check=$sql_num_check+1;
 				}			
 				if($sql_num_check>0)
