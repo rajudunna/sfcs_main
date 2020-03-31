@@ -228,14 +228,14 @@
 							} 
 							if($input_code=='Auto')
 							{
-								$sql12="select pac_tid,ims_qty from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
+                                
+                                $sql12="select pac_tid,ims_qty from $bai_pro3.ims_log where ims_mod_no='$module' and ims_doc_no in (select doc_no from bai_pro3.plandoc_stat_log) order by pac_tid";
 								$sql12_result=mysqli_query($link, $sql12) or exit("Sql Error2.1");
 								while($sql_row12=mysqli_fetch_array($sql12_result)) 
 								{
 									$bundles_new[]=$sql_row12['pac_tid'];
-									$input_qty[$sql_row12['pac_tid']]=$sql_row123['ims_qty']; 
+									$input_qty[$sql_row12['pac_tid']]=$sql_row12['ims_qty']; 
 								}
-								
 								// if(sizeof($bundles_new)>0)
 								// {
 									// $sql123="select bundle_number,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundles_new).") and operation_id=".$input_code."";
