@@ -334,7 +334,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//echo "<tr><td><input type=\"checkbox\" value=\"1\" name=\"sel[$x]\"><input type=\"hidden\" name=\"ship_id[$x]\" value=\"".$sql_row['ship_tid']."\"></td>";
 	echo "<tr>";
 	if($sql_row['ship_cartons']){
-	
+	$unset_url = getFullURL($_GET['r'],'unset.php','N').'&ship_tid='.$sql_row['ship_up_date'];
 	echo "<td><input type=\"checkbox\" value=\"".$sql_row['ship_up_date']."\" id='chk' onchange='check_clicked()' name=\"sel[$x]\"></td>";
 	echo "<td><a class='btn btn-xs btn-info' href='$unset_url'>Un-Set</a></td>";
 	}else{
