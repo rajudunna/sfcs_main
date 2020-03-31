@@ -1,6 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include 'sewing_barcode_generation.php';
 ?>
 <?php
 
@@ -255,3 +257,5 @@ function isInt(t)
     }
 }
 </script>
+
+
