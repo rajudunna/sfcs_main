@@ -58,34 +58,84 @@ if (isset($_GET['del_id']))
 <?php
 if(isset($_POST['submit']))
 {
+	
 	//var_dump($_POST['opn']);
 	$details=explode('|',$_POST['opn']);
 	//var_dump($details);
 	$operation_name=$details[1];
 	$operation_code=$details[0];
 	$application=$_POST['apn'];
-    $log_time=date('Y-m-d H:i:s');
+	$log_time=date('Y-m-d H:i:s');
 
-	// echo $operation_name."<br>";
-	// echo $operation_code."<br>";
-	//echo $application;
-    // $log_query = "INSERT IGNORE INTO $brandix_bts.log_table (appilication,operation_name,operation_code,log_time) values ('$application','$operation_name','$operation_code','$log_time')";
-	// $log_res = mysqli_query($link,$log_query);
-	
-	 $already_query = "select * from $brandix_bts.tbl_ims_ops where appilication = '$application'";
-	 $already_result = mysqli_query($link,$already_query);
-	 if(mysqli_num_rows($already_result)>0){
-	 	$insert_query = "UPDATE $brandix_bts.tbl_ims_ops set operation_name = '$operation_name',operation_code = '$operation_code'
-	 	                 where appilication = '$application' ";
-	 	                 //echo $insert_query;
+	$is_valid = 1;
 
-	 }else{
-	    $insert_query = "INSERT INTO $brandix_bts.tbl_ims_ops (operation_name,operation_code,appilication) VALUES('$operation_name','$operation_code','$application')";
+	if($application=='IMS'){
+		$ims_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =$operation_code";
+		$ress_ims = mysqli_query($link,$ims_operation);
+		while ($ims_row = mysqli_fetch_array($ress_ims))
+		{
+			$ims = $ims_row['operation_order'];
+		}
+	} else {
+		$ims_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =(select operation_code from  $brandix_bts.tbl_ims_ops where appilication = 'IMS')";
+		$ress_ims = mysqli_query($link,$ims_operation);
+		while ($ims_row = mysqli_fetch_array($ress_ims))
+		{
+			$ims = $ims_row['operation_order'];
+		}
+	}
+	if($application=='IMS_OUT'){
+		$ims_out_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =$operation_code";
+		$ress_ims_out = mysqli_query($link,$ims_out_operation);
+		while ($ims_out_row = mysqli_fetch_array($ress_ims_out))
+		{
+			$ims_out = $ims_out_row['operation_order'];
+		}
+	} else {
+		$ims_out_operation="select operation_order from $brandix_bts.default_operation_workflow where operation_code =(select operation_code from  $brandix_bts.tbl_ims_ops where appilication = 'IMS_OUT')";
+		$ress_ims_out = mysqli_query($link,$ims_out_operation);
+		while ($ims_out_row = mysqli_fetch_array($ress_ims_out))
+		{
+			$ims_out = $ims_out_row['operation_order'];
+		}
 	}
 	
-	$res_do_num = mysqli_query($link,$insert_query);
-
-	echo "<script>sweetAlert('Saved Successfully','','success')</script>";
+	if($application=='IMS' || $application=='IMS_OUT'){
+		$is_valid = 0;
+		if(strlen($ims) > strlen($ims_out)){
+			$is_valid = 0;
+			echo "<script>sweetAlert('Operation Code is not valid','IMS operation is greater than IMS OUT','error');$('#opn').val('');</script>";
+		} else {
+			$is_valid = 1;
+		}
+	}
+	
+	if($application=='IPS'){
+		$get_count_ims_log="select count(*) as ims_count from $bai_pro3.ims_log";
+		$res_ims_log_count = mysqli_query($link,$get_count_ims_log);
+		$get_count_ims_log_bkp="select count(*) as ims_bkp_count from $bai_pro3.ims_log_backup";
+		$res_ims_log_bkp_count = mysqli_query($link,$get_count_ims_log_bkp);
+		if(mysqli_num_rows($res_ims_log_count)==0 && mysqli_num_rows($res_ims_log_bkp_count)==0){
+			$is_valid= 1;
+		}
+		else {
+			$is_valid= 0;
+			echo "<script>sweetAlert('Cant edit for IPS Application','','error')</script>";
+		}
+	}
+	if($is_valid == '1'){
+		$already_query = "select * from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+		$already_result = mysqli_query($link,$already_query);
+		if(mysqli_num_rows($already_result)>0){
+			$insert_query = "UPDATE $brandix_bts.tbl_ims_ops set operation_name = '$operation_name',operation_code = '$operation_code'
+							 where appilication = '$application' ";
+		}else{
+		   $insert_query = "INSERT INTO $brandix_bts.tbl_ims_ops (operation_name,operation_code,appilication) VALUES('$operation_name','$operation_code','$application')";
+	   }
+	   $res_do_num = mysqli_query($link,$insert_query);
+   
+	   echo "<script>sweetAlert('Saved Successfully','','success')</script>";
+	}
 }
 
 ?>
@@ -119,7 +169,7 @@ if(isset($_POST['submit']))
 									<b>Operation Name<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b>
 									<select class="form-control" id="opn" name="opn" required>
 										<option value="">Select</option>
-									
+										<option value="Auto|Auto" class="hide_auto">Auto</option>
 									<?php
 										$get_operations="SELECT operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code not in (10,15) group by operation_code order by operation_code*1";
 										$result=mysqli_query($link,$get_operations);
@@ -186,49 +236,24 @@ if(isset($_POST['submit']))
 </body>
 </div>
 <script language="javascript" type="text/javascript">
-//<![CDATA[	
-	var table2_Props = 	{					
-					display_all_text: " [ Show all ] ",
-					btn_reset: true,
-					bnt_reset_text: "Clear all ",
-					rows_counter: true,
-					rows_counter_text: "Total Rows: ",
-					alternate_rows: true,
-					sort_select: true,
-					loader: true
-				};
-	setFilterGrid( "table_one",table2_Props );
-//]]>		
-</script>
-<script>
- function deleting_confirm(id){
-	var url = "<?php echo getFullURLLevel($_GET['r'],'master.php',0,'N');?>&del_id="+id;
-	 console.log("working");
-     sweetAlert({
-         title: "Are you sure?",
-         text: "You will not be able to recover this imaginary file!",
-         icon: "warning",
-         buttons: [
-           'No, cancel it!',
-           'Yes, I am sure!'
-         ],
-         dangerMode: true,
-       }).then(function(isConfirm) {
-         if (isConfirm) {
-           sweetAlert({
-             title: 'Shortlisted!',
-             text: 'Candidates are successfully shortlisted!',
-             icon: 'success',
-           })
-		   window.location.href=url;
-		   //.then(function() {
-             // form.submit();
-           // });
-         // } else {
-           // sweetAlert("Cancelled", "Your imaginary file is safe :)", "error");
-         // }
-       }
+$(document).ready(function() {
+	$('#opn').on('click',function(e){
+		var apn = $('#apn').val();
+		if(apn == ''){
+			sweetAlert('Please Select Application','','warning');
+		}
 	});
- }
- </script>
+	$('#apn').on('change',function(e){
+		var apn = $('#apn').val();
+		if(apn == 'IPS'){
+			$('.hide_auto').show();
+		}else {
+			$('.hide_auto').hide();
+			$('#opn').val('');
+		}
+	});
+});
+
+</script>
+
 

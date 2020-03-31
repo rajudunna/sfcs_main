@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R')); 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -448,6 +449,11 @@ if(isset($_POST['submit']))
 	{
 		$operation_name=$sql_row['operation_name'];
 		$operation_code=$sql_row['operation_code'];
+	}
+	if($operation_code == 'Auto'){
+		$get_ips_op = get_ips_operation_code($link,$style,$color);
+		$operation_code=$get_ips_op['operation_code'];
+		$operation_name=$get_ips_op['operation_name'];
 	}
 	//$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random) as act_cut_issue_status,cat_ref,input_job_no,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random)='' group by input_job_no order by input_job_no*1";
 	$sql="CREATE TABLE $newfiltertable ENGINE = MYISAM select order_style_no,input_job_no_random,group_concat(distinct input_job_no) as input_job_no,doc_no,group_concat(distinct char(color_code)) as color_code,group_concat(distinct acutno) as acutno,act_cut_status,input_job_input_status(input_job_no_random,$operation_code) as act_cut_issue_status,cat_ref,SUM(carton_act_qty) AS carton_qty from plan_doc_summ_input where order_del_no in ($schedule_list) and acutno=$color and input_job_no_random not in (select input_job_no_random_ref from plan_dashboard_input) and input_job_input_status(input_job_no_random,$operation_code)='' group by input_job_no order by input_job_no*1";

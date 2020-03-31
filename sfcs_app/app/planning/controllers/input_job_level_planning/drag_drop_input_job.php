@@ -5,7 +5,7 @@
 // $username="sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 $has_perm=haspermission($_GET['r']);
 $module_limit=14;
 // $super_user=array("roshanm","muralim","kirang","bainet","rameshk","baiict","gayanl","baisysadmin","chathurangad","buddhikam","saroasa","chathurikap","sfcsproject2","thanushaj","kemijaht","sfcsproject1","ber_databasesvc","saranilaga","thusiyas","thineshas","sudathra");
@@ -636,6 +636,11 @@ $module_limit=14;
 	{
 		$operation_name=$sql_row['operation_name'];
 		$operation_code=$sql_row['operation_code'];
+	}
+	if($operation_code == 'Auto'){
+		$get_ips_op = get_ips_operation_code($link,$style,$color);
+		$operation_code=$get_ips_op['operation_code'];
+		$operation_name=$get_ips_op['operation_name'];
 	}
 	
 	if($cutno!='All')

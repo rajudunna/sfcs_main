@@ -5,6 +5,7 @@
 // include("dbconf.php"); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); 	
 $userName = getrbac_user()['uname'];
 
 	$list=$_POST['listOfItems'];
@@ -215,7 +216,12 @@ $userName = getrbac_user()['uname'];
 	{
 		$operation_name=$sql_row['operation_name'];
 		$operation_code=$sql_row['operation_code'];
-	}
+    }
+    if($operation_code == 'Auto'){
+        $get_ips_op = get_ips_operation_code($link,$style,$color);
+        $operation_code=$get_ips_op['operation_code'];
+        $operation_name=$get_ips_op['operation_name'];
+    }
 	// remove docs
 	$remove_docs=array();
 	$sqlx="select input_job_no_random_ref as doc_no from $bai_pro3.plan_dash_doc_summ_input where

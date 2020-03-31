@@ -329,6 +329,7 @@ $authorized1=array("sfcsproject1");
 set_time_limit(200000);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 $has_permission = haspermission($_GET['r']);
 ?>
 
@@ -898,6 +899,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					{
 						$operation_name=$sql_row['operation_name'];
 						$operation_code=$sql_row['operation_code'];
+					}
+					if($operation_code == 'Auto'){
+						$get_ips_op = get_ips_operation_code($link,$style,$get_color);
+						$operation_code=$get_ips_op['operation_code'];
+						$operation_name=$get_ips_op['operation_name'];	
 					}
 					if(in_array($authorizeLevel_1,$has_permission))
 					{
