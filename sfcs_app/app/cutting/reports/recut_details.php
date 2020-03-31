@@ -74,7 +74,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 		</form>
 		<hr>
 
-           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Category</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Issue</th>
+           <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Category</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Docket Status</th>
             </thead>
 			<?php
 			if(isset($_REQUEST['filter']))
@@ -103,7 +103,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
                     $id = $row['doc_no'];
                     //chekcing this docket planned or not
                     $dock_checking_flag = 0;
-                    $checking_docket_planned_qry = "SELECT * FROM `$bai_pro3`.`cutting_table_plan` WHERE doc_no = $id";
+                    $checking_docket_planned_qry = "SELECT doc_no FROM `$bai_pro3`.`cutting_table_plan` WHERE doc_no = $id";
                     $result_checking_docket_planned_qry = $link->query($checking_docket_planned_qry);
                     if($result_checking_docket_planned_qry->num_rows > 0)
                     {
@@ -191,10 +191,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
             }
             else
             {
-                echo "<tr><td colspan='12' style='color:red;text-align: center;'><b>No Details Found!!!</b></td></tr>";
+                echo "<tr><td colspan='13' style='color:red;text-align: center;'><b>No Details Found!!!</b></td></tr>";
 			}
 		}else{
-			echo "<tr><td colspan='12' style='color:red;text-align: center;'><b>Please select filters to get report</b></td></tr>";
+			echo "<tr><td colspan='13' style='color:red;text-align: center;'><b>Please select filters to get report</b></td></tr>";
 		}
             ?>
              </table>
