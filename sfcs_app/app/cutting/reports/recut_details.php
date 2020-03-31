@@ -216,7 +216,7 @@ $(document).ready(function()
 });
 function viewrecutdetails(id)
 {
-    var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+    var function_text = "<?php echo getFullURLLevel($_GET['r'],'dashboards/controllers/recut_dashboards/functions_recut.php',2,'R'); ?>";
     $('.loading-image').show();
     $('#myModal').modal('toggle');
     $.ajax({
