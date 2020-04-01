@@ -118,7 +118,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$check=0;
 		}
 		
-		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
+		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod";
 		//echo $sql2."<BR>";
 		
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
