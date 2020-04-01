@@ -876,7 +876,7 @@ else if($concurrent_flag == 0)
 				$result_rejection_code_fetech_qrys = $link->query($rejection_code_fetech_qrys);
 				while($rowresult_rejection_code_fetech_qrys = $result_rejection_code_fetech_qrys->fetch_assoc()) 
 				{
-					$reason_code = $rowresult_rejection_code_fetech_qrys['reason_code'];
+					//$reason_code = $rowresult_rejection_code_fetech_qrys['reason_code'];
 					$type = $rowresult_rejection_code_fetech_qrys['form_type'];
 				}
 				$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
