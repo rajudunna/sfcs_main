@@ -1563,14 +1563,17 @@ else if($concurrent_flag == 0)
 						//updating the ims_qty when it was there in ims_log
 						$update_query = "update $bai_pro3.ims_log_backup set ims_qty = $act_ims_qty where tid = $updatable_id";
 						$ims_pro_qty_updating = mysqli_query($link,$update_query) or exit("While updating ims_pro_qty in ims_log_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if($ims_pro_qty_updating)
+						if($b_rep_qty[$i]>0)
 						{
-							$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
-							mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-							mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						  if($ims_pro_qty_updating)
+						  {
+							 $update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
+							 mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+							 $ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+							 mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+							 $ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+							 mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+						  }
 						}
 
 					}
