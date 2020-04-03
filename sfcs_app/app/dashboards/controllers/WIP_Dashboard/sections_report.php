@@ -173,7 +173,7 @@ $operation=$_GET['operations'];
 			$module = $modules[$i];
 			$rowcount_check=0;
 
-			$get_bcd_data= "select distinct input_job_no_random_ref,schedule,style,color,GROUP_CONCAT(bundle_number) as bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation and assigned_module='$module' and bundle_qty_status = 0 GROUP BY input_job_no_random_ref";
+			$get_bcd_data= "select distinct input_job_no_random_ref,schedule,style,color,GROUP_CONCAT(bundle_number) as bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation and assigned_module='$module' GROUP BY input_job_no_random_ref";
            // echo $get_bcd_data;
             $result_get_bcd_data = $link->query($get_bcd_data);
             while($row = $result_get_bcd_data->fetch_assoc())
@@ -221,7 +221,7 @@ $operation=$_GET['operations'];
 				{
 					$sql12.=" GROUP BY bundle_number,operation_id ";
 				}
-				//echo $sql12;
+				echo $sql12;
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=0;
 				$balance=0;
