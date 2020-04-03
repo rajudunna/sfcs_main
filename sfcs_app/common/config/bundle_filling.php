@@ -699,7 +699,7 @@ function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
 		//$shadebundleno=0;
 		$endno=0;
 		$update_qty=array();
-		$get_det_qry="select size,id from $bai_pro3.plan_cut_bundle where doc_no=".$doc_no."";
+		$get_det_qry="select size,id,bundle_count from $bai_pro3.plan_cut_bundle where doc_no=".$doc_no."";
 		$get_det_qry_rslt= mysqli_query($link,$get_det_qry);
 		if(mysqli_num_rows($get_det_qry_rslt)>0)
 		{
@@ -707,12 +707,13 @@ function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
 			{					
 				$size = $row_pcb['size'];
 				$plan_id = $row_pcb['id'];
-				foreach($shade_seq_plies_array as $shade_seq_key => $plies)
+				$bundle_count = $row_pcb['bundle_count'];
+				foreach($shade_seq_plies_array as $shade_seq_key => $plies_old)
 				{
 					$shade_seq_values = explode('$', $shade_seq_key);
 					$shade = $shade_seq_values[0];
 					$lay_seq = $shade_seq_values[1];
-					//$shadebundleno++;					
+					$plies = $plies_old * $bundle_count;			
 					$endno=($startno+$plies)-1;					
 					//Actual Cut Bundle 
 					$barcode="ACB-".$doc_no."-".$bundle."";
