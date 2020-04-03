@@ -221,7 +221,7 @@ $operation=$_GET['operations'];
 				{
 					$sql12.=" GROUP BY bundle_number,operation_id ";
 				}
-				echo $sql12;
+				//echo $sql12;
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=0;
 				$balance=0;
