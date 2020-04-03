@@ -847,6 +847,7 @@ $('input[type=submit]').click(function() {
 <script>
 function check_pack()
 {
+	$('.submission').hide();
 	var count = document.getElementById('count_of_data').value;
 	// var qty = document.getElementById('pack').value;
 	// var status = document.getElementById('status').value;
@@ -868,23 +869,21 @@ function check_pack()
 	{
 		sweetAlert("Please enter atleast one size quantity","","warning");
 		//swal('Please Enter Any size quantity','','warning');
+		$('.submission').show();
 		return false;
 	}
 	else
 	{
-		$('.submission').hide();
 		//alert("working");
 		$('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
 		
+
 		var bulk_data =  $("#smartform").serialize();  
+
 		//var bulk_data =  $("#smartform").serialize(),basketData.serializeArray();  
 		console.log(bulk_data);
-		//var bulk_data = ['1','2'];
-		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_functionality_ajax.php','R'); ?>";
-		$('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
-		//$('#storingfomr').submit();
 		document.getElementById('dynamic_table1').innerHTML = '';
 		document.getElementById('style_show').innerHTML = '';
 		document.getElementById('schedule_show').innerHTML = '';
@@ -892,6 +891,11 @@ function check_pack()
 		document.getElementById('job_number').value = '';
 		document.getElementById('module_show').innerHTML = '';
 		document.getElementById('pre_data').innerHTML ='';
+		//var bulk_data = ['1','2'];
+		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_functionality_ajax.php','R'); ?>";
+		$('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
+		//$('#storingfomr').submit();
+		
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
 		
