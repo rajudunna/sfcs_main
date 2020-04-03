@@ -209,7 +209,7 @@ function getsewingJobsData($section,$module,$get_operation)
             {
                 $input_date = $row44['ims_date'];
             }
-            $wip = $previous_output - $present_output;
+            $wip = ($previous_output - ($present_output + $rejected));
             
             $totalwip = $totalwip+$wip;
         
