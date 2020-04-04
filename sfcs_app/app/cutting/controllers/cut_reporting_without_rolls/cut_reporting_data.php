@@ -121,7 +121,7 @@ if(mysqli_num_rows($validation_result)>0){
     $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num_check12=mysqli_num_rows($sql_result12);
     if($sql_num_check12 == 0){
-        $sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=\"$order_del_no\" and color = '".$col."' and product=\"FAB\"";
+        $sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=\"$order_del_no\" and color = '".$col."' and product=\"FAB\" and status=9";
         $result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row1=mysqli_fetch_array($result))
         {
