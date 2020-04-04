@@ -31,7 +31,7 @@ $stock_report_inventory_result =$link->query($stock_report_inventory);
 while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 {
     $lot_no=trim($sql_row1['lot_no']);
-	// $qty_rec=$sql_row1['qty_rec'];
+	$qty_rec=$sql_row1['qty_rec'];
 	$qty_issued=$sql_row1['qty_issued'];
 	$qty_return=$sql_row1['qty_ret'];
 	$style_no=$sql_row1['style_no'];
@@ -39,15 +39,18 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	$status=trim($sql_row1['status']);
 	$location=trim($sql_row1['ref1']);
 	$boxno=trim($sql_row1['ref2']);
-	$tid=$sql_row1['tid'];	
+	$tid=$sql_row1['tid'];
+	
 	$item=trim($sql_row1['item']);
 	$ref3=trim($sql_row1['ref3']);
+
 
 	$item_name=trim(str_replace('"',"",$sql_row1['item_name']));
 	$item_name=trim(str_replace("'","",$item_name));
 	$item_desc=trim(str_replace('"',"",$sql_row1['item_desc']));
 
 	$batch_no=trim($sql_row1['batch_no']);
+
 	$pkg_no=trim($sql_row1['pkg_no']);
 	$remarks=trim($sql_row1['remarks']);
 	$grn_date=$sql_row1['grn_date'];
@@ -61,7 +64,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 	if($remarks==''){
 		$remarks=trim($sql_row1['roll_remarks']);
 		if($remarks==''){
-			$qry_get_rol="SELECT roll_remarks FROM $bai_rm_pj1.store_in WHERE tid=$tid";
+			$qry_get_rol="SELECT roll_remarks FROM $bai_rm_pj1.stock_report WHERE tid=$tid";
 			$sql_result1x =$link->query($qry_get_rol);
 			if(mysqli_num_rows($sql_result1x)> 0){
 				while ($row = $sql_result1x->fetch_assoc())
@@ -72,25 +75,21 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 
 	 	}
 	}
-	$sql1x="select qty_rec,ref4,ref1,ref3 from $bai_rm_pj1.store_in where tid=$tid";
+	
+	
+	$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
 	$sql_result1x =$link->query($sql1x);
 	if(mysqli_num_rows($sql_result1x)> 0) {
 		while ($row = $sql_result1x->fetch_assoc())
 		{
-			$qty_rec=$row['qty_rec'];
-			$shade=$row["ref4"];			
+			$shade=$row["ref4"];
+			$invoice=$row["inv_no"];
 			$location=trim($row['ref1']);
-			$ref3=trim($row['ref3']);			
+			$ref3=trim($row['ref3']);
 		}
 	}
-	$sql1x1="select inv_no from $bai_rm_pj1.sticker_report where lot_no='".$lot_no."'";
-	$sql_result1x1 =$link->query($sql1x1);
-	while ($row_1 = $sql_result1x1->fetch_assoc())
-	{
-		$invoice=$row_1["inv_no"];
-	}
     $current_date=date('Y-m-d');
-    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where tran_tid=$tid and date=\"$current_date\" ";
+    $sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" ";
     $sql_result1y =$link->query($sqly);
     if(mysqli_num_rows($sql_result1y)> 0) {
         while ($rowy = $sql_result1y->fetch_assoc())
@@ -100,7 +99,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 
-	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = $tid and DATE(log_time)=\"$current_date\"";
+	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\" and DATE(log_time)=\"$current_date\" GROUP BY lable_id";
     $sql_result_mrn =$link->query($sql_mrn);
     if(mysqli_num_rows($sql_result_mrn)> 0) {
         while ($row_mrn = $sql_result_mrn->fetch_assoc())
@@ -110,7 +109,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 	
-	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where tran_tid=$tid and date=\"$current_date\"";
+	$sqlz="select sum(ROUND(qty_returned,2)) as qty FROM `bai_rm_pj1`.`store_returns` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\"";
     $sql_result1z =$link->query($sqlz);
     if(mysqli_num_rows($sql_result1z)> 0) {
         while ($rowz = $sql_result1z->fetch_assoc())
@@ -120,13 +119,13 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
     }
 	$qty_balance=round($qty_balance,2);
+    $single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+
+    array_push($main_data,array_map('utf8_encode', $single_data));
+    unset($single_data);
 	
-	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
-    if($qty_balance > 0)
-	{
-		array_push($main_data,array_map('utf8_encode', $single_data));
-	    unset($single_data);
-	}
+
+
 }
 
 $qry_max="SELECT MAX(tid) AS tid FROM bai_rm_pj1.stock_report_inventory";
@@ -154,6 +153,7 @@ if($max_id>0){
 			$item=trim($sql_row1['item']);
 			$ref3=trim($sql_row1['ref3']);
 
+
 			$item_name=trim(str_replace('"',"",$sql_row1['item_name']));
 			$item_name=trim(str_replace("'","",$item_name));
 			$item_desc=trim(str_replace('"',"",$sql_row1['item_desc']));
@@ -174,31 +174,24 @@ if($max_id>0){
 				$remarks=trim($sql_row1['roll_remarks']);
 			}
 			
-			$sql1x="select qty_rec,ref4,ref1,ref3 from $bai_rm_pj1.store_in where tid=$tid";
+			$sql1x="select ref4,inv_no,ref1,ref3 from $bai_rm_pj1.sticker_ref where tid=$tid";
 			$sql_result1x =$link->query($sql1x);
 			if(mysqli_num_rows($sql_result1x)> 0) {
 				while ($row = $sql_result1x->fetch_assoc())
 				{
-					$qty_rec=$row['qty_rec'];
-					$shade=$row["ref4"];			
+					$shade=$row["ref4"];
+					$invoice=$row["inv_no"];
 					$location=trim($row['ref1']);
-					$ref3=trim($row['ref3']);			
+					$ref3=trim($row['ref3']);
 				}
 			}
-			$sql1x1="select inv_no from $bai_rm_pj1.sticker_report where lot_no='".$lot_no."'";
-			$sql_result1x1 =$link->query($sql1x1);
-			while ($row_1 = $sql_result1x1->fetch_assoc())
-			{
-				$invoice=$row_1["inv_no"];
-			}
-			/*
 			$current_date=date('Y-m-d');
 			$sqly="select sum(ROUND(qty_issued,2)) as qty FROM `bai_rm_pj1`.`store_out` where log_stamp > \"$log_time\" and tran_tid=\"$tid\" and date=\"$current_date\" ";
 			$sql_result1y =$link->query($sqly);
 			if(mysqli_num_rows($sql_result1y)> 0) {
 				while ($rowy = $sql_result1y->fetch_assoc())
 				{
-					// $qty_issued=$qty_issued+$rowy["qty"];
+					$qty_issued=$qty_issued+$rowy["qty"];
 					$qty_balance=$qty_rec+$qty_return- $qty_issued;
 				}
 			}
@@ -209,7 +202,7 @@ if($max_id>0){
 			if(mysqli_num_rows($sql_result_mrn)> 0) {
 				while ($row_mrn = $sql_result_mrn->fetch_assoc())
 				{
-					// $qty_issued=$qty_issued+$row_mrn["mrn_qty"];
+					$qty_issued=$qty_issued+$row_mrn["mrn_qty"];
 					$qty_balance=$qty_rec+$qty_return- $qty_issued;
 				}
 			}
@@ -219,19 +212,17 @@ if($max_id>0){
 			if(mysqli_num_rows($sql_result1z)> 0) {
 				while ($rowz = $sql_result1z->fetch_assoc())
 				{
-					// $qty_return=$qty_return+$rowz["qty"];
+					$qty_return=$qty_return+$rowz["qty"];
 					$qty_balance=$qty_rec+$qty_return- $qty_issued;
 				}
 			}
-			*/
-			$qty_balance=$qty_rec+$qty_return - $qty_issued;
 			$qty_balance=round($qty_balance,2);
 			$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
-			if($qty_balance > 0)
-			{
-				array_push($main_data,array_map('utf8_encode', $single_data));
-				unset($single_data);
-			}
+
+			array_push($main_data,array_map('utf8_encode', $single_data));
+			unset($single_data);
+			
+
 
 		}
 }
