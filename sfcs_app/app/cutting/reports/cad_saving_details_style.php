@@ -421,6 +421,7 @@ echo "
 			<th>CAD Saving  <?php $fab_uom ?></th>
 			<th>Fabric Allocated</th>
 			<th>Fabric Issued Docket</th>
+			<th>Fabric Issued Recut</th>
 			<th>Fabric Issued MRN</th>
 			<th>Fabric Issued Total</th>
 			<th>Damages</th>
@@ -732,7 +733,8 @@ echo "
 	echo "<td>".round((($old_order_total*$order_yy)-(round($cad_yy,4)*$old_order_total)),0)."</td>";
 	echo "<td>".round(($order_yy*$old_order_total),0)."</td>";
 	echo "<td>".round($issued_qty,0)."</td>";
-	echo "<td>".round($recut_issued_qty+$mrn_issued_qty,0)."</td>";
+	echo "<td>".round($recut_issued_qty,0)."</td>";
+	echo "<td>".round($mrn_issued_qty,0)."</td>";
 	echo "<td>".round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0)."</td>";
 	echo "<td>".round($damages_qty+$recut_damages_qty,0)."</td>";
 	echo "<td>".$joints."</td>";
