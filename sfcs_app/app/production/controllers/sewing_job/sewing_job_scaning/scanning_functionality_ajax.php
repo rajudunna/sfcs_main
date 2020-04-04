@@ -1690,15 +1690,26 @@ else if($concurrent_flag == 0)
                             {
                                 //For 900 Operation
                                 $line_out_removal_flag = 0;
-                                $get_qty_details1="select sum(if(operation_id = $line_out_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
+                                $get_qty_details1="select sum(if(operation_id = $line_out_ops_code,send_qty,0)) as input,sum(if(operation_id = $line_out_ops_code,rejected_qty,0)) as input_rej,sum(if(operation_id = $output_ops_code,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$b_tid[$i]";
                                 //echo $get_qty_details1;
                                $get_qty_result1=mysqli_query($link,$get_qty_details1) or exit("barcode status Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                                while($qty_details1=mysqli_fetch_array($get_qty_result1))
                                {
                                  $input_qty1 = $qty_details1['input'];
+                                 $input_qty_rej = $qty_details1['input_rej'];
                                  $output_qty1 = $qty_details1['output'] + $qty_details1['output_rej'];
                                }
-                               if($input_qty1 == $output_qty1)
+                               
+                               if($input_qty_rej > 0)
+                               {
+                                 $input_final_qty = $input_qty1 - $input_qty_rej;
+                               }
+                               else
+                               {
+                                 $input_final_qty = $input_qty1;
+                               } 
+
+                               if($input_final_qty == $output_qty1)
                                {
                                  $line_out_removal_flag = 1;
                                }
