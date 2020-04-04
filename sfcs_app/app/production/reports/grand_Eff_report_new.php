@@ -340,7 +340,7 @@ if(isset($_POST['submit']))
 								$pln_output=0; 
 								$pln_clh=0; 
 								$pln_sth=0; 
-								$sql2="select plan_eff, plan_pro, plan_sah,plan_clh from $bai_pro.pro_plan where sec_no=$sec and shift=\"$shift\" and date=\"$date\" and mod_no=$module"; 
+								$sql2="select plan_eff,  plan_pro, plan_sah,plan_clh from $bai_pro.pro_plan where sec_no=$sec and shift=\"$shift\" and date=\"$date\" and mod_no=$module"; 
 								$note.=$sql2."<br/>"; 
 								$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error42".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 
