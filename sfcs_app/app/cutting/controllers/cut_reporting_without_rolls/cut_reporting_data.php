@@ -341,10 +341,20 @@ $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
 
 /*get mark length for #3111 (No changes done but this branch roll backed So hard committed for UAT push*/
-$mlength="SELECT mklength FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
+$mlength="SELECT mklength,cat_ref FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
 $mlengthresult = mysqli_query($link,$mlength);
 $marklength = mysqli_fetch_array($mlengthresult);
 $response_data['marklength']=$marklength['mklength'];
+$cat_refere=$marklength['cat_ref'];
+
+/*getting binding consumption and seperate docket status from cat stat log table*/
+if($cat_refere>0){
+    $qry_catstat="SELECT binding_consumption,seperate_docket FROM $bai_pro3.`cat_stat_log` WHERE tid =$cat_refere";
+    $qry_catstat_result = mysqli_query($link,$qry_catstat);
+    $catstat_result = mysqli_fetch_array($qry_catstat_result);
+    $response_data['binding_consumption']=$catstat_result['binding_consumption'];
+    $response_data['seperate_docket']=$catstat_result['seperate_docket'];
+}
 
 echo json_encode($response_data);
 exit();
