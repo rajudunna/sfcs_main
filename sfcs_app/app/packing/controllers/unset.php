@@ -12,7 +12,7 @@
 		<?php 
 			include(getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R'));  
 			$ship_tid=$_GET['ship_tid'];
-			$sql="delete from $bai_pro3.ship_stat_log where ship_tid=$ship_tid";
+			$sql="delete from $bai_pro3.ship_stat_log where ship_up_date='$ship_tid'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// echo "<h2><font color=\"green\">Successfully Updated!</font></h2>";
 			echo "<script>sweetAlert('Successfully','Updated','success');</script>";
