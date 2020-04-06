@@ -4,6 +4,12 @@ ini_set('max_execution_time', '50000');
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
+$create_new_table="CREATE TABLE `bai_pro3`.`tbl_carton_ready_archive` (PRIMARY KEY(`id`),KEY `mo_check`( `mo_no` , `operation_id` ))ENGINE=INNODB  COLLATE = latin1_swedish_ci COMMENT = '' SELECT `id`, `operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty` FROM `bai_pro3`.`tbl_carton_ready` ";
+$create_tbl_res = mysqli_query($link,$create_new_table);
+if($create_tbl_res)
+{
+	echo "<b><h2 style='color:pink;'>Successfully Created and Inserted new table : </h2></b></br>";
+}
 $get_del_mos="SELECT DISTINCT mo_no,operation_id FROM `bai_pro3`.`tbl_carton_ready` WHERE mo_no IN (SELECT mo_number FROM `m3_inputs`.deleted_mos GROUP BY mo_number) GROUP BY mo_no";
 $del_mo_result = mysqli_query($link,$get_del_mos);
 $sql_num=mysqli_num_rows($del_mo_result);
@@ -72,14 +78,6 @@ while($row1 = mysqli_fetch_array($style_result))
 				
 				if($output > 0)
 				{
-					if($remain < 0 )
-					{
-						//to insert negative values
-						$mo_val = $mo_no."//".$remain;
-						$mo_num_qry = "INSERT INTO `bai_pro3`.`bai_mod_db` (`mod_id`) VALUES ('$mo_val');";
-						mysqli_query($link,$mo_num_qry);
-						$remain = 0;
-					}
 					$insert_qry = "INSERT INTO `bai_pro3`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`) VALUES ($code, '$mo_no', $remain, $output); ";
 					// $qty_inserting = mysqli_query($link,$insert_qry) or exit("While inserting mo_operation_quantites".$insert_qry."<br/>".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_inserting = mysqli_query($link,$insert_qry);
@@ -117,14 +115,6 @@ while($row1 = mysqli_fetch_array($style_result))
 									
 									if($output1 > 0)
 									{
-										if($remain1 < 0 )
-										{
-											//to insert negative values
-											$mo_val1 = $mo_no1."//".$remain1;
-											$mo_num_qry1 = "INSERT INTO `bai_pro3`.`bai_mod_db` (`mod_id`) VALUES ('$mo_val1');";
-											mysqli_query($link,$mo_num_qry1);
-											$remain1 = 0;
-										}
 										$insert_qry1 = "INSERT INTO `bai_pro3`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`) VALUES ($code1, '$mo_no1', $remain1, $output1); ";
 										$qty_inserting1 = mysqli_query($link,$insert_qry1);
 										if($qty_inserting1)
