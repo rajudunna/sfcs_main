@@ -332,8 +332,8 @@ if(isset($_POST['submit']))
 								
 							
 							$select_check_one="select tid from $bai_pro.grand_rep where tid='$code'";
-							$result_insert_one=mysql_query($select_check_one,$link) or ("Sql error".mysql_error());
-					
+							$result_insert_one=mysqli_query($link, $select_check_one) or exit("Sql Error405".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
 							$check_result_one=mysqli_num_rows($result_insert_one);
 							if($check_result_one==0)
 							{
