@@ -366,7 +366,7 @@
 																		$style = $res1['bac_style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
+																	$plan_pcs_qry="SELECT SUM(plan_pro) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
 																	// echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))

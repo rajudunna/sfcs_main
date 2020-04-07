@@ -99,88 +99,116 @@ if(isset($_POST['formIssue']))
     $size = $_POST['size'];
     // var_dump($_POST);
     // die();
+    $job_list = implode(",",$job_no);
+    // $get_schedule="SELECT distinct(SCHEDULE),input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random in (".$job_list.")";
+    // $get_schedule_result=mysqli_query($link, $get_schedule)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($row = mysqli_fetch_array($get_schedule_result))
+    // {
+    //     $schedule = $row['SCHEDULE'];
+    //     $input_job_no = $row['input_job_no'];
+    // }
+    // $job_deactivated="SELECT count(*) FROM $bai_pro3.job_deactive_log WHERE input_job_no_random in (".$job_list.") and remove_type='3'";
+    // //echo $job_deactivated;
+    // $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // if(mysqli_num_rows($job_deactivated_result) > 0){
+    //     $job_deactivated = 0;
+    // } else {
+    //     $job_deactivated = 1;
+    // }
+    $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE input_job_no_random in (".$job_list.") and remove_type='3'";
+    $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($job_deactivated_result) == 0){
+        $job_deactivated_status = 1;
+    } else {
+        $job_deactivated_status = 0;
+    }
     
-    $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
-    $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($recut_row = mysqli_fetch_array($get_recut_result))
+    if($job_deactivated_status == 1)
     {
-        if($recut_row['recut_status']!='')
+    
+        $get_recut_status="select max(status) as recut_status from $bai_pro3.recut_v2_child_issue_track where recut_id=".$doc_no_ref."";
+        $get_recut_result=mysqli_query($link, $get_recut_status)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($recut_row = mysqli_fetch_array($get_recut_result))
         {
-            $issue_status=$recut_row['recut_status']+1;
-        }
-        else
-        {
-            $issue_status=1;
-        }       
-    }
-    //To check whether rejection is swing category
-    $category=['sewing'];
-    $get_operation_id = "SELECT DISTINCT(operation_id) as operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$newIds).") ORDER BY barcode_sequence";
-    $get_operation_id_res = $link->query($get_operation_id);
-    while($row_ops = $get_operation_id_res->fetch_assoc()) 
-    {
-      $operation_id[] = $row_ops['operation_id'];
-    }
-    $operations = implode(",",$operation_id);
-    $checking_qry = "SELECT DISTINCT(category) as category FROM `$brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code in ($operations)";
-     // echo $checking_qry;
-    $result_checking_qry = $link->query($checking_qry);
-    while($row_cat = $result_checking_qry->fetch_assoc()) 
-    {
-        $emb_cut_check_flag = 0;
-        $category_act = $row_cat['category'];
-            
-        if(in_array($category_act,$category))
-        {
-            $emb_cut_check_flag = 1;
-        }
-        if($emb_cut_check_flag == 1)
-        {
-            foreach($issueval[$category_act] as $key=>$value)
+            if($recut_row['recut_status']!='')
             {
-                //retreaving remaining_qty from recut_v2_child
-                $act_id = $bcd_id[$category_act][$key];
-                $recut_allowing_qty = $issueval[$category_act][$key];
-                $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
-                $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
-                while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
+                $issue_status=$recut_row['recut_status']+1;
+            }
+            else
+            {
+                $issue_status=1;
+            }       
+        }
+        //To check whether rejection is swing category
+        $category=['sewing'];
+        $get_operation_id = "SELECT DISTINCT(operation_id) as operation_id FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN (".implode(',',$newIds).") ORDER BY barcode_sequence";
+        $get_operation_id_res = $link->query($get_operation_id);
+        while($row_ops = $get_operation_id_res->fetch_assoc()) 
+        {
+        $operation_id[] = $row_ops['operation_id'];
+        }
+        $operations = implode(",",$operation_id);
+        $checking_qry = "SELECT DISTINCT(category) as category FROM `$brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code in ($operations)";
+        // echo $checking_qry;
+        $result_checking_qry = $link->query($checking_qry);
+        while($row_cat = $result_checking_qry->fetch_assoc()) 
+        {
+            $emb_cut_check_flag = 0;
+            $category_act = $row_cat['category'];
+                
+            if(in_array($category_act,$category))
+            {
+                $emb_cut_check_flag = 1;
+            }
+            if($emb_cut_check_flag == 1)
+            {
+                foreach($issueval[$category_act] as $key=>$value)
                 {
-                    $bcd_individual = $row_bcd['bundle_number'];
-                    $bundle_number = $row_bcd['id'];
-                    $operation_id = $row_bcd['operation_id'];
-                    $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
-                    // echo $retreaving_rej_qty;
-                    $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
-                    while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
+                    //retreaving remaining_qty from recut_v2_child
+                    $act_id = $bcd_id[$category_act][$key];
+                    $recut_allowing_qty = $issueval[$category_act][$key];
+                    $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                    $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
+                    while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                     {
-                        $actual_allowing_to_recut = $child_details['recut_reported_qty']-$child_details['issued_qty'];
-                    }
-                    if($actual_allowing_to_recut < $recut_allowing_qty)
-                    {
-                        $to_add = $actual_allowing_to_recut;
-                        $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
-                    }
-                    else
-                    {
-                        $to_add = $recut_allowing_qty;
-                        $recut_allowing_qty = 0;
-                    }
-                    
-                    if($to_add > 0)
-                    {
-                      //updating recut_v2_child
-                      $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
-                      mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $bcd_individual = $row_bcd['bundle_number'];
+                        $bundle_number = $row_bcd['id'];
+                        $operation_id = $row_bcd['operation_id'];
+                        $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
+                        // echo $retreaving_rej_qty;
+                        $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
+                        while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
+                        {
+                            $actual_allowing_to_recut = $child_details['recut_reported_qty']-$child_details['issued_qty'];
+                        }
+                        if($actual_allowing_to_recut < $recut_allowing_qty)
+                        {
+                            $to_add = $actual_allowing_to_recut;
+                            $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
+                        }
+                        else
+                        {
+                            $to_add = $recut_allowing_qty;
+                            $recut_allowing_qty = 0;
+                        }
+                        
+                        if($to_add > 0)
+                        {
+                        //updating recut_v2_child
+                        $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
+                        mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                      $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
-                      mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
-                       
-                       //updating rejection_log_child
-                        $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
-                       mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
+                        mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        
+                        //updating rejection_log_child
+                            $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
+                        mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+                        }
                     }
                 }
+                $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
             }
             $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$doc_no_ref";
             $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -223,54 +251,57 @@ if(isset($_POST['formIssue']))
             }
             // die();
         }
-        else
-        {
-            foreach($issueval[$category_act] as $key=>$value)
-            {
-                //retreaving remaining_qty from recut_v2_child
-                $act_id = $bcd_id[$category_act][$key];
-                $recut_allowing_qty = $issueval[$category_act][$key];
-               // var_dump($recut_allowing_qty);
-                $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
-               // echo $retreaving_bcd_data;
-                $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
-                while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
+        // else
+        // {
+        //     foreach($issueval[$category_act] as $key=>$value)
+        //     {
+                foreach($issueval[$category_act] as $key=>$value)
                 {
-                    $bcd_individual = $row_bcd['bundle_number'];
-                    $bundle_number = $row_bcd['id'];
-                    $operation_id = $row_bcd['operation_id'];
-                    $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
-                   // echo $retreaving_rej_qty;
-                    $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
-                    while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
+                    //retreaving remaining_qty from recut_v2_child
+                    $act_id = $bcd_id[$category_act][$key];
+                    $recut_allowing_qty = $issueval[$category_act][$key];
+                    // var_dump($recut_allowing_qty);
+                    $retreaving_bcd_data = "SELECT * FROM `$brandix_bts`.`bundle_creation_data` WHERE id IN ($act_id) ORDER BY barcode_sequence";
+                    // echo $retreaving_bcd_data;
+                    $retreaving_bcd_data_res = $link->query($retreaving_bcd_data);
+                    while($row_bcd = $retreaving_bcd_data_res->fetch_assoc()) 
                     {
-                        $actual_allowing_to_recut = $child_details['recut_reported_qty']-$child_details['issued_qty'];
-                    }
-                    if($actual_allowing_to_recut < $recut_allowing_qty)
-                    {
-                        $to_add = $actual_allowing_to_recut;
-                        $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
-                    }
-                    else
-                    {
-                        $to_add = $recut_allowing_qty;
-                        $recut_allowing_qty = 0;
-                    }
-                    
-                    if($to_add > 0)
-                    {
-                        //updating recut_v2_child
-                        $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
-                      mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $bcd_individual = $row_bcd['bundle_number'];
+                        $bundle_number = $row_bcd['id'];
+                        $operation_id = $row_bcd['operation_id'];
+                        $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`recut_v2_child` where bcd_id = $bundle_number and parent_id = '$doc_no_ref'";
+                        // echo $retreaving_rej_qty;
+                        $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
+                        while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
+                        {
+                            $actual_allowing_to_recut = $child_details['recut_reported_qty']-$child_details['issued_qty'];
+                        }
+                        if($actual_allowing_to_recut < $recut_allowing_qty)
+                        {
+                            $to_add = $actual_allowing_to_recut;
+                            $recut_allowing_qty = $recut_allowing_qty - $actual_allowing_to_recut;
+                        }
+                        else
+                        {
+                            $to_add = $recut_allowing_qty;
+                            $recut_allowing_qty = 0;
+                        }
+                        
+                        if($to_add > 0)
+                        {
+                            //updating recut_v2_child
+                            $update_recut_v2_child = "update $bai_pro3.recut_v2_child set issued_qty = issued_qty+$to_add where bcd_id = $bundle_number and parent_id = $doc_no_ref";
+                        mysqli_query($link, $update_recut_v2_child) or exit("update_recut_v2_child".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                      $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
-                      mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
-                       
-                       //updating rejection_log_child
-                        $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
-                       mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $issued_to_module = issued_to_module($bundle_number,$to_add,2);
+                        $insert_query_track= "INSERT INTO $bai_pro3.`recut_v2_child_issue_track` (`recut_id`, `bcd_id`, `issued_qty`, `status`) VALUES ( $doc_no_ref, $bundle_number, $to_add, $issue_status)"; 
+                        mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        
+                        //updating rejection_log_child
+                            $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
+                        mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            $issued_to_module = issued_to_module($bundle_number,$to_add,2);
 
+                        }
                     }
                 }
             } 
@@ -343,14 +374,16 @@ if(isset($_POST['formIssue']))
                     }
                 // }
             }
-        }
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
+    }else {
+        $url = '?r='.$_GET['r'];
+        echo "<script>sweetAlert('Sewing Job is Deactivated! ','Issue To Module is unsuccessfull','Error');window.location = '".$url."'</script>";  
     }
-    $url = '?r='.$_GET['r'];
-    echo "<script>sweetAlert('Successfully Issued','','success');window.location = '".$url."'</script>";
-}
 function issued_to_module($bcd_id,$qty,$ref)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $op_code = '15';
     $bcd_colum_ref = "replace_in";
     if($ref == 2)
     {
@@ -375,7 +408,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
-     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
      $result_qry_prellel_ops = $link->query($qry_prellel_ops);
     while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
     {
@@ -405,6 +438,7 @@ function issued_to_module($bcd_id,$qty,$ref)
 		$ops_master_qry = "SELECT tor.operation_code FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'Send PF' AND style='$style' AND color='$mapped_color' ORDER BY CAST(tosm.operation_order AS CHAR) LIMIT 1"; 
 
     }
+   // echo $ops_master_qry;
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
@@ -412,6 +446,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
+    // die();
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {

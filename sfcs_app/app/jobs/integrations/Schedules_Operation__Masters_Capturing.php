@@ -64,7 +64,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $url_INTO = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMPDWCT00?CONO=$comp_no&FACI=$facility_code&PLGR=$WorkCenterId";
         echo "</br>".$url_INTO."</br>";
             $response_INTO = getCurlAuthRequestLocal($url_INTO,$basic_auth);
+            
             $into_value = '';
+            $doid_value=trim($response_INTO['response']['DOID'],' ');
+            
             if($response_INTO['status'] && isset($response_INTO['response']['INTO'])){
                 $into_value = trim($response_INTO['response']['INTO'],' ');
             }
@@ -91,7 +94,7 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
         $ZFeatureId=$sql_row['zfeature'];
         //GETTING SFCS OPERATION ID FROM OPERATION MASTER BASED ON M3 Operation Type
         $selecting_qry = "select operation_code from $brandix_bts.tbl_orders_ops_ref where m3_operation_type = '$into_value'";
-        echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
+        //echo "</br>Getting sfcs OPS ID".$selecting_qry."</br>";
         $res_selecting_qry = mysqli_query($link,$selecting_qry);
         while($rew_res_selecting_qry = mysqli_fetch_array($res_selecting_qry))
         {
@@ -100,8 +103,10 @@ while($sql_row=mysqli_fetch_array($result_qry_modetails))
 
         //insertion query for schedule_oprations_master table
         // $sql1="insert into $bai_pro3.schedule_oprations_master(Style, ScheduleNumber, ColorId, Description, SizeId, ZFeature, ZFeatureId, MONumber,SMV, OperationDescription, OperationNumber,WorkCenterId,Main_OperationNumber,Main_WorkCenterId) values('".$Style."','".$ScheduleNumber."','".$ColorId."','".$Description."','".$SizeId."','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."')";
-
-        array_push($values, "('" . $Style . "','" . $ScheduleNumber . "','" . $ColorId . "','" . $Description . "','" . $SizeId . "','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."','".$into_value."')");
+        if($doid_value !='SFCS_EXCLUDE'){
+            array_push($values, "('" . $Style . "','" . $ScheduleNumber . "','" . $ColorId . "','" . $Description . "','" . $SizeId . "','".$ZFeature."','".$ZFeatureId."','".$MONumber."','".$SMV."','".$operation_desc."','".$sfcs_operation_id."','".$WorkCenterId."','".$operation_code."','".$WorkCenterId_parent."','".$into_value."')");
+        }
+        
     }
 
     if($workcenter_status_valid){

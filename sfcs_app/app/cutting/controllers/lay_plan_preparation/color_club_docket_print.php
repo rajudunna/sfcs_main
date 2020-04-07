@@ -214,7 +214,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 }
 
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
+$sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=\"$order_del_no\" and clubbing>0";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -396,7 +396,7 @@ $sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation whe
 	}
 	$actwidth=$system_width;
 
-$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$system_width\"";
 //echo $sql22."<bR>";
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -3898,8 +3898,16 @@ tags will be replaced.-->
   <td colspan=16 rowspan=2 class=xl9117319 style='border-right:.5pt solid black;
   border-bottom:.5pt solid black'>Inspection Comments:
   <?php
-   if(sizeof($batch_det) > 0)
-   {
+  	$idocs_2 = "'" . implode ( "', '", $docs ) . "'";
+
+	$sql_batch="select distinct * from $bai_rm_pj1.docket_ref where doc_no in ($idocs_2) and doc_type='normal'  group by roll_id order by batch_no,ref4 asc";
+	$sql_result_batch=mysqli_query($link, $sql_batch) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_batch=mysqli_fetch_array($sql_result_batch))
+	{
+		$batch_det[]=trim($sql_row_batch['batch_no']);
+	}
+	if(sizeof($batch_det) > 0)
+	{
    	    $rem="";
 		$batchs=array();
 	   	for($i=0;$i<sizeof($batch_det);$i++)
