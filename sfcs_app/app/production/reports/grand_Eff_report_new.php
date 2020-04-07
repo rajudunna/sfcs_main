@@ -332,7 +332,7 @@ if(isset($_POST['submit']))
 								
 							$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")"; 
 							mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				
+							// echo $sql2;
 							//New code to extract values from existing 
 								
 							if(date("Y-m-d")>"2014-06-30") 
