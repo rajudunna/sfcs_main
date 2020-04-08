@@ -860,74 +860,78 @@ $('input[type=submit]').click(function() {
 <script>
 function check_pack()
 {
-    var count = document.getElementById('count_of_data').value;
-    // var qty = document.getElementById('pack').value;
-    // var status = document.getElementById('status').value;
-    var tot_qty = 0;
-    var tot_rej_qty = 0;
-    for(var i=0; i<count; i++)
-    {
-        var variable = i+"reporting";
-        var qty_cnt = document.getElementById(variable).value;
-        tot_qty += Number(qty_cnt);
-    }
-    for(var i=0; i<count; i++)
-    {
-        var variable_rej = i+"rejections";
-        var qty_rej_cnt = document.getElementById(variable_rej).value;
-        tot_rej_qty += Number(qty_rej_cnt);
-    }
-    if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
-    {
-        sweetAlert("Please enter atleast one size quantity","","warning");
-        //swal('Please Enter Any size quantity','','warning');
-        return false;
-    }
-    else
-    {
-        $('.submission').hide();
-        //alert("working");
-        $('#progressbar').show();
-        $('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
-        $('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-        
-        var bulk_data = $("#smartform").serialize(); 
-        //var bulk_data = $("#smartform").serialize(),basketData.serializeArray(); 
-        console.log(bulk_data);
-        //var bulk_data = ['1','2'];
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_functionality_ajax.php','R'); ?>";
-        $('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
-        //$('#storingfomr').submit();
-        document.getElementById('dynamic_table1').innerHTML = '';
-        document.getElementById('style_show').innerHTML = '';
-        document.getElementById('schedule_show').innerHTML = '';
-        document.getElementById('color_show').innerHTML = '';
-        document.getElementById('job_number').value = '';
-        document.getElementById('module_show').innerHTML = '';
-        document.getElementById('pre_data').innerHTML ='';
-        $('#flag_validation').val(0);
-        $('#smart_btn_arear').hide();
-        
-            $.ajax
-            ({
-                type: "POST",
-                url: function_text,
-                data : {bulk_data: bulk_data},
-                //dataType: "json",
-                success: function (response) 
-                {   
-                    console.log(response);
-                    $('#pre_pre_data').show();
-                    document.getElementById('pre_data').innerHTML = response;
-                    $('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
-                    $('.progress').hide();
-                    $('#smart_btn_arear').show();
-                }
-                
-            });
-        
-        //return true;
-    }
+	$('.submission').hide();
+	var count = document.getElementById('count_of_data').value;
+	// var qty = document.getElementById('pack').value;
+	// var status = document.getElementById('status').value;
+	var tot_qty = 0;
+	var tot_rej_qty = 0;
+	for(var i=0; i<count; i++)
+	{
+		var variable = i+"reporting";
+		var qty_cnt = document.getElementById(variable).value;
+		tot_qty += Number(qty_cnt);
+	}
+	for(var i=0; i<count; i++)
+	{
+		var variable_rej = i+"rejections";
+		var qty_rej_cnt = document.getElementById(variable_rej).value;
+		tot_rej_qty += Number(qty_rej_cnt);
+	}
+	if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
+	{
+		sweetAlert("Please enter atleast one size quantity","","warning");
+		//swal('Please Enter Any size quantity','','warning');
+		$('.submission').show();
+		return false;
+	}
+	else
+	{
+		//alert("working");
+		$('#progressbar').show();
+		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
+		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
+		
+
+		var bulk_data =  $("#smartform").serialize();  
+
+		//var bulk_data =  $("#smartform").serialize(),basketData.serializeArray();  
+		console.log(bulk_data);
+		document.getElementById('dynamic_table1').innerHTML = '';
+		document.getElementById('style_show').innerHTML = '';
+		document.getElementById('schedule_show').innerHTML = '';
+		document.getElementById('color_show').innerHTML = '';
+		document.getElementById('job_number').value = '';
+		document.getElementById('module_show').innerHTML = '';
+		document.getElementById('pre_data').innerHTML ='';
+		//var bulk_data = ['1','2'];
+		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_functionality_ajax.php','R'); ?>";
+		$('.progress-bar').css('width', 80+'%').attr('aria-valuenow', 40); 
+		//$('#storingfomr').submit();
+		
+		$('#flag_validation').val(0);
+		$('#smart_btn_arear').hide();
+		
+			$.ajax
+			({
+				type: "POST",
+				url: function_text,
+				data : {bulk_data: bulk_data},
+				//dataType: "json",
+				success: function (response) 
+				{	
+					console.log(response);
+					$('#pre_pre_data').show();
+					document.getElementById('pre_data').innerHTML = response;
+					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
+					$('.progress').hide();
+					$('#smart_btn_arear').show();
+				}
+				
+			});
+		
+		//return true;
+	}
 }
 function validating()
 {
