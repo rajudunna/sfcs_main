@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 $data = $_POST;
 $doc_no = $data['doc_no'];
 
-$finishedrolls="SELECT * FROM $bai_pro3.`docket_roll_info` WHERE docket=".$doc_no;
+$finishedrolls="SELECT distinct(roll_no) as roll_no FROM $bai_pro3.`docket_roll_info` WHERE docket=".$doc_no;
 $finishedrollsresult = mysqli_query($link,$finishedrolls);
         if(mysqli_num_rows($finishedrollsresult) > 0)
         {
