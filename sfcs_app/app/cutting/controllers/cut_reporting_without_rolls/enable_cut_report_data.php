@@ -56,7 +56,7 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                         $new_color=$color.'^'.$pcut_no;
                     }
                     if($pcut_no){
-                        $mrn_request_qry="SELECT tid FROM $bai_rm_pj2.`mrn_track` WHERE style='".$style."' and schedule='".$schedule."' and color = '".$new_color."' and status='9'";
+                        $mrn_request_qry="SELECT tid FROM $bai_rm_pj2.`mrn_track` WHERE style='".$style."' and schedule='".$schedule."' and color = '".$new_color."' and status='9' limit 1";
                         // echo $mrn_request_qry;
                         $mrn_request_qry_result = mysqli_query($link,$mrn_request_qry);
                         if(mysqli_num_rows($mrn_request_qry_result) > 0)
