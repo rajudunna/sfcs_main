@@ -1,6 +1,6 @@
+
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-	include(getFullURLLevel($_GET['r'],'/common/config/functions_dashboard.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 	$has_permission=haspermission($_GET['r']);
@@ -708,21 +708,6 @@
 						//Checking with ims_log 
 					}
 
-					$application = 'IPS';
-					$sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
-					$sewing_id_query_result = mysqli_query($link,$sewing_id_query);
-					if(mysqli_num_rows($sewing_id_query_result)>0)
-					{
-						while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
-						{
-							$input_ops_code = $sewing_ops_id['operation_code'];
-						}
-					}
-					if($input_ops_code == 'Auto'){
-						$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
-						$input_ops_code=$get_ips_op['operation_code'];
-					}
-
 					$appilication = 'IMS_OUT';
 					$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
 					// echo $checking_output_ops_code;
@@ -739,7 +724,7 @@
 						$output_ops_code = 130;
 					}
 					//echo 'ops_code.'.$b_op_id;
-					if($b_op_id == $input_ops_code)
+					if($b_op_id == 100 || $b_op_id == 129)
 					{
 						$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
 						//echo $searching_query_in_imslog;
@@ -787,10 +772,24 @@
 
 						
 					// $input_ops_code =100;
-						
+						$application = 'IPS';
+						$sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+						$sewing_id_query_result = mysqli_query($link,$sewing_id_query);
+						if(mysqli_num_rows($sewing_id_query_result)>0)
+						{
+							while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
+							{
+								$input_ops_code = $sewing_ops_id['operation_code'];
+							}
+						}
+						else
+						{
+							$input_ops_code =100;
+						}
+					
 					
 						//echo "PAC TID = $b_tid + $value";
-						if($b_op_id == $input_ops_code)
+						if($input_ops_code == 100 || $input_ops_code == 129)
 						{
 							$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 							$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
@@ -1019,3 +1018,6 @@
 	}
 
 </script>
+
+
+
