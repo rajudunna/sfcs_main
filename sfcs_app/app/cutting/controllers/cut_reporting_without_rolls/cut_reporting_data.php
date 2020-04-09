@@ -4,10 +4,14 @@ error_reporting(1);
 
 $response_data = array();
 $op_code = 15;
- 
+$cat_ref = '';
+$order_tid = '';
+$cut_no = '';
+
+
 foreach($sizes_array as $size){
-    $a_sizes_sum .= 'a_'.$size.'+';
-    $a_sizes_str .= 'a_'.$size.',';
+    $a_sizes_sum .= 'p_'.$size.'+';
+    $a_sizes_str .= 'p_'.$size.',';
 }
 $a_sizes_sum = rtrim($a_sizes_sum,'+');
 $a_sizes_str = rtrim($a_sizes_str,',');
@@ -68,13 +72,17 @@ else if($short_ship_status==2){
     echo json_encode($response_data);
     exit();
 }
+
+
+
 $manual_flag = 0;
-$doc_status_query  = "SELECT manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
+$doc_status_query  = "SELECT cat_ref,manual_flag,a_plies,p_plies,acutno,act_cut_status,order_tid,org_doc_no,remarks,($a_sizes_sum) as ratio 
                     from $bai_pro3.plandoc_stat_log where doc_no = $doc_no";
                     // echo $doc_status_query;
 $doc_status_result = mysqli_query($link,$doc_status_query);
 if(mysqli_num_rows($doc_status_result)>0){
     $row = mysqli_fetch_array($doc_status_result);
+    $cat_ref = $row['cat_ref'];
     $a_plies = $row['a_plies'];
     $p_plies = $row['p_plies'];
     $act_cut_status = $row['act_cut_status'];
@@ -334,13 +342,46 @@ $checkstock="SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE plan_lot_ref LIKE 
 $checkstockresult12=mysqli_query($link, $checkstock) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $checkstockresult=mysqli_num_rows($checkstockresult12);
 
+$category_query = "SELECT category FROM $bai_pro3.`cat_stat_log` WHERE tid =$cat_ref";
+$category_result = mysqli_query($link, $category_query);
+$category_row = mysqli_fetch_array($category_result);
+$category = $category_row['category'];
 
+// get all categories for the cut
+$dockets_for_cut = [];
+$dockets_for_cut_query = "SELECT doc_no,a_plies,p_plies,act_cut_status,($a_sizes_sum) as ratio from $bai_pro3.plandoc_stat_log 
+where order_tid = '$order_tid' and acutno = '$cut_no' and doc_no != $doc_no";
+$dockets_for_cut_result = mysqli_query($link, $dockets_for_cut_query);
+while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
+    $doc_for_cut = $docket_row['doc_no'];
+    $material_req = 0;
+    $material_req_query = "SELECT category,material_req from $bai_pro3.order_cat_doc_mk_mix  where doc_no=$doc_for_cut";
+    $material_req_result = mysqli_query($link,$material_req_query);
+    if(mysqli_num_rows($material_req_result)>0){
+        $material_req_row = mysqli_fetch_array($material_req_result);
+        $material_req = $material_req_row['material_req'];
+        $category = $material_req_row['category'];
+    }
+    
+    $dockets_for_cut[$doc_for_cut]['category'] = $category;
+    $dockets_for_cut[$doc_for_cut]['doc_no'] = $doc_for_cut;
+    $dockets_for_cut[$doc_for_cut]['fab_required'] = $material_req;
+    $dockets_for_cut[$doc_for_cut]['a_plies'] = $docket_row['a_plies'];
+    $dockets_for_cut[$doc_for_cut]['doc_qty'] = $docket_row['p_plies'] * $docket_row['ratio'];
+    $dockets_for_cut[$doc_for_cut]['p_plies'] =  $docket_row['p_plies'];
+    $dockets_for_cut[$doc_for_cut]['act_cut_status'] =  $docket_row['act_cut_status'];
+}
+
+
+$response_data['dockets_for_cut'] = $dockets_for_cut;
+$response_data['category'] = $category;
 $response_data['doc_no'] = $doc_no;
 $response_data['fab_required'] = $fab_required; 
 $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies']    = $p_plies;
+$response_data['a_plies']    = $a_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
 $response_data['module']  = $module;
@@ -375,6 +416,9 @@ if($cat_refere>0){
     $response_data['seperate_docket']=$catstat_result['seperate_docket'];
 }
 
+
+// get all other category dockets
+// $response_data['other_category_dockets'] = 
 echo json_encode($response_data);
 exit();
 
