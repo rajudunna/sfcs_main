@@ -188,7 +188,7 @@
 					$work_station_id = $_POST['work_station_id'];
 					if ($emb_table_id > 0)
 					{
-						$save_emb_details = "SELECT * from  $bai_pro3.tbl_emb_table where emb_table_name ='$emb_table_name' and cut_table_name='$cut_table' and work_station_id ='$work_station_id' and emb_table_id !='$emb_table_id'";
+						$save_emb_details = "SELECT * from   $bai_pro3.tbl_emb_table where emb_table_name ='$emb_table_name' and cut_table_name='$cut_table' and work_station_id ='$work_station_id' and emb_table_id !='$emb_table_id'";
 						$save_emb_result = mysqli_query($link,$save_emb_details);
 						if(mysqli_num_rows($save_emb_result)> 0)
 						{

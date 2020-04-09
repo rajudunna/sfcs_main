@@ -42,7 +42,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 
 }else{
 	if($tid>0){ 
-		$count_qry= "select complaint_reason from $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason'  and tid !=$tid"; 
+		$count_qry= "select complaint_reason from  $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason'  and tid !=$tid"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

@@ -55,7 +55,7 @@ if (empty($tbl_name) || empty($p_status)) {
 	}
 	if($tbl_id>0){
 		//update
-		$query="SELECT * from $bai_pro3.tbl_cutting_table where tbl_name='$tbl_name'  and tbl_id !='$tbl_id'";
+		$query="SELECT * from  $bai_pro3.tbl_cutting_table where tbl_name='$tbl_name'  and tbl_id !='$tbl_id'";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
