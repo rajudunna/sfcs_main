@@ -4,8 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 $data = $_POST;
 $doc_no = $data['doc_no'];
 
-$finishedrolls="SELECT distinct(roll_no) as roll_no FROM $bai_pro3.`docket_roll_info` WHERE docket=".$doc_no;
-$finishedrollsresult = mysqli_query($link,$finishedrolls);
+        $finishedrolls="SELECT distinct(roll_no) as roll_no FROM $bai_pro3.`docket_roll_info` WHERE docket=".$doc_no;
+        $finishedrollsresult = mysqli_query($link,$finishedrolls);
         if(mysqli_num_rows($finishedrollsresult) > 0)
         {
             while($row = mysqli_fetch_array($finishedrollsresult))
@@ -27,7 +27,7 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                     WHEN roll_id IN ( '" . implode( "', '" , $response_data1 ) . "' ) THEN 1 
                     ELSE 0
                 END) AS existed
-            FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id AND `bai_pro3`.`docket_roll_info`.docket=`bai_rm_pj1`.`fabric_cad_allocation`.doc_no WHERE doc_no='".$doc_no."' order by `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj1.fabric_cad_allocation.allocated_qty" ; 
+            FROM $bai_rm_pj1.`fabric_cad_allocation` left join `bai_rm_pj1`.`store_in` on `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj1`.`store_in`.tid left join `bai_pro3`.`docket_roll_info` on `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id AND `bai_pro3`.`docket_roll_info`.docket=`bai_rm_pj1`.`fabric_cad_allocation`.doc_no WHERE doc_no='".$doc_no."' group by roll_id" ; 
             $docketrollsresult = mysqli_query($link,$docketrolls);
             $response_data=array();
             if(mysqli_num_rows($docketrollsresult) > 0){
@@ -56,35 +56,34 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                         $new_color=$color.'^'.$pcut_no;
                     }
                     if($pcut_no){
-                        $mrn_request_qry="SELECT tid FROM $bai_rm_pj2.`mrn_track` WHERE style='".$style."' and schedule='".$schedule."' and color = '".$new_color."' and status='9' limit 1";
+                        $mrn_request_qry="SELECT tid FROM $bai_rm_pj2.`mrn_track` WHERE style='".$style."' and schedule='".$schedule."' and color = '".$new_color."' and status='9'";
                         // echo $mrn_request_qry;
                         $mrn_request_qry_result = mysqli_query($link,$mrn_request_qry);
                         if(mysqli_num_rows($mrn_request_qry_result) > 0)
                         {
                             while($mrn_track_row=mysqli_fetch_array($mrn_request_qry_result))
                             {
-                                $tid=$mrn_track_row['tid'];
-                                $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,`store_in`.tid  as roll_id,
-                                (
-                                    CASE 
-                                        WHEN store_in.tid IN ( '" . implode( "', '" , $response_data1 ) . "' ) THEN 1 
-                                        ELSE 0
-                                    END) AS existed FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj2`.`mrn_out_allocation`.lable_id  
-                                WHERE mrn_tid='".$tid."' ORDER BY `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj2.mrn_out_allocation.iss_qty"; 
-                                // echo $mrn_details;
-                                $mrn_detailsresult = mysqli_query($link,$mrn_details);
-                                if(mysqli_num_rows($mrn_detailsresult) > 0)
-                                {
-                                    while($mrn_row=mysqli_fetch_array($mrn_detailsresult))
-                                    {
-                                        $mrn_row['bgcolor'] = 'pink';
-                                        $response_data[] = $mrn_row;
-                                    }
-                                }
-                                // var_dump($response_data);
-                                // $result['response_data']=$mrn_data;
+                                $tid[]=$mrn_track_row['tid'];
                             }
                         }
+                        $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,`store_in`.tid  as roll_id,
+                        (
+                            CASE 
+                                WHEN store_in.tid IN ( '" . implode( "', '" , $response_data1 ) . "' ) THEN 1 
+                                ELSE 0
+                            END) AS existed FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj2`.`mrn_out_allocation`.lable_id  
+                        WHERE mrn_tid IN ( '" . implode( "', '" , $tid ) . "' ) GROUP BY lable_id"; 
+                        // echo $mrn_details;
+                        $mrn_detailsresult = mysqli_query($link,$mrn_details);
+                        if(mysqli_num_rows($mrn_detailsresult) > 0)
+                        {
+                            while($mrn_row=mysqli_fetch_array($mrn_detailsresult))
+                            {
+                                $mrn_row['bgcolor'] = 'pink';
+                                $response_data[] = $mrn_row;
+                            }
+                        }
+                       
                     }
                 }
                 $result['totalreportedplie']=$totalreportedplie;
@@ -150,7 +149,7 @@ $finishedrollsresult = mysqli_query($link,$finishedrolls);
                                             while($mrn_track_row=mysqli_fetch_array($mrn_request_qry_result))
                                             {
                                                 $tid=$mrn_track_row['tid'];
-                                                $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,store_in.tid as roll_id FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_rm_pj1`.`fabric_cad_allocation` ON `bai_rm_pj1`.`fabric_cad_allocation`.roll_id=`bai_rm_pj2`.`mrn_out_allocation`.lable_id LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj1`.`fabric_cad_allocation`.roll_id  
+                                                $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,store_in.tid as roll_id FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.roll_no=`bai_rm_pj2`.`mrn_out_allocation`.lable_id 
                                                 WHERE mrn_tid='".$tid."' ORDER BY `bai_rm_pj1`.`store_in`.ref4, bai_rm_pj2.mrn_out_allocation.iss_qty"; 
                                                 // echo $mrn_details;
                                                 $mrn_detailsresult = mysqli_query($link,$mrn_details);
