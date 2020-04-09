@@ -33,27 +33,46 @@ else
 {
 	if($dr_id>0)
 	{
-		//update
-		$sql = "update $bai_pro3.transport_modes set transport_mode='$code' where sno=$dr_id";
-
-		if (mysqli_query($conn, $sql)) {
+		$query1="select transport_mode from $bai_pro3.transport_modes where transport_mode='$code' sno !=$dr_id ";
+		// echo $query1;
+		$sql_result1=mysqli_query($conn, $query1);
+		
+		if(mysqli_num_rows($sql_result1)>0){
 			$url=getFullURL($_GET['r'],'transport_modes_add.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Record updated successfully',
+				  title: 'Transport Mode Already Existed! ',
 				  text: 'Message!',
-				  type: 'success',
+				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},
 				function(isConfirm){
 				  if (isConfirm) {
 					window.location.href = \"$url\";
 				  }
+			}); }, 100);</script>";
+		}else{	
+			$sql = "update $bai_pro3.transport_modes set transport_mode='$code' where sno=$dr_id";
+
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'transport_modes_add.php','N');
+				//echo $url;
+				//echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
 				}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}
 	else

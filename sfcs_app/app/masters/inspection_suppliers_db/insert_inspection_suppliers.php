@@ -37,31 +37,50 @@ if (empty($product_code) ){
 }else{
 	if($tid>0){
 		//update
-		$sql = "update $bai_rm_pj1.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
-		//echo $sql;exit;
-		if (mysqli_query($conn, $sql)) {
+		$count_qry="select * from $bai_rm_pj1.inspection_supplier_db where  complaint_no='$complaint_no'
+		and supplier_code = '$supplier_code'and supplier_m3_code = '$supplier_m3_code' and seq_no='$seq_no' and tid !=$tid";
+		$count = mysqli_num_rows(mysqli_query($conn,$count_qry));
+		if($count > 0){
 			$url=getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
-			
-			// echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
+			echo"<script>setTimeout(function () {
 				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
+					title: 'Complaint No already existed',
+					text: 'Warning!',
+					type: 'error',
+					confirmButtonText: 'OK'
 				},
 				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
 				}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+		}else{
+			$sql = "update $bai_rm_pj1.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
+			//echo $sql;exit;
+			if (mysqli_query($conn, $sql) or exit ("error1")) {
+				$url=getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
+				
+				// echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+					title: 'Record updated successfully',
+					text: 'Message!',
+					type: 'success',
+					confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+					}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}else{
 		
 		$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' and (supplier_code = '$supplier_code' or supplier_m3_code = '$supplier_m3_code')"; 
-		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry) or exit ("error2"));
 	
 		if($count > 0){
 			$url=getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
@@ -84,7 +103,7 @@ if (empty($product_code) ){
 		}
 		else{
 			$sql = "INSERT INTO $bai_rm_pj1.inspection_supplier_db(product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
-			if (mysqli_query($conn, $sql)) {
+			if (mysqli_query($conn, $sql)or exit ("error3")) {
 				$url=getFullURL($_GET['r'],'save_inspection_suppliers.php','N');
 
 

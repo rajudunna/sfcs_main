@@ -16,15 +16,9 @@ $tbl_id=$_POST['tbl_id'];
 $emp_id =$_POST['emp_id'];
 // echo $tbl_name;die();
 $emp_name =$_POST['emp_name'];
-
-
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 // echo 
-
-
-
-
 if (empty($emp_id) || empty($emp_name)) {
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	echo"<script>setTimeout(function () { 
@@ -39,89 +33,88 @@ if (empty($emp_id) || empty($emp_name)) {
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-	// echo "Please fill values";
 }else{
-	
 	if($tbl_id>0){
-		
-		//update
-		
-		$sql = "update $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$tbl_id";
-		// echo $sql;die();
-		if (mysqli_query($conn, $sql)) {
-
-			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
-
-
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
-	}else{
-		
-		$query="select emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id'  ";
+		$query = "SELECT emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id' and id != $tbl_id ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
-		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-
-
-		echo"<script>setTimeout(function () { 
-			swal({
-			  title: 'Record Already Existed!',
-			  text: 'Message!',
-			  type: 'warning',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
-
-		}else{
-
-		//insert 
-		$sql = "INSERT INTO $bai_pro3.tbl_leader_name (emp_id,emp_name)
-			VALUES ('$emp_id','$emp_name')";
-		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-								//echo "New record created successfully";
-								echo"<script>setTimeout(function () { 
-									swal({
-									  title: 'New record created successfully',
-									  text: 'Message!',
-									  type: 'success',
-									  confirmButtonText: 'OK'
-									},
-									function(isConfirm){
-									  if (isConfirm) {
-										window.location.href = \"$url\";
-									  }
-									}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			echo"<script>setTimeout(function () { 
+				swal({
+					title: 'Employee Id Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+			}); }, 100);</script>";
+		}else{
+			$sql = "UPDATE $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id = $tbl_id";
+			// echo $sql;die();
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+				//echo $url;
+				//echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+				}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
-
-     }
+	}else{
+		$query = "SELECT emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id' ";
+		$sql_result=mysqli_query($conn, $query);
+		if(mysqli_num_rows($sql_result)>0){
+			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+			echo"<script>setTimeout(function () { 
+				swal({
+					title: 'Employee Id Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+			}); }, 100);</script>";
+		}else{
+			$sql = "INSERT INTO $bai_pro3.tbl_leader_name (emp_id,emp_name)VALUES ('$emp_id','$emp_name')";
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+									//echo "New record created successfully";
+									echo"<script>setTimeout(function () { 
+										swal({
+										title: 'New record created successfully',
+										text: 'Message!',
+										type: 'success',
+										confirmButtonText: 'OK'
+										},
+										function(isConfirm){
+										if (isConfirm) {
+												window.location.href = \"$url\";
+										}
+									}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+		}	
 	}
 }
-
 mysqli_close($conn);
 //header('location: index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2N1dHRpbmcvY3V0dGluZ190YWJsZV9hZGQucGhw');
 exit;
-
-
 ?>

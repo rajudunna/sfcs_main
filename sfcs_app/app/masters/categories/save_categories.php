@@ -42,90 +42,116 @@ if (empty($category_name) || empty($category_status) || empty($cat_select))
 }
 else
 {
-	if($row_id>0)
+	if($row_id>0) // update
 	{
-		//update
-		$sql = "update tbl_category set cat_name='$category_name',status='$category_status',cat_selection='$cat_select' where id=$row_id";
-		
-		if (mysqli_query($conn, $sql)) {
+		//update 
+		$query="select cat_name from tbl_category where cat_name='$category_name' and id != '$row_id' ";
+		$sql_result=mysqli_query($conn, $query);
+		if(mysqli_num_rows($sql_result)>0)
+		{
 			$url=getFullURL($_GET['r'],'add_categories.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
+			echo "<script>
+				swal('Error','Category already exists','error');
+				window.location.href='$url';
+				</script>";
 		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			$sql = "update $bai_pro3.tbl_category set cat_name='$category_name',status='$category_status',cat_selection='$cat_select' where id=$row_id";
+			
+			//UPDATE tbl_category SET cat_name='cbj', STATUS='1',cat_selection='Yes' WHERE id=1; 
+			
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'add_categories.php','N');
+				//echo $url;
+				//echo "Record updated successfully";
+				//echo "<script>
+						//swal('Success', 'Category updated successfully' ,'success');
+						//window.location.href = '$url';
+					//</script>";
+				echo"<script>setTimeout(function () { 
+					swal({
+					title: 'Record updated successfully',
+					text: 'Message!',
+					type: 'success',
+					confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+					}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}
-	else 
+	else // create
 	{             
 		$query="select cat_name from tbl_category where cat_name='$category_name'";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0)
-					{
-						//echo "<script>sweetAlert('Category Already Existed','','warning');</script>";
+		{
+			//echo "<script>sweetAlert('Category Already Existed','','warning');</script>";
 
-						$url=getFullURL($_GET['r'],'add_categories.php','N');
+			$url=getFullURL($_GET['r'],'add_categories.php','N');
+
+			echo "<script>
+					swal('Error', 'Category already exists' ,'error');
+					window.location.href = '$url';
+				</script>";
+
+			// echo"<script>setTimeout(function () { 
+			// 	swal({
+			// 		title: 'Category Already Existed!',
+			// 		text: 'Message!',
+			// 		type: 'warning',
+			// 		confirmButtonText: 'OK'
+			// 	},
+			// 	function(isConfirm){
+			// 		if (isConfirm) {
+			// 		window.location.href = \"$url\";
+			// 		}
+			// 	}); }, 100);</script>";
 
 
-						echo"<script>setTimeout(function () { 
-							swal({
-							  title: 'Category Already Existed!',
-							  text: 'Message!',
-							  type: 'warning',
-							  confirmButtonText: 'OK'
-							},
-							function(isConfirm){
-							  if (isConfirm) {
-								window.location.href = \"$url\";
-							  }
-							}); }, 100);</script>";
+			//echo "<script>window.location = 'index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw'</script>";
+		}else{
+		
+				$sql = "INSERT INTO tbl_category (cat_name, status,cat_selection)
+				VALUES ('$category_name','$category_status','$cat_select')";
 
-			
-						//echo "<script>window.location = 'index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw'</script>";
-					}else{
+				if (mysqli_query($conn, $sql)) 
+				{
+					$url=getFullURL($_GET['r'],'add_categories.php','N');
+					//echo "New record created successfully";
+
+					echo "<script>
+							swal('Success', 'Category inserted successfully' ,'success');
+							window.location.href = '$url';
+						</script>";
+					// echo"<script>setTimeout(function () { 
+					// 	swal({
+					// 		title: 'New record created successfully',
+					// 		text: 'Message!',
+					// 		type: 'success',
+					// 		confirmButtonText: 'OK'
+					// 	},
+					// 	function(isConfirm){
+					// 		if (isConfirm) {
+					// 		window.location.href = \"$url\";
+					// 		}
+					// 	}); }, 100);</script>";
 					
-							$sql = "INSERT INTO tbl_category (cat_name, status,cat_selection)
-							VALUES ('$category_name','$category_status','$cat_select')";
-
-							if (mysqli_query($conn, $sql)) 
-							{
-								$url=getFullURL($_GET['r'],'add_categories.php','N');
-								//echo "New record created successfully";
-								echo"<script>setTimeout(function () { 
-									swal({
-									  title: 'New record created successfully',
-									  text: 'Message!',
-									  type: 'success',
-									  confirmButtonText: 'OK'
-									},
-									function(isConfirm){
-									  if (isConfirm) {
-										window.location.href = \"$url\";
-									  }
-									}); }, 100);</script>";
-								
-							} 
-							else 
-							{
-								echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-							}
-					}
+				} 
+				else 
+				{
+					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				}
+		}
 	}
 }
 
 mysqli_close($conn);
-header('location: '.getFullURLLevel($_GET['r'],'add_categories.php',0,'N'));
+// header('location: '.getFullURLLevel($_GET['r'],'add_categories.php',0,'N'));
 exit;
 ?>
 <!-- index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw -->

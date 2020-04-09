@@ -37,7 +37,24 @@ else
 {
 	if($dr_id>0)
 	{
-		//update
+		$query1="select prefix,prefix_name from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and prefix='$department' and type_of_sewing='$reason' and id !=$dr_id ";
+		$sql_result1=mysqli_query($conn, $query1);
+		
+		if(mysqli_num_rows($sql_result1)>0){
+			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
+			echo"<script>setTimeout(function () { 
+				swal({
+				  title: ' Already Prefix had Existed!',
+				  text: 'Message!',
+				  type: 'warning',
+				  confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				  if (isConfirm) {
+						window.location.href = \"$url\";
+				  }
+			}); }, 100);</script>";
+		}else{
 		$sql = "update $brandix_bts.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type' where id=$dr_id";
 
 		if (mysqli_query($conn, $sql)) {
@@ -60,8 +77,7 @@ else
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}
-	else
-	{
+	}else{
 
 		
 
@@ -72,49 +88,42 @@ else
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Reason Already Existed!',
+				  title: 'Prefix  Already Existed!',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
 				},
 				function(isConfirm){
 				  if (isConfirm) {
-					window.location.href = \"$url\";
+						window.location.href = \"$url\";
 				  }
-				}); }, 100);</script>";
+			}); }, 100);</script>";
 
-		}
-		
-		else{
-
-
-
-
-		$sql = "INSERT INTO $brandix_bts.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
-		VALUES ('$code','$department','$reason','$type')";
-  
-		if (mysqli_query($conn, $sql)) 
-		{
-			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
-			//echo "New record created successfully";
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'New record created successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
-		} 
-		else 
-		{
-		    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
-
+		}else{
+			$sql = "INSERT INTO $brandix_bts.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
+			VALUES ('$code','$department','$reason','$type')";
+	
+			if (mysqli_query($conn, $sql)) 
+			{
+				$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
+				//echo "New record created successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+					title: 'New record created successfully',
+					text: 'Message!',
+					type: 'success',
+					confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+					}); }, 100);</script>";
+			} 
+			else 
+			{
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 
 		}
 	}

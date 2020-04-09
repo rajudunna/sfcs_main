@@ -31,36 +31,67 @@ if (empty($section)) {
 	if($id>0){
 		
 		//update
-		
-		$sql = "update $bai_pro3.sections_master set sec_name='$section',date_time='$datetime',ims_priority_boxs='$ims_priority_boxs',section_display_name='$section_display_name',section_head='$section_head' where sec_id=$id";
-		// echo $sql;die();
-		if (mysqli_query($conn, $sql)) {
-
-			$url=getFullURL($_GET['r'],'add_section_master.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
+		$query = "select section_display_name from $bai_pro3.sections_master
+		 where   section_display_name='$section_display_name' and sec_id !=$id";
+			$sql_result=mysqli_query($conn,$query);
+		if(mysqli_num_rows($sql_result)>0){
+		$url=getFullURL($_GET['r'],'add_section_master.php','N');
+			echo"<script>setTimeout(function () {
+					swal({
+						title: 'Section Name  already existed',
+						text: 'Warning!',
+						type: 'error',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+			}); }, 100);</script>";
+		}else{
+				$query = "select section_head  from $bai_pro3.sections_master
+				where   section_head='$section_head' and sec_id !=$id";
+				$sql_result=mysqli_query($conn,$query);
+				if(mysqli_num_rows($sql_result)>0){
+				$url=getFullURL($_GET['r'],'add_section_master.php','N');
+				echo"<script>setTimeout(function () {
+							swal({
+								title: 'Section Head already existed',
+								text: 'Warning!',
+								type: 'error',
+								confirmButtonText: 'OK'
+							},
+							function(isConfirm){
+								if (isConfirm) {
+									window.location.href = \"$url\";
+								}
 				}); }, 100);</script>";
+			}else{
+				$sql = "update $bai_pro3.sections_master set sec_name='$section',date_time='$datetime',ims_priority_boxs='$ims_priority_boxs'
+				,section_display_name='$section_display_name',section_head='$section_head' where sec_id=$id";
+				// echo $sql;die();
+				if (mysqli_query($conn, $sql)) {
 
-
-
-
-
-
-
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+					$url=getFullURL($_GET['r'],'add_section_master.php','N');
+					//echo $url;
+					//echo "Record updated successfully";
+					echo"<script>setTimeout(function () { 
+						swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+						},
+						function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+					}); }, 100);</script>";
+				} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
+	}
 	}else{
 		
 		$query="select sec_name from $bai_pro3.sections_master where sec_name='$section'";

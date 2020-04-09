@@ -29,9 +29,6 @@ $conn=$link;
 // echo 
 
 
-
-
-
 if (empty($tbl_name) || empty($p_status)) {
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	echo"<script>setTimeout(function () { 
@@ -57,17 +54,30 @@ if (empty($tbl_name) || empty($p_status)) {
 		$tblstatus = 'In-Active';
 	}
 	if($tbl_id>0){
-		
 		//update
-		
-		$sql = "update $bai_pro3.tbl_cutting_table set tbl_name='$tbl_name',status='$tblstatus' where tbl_id=$tbl_id";
-		// echo $sql;die();
-		if (mysqli_query($conn, $sql)) {
-
+		$query="SELECT * from $bai_pro3.tbl_cutting_table where tbl_name='$tbl_name'  and tbl_id !='$tbl_id'";
+		$sql_result=mysqli_query($conn, $query);
+		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-			//echo $url;
-			//echo "Record updated successfully";
+
 			echo"<script>setTimeout(function () { 
+				swal({
+				title: 'Table Already Existed!',
+				text: 'Message!',
+				type: 'warning',
+				confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				if (isConfirm) {
+					window.location.href = \"$url\";
+				}
+				}); }, 100);</script>";
+		}else{
+			$sql = "update $bai_pro3.tbl_cutting_table set tbl_name='$tbl_name', status='$p_status' where tbl_id=$tbl_id";
+			// echo $sql;die();
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+				echo"<script>setTimeout(function () { 
 				swal({
 				  title: 'Record updated successfully',
 				  text: 'Message!',
@@ -79,62 +89,52 @@ if (empty($tbl_name) || empty($p_status)) {
 					window.location.href = \"$url\";
 				  }
 				}); }, 100);</script>";
-
-
-
-
-
-
-
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}else{
 		
 		$query="select tbl_name from $bai_pro3.tbl_cutting_table where tbl_name='$tbl_name'";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
-		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-
-
-		echo"<script>setTimeout(function () { 
-			swal({
-			  title: 'Cutting Table Already Existed!',
-			  text: 'Message!',
-			  type: 'warning',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
+			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+			echo"<script>setTimeout(function () { 
+				swal({
+				title: 'Table Name Already Existed!',
+				text: 'Message!',
+				type: 'warning',
+				confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				if (isConfirm) {
+					window.location.href = \"$url\";
+				}
+				}); }, 100);</script>";
 
 		}else{
-
-		//insert 
-		$sql = "INSERT INTO $bai_pro3.tbl_cutting_table (tbl_name,status)
-			VALUES ('$tbl_name','$tblstatus')";
-		if (mysqli_query($conn, $sql)) {
-			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
-								//echo "New record created successfully";
-								echo"<script>setTimeout(function () { 
-									swal({
-									  title: 'New record created successfully',
-									  text: 'Message!',
-									  type: 'success',
-									  confirmButtonText: 'OK'
-									},
-									function(isConfirm){
-									  if (isConfirm) {
-										window.location.href = \"$url\";
-									  }
-									}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
-
-     }
+			//insert 
+			$sql = "INSERT INTO $bai_pro3.tbl_cutting_table (tbl_name,status)
+				VALUES ('$tbl_name','$p_status')";
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
+				//echo "New record created successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+					title: 'New record created successfully',
+					text: 'Message!',
+					type: 'success',
+					confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+					}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+    	}
 	}
 }
 

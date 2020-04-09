@@ -42,27 +42,46 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 
 }else{
 	if($tid>0){ 
-		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
-		//echo 	$sql;
-		if (mysqli_query($conn, $sql)) {
+		$count_qry= "select complaint_reason from $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason'  and tid !=$tid"; 
+		// echo $count_qry;
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
+			// echo $count;die();
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
-			
-			// echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
+			echo "<script>setTimeout(function () { 
 				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
+					title: ' Complaint Reason Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
 				},
 				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+			}); }, 100);</script>";
+		}else{
+			$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
+			//echo 	$sql;
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
+				
+				// echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
 				}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}else{
 		
@@ -74,46 +93,44 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
 
-		echo "<script>setTimeout(function () { 
-			swal({
-			  title: ' Reason Already Existed!',
-			  text: 'Message!',
-			  type: 'warning',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
+			echo "<script>setTimeout(function () { 
+				swal({
+				title: ' Reason Already Existed!',
+				text: 'Message!',
+				type: 'warning',
+				confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				if (isConfirm) {
+					window.location.href = \"$url\";
+				}
 			}); }, 100);</script>";
-			// $error_msg = 1;
-			// echo "<script>alert('Enter data correctly.')</script>";
-		}
-		else{
+				
+		}else{
 			$sql = "INSERT INTO $bai_rm_pj1.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
 
-		echo"<script>setTimeout(function () { 
-			swal({ 
-			  title: 'New Record Created successfully',
-			  text: 'Message!',
-			  type: 'success',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
-				// echo "New record created successfully";
+				echo"<script>setTimeout(function () { 
+					swal({ 
+					title: 'New Record Created successfully',
+					text: 'Message!',
+					type: 'success',
+					confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+				}); }, 100);</script>";
+						// echo "New record created successfully";
 			}
 			else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
 		}
-		//insert 
+	
 	}
 }
 
