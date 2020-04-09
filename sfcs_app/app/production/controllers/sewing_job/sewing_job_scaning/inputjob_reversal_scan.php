@@ -862,7 +862,7 @@
 					{
 						$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 					}
-					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module=".$b_module[$key]." and shift='".$b_shift."'";
+					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module='".$b_module[$key]."' and shift='".$b_shift."'";
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{
@@ -920,7 +920,7 @@
 					}
 					//CODE FOR UPDATING CPS LOG
 					$category=['cutting','Send PF','Receive PF'];
-					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
 					// echo $checking_qry;
 					$result_checking_qry = $link->query($checking_qry);
 					while($row_cat = $result_checking_qry->fetch_assoc()) 
