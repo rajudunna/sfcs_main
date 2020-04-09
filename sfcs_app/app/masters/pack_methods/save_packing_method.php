@@ -78,7 +78,6 @@ if (empty($pack_method_name) || empty($status)) {
 			} else {
 				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
-		}		
 	}else{
 		$query="select pack_method_name from $bai_pro3.pack_methods where pack_method_name='$pack_method_name'";
 		$sql_result=mysqli_query($conn, $query);
