@@ -40,26 +40,45 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 }else{
 	if($tid>0){
 		//update
-		$sql = "update $bai_rm_pj1.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
-		//echo $sql;exit;
-		if (mysqli_query($conn, $sql)) {
+		$count_qry= "SELECT supplier_code,supplier_m3_code from $bai_rm_pj1.inspection_supplier_db where supplier_code='$supplier_code'
+		 and supplier_m3_code='$supplier_m3_code'and tid !=$tid"; 
+		
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
 			$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
-			
-			// echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
+			echo "<script>setTimeout(function () { 
 				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
+					title: 'supplier code Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
 				},
 				function(isConfirm){
-				  if (isConfirm) {
+				if (isConfirm) {
 					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				}
+			}); }, 100);</script>";
+		}else {
+			$sql = "update $bai_rm_pj1.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',
+			supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
+			//echo $sql;exit;
+			if (mysqli_query($conn, $sql)) {
+					$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
+					echo"<script>setTimeout(function () { 
+						swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+						},
+						function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+					}); }, 100);</script>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}else{
 		
@@ -71,17 +90,17 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 			$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 
 
-		echo "<script>setTimeout(function () { 
-			swal({
-			  title: 'inspection supplier Already Existed!',
-			  text: 'Message!',
-			  type: 'warning',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
+			echo "<script>setTimeout(function () { 
+				swal({
+					title: 'supplier code Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
 			}); }, 100);</script>";
 			// $error_msg = 1;
 			// echo "<script>alert('Enter data correctly.')</script>";
@@ -90,20 +109,18 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 			$sql = "INSERT INTO $bai_rm_pj1.inspection_supplier_db(product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
-
-
-		echo"<script>setTimeout(function () { 
-			swal({
-			  title: 'record inserted successfully ',
-			  text: 'Message!',
-			  type: 'success',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'record inserted successfully ',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+					}); }, 100);</script>";
 				// echo "New record created successfully";
 			}
 			else {

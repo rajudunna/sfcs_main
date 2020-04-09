@@ -69,7 +69,7 @@
 					<select class="form-control" name="cut_table" id="cut_table" required>
 						<option value="">Please Select</option>
 						<?php 
-							$get_cut_table_qury = "SELECT tbl_name FROM bai_pro3.`tbl_cutting_table` WHERE status='active';";
+							$get_cut_table_qury = "SELECT tbl_name FROM $bai_pro3.`tbl_cutting_table` WHERE status='active';";
 							$get_cut_table_result = mysqli_query( $link, $get_cut_table_qury);
 							while ($row = mysqli_fetch_array($get_cut_table_result))
 							{
@@ -188,20 +188,41 @@
 					$work_station_id = $_POST['work_station_id'];
 					if ($emb_table_id > 0)
 					{
-						// echo "not null";
-						$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."' WHERE `emb_table_id` = '".$emb_table_id."';";
-						$update_emb_result = mysqli_query( $link, $update_emb_details);
-						if ($update_emb_result == 1 or $update_emb_result == '1')
+						$save_emb_details = "SELECT * from  $bai_pro3.tbl_emb_table where emb_table_name ='$emb_table_name' and cut_table_name='$cut_table' and work_station_id ='$work_station_id' and emb_table_id !='$emb_table_id'";
+						$save_emb_result = mysqli_query($link,$save_emb_details);
+						if(mysqli_num_rows($save_emb_result)> 0)
 						{
 							echo "<script>
-									sweetAlert('Updated Emblishment Table Successfully','','success');
-									window.location.href = \"$self_url\";
-								</script>";
+							sweetAlert('Emblishment table already exists','','error');
+							window.location.href= \"$self_url\";
+							</script>";
+						}else{
+							// echo "not null";
+							$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."' WHERE `emb_table_id` = '".$emb_table_id."';";
+							$update_emb_result = mysqli_query( $link, $update_emb_details);
+							if ($update_emb_result == 1 or $update_emb_result == '1')
+							{
+								echo "<script>
+										sweetAlert('Updated Emblishment Table Successfully','','success');
+										window.location.href = \"$self_url\";
+									</script>";
+							}
 						}
 					}
 					else
 					{
 						// echo "null";
+						$save_emb_details= "SELECT * from $bai_pro3.tbl_emb_table where emb_table_name ='$emb_table_name' and cut_table_name='$cut_tbl_name' and work_station_id='$work_station_id' ";
+						$save_emb_result = mysqli_query($link,$save_emb_details);
+						if(mysqli_num_rows($save_emb_result) > 0)
+						{
+							echo"<script>
+							sweetAlert('Emblishment table already exists','','error');
+							window.location.href = \"$self_url\";
+							</script>";
+							die();
+						}
+
 						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."');";
 						$save_emb_result = mysqli_query( $link, $save_emb_details);
 						if ($save_emb_result == 1 or $save_emb_result == '1')

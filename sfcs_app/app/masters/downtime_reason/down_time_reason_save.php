@@ -42,8 +42,24 @@ else
 {
 	if($dr_id>0)
 	{
-		//update
-		$sql = "update $bai_pro2.downtime_reason set code='$code',rdept='$department',reason='$reason' where id=$dr_id";
+		$query1="select reason from $bai_pro2.downtime_reason  where reason='$reason' or code='$code' and id != $dr_id";
+		$sql_result1=mysqli_query($conn, $query1);
+		if(mysqli_num_rows($sql_result1)>0){
+			$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
+			echo"<script>setTimeout(function () { 
+				swal({
+				  title: 'Reason Already Existed for this Code',
+				  text: 'Message!',
+				  type: 'warning',
+				  confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				  if (isConfirm) {
+						window.location.href = \"$url\";
+				  }
+			}); }, 100);</script>";
+		}else{
+		$sql = "update $bai_pro2.downtime_reason set code='$code', rdept='$department',reason='$reason' where id=$dr_id";
 		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
@@ -58,18 +74,14 @@ else
 				},
 				function(isConfirm){
 				  if (isConfirm) {
-					window.location.href = \"$url\";
+					 window.location.href = \"$url\";
 				  }
 				}); }, 100);</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
 	}
-	else
-	{
-
-		
-
+	}else{
 		$query1="select reason,code from $bai_pro2.downtime_reason  where reason='$reason' or code='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
@@ -85,49 +97,34 @@ else
 				},
 				function(isConfirm){
 				  if (isConfirm) {
-					window.location.href = \"$url\";
+					 window.location.href = \"$url\";
 				  }
+			}); }, 100);</script>";
+		}else{
+			$sql = "INSERT INTO $bai_pro2.downtime_reason (code, rdept,reason)
+			VALUES ('$code','$department','$reason')";
+
+			if (mysqli_query($conn, $sql)) 
+			{
+				$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
+				//echo "New record created successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'New record created successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
 				}); }, 100);</script>";
-
-
-
-
-		}
-		
-		
-		
-		
-		
-		
-		else{
-
-
-
-
-		$sql = "INSERT INTO $bai_pro2.downtime_reason (code, rdept,reason)
-		VALUES ('$code','$department','$reason')";
-
-		if (mysqli_query($conn, $sql)) 
-		{
-			$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
-			//echo "New record created successfully";
-			echo"<script>setTimeout(function () { 
-				swal({
-				  title: 'New record created successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
-				},
-				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
-				}); }, 100);</script>";
-		} 
-		else 
-		{
-		    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
+			} 
+			else 
+			{
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 
 
 		}

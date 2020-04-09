@@ -56,16 +56,15 @@
                         <div id="valOk" class="row viewerror clearfix hidden">
                             <div class="alert alert-success">Yay! ..</div>
                         </div>
-
-                        
-                                    
-                                <div class="row"><div class="col-md-6"><div class="form-group">
-                <label class="control-label control-label-left col-sm-3" for="category_name">Category Name<span class="req"> *</span></label>
-                <div class="controls col-sm-9">
-                    
-                <input id="category_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Category name" name="category_name"  value="<?php echo $cat_name; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
-                
-        </div></div><div class="col-md-6"><div class="form-group">
+                    <div class="row">
+                    <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label control-label-left col-sm-3" for="category_name">Category Name<span class="req"> *</span></label>
+                        <div class="controls col-sm-9">
+                        <input id="category_name" type="text" class="form-control k-textbox" data-role="text" placeholder="Category name" name="category_name"  value="<?php echo $cat_name; ?>" required="required" data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                    </div>
+                    </div
+                    ><div class="col-md-6"><div class="form-group">
                 <label class="control-label control-label-left col-sm-3" for="category_status">Select Status</label>
                 <div class="controls col-sm-9">
                     
@@ -89,6 +88,7 @@
                 <select id="cat_selection" class="form-control" data-role="select" selected="selected" name="cat_selection"  data-parsley-errors-container="#errId3">
                      <?php
                     if($cat_selection=="Yes"){
+
                         echo '<option value="Yes" selected>Yes</option>';
                         echo '<option value="No">No</option>';
                     }else{
@@ -104,13 +104,15 @@
                         
                         
                 <button id="save_btn" type="submit" class="btn btn-primary btn-sm"  name="save_btn">Save</button></div></div></div>
-
-
+                    
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    
+    
+    
 <?php include('view_categories.php'); ?>
 </body>
 </html>

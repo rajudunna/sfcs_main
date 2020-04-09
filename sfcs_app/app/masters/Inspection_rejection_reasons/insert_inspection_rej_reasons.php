@@ -31,27 +31,47 @@ if (empty($rejec_code) || empty($rejec_des) )
 		}); }, 100);</script>";
 }else{
 	if($tid>0){
-		//update
-		$sql = "update bai_rm_pj1.reject_reasons set reject_code='$rejec_code',reject_desc='$rejec_des' where tid=$tid";
-		//echo $sql;exit;
-		if (mysqli_query($conn, $sql)) {
+		$count_qry= "select reject_desc from $bai_rm_pj1.reject_reasons where   reject_desc = '$rejec_des'  and tid !=$tid"; 
+		// echo $count_qry;
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
+			// echo $count;die();
 			$url=getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
-			
-			// echo "Record updated successfully";
-			echo"<script>setTimeout(function () { 
+			echo "<script>setTimeout(function () { 
 				swal({
-				  title: 'Record updated successfully',
-				  text: 'Message!',
-				  type: 'success',
-				  confirmButtonText: 'OK'
+					title: 'Rejection  Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
 				},
 				function(isConfirm){
-				  if (isConfirm) {
-					window.location.href = \"$url\";
-				  }
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
+			}); }, 100);</script>";
+		}else{
+		
+			$sql = "update bai_rm_pj1.reject_reasons set reject_code='$rejec_code',reject_desc='$rejec_des' where tid=$tid";
+			//echo $sql;exit;
+			if (mysqli_query($conn, $sql)) {
+				$url=getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
+				
+				// echo "Record updated successfully";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Record updated successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+					},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
 				}); }, 100);</script>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
 		}
 	}else{
 		
@@ -61,19 +81,17 @@ if (empty($rejec_code) || empty($rejec_des) )
 		if($count > 0){
 			// echo $count;die();
 			$url=getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
-
-
-		echo "<script>setTimeout(function () { 
-			swal({
-			  title: 'inspection rejection Already Existed!',
-			  text: 'Message!',
-			  type: 'warning',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
+			echo "<script>setTimeout(function () { 
+				swal({
+					title: 'inspection rejection Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+					if (isConfirm) {
+						window.location.href = \"$url\";
+					}
 			}); }, 100);</script>";
 			// $error_msg = 1;
 			// echo "<script>alert('Enter data correctly.')</script>";
@@ -84,18 +102,18 @@ if (empty($rejec_code) || empty($rejec_des) )
 				$url=getFullURL($_GET['r'],'save_inspection_rej_reasons.php','N');
 
 
-		echo"<script>setTimeout(function () { 
-			swal({
-			  title: 'Record Inserted successfully',
-			  text: 'Message!',
-			  type: 'success',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
+				echo"<script>setTimeout(function () { 
+					swal({
+						title: 'Record Inserted successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+						},
+					function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+				}); }, 100);</script>";
 				// echo "New record created successfully";
 			}
 			else {

@@ -43,12 +43,29 @@ if (empty($rejec_code) || empty($rejec_des)  )
 	
 	if($tid>0){
 		//update
+		$count_qry= "select reason_code,reason_desc  from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code' and reason_desc = '$rejec_des' and reason_tid !=$tid "; 
+		// echo $count_qry;
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
+			// echo $count;die();
+			$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+			echo "<script>setTimeout(function () { 
+				swal({
+					title: 'Reason Code Already Existed!',
+					text: 'Message!',
+					type: 'warning',
+					confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				if (isConfirm) {
+					window.location.href = \"$url\";
+				}
+			}); }, 100);</script>";
+		}else{
 		$sql = "update $bai_rm_pj2.mrn_reason_db set reason_code='$rejec_code',reason_desc='$rejec_des',status='$status' where reason_tid=$tid";
 		//echo $sql;exit;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
-			
-			// echo "Record updated successfully";
 			echo"<script>setTimeout(function () { 
 				swal({
 				  title: 'Record updated successfully',
@@ -60,13 +77,14 @@ if (empty($rejec_code) || empty($rejec_des)  )
 				  if (isConfirm) {
 					window.location.href = \"$url\";
 				  }
-				}); }, 100);</script>";
+			}); }, 100);</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 		}
+	}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code' and (reason_desc = '$rejec_des' )"; 
+		$count_qry= "select reason_code from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code'  "; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
@@ -90,28 +108,46 @@ if (empty($rejec_code) || empty($rejec_des)  )
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
+		$count_qry= "select reason_desc from $bai_rm_pj2.mrn_reason_db where reason_desc='$rejec_des'  "; 
+		// echo $count_qry;
+		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
+		if($count > 0){
+			// echo $count;die();
+			$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
+			echo "<script>setTimeout(function () { 
+				swal({
+				title: 'Reason description Already Existed!',
+				text: 'Message!',
+				type: 'warning',
+				confirmButtonText: 'OK'
+				},
+				function(isConfirm){
+				if (isConfirm) {
+					window.location.href = \"$url\";
+				}
+			}); }, 100);</script>";
+		}else{
 			$sql = "INSERT INTO $bai_rm_pj2.mrn_reason_db(reason_code, reason_desc,status) VALUES('$rejec_code','$rejec_des','$status')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'save_mrn_req_reasons.php','N');
-
-
-		echo"<script>setTimeout(function () { 
-			swal({
-			  title: 'Record inserted successfully',
-			  text: 'Message!',
-			  type: 'success',
-			  confirmButtonText: 'OK'
-			},
-			function(isConfirm){
-			  if (isConfirm) {
-				window.location.href = \"$url\";
-			  }
-			}); }, 100);</script>";
-				// echo "New record created successfully";
-			}
-			else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-			}
+					echo"<script>setTimeout(function () { 
+						swal({
+						title: 'Record inserted successfully',
+						text: 'Message!',
+						type: 'success',
+						confirmButtonText: 'OK'
+						},
+						function(isConfirm){
+						if (isConfirm) {
+							window.location.href = \"$url\";
+						}
+					}); }, 100);</script>";
+					// echo "New record created successfully";
+				}
+				else {
+					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				}
+			}	
 		}
 		//insert 
 	}
