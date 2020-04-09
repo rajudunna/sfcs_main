@@ -49,7 +49,7 @@ if (empty($section)) {
 						}
 			}); }, 100);</script>";
 		}else{
-				$query = "select section_head  from $bai_pro3.sections_master
+				$query = "select section_head from $bai_pro3.sections_master
 				where   section_head='$section_head' and sec_id !=$id";
 				$sql_result=mysqli_query($conn,$query);
 				if(mysqli_num_rows($sql_result)>0){

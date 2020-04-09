@@ -49,7 +49,7 @@ else
 {
 	if($row_id>0)
 	{
-		$query="select * from $brandix_bts.ops_short_cuts where short_key_code='$short_key_code' and id != $row_id";
+		$query="select *  from $brandix_bts.ops_short_cuts where short_key_code='$short_key_code' and id != $row_id";
 
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){

@@ -33,7 +33,7 @@ else
 {
 	if($dr_id>0)
 	{
-		$query1="select transport_mode from $bai_pro3.transport_modes where transport_mode='$code' sno !=$dr_id ";
+		$query1="select transport_mode  from $bai_pro3.transport_modes where transport_mode='$code' sno !=$dr_id ";
 		// echo $query1;
 		$sql_result1=mysqli_query($conn, $query1);
 		

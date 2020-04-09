@@ -31,7 +31,7 @@ if (empty($reason_cat) || empty($reason_desc) || empty($reason_code) || empty($r
 		}); }, 100);</script>";
 }else{
 	if($sno>0){
-		$count_qry= "select reason_order from $bai_pro3.bai_qms_rejection_reason 
+		$count_qry= "select reason_order from  $bai_pro3.bai_qms_rejection_reason 
 		where  reason_order='$reason_order' and sno != $sno"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));

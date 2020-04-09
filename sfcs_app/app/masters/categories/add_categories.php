@@ -97,7 +97,7 @@
                     }
                 
                 ?>
-                </select><span id="errId3" class="error"></span></div>
+                </select><span id ="errId3" class="error"></span></div>
                         
                 </div></div><div class="col-md-6"><div class="form-group">
                         

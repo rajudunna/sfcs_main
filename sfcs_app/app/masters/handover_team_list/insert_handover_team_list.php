@@ -48,7 +48,7 @@ if (empty($emp_id) || empty($emp_call_name) )
 }else{
 	if($team_id>0){
 		//update
-		$count_qry= "select emp_call_name from $bai_pro3.tbl_fg_crt_handover_team_list where emp_call_name='$emp_call_name' and team_id != $team_id "; 
+		$count_qry= "select emp_call_name  from $bai_pro3.tbl_fg_crt_handover_team_list where emp_call_name='$emp_call_name' and team_id != $team_id "; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

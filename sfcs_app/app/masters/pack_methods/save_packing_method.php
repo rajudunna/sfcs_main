@@ -41,7 +41,7 @@ if (empty($pack_method_name) || empty($status)) {
 }else{
 	if($pack_id>0)
 	{
-		$query="select pack_method_name from $bai_pro3.pack_methods where pack_method_name='$pack_method_name' and pack_id !=$pack_id";
+		$query="select pack_method_name  from $bai_pro3.pack_methods where pack_method_name='$pack_method_name' and pack_id !=$pack_id";
 		$sql_result=mysqli_query($conn,$query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'add_packing_method.php','N');

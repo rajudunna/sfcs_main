@@ -40,7 +40,7 @@ if (empty($product_code) || empty($supplier_code) || empty($complaint_no) || emp
 }else{
 	if($tid>0){
 		//update
-		$count_qry= "SELECT supplier_code,supplier_m3_code from $bai_rm_pj1.inspection_supplier_db where supplier_code='$supplier_code'
+		$count_qry= "SELECT supplier_code,supplier_m3_code  from $bai_rm_pj1.inspection_supplier_db where supplier_code='$supplier_code'
 		 and supplier_m3_code='$supplier_m3_code'and tid !=$tid"; 
 		
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));

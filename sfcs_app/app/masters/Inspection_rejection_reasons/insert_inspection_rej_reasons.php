@@ -31,7 +31,7 @@ if (empty($rejec_code) || empty($rejec_des) )
 		}); }, 100);</script>";
 }else{
 	if($tid>0){
-		$count_qry= "select reject_desc from $bai_rm_pj1.reject_reasons where   reject_desc = '$rejec_des'  and tid !=$tid"; 
+		$count_qry= "select reject_desc from $bai_rm_pj1.reject_reasons  where   reject_desc = '$rejec_des'  and tid !=$tid"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
