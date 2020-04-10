@@ -509,8 +509,11 @@ if($barcode_generation == 1)
 					$qms[$nop_qry_row['bundle_number']]['acutno'] = $nop_qry_row['cut_number'];
 					$qms[$nop_qry_row['bundle_number']]['input_job_no'] = $nop_qry_row['input_job_no'];
 					$qms[$nop_qry_row['bundle_number']]['bundle_no'] = $nop_qry_row['bundle_number'];
+					$send_qty = $nop_qry_row['send_qty'];
+					$recevied_qty = $nop_qry_row['recevied_qty'];
+					$rejected_qty = $nop_qry_row['rejected_qty'];
 					$qms[$nop_qry_row['bundle_number']]['remarks'] = $remarks;
-					$actual_bundles[] = $nop_qry_row['bundle_number'];
+					$actual_bundles[$nop_qry_row['bundle_number']] = $nop_qry_row['bundle_number'];
 					$barcode_seq[] = $nop_qry_row['barcode_sequence'];
 					$barcode_sequence[] = $nop_qry_row['barcode_sequence'];
 					$b_colors_1[] =  $nop_qry_row['color'];
@@ -523,6 +526,7 @@ if($barcode_generation == 1)
 					$b_remarks_1[] = $remarks;
 					$b_module1[] = $module_cum;
 					$bundle_individual_number = $nop_qry_row['bundle_number'];
+					$bundle_to_report_qty[$bundle_individual_number] = $send_qty - ($recevied_qty + $rejected_qty);
 					//echo $doc_value.'-'.$bundle_individual_number.'-'.$cumulative_qty.'</br>';
 					// if ($emb_cut_check_flag != 0) {
 					// 	$retreving_remaining_qty_qry = getElegiblereportFromACB($actual_input_job_number = '', $bundle_individual_number);
@@ -546,38 +550,59 @@ if($barcode_generation == 1)
 						} else {
 							$bundle_pending_qty =  $nop_qry_row['send_qty'] - ($nop_qry_row['recevied_qty']+$nop_qry_row['rejected_qty']);
 						}
-						if($bundle_pending_qty > 0 && $cumulative_qty > 0)
+						if($bundle_pending_qty > 0 && $cumulative_qty > 0 && $bundle_to_report_qty[$bundle_individual_number] > 0)
 						{
 							if($bundle_pending_qty <= $cumulative_qty)
 							{
-								$actual_rec_quantities[]=$bundle_pending_qty;
-								$rec_qtys_array[$bundle_individual_number] = $bundle_pending_qty;
-								//$fillup_qty[$doc_value][$b_sizes[$key]] = $bundle_pending_qty;
-								$remaining_qty_rec = $cumulative_qty - $bundle_pending_qty;
-								$cumulative_qty = $remaining_qty_rec;
-								$to_add += $bundle_pending_qty;
+								if($bundle_pending_qty <= $bundle_to_report_qty[$bundle_individual_number]){
+									$actual_rec_quantities[$nop_qry_row['bundle_number']]=$bundle_pending_qty;
+									$rec_qtys_array[$bundle_individual_number] = $bundle_pending_qty;
+									//$fillup_qty[$doc_value][$b_sizes[$key]] = $bundle_pending_qty;
+									$remaining_qty_rec = $cumulative_qty - $bundle_pending_qty;
+									$cumulative_qty = $remaining_qty_rec;
+									$to_add += $bundle_pending_qty;
+								} 
+								else if($bundle_pending_qty > $bundle_to_report_qty[$bundle_individual_number]){
+									$actual_rec_quantities[$nop_qry_row['bundle_number']]=$bundle_to_report_qty[$bundle_individual_number];
+									$rec_qtys_array[$bundle_individual_number] = $bundle_to_report_qty[$bundle_individual_number];
+									//$fillup_qty[$doc_value][$b_sizes[$key]] = $bundle_to_report_qty[$bundle_individual_number];
+									$remaining_qty_rec = $cumulative_qty - $bundle_to_report_qty[$bundle_individual_number];
+									$cumulative_qty = $remaining_qty_rec;
+									$to_add += $bundle_to_report_qty[$bundle_individual_number];
+									$bundle_pending_qty = $bundle_pending_qty - $bundle_to_report_qty[$bundle_individual_number];
+								} 
 								//$bundle_pending_qty = 0;
 							}
 							else
 							{
-								$actual_rec_quantities[]=$cumulative_qty;
-								$rec_qtys_array[$bundle_individual_number] = $cumulative_qty;
-								//$fillup_qty[$doc_value][$b_sizes[$key]] = $cumulative_qty;
-								$to_add += $cumulative_qty;
-								$cumulative_qty = 0;
+								if($cumulative_qty <= $bundle_to_report_qty[$bundle_individual_number]){
+									$actual_rec_quantities[$nop_qry_row['bundle_number']]=$cumulative_qty;
+									$rec_qtys_array[$bundle_individual_number] = $cumulative_qty;
+									//$fillup_qty[$doc_value][$b_sizes[$key]] = $cumulative_qty;
+									$to_add += $cumulative_qty;
+									$cumulative_qty = 0;
+								} 
+								else if($cumulative_qty > $bundle_to_report_qty[$bundle_individual_number]){
+									$actual_rec_quantities[$nop_qry_row['bundle_number']]=$bundle_to_report_qty[$bundle_individual_number];
+									$rec_qtys_array[$bundle_individual_number] = $cumulative_qty;
+									//$fillup_qty[$doc_value][$b_sizes[$key]] = $cumulative_qty;
+									$cumulative_qty = $cumulative_qty-$bundle_to_report_qty[$bundle_individual_number];
+									$to_add += $cumulative_qty;
+								}
+
 								
 							}
 						}
 						else if($bundle_pending_qty == 0)
 						{
-							$actual_rec_quantities[]=0;
+							$actual_rec_quantities[$nop_qry_row['bundle_number']]=0;
 							$rec_qtys_array[$bundle_individual_number] = 0;
 							$to_add += 0;
 						}
 					}
 					else
 					{
-						$actual_rec_quantities[] = 0;
+						$actual_rec_quantities[$nop_qry_row['bundle_number']] = 0;
 						$rec_qtys_array[$bundle_individual_number] = 0;
 						$to_add += 0;
 					}
