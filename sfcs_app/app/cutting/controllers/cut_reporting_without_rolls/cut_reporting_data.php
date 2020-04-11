@@ -364,7 +364,6 @@ $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies']    = $p_plies;
-$response_data['a_plies']    = $a_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
 $response_data['module']  = $module;
