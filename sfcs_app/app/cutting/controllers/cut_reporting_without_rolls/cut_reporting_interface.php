@@ -1801,7 +1801,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#binding_consum').val(data.binding_consumption);
             $('#seperat_dock').val(data.seperate_docket);
 
-
             //doc type
 
             $('#d_doc_type').html(camelCase(data.doc_target_type)+' Docket');

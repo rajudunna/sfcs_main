@@ -355,7 +355,6 @@ while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
     $dockets_for_cut[$doc_for_cut]['act_cut_status'] =  $docket_row['act_cut_status'];
 }
 
-
 $response_data['dockets_for_cut'] = $dockets_for_cut;
 $response_data['category'] = $category;
 $response_data['doc_no'] = $doc_no;
