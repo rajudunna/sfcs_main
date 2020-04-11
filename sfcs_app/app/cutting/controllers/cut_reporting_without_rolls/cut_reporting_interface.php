@@ -1683,7 +1683,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         }
         
     }
-
     function camelCase(str) { 
         return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) 
         { 
