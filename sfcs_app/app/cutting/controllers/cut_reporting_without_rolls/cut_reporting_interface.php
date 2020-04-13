@@ -1188,6 +1188,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
         var error_message = '';
+      
         
         //Screen Validations
         if(c_plies == 0 && full_reporting_flag == '1'){

@@ -382,10 +382,6 @@ $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies']    = $p_plies;
-<<<<<<< HEAD
-=======
-// $response_data['a_plies']    = $a_plies;
->>>>>>> cd45b6215c2de713fd1653027a436ee604115abf
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
 $response_data['module']  = $module;
@@ -403,6 +399,7 @@ $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
+
 
 /*get mark length for #3111 (No changes done but this branch roll backed So hard committed for UAT push*/
 $mlength="SELECT mklength,cat_ref FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;
