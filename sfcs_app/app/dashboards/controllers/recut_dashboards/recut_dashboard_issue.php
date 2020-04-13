@@ -116,14 +116,16 @@ if(isset($_POST['formIssue']))
     //     $job_deactivated = 1;
     // }
     $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE input_job_no_random in (".$job_list.") and remove_type='3'";
+    // echo $job_deactivated;
     
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($job_deactivated_result) == 0){
-        $job_deactivated_status = 1;
-    } else {
         $job_deactivated_status = 0;
+    } else {
+        $job_deactivated_status = 1;
     }
-    
+    // echo $job_deactivated_status;
+    // die();
     if($job_deactivated_status == 0)
     {
     
@@ -239,9 +241,9 @@ if(isset($_POST['formIssue']))
                             $job = $row['input_job_no'];
                         }
                     
-                        if($plan_jobcount > 0) {
-                            $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
-                        }
+                    }
+                    if($plan_jobcount > 0) {
+                        $plan_logical_bundles_rejection = plan_logical_bundles_recut($doc_no_ref,$plan_jobcount,$plan_bundleqty,$job,$job_new,$schedule,$size_new);
                     }
                    
 
