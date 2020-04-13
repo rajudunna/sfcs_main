@@ -209,7 +209,7 @@ if(isset($_POST['formIssue']))
                         }
                     }
                 }
-                $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
+                // $issue_to_sewing = issue_to_sewing($job_no,$size[$category_act],$issueval[$category_act],$doc_no_ref,$bcd_id[$category_act]);
             }
             $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$doc_no_ref";
             $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Sql Error : plan_cut_bundle_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
