@@ -281,11 +281,11 @@ if(isset($_GET['tid']))
 		for($i=0;$i<sizeof($act_id);$i++)
 		{
 			$update="UPDATE $bai_pro3.act_cut_bundle set act_used_qty=act_used_qty-".$act_id_qty[$i]." where id=".$act_id[$i]."";
-			echo $update."<br>";
-			//mysqli_query($link, $update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+			// echo $update."<br>";
+			mysqli_query($link, $update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 			$insert="insert $bai_pro3.act_log_bundle_trn(plan_log_bundle_id,act_cut_bundle_id,rej_qty) values(".$bundle_no_ref.",".$act_id[$i].",".(-1*$act_id_qty[$i]).")";
-			echo $insert."<br>";
-			//mysqli_query($link, $insert) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
+			// echo $insert."<br>";
+			mysqli_query($link, $insert) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
 		}
 		
 	}
