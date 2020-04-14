@@ -352,36 +352,36 @@ $dockets_for_cut = [];
 $dockets_for_cut_query = "SELECT doc_no,a_plies,p_plies,act_cut_status,($a_sizes_sum) as ratio from $bai_pro3.plandoc_stat_log 
 where order_tid = '$order_tid' and acutno = '$cut_no' and doc_no != $doc_no";
 $dockets_for_cut_result = mysqli_query($link, $dockets_for_cut_query);
+
 while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
     $doc_for_cut = $docket_row['doc_no'];
     $material_req = 0;
+    $other_docket_category = '';
     $material_req_query = "SELECT category,material_req from $bai_pro3.order_cat_doc_mk_mix  where doc_no=$doc_for_cut";
     $material_req_result = mysqli_query($link,$material_req_query);
     if(mysqli_num_rows($material_req_result)>0){
         $material_req_row = mysqli_fetch_array($material_req_result);
         $material_req = $material_req_row['material_req'];
-        $category = $material_req_row['category'];
+        $other_docket_category = $material_req_row['category'];
     }
     
-    $dockets_for_cut[$doc_for_cut]['category'] = $category;
+    $dockets_for_cut[$doc_for_cut]['category'] = $other_docket_category;
     $dockets_for_cut[$doc_for_cut]['doc_no'] = $doc_for_cut;
-    $dockets_for_cut[$doc_for_cut]['fab_required'] = $material_req;
+    $dockets_for_cut[$doc_for_cut]['fab_required'] = round($material_req);
     $dockets_for_cut[$doc_for_cut]['a_plies'] = $docket_row['a_plies'];
     $dockets_for_cut[$doc_for_cut]['doc_qty'] = $docket_row['p_plies'] * $docket_row['ratio'];
     $dockets_for_cut[$doc_for_cut]['p_plies'] =  $docket_row['p_plies'];
     $dockets_for_cut[$doc_for_cut]['act_cut_status'] =  $docket_row['act_cut_status'];
 }
 
-
 $response_data['dockets_for_cut'] = $dockets_for_cut;
 $response_data['category'] = $category;
 $response_data['doc_no'] = $doc_no;
-$response_data['fab_required'] = $fab_required; 
+$response_data['fab_required'] = round($fab_required); 
 $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
 $response_data['p_plies']    = $p_plies;
-$response_data['a_plies']    = $a_plies;
 $response_data['act_cut_status'] = $act_cut_status;
 $response_data['acut_no'] = $acut_no;
 $response_data['module']  = $module;
@@ -399,6 +399,7 @@ $response_data['doc_target_type'] = $target_doc_type;
 $response_data['ratio_data']      = getSizesRatio($doc_no,$child_docs);
 $response_data['rollinfo']      = $sql_num_check12;
 $response_data['rollinfo1']      = $checkstockresult;
+
 
 /*get mark length for #3111 (No changes done but this branch roll backed So hard committed for UAT push*/
 $mlength="SELECT mklength,cat_ref FROM $bai_pro3.`order_cat_doc_mk_mix` WHERE doc_no=".$doc_no;

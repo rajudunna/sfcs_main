@@ -5,7 +5,7 @@
 	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-	$sql = "SELECT * FROM $bai_pro3.`bai_qms_rejection_reason`";
+	$sql = "SELECT * FROM  $bai_pro3.`bai_qms_rejection_reason`";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$snos = 1;

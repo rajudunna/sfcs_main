@@ -36,9 +36,13 @@
     <div class='panel panel-primary'>
 	<div class='panel-heading'>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<b>Downtime Reasons</b>
 =======
 		<b>Downtime Log Reasons</b>
+>>>>>>> 3672-bug-fixing-in-masters
+=======
+		<b>Downtime Log Reasons </b>
 >>>>>>> 3672-bug-fixing-in-masters
 	</div>
 	<div class='panel-body'>

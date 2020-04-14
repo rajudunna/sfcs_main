@@ -43,7 +43,7 @@ if (empty($rejec_code) || empty($rejec_des)  )
 	
 	if($tid>0){
 		//update
-		$count_qry= "select reason_code,reason_desc  from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code' and reason_desc = '$rejec_des' and reason_tid !=$tid "; 
+		$count_qry= "select reason_code,reason_desc   from $bai_rm_pj2.mrn_reason_db where reason_code = '$rejec_code' and reason_desc = '$rejec_des' and reason_tid !=$tid "; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

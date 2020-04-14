@@ -1,6 +1,6 @@
+
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
-	include(getFullURLLevel($_GET['r'],'/common/config/functions_dashboard.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 	$has_permission=haspermission($_GET['r']);
@@ -708,21 +708,6 @@
 						//Checking with ims_log 
 					}
 
-					$application = 'IPS';
-					$sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
-					$sewing_id_query_result = mysqli_query($link,$sewing_id_query);
-					if(mysqli_num_rows($sewing_id_query_result)>0)
-					{
-						while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
-						{
-							$input_ops_code = $sewing_ops_id['operation_code'];
-						}
-					}
-					if($input_ops_code == 'Auto'){
-						$get_ips_op = get_ips_operation_code($link,$b_style,$mapped_color);
-						$input_ops_code=$get_ips_op['operation_code'];
-					}
-
 					$appilication = 'IMS_OUT';
 					$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
 					// echo $checking_output_ops_code;
@@ -739,7 +724,7 @@
 						$output_ops_code = 130;
 					}
 					//echo 'ops_code.'.$b_op_id;
-					if($b_op_id == $input_ops_code)
+					if($b_op_id == 100 || $b_op_id == 129)
 					{
 						$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
 						//echo $searching_query_in_imslog;
@@ -787,10 +772,24 @@
 
 						
 					// $input_ops_code =100;
-						
+						$application = 'IPS';
+						$sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+						$sewing_id_query_result = mysqli_query($link,$sewing_id_query);
+						if(mysqli_num_rows($sewing_id_query_result)>0)
+						{
+							while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
+							{
+								$input_ops_code = $sewing_ops_id['operation_code'];
+							}
+						}
+						else
+						{
+							$input_ops_code =100;
+						}
+					
 					
 						//echo "PAC TID = $b_tid + $value";
-						if($b_op_id == $input_ops_code)
+						if($input_ops_code == 100 || $input_ops_code == 129)
 						{
 							$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 							$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
@@ -863,7 +862,7 @@
 					{
 						$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 					}
-					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module=".$b_module[$key]." and shift='".$b_shift."'";
+					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module='".$b_module[$key]."' and shift='".$b_shift."'";
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{
@@ -921,7 +920,7 @@
 					}
 					//CODE FOR UPDATING CPS LOG
 					$category=['cutting','Send PF','Receive PF'];
-					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
 					// echo $checking_qry;
 					$result_checking_qry = $link->query($checking_qry);
 					while($row_cat = $result_checking_qry->fetch_assoc()) 
@@ -1019,3 +1018,6 @@
 	}
 
 </script>
+
+
+

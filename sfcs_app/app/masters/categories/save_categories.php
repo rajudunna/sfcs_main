@@ -45,7 +45,7 @@ else
 	if($row_id>0) // update
 	{
 		//update 
-		$query="select cat_name from tbl_category where cat_name='$category_name' and id != '$row_id' ";
+		$query="select cat_name  from tbl_category where cat_name='$category_name' and id != '$row_id' ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0)
 		{

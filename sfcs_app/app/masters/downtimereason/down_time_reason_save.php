@@ -38,7 +38,7 @@ if (empty($code) || empty($department) || empty($reason)) {
 }else{
 		if($dr_id>0)
 		{	
-			$query1="select code from $bai_pro2.downtime_reason where code='$code'  and id != $dr_id";
+			$query1="select code from  $bai_pro2.downtime_reason where code='$code'  and id != $dr_id";
 			$sql_result1=mysqli_query($conn,$query1);
 			if (mysqli_num_rows($sql_result1)>0){
 				$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');

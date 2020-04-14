@@ -37,7 +37,7 @@ else
 {
 	if($dr_id>0)
 	{
-		$query1="select prefix,prefix_name from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and prefix='$department' and type_of_sewing='$reason' and id !=$dr_id ";
+		$query1="select prefix,prefix_name  from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and prefix='$department' and type_of_sewing='$reason' and id !=$dr_id ";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
