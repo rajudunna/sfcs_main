@@ -116,7 +116,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$style=$sql_row1['order_style_no'];
 			$schedule=$sql_row1['order_del_no'];
-			echo $schedule.'schedule<br/>';
+			//echo $schedule.'schedule<br/>';
 			$color=$sql_row1['order_col_des'];
 			$total_qty=$sql_row1['total'];
 			
@@ -262,7 +262,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$ex_factory="NIP";
 			$sql11="select order_date as ex_factory_date_new from $bai_pro3.bai_orders_db where order_del_no=$schedule";
-			echo $sql11."<br/>";
+			//echo $sql11."<br/>";
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))
 			{
