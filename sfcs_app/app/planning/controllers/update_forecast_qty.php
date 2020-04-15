@@ -250,14 +250,10 @@ if(isset($_POST['update']))
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql11="select forcast_id, module, qty, date, reason from $bai_pro3.`line_forecast` where forcast_id='$fr_id[$i]' and module='$fr_mod[$i]' qty='$fc_qty[$i]' and date= '$daten' and reason='$fr_reason[$i]'";
-				$sql11_result=mysqli_query($link, $sql11) or exit("Sql Error9" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql11_result)==0)
-				{
-					$sql="INSERT  INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
-					//echo $sql."<br>";
-					$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				}
+				$sql="INSERT INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				//echo $sql."<br>";
+				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				
 			}
 			else
 			{

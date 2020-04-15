@@ -212,6 +212,15 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql4531) or exit("Sql Error113"); 
 			
+			$sql_check="select order_tid from $bai_pro3.bai_orders_db where order_tid IN  ('".implode("','",$order_tids)."')";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{ 
+				$sql4551="INSERT INTO $bai_pro3.bai_orders_db SELECT * FROM $bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
+				// echo $sql4551."<br>"; 
+				$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error114"); 
+			}	
+			
 			$sql1111="select order_tid from $bai_pro3.bai_orders_db where order_tid in('".implode("','",$order_tids)."')";
 			$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql1111_result)==0)

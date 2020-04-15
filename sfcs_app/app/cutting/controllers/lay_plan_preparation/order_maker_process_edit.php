@@ -210,14 +210,14 @@ if(isset($_POST['update']))
 				{
 					if(strlen($in_pwidth[$i])>0 and $in_pwidth[$i]!="")
 					{
-						$sql1111="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$iLastid."-".$in_pwidth[$i]."'";
-						$sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql1111_result)==0)
+						$sql_check="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$iLastid."-".$in_pwidth[$i]."'";
+						$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sql_check_res)==0)
 						{
 							$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$iLastid."-".$in_pwidth[$i]."')";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-							//echo "<br/>".$sql;
-						}
+						    //echo "<br/>".$sql;
+						}    
 						$sql="update marker_ref_matrix set marker_ref='$iLastid', marker_width='".$in_pwidth[$i]."', marker_length='".$in_mklength[$i]."',cat_ref=$cat_ref,allocate_ref=$allocate_ref,pat_ver='$mk_ver',style_code='$style_code',title_size_s01=\"$size01\" , title_size_s02=\"$size02\" , title_size_s03=\"$size03\" , title_size_s04=\"$size04\" , title_size_s05=\"$size05\" , title_size_s06=\"$size06\" , title_size_s07=\"$size07\" , title_size_s08=\"$size08\" , title_size_s09=\"$size09\" , title_size_s10=\"$size10\" , title_size_s11=\"$size11\" , title_size_s12=\"$size12\" , title_size_s13=\"$size13\" , title_size_s14=\"$size14\" , title_size_s15=\"$size15\" , title_size_s16=\"$size16\" , title_size_s17=\"$size17\" , title_size_s18=\"$size18\" , title_size_s19=\"$size19\" , title_size_s20=\"$size20\" , title_size_s21=\"$size21\" , title_size_s22=\"$size22\" , title_size_s23=\"$size23\" , title_size_s24=\"$size24\" , title_size_s25=\"$size25\" , title_size_s26=\"$size26\" , title_size_s27=\"$size27\" , title_size_s28=\"$size28\" , title_size_s29=\"$size29\" , title_size_s30=\"$size30\" , title_size_s31=\"$size31\" , title_size_s32=\"$size32\" , title_size_s33=\"$size33\" , title_size_s34=\"$size34\" , title_size_s35=\"$size35\" , title_size_s36=\"$size36\" , title_size_s37=\"$size37\" , title_size_s38=\"$size38\" , title_size_s39=\"$size39\" , title_size_s40=\"$size40\" , title_size_s41=\"$size41\" , title_size_s42=\"$size42\" , title_size_s43=\"$size43\" , title_size_s44=\"$size44\" , title_size_s45=\"$size45\" , title_size_s46=\"$size46\" , title_size_s47=\"$size47\" , title_size_s48=\"$size48\" , title_size_s49=\"$size49\" , title_size_s50=\"$size50\",title_flag=\"$title_flag\", buyer_code='$buyer_code', ".implode(",",$allo_c)."  where marker_ref_tid='".$iLastid."-".$in_pwidth[$i]."'";
 					
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

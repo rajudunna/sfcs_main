@@ -656,31 +656,34 @@ if(isset($_POST['fix']))
 				$tid2=str_replace($order_col_dess,$cols,$sql_row121['order_tid2']); 
 				$com_no=$sql_row121['compo_no']; 
 
-				$sql1111="select order_tid from $bai_pro3.cat_stat_log where order_tid=\"".$tid."\"";
-                $sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql1111_result)==0)
-                {
+				$sql_check="select order_tid2 from $bai_pro3.cat_stat_log where order_tid2=\"".$tid2."\"";
+				$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res)==0)
+				{
 					$sql1="insert into $bai_pro3.cat_stat_log (order_tid,order_tid2,catyy,fab_des,col_des,mo_status,compo_no) values (\"".$tid."\",\"".$tid2."\",".$sql_row121['catyy'].",\"".$sql_row121['fab_des']."\",\"".$sql_row121['col_des']."\",\"Y\",\"$com_no\")"; 
-					mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));         
-				}			
-			}			 
+					mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));  
+				}	       
+			}			
+			 
 			$sql19="delete from $bai_pro3.bai_orders_db_club where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
 			mysqli_query($link, $sql19) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		
-			$sql1112="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_club where order_col_des in('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
-            $sql1112_result=mysqli_query($link, $sql1112) or exit("Sql Error1112".mysqli_error($GLOBALS["___mysqli_ston"]));
-            if(mysqli_num_rows($sql1112_result)==0)
-            {   			
+			
+			$sql_check1="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_club where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
+			$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res1)==0)
+			{	
 				$sql19="insert into $bai_pro3.bai_orders_db_club select * from bai_orders_db where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
 				mysqli_query($link, $sql19) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			}
-			$sql1113="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_confirm where order_col_des in('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
-            $sql1113_result=mysqli_query($link, $sql1113) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql1113_result)==0)
+			}	
+			
+			$sql_check2="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
+			$sql_check_res2=mysqli_query($link, $sql_check2) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res2)==0)
 			{
 				$sql1="insert into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
 				mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			}
+			}	
+			
 			
 			$sql1="insert ignore into $bai_pro3.bai_orders_db(order_tid,order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,order_col_des,order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,color_code,order_joins,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no) select \"".$style.$schedule.$cols."\",order_date,order_upload_date,order_last_mod_date,order_last_upload_date,order_div,order_style_no,order_del_no,'$cols',order_col_code,order_cat_stat,order_cut_stat,order_ratio_stat,order_cad_stat,order_stat,Order_remarks,order_po_no,order_no,$new_color_code,1,packing_method,style_id,carton_id,carton_print_status,ft_status,st_status,pt_status,trim_cards,trim_status,fsp_time_line,fsp_last_up,order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f,order_embl_g,order_embl_h,destination,zfeature,co_no from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
 			//echo $sql1."<br><br>"; 
@@ -724,13 +727,15 @@ if(isset($_POST['fix']))
 					}                                         
 				}				 
 			} 
-			$sql1114="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_club_confirm where order_col_des in('".implode("','",$selected)."') and order_del_no=\"$schedule\"";
-            $sql1114_result=mysqli_query($link, $sql1114) or exit("Sql Error1113".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql1114_result)==0)
+			
+			$sql_check3="select order_col_des,order_del_no from $bai_pro3.bai_orders_db_club_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no='".$schedule."'";
+			$sql_check_res3=mysqli_query($link, $sql_check3) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res3)==0)
 			{
 				$sql451="insert into $bai_pro3.bai_orders_db_club_confirm select * from $bai_pro3.bai_orders_db_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no='".$schedule."'";
 				$sql451=mysqli_query($link, $sql451) or die("Error".$sql451.mysqli_error($GLOBALS["___mysqli_ston"]));
-			}
+			}	
+			
 			$sql452="select * from $bai_pro3.bai_orders_db_confirm where order_col_des in ('".implode("','",$selected)."') and order_del_no=\"$schedule\""; 
 			//echo $sql45."<br>";
 			$sql_result452=mysqli_query($link, $sql452) or die("Error".$sql452.mysqli_error($GLOBALS["___mysqli_ston"]));

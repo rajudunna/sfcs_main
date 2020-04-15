@@ -108,21 +108,20 @@ if(isset($_POST["Update"]) || isset($_POST["update"])){
 			}
 			else
 			{
-				$sql22="select * from $bai_pro3.bai_orders_db_confirm where  order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-				$sql22_result=mysqli_query($link, $sql22) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql22_result)==0)
-
+				$sql_check1="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+				$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res1)==0)
 				{
-				    $insert="insert  into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-				}
-				if(!mysqli_query($link, $insert))
-				{			
-					echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
-				}
-				else
-				{			
-					echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
-				}		
+					$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+					if(!mysqli_query($link, $insert))
+					{			
+						echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+					}
+					else
+					{			
+						echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+					}
+				}			
 			}
 		}
 	}else{
@@ -507,21 +506,20 @@ if(isset($_POST["update"])){
 					echo "<div class=\"col-sm-12 alert-danger\"><h2><span class=\"label label-default\">Order quantities already updated!</span></h2></div>";
 				}
 				else
-				{`
-
-					$sql223="select * from $bai_pro3.bai_orders_db_confirm where  order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-					$sql223_result=mysqli_query($link, $sql223) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($sql223_result)==0)
+				{
+					$sql_check2="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1";
+					$sql_check_res2=mysqli_query($link, $sql_check2) or exit("Sql Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_check_res2)==0)
 					{
-					     $insert="insert  into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-					}
-					if(!mysqli_query($link, $insert))
-					{			
-						echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
-					}
-					else
-					{			
-						echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+						$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+						if(!mysqli_query($link, $insert))
+						{			
+							echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+						}
+						else
+						{			
+							echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+						}	
 					}		
 				}
 			}

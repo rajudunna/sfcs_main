@@ -336,15 +336,16 @@ if(isset($_POST["submit"]))
                         $sql9="delete from $bai_pro3.plan_dashboard where doc_no in (select doc_no from $bai_pro3.plandoc_stat_log where order_tid=\"".$order_tid[$i]."\")"; 
                         mysqli_query($link, $sql9) or die("Error=9".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         //echo $sql9."<br>"; 
-                        $sql1111="select tid from $bai_pro3.lay_plan_delete_track where tid='$order_tid[$i]'";
-	                    $sql1111_result=mysqli_query($link, $sql1111) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
-	                    if(mysqli_num_rows($sql1111_result)==0)
-	                    { 
+                        
+                        $sql_check="select tid,schedule_no,col_desc,reason,log_time,username from $bai_pro3.lay_plan_delete_track where tid='$order_tid[$i]' and schedule_no='$schedule_no[$i]' and col_desc='$col_desc[$i]' and reason='$reason' and log_time='$date' and username='$username'";
+                        $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_check_res)==0)
+                        { 
                             $sql121="insert into $bai_pro3.lay_plan_delete_track(tid,schedule_no,col_desc,reason,log_time,username) values('$order_tid[$i]','$schedule_no[$i]','$col_desc[$i]','$reason','$date','$username')";
-                            //echo $sql121;
-                            mysqli_query($link, $sql121) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        } 
-                        //echo $sql121."<br>"; 
+    						//echo $sql121;
+                            mysqli_query($link, $sql121) or die("Error=121".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                            //echo $sql121."<br>";
+                        }     
                     } 
 
                     $sql2="delete from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid[$i]."\""; 

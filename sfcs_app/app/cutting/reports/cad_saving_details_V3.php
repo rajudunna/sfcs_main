@@ -1,7 +1,5 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0003",$username,1,$group_id_sfcs);
 ?>
 
 <title>CAD Saving Details</title>

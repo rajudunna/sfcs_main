@@ -832,10 +832,15 @@
 										{
 											$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
 											mysqli_query($link,$update_status_query) or exit(message_sql($b_shift));
-											$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-											mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
-											$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-											mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
+											$sql_check1="select tid from $bai_pro3.ims_log where tid=$updatable_id";
+			                                $sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			                                if(mysqli_num_rows($sql_check_res1)==0)
+			                                {
+												$ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+												mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
+												$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+												mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
+											}	
 										}
 									}						
 								}
@@ -975,7 +980,7 @@
 				if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
 				{
 					// insert into plan_dashboard_input if sewing job not exists
-					$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
+					$insert_qry_ips = "INSERT INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
 					mysqli_query($link, $insert_qry_ips) or exit(message_sql($b_shift));
 				}
 
