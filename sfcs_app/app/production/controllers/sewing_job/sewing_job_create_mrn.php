@@ -383,7 +383,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Reversal successfully Completed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 							}
 							</script>";
 						}
@@ -393,7 +393,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('Reversal Failed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -569,7 +569,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Successfully','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -580,7 +580,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Failed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -604,7 +604,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Already Confirmed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
