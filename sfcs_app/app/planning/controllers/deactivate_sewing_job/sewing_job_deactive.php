@@ -217,10 +217,21 @@ if(isset($_POST['submit']) || $module)
 			{           
 				for($kk=0;$kk<sizeof($pending);$kk++)
 				{ 
-				
-				// REEJECTION//
-                 $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
-                //  echo $ip_op_qty;
+                    $application2='IPS';
+
+                    $scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
+                    $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row123=mysqli_fetch_array($scanning_result12))
+                    {
+                        $operation_in_code=$sql_row123['operation_code'];
+                    }
+                    if($operation_in_code == 'Auto'){
+                        $get_ips_op = get_ips_operation_code($link,$style,$color);
+                        $operation_in_code=$get_ips_op['operation_code'];
+                    }
+                    // REEJECTION//
+                    $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+                    //  echo $ip_op_qty;
 					$ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowwip12=mysqli_fetch_array($ip_op_qty_res))
 					{
