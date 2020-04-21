@@ -516,11 +516,6 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id, $deduct_from_carton_read
 
             if ($deduct_from_carton_ready)
             {
-                $sum = $res['quantity'];
-            }
-            if ($sum > 0) {
-                // dont insert into m3_transactions
-            } else {
                 $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= '$mo_number'";
                 // echo $insert_update_tbl_carton_ready;
                 mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
@@ -571,7 +566,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid, $deduct_from_carton_ready)
     $obj = new rest_api_calls();
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     $current_date = date("Y-m-d H:i:s");
-
+    $fg_opn = 200;
     $host = $api_hostname;
     $port = $api_port_no;
     $company_num = $company_no;
@@ -595,9 +590,9 @@ function updateM3CartonScanReversal($b_op_id, $b_tid, $deduct_from_carton_ready)
         $id = $nop_qry_row['id'];
         $negative_qty = $good_quantity_past * -1;
 
-        $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= '$mo_number'";
+        // $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= '$mo_number'";
         // echo $insert_update_tbl_carton_ready;
-        mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
+        // mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
 
         if ($deduct_from_carton_ready)
         {
@@ -619,16 +614,18 @@ function updateM3CartonScanReversal($b_op_id, $b_tid, $deduct_from_carton_ready)
                 }
             }
             // 200 Operation start
-                $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','pending','$main_ops_code','opn')";
-                // echo $inserting_into_m3_tran_log_pms070mi;
-                mysqli_query($link,$inserting_into_m3_tran_log_pms070mi) or exit("While inserting into m3_tranlog pms070mi");
+            $inserting_into_m3_tran_log_pms070mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','pending','$main_ops_code','opn')";
+            // echo $inserting_into_m3_tran_log_pms070mi;
+            mysqli_query($link,$inserting_into_m3_tran_log_pms070mi) or exit("While inserting into m3_tranlog pms070mi");
                 
             // 200 Operation End
-
-            // FG start
+            if ($b_op_id == $fg_opn)
+            {
+                // FG start
                 $inserting_into_m3_tran_log_pms050mi = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) VALUES ('".date('Y-m-d H:i:s')."','$mo_number','$negative_qty','','cpk_reversal','$username','$b_op_id','$short_key_code','$id','$work_station_id','pending','$main_ops_code','fg')";
                 // echo $inserting_into_m3_tran_log_pms050mi;
                 mysqli_query($link,$inserting_into_m3_tran_log_pms050mi) or exit("While inserting into m3_tranlog pms050mi");
+            }
             // FG End
         //M3 Rest API Call END
     }
