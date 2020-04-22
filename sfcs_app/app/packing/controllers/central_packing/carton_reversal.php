@@ -68,7 +68,7 @@
 									$color=$row12['color'];
 								}
 								
-								//checking scnning done or not for 200 operation
+								//checking scanning done or not for 200 operation
 								$imploded_id = implode(",",$b_tid);
 								$check_temp = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in ($imploded_id) and operation_id=$b_op_id";
 								$result_check_temp=mysqli_query($link, $check_temp) or exit("4=error while fetching bcd_temp_opn".$check_temp);
@@ -92,7 +92,7 @@
 
 									// Get last opn in packing
 									$get_last_opn_packing = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' ORDER BY tbl_orders_ops_ref.operation_code*1 DESC LIMIT 1;";
-									$result_last_opn_sewing=mysqli_query($link, $get_last_opn_packing) or exit("error while fetching pre_op_code_b4_carton_ready");
+									$result_last_opn_sewing=mysqli_query($link, $get_last_opn_packing) or exit("error while fetching packing last operation");
 									if (mysqli_num_rows($result_last_opn_sewing) > 0)
 									{
 										$final_op_code=mysqli_fetch_array($result_last_opn_sewing);
@@ -110,7 +110,7 @@
 									}
 									
 									$get_details_b4_carton_ready = "SELECT ops_sequence,operation_order FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code WHERE style='$style' AND color = '$color' AND category='$application' AND tbl_style_ops_master.operation_code=$b_op_id";
-									$result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("2=error while fetching pre_op_code_b4_carton_ready".$get_details_b4_carton_ready);
+									$result_details_b4_carton_ready=mysqli_query($link, $get_details_b4_carton_ready) or exit("2=error".$b_op_id." is not mapped for this style and color".$get_details_b4_carton_ready);
 									if (mysqli_num_rows($result_details_b4_carton_ready) > 0)
 									{
 										$op_order=mysqli_fetch_array($result_details_b4_carton_ready);
@@ -124,25 +124,33 @@
 											$final_op_code1=mysqli_fetch_array($result_pre_op_b4_carton_ready1);
 											$next_opn = $final_op_code1['operation_code'];
 										}
+										
+										$get_pre_op_code_b4_carton_ready2 = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code  WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND category='$application' AND CAST(operation_order AS CHAR) < '$operation_order' AND tbl_style_ops_master.operation_code NOT IN (10,15) ORDER BY operation_order DESC LIMIT 1";
+										$result_pre_op_b4_carton_ready2=mysqli_query($link, $get_pre_op_code_b4_carton_ready2) or exit("3=error while fetching previous_operation".$get_pre_op_code_b4_carton_ready2);
+										if (mysqli_num_rows($result_pre_op_b4_carton_ready2) > 0)
+										{
+											$final_op_code2=mysqli_fetch_array($result_pre_op_b4_carton_ready2);
+											$before_opn = $final_op_code2['operation_code'];
+										}
 									}
-									$check_temp1 = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in ($imploded_id) and operation_id=$next_opn";
-									$result_check_temp1=mysqli_query($link, $check_temp1) or exit("4=error while fetching bcd_temp_next_opn".$check_temp1);
-									if (mysqli_num_rows($result_check_temp1) > 0)
+									if ($next_opn != '')
+									{	
+										$check_temp1 = "select sum(recevied_qty) as quantity from $brandix_bts.bundle_creation_data_temp where bundle_number in ($imploded_id) and operation_id=$next_opn";
+										$result_check_temp1=mysqli_query($link, $check_temp1) or exit("4=error while fetching bcd_temp_next_opn".$check_temp1);
+										if (mysqli_num_rows($result_check_temp1) > 0)
+										{
+											$final_res1=mysqli_fetch_array($result_check_temp1);
+											$qty_temp1 = $final_res1['quantity'];
+										}
+									}
+									else
 									{
-										$final_res1=mysqli_fetch_array($result_check_temp1);
-										$qty_temp1 = $final_res1['quantity'];
-									}							
+										$qty_temp1 = 0;
+									}
 									
 									if ($dont_check)
 									{
-										// $get_pre_op_code_b4_carton_ready = "SELECT tbl_style_ops_master.operation_code FROM $brandix_bts.tbl_style_ops_master LEFT JOIN $brandix_bts.`tbl_orders_ops_ref` ON tbl_orders_ops_ref.operation_code = tbl_style_ops_master.operation_code  WHERE style='$style' AND color = '$color' AND ops_sequence = '$ops_sequence' AND category='$application' AND CAST(operation_order AS CHAR) < '$operation_order' AND tbl_style_ops_master.operation_code NOT IN (10,15) ORDER BY operation_order DESC LIMIT 1";
-										//     $result_pre_op_b4_carton_ready=mysqli_query($link, $get_pre_op_code_b4_carton_ready) or exit("3=error while fetching pre_op_code_b4_carton_ready".$get_pre_op_code_b4_carton_ready);
-										//     if (mysqli_num_rows($result_pre_op_b4_carton_ready) > 0)
-										//     {
-										//         $final_op_code=mysqli_fetch_array($result_pre_op_b4_carton_ready);
-										//         $before_opn = $final_op_code['operation_code'];
-										//     }
-
+										
 										// while ($get_carton_type=mysqli_fetch_array($count_result))
 										// {
 											// $opn_status = $get_carton_type['opn_status'];
@@ -178,19 +186,31 @@
 										if($b_op_id == 200)
 										{
 											$update_pac_stat_log = "UPDATE $bai_pro3.pac_stat_log SET status=NULL,scan_user='',scan_date='' WHERE pac_stat_id = '".$carton_id."'";
-											mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log");
+											mysqli_query($link, $update_pac_stat_log) or exit("Error while updating pac_stat_log".$update_pac_stat_log);
 										}
 										$imploded_b_tid = implode(",",$b_tid);
 										updateM3CartonScanReversal($b_op_id,$imploded_b_tid, $deduct_from_carton_ready);
 										
-										if ($packing_last_opn == $b_op_id) {
-											$update_carton_status = ", carton_status='DONE'";
+										// if ($packing_last_opn == $b_op_id) {
+											// $update_carton_status = ", carton_status='DONE'";
+										// } else {
+											// $update_carton_status = "";
+										// }
+										if ($packing_first_opn == $b_op_id) {
+											$set_opn = NULL;
 										} else {
-											$update_carton_status = "";
+											if($before_opn != '')
+											{
+												$set_opn = $before_opn;
+											}
+											else
+											{
+												$set_opn = NULL;
+											}
 										}
 										
-										$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=NULL,carton_status=NULL where id = '".$carton_id."'";
-										$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
+										$update_pac_stat_table="update $bai_pro3.pac_stat set opn_status=$set_opn,carton_status=NULL where id = '".$carton_id."'";
+										$pac_stat_log_result = mysqli_query($link, $update_pac_stat_table) or exit("Error while updating pac_stat1".$update_pac_stat_table);
 
 										$get_carton_type=mysqli_fetch_array($carton_details);
 										$carton_type = $get_carton_type['carton_mode'];
