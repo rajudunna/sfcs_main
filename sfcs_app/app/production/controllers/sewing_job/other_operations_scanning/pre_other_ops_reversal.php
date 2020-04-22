@@ -254,6 +254,7 @@ $(document).ready(function()
 				dataType: "json",
 				success: function (response) 
 				{	
+					console.log(response);
 	                s_no = 0;
 					var data = response['table_data'];
 					if(response['status']==3)
@@ -279,7 +280,7 @@ $(document).ready(function()
 						}
 						else if (response['status']==2)
 						{
-							var msg = "previous operation not done";
+							var msg = "Next Operation Scanning already Perfomed";
 						}
 						else if (response['status']==4)
 						{
