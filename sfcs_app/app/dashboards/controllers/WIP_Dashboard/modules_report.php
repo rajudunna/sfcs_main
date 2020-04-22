@@ -327,7 +327,7 @@ if(isset($_POST['submit']))
 	                                                <td>".$rejected."</td>
 	                                                <td>".($input_qty-($output_qty+$rejected))."</td>
 	                                                <td>".$remarks."</td>
-	                                                <td>".($input_qty-($output_qty+$rejected))."</td>
+	                                                <td>".($input_qty-$output_qty)."</td>
 	                                            </tr>"; 
 	                                    }
                                     }
