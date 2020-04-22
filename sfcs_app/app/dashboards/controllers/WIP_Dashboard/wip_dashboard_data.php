@@ -161,7 +161,7 @@ function getsewingJobsData($section,$module,$get_operation)
             $previous_output=0;
             $present_output=0;
             $rejected=0;
-            $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty,0)+rejected_qty)";
+            $get_jobs = "select cut_number,docket_number,remarks,input_job_no_random_ref,input_job_no,SUM(if(operation_id = $present_operation,rejected_qty,0)) as rejected_qty,sum(if(operation_id = $previous_operation,recevied_qty,0)) as previous_output,sum(if(operation_id = $present_operation,recevied_qty,0)) as present_output From $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id in ($previous_operation,$present_operation) and (recevied_qty >0 or rejected_qty >0) GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $previous_operation,recevied_qty,0)) !=SUM(IF(operation_id = $present_operation,recevied_qty+rejected_qty,0))";
             // echo $get_jobs;
             $get_jobs_result = $link->query($get_jobs);
             while($row4 = mysqli_fetch_array($get_jobs_result))

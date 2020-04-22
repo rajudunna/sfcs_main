@@ -200,7 +200,7 @@ if(isset($_POST['submit']))
 	                            <th style="max-width: 30px">Cut No</th>
 	                            <th>Size</th>
 	                            <th>Previous Operation Quantity</th>
-	                            <th>Current Operation Quantity</th>
+	                            <th>Current Operation (<?php echo $operation_code; ?>) Quantity</th>
 	                            <th>Rejected</th>
 	                            <th>Balance</th>
 	                            <th>Input<br>Remarks</th>
@@ -249,7 +249,7 @@ if(isset($_POST['submit']))
 							        }
                                     if($category_act == 'sewing')
                                     {
-                                       $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty,0))";
+                                       $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output,SUM(if(operation_id = $operation_code,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty+rej_qty,0))";
 							            $result_get_jobs_data = $link->query($get_jobs_data);
 							           // echo  $get_jobs_data;
 							            while($row3 = $result_get_jobs_data->fetch_assoc()) 
@@ -396,8 +396,9 @@ if(isset($_POST['submit']))
         </div>
         <span id='hiddenTable' style="display: none"></span>
     </div>
-	
+
 <script language="javascript" type="text/javascript">
+	var copiedTable = document.getElementById('table1').innerHTML;
     var table2_Props =  {            
         display_all_text: "All",
         col_0: "none",
@@ -434,18 +435,19 @@ if(isset($_POST['submit']))
 
 function getCSVData() {
 
-	var copiedTable = document.getElementById('table1').innerHTML;
+	// var copiedTable = document.getElementById('table1').innerHTML;
 	$('#hiddenTable').html(copiedTable);
-  	$("#hiddenTable tbody tr:first-child").remove();
-	$("#hiddenTable tbody tr").each(function(){
-	   $(this).find("td:first").remove();
-	   $(this).find("th:first").remove();
+    // $('#hiddenTable').removeClass('setFilterGrid("table1", table2_Props)');
+  	//$("#hiddenTable tbody tr:first-child").remove();
+	$("#hiddenTable tbody tr").each(function()	{
+		$(this).find("td:first").remove();
+	    $(this).find("th:first").remove();
 	});
-	var printableTable = $('#hiddenTable tbody').html();
+	var printableTable = $('#hiddenTable tbody').html();		  
 	console.log(printableTable);
   // $('table').attr('border', '1');
   // $('table').removeClass('table-bordered');
-  // $('table').removeClass('setFilterGrid("table1", table2_Props)');
+  
   var uri = 'data:application/vnd.ms-excel;base64,'
     , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
     , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
@@ -463,6 +465,7 @@ function getCSVData() {
 
     // $('table').attr('border', '0');
     // $('table').addClass('table-bordered');
+    //$('#hiddenTable').addClass('setFilterGrid("table1", table2_Props)');
 
 
 	// $("table tr").each(function(){

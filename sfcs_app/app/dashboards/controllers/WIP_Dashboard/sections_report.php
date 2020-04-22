@@ -158,7 +158,7 @@ $operation=$_GET['operations'];
 								<th>Cut No</th>
 								<th>Size</th>
 								<th>Previous Operation Quantity</th>
-								<th>Current Operation Quantity</th>
+								<th>Current Operation ($operation) Quantity</th>
 								<th>Rejected Qty</th>
 								<th>Balance</th>
 								<th>Remarks</th>
@@ -173,7 +173,7 @@ $operation=$_GET['operations'];
 			$module = $modules[$i];
 			$rowcount_check=0;
 
-			$get_bcd_data= "select distinct input_job_no_random_ref,schedule,style,color,GROUP_CONCAT(bundle_number) as bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation and assigned_module='$module' GROUP BY input_job_no_random_ref";
+			$get_bcd_data= "select distinct input_job_no_random_ref,schedule,style,color,GROUP_CONCAT(bundle_number) as bundle_number From $brandix_bts.bundle_creation_data where operation_id=$operation and assigned_module='$module' and bundle_qty_status = 0 GROUP BY input_job_no_random_ref";
            // echo $get_bcd_data;
             $result_get_bcd_data = $link->query($get_bcd_data);
             while($row = $result_get_bcd_data->fetch_assoc())
@@ -233,20 +233,20 @@ $operation=$_GET['operations'];
 				
 				$rowcount_check=1;
 		        $row_counter = 0;
-                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
+                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
 
 				if(isset($_POST['submit']))
 				{
 					$input_selection=$_POST['input_selection'];
 					if($input_selection=='input_wise'){
-						$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
+						$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
 					}
 
 					if($input_selection=='bundle_wise'){
-						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
+						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
 					}
 				}else{
-					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty,0))";
+					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
 				}  
 				$get_details.="  order by schedule, size_id DESC";
 				//echo $get_details;
