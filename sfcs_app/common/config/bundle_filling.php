@@ -1159,10 +1159,11 @@ function act_logical_bundles_gen_club($doc_no,$style,$color)
 
 function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$job_no,$schedule,$size_new) {
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-	
+	// echo 'Bundle filling<br/>';
 	// var_dump($dono,'-dono<br/>');
 	// var_dump($plan_jobcount,'-plan_jobcount<br/>');
 	// var_dump($plan_bundleqty,'-plan_bundleqty<br/>');
+	// var_dump($job,'-job<br/>');
 	// var_dump($job_no,'-job_no<br/>');
 	// var_dump($schedule,'-schedule<br/>');
 	// // var_dump($cut,'-seq<br/>');
@@ -1172,12 +1173,15 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 	$completed_list;
 	
 	$excess_doc_query = "select tid,input_job_no,sref_id from $bai_pro3.pac_stat_log_input_job where doc_no ='".$dono."' and doc_type='R' and type_of_sewing='2'";
+	// var_dump($excess_doc_query,"-excess_doc_query<br/>");
 	$excess_doc_query_res = mysqli_query($link, $excess_doc_query) or exit("issue in excess doc query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($excess_doc_query_res_row = mysqli_fetch_array($excess_doc_query_res))
     {
 		$excess_tid[] = $excess_doc_query_res_row['tid'];
 	}
 	$assigned_module_query = "select assigned_module from $brandix_bts.bundle_creation_data where input_job_no_random_ref ='".$job_no."'";
+	// var_dump($assigned_module_query,"-assigned_module_query<br/>");
+
 	$assigned_module_query_res = mysqli_query($link, $assigned_module_query) or exit("issue in excess doc query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($assigned_module_query_res_row = mysqli_fetch_array($assigned_module_query_res))
     {
@@ -1231,29 +1235,40 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 	}
 	
 	$job_counter_tmp1= echo_title("$bai_pro3.packing_summary_input","MAX(barcode_sequence)+1","doc_no='".$dono."' and order_del_no",$schedule,$link);
+	// var_dump($job_counter_tmp1,"-job_counter_tmp1<br/>");
 	if ($job_counter_tmp1 > 1)
 	{
 		$bundle_seq = $job_counter_tmp1;
 	} else{
 		$bundle_seq = 1;
 	}
+	// var_dump($bundle_seq,"-bundle_seq<br/>");
+
 	$barcode='';
 	$bundle_cum_qty=0;
     $plan_jobcount1= $plan_jobcount;
 	$input_job_num_rand=$job_no;
-    $plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$dono and size='".$size_new."'";
+	$plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$dono and size='".$size_new."' and id NOT IN (SELECT plan_cut_bundle_id FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no=$dono AND size_code='".$size_new."')";
+	// var_dump($plan_cut_bundle_qry,"-plan_cut_bundle_qry<br/>");
+	
     $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Issue while Selecting PCB".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($plan_cut_bundle_res)>0)
-    {        
+    {      
+		$calculation_plies=0;  
         while($plan_cut_bundle_row = mysqli_fetch_array($plan_cut_bundle_res))
         {
             $size = $plan_cut_bundle_row['size'];
             $size_code = $plan_cut_bundle_row['size_code'];
             $plan_cut_bundle_id = $plan_cut_bundle_row['id'];
 			$size_plies = $plan_cut_bundle_row['plies'];
+			// var_dump($size_plies,"-size_plies<br/>");
+			$calculation_plies+=$size_plies;
+			// var_dump($calculation_plies,"-calculation_plies<br/>");
 
 			$filled_plies=0;
 			$filled_qry = "SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE plan_cut_bundle_id=$plan_cut_bundle_id";
+			// var_dump($filled_qry,"-filled_qry<br/>");
+
 			$filled_qry_res = mysqli_query($link, $filled_qry) or exit("Issue while Selecting PLB".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($filled_qry_res)>0)
 			{
@@ -1261,11 +1276,20 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
         		{
 					$filled_plies = $filled_qry_res_row['carton_act_qty'];
 				}
+				// var_dump($filled_plies,"-filled_plies<br/>");
+
 			}
 			$size_plies = $size_plies - $filled_plies;
+			// var_dump($size_plies,"-size_plies<br/>");
+
 			do 
 			{
-				if($plan_jobcount1 > 0){
+
+				// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+				// var_dump($calculation_plies,"-calculation_plies<br/>");
+				// var_dump($plan_jobcount,"-plan_jobcount<br/>");
+
+				if($plan_jobcount1 > 0 && $calculation_plies <= $plan_jobcount){
 					if($size_plies >= $plan_bundleqty)
 					{
 						$logic_qty = $plan_bundleqty;
@@ -1274,22 +1298,34 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 					{
 						$logic_qty = $size_plies;
 					}
+					// var_dump($logic_qty,"-logic_qty<br/>");
+
 					// echo $plan_jobcount1.'$plan_jobcount1<br/>';
 					// echo $logic_qty.'$logic_qty<br/>';
 					if($plan_jobcount1 <= $logic_qty){
 						$logic_qty = $plan_jobcount1;
 					}
+					// var_dump($logic_qty,"-logic_qty<br/>");
+
 					// echo $logic_qty.' final logic_qty<br/>';
 					if($logic_qty > 0){
 	
 						$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
+						// var_dump($bundle_cum_qty,"-bundle_cum_qty<br/>");
 					
 						$barcode="SPB-".$dono."-".$job."-".$bundle_seq."";
+						// var_dump($barcode,"-barcode<br/>");
+
 						//Plan Logical Bundle				
 						$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$job."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','R', '-1', '', $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+						// var_dump($ins_qry,"-ins_qry<br/>");
+
 						// echo $ins_qry.'<br/>';
 						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$pac_tid= mysqli_insert_id($link);
+						// var_dump($pac_tid,"-pac_tid<br/>");
+
+						
 						foreach($operation_codes as $index => $op_code)
 						{
 							$send_qty = 0;
@@ -1307,19 +1343,37 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 						}
 						$barcode='';
 						$size_plies = $size_plies - $logic_qty;
+						// var_dump($size_plies,"-size_plies<br/>");
+
 						$count++;
+						// var_dump($count,"-count<br/>");
+
 						$bundle_seq++;
+						// var_dump($bundle_seq,"-bundle_seq<br/>");
+
 						$plan_jobcount1 = $plan_jobcount1 - $logic_qty;
+						// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+
 					} else {
 						// var_dump($excess_tid.'~~~~excess_tid');
 						// var_dump(sizeof($excess_tid).'excess_tid');
 						$size_plies=0;
+						// var_dump($size_plies,"-size_plies<br/>");
 						$plan_jobcount1=0;
+						// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
 					}
 				} else{
 					$size_plies = 0;
-					$plan_jobcount1= $plan_jobcount;
+					$plan_jobcount1= 0;
+					$calculation_plies = 0;
+					// var_dump($size_plies,"-size_plies<br/>");
+					// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+
 				}
+					// echo "while before";
+					// // var_dump($size_plies,"-size_plies<br/>");
+					// var_dump($calculation_plies,"-calculation_plies<br/>");
+					// var_dump($plan_jobcount,"-plan_jobcount<br/>");
 			}while ($size_plies > 0);   
         }			
 	}
