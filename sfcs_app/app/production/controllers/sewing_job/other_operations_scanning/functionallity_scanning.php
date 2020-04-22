@@ -962,10 +962,10 @@ function packingReversal($data)
 	                    $before_opn = $final_op_code['operation_code'];
 	                }
 	            }
-	            while ($get_carton_type=mysqli_fetch_array($count_result))
-	            {
-	            	$opn_status = $get_carton_type['opn_status'];
-	            }
+	            // while ($get_carton_type=mysqli_fetch_array($count_result))
+	            // {
+	            // 	$opn_status = $get_carton_type['opn_status'];
+	            // }
 	            // echo "$before_opn == $opn_status <br>";
 	            if ($opn_status != $before_opn)
 	            {
