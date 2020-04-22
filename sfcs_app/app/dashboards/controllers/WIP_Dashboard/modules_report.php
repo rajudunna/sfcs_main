@@ -299,7 +299,7 @@ if(isset($_POST['submit']))
 	                                            <td>"; 
 	                                                if($original_qty == $recevied_qty)   
 	                                                { 
-	                                                    if($recevied_qty1 == 0 && $rejected != $recevied_qty)
+	                                                    if($recevied_qty1 == 0 && $rejected != $recevied_qty && $rejected == 0)
 	                                                    {    
 	                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$bundle."\">"; 
 	                                                    }
