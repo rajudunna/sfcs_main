@@ -192,7 +192,7 @@
 								}
 							});							
 						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6)
+						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
 						{
 
 							$("#loading_img").hide();
@@ -211,10 +211,14 @@
 							else if (response['status']==5)
 							{
 								var msg = "previous operation not done";
-							}else if (response['status']==6)
+							}
+							else if (response['status']==6)
 							{
 								var msg = "Short shipment done Permanently" ;
-
+							}
+							else if (response['status']==7)
+							{
+								var msg = "Short shipment done Temporarily" ;
 							}
 							$('#'+id).val('');
 							swal("error",msg,"error")
