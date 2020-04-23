@@ -613,7 +613,7 @@
                             $tot=0;  
                             //echo "Testing".$temp_module;
                             $temp_jobno=$sql_row["job"];
-                            if ($temp_module=="0")
+                            if ($temp_module=="0" || $temp_module=="")
                             {
                                 $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no='$temp_schedule' AND input_job_no='$temp_jobno' )";
                                 // echo $sql5555."<br>";
