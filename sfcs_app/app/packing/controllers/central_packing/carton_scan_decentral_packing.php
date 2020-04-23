@@ -182,7 +182,7 @@
 							$("#submit_btn").attr("disabled", true);
 							$('#carton_id').focus();
 						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6)
+						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
 						{
 							$("#loading_img").hide();
 							if (response['status']==0)
@@ -200,10 +200,14 @@
 							else if (response['status']==5)
 							{
 								var msg = "previous operation not done";
-							}else if (response['status']==6)
+							}
+							else if (response['status']==6)
 							{
 								var msg = "Short shipment done Permanently" ;
-
+							}
+							else if (response['status']==7)
+							{
+								var msg = "Short shipment done Temporarily" ;
 							}
 							
 							$("#error_msg").show();
