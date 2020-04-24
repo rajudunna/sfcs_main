@@ -250,7 +250,7 @@ if(isset($_POST['update']))
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql="INSERT IGNORE INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				$sql="INSERT INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				
