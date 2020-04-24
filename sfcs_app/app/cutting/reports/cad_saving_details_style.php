@@ -1,8 +1,5 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
-// $view_access=user_acl("SFCS_0004",$username,1,$group_id_sfcs);
-?>
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));?>
 
 <title>CAD Saving Details</title>
 
@@ -439,9 +436,9 @@ echo "
 	{
 
 	$schedule=$row3["sch"];
-	$color=$row3["col"];
+	$color=rtrim($row3["col"]);
 
-	$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category!=\"\"";
+	$sql4="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category!=\"\"";
 	// echo $sql4;
 	$result4=mysqli_query($link, $sql4) or exit("Sql Error1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row4=mysqli_fetch_array($result4))
@@ -473,7 +470,7 @@ echo "
 	{
 		$old_order_total=$order_total_qty;
 	}
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid like '% $schedule$color%' and category='$category'";
+	$sql="select * from $bai_pro3.cat_stat_log where order_tid like '%$schedule$color%' and category='$category'";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
@@ -519,19 +516,19 @@ echo "
 	}
 
 
-	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
+	$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid like \"%$schedule$color%\" and cat_ref=\"$cat_ref\" and act_cut_status=\"DONE\" GROUP BY doc_no";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
 		$cut_comp_iss_qty=$cut_comp_iss_qty+$row["doc_qty"];
 	}
 
-	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"%$schedule$color%\" and cat_ref=\"$cat_ref\"";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1b".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$ratios_no_count=mysqli_num_rows($result);
 	$docketnos[]=-1;
 	$docketno[]=-1;
-	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
+	$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"%$schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1c".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$cut_no_count=mysqli_num_rows($result);
 	while($row=mysqli_fetch_array($result))

@@ -254,6 +254,7 @@ $(document).ready(function()
 				dataType: "json",
 				success: function (response) 
 				{	
+					console.log(response);
 	                s_no = 0;
 					var data = response['table_data'];
 					if(response['status']==3)
@@ -270,7 +271,7 @@ $(document).ready(function()
 						document.getElementById('sizes').innerHTML = response['sizes'];
 						document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Reversed Succesfully</center>";
 						$('#status').css("background-color", "limegreen");
-					}else if(response['status']==1 || response['status']==2 || response['status']==4)
+					}else if(response['status']==1 || response['status']==2 || response['status']==4 || response['status']==5 || response['status']==6)
 					{                           
 						$("#loading_img").hide();
 						if (response['status']==1)
@@ -279,11 +280,19 @@ $(document).ready(function()
 						}
 						else if (response['status']==2)
 						{
-							var msg = "previous operation not done";
+							var msg = "Next Operation Scanning already Perfomed";
 						}
 						else if (response['status']==4)
 						{
 						    var msg = "Carton Not Eligible Due to Quantity not Available";	
+						}
+						else if (response['status']==5)
+						{
+						    var msg = "Short shipment done Temporarirly";	
+						}
+						else if (response['status']==6)
+						{
+						    var msg = "Short shipment done Permanently";	
 						}
 						$("#error_msg").show();
 						document.getElementById('error_msg').innerHTML = msg;

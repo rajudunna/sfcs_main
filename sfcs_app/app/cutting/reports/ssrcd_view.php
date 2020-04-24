@@ -3,8 +3,7 @@ $url1 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config
 include("$url1");  
 $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'); 
 include("$url2");
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0012",$username,1,$group_id_sfcs); 
+
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"

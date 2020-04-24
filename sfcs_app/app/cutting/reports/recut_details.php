@@ -5,9 +5,7 @@ $username=strtolower($username_list[1]);
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-$view_access=user_acl("SFCS_0011",$username,1,$group_id_sfcs); 
 ?>
 <style>
 /* #pch{
@@ -85,9 +83,14 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 		
 		if(mysqli_affected_rows($link)>0)
 		{
-			$sql="insert ignore into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
-			//echo $sql."<br/>";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_check="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$qms_tid";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$sql="insert into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
+				//echo $sql."<br/>";
+				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			}	
 			
 			$sql="delete from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
 			//echo $sql."<br/>";

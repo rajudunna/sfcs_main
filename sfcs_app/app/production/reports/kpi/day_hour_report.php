@@ -52,17 +52,17 @@
 				<select name="selected_section" id="selected_section" class="form-control" required>
 					<option value="all">All</option>
 					<?php
-						$sql="SELECT DISTINCT sec_name FROM $bai_pro3.sections_master ORDER BY sec_name";
+						$sql="SELECT DISTINCT sec_name,section_display_name FROM $bai_pro3.sections_master ORDER BY sec_name";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['sec_name'])==str_replace(" ","",$selected_section))
 							{
-								echo "<option value=\"".$sql_row['sec_name']."\" selected>".$sql_row['sec_name']."</option>";
+								echo "<option value=\"".$sql_row['sec_name']."\" selected>".$sql_row['section_display_name']."</option>";
 							}
 							else
 							{
-								echo "<option value=\"".$sql_row['sec_name']."\">".$sql_row['sec_name']."</option>";
+								echo "<option value=\"".$sql_row['sec_name']."\">".$sql_row['section_display_name']."</option>";
 							}
 						}
 					?>
