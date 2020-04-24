@@ -56,7 +56,7 @@
 							// $get_carton_type=mysqli_fetch_array($carton_details);
 							// $opn_status = $get_carton_type['opn_status'];
 
-							if ($opn_status == null)
+							if ($opn_status == null || $opn_status == 0)
 							{
 								echo "<script>sweetAlert('Previous Operation Not Done','','warning')</script>";
 							}
@@ -202,7 +202,7 @@
 											// $update_carton_status = "";
 										// }
 										if ($packing_first_opn == $b_op_id) {
-											$set_opn = NULL;
+											$set_opn = 0;
 										} else {
 											if($before_opn != '')
 											{
@@ -210,7 +210,7 @@
 											}
 											else
 											{
-												$set_opn = NULL;
+												$set_opn = 0;
 											}
 										}
 										

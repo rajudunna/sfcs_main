@@ -869,7 +869,7 @@ function packingReversal($data)
 		$get_carton_type=mysqli_fetch_array($carton_details);
 		$opn_status = $get_carton_type['opn_status'];
 
-		if ($opn_status == null)
+		if ($opn_status == null || $opn_status == 0)
 		{
 			$result_array['status'] = 1;
 	        echo json_encode($result_array);
@@ -1056,7 +1056,7 @@ function packingReversal($data)
                 $update_carton_status = "";
                 
                 if ($packing_first_opn == $b_op_id) {
-					$set_opn = NULL;
+					$set_opn = 0;
 				} else {
 					if($before_opn != '')
 					{
@@ -1064,11 +1064,11 @@ function packingReversal($data)
 					}
 					else
 					{
-						$set_opn = NULL;
+						$set_opn = 0;
 					}
 				}
 
-				$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status='".$set_opn."' ".$update_carton_status." where id = '".$carton_id."'";
+				$update_pac_stat_atble="update $bai_pro3.pac_stat set opn_status=".$set_opn." ".$update_carton_status." where id = '".$carton_id."'";
 				$pac_stat_log_result = mysqli_query($link, $update_pac_stat_atble) or exit("Error while updating pac_stat_log");
 
 				$get_carton_type=mysqli_fetch_array($carton_details);
