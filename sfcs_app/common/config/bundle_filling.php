@@ -1248,7 +1248,7 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 	$bundle_cum_qty=0;
     $plan_jobcount1= $plan_jobcount;
 	$input_job_num_rand=$job_no;
-	$plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$dono and size='".$size_new."' and id NOT IN (SELECT plan_cut_bundle_id FROM $bai_pro3.pac_stat_log_input_job WHERE doc_no=$dono AND size_code='".$size_new."')";
+	$plan_cut_bundle_qry = "SELECT * FROM $bai_pro3.plan_cut_bundle WHERE doc_no=$dono and size='".$size_new."'";
 	// var_dump($plan_cut_bundle_qry,"-plan_cut_bundle_qry<br/>");
 	
     $plan_cut_bundle_res = mysqli_query($link, $plan_cut_bundle_qry) or exit("Issue while Selecting PCB".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1262,11 +1262,10 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
             $plan_cut_bundle_id = $plan_cut_bundle_row['id'];
 			$size_plies = $plan_cut_bundle_row['plies'];
 			// var_dump($size_plies,"-size_plies<br/>");
-			$calculation_plies+=$size_plies;
 			// var_dump($calculation_plies,"-calculation_plies<br/>");
 
 			$filled_plies=0;
-			$filled_qry = "SELECT * FROM $bai_pro3.pac_stat_log_input_job WHERE plan_cut_bundle_id=$plan_cut_bundle_id";
+			$filled_qry = "SELECT sum(carton_act_qty) as carton_act_qty FROM $bai_pro3.pac_stat_log_input_job WHERE plan_cut_bundle_id=$plan_cut_bundle_id";
 			// var_dump($filled_qry,"-filled_qry<br/>");
 
 			$filled_qry_res = mysqli_query($link, $filled_qry) or exit("Issue while Selecting PLB".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1280,101 +1279,103 @@ function plan_logical_bundles_recut($dono,$plan_jobcount,$plan_bundleqty,$job,$j
 
 			}
 			$size_plies = $size_plies - $filled_plies;
+			$calculation_plies+=$size_plies;
 			// var_dump($size_plies,"-size_plies<br/>");
-
-			do 
-			{
-
-				// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
-				// var_dump($calculation_plies,"-calculation_plies<br/>");
-				// var_dump($plan_jobcount,"-plan_jobcount<br/>");
-
-				if($plan_jobcount1 > 0 && $calculation_plies <= $plan_jobcount){
-					if($size_plies >= $plan_bundleqty)
-					{
-						$logic_qty = $plan_bundleqty;
-					} 
-					else 
-					{
-						$logic_qty = $size_plies;
-					}
-					// var_dump($logic_qty,"-logic_qty<br/>");
-
-					// echo $plan_jobcount1.'$plan_jobcount1<br/>';
-					// echo $logic_qty.'$logic_qty<br/>';
-					if($plan_jobcount1 <= $logic_qty){
-						$logic_qty = $plan_jobcount1;
-					}
-					// var_dump($logic_qty,"-logic_qty<br/>");
-
-					// echo $logic_qty.' final logic_qty<br/>';
-					if($logic_qty > 0){
+			if($size_plies > 0){
+				do 
+				{
 	
-						$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
-						// var_dump($bundle_cum_qty,"-bundle_cum_qty<br/>");
-					
-						$barcode="SPB-".$dono."-".$job."-".$bundle_seq."";
-						// var_dump($barcode,"-barcode<br/>");
-
-						//Plan Logical Bundle				
-						$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$job."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','R', '-1', '', $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
-						// var_dump($ins_qry,"-ins_qry<br/>");
-
-						// echo $ins_qry.'<br/>';
-						$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$pac_tid= mysqli_insert_id($link);
-						// var_dump($pac_tid,"-pac_tid<br/>");
-
-						
-						foreach($operation_codes as $index => $op_code)
-						{
-							$send_qty = 0;
-							if($index == 0) {
-								$send_qty = $logic_qty;
-							}
-							//Plan Logical Bundle Trn
-							$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$dono."','".$job."','".$input_job_num_rand."','".$assigned_module."','Recut','".$color."',".$bundle_seq.",'".$barcode."')";
-							// echo $b_query.'<br/>';
-							mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-							$moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$pac_tid."','".$logic_qty."', '".$op_code."', '".$operation_names[$index]."')";
-							// echo $moq_qry.'<br/>';
-							mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
-						}
-						$barcode='';
-						$size_plies = $size_plies - $logic_qty;
-						// var_dump($size_plies,"-size_plies<br/>");
-
-						$count++;
-						// var_dump($count,"-count<br/>");
-
-						$bundle_seq++;
-						// var_dump($bundle_seq,"-bundle_seq<br/>");
-
-						$plan_jobcount1 = $plan_jobcount1 - $logic_qty;
-						// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
-
-					} else {
-						// var_dump($excess_tid.'~~~~excess_tid');
-						// var_dump(sizeof($excess_tid).'excess_tid');
-						$size_plies=0;
-						// var_dump($size_plies,"-size_plies<br/>");
-						$plan_jobcount1=0;
-						// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
-					}
-				} else{
-					$size_plies = 0;
-					$plan_jobcount1= 0;
-					$calculation_plies = 0;
-					// var_dump($size_plies,"-size_plies<br/>");
 					// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
-
-				}
-					// echo "while before";
-					// // var_dump($size_plies,"-size_plies<br/>");
 					// var_dump($calculation_plies,"-calculation_plies<br/>");
 					// var_dump($plan_jobcount,"-plan_jobcount<br/>");
-			}while ($size_plies > 0);   
+	
+					if($plan_jobcount1 > 0){
+						if($size_plies >= $plan_bundleqty)
+						{
+							$logic_qty = $plan_bundleqty;
+						} 
+						else 
+						{
+							$logic_qty = $size_plies;
+						}
+						// var_dump($logic_qty,"-logic_qty<br/>");
+	
+						// echo $plan_jobcount1.'$plan_jobcount1<br/>';
+						// echo $logic_qty.'$logic_qty<br/>';
+						if($plan_jobcount1 <= $logic_qty){
+							$logic_qty = $plan_jobcount1;
+						}
+						// var_dump($logic_qty,"-logic_qty<br/>");
+	
+						// echo $logic_qty.' final logic_qty<br/>';
+						if($logic_qty > 0){
+		
+							$bundle_cum_qty=$logic_qty+$bundle_cum_qty;
+							// var_dump($bundle_cum_qty,"-bundle_cum_qty<br/>");
+						
+							$barcode="SPB-".$dono."-".$job."-".$bundle_seq."";
+							// var_dump($barcode,"-barcode<br/>");
+	
+							//Plan Logical Bundle				
+							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,plan_cut_bundle_id,barcode_sequence,tran_user,barcode,style,color,schedule,tran_ts)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$job."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','R', '-1', '', $plan_cut_bundle_id,$bundle_seq,'".$username."','".$barcode."','".$style."','".$color."','".$schedule."','".date('Y-m-d H:i:s')."')";
+							// var_dump($ins_qry,"-ins_qry<br/>");
+	
+							// echo $ins_qry.'<br/>';
+							$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$pac_tid= mysqli_insert_id($link);
+							// var_dump($pac_tid,"-pac_tid<br/>");
+	
+							
+							foreach($operation_codes as $index => $op_code)
+							{
+								$send_qty = 0;
+								if($index == 0) {
+									$send_qty = $logic_qty;
+								}
+								//Plan Logical Bundle Trn
+								$b_query = "INSERT  INTO $brandix_bts.bundle_creation_data(`style`,`schedule`,`color`,`size_id`,`size_title`,`sfcs_smv`,`bundle_number`,`original_qty`,`send_qty`,`recevied_qty`,`rejected_qty`,`left_over`,`operation_id`,`docket_number`, `scanned_date`, `scanned_user`, `cut_number`, `input_job_no`,`input_job_no_random_ref`, `assigned_module`, `remarks`, `mapped_color`,`barcode_sequence`,`barcode_number`) VALUES ('".$style."','". $schedule."','".$color."','". $size_code."','".$size."','". $smv[$op_code]."',".$pac_tid.",".$logic_qty.",".$send_qty.",0,0,0,".$op_code.",'".$dono."','".date('Y-m-d H:i:s')."', '".$username."','".$dono."','".$job."','".$input_job_num_rand."','".$assigned_module."','Recut','".$color."',".$bundle_seq.",'".$barcode."')";
+								// echo $b_query.'<br/>';
+								mysqli_query($link, $b_query) or exit("Issue in inserting BCD".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+								$moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$pac_tid."','".$logic_qty."', '".$op_code."', '".$operation_names[$index]."')";
+								// echo $moq_qry.'<br/>';
+								mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
+							$barcode='';
+							$size_plies = $size_plies - $logic_qty;
+							// var_dump($size_plies,"-size_plies<br/>");
+	
+							$count++;
+							// var_dump($count,"-count<br/>");
+	
+							$bundle_seq++;
+							// var_dump($bundle_seq,"-bundle_seq<br/>");
+	
+							$plan_jobcount1 = $plan_jobcount1 - $logic_qty;
+							// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+	
+						} else {
+							// var_dump($excess_tid.'~~~~excess_tid');
+							// var_dump(sizeof($excess_tid).'excess_tid');
+							$size_plies=0;
+							// var_dump($size_plies,"-size_plies<br/>");
+							$plan_jobcount1=0;
+							// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+						}
+					} else{
+						$size_plies = 0;
+						$plan_jobcount1= 0;
+						$calculation_plies = 0;
+						// var_dump($size_plies,"-size_plies<br/>");
+						// var_dump($plan_jobcount1,"-plan_jobcount1<br/>");
+	
+					}
+						// echo "while before";
+						// // var_dump($size_plies,"-size_plies<br/>");
+						// var_dump($calculation_plies,"-calculation_plies<br/>");
+						// var_dump($plan_jobcount,"-plan_jobcount<br/>");
+				}while ($size_plies > 0);   
+			}
         }			
 	}
 	// die();

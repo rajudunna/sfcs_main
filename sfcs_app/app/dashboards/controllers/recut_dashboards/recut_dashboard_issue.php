@@ -458,11 +458,11 @@ function issued_to_module($bcd_id,$qty,$ref)
     //updating cps log and bts
     $update_qry_cps = "update $bai_pro3.cps_log set remaining_qty = remaining_qty+$qty where doc_no = $docket_no and operation_code = 15 and size_code ='$size_id'";
     mysqli_query($link, $update_qry_cps) or exit("update_qry_cps".mysqli_error($GLOBALS["___mysqli_ston"]));
-    if($bcd_colum_ref=='recut_in'){
-        $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+0 where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
-    }else{
-        $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
-    }
+    // if($bcd_colum_ref=='recut_in'){
+    //     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+0 where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
+    // }else{
+    // }
+    $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
      $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
@@ -511,11 +511,11 @@ function issued_to_module($bcd_id,$qty,$ref)
         {
             $emb_input_ops_code = $row_emb['operation_code'];
             //updating bcd for emblishment in operation 
-            if($bcd_colum_ref=='recut_in'){
-                $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + 0 where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
-            }else {
-                $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
-            }
+            // if($bcd_colum_ref=='recut_in'){
+            //     $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + 0 where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
+            // }else {
+            // }
+            $update_bcd_for_emb_qry = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref = $bcd_colum_ref + $qty where docket_number = $docket_no and operation_id = $emb_input_ops_code and size_id = '$size_id'";
             mysqli_query($link, $update_bcd_for_emb_qry) or exit("update_bcd_for_emb_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
             //updating embellishment_plan_dashboard
@@ -567,11 +567,11 @@ function issued_to_module($bcd_id,$qty,$ref)
             {
                 $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);  
             }    
-            if($bcd_colum_ref=='recut_in'){
-                $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+0 where bundle_number = $bundle_number and operation_id = $input_ops_code";
-            } else {
-                $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
-            }
+            // if($bcd_colum_ref=='recut_in'){
+            //     $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+0 where bundle_number = $bundle_number and operation_id = $input_ops_code";
+            // } else {
+            // }
+            $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
             mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));            
         }   
     return;
