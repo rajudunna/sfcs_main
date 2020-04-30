@@ -207,10 +207,15 @@ if(isset($_POST['clear']) && short_shipment_status($_POST['style'],$_POST['sched
 			$sql4531="DELETE from $bai_pro3.bai_orders_db where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 
 			$sql_result4531=mysqli_query($link, $sql4531) or exit("Sql Error113"); 
-			 
-			$sql4551="INSERT IGNORE INTO bai_pro3.bai_orders_db SELECT * FROM bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
-			// echo $sql4551."<br>"; 
-			$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error114"); 
+			
+			$sql_check="select order_tid from $bai_pro3.bai_orders_db where order_tid IN  ('".implode("','",$order_tids)."')";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{ 
+				$sql4551="INSERT INTO $bai_pro3.bai_orders_db SELECT * FROM $bai_pro3.bai_orders_db_club WHERE order_tid IN  ('".implode("','",$order_tids)."')"; 
+				// echo $sql4551."<br>"; 
+				$sql_result4551=mysqli_query($link, $sql4551) or exit("Sql Error114"); 
+			}	
 			
 			$sql45312="UPDATE $bai_pro3.bai_orders_db set order_joins=0,order_no='' where order_tid in ('".implode("','",$order_tids)."')"; 
 			// echo $sql4531."<br>"; 

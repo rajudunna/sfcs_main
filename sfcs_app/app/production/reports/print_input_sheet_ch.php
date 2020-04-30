@@ -736,6 +736,7 @@
                                 {
 									$cut_recevied_quantity=$sql_row_new_cutv['recevied_cut_qty'];
 								}
+								
 
                 }
                             echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Cut Reported Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";

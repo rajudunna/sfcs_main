@@ -54,8 +54,13 @@
 					if(isset($_POST['prepare']));
 					if(1)
 					{
-						$sel=$_POST['sel'];
-						
+						$sel_value=$_POST['sel'];
+						$get_tids = "SELECT ship_tid FROM $bai_pro3.ship_stat_log where ship_up_date in ("."'" . implode ( "', '", $sel_value ) . "'".")";
+						$tid_result=mysqli_query($link, $get_tids) or exit("Sql Error1 ship_tids".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($tid_row=mysqli_fetch_array($tid_result))
+						{
+							$sel[] = $tid_row['ship_tid'];
+						}
 						if(sizeof($sel)>0)
 						{
 							$grand_pcs=0;
@@ -77,7 +82,7 @@
 								,coalesce(sum(ship_s_s02),0) as \"ship_s_s02\",coalesce(sum(ship_s_s03),0) as \"ship_s_s03\",coalesce(sum(ship_s_s04),0) as \"ship_s_s04\",coalesce(sum(ship_s_s05),0) as \"ship_s_s05\",coalesce(sum(ship_s_s06),0) as \"ship_s_s06\",coalesce(sum(ship_s_s07),0) as \"ship_s_s07\",coalesce(sum(ship_s_s08),0) as \"ship_s_s08\",coalesce(sum(ship_s_s09),0) as \"ship_s_s09\",coalesce(sum(ship_s_s10),0) as \"ship_s_s10\",coalesce(sum(ship_s_s11),0) as \"ship_s_s11\",coalesce(sum(ship_s_s12),0) as \"ship_s_s12\",coalesce(sum(ship_s_s13),0) as \"ship_s_s13\",coalesce(sum(ship_s_s14),0) as \"ship_s_s14\",coalesce(sum(ship_s_s15),0) as \"ship_s_s15\",coalesce(sum(ship_s_s16),0) as \"ship_s_s16\",coalesce(sum(ship_s_s17),0) as \"ship_s_s17\",coalesce(sum(ship_s_s18),0) as \"ship_s_s18\",coalesce(sum(ship_s_s19),0) as \"ship_s_s19\",coalesce(sum(ship_s_s20),0) as \"ship_s_s20\",coalesce(sum(ship_s_s21),0) as \"ship_s_s21\",coalesce(sum(ship_s_s22),0) as \"ship_s_s22\",coalesce(sum(ship_s_s23),0) as \"ship_s_s23\",coalesce(sum(ship_s_s24),0) as \"ship_s_s24\",coalesce(sum(ship_s_s25),0) as \"ship_s_s25\",coalesce(sum(ship_s_s26),0) as \"ship_s_s26\",coalesce(sum(ship_s_s27),0) as \"ship_s_s27\",coalesce(sum(ship_s_s28),0) as \"ship_s_s28\",coalesce(sum(ship_s_s29),0) as \"ship_s_s29\",coalesce(sum(ship_s_s30),0) as \"ship_s_s30\",coalesce(sum(ship_s_s31),0) as \"ship_s_s31\",coalesce(sum(ship_s_s32),0) as \"ship_s_s32\",coalesce(sum(ship_s_s33),0) as \"ship_s_s33\",coalesce(sum(ship_s_s34),0) as \"ship_s_s34\",coalesce(sum(ship_s_s35),0) as \"ship_s_s35\",coalesce(sum(ship_s_s36),0) as \"ship_s_s36\",coalesce(sum(ship_s_s37),0) as \"ship_s_s37\",coalesce(sum(ship_s_s38),0) as \"ship_s_s38\",coalesce(sum(ship_s_s39),0) as \"ship_s_s39\",coalesce(sum(ship_s_s40),0) as \"ship_s_s40\",coalesce(sum(ship_s_s41),0) as \"ship_s_s41\",coalesce(sum(ship_s_s42),0) as \"ship_s_s42\",coalesce(sum(ship_s_s43),0) as \"ship_s_s43\",coalesce(sum(ship_s_s44),0) as \"ship_s_s44\",coalesce(sum(ship_s_s45),0) as \"ship_s_s45\",coalesce(sum(ship_s_s46),0) as \"ship_s_s46\",coalesce(sum(ship_s_s47),0) as \"ship_s_s47\",coalesce(sum(ship_s_s48),0) as \"ship_s_s48\",coalesce(sum(ship_s_s49),0) as \"ship_s_s49\",coalesce(sum(ship_s_s50),0) as \"ship_s_s50\" from $bai_pro3.ship_stat_log where ship_status=1 and ship_tid in (".implode(",",$sel).") group by ship_schedule order by ship_schedule";
 							// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// echo $sql."<br>";
-							$sql_result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_result=mysqli_query($link, $sql) or exit("Sql Error12 ship_data".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$num_sch=mysqli_num_rows($sql_result);
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
@@ -163,7 +168,7 @@
 								$total_pcs=$ship_xs+$ship_s+$ship_m+$ship_l+$ship_xl+$ship_xxl+$ship_xxxl+$ship_s01+$ship_s02+$ship_s03+$ship_s04+$ship_s05+$ship_s06+$ship_s07+$ship_s08+$ship_s09+$ship_s10+$ship_s11+$ship_s12+$ship_s13+$ship_s14+$ship_s15+$ship_s16+$ship_s17+$ship_s18+$ship_s19+$ship_s20+$ship_s21+$ship_s22+$ship_s23+$ship_s24+$ship_s25+$ship_s26+$ship_s27+$ship_s28+$ship_s29+$ship_s30+$ship_s31+$ship_s32+$ship_s33+$ship_s34+$ship_s35+$ship_s36+$ship_s37+$ship_s38+$ship_s39+$ship_s40+$ship_s41+$ship_s42+$ship_s43+$ship_s44+$ship_s45+$ship_s46+$ship_s47+$ship_s48+$ship_s49+$ship_s50;
 
 								$grand_pcs+=$total_pcs;
-
+								$cnt = 0;
 								foreach($filtered_sizes as $key => $value){
 									$sizes_info="select title_size_".$sizes_array[$key]." from bai_orders_db_confirm where order_style_no='".$ship_style."' and order_del_no=".$ship_schedule." and trim(order_col_des)='".$ship_color."'";
 									$sizes_info_result=mysqli_query($link, $sizes_info);
@@ -172,7 +177,15 @@
 									echo "<td>$ship_style</td>";
 									echo "<td>$ship_schedule</td>";
 									echo "<td>$total_pcs</td>";
-									echo "<td>$ship_cartons</td>";
+									$cnt++;
+									if($cnt == 1)
+									{
+										echo "<td><b>$ship_cartons</b></td>";
+									}
+									else
+									{
+										echo "<td>-</td>";
+									}
 									echo "<td>$sizes_info_details[0]</td>
 									<td>$value</td>";
 									echo "</tr>";
@@ -272,11 +285,11 @@ if(isset($_POST['submit']))
 	if($seal!='' && $vehicle!='')
 	{
 		$sql="insert into $bai_pro3.disp_db set create_date=\"$date\", party=\"$party\", vehicle_no=\"$vehicle\", mode=\"$mode\", status=1, seal_no=\"$seal\", remarks=\"$remarks\", prepared_by=USER(), prepared_time=NOW()";
-		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Sql Error1 insert disp_db".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$iLastID=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		
 		$sql="update $bai_pro3.ship_stat_log set disp_note_no=$iLastID, ship_status=2 where ship_tid in ($ship_id)";
-		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Sql Error2 update status".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		echo "<script type='text/javascript'> setTimeout('Redirect()',0); function Redirect() {  location.href = '$jump_url1'; }</script>"; 
 	}

@@ -413,7 +413,7 @@ $userName = getrbac_user()['uname'];
 					$log.="<th>".$msc93."</th></tr>";
 				if(mysqli_num_rows($resultr112)==0)
 				{
-					$sql_map_table="select mapped_cut_table from $bai_pro3.module_master where module_name=".$items[0]." and status='Active'";
+					$sql_map_table="select mapped_cut_table from $bai_pro3.module_master where module_name='".$items[0]."' and status='Active'";
 					$log.="<tr><th>".$sql_map_table."</th>";
 					$msc94=microtime(true);
 					$log.="<th>".$msc94."</th>";
