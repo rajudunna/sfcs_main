@@ -227,7 +227,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		while ($row_mrn = $sql_result_mrn->fetch_assoc())
 		{
 			// $qty_issued=$available+$row_mrn["mrn_qty"];
-			$available=round(($available-$row_mrn["mrn_qty"]),2);
+			//$available=round(($available-$row_mrn["mrn_qty"]),2);
 			$available2 = round(($available2- $row_mrn["mrn_qty"]),2);
 		}
 	}
@@ -450,12 +450,12 @@ if(isset($_POST['put']))
 					// $issued_ref[$j]=$issued_qty[$j];
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
-						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j].",qty_allocated=qty_allocated-".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
