@@ -23,6 +23,15 @@
     <?php
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
+        $schedule=$_POST["schedule"];
+        $sql2="select order_style_no,order_col_des AS order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$schedule\" ";
+        $result2=mysqli_query($link, $sql2) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row=mysqli_fetch_array($result2))
+        {
+            $styles=$row["order_style_no"];
+            $mapped_colors=$row["order_col_des"];
+        }
         $application='IMS_OUT';
 
         $scanning_query="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -40,9 +49,13 @@
         {
             $operation_in_code=$sql_row123['operation_code'];
         }
-
+        
+		if($operation_in_code == 'Auto'){
+            $get_ips_op = get_ips_operation_code($link,$styles,$mapped_colors);
+            $operation_in_code =$get_ips_op['operation_code'];
+        } 
         //$schedule=$_GET["schedule"];
-        $schedule=$_POST["schedule"];
+        //$schedule=$_POST["schedule"];
         //$schedule="399160"; //for testing
         $schedule_split=explode(",",$schedule);
         if($schedule!='')
