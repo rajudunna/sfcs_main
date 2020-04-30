@@ -210,10 +210,9 @@ if(isset($_POST['submit']) || $module)
 			{           
 				for($kk=0;$kk<sizeof($pending);$kk++)
 				{ 
-				
-				// REEJECTION//
-                 $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
-                //  echo $ip_op_qty;
+                    // REEJECTION//
+                    $ip_op_qty="SELECT DATE(date_time) as date1,input_job_no,input_job_no_random_ref,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,original_qty,0)) as job_qty,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(rejected_qty) AS rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+                    //  echo $ip_op_qty;
 					$ip_op_qty_res=mysqli_query($link, $ip_op_qty) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_rowwip12=mysqli_fetch_array($ip_op_qty_res))
 					{
