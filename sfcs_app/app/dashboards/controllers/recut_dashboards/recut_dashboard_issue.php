@@ -2,6 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 include 'sewing_barcode_generation.php';
 ?>
 <?php
@@ -390,7 +391,11 @@ function issued_to_module($bcd_id,$qty,$ref)
             }
             else
             {
-                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link);  
+                $input_ops_code=echo_title("$brandix_bts.tbl_ims_ops","operation_code","appilication",'IPS',$link); 
+                if($input_ops_code == 'Auto'){
+					$get_ips_op = get_ips_operation_code($link,$style,$mapped_color);
+					$input_ops_code=$get_ips_op['operation_code'];
+				} 
             }    
             $update_qry_bcd_input = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where bundle_number = $bundle_number and operation_id = $input_ops_code";
             mysqli_query($link, $update_qry_bcd_input) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));            

@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
 
 if (isset($_POST["barcode_info"])){
@@ -817,6 +818,20 @@ if(isset($_POST["trans_action"])){
                             $color = $result_array['color_dis'];
                             $table_data = $result_array['table_data'];
 
+                            $application='IPS';
+                            $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                            //echo $scanning_query;
+                            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($sql_row=mysqli_fetch_array($scanning_result))
+                            {
+                            $operation_name=$sql_row['operation_name'];
+                            $operation_code=$sql_row['operation_code'];
+                            }
+                            if($operation_code == 'Auto'){
+                                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                                $operation_code=$get_ips_op['operation_code'];
+                                $operation_name=$get_ips_op['operation_name'];
+                            }
                             // checking ops ..............................................
 
                             $dep_ops_array_qry = "select operation_code,ops_sequence, default_operration,smv,manual_smv from $brandix_bts.tbl_style_ops_master WHERE style='$b_style' AND color = '$mapped_color' and operation_code=$b_op_id";
@@ -1384,15 +1399,7 @@ if(isset($_POST["trans_action"])){
                                 }
                                 
                                 
-                                $application='IPS';
-                                $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-                                //echo $scanning_query;
-                                $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                while($sql_row=mysqli_fetch_array($scanning_result))
-                                {
-                                $operation_name=$sql_row['operation_name'];
-                                $operation_code=$sql_row['operation_code'];
-                                }
+                                
                                 $sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(send_qty),0) AS s_qty,COALESCE(SUM(recut_in),0) AS rc_qty,COALESCE(SUM(replace_in),0) AS rp_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1423,7 +1430,7 @@ if(isset($_POST["trans_action"])){
                                 for($i=0;$i<sizeof($b_tid);$i++)
                                 {
                                     if($b_tid[$i] == $bundle_no){
-                                        if($b_op_id == 100 || $b_op_id == 129)
+                                        if($b_op_id == $operation_code)
                                         {
                                             //Searching whethere the operation was present in the ims log and ims buff
                                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = $b_tid[$i] AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$b_op_id AND ims_remarks = '$b_remarks[$i]'";
@@ -1465,17 +1472,7 @@ if(isset($_POST["trans_action"])){
                                         }
                                         elseif($b_op_id == $output_ops_code)
                                         {
-                                            //To gent Input Operation Code
-                                            $application='IPS';
-                                            $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-                                            //echo $scanning_query;
-                                            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                            while($sql_row=mysqli_fetch_array($scanning_result))
-                                            {
-                                            $operation_name=$sql_row['operation_name'];
-                                            $operation_code=$sql_row['operation_code'];
-                                            }
-                                            if($operation_code == 100 || $operation_code == 129)
+                                            if($b_op_id ==$operation_code)
                                             {
                                                 //updating ims_pro_qty against the input
                                                 $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";
@@ -1886,6 +1883,20 @@ if(isset($_POST["trans_action"])){
                                             {
                                                 $style = $row['style'];
                                                 $color = $row['color'];
+                                            }
+                                            $application='IPS';
+                                            $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+                                            //echo $scanning_query;
+                                            $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                            while($sql_row=mysqli_fetch_array($scanning_result))
+                                            {
+                                            $operation_name=$sql_row['operation_name'];
+                                            $operation_code=$sql_row['operation_code'];
+                                            }
+                                            if($operation_code == 'Auto'){
+                                                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                                                $operation_code=$get_ips_op['operation_code'];
+                                                $operation_name=$get_ips_op['operation_name'];
                                             }
                                             $ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$job_number[0]";
                                             $result_ops_seq_check = $link->query($ops_seq_check);
@@ -2470,8 +2481,9 @@ if(isset($_POST["trans_action"])){
                                                         {
                                                             $output_ops_code = 130;
                                                         }
-                                                        //echo 'ops_code.'.$b_op_id;
-                                                        if($b_op_id == 100 || $b_op_id == 129)
+                                                        // echo 'b_op_id.'.$b_op_id;
+                                                        // echo 'operation_code.'.$operation_code;
+                                                        if($b_op_id == $operation_code)
                                                         {
                                                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$b_op_id' AND ims_remarks = '$remarks'";
                                                             //echo $searching_query_in_imslog;
@@ -2507,25 +2519,25 @@ if(isset($_POST["trans_action"])){
                                                             }
 
                                                             
-                                                        // $input_ops_code =100;
-                                                            $application = 'IPS';
-                                                            $sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
-                                                            $sewing_id_query_result = mysqli_query($link,$sewing_id_query);
-                                                            if(mysqli_num_rows($sewing_id_query_result)>0)
-                                                            {
-                                                                while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
-                                                                {
-                                                                    $input_ops_code = $sewing_ops_id['operation_code'];
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                $input_ops_code =100;
-                                                            }
+                                                            $input_ops_code =$operation_code;
+                                                            // $application = 'IPS';
+                                                            // $sewing_id_query = "select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application'";
+                                                            // $sewing_id_query_result = mysqli_query($link,$sewing_id_query);
+                                                            // if(mysqli_num_rows($sewing_id_query_result)>0)
+                                                            // {
+                                                            //     while($sewing_ops_id = $sewing_id_query_result->fetch_assoc()) 
+                                                            //     {
+                                                            //         $input_ops_code = $sewing_ops_id['operation_code'];
+                                                            //     }
+                                                            // }
+                                                            // else
+                                                            // {
+                                                            //     $input_ops_code =100;
+                                                            // }
                                                         
                                                         
                                                             //echo "PAC TID = $b_tid + $value";
-                                                            if($input_ops_code == 100 || $input_ops_code == 129)
+                                                            if($b_op_id == $input_ops_code)
                                                             {
                                                                 $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
                                                                 $result_searching_query_in_imslog = $link->query($searching_query_in_imslog);
