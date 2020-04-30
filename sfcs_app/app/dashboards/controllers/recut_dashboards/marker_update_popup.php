@@ -39,9 +39,11 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 			$sql_query_old_marker="update  $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]."  and tid !=".$mk_ref_id."";
 			$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// echo $sql_update_marker_length_id."<br>";
-			$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$mk_id.",mk_ref=".$mk_ref_id." where doc_no=".$date_maker[$i][2]."";
+			$sql11x132="update $bai_pro3.plandoc_stat_log set fabric_status='0', mk_ref_id=".$mk_id.",mk_ref=".$mk_ref_id." where doc_no=".$date_maker[$i][2]."";
 			// echo $sql11x132."<br>";
-			$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql_result11x112=mysqli_query($link, $sql11x132) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql1="update $bai_pro3.recut_v2 set fabric_status='0',mk_ref=".$mk_ref_id."  where doc_no=".$doc_no;
+            mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_inse="INSERT INTO `bai_pro3`.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`) 
 			VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$mk_id."')";
 			// echo $sql_inse."<br>";
@@ -66,15 +68,17 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 				{
 					while($row111x21=mysqli_fetch_array($sql_result11x1121)) 
 					{
-						$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$row111x21['tid']." where doc_no=".$date_maker[$i][2]."";
+						$sql11x132="update $bai_pro3.plandoc_stat_log set fabric_status='0', mk_ref_id=".$date_maker[$i][1].",mk_ref=".$row111x21['tid']." where doc_no=".$date_maker[$i][2]."";
 						// echo $sql11x132."<br>";
 						$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-						
+                        
+                        $sql1="update $bai_pro3.recut_v2 set fabric_status='0',mk_ref=".$row111x21['tid']." where doc_no=".$doc_no;
+                        mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 						//for edit marker length
 						$sql_query_old_marker="update  $bai_pro3.maker_stat_log set recut_lay_plan='$recut_lay_plan' where allocate_ref=".$date_maker[$i][3]." and tid =".$row111x21['tid']."";
 						$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-						$sql_query_old_marker_invalid="update $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]." and tid =".$row111x21['tid']."";
+						$sql_query_old_marker_invalid="update $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]." and tid !=".$row111x21['tid']."";
 						$test_query_old_marker_invalid=mysqli_query($link, $sql_query_old_marker_invalid) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 
@@ -102,9 +106,11 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 					$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql_query_old_marker;
 					// die();
-					$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$iLastid." where doc_no=".$date_maker[$i][2]."";
+					$sql11x132="update $bai_pro3.plandoc_stat_log set fabric_status='0', mk_ref_id=".$date_maker[$i][1].",mk_ref=".$iLastid." where doc_no=".$date_maker[$i][2]."";
 					// echo $sql11x132."<br>";
-					$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error143 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql_result11x112=mysqli_query($link, $sql11x132) or die("Error143 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $sql1="update $bai_pro3.recut_v2 set fabric_status='0',mk_ref=".$iLastid." where doc_no=".$doc_no;
+                    mysqli_query($link, $sql1) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_inse="INSERT INTO `bai_pro3`.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`) 
 					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$date_maker[$i][1]."')";
 					mysqli_query($link, $sql_inse) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));		
@@ -123,5 +129,7 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 		mysqli_query($link, $sql) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}		
 }
+
+
 die();
 ?>

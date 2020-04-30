@@ -820,6 +820,8 @@ if(isset($_POST['allocate_new']))
 			}
 			else
 			{
+				$sql2="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+				mysqli_query($link, $sql2) or exit("Sql Errordd5: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
 			

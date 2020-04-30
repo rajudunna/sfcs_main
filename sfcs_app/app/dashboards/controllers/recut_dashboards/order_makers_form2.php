@@ -71,13 +71,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$color=$sql_row['order_col_des'];
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
+	$serial_no=$_GET['serial_no'];
 }
 ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Form</div>
 <div class="panel-body">
-<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
+<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process.php", "N"); ?>">
 <?php
 
@@ -85,11 +86,13 @@ $cat_ref=$_GET['cat_ref'];
 $tran_order_tid=$_GET['tran_order_tid'];
 $cuttable_ref=$_GET['cuttable_ref'];
 $allocate_ref=$_GET['allocate_ref'];
+$serial_no=$_GET['serial_no'];
 
 echo "<input type='hidden' name='cat_ref' value='$cat_ref'>";
 echo "<input type='hidden' name='tran_order_tid' value='$tran_order_tid'>";
 echo "<input type='hidden' name='cuttable_ref' value='$cuttable_ref'>";
 echo "<input type='hidden' name='allocate_ref' value='$allocate_ref'>";
+echo "<input type='hidden' name='serial_no' value='$serial_no'>";
 
 
 echo "<div class=block>";
@@ -107,7 +110,7 @@ for ($i=0; $i < 5; $i++) {
 		<td><input class="form-control"  type="text" name= "in_skgrp['.$i.']" id= "sk_grp_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_width['.$i.']" id= "width_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mklen['.$i.']" id= "mk_len_'.$i.'" onchange="validate_data('.$i.',this)" title="please enter numbers and decimals"></td>
-		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'"onchange="mk_name_validate('.$i.',this)" title="please enter numbers and decimals"></td>
+		<td><input class="form-control"  type="text" name= "in_mkname['.$i.']" id="mk_name_'.$i.'" onchange="mk_name_validate('.$i.',this)" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_ptrname['.$i.']" id="ptr_name_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_mkeff['.$i.']" id= "mk_eff_'.$i.'" title="please enter numbers and decimals"></td>
 		<td><input class="form-control"  type="text" name= "in_permts['.$i.']" id= "permts_'.$i.'" title="please enter numbers and decimals"></td>
@@ -132,7 +135,7 @@ echo "</form>";
 echo "</div>";
 echo "<br/>";
 
-echo "<h2 style=\"padding-left:10px;\"><span class=\"label label-default\" >Reference of Existing Workouts:</span></h2>";
+
 
 
 
@@ -162,6 +165,7 @@ function compareArrays(arr1, arr2){
 		return false;
 	}
 }
+
 function mk_name_validate(b,id_name){
 	if($("#mk_name_"+b).val() != ''){
 		var rowData=[];
@@ -183,43 +187,19 @@ function mk_name_validate(b,id_name){
 		}
 	}
 }
+
 function validate_data(b, id_name) {
-	// alert();
-	// console.log(b);
-	// alert(b);
-	// console.log([1,2].equals([1,2]));
 	if($("#mk_ver_"+b).val() != '' && $("#sk_grp_"+b).val() != '' && $("#width_"+b).val() != '' && $("#mk_len_"+b).val()){
 		var rowData=[];
 		var CurData=[];
-		// var rows = $('#table-data >tbody >tr').length;
-		
-		// var rows = document.getElementById('rows').value;
-		// var mk_Ref;
-		// var mk_shr;
-		// var mk_len;
 		var table = $("#body-data");
 		CurData = [$("#mk_ver_"+b).val(), $("#sk_grp_"+b).val(), $("#width_"+b).val(), $("#mk_len_"+b).val()];
-		// CurData = $("#sk_grp_"+b).val();
-		// CurData[] = $("#width_"+b).val();
-		// CurData[] = $("#mk_len_"+b).val();
-		// console.log(CurData);
 		var tr_length= table.find('tr').length;
-		console.log(tr_length);
+		
 		for (let index = 0; index <= tr_length; index++) {
-		// console.log($("#mk_ver_"+index).val());
 			if(index!= b && $("#mk_ver_"+index).val() != '' && $("#sk_grp_"+index).val() != '' && $("#width_"+index).val() != '' && $("#mk_len_"+index).val()){
-
 				for (let index1 = 1; index1 <= 4; index1++) {
-
 					rowData = [$("#mk_ver_"+index).val(), $("#sk_grp_"+index).val(), $("#width_"+index).val(), $("#mk_len_"+index).val()];
-					// rowData[index] = $("#sk_grp_"+index).val();
-					// rowData[index] = $("#width_"+index).val();
-					// rowData[index] = $("#mk_len_"+index).val();
-
-					// console.log(CurData);
-					console.log(rowData);
-
-					console.log(compareArrays(CurData, rowData));
 					if(compareArrays(CurData, rowData)){
 					swal('Using Same combinations...','Please Check.','warning');
 						$("#"+id_name.id).val('');

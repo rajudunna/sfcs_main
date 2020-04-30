@@ -25,12 +25,13 @@ div.block
 
 
 $allocate_ref=$_GET['allocate_ref'];
+$serial_no=$_GET['serial_no'];
 $tran_order_tid=$_POST['tran_order_tid'];
 
-$sql="update $bai_pro3.allocate_stat_log set mk_status=3 where tid=$allocate_ref and recut_lay_plan='no'";
+$sql="update $bai_pro3.allocate_stat_log set mk_status=3 where tid=$allocate_ref and recut_lay_plan='yes'";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="select * from $bai_pro3.bai_orders_db where order_tid=(select order_tid from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no')";
+$sql="select * from $bai_pro3.bai_orders_db where order_tid=(select order_tid from $bai_pro3.allocate_stat_log where tid=$allocate_ref  and recut_lay_plan='yes')";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -42,7 +43,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule=$sql_row['order_del_no'];
 }
 
-echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
 
 
 ?>

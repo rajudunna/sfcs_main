@@ -306,6 +306,7 @@ function ReplaceProcess($replace_id_edit)
             while($replace_row = $result_excess_job_qry->fetch_assoc()) 
             {
                 $input_job_no_excess = $replace_row['input_job_no_random_ref'];
+                $input_job_no_excess1[] = $replace_row['input_job_no_random_ref'];
                 $doc_nos = $replace_row['doc_nos'];
                 $exces_qty_org =$replace_row['excess_qty'];
                 //cps_qry
