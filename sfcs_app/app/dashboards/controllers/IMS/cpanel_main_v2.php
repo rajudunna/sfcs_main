@@ -746,7 +746,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
             for($kk=0;$kk<sizeof($pending);$kk++)
             { 
               $value=$recut_job_val[$pending[$kk]];             
-              $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,sum(rejected_qty)  as rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
+              $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0))  as rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
               $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
               {

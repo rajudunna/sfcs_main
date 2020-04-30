@@ -1,1 +1,0 @@
-<?php $log_time=0; ?>

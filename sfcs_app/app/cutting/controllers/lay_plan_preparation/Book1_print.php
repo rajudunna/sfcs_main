@@ -3371,7 +3371,7 @@ tags will be replaced.-->
 
     if($sql_num_check==0) 
     { 
-        $sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
+        $sql="insert into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\""; 
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         //$sql_num_confirm=mysql_num_rows($sql_result); 
     } 

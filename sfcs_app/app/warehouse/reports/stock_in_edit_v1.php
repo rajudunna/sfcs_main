@@ -6,7 +6,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 ?>
 
-<?php include("functions.php"); ?>
+<?php 
+//include("functions.php"); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+?>
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">

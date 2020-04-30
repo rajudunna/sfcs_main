@@ -155,7 +155,7 @@
 							$schs_array[]=$row["sch"];
 							$division=$row["order_div"];
 						}
-						$sewing_jobratio_sizes_query1236 = "SELECT group_concat(id) as id from brandix_bts.`tbl_orders_master` where product_schedule=$schedule";
+						$sewing_jobratio_sizes_query1236 = "SELECT group_concat(id) as id from brandix_bts.`tbl_orders_master` where product_schedule in ($schedule)";
 						// echo $sewing_jobratio_sizes_query1236.'<br>';
 						$sewing_jobratio_sizes_result145=mysqli_query($link, $sewing_jobratio_sizes_query1236) or exit("Error while getting Job Ratio Details");
 						while($sewing_jobratio_color_details145=mysqli_fetch_array($sewing_jobratio_sizes_result145)) 

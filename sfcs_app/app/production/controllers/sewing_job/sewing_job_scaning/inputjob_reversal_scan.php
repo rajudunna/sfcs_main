@@ -443,7 +443,7 @@
 			foreach($bundle_no as $key => $value)
 			{
 				$module_cum = $b_module[$key];
-				$query_to_fetch_individual_bundles = "select * FROM $brandix_bts.bundle_creation_data where color = '$color[$key]' and size_title = '$size[$key]' and input_job_no_random_ref = '$input_job_no_random' AND operation_id = '$operation_id' AND assigned_module = '$module_cum' order by barcode_sequence";
+				$query_to_fetch_individual_bundles = "select * FROM $brandix_bts.bundle_creation_data where color = '$color[$key]' and size_title = '$size[$key]' and input_job_no_random_ref = '$input_job_no_random' AND operation_id = $operation_id AND assigned_module = '$module_cum' order by barcode_sequence";
 				$cumulative_reversal_qty = $reversalval[$key];
 				// echo $query_to_fetch_individual_bundles;
 				$qry_nop_result=mysqli_query($link,$query_to_fetch_individual_bundles) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -465,11 +465,11 @@
 					$actual_bundles[] = $nop_qry_row['bundle_number'];
 					if($post_code[0] != '0')
 					{
-						$query_to_fetch_individual_bundle_details = "select (send_qty-recevied_qty)as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$post_code[0]'";
+						$query_to_fetch_individual_bundle_details = "select (send_qty-(recevied_qty+rejected_qty))as recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = $bundle_individual_number and operation_id=$post_code[0]";
 					}
 					else
 					{
-						$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = '$bundle_individual_number' and operation_id='$operation_id'";
+						$query_to_fetch_individual_bundle_details = "select recevied_qty  FROM $brandix_bts.bundle_creation_data where bundle_number = $bundle_individual_number and operation_id=$operation_id";
 					}
 					// echo $query_to_fetch_individual_bundle_details;
 					$result_query_to_fetch_individual_bundle_details=mysqli_query($link,$query_to_fetch_individual_bundle_details) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -531,7 +531,7 @@
 			}
 
 			// echo "post code".$post_code;
-			$ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code='$operation_id'";
+			$ops_seq_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$mapped_color' and operation_code=$operation_id";
 			$result_ops_seq_check = $link->query($ops_seq_check);
 			while($row = $result_ops_seq_check->fetch_assoc()) 
 			{
@@ -554,7 +554,7 @@
 				$act_reciving_qty = $reversalval[$key];
 				//echo "rep_qty_rep".$rep_qty[$key]."</br>";
 				//	echo "rep_qty".$act_reciving_qty."</br>";
-				$select_send_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+				$select_send_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $operation_id and remarks='$remarks' and bundle_number=$bundle_no[$key] group by bundle_number order by bundle_number";
 				$result_select_send_qty = $link->query($select_send_qty);
 				while($row = $result_select_send_qty->fetch_assoc()) 
 				{
@@ -564,7 +564,7 @@
 				}
 				if($post_ops_code)
 				{
-					$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $post_ops_code and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+					$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $post_ops_code and remarks='$remarks' and bundle_number=$bundle_no[$key] group by bundle_number order by bundle_number";
 					//echo $post_ops_qry_to_find_rec_qty;
 					$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 					if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -581,7 +581,7 @@
 				}
 				else if($ops_dependency)
 				{
-					$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $ops_dep and remarks='$remarks' and bundle_number='$bundle_no[$key]' group by bundle_number order by bundle_number";
+					$post_ops_qry_to_find_rec_qty = "select (SUM(recevied_qty)) AS recevied_qty,size_title from  $brandix_bts.bundle_creation_data_temp WHERE operation_id = $ops_dep and remarks='$remarks' and bundle_number=$bundle_no[$key] group by bundle_number order by bundle_number";
 					//echo $post_ops_qry_to_find_rec_qty;
 					$result_post_ops_qry_to_find_rec_qty = $link->query($post_ops_qry_to_find_rec_qty);
 					if($result_post_ops_qry_to_find_rec_qty->num_rows > 0)
@@ -619,7 +619,7 @@
 						$rec_qty = $row['recevied_qty'];
 					}
 					$act_rec_qty = $rec_qty - $reversalval[$key];
-					$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty where id = $id";
+					$update_present_qry = "update $brandix_bts.bundle_creation_data  set recevied_qty = $act_rec_qty, `bundle_qty_status`= '0' where id = $id";
 					$result_query = $link->query($update_present_qry) or exit(message_sql($b_shift));
 					if($post_code)
 					{
@@ -675,7 +675,7 @@
 						$color = $row['color'];
 						$size_title = $row['size_title'];
 					}
-					$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = $b_op_id";
+					$ops_name_qry = "select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code = '$b_op_id'";
 					$result_ops_name_qry = $link->query($ops_name_qry) or exit('query error in updating 8');
 					//var_dump($result_ops_name_qry);
 					while($row_ops = $result_ops_name_qry->fetch_assoc()) 
@@ -832,10 +832,15 @@
 										{
 											$update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
 											mysqli_query($link,$update_status_query) or exit(message_sql($b_shift));
-											$ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-											mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
-											$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-											mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
+											$sql_check1="select tid from $bai_pro3.ims_log where tid=$updatable_id";
+			                                $sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			                                if(mysqli_num_rows($sql_check_res1)==0)
+			                                {
+												$ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+												mysqli_query($link,$ims_backup) or exit(message_sql($b_shift));
+												$ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+												mysqli_query($link,$ims_delete) or exit(message_sql($b_shift));
+											}	
 										}
 									}						
 								}
@@ -862,7 +867,7 @@
 					{
 						$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 					}
-					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module='".$b_module[$key]."' and shift='".$b_shift."'";
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{
@@ -920,7 +925,7 @@
 					}
 					//CODE FOR UPDATING CPS LOG
 					$category=['cutting','Send PF','Receive PF'];
-					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = $post_ops_code";
+					$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
 					// echo $checking_qry;
 					$result_checking_qry = $link->query($checking_qry);
 					while($row_cat = $result_checking_qry->fetch_assoc()) 
@@ -935,7 +940,7 @@
 					$reversal_value = $reversalval[$key];
 					if($emb_cut_check_flag == 1)
 					{
-						$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number='$b_no' and operation_id='$operation_id' limit 1";
+						$doc_query = "Select docket_number,size_title from $brandix_bts.bundle_creation_data where bundle_number=$b_no and operation_id=$operation_id limit 1";
 						$doc_result = mysqli_query($link,$doc_query) or exit("Error in getting the docket for the bundle");
 						while($row  = mysqli_fetch_array($doc_result))
 						{
@@ -975,7 +980,7 @@
 				if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
 				{
 					// insert into plan_dashboard_input if sewing job not exists
-					$insert_qry_ips = "INSERT IGNORE INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
+					$insert_qry_ips = "INSERT INTO $bai_pro3.`plan_dashboard_input` SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref = '$input_job_no_random'";
 					mysqli_query($link, $insert_qry_ips) or exit(message_sql($b_shift));
 				}
 

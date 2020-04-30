@@ -270,6 +270,7 @@ if(isset($_POST['formIssue']))
 function issued_to_module($bcd_id,$qty,$ref)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $op_code = '15';
     $bcd_colum_ref = "replace_in";
     if($ref == 2)
     {
@@ -294,7 +295,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     $update_qry_bcd = "update $brandix_bts.bundle_creation_data set $bcd_colum_ref=$bcd_colum_ref+$qty where docket_number = $docket_no and size_id = '$size_id' and operation_id = 15";
      mysqli_query($link, $update_qry_bcd) or exit("update_qry_bcd".mysqli_error($GLOBALS["___mysqli_ston"]));
      //validate parellel operations for updating recut_in
-     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0";
+     $qry_prellel_ops="select COUNT(*) as cnt from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and ops_dependency>0 and operation_code=15";
      $result_qry_prellel_ops = $link->query($qry_prellel_ops);
     while($row_ops = $result_qry_prellel_ops->fetch_assoc()) 
     {
@@ -324,6 +325,7 @@ function issued_to_module($bcd_id,$qty,$ref)
 		$ops_master_qry = "SELECT tor.operation_code FROM brandix_bts.tbl_orders_ops_ref AS tor LEFT JOIN `brandix_bts`.`tbl_style_ops_master` AS tosm ON tor.operation_code=tosm.operation_code WHERE category = 'Send PF' AND style='$style' AND color='$mapped_color' ORDER BY CAST(tosm.operation_order AS CHAR) LIMIT 1"; 
 
     }
+   // echo $ops_master_qry;
     $result_ops_master_qry = $link->query($ops_master_qry);
     while($row_ops = $result_ops_master_qry->fetch_assoc()) 
     {
@@ -331,6 +333,7 @@ function issued_to_module($bcd_id,$qty,$ref)
     }
     $qry_ops_mapping = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color='$mapped_color' and  operation_code in (".implode(',',$emb_ops).")";
     // echo $qry_ops_mapping;
+    // die();
     $result_qry_ops_mapping = $link->query($qry_ops_mapping);
     if(mysqli_num_rows($result_qry_ops_mapping) > 0)
     {
@@ -370,7 +373,7 @@ function issued_to_module($bcd_id,$qty,$ref)
             $result_checking_qry_plan_dashboard = $link->query($checking_qry_plan_dashboard);
             if(mysqli_num_rows($result_checking_qry_plan_dashboard) == 0)
             {   
-                $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input` 
+                $insert_qry_ips = "INSERT INTO `$bai_pro3`.`plan_dashboard_input` 
                 SELECT * FROM `$bai_pro3`.`plan_dashboard_input_backup`
                 WHERE input_job_no_random_ref = '$input_job_no_random_ref' order by input_trims_status desc limit 1";
                 mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -324,7 +324,7 @@ function ReplaceProcess($replace_id_edit)
                 $count++;
                 $rec_qty = 0;
                 $already_replaced_qty = 0;
-                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in (".implode(',',$input_job_no_excess1).") and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
+                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ('$input_job_no_excess') and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                 if($result_bcd_checking_qry->num_rows > 0)
                 {
@@ -335,7 +335,7 @@ function ReplaceProcess($replace_id_edit)
                     }
                 }
                 //checking the input job already replaced or not
-                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN (".implode(',',$input_job_no_excess1).") and size_title='$excess_size_title'";
+                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN ('$input_job_no_excess') and size_title='$excess_size_title'";
                 // echo $checking_replaced_or_not;
                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                 if($result_checking_replaced_or_not->num_rows > 0)
