@@ -18,7 +18,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $schedule=$sql_row['order_del_no'];
 }
 
-$sql = "select * from $bai_pro3.`allocate_stat_log` where cat_ref=".$cat_id;
+$sql = "select * from $bai_pro3.`allocate_stat_log` where cat_ref=".$cat_id." and recut_lay_plan='no'";
 // echo $sql.'<br/>';
 $sql_result = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $record=mysqli_num_rows($sql_result);
@@ -84,7 +84,7 @@ if(mysqli_num_rows($sql_result)>0)
         $pliespercut=$sql_row['pliespercut'];
         $ii=0;
 		$temp1=0;
-        $sql1 = "select * from $bai_pro3.cat_stat_log where order_tid in (select order_tid from $bai_pro3.`allocate_stat_log` where cat_ref=$cat_id)";
+        $sql1 = "select * from $bai_pro3.cat_stat_log where order_tid in (select order_tid from $bai_pro3.`allocate_stat_log` where cat_ref=$cat_id and recut_lay_plan='no')";
         // echo $sql1.'<br/>';
         $sql_result1 = mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $cnt_num=mysqli_num_rows($sql_result1);
@@ -96,7 +96,7 @@ if(mysqli_num_rows($sql_result)>0)
             
             if($sql_row1['tid']!=$cat_id) 
             {
-                $sql41 = "select * from $bai_pro3.`allocate_stat_log` where cat_ref=".$sql_row1['tid']." and ratio=".$ratio;
+                $sql41 = "select * from $bai_pro3.`allocate_stat_log` where cat_ref=".$sql_row1['tid']." and ratio=".$ratio." and recut_lay_plan='no'";
 				// echo $sql41.'<br/>';
                 $sql_result41 = mysqli_query($link, $sql41) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$num_cnt=mysqli_num_rows($sql_result41);

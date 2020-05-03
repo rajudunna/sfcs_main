@@ -39,7 +39,7 @@ class ReactApp extends React.Component {
         if (current) {
             allData = await current.getResolvedState().sortedData;
             console.log(allData);
-        }
+        } 
 
         if (allData.length > 0) {
             this.displayExcel(allData);
@@ -50,7 +50,7 @@ class ReactApp extends React.Component {
     }
 
     displayExcel(data) {
-        let headerCol = ["Location", "Lot No", "Style No", "Batch No", "SKU", "Item Description", "Item Name", "Box/Roll No", "Measured Width", "Received Qty", "Issued Qty", "Return Qty", "Balance Qty", "Shade", "Invoice", "Status", "GRN Date", "Remarks", "Label Id", "Product Group", "Buyer", "Supplier"];
+        let headerCol = ["Location", "Lot No", "Style No", "Batch No", "SKU", "Item Description", "Item Name", "Box/Roll No", "Measured Width", "Received Qty", "Issued Qty", "Return Qty", "Balance Qty", "Shade","Allocated Qty","Shrinkage Length","Shrinkage Width","Shrinkage Group", "Invoice", "Status", "GRN Date", "Remarks", "Label Id", "Product Group", "Buyer", "Supplier"];
         let sheet_data = [];
         const file_name = 'Rm Stock Report.xlsx';
         sheet_data.push(headerCol);
@@ -58,7 +58,7 @@ class ReactApp extends React.Component {
             let item = [];
             item.push(items.location, items.lotno, items.style, items.batchno, items.sku, items.itemdescription,
                 items.itemname, items.box_roll_no, items.measuredwidth, items.receivedqty, items.issuedqty, items.returnqty,
-                items.balanceqty, items.shade, items.invoice, items.status, items.grndate, items.remarks,
+                items.balanceqty, items.shade,items.allocatedqty,items.shrinkagelength,items.shrinkagewidth,items.shrinkagegroup,items.invoice, items.status, items.grndate, items.remarks,
                 items.labelid, items.productgroup, items.buyer, items.supplier);
             sheet_data.push(item);
         });
@@ -144,6 +144,26 @@ class ReactApp extends React.Component {
                 {
                     Header: "Shade",
                     accessor: "shade",
+                    filterable: true
+                },
+                {
+                    Header: "Allocated Qty",
+                    accessor: "allocatedqty",
+                    filterable: true
+                },
+                {
+                    Header: "Shrinkage Length",
+                    accessor: "shrinkagelength",
+                    filterable: true
+                },
+                {
+                    Header: "Shrinkage Width",
+                    accessor: "shrinkagewidth",
+                    filterable: true
+                },
+                {
+                    Header: "Shrinkage Group",
+                    accessor: "shrinkagegroup",
                     filterable: true
                 },
                 {

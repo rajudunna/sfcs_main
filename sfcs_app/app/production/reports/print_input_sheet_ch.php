@@ -23,6 +23,15 @@
     <?php
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
+        $schedule=$_POST["schedule"];
+        $sql2="select order_style_no,order_col_des AS order_col_des from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$schedule\" ";
+        $result2=mysqli_query($link, $sql2) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row=mysqli_fetch_array($result2))
+        {
+            $styles=$row["order_style_no"];
+            $mapped_colors=$row["order_col_des"];
+        }
         $application='IMS_OUT';
 
         $scanning_query="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -40,9 +49,13 @@
         {
             $operation_in_code=$sql_row123['operation_code'];
         }
-
+        
+		if($operation_in_code == 'Auto'){
+            $get_ips_op = get_ips_operation_code($link,$styles,$mapped_colors);
+            $operation_in_code =$get_ips_op['operation_code'];
+        } 
         //$schedule=$_GET["schedule"];
-        $schedule=$_POST["schedule"];
+        //$schedule=$_POST["schedule"];
         //$schedule="399160"; //for testing
         $schedule_split=explode(",",$schedule);
         if($schedule!='')
@@ -613,7 +626,7 @@
                             $tot=0;  
                             //echo "Testing".$temp_module;
                             $temp_jobno=$sql_row["job"];
-                            if ($temp_module=="0")
+                            if ($temp_module=="0" || $temp_module=="")
                             {
                                 $sql5555="SELECT input_module FROM  $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref IN (SELECT DISTINCT input_job_no_random FROM packing_summary_input WHERE order_del_no='$temp_schedule' AND input_job_no='$temp_jobno' )";
                                 // echo $sql5555."<br>";
@@ -716,10 +729,18 @@
 
                                     $o_total+=($o_s_s01+$o_s_s02+$o_s_s03+$o_s_s04+$o_s_s05+$o_s_s06+$o_s_s07+$o_s_s08+$o_s_s09+$o_s_s10+$o_s_s11+$o_s_s12+$o_s_s13+$o_s_s14+$o_s_s15+$o_s_s16+$o_s_s17+$o_s_s18+$o_s_s19+$o_s_s20+$o_s_s21+$o_s_s22+$o_s_s23+$o_s_s24+$o_s_s25+$o_s_s26+$o_s_s27+$o_s_s28+$o_s_s29+$o_s_s30+$o_s_s31+$o_s_s32+$o_s_s33+$o_s_s34+$o_s_s35+$o_s_s36+$o_s_s37+$o_s_s38+$o_s_s39+$o_s_s40+$o_s_s41+$o_s_s42+$o_s_s43+$o_s_s44+$o_s_s45+$o_s_s46+$o_s_s47+$o_s_s48+$o_s_s49+$o_s_s50);
                                 }
+								$sql_new="select sum(recevied_qty) as recevied_cut_qty from $brandix_bts.bundle_creation_data where schedule=\"$schedule\" and operation_id=15 ";
+                                //echo $sql123;
+                                $sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                while($sql_row_new_cutv=mysqli_fetch_array($sql_result_new))
+                                {
+									$cut_recevied_quantity=$sql_row_new_cutv['recevied_cut_qty'];
+								}
+								
 
                 }
-                            echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";
-                            echo "<tr><th>$o_total</th><th>$tot_in</th><th>$tot_out</th><th>$balance</th><th>$tot_balance</th></tr>";
+                            echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Cut Reported Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";
+                            echo "<tr><th>$o_total</th><th>$cut_recevied_quantity</th><th>$tot_in</th><th>$tot_out</th><th>$balance</th><th>$tot_balance</th></tr>";
                             echo "</table>";
                             echo "</th>";
                             echo "</tr>";

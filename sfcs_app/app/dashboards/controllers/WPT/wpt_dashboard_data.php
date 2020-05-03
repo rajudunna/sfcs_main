@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 $url = '/sfcs_app/app/dashboards/controllers/rms/fabric_requisition.php';
 $url = base64_encode($url);
 $section = $_GET['section'];
@@ -12,11 +13,7 @@ $final_wip = array();
 $line_breaker = 0;
 if($section > 0){
     $docket_cqty = array();
-    //getting ips op code
-    $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
-    $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
-    $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
-
+    
     //getting all modules against to the section
     $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section=$section GROUP BY section ORDER BY section + 0";
     $modules_result = mysqli_query($link,$modules_query) or exit($data.="No modules Found");
@@ -108,7 +105,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
-    global $ips_op_code;
+    // global $ips_op_code;
     $docs_data = '';
     $break_me_at = 6;
     $cut_wip = 0; 
@@ -153,7 +150,16 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $aplies = $row['a_plies'];
             $pplies = $row['p_plies'];
 
-        
+            //getting ips op code
+            $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+            $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
+            $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
+            if($ips_op_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $ips_op_code=$get_ips_op['operation_code'];
+            }
+
+
             $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
                             where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  

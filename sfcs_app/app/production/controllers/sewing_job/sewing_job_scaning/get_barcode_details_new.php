@@ -1,6 +1,7 @@
 <?php 
     error_reporting(0);
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
     include 'functions_scanning_ij.php';
 
     $barcode = $_POST['barcode'];
@@ -1200,6 +1201,11 @@
               $operation_name=$sql_row['operation_name'];
               $operation_code=$sql_row['operation_code'];
             }
+            if($operation_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $operation_code=$get_ips_op['operation_code'];
+                $operation_name=$get_ips_op['operation_name'];
+            }
             $sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,COALESCE(SUM(original_qty),0) AS org_qty,COALESCE(SUM(replace_in),0) AS replace_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$b_job_no."' AND operation_id = $operation_code";
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row=mysqli_fetch_array($sql_result))
@@ -1210,21 +1216,26 @@
                 $replace_in_qty=$sql_row["replace_qty"];
             }
             //commented due to #2390 CR(original_qty = recevied_qty + rejected_qty)
-            // $sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
-            // $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-            // while($sql_row2=mysqli_fetch_array($sql_result2))
-            // {
-            //      $job_qty=$sql_row2["job_qty"];
-            // }
+			// $sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$b_job_no."'";
+			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row2=mysqli_fetch_array($sql_result2))
+			// {
+			// 		$job_qty=$sql_row2["job_qty"];
+			// }
 
-            if(($orginal_qty+$replace_in_qty)==($rec_qty+$rej_qty)) 
-            {
-                $backup_query="INSERT IGNORE INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
-                mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+			if(($orginal_qty+$replace_in_qty)==($rec_qty+$rej_qty)) 
+			{
+                $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$b_job_no."'";
+                $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($sql_check_res)==0)
+                {
+    				$backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$b_job_no."'";
+    				mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                }    
 
-                $sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
-                mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            }
+				$sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$b_job_no."'";
+				mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+			}
             if($b_rep_qty[$i] > 0 || $b_rej_qty[$i] > 0)
             {
                 foreach ($b_tid as $key => $tid) 
@@ -1293,7 +1304,11 @@
               {
                 $operation_in_code=$sql_row1111['operation_code'];
               }
-
+              if($operation_in_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $operation_in_code=$get_ips_op['operation_code'];
+                $operation_name=$get_ips_op['operation_name'];
+            }
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 if($b_tid[$i] == $bundle_no)
@@ -1319,10 +1334,15 @@
                             {
                                 $update_status_query = "update $bai_pro3.ims_log_backup set ims_status = '' where tid = $updatable_id";
                                 mysqli_query($link,$update_status_query) or exit("While updating status in ims_log_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                $ims_backup="insert ignore into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
-                                mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                $ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
-                                mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $sql_check1="select tid from $bai_pro3.ims_log where tid=$updatable_id";
+                                $sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                if(mysqli_num_rows($sql_check_res1)==0)
+                                {
+                                    $ims_backup="insert into $bai_pro3.ims_log select * from bai_pro3.ims_log_backup where tid=$updatable_id";
+                                    mysqli_query($link,$ims_backup) or exit("Error while inserting into ims log".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                    $ims_delete="delete from $bai_pro3.ims_log_backup where tid=$updatable_id";
+                                    mysqli_query($link,$ims_delete) or exit("While Deleting ims log backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                }    
                             }
 
                         }
@@ -1378,15 +1398,10 @@
                           $operation_name=$sql_row['operation_name'];
                           $operation_code=$sql_row['operation_code'];
                         }
-
-                        //To get Line Out Operation
-                        $application1 = 'IMS';
-                        $scanning_query1="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
-                        //echo $scanning_query;
-                        $scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_row1=mysqli_fetch_array($scanning_result1))
-                        {
-                          $line_out_ops_code=$sql_row1['operation_code'];
+                        if($operation_code == 'Auto'){
+                            $get_ips_op = get_ips_operation_code($link,$style,$color);
+                            $operation_code=$get_ips_op['operation_code'];
+                            $operation_name=$get_ips_op['operation_name'];
                         }
                         //*To get previous Operation
                        $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
@@ -1407,7 +1422,7 @@
                            $previous_operation = $row23['operation_code'];
                        }
                         
-                        if($operation_code == 100 || $operation_code == 129)
+                        if($b_op_id == $operation_code)
                         {
                             //updating ims_pro_qty against the input
                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";

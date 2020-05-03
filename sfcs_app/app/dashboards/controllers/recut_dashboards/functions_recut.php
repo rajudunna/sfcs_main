@@ -222,6 +222,7 @@ function ReplaceProcess($replace_id_edit)
     error_reporting(0);
     $count = 0;
     include("../../../../common/config/config_ajax.php");
+    include("../../../../common/config/functions_dashboard.php");
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
     $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";    
     $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
@@ -258,7 +259,10 @@ function ReplaceProcess($replace_id_edit)
             {
                 $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
             }
-
+            if($input_ops_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $input_ops_code=$get_ips_op['operation_code'];
+            }
         } 
     }
     
@@ -302,6 +306,7 @@ function ReplaceProcess($replace_id_edit)
             while($replace_row = $result_excess_job_qry->fetch_assoc()) 
             {
                 $input_job_no_excess = $replace_row['input_job_no_random_ref'];
+                $input_job_no_excess1[] = $replace_row['input_job_no_random_ref'];
                 $doc_nos = $replace_row['doc_nos'];
                 $exces_qty_org =$replace_row['excess_qty'];
                 //cps_qry

@@ -5,6 +5,7 @@
     $include_path=getenv('config_job_path');
 	include( $include_path.'/sfcs_app/common/config/config_jobs.php');
     include( $include_path.'/sfcs_app/common/config/rest_api_calls.php');   
+    include( $include_path.'/sfcs_app/common/config/functions_dashboard.php');   
     $application = 'IPS';
     $status = 'F';
     $append = '';
@@ -23,12 +24,7 @@
     
             //getting the operation code from the masters table
             $counter = 0;
-            $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
-            $op_code_result = mysqli_query($link,$op_code_query);
-            while($row = mysqli_fetch_array($op_code_result)){
-                $op_code = $row['operation_code'];
-            }
-
+            
             //getting dockets with 0,F status
             /*
             $fail_dockets_query = "select doc_no from $bai_pro3.cps_log where remaining_qty = 0
@@ -84,6 +80,15 @@
                         $schedule= $drow['schedule'];
                         $color   = $drow['color'];
                             
+                        $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
+                        $op_code_result = mysqli_query($link,$op_code_query);
+                        while($row = mysqli_fetch_array($op_code_result)){
+                            $op_code = $row['operation_code'];
+                        }
+                        if($op_code == 'Auto'){
+                            $get_ips_op = get_ips_operation_code($link,$style,$color);
+                            $op_code=$get_ips_op['operation_code'];
+                        }
                         //getting scanned_qty
                         $scanned_qty_query = "SELECT SUM(recevied_qty) as rqty from $brandix_bts.bundle_creation_data 
                                 where  input_job_no_random_ref = '$job_no_r'";

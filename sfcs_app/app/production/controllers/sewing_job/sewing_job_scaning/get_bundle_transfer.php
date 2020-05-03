@@ -1,21 +1,13 @@
 <?php
    
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
     error_reporting(0);
     $ops_code=$_POST['ops_code'];
     $module = $_POST['module'];
     $barcode = $_POST['barcode'];
     $barcode_number = explode('-', $barcode)[0];
    
-    $application='IPS'; 
-			$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-			
-			$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($scanning_result))
-			{
-			  $operation_name=$sql_row['operation_name'];
-              $operation_code_ims=$sql_row['operation_code'];
-            }
 
     $selct_qry = "select style,color,assigned_module,send_qty,schedule from $brandix_bts.bundle_creation_data where bundle_number = $barcode_number and operation_id=$ops_code";
     $selct_qry_result=mysqli_query($link,$selct_qry) or exit("while retriving bundle_number".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -28,6 +20,21 @@
         $result_array['from_module'] = $selct_qry_result_row['assigned_module'];
         $result_array['schedule'] = $selct_qry_result_row['schedule'];
         $result_array['send_qty'] = $selct_qry_result_row['send_qty'];
+
+        $application='IPS'; 
+        $scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+        
+        $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row=mysqli_fetch_array($scanning_result))
+        {
+            $operation_name=$sql_row['operation_name'];
+            $operation_code_ims=$sql_row['operation_code'];
+        }
+        if($operation_code_ims == 'Auto'){
+            $get_ips_op = get_ips_operation_code($link,$style,$color);
+            $operation_code_ims=$get_ips_op['operation_code'];
+            $operation_name=$get_ips_op['operation_name'];
+        }
         // echo $original_qty;
         $check_prev_operation = "SELECT * FROM `brandix_bts`.`tbl_style_ops_master` WHERE style ='$style' AND color='$color' AND operation_code ='$ops_code'";
         $prev_result=mysqli_query($link,$check_prev_operation) or exit("while retriving prev".mysqli_error($GLOBALS["___mysqli_ston"]));
