@@ -187,8 +187,8 @@ LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operatio
 $result_fetching_ops_with_cat1 = mysqli_query($link,$fetching_ops_with_category1) or exit("Issue while Selecting Operaitons");
 while($row1=mysqli_fetch_array($result_fetching_ops_with_cat1))
 {
-    $operation_codes[] = $row1['operation_code'];				
-    $smv[$row1['operation_code']] = $row1['smv'];				
+    $operation_codes[] = $row1['operation_code'];               
+    $smv[$row1['operation_code']] = $row1['smv'];               
 }
 
 foreach($to_insert_jobs as $shade => $ij){
@@ -199,10 +199,11 @@ foreach($to_insert_jobs as $shade => $ij){
                 $seq_no = $pac_seq[$ijob] != '' ? $pac_seq[$ijob] : 0;
                 $pcb_id = $plan_cut_bundle_id[$ijob][$size][$seq_no];
                 $date = date('Y-m-d H:i:s');
-                $barcode="SPB-".$doc_no."-".$job_map[$ijob]."-".$seq_no."";
+                $seq_no_main = str_replace('-','', $seq_no); 
+                $barcode="SPB-".$doc_no."-".$job_map[$ijob]."-".$seq_no_main."";
                 $insert_query = "INSERT into $bai_pro3.pac_stat_log_input_job (doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,type_of_sewing,sref_id,shade_group,plan_cut_bundle_id,tran_ts,tran_user,barcode,style,color,schedule) 
                 values 
-                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade','$pcb_id','$date','$username','$barcode','$style','$schedule','$color')";
+                ($doc_no,'$size_map[$size]',$qty,'$job_map[$ijob]','$ijob','$destination','$packing_mode','$size','N',$seq_no,$type_of_sew,$sref_id,'$shade','$pcb_id','$date','$username','$barcode','$style','$color','$schedule')";
                 mysqli_query($link,$insert_query) or exit("Problem while inserting new jobs job - $ijob - $size_map[$size] - $size - $qty - $type_of_sew");
                 $inserted_tids[] = mysqli_insert_id($link);
                 $pac_tid = mysqli_insert_id($link);
@@ -283,22 +284,25 @@ while($row = mysqli_fetch_array($sewing_op_codes_result))
     $op_codes_style[] = $row['op_code'];
 }
 
+$operations = implode(",",$op_codes_style);
 $jobs_array = array_unique($jobs);
-	foreach($jobs_array as $job){
-		$query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
+    foreach($jobs_array as $job){
+        $query = "select group_concat(tid order by tid DESC) as tid,input_job_no_random as ij from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$job'
           group by input_job_no_random ";        
-		$result = mysqli_query($link,$query);
-		while($row = mysqli_fetch_array($result)){
-			$tids = $row['tid'];
-			$tid  = explode(',',$tids);
-			$barcode_seq = sizeof($tid);
-			foreach($tid as $id){
-				$update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid='$id'";
-				mysqli_query($link,$update_query) or exit('Unable to update');
-				$barcode_seq--;
-			}
-		}
-	}
+        $result = mysqli_query($link,$query);
+        while($row = mysqli_fetch_array($result)){
+            $tids = $row['tid'];
+            $tid  = explode(',',$tids);
+            $barcode_seq = sizeof($tid);
+            foreach($tid as $id){
+                $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $barcode_seq where tid='$id'";
+                mysqli_query($link,$update_query) or exit('Unable to update');
+                $update_query_bcd = "Update $brandix_bts.bundle_creation_data set barcode_sequence = $barcode_seq where bundle_number='$id' and operation_id in ($operations)";
+                mysqli_query($link,$update_query_bcd) or exit('Unable to update BCD');
+                $barcode_seq--;
+            }
+        }
+    }
        
 
 $inserted_rescords_query = "SELECT tid,carton_act_qty from $bai_pro3.pac_stat_log_input_job where tid In (".implode($inserted_tids,',').")";
@@ -331,10 +335,10 @@ function insert_into_moq($ref_id,$op_code,$qty){
 
     $mo_details = "SELECT * FROM $bai_pro3.mo_details WHERE TRIM(size)='$size' 
                    and TRIM(style)='$style' and TRIM(schedule)=$schedule and TRIM(color)='$color' order by mo_no";
-    $mos_result = mysqli_query($link,$mo_details);		
+    $mos_result = mysqli_query($link,$mo_details);      
     while($row = mysqli_fetch_array($mos_result)){
         $mos[$row['mo_no']] = $row['mo_quantity'];
-    }	   
+    }      
     //returning back if has no mo's at all
     if(sizeof($mos) == 0)
         return false;
@@ -347,18 +351,18 @@ function insert_into_moq($ref_id,$op_code,$qty){
         while($row = mysqli_fetch_array($mo_ops_result)){
             $op_desc[$mo] = $row['OperationDescription'];
             $op_codes[$mo] = $row['OperationNumber'];
-        }	
+        }   
     }
     
     if(sizeof($mos) == 1){
-        foreach($mos as $mo=>$mo_qty){			   
+        foreach($mos as $mo=>$mo_qty){             
             $insert_query = "Insert into $bai_pro3.mo_operation_quantites 
                             (`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
                             values ('".date('Y-m-d H:i:s')."','$mo','$ref_id','$qty','$op_code','$op_desc[$mo]')";                
-            mysqli_query($link,$insert_query) or exit("Error 0 In Inserting to MO Qtys for mo : ".$mo);	
-            $qty = 0;			
+            mysqli_query($link,$insert_query) or exit("Error 0 In Inserting to MO Qtys for mo : ".$mo); 
+            $qty = 0;           
         }
-    }else{	
+    }else{  
         foreach($mos as $mo=>$mo_qty){
             $last_mo = $mo;
             if($qty <= 0)
@@ -368,11 +372,11 @@ function insert_into_moq($ref_id,$op_code,$qty){
             //getting already filled quantities 
             $filled_qty_query = "Select SUM(bundle_quantity) as filled from $bai_pro3.mo_operation_quantites where 
                                  mo_no = '$mo' and op_code = $op_code";
-            $filled_qty_result = mysqli_query($link,$filled_qty_query);	
+            $filled_qty_result = mysqli_query($link,$filled_qty_query); 
             while($row = mysqli_fetch_array($filled_qty_result)){
                 $filled_qty = $row['filled'];
-            }		
-            $available = $mo_qty - $filled_qty;	 
+            }       
+            $available = $mo_qty - $filled_qty;  
 
             if($available <= 0)
                 continue;
@@ -382,7 +386,7 @@ function insert_into_moq($ref_id,$op_code,$qty){
                                 (`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)
                                 values 
                                 ('".date('Y-m-d H:i:s')."','$mo','$ref_id','$available','$op_code','$op_desc[$mo]')"; 
-                mysqli_query($link,$insert_query) or exit("Error 1 In Inserting to MO Qtys for mo : ".$mo);	
+                mysqli_query($link,$insert_query) or exit("Error 1 In Inserting to MO Qtys for mo : ".$mo); 
             }else{
                 $insert_query = "Insert into $bai_pro3.mo_operation_quantites 
                                 (`date_time`, `mo_no`,`ref_no`,`bundle_quantity`, `op_code`, `op_desc`)

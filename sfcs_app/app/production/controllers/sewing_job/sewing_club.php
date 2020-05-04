@@ -54,7 +54,9 @@ if(isset($_POST['myval']))
 			$input_job_random=$row2["input_job_no_random"];
 			$input_job_no_r=$row2["input_job_no"];
 			$count_sch_qry2 = "UPDATE bai_pro3.pac_stat_log_input_job SET input_job_no = '$value2', input_job_no_random = '$input_job_random_min' WHERE input_job_no='$input_job_no_r' and input_job_no_random = '$input_job_random'";
-			$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));				
+			$result12=mysqli_query($link, $count_sch_qry2) or die("Error108-".$count_sch_qry2."-".mysqli_error($GLOBALS["___mysqli_ston"]));	
+			$bcd_update="UPDATE $brandix_bts.bundle_creation_data SET input_job_no_random_ref='$input_job_random_min',input_job_no='$value2' WHERE input_job_no='$input_job_no_r' and input_job_no_random_ref='$input_job_random'";
+            mysqli_query($link, $bcd_update) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));			
 		}
 		update_barcode_sequences($input_job_random_min);
 		echo "<script>sweetAlert('Following Sewing Jobs Clubbed Sucessfully','','success');</script>";
@@ -288,6 +290,13 @@ function min_vals($ary){
 function update_barcode_sequences($input_job_random)
 {
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    $CAT = 'sewing';
+	//sewing cat opcodes
+	$sewing_op_codes = "SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.tbl_orders_ops_ref WHERE category = '$CAT'";
+	$row = mysqli_fetch_array(mysqli_query($link,$sewing_op_codes));
+	{
+	    $op_codes = $row['op_codes'];
+	}
     $query = "select tid from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_random' order by doc_no,old_size";
     $result = mysqli_query($link,$query);
 	$counter=1;
@@ -296,6 +305,9 @@ function update_barcode_sequences($input_job_random)
         $tid = $row['tid'];
         $update_query = "Update bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid=$tid";
         mysqli_query($link,$update_query) or exit('Unable to update');
+
+        $update_query_bcd = "Update $brandix_bts.bundle_creation_data set barcode_sequence = $counter where bundle_number=$tid and operation_id in ($op_codes)";
+        mysqli_query($link,$update_query_bcd) or exit('Unable to update BCD');
         $counter++;        
 	}
 	return;
