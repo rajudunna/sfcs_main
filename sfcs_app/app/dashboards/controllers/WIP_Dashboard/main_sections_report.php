@@ -315,7 +315,7 @@ $operation=$_GET['operations'];
 							<td>$current_ops_qty</td>";
 							echo "<td>$rejected</td>";
 		                          			
-							echo "<td>".($previous_ops_qty-($current_ops_qty)+$rejected)."</td>
+							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
 							<td>$remarks</td>";
 							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 							//if($row_counter > 0)
