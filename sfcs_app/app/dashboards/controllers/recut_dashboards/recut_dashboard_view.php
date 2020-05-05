@@ -1,6 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    
+
     if(isset($_POST['formsubmit']))
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
@@ -287,7 +287,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                                 //checking that inputjob already scanned or not
                                 $rec_qty = 0;
                                 $already_replaced_qty = 0;
-                                $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_id = '$size[$key]' and operation_id = '$input_ops_code'";
+                                $bcd_checking_qry = "select sum(recevied_qty)as rec_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref ='$input_job_no_excess' and size_id = '$size[$key]' and operation_id = '$input_ops_code'";
                                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                                 if($result_bcd_checking_qry->num_rows > 0)
                                 {
@@ -297,7 +297,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                                     }
                                 }
                                 //checking the input job already replaced or not
-                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN($input_job_no_excess) and size_title='$size_title'";
+                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` = '$input_job_no_excess' and size_title='$size_title'";
                                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                                 if($result_checking_replaced_or_not->num_rows > 0)
                                 {
@@ -307,7 +307,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                                     }
                                 }
                                 $already_replaced_with_sj = array_sum($replacing_input_job_with_qty[$sj][$size_title]);
-                                $exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
+                                //$exces_qty = $exces_qty - ($rec_qty + $already_replaced_qty+$already_replaced_with_sj);
+                                $rec_already_replaced_and_with_sj = $rec_qty + $already_replaced_qty + $already_replaced_with_sj;
+                                //checking two conditions and getting excess quantity value -3092
+                                $value_left = $exces_qty_org - $rec_already_replaced_and_with_sj;
+                                // checking if [ if the excess qty is <= already replaced qty, then evaluating if whether the excess qtys remaining in sew job for replacement ] 
+                                if($exces_qty <= $rec_already_replaced_and_with_sj &&  $value_left > 0)
+                                {
+                                    $exces_qty = min($exces_qty,$rec_already_replaced_and_with_sj);
+                                }
+                                else
+                                {
+                                    $exces_qty = ($exces_qty) - ($rec_already_replaced_and_with_sj);
+                                }
+
                             }
                             if($exces_qty > 0)
                             {
