@@ -1,10 +1,10 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
+
     if(isset($_POST['formsubmit']))
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
-        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
         $ids=$_POST['ids'];
         $recutval = $_POST['recutval'];
         $cat = $_POST['cat'];
