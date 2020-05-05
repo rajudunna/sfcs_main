@@ -22,6 +22,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/bundle_filling.php',4,'R'));?>
 <?php
 
     function mofillingforrecutreplace($qty,$bcd_id)
@@ -250,6 +251,9 @@ if($sql_result1_res==0){
             
 
             $docket_no = mysqli_insert_id($link);
+            if($docket_no > 0){
+                $plan_cut_bundle = plan_cut_bundle($docket_no);
+            }
             $category_new = "SELECT category FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$docket_no)";
             $category_new_res = $link->query($category_new);
             while($category_new_res1 = $category_new_res->fetch_assoc()) 
@@ -488,6 +492,9 @@ if($sql_result1_res==0){
             
 
             $docket_no = mysqli_insert_id($link);
+            if($docket_no > 0){
+                $plan_cut_bundle = plan_cut_bundle($docket_no);
+            }
             $category_new = "SELECT category FROM `$bai_pro3`.`cat_stat_log` where tid in (select cat_ref from  `$bai_pro3`.`plandoc_stat_log` where doc_no=$docket_no)";
             $category_new_res = $link->query($category_new);
             while($category_new_res1 = $category_new_res->fetch_assoc()) 
