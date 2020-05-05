@@ -1402,6 +1402,15 @@
                             $operation_code=$get_ips_op['operation_code'];
                             $operation_name=$get_ips_op['operation_name'];
                         }
+						//To get Line Out Operation
+                        $application1 = 'IMS';
+                        $scanning_query1="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application1'";
+                        //echo $scanning_query;
+                        $scanning_result1=mysqli_query($link, $scanning_query1)or exit("scanning_error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row1=mysqli_fetch_array($scanning_result1))
+                        {
+                          $line_out_ops_code=$sql_row1['operation_code'];
+                        }
                         //*To get previous Operation
                        $ops_sequence_check = "select id,ops_sequence,ops_dependency,operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color = '$mapped_color' and operation_code=$b_op_id";
                         //echo $ops_sequence_check;
@@ -1421,7 +1430,7 @@
                            $previous_operation = $row23['operation_code'];
                        }
                         
-                        if($b_op_id == $operation_code)
+                        if($operation_code == 100 || $operation_code == 129)
                         {
                             //updating ims_pro_qty against the input
                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";
