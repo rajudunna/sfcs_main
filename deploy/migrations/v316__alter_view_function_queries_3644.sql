@@ -1,10 +1,8 @@
 /*#3644 Alter view and Create Function queries*/
 
-DELIMITER $$
+USE `bai_pro3`;
 
-USE `bai_pro3`$$
-
-DROP FUNCTION IF EXISTS `fn_act_ship_qty`$$
+DROP FUNCTION IF EXISTS `fn_act_ship_qty`;
 
 CREATE FUNCTION `fn_act_ship_qty`(in_sch_no BIGINT) RETURNS INT(11)
 BEGIN
@@ -16,13 +14,9 @@ BEGIN
 FROM `ship_stat_log`
 WHERE (ship_schedule=in_sch_no AND `ship_stat_log`.`ship_status` = 2));
 	  RETURN var_name;
-    END$$
+    END;
 
-DELIMITER ;
-
-DELIMITER $$
-
-USE `bai_pro3`$$
+USE `bai_pro3`;
 
 ALTER VIEW `bai_ship_cts_ref` AS (
 SELECT
@@ -32,6 +26,4 @@ SELECT
   GROUP_CONCAT(`ship_stat_log`.`disp_note_no` SEPARATOR ',') AS `disp_note_ref`
 FROM `ship_stat_log`
 WHERE (`ship_stat_log`.`ship_status` = 2)
-GROUP BY `ship_stat_log`.`ship_schedule`)$$
-
-DELIMITER ;
+GROUP BY `ship_stat_log`.`ship_schedule`);
