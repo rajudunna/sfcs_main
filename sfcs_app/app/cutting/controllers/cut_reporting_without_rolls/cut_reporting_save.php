@@ -646,12 +646,11 @@ if($target == 'normal'){
 	
 }
 $old_logic = 0;
-
-$get_orgdoc_qry="select doc_no,plies,act_cut_status from $bai_pro3.plandoc_stat_log where org_doc_no=$doc_no";
+$get_orgdoc_qry="select p_plies,act_cut_status from $bai_pro3.plandoc_stat_log where org_doc_no=$doc_no";
 $rslt_get_orgdoc_qry = $link->query($get_orgdoc_qry);
 while($row_rslt_doc = $rslt_get_orgdoc_qry->fetch_assoc())
 {
-    $c_plies =$row_rslt_doc['plies'];
+    $c_plies =$row_rslt_doc['p_plies'];
     if($c_plies == 1){
         $old_logic = 1;
     }else {
@@ -1328,11 +1327,11 @@ if($old_logic == 1){
             next_reason1 : foreach($rejection_details as $size => $reason_wise){
                 foreach($reason_wise as $reason => $rqty){
                     if($quit_counter1++ > $THRESHOLD )
-                        goto iquit2;
+                        goto iquit1;
                     if($rqty > 0){
                     next_docket1 :foreach($reported2 as $doc => $size_wise){
                                         if($quit_counter2++ > $THRESHOLD )
-                                            goto iquit2;
+                                            goto iquit1;
                                         foreach($size_wise as $dsize => $dqty){
                                             if($dsize == $size){
                                                 if($dqty > 0){
@@ -1386,7 +1385,7 @@ if($old_logic == 1){
             }
             $response_data['rejections_response'] = $rej_status;
         } 
-        iquit2 : if($status === 'fail'){
+        iquit1 : if($status === 'fail'){
             $response_data['pass'] = 0;
             //force_exit('Style Clubbed Docket Reporting Failed');
             echo json_encode($response_data);
@@ -1472,7 +1471,7 @@ if($old_logic == 1){
             unset($reported);		
         }   
        
-         iquit : if($status === 'fail'){
+         iquit4 : if($status === 'fail'){
             $response_data['pass'] = 0;
             echo json_encode($response_data);
             exit();
