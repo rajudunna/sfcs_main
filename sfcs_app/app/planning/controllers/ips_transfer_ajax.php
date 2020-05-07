@@ -49,6 +49,7 @@ function leading_zeros($value, $places)
 function get_details($module){
         $counter = 0;
         include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
         
 
     $html_out = "<div class='panel panel-primary'>";
@@ -100,7 +101,11 @@ function get_details($module){
             $operation_name=$sql_row1['operation_name'];
             $operation_code=$sql_row1['operation_code'];
         }
-
+        if($operation_code == 'Auto'){
+            $get_ips_op = get_ips_operation_code($link,$style,$color);
+            $operation_code=$get_ips_op['operation_code'];
+            $operation_name=$get_ips_op['operation_name'];
+        }
 
         // To get Prefix
         $get_prefix="select * from  brandix_bts.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";

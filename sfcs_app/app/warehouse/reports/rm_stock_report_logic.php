@@ -17,6 +17,10 @@ $qty_issued='';
 $qty_return='';
 $qty_balance='';
 $shade='';
+$qty_allocated='';
+$shrinkage_length='';
+$shrinkage_width='';
+$shrinkage_group='';
 $invoice='';
 $status='';
 $grn_date='';
@@ -72,6 +76,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 
 	 	}
 	}
+	
 	$sql1x="select qty_rec,ref4,ref1,ref3 from $bai_rm_pj1.store_in where tid=$tid";
 	$sql_result1x =$link->query($sql1x);
 	if(mysqli_num_rows($sql_result1x)> 0) {
@@ -81,6 +86,17 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 			$shade=$row["ref4"];			
 			$location=trim($row['ref1']);
 			$ref3=trim($row['ref3']);			
+		}
+	}
+	$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $bai_rm_pj1.store_in where tid=$tid";
+	$sql_result1a=$link->query($sql1a);
+	if(mysqli_num_rows($sql_result1a)> 0) {
+		while ($row = $sql_result1a->fetch_assoc())
+		{
+			$qty_allocated=$row['qty_allocated']; 
+			$shrinkage_length=$row['shrinkage_length'];
+			$shrinkage_width=$row['shrinkage_width'];
+			$shrinkage_group=$row['shrinkage_group'];
 		}
 	}
 	$sql1x1="select inv_no from $bai_rm_pj1.sticker_report where lot_no='".$lot_no."'";
@@ -118,10 +134,12 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
             $qty_return=$qty_return+$rowz["qty"];
             $qty_balance=$qty_rec+$qty_return- $qty_issued;
 		}
-    }
+	}
+	
+
 	$qty_balance=round($qty_balance,2);
 	
-	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+	$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
     if($qty_balance > 0)
 	{
 		array_push($main_data,array_map('utf8_encode', $single_data));
@@ -185,6 +203,17 @@ if($max_id>0){
 					$ref3=trim($row['ref3']);			
 				}
 			}
+			$sql1a="select qty_allocated,shrinkage_length,shrinkage_width,shrinkage_group from $bai_rm_pj1.store_in where tid=$tid";
+			$sql_result1a=$link->query($sql1a);
+			if(mysqli_num_rows($sql_result1a)> 0) {
+				while ($row = $sql_result1a->fetch_assoc())
+				{
+					$qty_allocated=$row['qty_allocated'];
+					$shrinkage_length=$row['shrinkage_length'];
+					$shrinkage_width=$row['shrinkage_width'];
+					$shrinkage_group=$row['shrinkage_group'];
+				}
+			}
 			$sql1x1="select inv_no from $bai_rm_pj1.sticker_report where lot_no='".$lot_no."'";
 			$sql_result1x1 =$link->query($sql1x1);
 			while ($row_1 = $sql_result1x1->fetch_assoc())
@@ -226,7 +255,7 @@ if($max_id>0){
 			*/
 			$qty_balance=$qty_rec+$qty_return - $qty_issued;
 			$qty_balance=round($qty_balance,2);
-			$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
+			$single_data = ["location"=>$location,"lotno"=>$lot_no,"style"=>$style_no,"batchno"=>$batch_no,"sku"=>$item,"itemdescription"=>$item_desc,"itemname"=>$item_name,"box_roll_no"=>$boxno,"measuredwidth"=>$ref3,"receivedqty"=>$qty_rec,"issuedqty"=>$qty_issued,"returnqty"=>$qty_return,"balanceqty"=>$qty_balance,"shade"=>$shade,"allocatedqty"=>$qty_allocated,"shrinkagelength"=>$shrinkage_length,"shrinkagewidth"=>$shrinkage_width,"shrinkagegroup"=>$shrinkage_group,"invoice"=>$invoice,"status"=>$status,"grndate"=>$grn_date,"remarks"=>$remarks,"labelid"=>$tid,"productgroup"=>$product,"buyer"=>$buyer,"supplier"=>$supplier];
 			if($qty_balance > 0)
 			{
 				array_push($main_data,array_map('utf8_encode', $single_data));

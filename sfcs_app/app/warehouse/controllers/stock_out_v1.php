@@ -227,7 +227,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		while ($row_mrn = $sql_result_mrn->fetch_assoc())
 		{
 			// $qty_issued=$available+$row_mrn["mrn_qty"];
-			$available=round(($available-$row_mrn["mrn_qty"]),2);
+			//$available=round(($available-$row_mrn["mrn_qty"]),2);
 			$available2 = round(($available2- $row_mrn["mrn_qty"]),2);
 		}
 	}
@@ -308,7 +308,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   }
   $remarks=$sql_row['remarks'];
   $user=$sql_row['updated_by'];
-			  $sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid='$tran_tid'";
+			  $sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid=$tran_tid";
 			  $result3=mysqli_query($link,$sql3) or die("Error = ".mysqli_error());
 			  while($row3=mysqli_fetch_array($result3))
 			  {
@@ -319,8 +319,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
   if($d==1)
   {
 	  $dockets=explode("T",$cutno);
-	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=\"".$dockets[1]."\"";
-	  //echo $sql1;
+	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
+	  echo $sql1;
 	  $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
 	  while($row1=mysqli_fetch_array($result1))
 	  {
@@ -433,17 +433,9 @@ if(isset($_POST['put']))
 			 $issued_ref[$j]=$qty_issued[$j];
 			 $tid_ref[$j]= $tid[$j];
 		  
-			 	unset($qty_issued);
-				unset($qty_ret);
-				unset($qty_allocated);
-				unset($total_qty);
-				$total_qty[$j]=0;
-				$qty_issued=array();
-				$qty_ret=array();
-				$qty_allocated=array();
-				$total_qty=array();
-				if($issued_qty[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+			 	
+				if($issued_ref[$j]<=$val_ref[$j]){
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
 					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{
@@ -458,12 +450,12 @@ if(isset($_POST['put']))
 					// $issued_ref[$j]=$issued_qty[$j];
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
-						$roll_splitting = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
+						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j].",qty_allocated=qty_allocated-".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

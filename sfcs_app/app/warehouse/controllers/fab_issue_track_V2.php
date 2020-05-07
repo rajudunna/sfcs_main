@@ -699,7 +699,7 @@ if(isset($_POST['new_entry']))
 									{
 										$status=1;
 									}
-									$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status where tid=".$roll_id;
+									$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_qty.",status=$status,allotment_status=$status where tid=".$roll_id;
 									mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}	
 							}

@@ -4,6 +4,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 
 
@@ -18,7 +19,7 @@
 
 	
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
-
+	
 	if ($_GET['operation_id'])
 	{
 		$input_job_no_random_ref=$_GET['input_job_no_random_ref'];
@@ -32,6 +33,19 @@
 		// $operation_name='Sewing In - 129'; 
 		$barcode_generation=1;
 		$read_only_job_no = 'readonly';
+		$application='IPS';
+		$scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+		$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($scanning_result))
+		{
+			$operation_code_routing=$sql_row['operation_code'];
+		}
+
+		if($operation_code_routing == 'Auto'){
+			$get_ips_op = get_ips_operation_code($link,$style,$color);
+			$operation_code_routing=$get_ips_op['operation_code'];
+		}
+
 	} else {
 		$schedule=$_POST['schedule'];
 		$color=$_POST['color'];
@@ -42,8 +56,8 @@
 		$operation_code=$_POST['operation_id'];
 		$barcode_generation=$_POST['barcode_generation'];
 		$read_only_job_no = '';
+		$operation_code_routing='';
 	}
-
 
 	$access_report = $operation_code.'-G';
 	$access_reject = $operation_code.'-R';
@@ -76,14 +90,8 @@
 	echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
 	echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 
-	$application='IPS';
-	$scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-	$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($scanning_result))
-	{
-		$operation_code_routing=$sql_row['operation_code'];
-	}
-
+	
+	
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
@@ -403,6 +411,7 @@ $(document).ready(function()
 							dataType: "json",
 							success: function (response) 
 							{
+
 								var sewing_rejection = document.getElementById('sewing_rejection').value;
 								console.log(response);
 								console.log(sewing_rejection);
@@ -424,13 +433,14 @@ $(document).ready(function()
 									{
 										$('#emb_cut_check_flag').val(emb_ops);
 									}
-									console.log(response['emb_cut_check_flag']);
+									console.log(response['operation_code_routing']+'ops_code');
 									console.log(data);
 									$('#dynamic_table1').html('');
 									$('#module_div').hide();
 									console.log(response['color_dis']);
 									document.getElementById('style_show').innerHTML = response['style'];
 									document.getElementById('style').value = response['style'];
+									document.getElementById('operation_code_routing').value = response['operation_code_routing'];
 									document.getElementById('schedule_show').innerHTML = response['schedule'];
 									document.getElementById('schedule').value = response['schedule'];
 									document.getElementById('color_show').innerHTML = response['color_dis'];
@@ -440,6 +450,8 @@ $(document).ready(function()
 									$("#dynamic_table1").append(markup);
 									$("#dynamic_table1").append(btn);
 									$("#dynamic_table1").append(flagelem);
+								var operation_code_routing = document.getElementById('operation_code_routing').value;
+
 									var op_codes_str='';
 									$.each(op_codes, function( index, value ) {
 										console.log( index + ": " + value );
@@ -552,7 +564,8 @@ $(document).ready(function()
 											status = '<font color="red">No Operation Reported</font>';
 										}
 										*/
-										var temp_var_bal1 = 0;				
+										var temp_var_bal1 = 0;		
+										
 										if(operation_id == operation_code_routing)
 										{
 											if (display_reporting_qty == 'yes' && $('#good_report').val()== '')

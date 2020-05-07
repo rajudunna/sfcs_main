@@ -8,7 +8,7 @@ error_reporting(0);
 $LEFT_THRESHOLD = 10000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 $LEFT = 0;
- 
+
 
 $rollwisedata=$_POST['data'];
 $doc_no=$_POST['doc_no'];
@@ -24,9 +24,18 @@ if($rollwisedata)
     foreach($rollwisedata as $value)
     { 
         $laysequence=$value[1]?$value[1]:0;
-        $exec ="INSERT INTO $bai_pro3.`docket_roll_info` (style,schedule,color,docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return)
-        VALUES ('".$style."','".$schedule."','".$color."',".$doc_no.",".$laysequence.",'".$value[2]."','".$value[3]."','".$value[4]."','".$value[5]."','".$value[6]."','".$value[7]."','".$value[8]."','".$value[9]."','".$value[10]."','".$value[11]."')";
+        if($value[13] == 'pink'){
+            $alloc_type = 'Mrn';
+        } else {
+            $alloc_type = 'Fabric';
+        }
+        $exec ="INSERT INTO $bai_pro3.`docket_roll_info` (style,schedule,color,docket,lay_sequence,roll_no,shade,width,fabric_rec_qty,reporting_plies,damages,joints,endbits,shortages,fabric_return,alloc_type,alloc_type_id)
+        VALUES ('".$style."','".$schedule."','".$color."',".$doc_no.",".$laysequence.",'".$value[2]."','".$value[3]."','".$value[4]."','".$value[5]."','".$value[6]."','".$value[7]."','".$value[8]."','".$value[9]."','".$value[10]."','".$value[11]."','".$alloc_type."','".$value[12]."')";
         $result= mysqli_query($link,$exec);   
+        if($value[13] == 'pink'){
+			$exec1 ="UPDATE $bai_rm_pj2.`mrn_out_allocation` set cut_status=1 where tid = ".$value[12];
+            $result1= mysqli_query($link,$exec1); 
+        }
     }
 
     if($result)
