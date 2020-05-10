@@ -210,6 +210,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
   $tid=$sql_row['tid'];
   $location=$sql_row['ref1'];
+  $shade=$sql_row['ref4'];
   $box=$sql_row['ref2'];
   $qty_rec=$sql_row['qty_rec'];
   $qty_return=$sql_row['qty_ret'];
@@ -232,6 +233,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 	}
   echo "<tr>";
+  if($shade!=''){
   if($status==0)
   {
 	  if($available > 0)
@@ -262,6 +264,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		  echo '<td>Locked</td>';
 		  echo '<td>Locked</td>';
 	  }		
+  }
   }
   echo "</tr>";	
 }
@@ -301,11 +304,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $tran_tid=$sql_row['tran_tid'];
   $cutno=$sql_row['cutno'];
 
-  $d=0;
-  if(strpos($cutno,"T") !== FALSE)
-  {
-	  $d=1;
-  }
+  // $d=0;
+  // if(strpos($cutno,"T") !== FALSE)
+  // {
+	  // $d=1;
+  // }
   $remarks=$sql_row['remarks'];
   $user=$sql_row['updated_by'];
 			  $sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid=$tran_tid";
@@ -316,37 +319,37 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				  $ref2=$row3["ref2"];
 				  $barcode_number=$row3["barcode_number"];
 			  }
-  if($d==1)
-  {
-	  $dockets=explode("T",$cutno);
-	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
-	  echo $sql1;
-	  $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
-	  while($row1=mysqli_fetch_array($result1))
-	  {
-		  $cutnos=$row1["acutno"];
-		  $order_tid=$row1["orders"];
-	  }
+  // if($d==1)
+  // {
+	  // $dockets=explode("T",$cutno);
+	  // $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
+	  // echo $sql1;
+	  // $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
+	  // while($row1=mysqli_fetch_array($result1))
+	  // {
+		  // $cutnos=$row1["acutno"];
+		  // $order_tid=$row1["orders"];
+	  // }
 
 	  
 	  
-	  $sql2="select order_style_no AS style,order_del_no AS sch,order_col_des AS color,color_code AS code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
-	  //echo $sql1;
-	  $result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
-	  while($row2=mysqli_fetch_array($result2))
-	  {
-		  $style=$row2["style"];
-		  $schedule=$row2["sch"];
-		  $color=$row2["color"];
-		  $code=$row2["code"];
-	  }
+	  // $sql2="select order_style_no AS style,order_del_no AS sch,order_col_des AS color,color_code AS code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	 // echo $sql1;
+	  // $result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
+	  // while($row2=mysqli_fetch_array($result2))
+	  // {
+		  // $style=$row2["style"];
+		  // $schedule=$row2["sch"];
+		  // $color=$row2["color"];
+		  // $code=$row2["code"];
+	  // }
 				  
-	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
-  }
-  else
-  {
+	  // echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
+  // }
+  // else
+  // {
 	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
-  }
+  //}
   
   
 
