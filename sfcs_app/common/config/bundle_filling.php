@@ -789,6 +789,376 @@ function act_logical_bundles($doc_no,$schedule,$style,$color,$call_status)
 	}
 }
 
+function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$plies,$prev_child_data){
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+	$category=['cutting','Send PF','Receive PF'];
+	$operation_code = array();
+	$bundle_no=1;
+	$fetching_ops_with_category = "SELECT tsm.operation_code AS operation_code,tsm.previous_operation AS previous_ops,tsm.ops_dependency AS next_ops FROM $brandix_bts.tbl_style_ops_master tsm 
+	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$schedule' AND color='$color' AND tor.display_operations='yes' AND tor.category in ('".implode("','",$category)."') and tsm.operation_code<>10 GROUP BY tsm.operation_code ORDER BY tsm.operation_order";
+	// echo $fetching_ops_with_category;
+	$result_fetching_ops_with_cat = mysqli_query($link,$fetching_ops_with_category) or exit("Issue while selecting the Operations");
+	while($row=mysqli_fetch_array($result_fetching_ops_with_cat))
+	{
+		$operation_code[] = $row['operation_code'];			
+		$prev_code[$row['operation_code']] = $row['previous_ops'];			
+		$next_code[$row['operation_code']] = $row['next_ops'];			
+	}
+	// var_dump($operation_code);
+	$fetching_ops_with_category1 = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
+	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category='sewing' and tsm.operation_code<>10 GROUP BY tsm.operation_code ORDER BY tsm.operation_order limit 1";
+	$result_fetching_ops_with_cat1 = mysqli_query($link,$fetching_ops_with_category1) or exit("Issue while selecting the Operations");
+	while($row1=mysqli_fetch_array($result_fetching_ops_with_cat1))
+	{
+		$sew_ops = $row1['operation_code'];			
+	}
+	$p_sizes_str   = '';
+	$a_sizes_str   = '';
+	foreach($sizes_array as $size){
+		$p_sizes_str .= 'p_'.$size.',';
+		$a_sizes_str .= 'a_'.$size.',';
+	}
+	$a_sizes_str = rtrim($a_sizes_str,',');
+	$p_sizes_str = rtrim($p_sizes_str,',');
+	$is_existed = "SELECT * from $bai_pro3.plan_cut_bundle where doc_no = $doc_no";
+	$is_existed_res = mysqli_query($link,$is_existed);
+	if(mysqli_num_rows($is_existed_res)>0)
+	{
+
+		$shade_seq_plies_array = [];
+		$shade_seq= '';
+		$docket_query="SELECT id,lay_seq,shade,plies FROM $bai_pro3.`docket_roll_alloc` where docket=".$doc_no." and plies>0 and status=0 order by lay_seq,shade asc";
+		$docket_queryresult = mysqli_query($link,$docket_query);
+		if(mysqli_num_rows($docket_queryresult) > 0)
+		{
+			while($row = mysqli_fetch_array($docket_queryresult))
+			{
+				$shade_seq = $row['shade'].'$'.$row['lay_seq'];
+				if(!$shade_seq_plies_array[$shade_seq])
+				{
+					$shade_seq_plies_array[$shade_seq] = 0;
+				}	
+				$shade_seq_plies_array[$shade_seq] += $row['plies'];
+				$udpate ="UPDATE $bai_pro3.`docket_roll_alloc` set status=1 where id =".$row['id']."";
+				mysqli_query($link,$udpate);
+			}
+			$query10 = "SELECT $p_sizes_str,doc_no from $bai_pro3.plandoc_stat_log where doc_no = '$doc_no'";
+			// echo $query10.'<br/>';
+			$query10_result = mysqli_query($link,$query10);
+			while($query10_row = mysqli_fetch_array($query10_result))
+			{
+				$doc = $query10_row['doc_no'];
+				foreach($shade_seq_plies_array as $shade_seq_key => $plies_old)
+				{
+					foreach($sizes_array as $size){
+						if($query10_row['p_'.$size] > 0)
+						{
+							$rep[$doc][$size] = ($query10_row['p_'.$size] * $plies_old);
+							$act_qty = $rep[$doc][$size];
+							$query9 = "SELECT id,size_code,size,plies from $bai_pro3.plan_cut_bundle where doc_no = $doc_no and size_code='$size'";
+							// echo $query10.'<br/>';
+							$query9_res = mysqli_query($link,$query9);
+							while($query9_row = mysqli_fetch_array($query9_res)){
+								$pcb_id = $query9_row['id'];
+								$size_code = $query9_row['size_code'];
+								$pcb_size = $query9_row['size'];
+								$docketexisted1="SELECT max(end_no) as start,count(*) as bundles from $bai_pro3.act_cut_bundle where docket=".$doc_no."";
+								$docketexisted1result=mysqli_query($link,$docketexisted1);
+								while($bundle_row = mysqli_fetch_array($docketexisted1result))
+								{
+									if($bundle_row['bundles']==0)
+									{
+										$startno = 1;
+										$bundle = 1;
+									}
+									else
+									{		
+										$startno = $bundle_row['start']+1;
+										$bundle = $bundle_row['bundles']+1;
+									}
+								}
+								$endno=($startno+$act_qty)-1;					
+								$barcode="ACB-".$doc_no."-".$bundle."";
+								$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,start_no,end_no,act_qty,tran_user,bundle_order,act_good_qty) VALUES ('".$style."','".$color."',".$pcb_id.",".$doc_no.",'".$pcb_size."','".$barcode."',".$startno.",".$endno.",".$act_qty.",'".$username."','".$bundle."',".$act_qty.")";	
+								// echo $insert_docket_num_info.'<br/>';
+								$result= mysqli_query($link,$insert_docket_num_info);
+								$actid = mysqli_insert_id($link);					
+
+								// //Actual Cut Bundle Trn	
+								foreach($operation_code as $index => $op_code)
+								{
+									// act Cut Bundle Trn
+									$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($actid,$pcb_id,$op_code,$act_qty,$act_qty,0,0,'$username',1,'".$barcode."-$op_code')";
+									$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		//child logic
+		$get_orgdoc_qry="select * from $bai_pro3.plandoc_stat_log where org_doc_no=$doc_no ";
+		$rslt_get_orgdoc_qry = $link->query($get_orgdoc_qry);
+		while($row_rslt_doc = $rslt_get_orgdoc_qry->fetch_assoc())
+		{
+			$childdoc[]=$row_rslt_doc['doc_no'];
+		}
+		foreach($childdoc as $key1=>$child_doc){
+			$query10 = "SELECT $a_sizes_str,doc_no from $bai_pro3.plandoc_stat_log where doc_no = '$child_doc' 
+			order by acutno ASC";
+			// echo $query10.'<br/>';
+			$query10_result = mysqli_query($link,$query10);
+			while($query10_row = mysqli_fetch_array($query10_result)){
+				$doc = $query10_row['doc_no'];
+				foreach($sizes_array as $size){
+					if($query10_row['a_'.$size] > 0){
+						$ch_plies = $query10_row['a_'.$size];
+					 
+						if($prev_child_data[$child_doc][$size]>0){
+							$rep[$child_doc][$size] = $ch_plies - $prev_child_data[$child_doc][$size];
+						} else {
+							$rep[$child_doc][$size] = $ch_plies;
+						}
+						if($rep[$child_doc][$size] > 0){
+							$query9 = "SELECT id,size_code,size,plies from $bai_pro3.plan_cut_bundle where doc_no = $child_doc and size_code='$size'";
+							// echo $query9.'<br/>';
+							$query9_res = mysqli_query($link,$query9);
+							while($query9_row = mysqli_fetch_array($query9_res)){
+								$pcb_id = $query9_row['id'];
+								$pcb_size_code = $query9_row['size_code'];
+								$pcb_size = $query9_row['size'];
+								$pcb_plies = $query9_row['plies'];
+								$docketexisted1="SELECT max(end_no) as start,count(*) as bundles from $bai_pro3.act_cut_bundle where docket=".$child_doc."";
+								$docketexisted1result=mysqli_query($link,$docketexisted1);
+								while($bundle_row = mysqli_fetch_array($docketexisted1result))
+								{
+									if($bundle_row['bundles']==0)
+									{
+										$startno = 1;
+										$bundle = 1;
+									}
+									else
+									{		
+										$startno = $bundle_row['start']+1;
+										$bundle = $bundle_row['bundles']+1;
+									}
+								}
+								$get_parent_plan_id_qry="select parent_plan_cut_bundle_id from $bai_pro3.plan_cut_bundle where id=$pcb_id";
+								$result_parent_plan_id = $link->query($get_parent_plan_id_qry);
+								while($row_plan = $result_parent_plan_id->fetch_assoc())
+								{
+									$planid=$row_plan['parent_plan_cut_bundle_id'];
+								}
+								$get_acut_id_qry="select id from $bai_pro3.act_cut_bundle where plan_cut_bundle_id=$planid";
+								$result_acut_id = $link->query($get_acut_id_qry);
+								while($row_act = $result_acut_id->fetch_assoc())
+								{
+									$paractid=$row_act['id'];
+								}
+								// echo $paractid;
+								$endno=($startno+$rep[$child_doc][$size])-1;					
+								$barcode="ACB-".$child_doc."-".$bundle."";
+								$lay_seq = '';
+								$shade = '';
+								//insert acb
+								$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,act_qty,tran_user,bundle_order,act_good_qty) VALUES ('".$style."','".$color."',".$pcb_id.",".$child_doc.",'".$pcb_size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$rep[$child_doc][$size].",'".$username."','".$bundle."',".$rep[$child_doc][$size].")";	
+								// echo $insert_docket_num_info.'<br/>';
+								$result= mysqli_query($link,$insert_docket_num_info);
+								$id=mysqli_insert_id($link);
+								//insert acb trn
+								$qty_new=array();					
+								$qty_new_rej=array();					
+								foreach($operation_code as $index => $op_code)
+								{
+									$act_qty = $rep[$child_doc][$size];
+									if($op_code!=10 || $op_code!=1)
+									{
+										//get details from bundle_creation_data
+										$get_qty_det_qry="select sum(recevied_qty+recut_in+replace_in) as qty,rejected_qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$op_code";
+										// echo $get_qty_det_qry;
+										$rslt_get_qty_det_qry = $link->query($get_qty_det_qry);
+										if(mysqli_num_rows($rslt_get_qty_det_qry)>0)
+										{
+											while($rowqty = $rslt_get_qty_det_qry->fetch_assoc())
+											{
+												$quantity=$rowqty['qty'];
+												$rejquantity=$rowqty['rejected_qty'];
+												// echo $rejquantity.'rejquantity<br/>';
+											}
+										}
+										else
+										{
+											
+											$quantity=0;
+											$rejquantity=0;
+											// echo $rejquantity.'rejquantity<br/>';
+										}
+										// echo $rejquantity.'rejquantity<br/>';
+										
+										if($op_code==15)
+										{
+											$qty_new[$op_code]=$act_qty;
+											$qty_new_rej[$op_code]=$rejquantity;
+											// act Cut Bundle Trn
+											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$pcb_id,$op_code,$act_qty,$act_qty,$act_qty,$rejquantity,'$username',1,'".$barcode."-$op_code')";
+											$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
+
+											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$id." and ops_code=$op_code";
+											// echo $plan_cut_insert_transactions_query;
+											$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into parent act_cut_bundle2');	
+										}
+										else
+										{
+											$qty_new[$op_code]=$quantity;
+											$qty_new_rej[$op_code]=$rejquantity;
+											
+											$ops_seq_check = "select operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$op_code";
+											$result_ops_seq_check = $link->query($ops_seq_check);
+											while($row = $result_ops_seq_check->fetch_assoc())
+											{
+												$ops_order = $row['operation_order'];
+											}
+											
+											$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color'  AND CAST(operation_order AS CHAR) < '$ops_order' ORDER BY operation_order DESC LIMIT 1";
+											$result_pre_ops_check = $link->query($pre_ops_check);
+											if($result_pre_ops_check->num_rows > 0)
+											{
+												while($row = $result_pre_ops_check->fetch_assoc())
+												{
+													$pre_ops_code = $row['operation_code'];
+												}
+											}
+
+											if($prev_code[$op_code]==15)
+											{
+												$sendqty=$act_qty;
+											}
+											else
+											{
+												$sendqty=$qty_new[$pre_ops_code];
+											}
+
+											// act Cut Bundle Trn
+											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$pcb_id,$op_code,$sendqty,$act_qty,$quantity,$rejquantity,'$username',1,'".$barcode."-$op_code')";
+											$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);	
+
+											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$id." and ops_code=$op_code";
+											// echo $update_qnty_qry;
+											$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into parent act_cut_bundle1');
+										}
+									}
+								}
+								
+								$quantity_used=0;
+								if(sizeof($operation_code)==1)
+								{
+									$get_qty_det_qry1="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$sew_ops";
+									// echo $get_qty_det_qry1;
+									$rslt_get_qty_det_qry1 = $link->query($get_qty_det_qry1);
+									if(mysqli_num_rows($rslt_get_qty_det_qry1)>0)
+									{
+										while($rowqty1 = $rslt_get_qty_det_qry1->fetch_assoc())
+										{
+											if($rowqty1['qty'] != NULL){
+												$quantity_used=$rowqty1['qty'];
+											}
+										}	
+									}
+									else
+									{
+										$quantity_used=0;
+									}	
+									// echo $quantity_used.'<br/>';
+									
+									$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
+									// echo $update_qnty_qry;
+									$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle2');	
+
+									$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
+									// echo $update_qnty_qry;
+									$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle3');								
+								}
+								else
+								{
+									$ops_code=0;
+									$last_ops=0;
+									$check=0;
+									$act_good_qtys=array();
+									// Checking weather its parallel or not
+									for($i=0;$i<sizeof($operation_code);$i++)
+									{
+										if($next_code[$operation_code[$i]]<>'')
+										{
+											$ops_code=$next_code[$operation_code[$i]];
+											$act_good_qtys[]=$qty_new[$operation_code[$i]];
+											$check++;
+										}						
+										$last_ops=$operation_code[$i];	
+									}
+									if($ops_code>0 && $check>1)
+									{						
+										$get_qty_det_qry2="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$ops_code";
+										$rslt_get_qty_det_qry2 = $link->query($get_qty_det_qry2);
+										if(mysqli_num_rows($rslt_get_qty_det_qry2)>0)
+										{
+											while($rowqty2 = $rslt_get_qty_det_qry2->fetch_assoc())
+											{
+												if($rowqty2['qty'] != NULL)
+												{
+													$quantity_used=$rowqty2['qty'];
+												}
+											}	
+										}
+										else
+										{
+											$quantity_used=0;
+										}	
+										$good_qty=min($act_good_qtys);
+										$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$good_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
+										$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle4');	
+										
+										$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
+										// echo $update_qnty_qry;
+										$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle5');
+									}
+									else
+									{
+										$get_qty_det_qry3="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$sew_ops";
+										$rslt_get_qty_det_qry3 = $link->query($get_qty_det_qry3);
+										if(mysqli_num_rows($rslt_get_qty_det_qry3)>0)
+										{
+											while($rowqty3 = $rslt_get_qty_det_qry3->fetch_assoc())
+											{
+												if($rowqty3['qty'] != NULL)
+												{
+													$quantity_used=$rowqty3['qty'];
+												}
+											}	
+										}
+										else
+										{
+											$quantity_used=0;
+										}	
+										$good_qty=$qty_new[$last_ops];
+										$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$good_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
+										$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle6');	
+										
+										$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
+										// echo $update_qnty_qry;
+										$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle7');
+										
+									}						
+								}
+							}
+						}
+					}
+
+				}
+			}
+		}
+	}
+}
 // Creating Child dockets and creating Plan Cut Bundles for Child dockets
 function plan_cut_bundle_gen_club($docket_no,$style,$color) 
 {	

@@ -841,6 +841,7 @@ if($old_logic == 1){
                     $dummy_a_str = '';
                     foreach($sizes_array as $size){
                         $dummy_a_str .= 'a_'.$size.'='.$as_row[$size].','; 
+                        $prev_child_data[$child_doc][$size] = $as_row['a_'.$size];
                     }
                     $before_aS[$child_doc] = $dummy_a_str;
                 }
@@ -931,7 +932,7 @@ if($old_logic == 1){
             exit();
         }else{
             $call_status=2;
-            act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
+            act_logical_bundles_schedule_clubbing($doc_no,$schedule,$style,$color,$plies,$prev_child_data);
             $response_data['pass'] = 1;
             $response_data['m3_updated'] = $status;
             echo json_encode($response_data);
@@ -1304,6 +1305,7 @@ if($old_logic == 1){
                     $dummy_a_str = '';
                     foreach($sizes_array as $size){
                         $dummy_a_str .= 'a_'.$size.'='.$as_row[$size].','; 
+                        $prev_child_data[$child_doc][$size] = $as_row['a_'.$size];
                     }
                     $before_aS[$child_doc] = $dummy_a_str;
                 }
@@ -1392,7 +1394,7 @@ if($old_logic == 1){
             exit();
         }else{
             $call_status=2;
-            act_logical_bundles($doc_no,$schedule,$style,$color,$call_status);
+            act_logical_bundles_schedule_clubbing($doc_no,$schedule,$style,$color,$plies,$prev_child_data);
             $response_data['pass'] = 1;
             $response_data['m3_updated'] = $status;
             echo json_encode($response_data);
