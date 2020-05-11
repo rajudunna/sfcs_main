@@ -264,6 +264,7 @@
 
     $newyy=0; 
     $new_order_qty=0; 
+    $consumption=0;
     $sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref  and allocate_ref>0"; 
     mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -282,6 +283,17 @@
     $mk_new_length=$sql_row22['mklength']; 
     } 
     $newyy=$newyy+($mk_new_length*$new_plies); 
+    //For caliculation of bindingconsumption qty
+    $sql23="SELECT (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid=\"$order_tid\"";
+    $sql_result21=mysqli_query($link, $sql23) or exit("Sql Error2123".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row21=mysqli_fetch_array($sql_result21))
+    {
+        $p_qty=$sql_row21['qty'];
+    }
+    if($binding_consumption > 0)
+    {
+       $consumption=$consumption+($binding_consumption*$p_qty); 
+    }
     } 
      
     $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\""; 
@@ -1797,7 +1809,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
             <!-- <td class=xl6613019></td>  -->
             <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Used 
             <?php $fab_uom ?></td> 
-            <td colspan=2 class=xl7713019><?php echo (ceil($newyy)+ceil($cut_waste)); ?></td> 
+            <td colspan=2 class=xl7713019><?php echo (ceil($newyy)+ceil($cut_waste)+ceil($consumption)); ?></td> 
             <td class=xl6513019></td> 
             <!-- <td class=xl6613019></td>  -->
             <td colspan=3 class=xl9813019 style='border-right:.5pt solid black'>Gusset 
@@ -1857,7 +1869,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
             $samples_qry_result=mysqli_query($link, $samples_qry) or exit("Sample query details".mysqli_error($GLOBALS["___mysqli_ston"]));
             $num_rows_samples = mysqli_num_rows($samples_qry_result);
             if($num_rows_samples >0){
-                $samples_total = 0;	   
+                $samples_total = 0;    
         ?>
         
         <tr class=xl6513019 height=21 style='mso-height-source:userset;height:15.75pt'> 
@@ -1882,8 +1894,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
                         if($size_code == $samples_size_arry[$ss]){
                             echo "<td class=xl7413019>".$samples_input_qty_arry[$ss]."</td>";
                             $flg = 1;
-                        }			
-                    }	
+                        }           
+                    }   
                     if($flg == 0){
                         echo "<td class=xl7413019><strong>-</strong></td>";
                     }      
@@ -2426,7 +2438,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                             $$code=($c_s[$m]-$o_s[$m]); 
                                         }
                                         if($excess_cut_qty == 1)
-                                        {					   
+                                        {                      
                                             $sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\" order by acutno*1"; 
                                         }
                                         else
@@ -2451,9 +2463,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                             $docketdate=$sql_row['date']; 
                                             $mk_ref=$sql_row['mk_ref']; 
                                             for($ii=0;$ii<$total_size;$ii++)
-                                            {							
+                                            {                           
                                                 $temp_code="a_".$sizes_array[$ii];
-                                                $$temp_code=$sql_row["a_".$sizes_array[$ii].""];	
+                                                $$temp_code=$sql_row["a_".$sizes_array[$ii].""];    
                                                 $temp_code1="ex_".$sizes_array[$ii];
                                                 if($$temp_code1>0)
                                                 {
@@ -2474,7 +2486,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                                 {
                                                     $ratio[$sql_row['acutno']][$sizes_array[$ii]]=$$temp_code;
                                                     $qty[$sql_row['acutno']][$sizes_array[$ii]]=$$temp_code*$plies;
-                                                }	
+                                                }   
                                             }
                                         }
                                         echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:10.0pt' > <td></td>
@@ -2504,9 +2516,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                                 $total_ratio1=$total_ratio1+$ratio[$cuts[$k]][$sizes_array[$n]]; 
                                                 $temp_sum=$temp_sum+$qty[$cuts[$k]][$sizes_array[$n]]; 
                                                 $total_temp_values=$total_temp_values+$qty[$cuts[$k]][$sizes_array[$n]];                 
-                                            }						
+                                            }                       
                                             echo "</tr>"; 
-                                            // $total_temp_values=0;												
+                                            // $total_temp_values=0;                                                
                                         } 
                                         
                                         if(($total_size-$temp_len)>$divide){
@@ -2634,7 +2646,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                                     { 
                                                         $code="ex_s".$sizes_code[$s]; 
                                                         $$code=($c_s[$s]-$o_s[$s]); 
-                                                    }							
+                                                    }                           
                                                     echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:10.0pt' > 
                                                             <td height=20 class=xl6613019 style='height:10.0pt'></td>"; 
                                                     echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
@@ -2674,7 +2686,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                                         echo "</div></td>"; 
                                                         $total_ratio1=$total_ratio1+$ratio[$cuts[$k]][$sizes_array[$s]]; 
                                                         $temp_sum=$temp_sum+$qty[$cuts[$k]][$sizes_array[$s]]; 
-                                                    }						
+                                                    }                       
                                                     echo "<td class=xl8713019>".$pliess[$cuts[$k]]."</td>"; 
                                                     // echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;margin-bottom:-10pt;'>".$total_ratio1."</div><div style='width: 116px;text-align: center; float: right; height:100%;border-top: 1px solid black;border-top: 1px solid black;margin-top:10pt;'>".$temp_sum."</div></td>"; 
                                                     echo "<td class=xl8713019></td>"; 
@@ -2689,7 +2701,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                                                     echo "<td class=xl8713019></td>"; 
                                                     echo "</tr>"; 
                                                     
-                                                    $total_temp_values=0;												
+                                                    $total_temp_values=0;                                               
                                                 }
                                             }
                                     }
@@ -2901,7 +2913,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                     }
                     $cuts=array();
                     if($excess_cut_qty == 1)
-                    {					   
+                    {                      
                         $sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\" order by acutno*1"; 
                     }
                     else
@@ -2927,9 +2939,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
                         $docketdate=$sql_row['date']; 
                         $mk_ref=$sql_row['mk_ref']; 
                         for($ii=0;$ii<sizeof($s_tit);$ii++)
-                        {							
+                        {                           
                             $temp_code="a_".$sizes_array[$ii];
-                            $$temp_code=$sql_row["a_".$sizes_array[$ii].""];	
+                            $$temp_code=$sql_row["a_".$sizes_array[$ii].""];    
                             $temp_code1="ex_".$sizes_array[$ii];
                             if($$temp_code1>0)
                             {
@@ -2950,7 +2962,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                             {
                                 $ratio[$sql_row['acutno']][$sizes_array[$ii]]=$$temp_code;
                                 $qty[$sql_row['acutno']][$sizes_array[$ii]]=$$temp_code*$plies;
-                            }	
+                            }   
                         }
                     }
                     if($cut_status == 1)
@@ -2960,7 +2972,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                         { 
                             $code="ex_s".$sizes_code[$s]; 
                             $$code=($c_s[$s]-$o_s[$s]); 
-                        }							
+                        }                           
                         echo "<tr class=xl6613019 height=20 ; style='mso-height-source:userset;height:15.0pt' > 
                                 <td height=20 class=xl6613019 style='height:15.0pt'></td>"; 
                         echo "<td class=xl8613019 style='width: 77px; text-align: center; margin:0; padding:0; height:100%;'>".chr($color_code)."000"."</td>"; 
@@ -3008,7 +3020,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                             $total_ratio1=$total_ratio1+$ratio[$cuts[$k]][$sizes_array[$s]]; 
                             $temp_sum=$temp_sum+$qty[$cuts[$k]][$sizes_array[$s]]; 
                             $total_temp_values=$total_temp_values+$qty[$cuts[$k]][$sizes_array[$s]];                 
-                        }						
+                        }                       
                         echo "<td class=xl8713019>".$pliess[$cuts[$k]]."</td>"; 
                         // echo "<td class=xl8713019 style='text-align: center;'><div style='width: 116px;text-align: center; float: right; height:100%;'>".$total_ratio1."</div></td>";
 
@@ -3025,7 +3037,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
                         echo "<td class=xl8713019></td>"; 
                         echo "</tr>"; 
                         
-                        $total_temp_values=0;												
+                        $total_temp_values=0;                                               
                     } 
 
                     ?>
@@ -3307,21 +3319,21 @@ xmlns="http://www.w3.org/TR/REC-html40">
 ?> 
 
 <style>
-	
+    
     .xl1532599,.xl6432599,.xl6532599,.xl6632599,.xl6732599,.xl6832599,.xl6932599,.xl7032599,.xl7132599,
-	.xl7232599,.xl7332599,.xl7432599,.xl7532599,.xl7632599,.xl7732599,.xl7832599,.xl7932599,.xl8032599,.xl8132599,
-	.xl8232599,.xl8332599,.xl8432599,.xl8532599,.xl8632599,.xl8732599,.xl8832599,.xl8932599,.xl9032599,.xl9132599,
-	.xl9232599,.xl9332599,.xl9432599,.xl9532599,.xl9632599,.xl9732599,.xl9832599,.xl6713019,
+    .xl7232599,.xl7332599,.xl7432599,.xl7532599,.xl7632599,.xl7732599,.xl7832599,.xl7932599,.xl8032599,.xl8132599,
+    .xl8232599,.xl8332599,.xl8432599,.xl8532599,.xl8632599,.xl8732599,.xl8832599,.xl8932599,.xl9032599,.xl9132599,
+    .xl9232599,.xl9332599,.xl9432599,.xl9532599,.xl9632599,.xl9732599,.xl9832599,.xl6713019,
     .xl9613019,.xl9713019,.xl7013019,.xl6813019,.xl9813019,.xl7613019,.xl6913019,.xl7613019,.xl7713019,.xl7213019,
     .xl7413019,.xl7513019,.xl7313019,.xl6713019,.xl10713019,.xl10913019,.xl10513019,.xl9213019{
-		font-size : 22px;
-	}
+        font-size : 22px;
+    }
     .xl10013019,.xl10313019,.xl8413019,.xl8613019,.xl8713019,.cat{
         font-size : 20px;
     }
-	*{
-		font-size : 22px;
-	}
+    *{
+        font-size : 22px;
+    }
     td,th {
         /* min-width:5pt; */
         text-align:center;
@@ -3340,6 +3352,6 @@ table { page-break-after:auto,page-break-inside:avoid; }
 
 <script>
 $(document).ready(function(){
-	$("table tbody th, table tbody td").wrapInner("<div></div>");
+    $("table tbody th, table tbody td").wrapInner("<div></div>");
 });
 </script>
