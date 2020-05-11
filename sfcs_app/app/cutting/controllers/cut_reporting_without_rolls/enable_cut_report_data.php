@@ -68,21 +68,21 @@ $doc_no = $data['doc_no'];
                             {
                                 $tid[]=$mrn_track_row['tid'];
                             }
-                        }
-                        $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,`store_in`.tid  as roll_id,mrn_out_allocation.tid as alloc_type_id,
-                        (
-                            CASE 
-                                WHEN store_in.tid IN ( '" . implode( "', '" , $response_data1 ) . "' ) AND mrn_out_allocation.cut_status=1 THEN 1 
-                                ELSE 0
-                            END) AS existed FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.alloc_type_id=`bai_rm_pj2`.`mrn_out_allocation`.tid WHERE mrn_tid IN ( '" . implode( "', '" , $tid ) . "' ) GROUP BY mrn_out_allocation.tid"; 
-                        // echo $mrn_details.'<br/>';
-                        $mrn_detailsresult = mysqli_query($link,$mrn_details);
-                        if(mysqli_num_rows($mrn_detailsresult) > 0)
-                        {
-                            while($mrn_row=mysqli_fetch_array($mrn_detailsresult))
+                            $mrn_details="SELECT lay_sequence,reporting_plies,damages,joints,endbits,shortages,fabric_return,iss_qty AS allocated_qty,ref2,ref4 AS shade,ref3 as roll_width,`store_in`.tid  as roll_id,mrn_out_allocation.tid as alloc_type_id,
+                            (
+                                CASE 
+                                    WHEN store_in.tid IN ( '" . implode( "', '" , $response_data1 ) . "' ) AND mrn_out_allocation.cut_status=1 THEN 1 
+                                    ELSE 0
+                                END) AS existed FROM bai_rm_pj2.`mrn_out_allocation` LEFT JOIN `bai_rm_pj1`.`store_in` ON `bai_rm_pj2`.`mrn_out_allocation`.lable_id=`bai_rm_pj1`.`store_in`.tid LEFT JOIN `bai_pro3`.`docket_roll_info` ON `bai_pro3`.`docket_roll_info`.alloc_type_id=`bai_rm_pj2`.`mrn_out_allocation`.tid WHERE mrn_tid IN ( '" . implode( "', '" , $tid ) . "' ) GROUP BY mrn_out_allocation.tid"; 
+                            // echo $mrn_details.'<br/>';
+                            $mrn_detailsresult = mysqli_query($link,$mrn_details);
+                            if(mysqli_num_rows($mrn_detailsresult) > 0)
                             {
-                                $mrn_row['bgcolor'] = 'pink';
-                                $response_data[] = $mrn_row;
+                                while($mrn_row=mysqli_fetch_array($mrn_detailsresult))
+                                {
+                                    $mrn_row['bgcolor'] = 'pink';
+                                    $response_data[] = $mrn_row;
+                                }
                             }
                         }
                        

@@ -848,8 +848,13 @@ function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$
 			while($query10_row = mysqli_fetch_array($query10_result))
 			{
 				$doc = $query10_row['doc_no'];
+				$lay_seq = '';
+				$shade = '';
 				foreach($shade_seq_plies_array as $shade_seq_key => $plies_old)
 				{
+					$shade_seq_values = explode('$', $shade_seq_key);
+					$shade = $shade_seq_values[0];
+					$lay_seq = $shade_seq_values[1];
 					foreach($sizes_array as $size){
 						if($query10_row['p_'.$size] > 0)
 						{
@@ -879,7 +884,7 @@ function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$
 								}
 								$endno=($startno+$act_qty)-1;					
 								$barcode="ACB-".$doc_no."-".$bundle."";
-								$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,start_no,end_no,act_qty,tran_user,bundle_order,act_good_qty) VALUES ('".$style."','".$color."',".$pcb_id.",".$doc_no.",'".$pcb_size."','".$barcode."',".$startno.",".$endno.",".$act_qty.",'".$username."','".$bundle."',".$act_qty.")";	
+								$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,start_no,end_no,act_qty,shade,tran_user,bundle_order,act_good_qty) VALUES ('".$style."','".$color."',".$pcb_id.",".$doc_no.",'".$pcb_size."','".$barcode."',".$startno.",".$endno.",".$act_qty.",'".$shade."','".$username."',".$bundle.",".$act_qty.")";	
 								// echo $insert_docket_num_info.'<br/>';
 								$result= mysqli_query($link,$insert_docket_num_info);
 								$actid = mysqli_insert_id($link);					
