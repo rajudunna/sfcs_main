@@ -516,15 +516,15 @@ if(isset($_POST['update_ajax']))
 	else
 	{
 	   
-		if($total_roll_qty==$issued_qty)
-		{
+		// if($total_roll_qty==$issued_qty)
+		// {
 		   
-			$sql="update bai_rm_pj1.store_in set qty_allocated=".$issued_qty.",status=2,allotment_status=2 where tid=".$roll_id;
-		}
-		else{
+			// $sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated-$issued_qty,status=2,allotment_status=2 where tid=".$roll_id;
+		// }
+		// else{
 		
-			$sql="update bai_rm_pj1.store_in set qty_allocated=".$issued_qty.",status=0,allotment_status=1 where tid=".$roll_id;
-		}
+			$sql="update bai_rm_pj1.store_in set qty_allocated=".$issued_qty." where tid=".$roll_id;
+		//}
 		
 		//Uncheck this
 		mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
