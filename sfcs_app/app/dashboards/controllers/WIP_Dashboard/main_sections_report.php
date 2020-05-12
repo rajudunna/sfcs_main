@@ -173,14 +173,14 @@ $operation=$_GET['operations'];
 		        }
 		        if($category_act == 'sewing')
 		        {
-                   	$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module' GROUP BY bundle_number,operation_id";
+                   	$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,sum(if(operation_id = $operation,rejected_qty,0)) as rej_qty, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module' GROUP BY bundle_number,operation_id";
 					//echo $sql12;
 					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=0;
 					$balance=0;
 					while($sql_row12=mysqli_fetch_array($sql_result12))
 					{
-					  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
+					  $balance=$balance+($sql_row12['input']-($sql_row12['output']+$sql_row12['rej_qty']));
 					  $sql_num_check=$sql_num_check+1;
 					}
 					
