@@ -333,7 +333,8 @@ $(document).ready(function(){
 	{
 		$("#dynamic_table1").html(" ");
 		$('#loading-image').show();
-		var color_name = $('#color option:selected').text();
+		var color_name = encodeURIComponent(window.btoa($('#color option:selected').text()));
+		//var color_name = $('#color option:selected').text();
 		var style_name = $('#pro_style option:selected').text();
 		$('#m3_smv').empty();
 		$('select[name="m3_smv"]').append('<option value="0">Select M3_SMV</option>');

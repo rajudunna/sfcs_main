@@ -14,5 +14,16 @@ function get_ips_operation_code($link,$style,$color){
 
     return $data;
 }
+function color_decode($color)
+{
+   $main_color=base64_decode(urldecode($color));
+   return $main_color;
+}
+
+function color_encode($color)
+{
+   $main_color=base64_encode(urlencode($color));
+   return $main_color;
+}
 
 ?>
