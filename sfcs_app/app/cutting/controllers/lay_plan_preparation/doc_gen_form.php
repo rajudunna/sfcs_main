@@ -22,12 +22,13 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));?>
 <?php
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $mk_ref=$_GET['mkref'];
 $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $schedule=$_GET['schedule'];
 
 $sql4="select * from $bai_pro3.plandoc_stat_log where order_tid='$tran_order_tid' and cat_ref='$cat_ref2' and allocate_ref='$allocate_ref' and mk_ref='$mk_ref'";
@@ -81,7 +82,7 @@ function popitup(url) {
 <h3><font face="verdana" color="green">Please wait <br> Docket is Generating...</font></h3>
 <?php
 
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $mk_ref=$_GET['mkref'];
 $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
@@ -412,11 +413,15 @@ while($sql_row=mysqli_fetch_array($order_joins_result))
 {
     $order_joins=$sql_row['order_joins'];
 }
+//Encoding order_tid
+$main_tran_order_tid=order_tid_encode($tran_order_tid);
+//Encoding color
+$main_color = color_encode($color);
 if ($order_joins>'0' or $order_joins>0) {
  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
             sweetAlert('Successfully Generated','','success');
-            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\";
             }
         </script>";
         
@@ -428,7 +433,7 @@ if ($order_joins>'0' or $order_joins>0) {
 } else {
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
             function Redirect() {
-                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
+                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid&color=$main_color&style=$style&schedule=$schedule\";
                 }
             </script>";
 }
@@ -448,10 +453,14 @@ else{
 
 
 	}
+	//Encoding order_tid
+	$main_tran_order_tid=order_tid_encode($tran_order_tid);
+	//Encoding color
+	$main_color = color_encode($color);
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			sweetAlert('Dockets Already Generated','','warning');
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\";
 			}
 		</script>";
 
