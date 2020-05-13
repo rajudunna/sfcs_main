@@ -180,7 +180,7 @@ $operation=$_GET['operations'];
 					$balance=0;
 					while($sql_row12=mysqli_fetch_array($sql_result12))
 					{
-					  $balance=$balance+$sql_row12['input']-($sql_row12['output'];
+					  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
 					  $sql_num_check=$sql_num_check+1;
 					}
 					
