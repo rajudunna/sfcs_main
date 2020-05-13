@@ -107,6 +107,18 @@
     { 
         $binding_consumption = $sql_row['binding_consumption'];
     } 
+     $consumption=0;
+    $sql23="SELECT (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid=\"$order_tid\"";
+    $sql_result21=mysqli_query($link, $sql23) or exit("Sql Error2123".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row21=mysqli_fetch_array($sql_result21))
+    {
+        $p_qty=$sql_row21['qty'];
+
+        if($binding_consumption > 0)
+        {
+           $consumption=$consumption+($binding_consumption*$p_qty);
+        }
+    }
      
     // embellishment start 
     $sql="select order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,order_embl_f from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\""; 
@@ -263,8 +275,7 @@
 
 
     $newyy=0; 
-    $new_order_qty=0; 
-    $consumption=0;
+    $new_order_qty=0;
     $sql2="select mk_ref,p_plies,cat_ref,allocate_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref  and allocate_ref>0"; 
     mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -283,17 +294,6 @@
     $mk_new_length=$sql_row22['mklength']; 
     } 
     $newyy=$newyy+($mk_new_length*$new_plies); 
-    //For caliculation of bindingconsumption qty
-    $sql23="SELECT (p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid=\"$order_tid\"";
-    $sql_result21=mysqli_query($link, $sql23) or exit("Sql Error2123".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row21=mysqli_fetch_array($sql_result21))
-    {
-        $p_qty=$sql_row21['qty'];
-    }
-    if($binding_consumption > 0)
-    {
-       $consumption=$consumption+($binding_consumption*$p_qty); 
-    }
     } 
      
     $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\""; 
