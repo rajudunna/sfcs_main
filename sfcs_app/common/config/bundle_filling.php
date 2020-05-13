@@ -970,7 +970,7 @@ function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$
 								$insert_docket_num_info="INSERT INTO $bai_pro3.`act_cut_bundle` (style,color,plan_cut_bundle_id,docket,size,barcode,shade,start_no,end_no,act_qty,tran_user,bundle_order,act_good_qty) VALUES ('".$style."','".$color."',".$pcb_id.",".$child_doc.",'".$pcb_size."','".$barcode."','".$shade."',".$startno.",".$endno.",".$rep[$child_doc][$size].",'".$username."','".$bundle."',".$rep[$child_doc][$size].")";	
 								// echo $insert_docket_num_info.'<br/>';
 								$result= mysqli_query($link,$insert_docket_num_info);
-								$id=mysqli_insert_id($link);
+								$c_acb_id=mysqli_insert_id($link);
 								//insert acb trn
 								$qty_new=array();					
 								$qty_new_rej=array();					
@@ -1006,10 +1006,10 @@ function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$
 											$qty_new[$op_code]=$act_qty;
 											$qty_new_rej[$op_code]=$rejquantity;
 											// act Cut Bundle Trn
-											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$pcb_id,$op_code,$act_qty,$act_qty,$act_qty,$rejquantity,'$username',1,'".$barcode."-$op_code')";
+											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($c_acb_id,$pcb_id,$op_code,$act_qty,$act_qty,$act_qty,$rejquantity,'$username',1,'".$barcode."-$op_code')";
 											$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);
 
-											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$id." and ops_code=$op_code";
+											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$c_acb_id." and ops_code=$op_code";
 											// echo $plan_cut_insert_transactions_query;
 											$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into parent act_cut_bundle2');	
 										}
@@ -1045,120 +1045,18 @@ function act_logical_bundles_schedule_clubbing($doc_no,$style,$schedule,$color,$
 											}
 
 											// act Cut Bundle Trn
-											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($id,$pcb_id,$op_code,$sendqty,$act_qty,$quantity,$rejquantity,'$username',1,'".$barcode."-$op_code')";
+											$plan_cut_insert_transactions_query = "insert into $bai_pro3.act_cut_bundle_trn(`act_cut_bundle_id`,`plan_cut_bundle_trn_id`,`ops_code`,`send_qty`,`original_qty`,`good_qty`,`rejection_qty`,`tran_user`,`status`,barcode) values ($c_acb_id,$pcb_id,$op_code,$sendqty,$act_qty,$quantity,$rejquantity,'$username',1,'".$barcode."-$op_code')";
 											$plan_cut_insert_transactions_query_res = $link->query($plan_cut_insert_transactions_query);	
 
-											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$id." and ops_code=$op_code";
+											$update_parqnty_qry="Update $bai_pro3.act_cut_bundle_trn SET good_qty=good_qty+$act_qty where act_cut_bundle_id=".$c_acb_id." and ops_code=$op_code";
 											// echo $update_qnty_qry;
 											$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into parent act_cut_bundle1');
 										}
 									}
 								}
-								
-								$quantity_used=0;
-								if(sizeof($operation_code)==1)
-								{
-									$get_qty_det_qry1="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$sew_ops";
-									// echo $get_qty_det_qry1;
-									$rslt_get_qty_det_qry1 = $link->query($get_qty_det_qry1);
-									if(mysqli_num_rows($rslt_get_qty_det_qry1)>0)
-									{
-										while($rowqty1 = $rslt_get_qty_det_qry1->fetch_assoc())
-										{
-											if($rowqty1['qty'] != NULL){
-												$quantity_used=$rowqty1['qty'];
-											}
-										}	
-									}
-									else
-									{
-										$quantity_used=0;
-									}	
-									// echo $quantity_used.'<br/>';
-									
-									$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
-									// echo $update_qnty_qry;
-									$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle2');	
-
-									$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
-									// echo $update_qnty_qry;
-									$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle3');								
-								}
-								else
-								{
-									$ops_code=0;
-									$last_ops=0;
-									$check=0;
-									$act_good_qtys=array();
-									// Checking weather its parallel or not
-									for($i=0;$i<sizeof($operation_code);$i++)
-									{
-										if($next_code[$operation_code[$i]]<>'')
-										{
-											$ops_code=$next_code[$operation_code[$i]];
-											$act_good_qtys[]=$qty_new[$operation_code[$i]];
-											$check++;
-										}						
-										$last_ops=$operation_code[$i];	
-									}
-									if($ops_code>0 && $check>1)
-									{						
-										$get_qty_det_qry2="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$ops_code";
-										$rslt_get_qty_det_qry2 = $link->query($get_qty_det_qry2);
-										if(mysqli_num_rows($rslt_get_qty_det_qry2)>0)
-										{
-											while($rowqty2 = $rslt_get_qty_det_qry2->fetch_assoc())
-											{
-												if($rowqty2['qty'] != NULL)
-												{
-													$quantity_used=$rowqty2['qty'];
-												}
-											}	
-										}
-										else
-										{
-											$quantity_used=0;
-										}	
-										$good_qty=min($act_good_qtys);
-										$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$good_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
-										$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle4');	
-										
-										$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
-										// echo $update_qnty_qry;
-										$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle5');
-									}
-									else
-									{
-										$get_qty_det_qry3="select sum(recevied_qty+recut_in+replace_in+rejected_qty) as qty from $brandix_bts.bundle_creation_data where docket_number=".$child_doc." and size_id='".$size."' and operation_id=$sew_ops";
-										$rslt_get_qty_det_qry3 = $link->query($get_qty_det_qry3);
-										if(mysqli_num_rows($rslt_get_qty_det_qry3)>0)
-										{
-											while($rowqty3 = $rslt_get_qty_det_qry3->fetch_assoc())
-											{
-												if($rowqty3['qty'] != NULL)
-												{
-													$quantity_used=$rowqty3['qty'];
-												}
-											}	
-										}
-										else
-										{
-											$quantity_used=0;
-										}	
-										$good_qty=$qty_new[$last_ops];
-										$update_qnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$good_qty,act_used_qty=act_used_qty+$quantity_used where id=".$id."";
-										$result_query = $link->query($update_qnty_qry) or exit('query error updating into act_cut_bundle6');	
-										
-										$update_parqnty_qry="Update $bai_pro3.act_cut_bundle SET act_good_qty=act_good_qty+$act_qty where id=".$paractid."";
-										// echo $update_qnty_qry;
-										$result_parquery = $link->query($update_parqnty_qry) or exit('query error updating into act_cut_bundle7');
-										
-									}						
-								}
 							}
 						}
 					}
-
 				}
 			}
 		}
