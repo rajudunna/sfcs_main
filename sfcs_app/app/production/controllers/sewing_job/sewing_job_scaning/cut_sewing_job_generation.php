@@ -34,7 +34,7 @@ function assign_to_gets($ars,$data_samps){
                 $ars['s'.$snp] = (($ars['s'.$snp])-$excess);
             }
             echo "<script>
-            var sp_values = document.getElementById('dataval'+".$ars['ratio']."+".$lp."+".$ars['end'].");
+            var sp_values = document.getElementById('dataval'+".$ars['ratio']."a+".$lp."a+".$ars['end'].");
             sp_values.setAttribute('data-sample','".$sample."');
             sp_values.setAttribute('data-excess','".$excess."');
             </script>";
@@ -480,11 +480,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
             if($old_ratio==$row['ratio']){
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -548,11 +548,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 $old_cut_status = '';
                 echo "<tr style='display:none'>
                     <td>".$row['ratio']."</td>
-                    <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                    <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                     <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -1024,7 +1024,7 @@ function assigndata(s,max,end){
 
     for(var jpg=1;Number(jpg)<Number(end);jpg++){
         var dummy = [];
-        var pl_cut_id = document.getElementById('datarc'+s+jpg);
+        var pl_cut_id = document.getElementById('datarc'+s+'a'+jpg);
         dummy['cut'] = pl_cut_id.getAttribute('data-cut');
         dummy['ratio'] = pl_cut_id.getAttribute('data-ratio');
         dummy['destination'] = pl_cut_id.getAttribute('data-destination');
@@ -1032,7 +1032,7 @@ function assigndata(s,max,end){
         dummy['size_details'] = [];
         for(var i=1;Number(i)<=Number(max);i++){
             var sp_title = document.getElementById('datatitle'+i);
-            var sp_values = document.getElementById('dataval'+s+i+jpg);
+            var sp_values = document.getElementById('dataval'+s+'a'+i+'a'+jpg);
             a = sp_title.getAttribute('data-title');
             b = sp_values.getAttribute('data-title');
 
