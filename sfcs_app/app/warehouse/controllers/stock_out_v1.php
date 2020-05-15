@@ -210,6 +210,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
   $tid=$sql_row['tid'];
   $location=$sql_row['ref1'];
+  $shade=$sql_row['ref4'];
   $box=$sql_row['ref2'];
   $qty_rec=$sql_row['qty_rec'];
   $qty_return=$sql_row['qty_ret'];
@@ -232,6 +233,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 	}
   echo "<tr>";
+  if($shade!=''){
   if($status==0)
   {
 	  if($available > 0)
@@ -262,6 +264,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		  echo '<td>Locked</td>';
 		  echo '<td>Locked</td>';
 	  }		
+  }
   }
   echo "</tr>";	
 }
@@ -301,11 +304,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $tran_tid=$sql_row['tran_tid'];
   $cutno=$sql_row['cutno'];
 
-  $d=0;
-  if(strpos($cutno,"T") !== FALSE)
-  {
-	  $d=1;
-  }
+  // $d=0;
+  // if(strpos($cutno,"T") !== FALSE)
+  // {
+	  // $d=1;
+  // }
   $remarks=$sql_row['remarks'];
   $user=$sql_row['updated_by'];
 			  $sql3="select lot_no,ref2,barcode_number from $bai_rm_pj1.store_in where tid=$tran_tid";
@@ -316,37 +319,37 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				  $ref2=$row3["ref2"];
 				  $barcode_number=$row3["barcode_number"];
 			  }
-  if($d==1)
-  {
-	  $dockets=explode("T",$cutno);
-	  $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
-	  echo $sql1;
-	  $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
-	  while($row1=mysqli_fetch_array($result1))
-	  {
-		  $cutnos=$row1["acutno"];
-		  $order_tid=$row1["orders"];
-	  }
+  // if($d==1)
+  // {
+	  // $dockets=explode("T",$cutno);
+	  // $sql1="select acutno,order_tid as orders from $bai_pro3.plandoc_stat_log where doc_no=".$dockets[1]."";
+	  // echo $sql1;
+	  // $result1=mysqli_query($link,$sql1) or die("Error = ".mysqli_error());
+	  // while($row1=mysqli_fetch_array($result1))
+	  // {
+		  // $cutnos=$row1["acutno"];
+		  // $order_tid=$row1["orders"];
+	  // }
 
 	  
 	  
-	  $sql2="select order_style_no AS style,order_del_no AS sch,order_col_des AS color,color_code AS code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
-	  //echo $sql1;
-	  $result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
-	  while($row2=mysqli_fetch_array($result2))
-	  {
-		  $style=$row2["style"];
-		  $schedule=$row2["sch"];
-		  $color=$row2["color"];
-		  $code=$row2["code"];
-	  }
+	  // $sql2="select order_style_no AS style,order_del_no AS sch,order_col_des AS color,color_code AS code from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid."\"";
+	 // echo $sql1;
+	  // $result2=mysqli_query($link,$sql2) or die("Error = ".mysqli_error());
+	  // while($row2=mysqli_fetch_array($result2))
+	  // {
+		  // $style=$row2["style"];
+		  // $schedule=$row2["sch"];
+		  // $color=$row2["color"];
+		  // $code=$row2["code"];
+	  // }
 				  
-	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
-  }
-  else
-  {
+	  // echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>".chr($code)."00".$cutnos."</td><td>$remarks</td><td>$user</td></tr>";
+  // }
+  // else
+  // {
 	  echo "<tr style='background-color:white;'><td>$date</td><td>$barcode_number</td><td>$ref2</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";
-  }
+  //}
   
   
 
@@ -451,14 +454,33 @@ if(isset($_POST['put']))
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
 						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_ref[$j]."  where tid=".$tid_ref[$j];
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j].",qty_allocated=qty_allocated-".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
+				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_ref[$j]." where tid=".$tid_ref[$j]."";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
+	            $query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
+				//echo $query_status;
+				$query_status_res=mysqli_query($link, $query_status) or exit("Sql Error6: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($qry_status_result=mysqli_fetch_array($query_status_res))
+				{
+					$qty_received[$j]=$qry_status_result['qty_rec'];
+					$qty_issue[$j]=$qry_status_result['qty_issued'];
+					$qty_returned[$j]=$qry_status_result['qty_ret'];
+					$qty_allocate[$j]=$qry_status_result['qty_allocated'];
+					$balance_qty[$j]=($qty_received[$j]+$qty_returned[$j])-($qty_issue[$j]+$qty_allocate[$j]);
+				}
+				if($balance_qty[$j]==0)
+				{
+					$status_new=2;
+					$sql44="update bai_rm_pj1.store_in set status=$status_new, allotment_status=$status_new where tid=".$tid_ref[$j]."";
+					//echo $sql44."</br>";
+					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+				
+				
 
 
 			//   $sql_result=mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error());
