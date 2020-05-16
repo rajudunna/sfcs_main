@@ -1,10 +1,10 @@
 <?php
 
-ini_set('max_execution_time', '21000');
+ini_set('max_execution_time', '50000');
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
-$sql1="SELECT DISTINCT SCHEDULE as schedule_no FROM `pac_stat` WHERE carton_status IS NULL AND id IN (SELECT pac_stat_id FROM `bai_pro3`.`pac_stat_log` WHERE STATUS = 'DONE')  ";
+$sql1="SELECT DISTINCT SCHEDULE as schedule_no FROM `bai_pro3`.`pac_stat` WHERE carton_status IS NULL AND id IN (SELECT pac_stat_id FROM `bai_pro3`.`pac_stat_log` WHERE STATUS = 'DONE')  ";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1--".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
