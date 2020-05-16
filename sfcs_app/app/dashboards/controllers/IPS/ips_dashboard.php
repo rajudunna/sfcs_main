@@ -171,7 +171,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				// 	$ops_code = get_ips_operation_code($link,$style,$color_info);
 				// }
 
-				$sql12="SELECT sum(recevied_qty) as input FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
+				$sql12="SELECT sum(recevied_qty) as input,sum(rejected_qty) as rejection FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$input_job_no_random_ref' and operation_id=$input_ops_code";
 				// echo $sql12.';<br>';
 				$sql_result12=mysqli_query($link, $sql12) or exit($sql12."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
@@ -183,6 +183,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					// if($sql_row12['input'] > 0)
 					// {
 						$input = $sql_row12['input'];
+						$rejection = $sql_row12['rejection'];
 					// }
 					// else
 					// {
@@ -398,7 +399,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}			
 					$club_c_code=array_unique($club_c_code);
 				
-					$title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($carton_qty-$input),50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
+					$title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($carton_qty-($input + $rejection)),50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
 					//$ui_url='input_status_update_input.php';	
 					$ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
 					$ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
