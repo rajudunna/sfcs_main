@@ -88,19 +88,19 @@
 				<?php
 					// Style
 					echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
-					$sql="select * from $brandix_bts.tbl_orders_style_ref order by product_style";
+					$sql="SELECT * FROM $bai_pro3.`packing_summary_input` GROUP BY order_style_no ORDER BY order_style_no";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>Select Style</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$style))
+						if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
 						{
-							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_style']."</option>";
+							echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
 						}
 						else
 						{
-							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_style']."</option>";
+							echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
 						}
 					}
 					echo "</select>";
@@ -110,19 +110,19 @@
 				<?php
 					// Schedule
 					echo "<select class='form-control' name=\"schedule\" id=\"schedule\"  >";
-					$sql="select * from $brandix_bts.tbl_orders_master where ref_product_style='".$style."'";
+					$sql="SELECT * FROM $bai_pro3.`packing_summary_input` where order_style_no='".$style."' group by order_del_no";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"NIL\" selected>Select Schedule</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
-						if(str_replace(" ","",$sql_row['id'])==str_replace(" ","",$schedule))
+						if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
 						{
-							echo "<option value=\"".$sql_row['id']."\" selected>".$sql_row['product_schedule']."</option>";
+							echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
 						}
 						else
 						{
-							echo "<option value=\"".$sql_row['id']."\">".$sql_row['product_schedule']."</option>";
+							echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
 						}
 					}
 					echo "</select>";
@@ -147,8 +147,8 @@
 					{
 						$style_id=$_POST['style'];
 						$sch_id=$_POST['schedule'];	
-						$style1 = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
-						$schedule1 = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
+						$style1 = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","product_style",$style_id,$link);
+						$schedule1 = echo_title("$brandix_bts.tbl_orders_master","product_schedule","product_schedule",$sch_id,$link);
 
 					}
 					
@@ -163,8 +163,8 @@
 					}
 					else
 					{
-						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style_id,$link);
-						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$sch_id,$link);
+						$style = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","product_style",$style_id,$link);
+						$schedule = echo_title("$brandix_bts.tbl_orders_master","product_schedule","product_schedule",$sch_id,$link);
 						$packing_summary_input_check = echo_title("$bai_pro3.packing_summary_input","count(*)","order_del_no",$schedule,$link);
 						if($packing_summary_input_check > 0)
 						{								
@@ -383,7 +383,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Reversal successfully Completed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 							}
 							</script>";
 						}
@@ -393,7 +393,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('Reversal Failed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -569,7 +569,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Successfully','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -580,7 +580,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Failed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -604,7 +604,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Already Confirmed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$id&schedule=$schedule_id\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
 
 							}
 							</script>";

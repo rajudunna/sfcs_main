@@ -1,11 +1,6 @@
 <?php
 // include("dbconf2.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-
-$view_access=user_acl("SFCS_0136",$username,1,$group_id_sfcs); 
-$authorized=user_acl("SFCS_0136",$username,7,$group_id_sfcs);
 ?>
 <?php
 
@@ -24,10 +19,6 @@ $authorized=user_acl("SFCS_0136",$username,7,$group_id_sfcs);
 <div class="panel-body">
 
 <?php
-
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
-
 
 
 echo "<div class='col-sm-12' style=\"float: left;overflow-x:scroll;max-height:600px;width:parent\"  >";

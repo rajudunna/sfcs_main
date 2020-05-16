@@ -1,6 +1,7 @@
 <?php 
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); 
     $vpo=$_GET["vpo"]; 
     $style=$_GET["style"];
 
@@ -162,25 +163,8 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 			        $pack_method[]=$sql_row['packing_method']; 
 			        $cols[]=$sql_row['cols']; 
 			        $cols_new[]=$sql_row['cols_new']; 
-			    }
-				$query_val='';
-				$ops="select * from $brandix_bts.tbl_ims_ops where appilication in ('IPS','IMS','Carton_Ready')";
-				$ops_result=mysqli_query($link, $ops) or exit("Error while getting schedules for the vpo"); 
-				while($row_result=mysqli_fetch_array($ops_result)) 
-			    { 
-			        if($row_result['appilication']=='IPS')
-					{
-						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS in_qty,"; 
-					}
-					else if($row_result['appilication']=='IMS')
-					{
-						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS out_qty,";
-					}
-					else if($row_result['appilication']=='Carton_Ready')
-					{
-						$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS pac_qty,";
-					}
 				}
+				
 				
 			    //echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
 			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".implode(",",array_unique($schedule))."</b></span></h3><br/>"; 
@@ -248,9 +232,41 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 				            echo "<td style='min-width: 300px'>".str_replace(",","</br>",$cols[$iii])."</td>"; 
 				            echo "<td height=20 style='height:15.0pt'>".$ii."</td>";
 							// echo "<div style=\"overflow:scroll; width:100%\">";
+
+							$query_val='';
+							$ops="select * from $brandix_bts.tbl_ims_ops where appilication in ('IPS','IMS','Carton_Ready')";
+							$ops_result=mysqli_query($link, $ops) or exit("Error while getting schedules for the vpo"); 
+							while($row_result=mysqli_fetch_array($ops_result)) 
+							{ 
+								if($row_result['appilication']=='IPS')
+								{
+									if($row_result['operation_code'] == 'Auto'){
+										
+										foreach(explode(",",$cols[$iii]) as $col_new){
+											$get_ips_op = get_ips_operation_code($link,$style,$col_new);
+											$ops_code[]=$get_ips_op['operation_code'];
+										}
+									} else {
+										$ops_code[] = $row_result['operation_code'];
+									}
+									// var_dump(array_unique($ops_code));
+									$query_val .= "sum(if(operation_id IN ('".implode(',',array_unique($ops_code))."'),recevied_qty,0)) AS in_qty,"; 
+								}
+								else if($row_result['appilication']=='IMS')
+								{
+									$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS out_qty,";
+								}
+								else if($row_result['appilication']=='Carton_Ready')
+								{
+									$query_val .= "sum(if(operation_id='".$row_result['operation_code']."',recevied_qty,0)) AS pac_qty,";
+								}
+							}
+
+							// var_dump($query_val);
+
 							$sql13="SELECT $query_val input_job_no_random_ref
 							FROM $brandix_bts.bundle_creation_data WHERE cut_number='".$ii."' and input_job_no_random_ref in ('".implode("','",$sew_job_rand)."') GROUP BY input_job_no order by input_job_no*1"; 
-							//echo $sql13."<br>";
+							// echo $sql13."<br>";
 							$result13=mysqli_query($link, $sql13) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row13=mysqli_fetch_array($result13)) 
 							{						

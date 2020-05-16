@@ -29,7 +29,7 @@ if($sql_num_check1==0)
 	// {
 		// $tid=$sql_row2['tid'];
 	// }
-	$sql3="delete FROM $bai_pro3.allocate_stat_log where tid=\"$allocate_ref\"";
+	$sql3="delete FROM $bai_pro3.allocate_stat_log where tid=\"$allocate_ref\" and recut_lay_plan='no'";
 	// echo "<br/>".$sql3."<br/>";
 	mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql4="delete FROM $bai_pro3.maker_stat_log where allocate_ref=\"$allocate_ref\"";
