@@ -126,7 +126,7 @@ if(isset($_POST['submit']))
 	                //echo $sql33;
 	                $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	                $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected";
+	                $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected and operation_id=$operation";
 	                //echo $bund_update;
 	                $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
@@ -152,7 +152,7 @@ if(isset($_POST['submit']))
 
             foreach($tid as $selected)
             {
-               $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected";
+               $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number=$selected and operation_id=$operation";
                 $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
                 $sql="select send_qty,input_job_no,bundle_number from $brandix_bts.bundle_creation_data where bundle_number=$selected and operation_id=$operation"; 
