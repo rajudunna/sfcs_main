@@ -233,7 +233,7 @@ $operation=$_GET['operations'];
 				
 				$rowcount_check=1;
 		        $row_counter = 0;
-                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no'";	
+                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' ";	
 
 				if(isset($_POST['submit']))
 				{
