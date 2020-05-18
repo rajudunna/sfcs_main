@@ -402,6 +402,17 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
         $bundle_qty = $old_pplice[0];
         echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
         echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
+        //#2932 old clubbed docket can change the bundle qty
+        $check_club_docket_query = "SELECT doc_no,p_plies from $bai_pro3.plandoc_stat_log where doc_no IN (".implode(',',$old_doc_nos).") and org_doc_no >=1 ";
+        $check_club_docket_query_res = mysqli_query($link,$check_club_docket_query);
+        if(mysqli_num_rows($check_club_docket_query_res) > 0){
+            while($club_row = mysqli_fetch_array($check_club_docket_query_res))
+	        {
+                if($club_row['p_plies'] == 1){
+                    echo "<input id='clubbed' type='hidden' value='clubbed'>";
+                }
+            }
+        }
         echo "<tr>
             <td>".$old_ratio."</td>
             <td>".implode(",",$old_pcut)."</td>
@@ -717,8 +728,10 @@ function delet(docs_id){
         });
         $("#bundle-qty").change(function(){
             if(Number($("#bundle-qty").val()) > $("#bundle-qty1").val()) {
-                swal('Invalid Garment per Bundle quantity.');
-                $("#bundle-qty").val($("#bundle-qty1").val());
+                if($("#clubbed").val() != 'clubbed'){
+                    swal('Invalid Garment per Bundle quantity.');
+                    $("#bundle-qty").val($("#bundle-qty1").val());
+                }
             }
             if(Number($("#job-qty").val())<Number($("#bundle-qty").val())) {
                 swal('Garment per Bundle Qty should be less then Garment per Sewing Job Qty');
