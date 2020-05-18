@@ -186,7 +186,7 @@ $operation=$_GET['operations'];
 					
 					$rowcount_check=1;
 	                $row_counter = 0;
-	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0)) order by schedule, size_id DESC";	
+	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))  order by schedule, size_id DESC";	
 					//echo $get_details;
 					$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	                if(mysqli_num_rows($sql_result12) > 0){
