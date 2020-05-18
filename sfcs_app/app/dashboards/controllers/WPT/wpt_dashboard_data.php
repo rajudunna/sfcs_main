@@ -300,7 +300,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                     }  
                 }
 
-                if ($manual_reported == 1 && $rem_qty <= 0) {
+                if ($manual_reported == 1) {
                     continue;
                 }
 
