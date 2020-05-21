@@ -205,198 +205,207 @@ $operation=$_GET['operations'];
 		            }
 	           }
 
-				$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module'";
-				//echo $sql12;
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$sql12.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
-					}
-					if($input_selection=='bundle_wise'){
-						$sql12.=" GROUP BY bundle_number,operation_id ";
-					}
-				}
-				else
-				{
-					$sql12.=" GROUP BY bundle_number,operation_id ";
-				}
-				//echo $sql12;
-				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_num_check=0;
-				$balance=0;
-				while($sql_row12=mysqli_fetch_array($sql_result12))
-				{
-				  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
-				  $sql_num_check=$sql_num_check+1;
-				}
-				
-				$rowcount_check=1;
-		        $row_counter = 0;
-                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' ";	
-
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
-					}
-
-					if($input_selection=='bundle_wise'){
-						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
-					}
-				}else{
-					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rej_qty,0))";
-				}  
-				$get_details.="  order by schedule, size_id DESC";
-				//echo $get_details;
-				$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-                
-				if(mysqli_num_rows($sql_result12) > 0){
-					if($toggle==0)
-					{
-						// $tr_color="#66DDAA";
-						$tr_color="blue";
-						$toggle=1;
-					} else if($toggle==1){
-						$tr_color="white";
-						$toggle=0;
-					}
-				}
-				
-
-				//echo  $get_details;
-				while($row12=mysqli_fetch_array($sql_result12))
-			    {
-                    $docket = $row12['docket_number'];
-                    $bundle_number=$row12['bundle_number'];
-                    $previous_ops_qty=$row12['input'];
-                    $current_ops_qty=$row12['output'];
-                    $sizes=$row12['size_title'];
-                    $job_no1 = $row12['input_job_no'];
-                    $cut_number = $row12['cut_number'];
-                    $remarks = $row12['remarks'];
-
-                     $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no1,$link);
-
-
-					$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket and a_plies>0";
-					//echo $sql22;
-					$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-					while($sql_row22=mysqli_fetch_array($sql_result22))
-					{
-						$order_tid=$sql_row22['order_tid'];
-						
-						$sql33="select color_code,order_date from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
-						$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row33=mysqli_fetch_array($sql_result33))
-						{
-							$color_code=$sql_row33['color_code']; //Color Code
-							$ex_factory=$sql_row33['order_date'];
-						}
-					}
-
-	                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
-	                //getting selection and apend result to query
+	            $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
+		        $result_checking_qry = $link->query($checking_qry);
+		        while($row_cat = $result_checking_qry->fetch_assoc()) 
+		        {
+		            $category_act = $row_cat['category'];
+		        }
+		        if($category_act == 'sewing')
+		        {
+                 	$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module'";
+					//echo $sql12;
 					if(isset($_POST['submit']))
 					{
 						$input_selection=$_POST['input_selection'];
 						if($input_selection=='input_wise'){
-							$get_rejected_qty.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
+							$sql12.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
+						}
+						if($input_selection=='bundle_wise'){
+							$sql12.=" GROUP BY bundle_number,operation_id ";
+						}
+					}
+					else
+					{
+						$sql12.=" GROUP BY bundle_number,operation_id ";
+					}
+					//echo $sql12;
+					$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=0;
+					$balance=0;
+					while($sql_row12=mysqli_fetch_array($sql_result12))
+					{
+					  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
+					  $sql_num_check=$sql_num_check+1;
+					}
+					
+					$rowcount_check=1;
+			        $row_counter = 0;
+	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' ";	
+
+					if(isset($_POST['submit']))
+					{
+						$input_selection=$_POST['input_selection'];
+						if($input_selection=='input_wise'){
+							$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rejected_qty,0))";
 						}
 
 						if($input_selection=='bundle_wise'){
-							$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
+							$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rejected_qty,0))";
 						}
 					}else{
-						$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
-					}
-					//echo  $get_rejected_qty;
-					$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row33=mysqli_fetch_array($sql_result33))
-					{
-						$rejected = $sql_row33['rejected'];
+						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation,recevied_qty+rejected_qty,0))";
+					}  
+					$get_details.="  order by schedule, size_id DESC";
+					//echo $get_details;
+					$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+	                
+					if(mysqli_num_rows($sql_result12) > 0){
+						if($toggle==0)
+						{
+							// $tr_color="#66DDAA";
+							$tr_color="blue";
+							$toggle=1;
+						} else if($toggle==1){
+							$tr_color="white";
+							$toggle=0;
+						}
 					}
 					
-					if($rowcount_check==1)
-					{	
-						if($row_counter == 0)
-							echo "<tr class=\"$tr_color\" class=\"new\">
-							<td style='border-top:1.5pt solid #fff;'>$module</td>";
-						else 
-							echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
+
+					//echo  $get_details;
+					while($row12=mysqli_fetch_array($sql_result12))
+				    {
+	                    $docket = $row12['docket_number'];
+	                    $bundle_number=$row12['bundle_number'];
+	                    $previous_ops_qty=$row12['input'];
+	                    $current_ops_qty=$row12['output'];
+	                    $sizes=$row12['size_title'];
+	                    $job_no1 = $row12['input_job_no'];
+	                    $cut_number = $row12['cut_number'];
+	                    $remarks = $row12['remarks'];
+
+	                     $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job_no1,$link);
+
+
+						$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket and a_plies>0";
+						//echo $sql22;
+						$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
+						while($sql_row22=mysqli_fetch_array($sql_result22))
+						{
+							$order_tid=$sql_row22['order_tid'];
+							
+							$sql33="select color_code,order_date from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+							$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row33=mysqli_fetch_array($sql_result33))
+							{
+								$color_code=$sql_row33['color_code']; //Color Code
+								$ex_factory=$sql_row33['order_date'];
+							}
+						}
+
+		                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
+		                //getting selection and apend result to query
 						if(isset($_POST['submit']))
 						{
 							$input_selection=$_POST['input_selection'];
+							if($input_selection=='input_wise'){
+								$get_rejected_qty.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
+							}
+
 							if($input_selection=='bundle_wise'){
-								echo "<td>$bundle_number</td>";
+								$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
 							}
 						}else{
-							echo "<td>$bundle_number</td>";
+							$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
 						}
-						
-						echo "<td>$style</td>
-						<td>$schedule</td>
-						<td>$color</td>
-						<td>".$display_prefix1."</td>
-						<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
-						<td>$sizes</td>
-						<td>$previous_ops_qty</td>
-						<td>$current_ops_qty</td>";
-						echo "<td>$rejected</td>";
-	                          			
-						echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
-						<td>$remarks</td>";
+						//echo  $get_rejected_qty;
+						$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row33=mysqli_fetch_array($sql_result33))
+						{
+							$rejected = $sql_row33['rejected'];
+						}
 						
 						if($rowcount_check==1)
-						{
-							echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
+						{	
+							if($row_counter == 0)
+								echo "<tr class=\"$tr_color\" class=\"new\">
+								<td style='border-top:1.5pt solid #fff;'>$module</td>";
+							else 
+								echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
+							
+							if(isset($_POST['submit']))
+							{
+								$input_selection=$_POST['input_selection'];
+								if($input_selection=='bundle_wise'){
+									echo "<td>$bundle_number</td>";
+								}
+							}else{
+								echo "<td>$bundle_number</td>";
+							}
+							
+							echo "<td>$style</td>
+							<td>$schedule</td>
+							<td>$color</td>
+							<td>".$display_prefix1."</td>
+							<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
+							<td>$sizes</td>
+							<td>$previous_ops_qty</td>
+							<td>$current_ops_qty</td>";
+							echo "<td>$rejected</td>";
+		                          			
+							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
+							<td>$remarks</td>";
+							
+							if($rowcount_check==1)
+							{
+								echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
+							}
+							$rowcount_check=0;
+							$row_counter++;
+							echo "</tr>";
 						}
-						$rowcount_check=0;
-						$row_counter++;
-						echo "</tr>";
-					}
-					else
-					{	
-						if($row_counter == 0)
-							echo "<tr class=\"$tr_color\"  class=\"new\"><td>$module</td>";
-						else 
-							echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
-						$row_counter++;
+						else
+						{	
+							if($row_counter == 0)
+								echo "<tr class=\"$tr_color\"  class=\"new\"><td>$module</td>";
+							else 
+								echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
+							$row_counter++;
 
-						if(isset($_POST['submit']))
-						{
-							$input_selection=$_POST['input_selection'];
-							if($input_selection=='bundle_wise'){
+							if(isset($_POST['submit']))
+							{
+								$input_selection=$_POST['input_selection'];
+								if($input_selection=='bundle_wise'){
+									echo "<td>$bundle_number</td>";
+									echo "<td>$style</td>";
+								}
+								if($input_selection=='input_wise'){
+									echo "<td>$style</td>";
+								}
+							}else{
 								echo "<td>$bundle_number</td>";
 								echo "<td>$style</td>";
 							}
-							if($input_selection=='input_wise'){
-								echo "<td>$style</td>";
-							}
-						}else{
-							echo "<td>$bundle_number</td>";
-							echo "<td>$style</td>";
+							echo"<td>$schedule</td>
+							<td>$color</td>
+							<td>".$display_prefix1."</td>
+							<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
+							<td>$sizes</td>
+							<td>$previous_ops_qty</td>
+							<td>$current_ops_qty</td>";
+							echo "<td>$rejected</td>";
+		                          			
+							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
+							<td>$remarks</td>";
+							echo "<td class=\"$tr_color\" ></td>";
+							echo "</tr>";
 						}
-						echo"<td>$schedule</td>
-						<td>$color</td>
-						<td>".$display_prefix1."</td>
-						<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
-						<td>$sizes</td>
-						<td>$previous_ops_qty</td>
-						<td>$current_ops_qty</td>";
-						echo "<td>$rejected</td>";
-	                          			
-						echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
-						<td>$remarks</td>";
-						echo "<td class=\"$tr_color\" ></td>";
-						echo "</tr>";
+							
+							$j++;				
 					}
-						
-						$j++;				
-				}
+		        }
 			}
 		}
 	    echo "</table></div></div>";
