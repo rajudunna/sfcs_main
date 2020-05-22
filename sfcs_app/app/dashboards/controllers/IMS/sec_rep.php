@@ -5,6 +5,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
@@ -268,16 +269,8 @@ if(isset($_GET['val']))
 				$col_span = count($ops_get_code);
 
 				//To get input operation
-				$application='IPS';
-
-				$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-				$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1111=mysqli_fetch_array($scanning_result))
-				{
-				  $operation_name=$sql_row1111['operation_name'];
-				  $input_code=$sql_row1111['operation_code'];
-				} 
-
+				
+				
 				//To get output operation
 				$application='IMS_OUT';
 
@@ -323,337 +316,341 @@ if(isset($_GET['val']))
 							echo "</tr>";
 		$toggle=0;
 		$j=1;
+
 		for($i=0; $i<sizeof($modules); $i++)
 		{
 			$module_ref=$modules[$i];
 			$new_module = $module_ref;
 			$rowcount_check=0;
-
-			$sqlwip="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
-			$sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_resultwip)>0)
+			$bundle_numbers = [];
+			$sqlwip1="SELECT pac_tid FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
+			$sql_resultwip1=mysqli_query($link, $sqlwip1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_resultwip1)>0)
 			{
-				while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+				while($sql_rowwip1=mysqli_fetch_array($sql_resultwip1))
 				{
-						$bundle_numbers[]=$sql_rowwip['pac_tid'];
-				}
-				// $sqlwip12="SELECT sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output FROM $brandix_bts.bundle_creation_data WHERE bundle_number in (".explode(",",$bundle_numbers).") assigned_module='$module'";
-				// $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
-				// {
-				// 	$wip=$sql_rowwip12['input']-$sql_rowwip12['output'];
-				// } 
-				//unset($bundle_numbers);
-		
-
-			$sql12="select sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).") and assigned_module='$module_ref' and  send_qty > 0";
-			//echo $sql12;
+					$bundle_numbers[]=$sql_rowwip1['pac_tid'];
+				}					
+			}
+			$sqlwip="SELECT sum(ims_qty) as input,sum(ims_pro_qty) as output FROM $bai_pro3.ims_log WHERE ims_mod_no='$module_ref' and ims_status<>'DONE'";
 			if(isset($_POST['submit']))
 			{
 				$input_selection=$_POST['input_selection'];
 				if($input_selection=='input_wise'){
-					$sql12.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
+					$sqlwip.=" GROUP BY input_job_rand_no_ref,ims_size";
 				}
 				if($input_selection=='bundle_wise'){
-					$sql12.=" GROUP BY bundle_number,operation_id ";
+					$sqlwip.=" GROUP BY pac_tid";
 				}
 			}
 			else
 			{
-				$sql12.=" GROUP BY bundle_number,operation_id ";
+				$sqlwip.=" GROUP BY pac_tid";
 			}
-			//echo $sql12;
-			$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=0;
-			$balance=0;
-			while($sql_row12=mysqli_fetch_array($sql_result12))
+			$sql_resultwip=mysqli_query($link, $sqlwip) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_resultwip1)>0)
 			{
-			  $balance=$balance+$sql_row12['input']-$sql_row12['output'];
-			  $sql_num_check=$sql_num_check+1;
-			}
-			//echo $balance;
-			// echo "</br>num : ".$sql_num_check."</br>";
+				$sql_num_check=0;
+				$balance=0;
+				while($sql_rowwip=mysqli_fetch_array($sql_resultwip))
+				{
+					$balance = $balance + $sql_rowwip['input']-$sql_rowwip['output'];
+					$sql_num_check=$sql_num_check+1;
+				}			
+				if($sql_num_check>0)
+				{
+					if($toggle==0)
+					{
+						$tr_color="#66DDAA";
+						$toggle=1;
+					}
+					else if($toggle==1)
+					{
+						$tr_color="white";
+						$toggle=0;
+					}
+		
+					//echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
+					$rowcount_check=1;
+				}		
 			
-			if($sql_num_check>0)
-			{
-				if($toggle==0)
+				$row_counter = 0;
+				$get_job="select input_job_no_random_ref,style,color from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).")  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations) group by input_job_no_random_ref";
+				// echo $get_job;
+				$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
 				{
-					$tr_color="#66DDAA";
-					$toggle=1;
-				}
-				else if($toggle==1)
-				{
-					$tr_color="white";
-					$toggle=0;
-				}
-	
-				//echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
-				$rowcount_check=1;
-			}
+					$input_job=$sql_row['input_job_no_random_ref'];
+					$style=$sql_row['style'];
+					$color=$sql_row['color'];
+					$application='IPS';
 
-			
-			
-		$row_counter = 0;
-		$get_job="select distinct input_job_no_random_ref from $brandix_bts.bundle_creation_data where bundle_number in (".implode(",",$bundle_numbers).")  and original_qty != recevied_qty and  send_qty > 0 and operation_id in($sewing_operations)";
-		//echo $get_job;
-		$sql_result=mysqli_query($link, $get_job) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$input_job=$sql_row['input_job_no_random_ref'];
-
-			$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
-
-			if(isset($_POST['submit']))
-			{
-				$input_selection=$_POST['input_selection'];
-				if($input_selection=='input_wise'){
-					$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
-				}
-
-				if($input_selection=='bundle_wise'){
-					$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
-				}
-			}else{
-				$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
-			}  
-			$get_details.="  order by schedule, size_id DESC";
-			//echo $get_details;
-			$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row12=mysqli_fetch_array($sql_result12))
-			{
-				
-                $style=$row12['style'];
-                $schedule=$row12['schedule'];
-                $color=$row12['color'];
-                $bundle_number=$row12['bundle_number'];
-                $cut_number=$row12['cut_number'];
-				$size=$row12['size_id'];
-				$size_title=$row12['size_title'];
-                $remarks=$row12['remarks'];
-				$docket=$row12['docket_number'];
-				$job=$row12['input_job_no'];
-
-                $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job,$link);
-
-
-				$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket and a_plies>0";
-				//echo $sql22;
-				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				while($sql_row22=mysqli_fetch_array($sql_result22))
-				{
-					$order_tid=$sql_row22['order_tid'];
-					
-					$sql33="select color_code,order_date from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
-					mysqli_query($link, $sql33) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row33=mysqli_fetch_array($sql_result33))
+					$scanning_query="select operation_name,operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+					$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row1111=mysqli_fetch_array($scanning_result))
 					{
-						$color_code=$sql_row33['color_code']; //Color Code
-						$ex_factory=$sql_row33['order_date'];
-					}
-				}
-	
-				$rejected1=array();
-				$rejected=array();
-                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and input_job_no_random_ref = '$input_job'";
-                //getting selection and apend result to query
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$get_rejected_qty.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
-					}
-
-					if($input_selection=='bundle_wise'){
-						$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
-					}
-				}else{
-					$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
-				}
-				//echo  $get_rejected_qty;
-				$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row33=mysqli_fetch_array($sql_result33))
-				{
-					$rejected1[$sql_row33['size_title']][$sql_row33['operation_id']] = $sql_row33['rejected'];
-					if($sql_row33['operation_id'] == $output_code)
+					$operation_name=$sql_row1111['operation_name'];
+					$input_code=$sql_row1111['operation_code'];
+					} 
+					if($input_code=='Auto')
 					{
-					 $rejected = $sql_row33['rejected'];
-				    }
-				}
-				
-                //Ex-Factory
-				$get_exfactory="select ex_factory from $m3_inputs.shipment_plan where schedule_no=$schedule";
-				$sql_result3=mysqli_query($link, $get_exfactory) or exit("Sql Error7 =$get_exfactory".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row33=mysqli_fetch_array($sql_result3))
-				{
-					$ex_factory=$row33['ex_factory'];
-				}
-
-				//To get Age from ims_log
-				$get_detais_ims="select tid,team_comm,ims_date From $bai_pro3.ims_log where ims_mod_no='$module_ref' and input_job_rand_no_ref='$input_job' and ims_status<>'DONE'";
-				 //******To get Age bundle wise
-				 if(isset($_POST['submit']))
-				 {
-					 $input_selection=$_POST['input_selection'];
-					 if($input_selection=='bundle_wise'){
-						 $get_detais_ims.=" AND pac_tid=$bundle_number";
-					 }
-					 if($input_selection=='input_wise'){
-						 $get_detais_ims.=" ";
+						$get_ips_op = get_ips_operation_code($link,$style,$color);
+						$input_code=$get_ips_op['operation_code'];
+						$operation_name=$get_ips_op['operation_name'];
 					}
-				 }else{
-					 $get_detais_ims.=" AND pac_tid=$bundle_number";
-				 }
-					//*******
-				
-				$sql_result31=mysqli_query($link, $get_detais_ims) or exit("Sql Error7111 =$get_detais_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row32=mysqli_fetch_array($sql_result31))
-				{
-					$tid=$row32['tid'];
-					$team_comm=$row32['team_comm'];
-					$ims_date=$row32['ims_date'];
-				}
-
-				
-				$quality_log_row="";
-				$quality_log_row="<td>$remarks</td><td>$ex_factory</td>";
-    
-				if($rowcount_check==1)
-				{	
-					if($row_counter == 0)
-						echo "<tr bgcolor=\"$tr_color\" class=\"new\">
-						<td style='border-top:1.5pt solid #fff;'>$module_ref</td>";
-					else 
-						echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:0px'></td>";
-					
-					// if($new_module == $old_module)
-					//     echo "<td></td>";
-					
-					if(isset($_POST['submit']))
-					{
-						$input_selection=$_POST['input_selection'];
-						if($input_selection=='bundle_wise'){
-							echo "<td>$bundle_number</td>";
-						}
-					}else{
-						echo "<td>$bundle_number</td>";
-					}
-					
-					echo "<td>$style</td>
-					<td>$schedule</td>
-					<td>$color</td>
-					<td>".$display_prefix1."</td>
-					<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
-					<td>$size_title</td>
-					<td>".$row12['input']."</td>
-					<td>".$row12['output']."</td>";
-				
-					foreach ($operation_code as $key => $value) 
-					{
-						if(strlen($ops_get_code[$value]) > 0){
-							if($rejected1[$size_title][$value] == '')
-								echo "<td>0</td>";
-							else    
-								echo"<td>".$rejected1[$size_title][$value]."</td>";
-						}
-					}  
-                          			
-					echo "<td>".($row12['input']-($row12['output']+$rejected))."</td>";
-					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
-					echo $quality_log_row;
-					if(in_array($edit,$has_permission))
-					{
-						if(strlen($team_comm)>0)
-						{
-							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-						}
-						else
-						{
-							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-						}
-					}
-					else
-					{
-						echo "<td>".$team_comm."</td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
-					}
-					if($rowcount_check==1)
-					{
-						echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
-					}
-					$rowcount_check=0;
-					$row_counter++;
-					echo "</tr>";
-				}
-				else
-				{	
-					if($row_counter == 0)
-						echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
-					else 
-						echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
-					$row_counter++;
-					// if($new_module == $old_module)
-				    //     echo "<td></td>";
+					$get_details="select style,schedule,color,size_title,size_id,cut_number,input_job_no,bundle_number,remarks,docket_number,sum(if(operation_id = $input_code,recevied_qty,0)) as input,sum(if(operation_id = $output_code,recevied_qty,0)) as output From $brandix_bts.bundle_creation_data where assigned_module=$module_ref and input_job_no_random_ref = '$input_job' and operation_id in ($sewing_operations) and (recevied_qty >0 or rejected_qty >0) and bundle_number in (".implode(",",$bundle_numbers).")";	
 
 					if(isset($_POST['submit']))
 					{
 						$input_selection=$_POST['input_selection'];
-						if($input_selection=='bundle_wise'){
-							echo "<td>$bundle_number</td>";
-							echo "<td>$style</td>";
-						}
 						if($input_selection=='input_wise'){
-							echo "<td>$style</td>";
+							$get_details.=" GROUP BY input_job_no_random_ref,size_title HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
+						}
+
+						if($input_selection=='bundle_wise'){
+							$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 						}
 					}else{
-						echo "<td>$bundle_number</td>";
-						echo "<td>$style</td>";
-					}
-					echo"<td>$schedule</td>
-					<td>$color</td>
-					<td>".$display_prefix1."</td>
-					<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
-					<td>$size_title</td>
-					<td>".$row12['input']."</td>
-					<td>".$row12['output']."</td>";
-					foreach ($operation_code as $key => $value) 
-					{
-						if(strlen($ops_get_code[$value]) > 0){
-							if($rejected1[$size_title][$value] == '')
-								echo "<td>0</td>";
-							else    
-								echo"<td>".$rejected1[$size_title][$value]."</td>";
-						}
+						$get_details.=" GROUP BY bundle_number HAVING SUM(IF(operation_id = $input_code,original_qty,0)) != SUM(IF(operation_id = $output_code,recevied_qty,0))";
 					}  
-					echo "<td>".($row12['input']-($row12['output']+$rejected))."</td>";
-					//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
-					echo $quality_log_row;
-					if(in_array($edit,$has_permission))
+					$get_details.="  order by schedule, size_id DESC";
+					// echo $get_details;
+					$sql_result12=mysqli_query($link, $get_details) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row12=mysqli_fetch_array($sql_result12))
 					{
-						if(strlen($team_comm)>0)
+						
+						$style=$row12['style'];
+						$schedule=$row12['schedule'];
+						$color=$row12['color'];
+						$bundle_number=$row12['bundle_number'];
+						$cut_number=$row12['cut_number'];
+						$size=$row12['size_id'];
+						$size_title=$row12['size_title'];
+						$remarks=$row12['remarks'];
+						$docket=$row12['docket_number'];
+						$job=$row12['input_job_no'];
+
+						$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$job,$link);
+
+
+						$sql22="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket and a_plies>0";
+						//echo $sql22;
+						$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+						while($sql_row22=mysqli_fetch_array($sql_result22))
 						{
-							echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+							$order_tid=$sql_row22['order_tid'];
+							
+							$sql33="select color_code,order_date from $bai_pro3.bai_orders_db_confirm where order_tid='$order_tid'";
+							mysqli_query($link, $sql33) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row33=mysqli_fetch_array($sql_result33))
+							{
+								$color_code=$sql_row33['color_code']; //Color Code
+								$ex_factory=$sql_row33['order_date'];
+							}
+						}
+			
+						$rejected1=array();
+						$rejected=array();
+						$get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module_ref' and input_job_no_random_ref = '$input_job'";
+						//getting selection and apend result to query
+						if(isset($_POST['submit']))
+						{
+							$input_selection=$_POST['input_selection'];
+							if($input_selection=='input_wise'){
+								$get_rejected_qty.=" GROUP BY input_job_no_random_ref,size_title,operation_id ";
+							}
+
+							if($input_selection=='bundle_wise'){
+								$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
+							}
+						}else{
+							$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
+						}
+						//echo  $get_rejected_qty;
+						$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row33=mysqli_fetch_array($sql_result33))
+						{
+							$rejected1[$sql_row33['size_title']][$sql_row33['operation_id']] = $sql_row33['rejected'];
+							if($sql_row33['operation_id'] == $output_code)
+							{
+							 $rejected = $sql_row33['rejected'];
+							}
+						}
+						
+						//Ex-Factory
+						$get_exfactory="select ex_factory from $m3_inputs.shipment_plan where schedule_no=$schedule";
+						$sql_result3=mysqli_query($link, $get_exfactory) or exit("Sql Error7 =$get_exfactory".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row33=mysqli_fetch_array($sql_result3))
+						{
+							$ex_factory=$row33['ex_factory'];
+						}
+
+						//To get Age from ims_log
+						$get_detais_ims="select tid,team_comm,ims_date From $bai_pro3.ims_log where ims_mod_no='$module_ref' and input_job_rand_no_ref='$input_job' and ims_status<>'DONE'";
+						 //******To get Age bundle wise
+						 if(isset($_POST['submit']))
+						 {
+							 $input_selection=$_POST['input_selection'];
+							 if($input_selection=='bundle_wise'){
+								 $get_detais_ims.=" AND pac_tid=$bundle_number";
+							 }
+							 if($input_selection=='input_wise'){
+								 $get_detais_ims.=" ";
+							}
+						 }else{
+							 $get_detais_ims.=" AND pac_tid=$bundle_number";
+						 }
+							//*******
+						
+						$sql_result31=mysqli_query($link, $get_detais_ims) or exit("Sql Error7111 =$get_detais_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row32=mysqli_fetch_array($sql_result31))
+						{
+							$tid=$row32['tid'];
+							$team_comm=$row32['team_comm'];
+							$ims_date=$row32['ims_date'];
+						}
+
+						
+						$quality_log_row="";
+						$quality_log_row="<td>$remarks</td><td>$ex_factory</td>";
+			
+						if($rowcount_check==1)
+						{	
+							if($row_counter == 0)
+								echo "<tr bgcolor=\"$tr_color\" class=\"new\">
+								<td style='border-top:1.5pt solid #fff;'>$module_ref</td>";
+							else 
+								echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:0px'></td>";
+							
+							// if($new_module == $old_module)
+							//     echo "<td></td>";
+							
+							if(isset($_POST['submit']))
+							{
+								$input_selection=$_POST['input_selection'];
+								if($input_selection=='bundle_wise'){
+									echo "<td>$bundle_number</td>";
+								}
+							}else{
+								echo "<td>$bundle_number</td>";
+							}
+							
+							echo "<td>$style</td>
+							<td>$schedule</td>
+							<td>$color</td>
+							<td>".$display_prefix1."</td>
+							<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
+							<td>$size_title</td>
+							<td>".$row12['input']."</td>
+							<td>".$row12['output']."</td>";
+						
+							foreach ($operation_code as $key => $value) 
+							{
+								if(strlen($ops_get_code[$value]) > 0){
+									if($rejected1[$size_title][$value] == '')
+										echo "<td>0</td>";
+									else    
+										echo"<td>".$rejected1[$size_title][$value]."</td>";
+								}
+							}  
+											
+							echo "<td>".($row12['input']-($row12['output']+$rejected))."</td>";
+							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+							echo $quality_log_row;
+							if(in_array($edit,$has_permission))
+							{
+								if(strlen($team_comm)>0)
+								{
+									echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+								}
+								else
+								{
+									echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+								}
+							}
+							else
+							{
+								echo "<td>".$team_comm."</td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+							}
+							if($rowcount_check==1)
+							{
+								echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
+							}
+							$rowcount_check=0;
+							$row_counter++;
+							echo "</tr>";
 						}
 						else
-						{
-							echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-						}						
+						{	
+							if($row_counter == 0)
+								echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
+							else 
+								echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
+							$row_counter++;
+							// if($new_module == $old_module)
+							//     echo "<td></td>";
+
+							if(isset($_POST['submit']))
+							{
+								$input_selection=$_POST['input_selection'];
+								if($input_selection=='bundle_wise'){
+									echo "<td>$bundle_number</td>";
+									echo "<td>$style</td>";
+								}
+								if($input_selection=='input_wise'){
+									echo "<td>$style</td>";
+								}
+							}else{
+								echo "<td>$bundle_number</td>";
+								echo "<td>$style</td>";
+							}
+							echo"<td>$schedule</td>
+							<td>$color</td>
+							<td>".$display_prefix1."</td>
+							<td>".chr($color_code).leading_zeros($cut_number,3)."</td>
+							<td>$size_title</td>
+							<td>".$row12['input']."</td>
+							<td>".$row12['output']."</td>";
+							foreach ($operation_code as $key => $value) 
+							{
+								if(strlen($ops_get_code[$value]) > 0){
+									if($rejected1[$size_title][$value] == '')
+										echo "<td>0</td>";
+									else    
+										echo"<td>".$rejected1[$size_title][$value]."</td>";
+								}
+							}  
+							echo "<td>".($row12['input']-($row12['output']+$rejected))."</td>";
+							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+							echo $quality_log_row;
+							if(in_array($edit,$has_permission))
+							{
+								if(strlen($team_comm)>0)
+								{
+									echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+								}
+								else
+								{
+									echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+								}						
+							}
+							else
+							{
+								echo "<td>".$team_comm."</td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
+							}
+							//if($row_counter > 0)
+								echo "<td bgcolor='$tr_color' style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
+							
+							echo "</tr>";
+						}
+						
+						$j++;
+						$old_module = $module_ref;				
 					}
-					else
-					{
-						echo "<td>".$team_comm."</td><td>".dateDiffsql($link,date("Y-m-d"),$ims_date)."</td>";
-					}
-					//if($row_counter > 0)
-						echo "<td bgcolor='$tr_color' style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
-					
-					echo "</tr>";
 				}
-				
-				$j++;
-				$old_module = $module_ref;				
 			}
-		}
-	}
 	}
 	    echo "</table></div></div>";
 ?>

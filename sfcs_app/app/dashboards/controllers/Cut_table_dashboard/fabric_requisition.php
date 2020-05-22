@@ -40,7 +40,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$module=$_POST["mods"];
 		$sql2x="select * from $bai_pro3.fabric_priorities where doc_ref=\"".$doc_no."\"";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$rows2=mysqli_num_rows($result2x);	
+		$rows2=mysqli_num_rows($result2x);
 	} 
 	else
 	{
@@ -158,7 +158,7 @@ function GetSelectedItem()
 
 <tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th><th>Control</th></tr>
 <?php
-	$sql11x1="select order_tid,acutno,mk_ref_id,cuttable_ref from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";	
+	$sql11x1="select order_tid,acutno from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";	
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row111x1=mysqli_fetch_array($sql_result11x1))
 	{
@@ -183,8 +183,9 @@ function GetSelectedItem()
 		$doc_qty[$row111x["doc_no"]] = $row111x["qty"];
 		$cat_refnce[$row111x["doc_no"]] = $row111x["category"];
 		$cat_compo[$row111x["doc_no"]] = $row111x["compo_no"];
-		
-		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$cat_tid = $row111x["cat_ref"];
+		// $sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid='".$row111x["cat_ref"]."'";
+		$sql111x12="select seperate_docket,binding_consumption from $bai_pro3.cat_stat_log where order_tid='".$order_ti."' and tid=$cat_tid";
 		$sql_result111x12=mysqli_query($link, $sql111x12) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row111x2=mysqli_fetch_array($sql_result111x12))
 		{
@@ -236,6 +237,7 @@ function GetSelectedItem()
 			}
 			else
 			{
+				echo "<td><center>N/A</center></td>";
 				echo "<td><center>N/A</center></td>";
 				echo "<td><center>N/A</center></td>";
 				echo "<td><center>N/A</center></td>";
@@ -334,18 +336,18 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
                                 </tbody>
 
                                 <tbody id='rejections_table'>
-								
-								<tr>
+                                                
+									<tr>
 									<td></td>
 									<?php
-									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$docs_no[$i]' >";
+									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
 									?>
 									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
+									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
 									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
 									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
 									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
@@ -355,7 +357,7 @@ for($i=0;$i<sizeof($cat_refnce);$i++)
 									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
 									<td></td>
 									</tr>  
-                                </tbody>
+								</tbody>
                             </table>
 								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
 								<?php 
@@ -693,8 +695,8 @@ if(isset($_GET['sidemenu'])){
 
 <script>
 function compareArrays(arr1, arr2){
-	// console.log(arr1.toString());
-	// console.log(arr2.toString());
+	arr1 = $.trim(arr1);
+	arr2 = $.trim(arr2);
 	if(arr1.toString() == arr2.toString()){
 		return true;
 	}else{
@@ -702,29 +704,68 @@ function compareArrays(arr1, arr2){
 	}
 }
 
-function validate_data(id_name) 
+function marker_validation(id_name, cur_element) 
 {
-	if($("#mk_ver").val() != '' && $("#sk_grp").val() != '' && $("#width").val() != '' && $("#mk_len").val()){
+	if($("#mk_name"+id_name).val() != ''){
 	var array = [];
 	var CurData=[];
-	
-	$('#mark_len_table'+doc_no+' tr').has('td').each(function() {
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
 		var arrayItem = [];
 		$('td', $(this)).each(function(index, item) {
-			// console.log($(this));
 			arrayItem[index] = $(item).text();
 		});
 		array.push(arrayItem);
 	});
-	CurData = [$("#mk_ver").val(), $("#sk_grp").val(), $("#width").val(), $("#mk_len").val()];
-		var table = $('#mark_len_table'+doc_no);
+	CurData = [$("#mk_name"+id_name).val()];
+		var table = $('#mark_len_table'+id_name);
 		var tr_length= table.find('tr').length;
-		// console.log(array[0]);
-		for($i=0; $i<tr_length; $i++)
+		for($i=0; $i<tr_length - 1; $i++)
 		{
-			if(compareArrays(CurData, array[$i])){
-				swal('Error');
-				$("#"+id_name.id).val('');
+			rowData = [array[$i][11]];
+			if(compareArrays(CurData, rowData)){
+				swal('Marker Name Already exists','Please Check.','warning');
+				$("#"+cur_element.id).val('');
+				return true;
+			}
+		}
+	}
+}
+
+function validate_data(id_name, cur_element) 
+{
+	// console.log(id_name);
+	
+	if($("#mk_ver"+id_name).val() != '' && $("#sk_grp"+id_name).val() != '' && $("#width"+id_name).val() != '' && $("#mk_len"+id_name).val()){
+	var array = [];
+	var CurData=[];
+	// console.log($('#mark_len_table'+id_name+' tr'));
+	$('#mark_len_table'+id_name+' tr').has('td').each(function() {
+		var arrayItem = [];
+		$('td', $(this)).each(function(index, item) {
+			// console.log($(item).text());
+			// console.log($(item).val());
+			arrayItem[index] = $(item).text();
+		});
+		array.push(arrayItem);
+	});
+	CurData = [$("#mk_ver"+id_name).val(), $("#sk_grp"+id_name).val(), $("#width"+id_name).val(), Math.round($("#mk_len"+id_name).val())];
+		var table = $('#mark_len_table'+id_name);
+		var tr_length= table.find('tr').length;
+	
+
+		for($i=0; $i<tr_length - 1; $i++)
+		{
+			rowData = [array[$i][7], array[$i][8], array[$i][9], Math.round(array[$i][10])];
+			console.log(CurData);
+			console.log(rowData);
+			// if(compareArrays(CurData, rowData)){
+			// 	swal('Marker Name Must be Unique','','error');
+			// 	$("#"+cur_element.id).val('');
+			// 	return true;
+			// }
+			if(compareArrays(CurData, rowData)){
+				swal('Using Same combinations...','Please Check.','warning');
+				$("#"+cur_element.id).val('');
 				return true;
 			}
 		}
@@ -798,7 +839,7 @@ function add_Newmklen(doc_no)
 		return false;
 	}
 	var table_body = $("#rejections_table_body"+doc_no);
-	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+permts+"</td><td>"+mk_eff+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
+	var new_row = "<tr id='unique_d_"+doc_no+"_r_"+rows_valu+"'><td style='display:none;' class='checked_value' id='checked"+values_rows1+"'>yes</td><td style='display:none;' id='id'>"+rows_valu+"</td><td style='display:none;' id='doc_no' >"+doc_no_new+"</td><td style='display:none;'  id='all_ref'>"+all_refs+"</td><td style='display:none;'  id='mk_ref'>"+mk_refs+"</td><td><input type='radio' name='selected_len"+doc_no+"' value="+rows_valu+" id='check"+rows_valu+"' onchange = valid_button("+rows_valu+") CHECKED></td><td>"+mk_type+"</td><td>"+mk_ver+"</td><td>"+sk_grp+"</td><td>"+width+"</td><td>"+mk_len+"</td><td>"+mk_name+"</td><td>"+ptr_name+"</td><td>"+mk_eff+"</td><td>"+permts+"</td><td>"+rmks1+"</td><td>"+rmks2+"</td><td>"+rmks3+"</td><td>"+rmks4+"</td><td style='display:none;'>0</td><td><input type='button' style='display : block' class='btn btn-sm btn-danger' id=delete_row"+rows_valu+" onclick=delete_row("+rows_valu+","+doc_no+") value='Delete'></td></tr>";
 	
 	// $('#delete_row'+rows_valu).on('click',function(){
 	// alert(rows_valu);

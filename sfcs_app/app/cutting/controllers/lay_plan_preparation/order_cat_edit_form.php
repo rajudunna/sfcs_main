@@ -199,7 +199,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Binding Consumption</th><td class=\"  \">:</td><td class=\"  \">
 			<div class=\"col-md-4\">
 			<input class='form-control float' type=\"text\" name=\"binding_consumption\" id=\"binding_consumption\"  value=\"".$sql_row['binding_consumption']."\"  required >
-			</div><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id=\"seperate_docket\"><input type=\"checkbox\"  name=\"seperate_docket\"  value='1'>Generate Separate Docket For Binding</span></td></tr>";
+			</div><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id=\"seperate_docket\"><input type=\"checkbox\" name=\"seperate_docket\" id=\"seperate_doc\" value='1'>Generate Separate Docket For Binding</span></td></tr>";
 
 			echo "<tr><th class=\"column-title\" style=\"color: #000000;\">Gmt Way</th><td class=\"  \">:</td><td class=\"  \"><div class=\"col-md-4\"><select class=\"form-control\" name=\"gmt_way\">";
 			echo "<option value=\"N\""; if($sql_row['gmtway']=='N'){ echo "selected"; } echo ">All Gmt One Way</option>";
@@ -324,7 +324,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		//echo $sql_num_check;
 		if($sql_num_check==0)
 		{
-			$sql="insert ignore into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+			$sql="insert into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -368,6 +368,9 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 <script>
 	function verify(){
 		var v = document.getElementById('in_width').value;
+		var d = document.getElementById('seperate_doc').checked;
+		var d_val = document.getElementById('binding_consumption').value;
+		
 		if(Number(v) <= 0){
 			sweetAlert('Pur Width cannot be zero','','warning');
 			return false;
@@ -377,8 +380,16 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		if( pat.value ==null || pat.value == 0){
 			sweetAlert('Please Enter Valid Pattern Version','','warning');
 			//pat.value = 0;
+			return false;		
+		}
+		else if(d == true && d_val == 0)
+		{
+			sweetAlert('Please Enter Valid Binding Consuption','','warning');
+			//pat.value = 0;
 			return false;
 		}
+		
+		//return false;
 		return true;
 	}
 

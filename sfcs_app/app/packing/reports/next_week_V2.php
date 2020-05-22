@@ -133,50 +133,37 @@ $status_update = getFullURL($_GET['r'],'status_update.php','N');
 <center><a href="summary_v2.php&weekno=<?php echo $weeknumber; ?>" onclick="return popitup('<?php echo $summary;?>?weekno=<?php echo $weeknumber; ?>')">Summary</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $pre_week;?>">Previous Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $current_week; ?>">Current Week</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="<?php echo $next_week;?>">Next Week</a>&nbsp;&nbsp;|&nbsp;&nbsp; </center>
 <div class='row'>
 	<div class='col-md-4'>
-				
-				<?php 
-					// $sqly="select distinct(buyer_div) from plan_modules";
-					$sqly = "SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
-					$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				?>
-				<label> Buyer Division : </label>
-				<select name="division" id="division" class="form-control" onchange="redirect_view()">
-					<option value=\"ALL\" selected >ALL</option>
-					<?php
-						while($sql_rowy=mysqli_fetch_array($sql_resulty))
-						{
-							$buyer_div=$sql_rowy['buyer_div'];
-							$buyer_name=$sql_rowy['buyer_name'];
-							// echo $_GET["division"];
-							if($_GET["division"] == $buyer_name) 
-							{
-								echo "<option value=\"".$buyer_name."\" selected>".$buyer_div."</option>";  
-							} 
-							else 
-							{
-								echo "<option value=\"".$buyer_name."\" >".$buyer_div."</option>"; 
-							}
-						}
-						echo '</select>';
-						
-						if($_GET["division"]!='ALL' && $_GET["division"]!='')
-						{
-							//echo "Buyer=".urldecode($_GET["view_div"])."<br>";
-							$buyer_division=urldecode($_GET["division"]);
-							//echo '"'.str_replace(",",'","',$buyer_division).'"'."<br>";
-							$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
-							$order_div_ref="and order_div in (".$buyer_division_ref.")";
-						}
-						else 
-						{
-							 $order_div_ref='';
-						} ?>
+		<label> Buyer Division : </label>
+			<select onchange='verify()' name="division" id="division" class="form-control" onchange="redirect_view()">';
+			<?php 
+				// $sqly="select distinct(buyer_div) from plan_modules";
+				$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+				//echo $sqly."<br>";
+				echo "<option value=\"ALL\" selected >All</option>";
+				mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowy=mysqli_fetch_array($sql_resulty))
+				{
+					$buyer_div=$sql_rowy['buyer_div'];
+					$buyer_name=$sql_rowy['buyer_name'];
+					// echo $_GET["division"];
+					if($_GET["division"] == $buyer_name) 
+					{
+						echo "<option value=\"".$buyer_name."\" selected>".$buyer_div."</option>";  
+					} 
+					else 
+					{
+						echo "<option value=\"".$buyer_name."\" >".$buyer_div."</option>"; 
+					}
+				}
+			echo '</select>';
+			?>
 	</div>
 
-						<?php
-						//echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable &nbsp&nbsp';
-						echo "<input type=\"submit\" name=\"submitx\" value=\"Show\" style='margin-top:22px;' class='btn btn-primary' onclick=\"javascript:button_disable();\">";
-						?>
+<?php
+//echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable &nbsp&nbsp';
+echo "<input type=\"submit\" name=\"submitx\" value=\"Show\" style='margin-top:22px;' class='btn btn-primary' onclick=\"javascript:button_disable();\">";
+?>
 
 </div>
 
@@ -199,18 +186,23 @@ else
 {
 	$division=$_POST['division'];
 }
-// $start_date = '2017-12-06';
-// $end_date = '2018-01-10';
-//$pending=$_POST['pending'];
-//$query1="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" and (schedule_no!=\"NULL\" and schedule_no > 0) order by left(style,1)";
-//$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" and (schedule_no!=\"NULL\" and schedule_no > 0) order by left(style,1)";
+if($_POST["division"]!='ALL' && $_POST["division"]!='')
+{
+	$buyer_division=urldecode($_POST["division"]);
+	$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
+	$order_div_ref="and BUYER_DIVISION in (".$buyer_division_ref.")";
+}
+else 
+{
+	$order_div_ref='';
+}
+
 $query1="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by left(style,1)";
 $query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\"  order by left(style,1)";
 
 if($division!="All")
 {
-	//$query="where MID(buyer_division,1, 2)=\"$division\" and ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" and (schedule_no!=\"NULL\" and schedule_no > 0)   order by left(style,1)";
-	$query="where buyer_division =\"$division\" and ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by left(style,1)";
+	$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" $order_div_ref order by left(style,1)";
 }
 //echo $query;
 //include("current_week_excel.php");
@@ -258,7 +250,7 @@ echo "</tr></table><br/><br/><br/>";*/
 $sHTML_Content.="<div class='table-responsive'><table id=\"table1\" border=\"1\" cellspacing=\"0\" cellpadding=\"1\" class=\"table table-bordered\">";
 //$sHTML_Content.= "<tr><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sno</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Buyer Division</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Customer Order No</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">MPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">CPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Style</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Schedule</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Color</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sections</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Order<br>Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Input</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Output</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FG</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Production Status</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">EX-FactoryDate</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Planing<br>Remarks</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">LogTime Of Each Status</th></tr>";
 
-$sHTML_Content.= "<tr><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sno</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Buyer Division</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Customer Order No</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">MPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">CPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Style</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Schedule NO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Color</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sections</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Order<br>Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Cut Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Input</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Output</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FG</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA</th>";
+$sHTML_Content.= "<tr><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sno</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Buyer Division</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Customer Order No</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">MPO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Style</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Schedule NO</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Color</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Sections</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Order<br>Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Cut Quantity</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Input</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Output</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FG</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA</th>";
 
 //echo "<th bgcolor=\"#002060\" style=\"color:#ffffff\">Production Status</th>"; 
 $sHTML_Content.="<th bgcolor=\"#002060\" style=\"color:#ffffff\">Low Status</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">High Status</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">EX-FactoryDate</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Planing<br>Remarks</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Offered Time</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">FCA Time</th><th bgcolor=\"#002060\" style=\"color:#ffffff\">Dispatch Time</th></tr>";
@@ -947,7 +939,7 @@ else
 				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+				//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -979,7 +971,7 @@ else
 				$sHTML_Content .="<td bgcolor=\"$id\">$x</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+				//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -1011,7 +1003,7 @@ else
 				$sHTML_Content .="<td bgcolor=\"$id\"><a href=\"$status_update&tid=$ref_id&&schedule=$schedule\" onclick=\"return popitup('$status_update&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";	
 				$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-				$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+				//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 				$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";
@@ -1049,7 +1041,7 @@ else
 			
 			$sHTML_Content .="<td bgcolor=\"$id\">".$buyer_division."</td>";
 			$sHTML_Content .="<td bgcolor=\"$id\">".$order_no."</td>";
-			$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
+			//$sHTML_Content .="<td bgcolor=\"$id\">".$mo."</td>";
 			$sHTML_Content .="<td bgcolor=\"$id\">".$co."</td>";
 			$sHTML_Content .="<td bgcolor=\"$id\">".$style."</td>";
 			$sHTML_Content .="<td bgcolor=\"$id\">".$schedule."<input type=\"hidden\" name=\"sche[]\" value=\"".$schedule."\" /></td>";

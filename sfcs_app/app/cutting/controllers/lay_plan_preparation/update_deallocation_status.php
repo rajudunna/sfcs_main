@@ -20,7 +20,7 @@
 		
 		if($fstatus<5)
 		{
-			$fab_qry="SELECT allocated_qty,roll_id FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+			$fab_qry="SELECT allocated_qty,roll_id FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
 			// echo $fab_qry."<br>";
 			$fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($fab_qry_result)>0)
@@ -61,11 +61,25 @@
 						// }
 					// }
 						   
-							$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated-".$allocated_qty.",status=1,allotment_status=1 where tid=".$roll_id;
+							$sql="update bai_rm_pj1.store_in set qty_allocated=qty_allocated-".$allocated_qty." where tid=".$roll_id;
 							mysqli_query($link, $sql) or exit("Sql Error2: delete fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$roll_id' ";
+							//echo $query_status;
+							$query_status_res=mysqli_query($link, $query_status) or exit("Sql Error6: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($qry_status_result=mysqli_fetch_array($query_status_res))
+							{
+								$qty_allocated=$qry_status_result['qty_allocated'];
+							}
+							if($qty_allocated==0)
+							{
+								$status_new=0;
+								$sql44="update bai_rm_pj1.store_in set status=$status_new, allotment_status=$status_new where tid='$roll_id' ";
+								//echo $sql44."</br>";
+								mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
+							}
 				}
 				// die();
-				$delete_fab="delete from $bai_rm_pj1.fabric_cad_allocation WHERE doc_no=$doc_no";
+				$delete_fab="delete from $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
 				$delete_fab_result=mysqli_query($link, $delete_fab) or exit("Sql Error2: delete fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$update_plan_qry="update $bai_pro3.plandoc_stat_log set plan_lot_ref='',print_status='',fabric_status=0 where doc_no=".$doc_no;

@@ -4,15 +4,6 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');?>"></script>
 
-
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions2.php',3,'R'));
-	$view_access=user_acl("SFCS_0095",$username,1,$group_id_sfcs); 
-	//require_once('../phplogin/auth2.php');
-	//Ticket # 118925 : Changed displayed widith from type (int) to (float
-?>
-
 <?php
 // include("../dbconf.php"); 
 	if(isset($_GET['doc_no']))
@@ -31,7 +22,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			$allocate_ref=$sql_row['allocate_ref'];
 		}
 		$min_width=0;
-		$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$_GET['doc_no']."";
+		$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$_GET['doc_no']."' ";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1x=mysqli_fetch_array($sql_result))
 		{
@@ -170,15 +161,25 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		
 		
 		//Updating New Marker Refere in Matrix for new marker reference
-		$sql="insert ignore into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$ilast_id."-".$p_width."')";
-		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_check="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$ilast_id."-".$p_width."'";
+		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res)==0)
+		{
+			$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$ilast_id."-".$p_width."')";
+			mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}	
 		
 		$sql="update $bai_pro3.marker_ref_matrix set marker_ref='$ilast_id', marker_width='".$p_width."', marker_length='".$mk_length."',cat_ref=$cat_ref,allocate_ref=$allocate_ref, style_code='$style_code', buyer_code='$buyer_code',pat_ver='$pat_ver', ".implode(",",$allo_c)." where marker_ref_tid='".$ilast_id."-".$p_width."'";
 		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//Updating New Marker Refere in Matrix for existing reference (to avoid existing issues)
-		$sql="insert ignore into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$mk_ref."-".$p_width."')";
-		mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_check1="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$mk_ref."-".$p_width."'";
+		$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res1)==0)
+		{
+			$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$mk_ref."-".$p_width."')";
+			mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}	
 		
 		$sql="update $bai_pro3.marker_ref_matrix set marker_ref='$mk_ref', marker_width='".$p_width."', marker_length='".$mk_length."',cat_ref=$cat_ref,allocate_ref=$allocate_ref, style_code='$style_code', buyer_code='$buyer_code',pat_ver='$pat_ver', ".implode(",",$allo_c)." where marker_ref_tid='".$mk_ref."-".$p_width."'";
 		mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -333,7 +334,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$mk_ref=$sql_row['mk_ref'];
 					}
 					$min_width=0;
-					$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." and doc_type=\"normal\"";
+					$sql="select roll_width as width from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."' and doc_type=\"normal\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1x=mysqli_fetch_array($sql_result))
 					{

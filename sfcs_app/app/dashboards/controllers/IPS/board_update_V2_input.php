@@ -10,6 +10,7 @@ Changes Log:
 set_time_limit(2000);
 include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
+include("../../../../common/config/functions_dashboard.php");
 error_reporting(0);
 $section_no=$_GET['section_no'];
 ?>
@@ -307,7 +308,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td>".$mods[$x]."</td>";
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Sewing Job:<br/>Cut Job:<br/>Job Qty:<br/></td>";
 		$module=$mods[$x];		
-		$sql1="SELECT type_of_sewing,input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,order_tid,group_concat(doc_no) as doc_no,color_code,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT trim(order_col_des)) AS order_col, order_col_des,ft_status,st_status,pt_status,trim_status,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_module=$module and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref ORDER BY input_priority ASC LIMIT 14";
+		$sql1="SELECT type_of_sewing,input_job_no_random_ref,input_module,input_priority,input_trims_status,input_panel_status,track_id,input_job_no,tid,input_job_no_random,order_tid,group_concat(doc_no) as doc_no,color_code,order_style_no,order_del_no,GROUP_CONCAT(DISTINCT trim(order_col_des)) AS order_col, order_col_des,ft_status,st_status,pt_status,trim_status,SUM(carton_act_qty) as carton_act_qty FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_module='$module' and (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) GROUP BY input_job_no_random_ref ORDER BY input_priority ASC LIMIT 14";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -469,6 +470,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				while($sql_row=mysqli_fetch_array($scanning_result))
 				{
 					$operation_code=$sql_row['operation_code'];
+				}
+				if($operation_code == 'Auto'){
+					$get_ips_op = get_ips_operation_code($link,$style,$color);
+					$operation_code=$get_ips_op['operation_code'];
 				}
 				$cut_input_report_query="select sum(original_qty) as cut_qty,sum(recevied_qty+rejected_qty) as report_qty,sum(recevied_qty) as recevied_qty from brandix_bts.bundle_creation_data where input_job_no_random_ref='$input_job_no_random_ref' and operation_id=".$operation_code."";
 				$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -156,7 +156,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$start_time=$sql_row['start_time'];
 	$end_time=$sql_row['end_time'];
 	
-	if($start_time <13)
+	if($start_time <12)
 	{
 		echo "<td>".$start_time." AM</td>";
 	}
@@ -165,7 +165,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<td>".$start_time." PM</td>";
 	}
 	
-	if($end_time <13)
+	if($end_time <12)
 	{
 		echo "<td>".$end_time." AM</td>";
 	}
@@ -233,7 +233,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//$sql22="select smv FROM $bai_pro.bai_log_buf where delivery=\"$schedule\" and bac_no=\"$module\" and bac_shift=\"$shift\" limit 1";
 	if($style!="")
 	{
-			$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' and bac_no=\"$module\" and bac_shift=\"$shift\"  limit 1";
+			$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' and bac_no=\"$module\" and bac_shift=\"$shift\"  limit 1";
 			//echo $sql22."<br/>"; 
 			$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result22)>0)
@@ -244,7 +244,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				}
 				if($smv=='' || $smv==0)
 				{
-					$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' limit 1";
+					$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' limit 1";
 					//echo $sql22."<br/>"; 
 					$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result22)>0)
@@ -259,7 +259,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			else
 			{
 				$smv=0;
-				$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style like '%$style%' limit 1";
+				$sql22="select max(smv) as smv FROM $bai_pro.bai_log_buf where bac_style='$style' limit 1";
 				//echo $sql22."<br/>"; 
 				$sql_result22=mysqli_query($link, $sql22) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result22)>0)
@@ -281,7 +281,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sah_loss1=(number_format(round($sah_loss/100,2),2,".",""));
 	
 	echo "<td>".(number_format(round($sah_loss/100,2),2,".",""))."</td>";
+	
+	if($sah_loss == 0 || $sah_loss1 == 0 )
+	{
+		echo "<td>".'0'."</td>";
+	}
+	else
+	{
 	echo "<td>".(number_format(round(($sah_loss1*60)/$smv,0),0,".",""))."</td>";
+	}
 	//old code
 	//if($username=="senthoorans" or $username=="kirang" or $username=="arunag" or $username=="pavanir" or $username=="kirang" or $username=="kirang")
 	//Date:04-04-2016/kirang/code changed to get access from central administration machanism
