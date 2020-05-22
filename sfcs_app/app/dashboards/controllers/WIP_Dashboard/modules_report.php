@@ -110,7 +110,7 @@ if(isset($_POST['submit']))
 	            if (sizeof($selected_sewing_jobs) > $allowable_jobs)
 	            {
 	                echo "<script>sweetAlert('You are Not Authorized to report more than Block Priorities','','warning');</script>";
-	                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module&operation_code=$operation\"; }</script>";
+	                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"modules_report.php?module=$module&operation_code=$operation\"; }</script>";
 	            }
 	            else
 	            {
