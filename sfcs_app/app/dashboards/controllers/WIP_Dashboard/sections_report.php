@@ -213,7 +213,7 @@ $operation=$_GET['operations'];
 		        }
 		        if($category_act == 'sewing')
 		        {
-                 	$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where bundle_number in ($bundles) and assigned_module='$module'";
+                 	$sql12="select sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output, count(*) as count from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module'";
 					//echo $sql12;
 					if(isset($_POST['submit']))
 					{
