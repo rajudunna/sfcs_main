@@ -233,9 +233,47 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		}
 	}
   echo "<tr>";
-  if($shade!=''){
-  if($status==0)
-  {
+if(trim($product_group)=='Fabric')
+{
+	if($shade!='')
+	{
+	  if($status==0)
+	  {
+		  if($available > 0)
+		  {
+			  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
+			  echo '<td style="background-color:white;"><input style="width:88px; type="text" name="date[]" value="'.date("Y-m-d").'"></td>';
+			  echo '<td style="background-color:white;"><input class="float" style="width: 72px; type="text" name="qty_issued[]"  value="" onchange="if(check(this.value, '.$available.')==1010){ this.value=0;}"></td>';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="style[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 110px; type="text" name="schedule[]"  value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 62px; type="text" name="cut[]" value=""></td>';
+			  echo '<td style="background-color:white;"><input style="width: 125px; type="text" name="remarks[]" value="">';
+			  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
+		  }
+		  
+	  }
+	  else
+	  {
+		  if($available > 0)
+		  {
+			  echo "<td>$location</td><td>$lot_ref</td>
+			  <td>$tid</td>
+			  <td>$box</td>
+			  <td>$available</td>";
+			  echo '<td>Locked</td>';
+			  echo '<td>Locked</td>';
+			  echo '<td>Locked</td>';
+			  echo '<td>Locked</td>';
+			  echo '<td>Locked</td>';
+			  echo '<td>Locked</td>';
+		  }		
+	  }
+	}
+}  
+else
+{
+	if($status==0)
+	{
 	  if($available > 0)
 	  {
 		  echo "<td  style='background-color:white;'>$location</td><td style='background-color:white;'>$lot_ref</td><td style='background-color:white;'>$barcode_number</td><td style='background-color:white;'>$box</td><td style='background-color:white;'>$available</td>";
@@ -248,9 +286,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		  echo '<input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="available2[]" value="'.$available2.'"></td>';
 	  }
 	  
-  }
-  else
-  {
+	}
+	else
+	{
 	  if($available > 0)
 	  {
 		  echo "<td>$location</td><td>$lot_ref</td>
@@ -264,8 +302,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		  echo '<td>Locked</td>';
 		  echo '<td>Locked</td>';
 	  }		
-  }
-  }
+	}
+}
   echo "</tr>";	
 }
 
