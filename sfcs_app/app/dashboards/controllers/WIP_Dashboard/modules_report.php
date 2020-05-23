@@ -249,7 +249,7 @@ if(isset($_POST['submit']))
 							        }
                                     if($category_act == 'sewing')
                                     {
-                                       $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output,SUM(if(operation_id = $operation_code,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty+rej_qty,0))";
+                                       $get_jobs_data="select size_title,input_job_no,bundle_number,docket_number,remarks,DATE(MIN(date_time)) AS input_date,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_code,recevied_qty,0)) as output,SUM(if(operation_id = $operation_code,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where style='$style' and color='$color' and bundle_number = $bundle_number  GROUP BY bundle_number HAVING SUM(IF(operation_id = $pre_ops_code,recevied_qty,0)) != SUM(IF(operation_id = $operation_code,recevied_qty+rejected_qty,0))";
 							            $result_get_jobs_data = $link->query($get_jobs_data);
 							           // echo  $get_jobs_data;
 							            while($row3 = $result_get_jobs_data->fetch_assoc()) 
