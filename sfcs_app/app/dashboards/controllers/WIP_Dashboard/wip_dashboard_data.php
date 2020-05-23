@@ -252,6 +252,7 @@ function getsewingJobsData($section,$module,$get_operation)
             }
             unset($job_no1);
         }
+		unset($job_no1);
     }
 
         $docs_data.="<span class='block'>

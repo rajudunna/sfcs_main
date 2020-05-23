@@ -2,8 +2,6 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
-// $view_access=user_acl("SFCS_0005",$username,1,$group_id_sfcs); 
 ?>
 
 
@@ -453,7 +451,7 @@ if(isset($_POST['submit']))
 		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);	
 	}
-
+    unset($act_s);
 	echo "</table>";
 
 	/* NEW */

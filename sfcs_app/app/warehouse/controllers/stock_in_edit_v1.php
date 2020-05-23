@@ -221,10 +221,11 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$box=$sql_row['ref2'];
 				$qty_rec=$sql_row['qty_rec'];
 				$status=$sql_row['status'];
-				$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
+				//$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
 				$ref4=$sql_row['ref4'];
 				$ref3=$sql_row['ref3'];
 				$ref5=$sql_row['ref5'];
+				$available=($qty_rec+$sql_row['qty_ret'])-($sql_row['qty_issued']+$sql_row['qty_allocated']);
 				
 				echo "<tr>";
 				

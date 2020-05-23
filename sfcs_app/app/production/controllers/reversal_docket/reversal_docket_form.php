@@ -305,9 +305,9 @@ if(isset($_POST['formSubmit']))
                                             $deletedqueries="DELETE FROM bai_pro3.docket_roll_info WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
                                             $deletedqueriesresult= mysqli_query($link,$deletedqueries) or exit("error1".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             $deleteplie=$deleteplie-$reportingrolls['reporting_plies'];//remaining plie
-                                            
-                                            if($deleteplie==0)
+                                            if($deleteplie==0 || $deleteplie < 0)
                                             {
+                                                $deleteplie=0;
                                                 break;
                                             }
                         
@@ -342,14 +342,12 @@ if(isset($_POST['formSubmit']))
                                 {
                                     while($reportingrolls = mysqli_fetch_array($reportingrollsresult))
                                     {
-                                        
                                         if($reportingrolls['reporting_plies']<=$deleteplie)
                                         {
                                             $deletedqueries="DELETE FROM bai_pro3.docket_roll_info WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
                                             $deletedqueriesresult= mysqli_query($link,$deletedqueries) or exit("error1".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             $deleteplie=$deleteplie-$reportingrolls['reporting_plies'];//remaining plie
-                                            
-                                            if($deleteplie==0)
+                                            if($deleteplie==0 ||$deleteplie<0)
                                             {
                                                 break;
                                             }
@@ -357,14 +355,15 @@ if(isset($_POST['formSubmit']))
                                         }
                                     else 
                                         {
-                                                $updatedplie=$reportingrolls['reporting_plies']-$deleteplie;
-                                                $updateroll="UPDATE bai_pro3.docket_roll_info SET reporting_plies = $updatedplie WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
-                                                $updaterollresult= mysqli_query($link,$updateroll);
-                                                $deleteplie=$deleteplie-$reportingrolls['reporting_plies']; //remaining plie
-                                                if($deleteplie==0)
-                                                {
-                                                    break;
-                                                }
+                                            $updatedplie=$reportingrolls['reporting_plies']-$deleteplie;
+                                            $updateroll="UPDATE bai_pro3.docket_roll_info SET reporting_plies = $updatedplie WHERE docket=$docket_number_post and roll_no=".$reportingrolls['roll_no'];
+                                            $updaterollresult= mysqli_query($link,$updateroll);
+                                            $deleteplie=$deleteplie-$reportingrolls['reporting_plies']; //remaining plie
+                                            if($deleteplie==0 || $deleteplie<0)
+                                            {
+                                                $deleteplie=0;
+                                                break;
+                                            }
                                             
                                         }
                                     }

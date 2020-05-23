@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 $url = '/sfcs_app/app/dashboards/controllers/rms/fabric_requisition.php';
 $url = base64_encode($url);
 $section = $_GET['section'];
@@ -12,11 +13,7 @@ $final_wip = array();
 $line_breaker = 0;
 if($section > 0){
     $docket_cqty = array();
-    //getting ips op code
-    $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
-    $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
-    $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
-
+    
     //getting all modules against to the section
     $modules_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section=$section GROUP BY section ORDER BY section + 0";
     $modules_result = mysqli_query($link,$modules_query) or exit($data.="No modules Found");
@@ -108,7 +105,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
     $dockets = array();
     $cutting_op_code = 15;
     $temp_line_breaker = 0;
-    global $ips_op_code;
+    // global $ips_op_code;
     $docs_data = '';
     $break_me_at = 6;
     $cut_wip = 0; 
@@ -118,10 +115,12 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
         $break_me_at = 11; 
     }
     
-    
-    $dockets_cqty_query = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND psl.a_plies = psl.p_plies AND psl.act_cut_status='DONE' and psl.short_shipment_status=0";
-    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND ((psl.a_plies = psl.p_plies AND psl.act_cut_status='') OR (psl.a_plies < psl.p_plies AND psl.act_cut_status='DONE')) and psl.short_shipment_status=0 GROUP BY doc_no ORDER BY input_priority ASC";  
-    $dockets_qty_job_qty_query2 = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input_backup AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND ((psl.a_plies < psl.p_plies AND psl.act_cut_status='DONE')) and psl.short_shipment_status=0 GROUP BY doc_no ORDER BY input_priority ASC";  
+    $dockets_cqty_query = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc 
+    WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND psl.a_plies = psl.p_plies AND psl.act_cut_status='DONE' and psl.short_shipment_status=0";
+    $dockets_qty_job_qty_query = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.manual_flag as manual_reported,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc 
+    WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND ((psl.a_plies = psl.p_plies AND psl.act_cut_status='') OR (psl.a_plies < psl.p_plies AND psl.act_cut_status='DONE')) and psl.short_shipment_status=0 GROUP BY doc_no ORDER BY input_priority ASC";  
+    $dockets_qty_job_qty_query2 = "SELECT GROUP_CONCAT(DISTINCT '\"',pdi.input_job_no_random_ref,'\"') AS jobs,pslij.doc_no AS doc_no,psl.a_plies AS a_plies,psl.manual_flag as manual_reported,psl.p_plies AS p_plies,psl.act_cut_status AS act_cut_status,bodc.order_style_no AS style,psl.acutno AS acutno,bodc.color_code AS color_code,bodc.order_del_no AS schedule,bodc.order_col_des AS color,bodc.ft_status AS ft_status FROM bai_pro3.plan_dashboard_input_backup AS pdi,bai_pro3.pac_stat_log_input_job AS pslij,bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc 
+    WHERE input_module='$module' AND pdi.input_job_no_random_ref=pslij.input_job_no_random AND psl.doc_no=pslij.doc_no AND psl.order_tid=bodc.order_tid AND ((psl.a_plies < psl.p_plies AND psl.act_cut_status='DONE')) and psl.short_shipment_status=0 GROUP BY doc_no ORDER BY input_priority ASC";  
    
 
     $dockets_cqty_result        = mysqli_query($link,$dockets_cqty_query);
@@ -152,8 +151,18 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
             $ft_status     = $row['ft_status'];
             $aplies = $row['a_plies'];
             $pplies = $row['p_plies'];
+            $manual_reported = $row['manual_reported'];
 
-        
+            //getting ips op code
+            $ips_op_code_query = "SELECT operation_code FROM $brandix_bts.tbl_ims_ops WHERE appilication = 'IPS'";
+            $ips_op_code_result = mysqli_query($link,$ips_op_code_query);
+            $ips_op_code = mysqli_fetch_array($ips_op_code_result)['operation_code'];
+            if($ips_op_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $ips_op_code=$get_ips_op['operation_code'];
+            }
+
+
             $job_qty_query = "SELECT SUM(carton_act_qty) as job_qty from $bai_pro3.pac_stat_log_input_job 
                             where input_job_no_random IN ($jobs)";              
             $job_qty_result = mysqli_query($link,$job_qty_query);  
@@ -167,6 +176,7 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                 //filtering scanned and unscanned jobs
                 $scanned_jobs_query = "SELECT input_job_no_random_ref as ij from $brandix_bts.bundle_creation_data where 
                     input_job_no_random_ref IN ($jobs) and  operation_id = $ips_op_code group by input_job_no_random_ref";
+                    // echo $scanned_jobs_query;
                 $scanned_jobs_result = mysqli_query($link,$scanned_jobs_query);
                 while($jobs_row = mysqli_fetch_array($scanned_jobs_result)){
                     $scanned_jobs[] = '"'.$jobs_row['ij'].'"'; 
@@ -288,8 +298,12 @@ function  getCutDoneJobsData($section,$module,$blocks,$ims_wip){
                         $temp_line_breaker = 1; //remove for 4,8 divisions
                         $docs_data.='&nbsp;<br/>';
                     }  
-                }  
-                
+                }
+
+                if ($manual_reported == 1) {
+                    continue;
+                }
+
                 $doc_str = '';
                 if($org_doc_no != '' || $org_doc_no > 0)
                     $doc_str = "<v><c>Org Doc no</c> : $org_doc_no</v>

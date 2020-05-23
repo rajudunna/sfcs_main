@@ -1,1 +1,0 @@
-<?php $style="2"; $color_code="'k'"; $schedule="2285"; $last_min="1.00"; $mini_order_ref="2"; $module="1-22-40-"; ?>

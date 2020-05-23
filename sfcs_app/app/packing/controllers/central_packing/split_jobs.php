@@ -24,7 +24,7 @@
             echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>'; 
             echo '<a href="'.$url_s.'&schedule='.$schedule.'&style='.$style.'" class="btn btn-primary pull-right"><i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp;&nbsp;Click here to go Back</a>'; 
 			
-            $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no = '$carton_no' AND pac_seq_no = '$seq_no'";
+            $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no =$carton_no AND pac_seq_no =$seq_no";
             // echo $sql2.'<br>';
 			// $sql2="SELECT carton_act_qty FROM $bai_pro3.pac_stat_log where schedule='$schedule' AND carton_no='$carton_no' AND style='$style' AND pack_method='$packmethod'"; 
             $result2=mysqli_query($link, $sql2) or exit("Sql Error1 ".mysqli_error($GLOBALS["___mysqli_ston"]));

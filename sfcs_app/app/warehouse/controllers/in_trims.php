@@ -1,8 +1,5 @@
 <?php 
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $url = '/sfcs_app/app/warehouse/controllers/in_trims.php';
 $out_trims_scanner = '/sfcs_app/app/warehouse/controllers/out_trims_scanner.php';
 ?>
