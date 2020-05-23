@@ -222,6 +222,7 @@ function ReplaceProcess($replace_id_edit)
     error_reporting(0);
     $count = 0;
     include("../../../../common/config/config_ajax.php");
+    include("../../../../common/config/functions_dashboard.php");
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
     $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";    
     $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
@@ -258,7 +259,10 @@ function ReplaceProcess($replace_id_edit)
             {
                 $input_ops_code = $row_result_checking_output_ops_code['operation_code'];
             }
-
+            if($input_ops_code == 'Auto'){
+                $get_ips_op = get_ips_operation_code($link,$style,$color);
+                $input_ops_code=$get_ips_op['operation_code'];
+            }
         } 
     }
     
@@ -302,8 +306,23 @@ function ReplaceProcess($replace_id_edit)
             while($replace_row = $result_excess_job_qry->fetch_assoc()) 
             {
                 $input_job_no_excess = $replace_row['input_job_no_random_ref'];
+                // $input_job_no_excess1[] = $replace_row['input_job_no_random_ref'];
                 $doc_nos = $replace_row['doc_nos'];
                 $exces_qty_org =$replace_row['excess_qty'];
+
+                // already replaces qtys
+                $total_replaced_qty = 0;
+                $input_excess = explode(",",$input_job_no_excess);
+                $input_excess_job = "'" . implode ( "', '", $input_excess ) . "'";
+                $total_replace_qty_query = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
+                // echo "<br/>".$total_replace_qty_query;
+                $total_replace_qty_result = $link->query($total_replace_qty_query);
+                if($total_replace_qty_result->num_rows > 0)
+                {
+                    while($row = mysqli_fetch_array($total_replace_qty_result)) {
+                        $total_replaced_qty = $row['replaced_qty'];
+                    }
+                }
                 //cps_qry
                 $cps_qry= "select sum(remaining_qty)as remaining_qty  from $bai_pro3.cps_log where doc_no in ($doc_nos) and size_title = '$excess_size_title' and operation_code = 15";
                 $result_cps_qry = $link->query($cps_qry);
@@ -315,7 +334,8 @@ function ReplaceProcess($replace_id_edit)
                     }
                     
                 }
-                $exces_qty = min($exces_qty_org,$cps_row_excess);
+                // gettinng the min quantity of cut rem qty , excess sewing job qty - already replaced excess sew job qty
+                $exces_qty = min($exces_qty_org-$total_replaced_qty,$cps_row_excess);
             }
             //checking that inputjob already scanned or not
             if($exces_qty > 0)
@@ -323,7 +343,7 @@ function ReplaceProcess($replace_id_edit)
                 $count++;
                 $rec_qty = 0;
                 $already_replaced_qty = 0;
-                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
+                $bcd_checking_qry = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_excess_job) and size_title = '$excess_size_title' and color = '$color' and operation_id = $input_ops_code";
                 $result_bcd_checking_qry = $link->query($bcd_checking_qry);
                 if($result_bcd_checking_qry->num_rows > 0)
                 {
@@ -334,7 +354,7 @@ function ReplaceProcess($replace_id_edit)
                     }
                 }
                 //checking the input job already replaced or not
-                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN($input_job_no_excess) and size_title='$excess_size_title'";
+                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
                 // echo $checking_replaced_or_not;
                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                 if($result_checking_replaced_or_not->num_rows > 0)
@@ -360,14 +380,14 @@ function ReplaceProcess($replace_id_edit)
                 else
                 {
                      //checking two conditions and getting excess quantity value -3092
-                    if($exces_qty < $rec_already_replaced)
-                    {
-                        $exces_qty = min($exces_qty,$rec_already_replaced);
-                    }
-                    else
-                    {
-                        $exces_qty = ($exces_qty) - ($rec_already_replaced);
-                    }
+                    //if($exces_qty < $rec_already_replaced)
+                    //{
+                    //  $exces_qty = min($exces_qty,$rec_already_replaced);
+                    //}
+                    //else
+                    //{
+                    //  $exces_qty = ($exces_qty) - ($rec_already_replaced);
+                    //}
                 }
                 $excess_table .= "<tr><td>".$input_job_no_excess."</td><td>".$excess_size_title."</td><td>$rec_qty</td><td>$already_replaced_qty</td><td id='$excess_size_title'>".$exces_qty."</td></tr>";
                 $excess_table .= "<input type='hidden' name='input_job_no_random_ref_replace[$excess_size_title]' value='$input_job_no_excess'>";
@@ -377,19 +397,26 @@ function ReplaceProcess($replace_id_edit)
     $excess_table .= "</tbody></table></div></div></div>";
     $html .= $excess_table;
     $s_no = 0;
-    $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
+    // $job_deactivated="SELECT count(*) as count1 FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
+    // $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+    // while($sql_row=mysqli_fetch_array($job_deactivated_result))
+    // {
+        // $count = $sql_row['count1'];
+    // }
+    // if($count == 0){
+        // $job_deactivated_status = 1;
+    // } else {
+        // $job_deactivated_status = 0;
+    // }
+	$job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE schedule='$scheule' and remove_type='3'";
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row=mysqli_fetch_array($job_deactivated_result))
-    {
-        $count = $sql_row['count1'];
-    }
-    if($count == 0){
-        $job_deactivated_status = 1;
+    if(mysqli_num_rows($job_deactivated_result) == 0){
+        $job_deactivated_status1 = 1;
     } else {
-        $job_deactivated_status = 0;
+        $job_deactivated_status1 = 0;
     }
     
-    if($job_deactivated_status == 1)
+    if($job_deactivated_status1 == 1)
     {
         if($count > 0)
         {
@@ -501,7 +528,7 @@ function getDocketDetails($recut_doc_id)
             size_title,rc.size_id,assigned_module FROM `$bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id` 
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
-            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY doc_no,size_title";
+            WHERE rc.parent_id = $recut_doc_id AND category = '$cat' GROUP BY doc_no,size_title";
           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Raised Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th></tr></thead><tbody>";
         }
         else
@@ -510,7 +537,7 @@ function getDocketDetails($recut_doc_id)
             size_title,rc.size_id,assigned_module FROM `$bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id`
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
-            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY input_job_no_random_ref,assigned_module,size_title";
+            WHERE rc.parent_id = $recut_doc_id AND category = '$cat' GROUP BY input_job_no_random_ref,assigned_module,size_title";
            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th></tr></thead><tbody>";
         }
         $result_getting_full_cut_details = $link->query($getting_full_cut_details);
@@ -662,7 +689,7 @@ function Markersview($markers_view_docket)
     $qry_cut_qty_check_qry = "SELECT *,bd.`order_style_no`,bd.`order_col_des`,bd.`order_del_no` FROM $bai_pro3.recut_v2 rv 
     LEFT JOIN $bai_pro3.`bai_orders_db_confirm` bd ON bd.`order_tid` = rv.`order_tid`
     LEFT JOIN $bai_pro3.maker_stat_log m ON m.tid = rv.`mk_ref`
-    WHERE doc_no =  '$markers_view_docket'";
+    WHERE doc_no =  $markers_view_docket";
     // echo $qry_cut_qty_check_qry;
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
@@ -774,7 +801,7 @@ function IssuedtoModuleProcess($issued_to_module_process)
             size_title,rc.size_id,assigned_module FROM `$bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id` 
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
-            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY doc_no,size_title";
+            WHERE rc.parent_id = $recut_doc_id AND category = '$cat' GROUP BY doc_no,size_title";
           $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Docket Number</th><th>Size</th><th>Rejected Qty</th><th>Recut Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th><th>Issuing Quantity</th></tr></thead><tbody>";
         }
         else
@@ -783,7 +810,7 @@ function IssuedtoModuleProcess($issued_to_module_process)
             size_title,rc.size_id,assigned_module FROM `$bai_pro3`.`recut_v2_child` rc 
             LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` ops ON ops.operation_code = rc.`operation_id`
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id`=rc.`bcd_id` 
-            WHERE rc.parent_id = '$recut_doc_id' AND category = '$cat' GROUP BY input_job_no_random_ref,assigned_module,size_title";
+            WHERE rc.parent_id = $recut_doc_id AND category = '$cat' GROUP BY input_job_no_random_ref,assigned_module,size_title";
            $table_data = "<table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Sewing Job Number</th><th>Assigned Module</th><th>Size</th><th>Rejected Qty</th><th>Recut Qty</th><th>Recut Reported Qty</th><th>Issued Qty</th><th>Remaining Qty</th><th>Issuing Quantity</th></tr></thead><tbody>";
         }
         // echo  $getting_full_cut_details.'</br>';

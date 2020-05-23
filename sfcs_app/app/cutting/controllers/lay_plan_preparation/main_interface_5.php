@@ -50,13 +50,13 @@ echo "<div>
 			</thead>";
 			foreach($cats_ids as $key=>$value)
 			{
-				$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value group by cat_ref ORDER BY tid";
+				$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value and recut_lay_plan='no' group by cat_ref ORDER BY tid";
 				$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($cat_row=mysqli_fetch_array($cat_ref_result))
 				{
 					$grand_tot_used_fab = 0;
 					$grand_tot_used_binding = 0;
-					$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." ORDER BY ratio";
+					$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='no' ORDER BY ratio";
 					// echo $sql.'<br>';
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -106,7 +106,7 @@ echo "<div>
 							$binding_consumption=$sql_row2['binding_con'];
 						}
 
-						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
+						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1 and recut_lay_plan='no'";
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
@@ -163,7 +163,7 @@ echo "<div>
 								echo "<td class=\"word-wrap\"><center>Lay plan Prepared";		
 							}	
 							
-							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
+							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 and recut_lay_plan='no'";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
 							{	

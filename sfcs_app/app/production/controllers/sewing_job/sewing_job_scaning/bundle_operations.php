@@ -416,7 +416,12 @@ $(document).ready(function(){
 									}2 
 								?>
 								var adding_html	= "<td><button type='button' id='deletable' class='btn btn-primary btn-sm' onclick='value_edition(this,"+data[i].main_id+","+data[i].m3_smv+");'><i class='fa fa-plus' aria-hidden='true'></i></button></td>";
-								var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
+
+								if(data[i].flag_valid=='0'){
+									var deleting_html = "<td><button type='button' id='deletable' class='btn btn-danger btn-sm'  onclick='default_oper("+data[i].main_id+",this)'><i class='fa fa-trash-o' aria-hidden='true'></i></button></td>";
+								}else{
+									var deleting_html="<td><button type='button' id='deletable' class='btn-warning btn-sm'><i class='glyphicon glyphicon-thumbs-down' aria-hidden='true'></i></button></td>";	
+								}
 								markup1+=deleting_html+adding_html+"</tr>";
 								s_no++;
 								 $("#dynamic_table").append(markup1);

@@ -111,6 +111,7 @@ if(isset($_GET['tid']))
 	
 	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
+	// die();
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result1))
 	{
@@ -291,27 +292,6 @@ if(isset($_GET['tid']))
 		}
 
 	}
-	// echo $update_qry_rejections_log.'</br>';
-	//updating in moq and inserting into m3 transactions
-	//To update M3 Bulk Upload Tool (To pass negative entry)
-	
-	// for($i=0;$i<sizeof($rejections_ref_explode);$i++)
-	// {	
-		// echo $rejections_ref_explode[$i]."<br><br>";
-		
-		// $rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);	
-
-		// $rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$rejections_ref_explode_ref[0]."'";
-		// $rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
-		// {
-		// 	$m3_reason_code=$rej_code_row["m3_reason_code"];
-		// }
-		
-		// $sql2="insert into $m3_bulk_ops_rep_db.m3_sfcs_tran_log (sfcs_date,sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,sfcs_qty,sfcs_reason,sfcs_log_user,sfcs_status,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift,m3_op_des,sfcs_tid_ref,sfcs_remarks) select NOW(),sfcs_style,sfcs_schedule,sfcs_color,sfcs_size,m3_size,sfcs_doc_no,".($rejections_ref_explode_ref[1]*-1).",'".$m3_reason_code."',USER(),0,m3_mo_no,m3_op_code,sfcs_job_no,sfcs_mod_no,sfcs_shift, m3_op_des,sfcs_tid_ref,sfcs_remarks from $m3_bulk_ops_rep_db.m3_sfcs_tran_log where sfcs_job_no='".$input_job_no."' and m3_op_code='".$operation_id."' and m3_size='".$qms_size."' and length(sfcs_reason)!=0 limit 1 ";
-		// echo $sql2."<br>";
-		// mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	// }
 	$url = '?r='.$_GET['r'];
 	echo "<script>sweetAlert('Deleted Successfully!!!','','success');window.location = '".$url."'</script>"; 
 	
@@ -332,29 +312,23 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 		$qms_schedule=$getresult['order_del_no'];
 	}
 
-
-	// $sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
-	// ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
-	// FROM bai_pro3.bai_qms_db qms 
-	// LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-	// LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-	// AND recut_qty = 0 AND replaced_qty = 0
-	// ";
-	// // echo $sql."<br>";
-	// $result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	// while($row1=mysqli_fetch_array($result))
-	// {
-	// 	$qms_style=$row1["qms_style"];
-	// 	$qms_schedule=$row1["qms_schedule"];
-	// }
+	 $sewing_cat = 'sewing';
+	$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
+						WHERE trim(category) = '$sewing_cat' ";
+	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
+	while($row=mysqli_fetch_array($op_code_result)) 
+	{
+		$op_codes  = $row['codes'];	
+	}
 	if(short_shipment_status($qms_style,$qms_schedule,$link)){
 		$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
 		ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
 		FROM bai_pro3.bai_qms_db qms 
 		LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-		AND recut_qty = 0 AND replaced_qty = 0
+		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` LEFT JOIN  bai_pro3.`lay_plan_recut_track` track ON track.bcd_id=bts.id  WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+		AND recut_qty = 0 AND replaced_qty = 0 and bts.`operation_id` in ($op_codes) AND track.recut_raised_qty IS NULL
 		";
+		
 		$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($result)>0)
 		{
