@@ -1478,7 +1478,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 
 	
 
-		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$peffresulta."%</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($peffresulta,1)."%</td>"; 
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($ppro_a_total_sum_total,0)."</td>"; 
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$clha_total_sum_total."</td>"; //Change 20100819 
 		  
