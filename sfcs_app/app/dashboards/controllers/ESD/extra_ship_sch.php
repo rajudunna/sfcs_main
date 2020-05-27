@@ -759,6 +759,7 @@ $('.roundedCorner').corner();
 					$wip_qty+=$sql_row11['wip'];
 					$schedule_no=$sql_row11['sch'];
 					$color_name=$sql_row11["col"];
+					
 					$ims_date=$sql_row11["ims_date"];
 					$ims_style=$sql_row11["ims_style"];
 					$job_wip=$sql_row11["wip"];
