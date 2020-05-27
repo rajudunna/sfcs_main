@@ -1,5 +1,5 @@
 <head>
-<script src="/sfcs_app/common/js/jquery-1.11.1.min.js/"></script>
+<script src="/sfcs_app/common/js/jquery-ui.js"></script>
 </head>
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));

@@ -90,7 +90,7 @@ else
 
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no,backup_status from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
@@ -98,7 +98,13 @@ if(isset($_POST['submit']))
 	{
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$lot_no=$sql_row['lot_no'];
+			$backup_status=$sql_row['backup_status'];
+			if($sql_row['backup_status']==1)
+			{
+				echo "<script>sweetAlert('Receiving / Lot Number Account Closed','','warning')</script>";
+			}else{
+				$lot_no=$sql_row['lot_no'];
+			}
 		}
 	}else{
 		// echo "<table class='table table-bordered'><tr class='danger'><td align='center'>Lot Number not found</td></tr></table>";
