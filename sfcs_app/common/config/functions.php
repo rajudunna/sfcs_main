@@ -35,15 +35,15 @@ function job_rec_status($input_job_no,$op_code)
 			$job_qty=$sql_row2["job_qty"];
 	}
 
-	if(($rec_qty >= $job_qty) AND ($s_qty+$rc_qty+$rp_qty == $rec_qty+$rej_qty)) 
+	if(($rec_qty >= $job_qty) AND (($s_qty+$rc_qty+$rp_qty) == ($rec_qty+$rej_qty))) 
 	{
 			$status='DONE';
 	}
-	elseif(($rej_qty == $job_qty) AND ($s_qty+$rc_qty+$rp_qty == $rec_qty+$rej_qty)) 
+	elseif(($rej_qty == $job_qty) AND (($s_qty+$rc_qty+$rp_qty) == ($rec_qty+$rej_qty))) 
 	{
 			$status='DONE';
 	}
-	elseif(($rej_qty + $rec_qty == $job_qty) AND ($s_qty+$rc_qty+$rp_qty == $rec_qty+$rej_qty)) 
+	elseif(($rej_qty + $rec_qty == $job_qty) AND (($s_qty+$rc_qty+$rp_qty) == ($rec_qty+$rej_qty))) 
 	{
 			$status='DONE';
 	}
