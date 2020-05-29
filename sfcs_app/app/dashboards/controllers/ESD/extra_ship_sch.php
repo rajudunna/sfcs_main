@@ -5,8 +5,6 @@ CR: 207 extrashipment dashboard based on IMS.
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0201",$username,1,$group_id_sfcs); 
 set_time_limit(2000);
 ?>
 <?php
@@ -29,7 +27,7 @@ function dateDiffsql($link,$start,$end)
 {
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	$sql="select distinct bac_date from $bai_pro.bai_log_buf where bac_date<='$start' and bac_date>='$end'";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	return mysqli_num_rows($sql_result);
 }
@@ -677,16 +675,17 @@ $('.roundedCorner').corner();
 		//echo "<font color=yellow>Refresh Rate: 120 Sec.</font>";
 		$sql="select max(ims_log_date) as \"lastup\" from $bai_pro3.ims_log";
 		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			//echo "Last Update at: ".$sql_row['lastup']."<br/>";
 		}
 		$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
 		// mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
+		
 			$section=$sql_rowx['sec_id'];
 			$section_head=$sql_rowx['sec_head'];
 			$section_mods=$sql_rowx['sec_mods'];
@@ -731,7 +730,7 @@ $('.roundedCorner').corner();
 			$wip_qty=0;
 			$sql1="SELECT distinct(ims_schedule) as schedule ,rand_track FROM $bai_pro3.ims_log WHERE ims_mod_no=$module AND ims_status <> \"DONE\" AND ims_remarks not in ('EXCESS') group by ims_schedule order by tid";
 			// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result1);
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -740,7 +739,7 @@ $('.roundedCorner').corner();
 				//NEW
 				$sql11="select req_date from $bai_pro3.ims_exceptions where ims_rand_track=$rand_track";
 				// mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rand_check=mysqli_num_rows($sql_result11);
 				while($sql_row11=mysqli_fetch_array($sql_result11))
 				{
@@ -752,7 +751,7 @@ $('.roundedCorner').corner();
 				$sql11="SELECT ims_doc_no, sum(ims_qty-ims_pro_qty) as \"wip\",ims_schedule as sch,ims_color as col,ims_date,ims_style,ims_remarks FROM $bai_pro3.ims_log WHERE ims_mod_no=$module AND ims_status <> \"DONE\" and ims_schedule=$ims_schedule";
 				//echo $sql11;
 				// mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
 				{
 					$ims_doc_no=$sql_row11['ims_doc_no'];
@@ -769,7 +768,7 @@ $('.roundedCorner').corner();
 				//$schedule_no=215635;
 				$ex_factory="";
 				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule_no."\" and order_col_des=\"".$color_name."\"";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error2 =".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error7 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$order_total_qty=$sql_row["order_s_xs"]+$sql_row["order_s_s"]+$sql_row["order_s_m"]+$sql_row["order_s_l"]+$sql_row["order_s_xl"]+$sql_row["order_s_xxl"]+$sql_row["order_s_xxxl"]+$sql_row["order_s_s06"]+$sql_row["order_s_s08"]+$sql_row["order_s_s10"]+$sql_row["order_s_s12"]+$sql_row["order_s_s14"]+$sql_row["order_s_s16"]+$sql_row["order_s_s18"]+$sql_row["order_s_s20"]+$sql_row["order_s_s22"]+$sql_row["order_s_s24"]+$sql_row["order_s_s26"]+$sql_row["order_s_s28"]+$sql_row["order_s_s30"];
@@ -785,7 +784,7 @@ $('.roundedCorner').corner();
 				}
 				//Ex-Factory
 				$sql="select ex_factory_date_new as ex_factory from $bai_pro4.week_delivery_plan_ref where schedule_no=\"".$schedule_no."\"";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error2 =$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Sql Error8 =$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$ex_factory=$sql_row['ex_factory'];
@@ -825,7 +824,7 @@ $('.roundedCorner').corner();
 			//$sql1="SELECT * from plan_dash_doc_summ where module=$module order by priority limit 4"; New to correct
 				$sql1="SELECT * from $bai_pro3.plan_dash_doc_summ where module=$module and act_cut_issue_status<>\"DONE\" order by priority limit 1";
 				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($sql_result1);
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -851,7 +850,7 @@ $('.roundedCorner').corner();
 					$sql11="select sum(ims_pro_qty) as \"bac_qty\", sum(emb) as \"emb_sum\" from (SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log where ims_log.ims_doc_no=$doc_no UNION ALL SELECT ims_pro_qty, if(ims_status='EPR' or ims_status='EPS',1,0) as \"emb\" FROM $bai_pro3.ims_log_backup WHERE ims_log_backup.ims_mod_no<>0 and ims_log_backup.ims_doc_no=$doc_no) as t";
 					// mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$input_count=mysqli_num_rows($sql_result11);
 					while($sql_row11=mysqli_fetch_array($sql_result11))
 					{
@@ -975,6 +974,7 @@ $('.roundedCorner').corner();
 		echo "<table class=\"data\" border=1px ><tr><td>Total Schedules</td><td>Extra Shipment Completed Schedules</td><td>%</td></tr>";
     if($sch_count>0)
 		$ext_ach_per=round((($sch_values[1]/$sch_count)*100),2);
+		$ext_ach_per1=$ext_ach_per;
 		echo "<tr><td>$sch_count</td><td>$sch_values[1]</td><td>$ext_ach_per%</td></tr>";
 
 		echo "<tr border=1px><td COLSPAN=2>Total Achievement</td><td>$sch_values[0]%</td></tr>";
