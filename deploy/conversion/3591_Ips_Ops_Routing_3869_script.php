@@ -1,0 +1,178 @@
+<?php
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+ini_set('max_execution_time', '500000');
+// error_reporting(E_ALL);
+
+$application='IPS';
+$scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
+$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($scanning_result))
+{
+    $operation_code_routing=$sql_row['operation_code'];
+}
+$appilication_out = "IMS_OUT";
+$checking_output_ops_code_out = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication_out'";
+$result_checking_output_ops_code_out = $link->query($checking_output_ops_code_out);
+if($result_checking_output_ops_code_out->num_rows > 0)
+{
+    while($row_result_checking_output_ops_code_out = $result_checking_output_ops_code_out->fetch_assoc()) 
+    {
+        $output_ops_code_out = $row_result_checking_output_ops_code_out['operation_code'];
+    }
+}
+else
+{
+    $output_ops_code_out = 130;
+}
+// $style = 'CNB2406H';
+// $color = '900MP1-WHITE';
+// $schedule = '672359';
+
+// $get_style_color_query="SELECT order_style_no as style,order_col_des as color,order_del_no as schedule FROM $bai_pro3.packing_summary_input where order_style_no='$style' and order_col_des='$color' and order_del_no='$schedule' limit 1";
+$get_style_color_query="SELECT order_style_no as style,order_col_des as color,order_del_no as schedule FROM $bai_pro3.packing_summary_input GROUP BY order_style_no,order_col_des,order_del_no";
+// echo $get_style_color_query.'<br/>';
+$get_style_color_query_result=mysqli_query($link, $get_style_color_query) or exit("Sql Error212".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row=mysqli_fetch_array($get_style_color_query_result))
+{
+    $style=$row['style'];
+    $color=$row['color'];
+    $schedule=$row['schedule'];
+    if($operation_code_routing == 'Auto') {
+        $qry_ips_ops_mapping = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND tor.category='sewing' GROUP BY tsm.operation_code ORDER BY tsm.operation_order LIMIT 1";
+        $result_qry_ips_ops_mapping = $link->query($qry_ips_ops_mapping);
+        while($sql_row1=mysqli_fetch_array($result_qry_ips_ops_mapping))
+        {
+            $operation_code_routing=$sql_row1['operation_code'];
+        }
+    }
+
+    $get_ims="SELECT operation_id FROM $bai_pro3.ims_log where ims_style='$style' and ims_color='$color' and ims_schedule='$schedule' limit 1";
+    // echo $get_ims.'<br/>';
+    $get_ims_result=mysqli_query($link, $get_ims) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
+    if(mysqli_num_rows($get_ims_result) > 0) {
+        while($ims_row=mysqli_fetch_array($get_ims_result))
+        {
+            $ims_operation =$ims_row['operation_id'];
+        }
+    } else {
+        $get_ims_bkp="SELECT operation_id FROM $bai_pro3.ims_log_backup where ims_style='$style' and ims_color='$color' and ims_schedule='$schedule' limit 1";
+        $get_ims_bkp_result=mysqli_query($link, $get_ims_bkp) or exit("Sql Error223".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($get_ims_bkp_result) > 0) {
+            while($ims_row=mysqli_fetch_array($get_ims_bkp_result))
+            {
+                $ims_operation =$ims_row['operation_id'];
+            }
+        } else {
+            $ims_operation = 0;
+        }
+    }
+    // echo $reported.'rep<br/>';
+    // echo $ims_operation.'ims_operation<br/>';
+    // echo $operation_code_routing.'operation_code_routing<br/>';
+
+    if($ims_operation != $operation_code_routing){
+        $get_bcd="SELECT * FROM $brandix_bts.bundle_creation_data where style='$style' and color='$color' and schedule='$schedule' and operation_id=$operation_code_routing AND send_qty>0 AND (recevied_qty+rejected_qty) > 0";
+        
+        // echo $get_bcd."<br>";
+        $get_bcd_result=mysqli_query($link, $get_bcd) or exit("Sql Error242".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($get_bcd_result) > 0) {
+            while($bcd_row=mysqli_fetch_array($get_bcd_result))
+            {
+                $bundle_number =$bcd_row['bundle_number'];
+                $original_qty =$bcd_row['original_qty'];
+                $send_qty =$bcd_row['send_qty'];
+                $recevied_qty =$bcd_row['recevied_qty'];
+                $rejected_qty =$bcd_row['rejected_qty'];
+                $operation_id =$bcd_row['operation_id'];
+                $size_id = 'a_'.$bcd_row['size_id'];
+                $schedule =$bcd_row['schedule'];
+                $scanned_date = $bcd_row['scanned_date'];
+                $docket_number =$bcd_row['docket_number'];
+                $assigned_module =$bcd_row['assigned_module'];
+                $shift =$bcd_row['shift'];
+                $input_job_no =$bcd_row['input_job_no'];
+                $input_job_no_random_ref =$bcd_row['input_job_no_random_ref'];
+                $schedule =$bcd_row['schedule'];
+                $remarks =$bcd_row['remarks'];
+                
+                $get_bcd_ims="SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where bundle_number=$bundle_number and operation_id=$output_ops_code_out";
+                // echo $get_bcd_ims."<br>";
+                $get_bcd_ims_result=mysqli_query($link, $get_bcd_ims) or exit("Sql Error242".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($bcd_ims_row=mysqli_fetch_array($get_bcd_ims_result))
+                {
+                    $send_qty_out =$bcd_ims_row['send_qty'];
+                    $recevied_qty_out =$bcd_ims_row['recevied_qty'];
+                    $rejected_qty_out =$bcd_ims_row['rejected_qty'];
+                }
+                $ims_status = '';
+                if($send_qty_out > 0){
+                    if($send_qty_out == ($recevied_qty_out+$rejected_qty_out)){
+                        $ims_status = 'DONE';
+                    }
+                }
+
+                $bundle_op_id=$bundle_number."-".$operation_id."-".$input_job_no.'-'.$remarks;
+
+                $cat_ref=0;
+                $catrefd_qry="select cat_ref FROM $bai_pro3.plandoc_stat_log WHERE order_tid in (select order_tid FROM bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color')";
+                // echo $catrefd_qry.'<br/>';
+                $catrefd_qry_result=mysqli_query($link,$catrefd_qry);
+                while($buyer_qry_row=mysqli_fetch_array($catrefd_qry_result))
+                {
+                    $cat_ref=$buyer_qry_row['cat_ref'];
+                }
+
+                $get_rep_ims="SELECT * FROM $bai_pro3.ims_log where pac_tid=".$bundle_number;
+                // echo $get_rep_ims.'<br/>';
+                $get_rep_ims_result=mysqli_query($link, $get_rep_ims) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($get_rep_ims_result) > 0) {
+                    $update_status_query = "update $bai_pro3.ims_log set ims_qty = $recevied_qty,ims_pro_qty = $recevied_qty_out,operation_id = $operation_id,ims_status = '$ims_status',bai_pro_ref='".$bundle_op_id."' where pac_tid = ".$bundle_number;
+                    // echo $update_status_query.'<br/>';
+                        mysqli_query($link,$update_status_query) or exit("While updating status in ims_log5".mysqli_error($GLOBALS["___mysqli_ston"]));
+                } else {
+                    $get_rep_ims_bkp="SELECT * FROM $bai_pro3.ims_log_backup where pac_tid=".$bundle_number;
+                    // echo $get_rep_ims_bkp.'<br/>';
+                    $get_rep_ims_bkp_result=mysqli_query($link, $get_rep_ims_bkp) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($get_rep_ims_bkp_result) == 0) {
+                        
+                        $insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
+                                    ims_size,ims_qty,ims_pro_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id,ims_status) values ('".$scanned_date."','".$cat_ref."','".$docket_number."','".$assigned_module."','".$shift."','".$size_id."','".$recevied_qty."','".$recevied_qty_out."','".$scanned_date."','".$style."','".$schedule."','".$color."','".$docket_number."','".$bundle_op_id."','".$input_job_no_random_ref."','".$input_job_no."','".$bundle_number."','".$remarks."','".$operation_id."','".$ims_status."')";
+                        // echo $insert_imslog.'<br/>';
+                        mysqli_query($link,$insert_imslog) or exit("While updating status in ims_log3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
+                }
+                $get_rep_ims_bkp="SELECT * FROM $bai_pro3.ims_log_backup where pac_tid=".$bundle_number;
+                // echo $get_rep_ims_bkp.'<br/>';
+                $get_rep_ims_bkp_result=mysqli_query($link, $get_rep_ims_bkp) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+                if(mysqli_num_rows($get_rep_ims_bkp_result) > 0) {
+                    $update_ims_bkp = "update $bai_pro3.ims_log_backup set ims_qty = $recevied_qty,ims_pro_qty = $recevied_qty_out,operation_id = $operation_id,bai_pro_ref='".$bundle_op_id."' where pac_tid = $bundle_number";
+                    // echo $update_ims_bkp.'<br/>';
+                    mysqli_query($link,$update_ims_bkp) or exit("While updating status in ims_log_backup1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    
+                }
+            }
+            $ims_backup_up="insert into $bai_pro3.ims_log_backup select * from $bai_pro3.ims_log where ims_style='$style' and ims_color='$color' and ims_schedule='$schedule' and ims_status='DONE' and operation_id=$operation_code_routing";
+            // echo $ims_backup_up.'<br/>';
+            mysqli_query($link,$ims_backup_up) or exit("Error while inserting into ims_backup".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+            $ims_delete="delete from $bai_pro3.ims_log where ims_style='$style' and ims_color='$color' and ims_schedule='$schedule' and ims_status='DONE' and operation_id=$operation_code_routing";
+            // echo $ims_delete.'<br/>';
+            mysqli_query($link,$ims_delete) or exit("While De".mysqli_error($GLOBALS["___mysqli_ston"]));
+        }
+        
+        $get_bcd_del="SELECT * FROM $brandix_bts.bundle_creation_data where style='$style' and color='$color' and schedule='$schedule' and operation_id=$operation_code_routing AND (recevied_qty+rejected_qty) = 0";
+        // echo $get_bcd_del."<br>";
+        $get_bcd_del_result=mysqli_query($link, $get_bcd_del) or exit("Sql Error242".mysqli_error($GLOBALS["___mysqli_ston"]));
+        if(mysqli_num_rows($get_bcd_del_result) > 0) {
+            while($bcd_del_row=mysqli_fetch_array($get_bcd_del_result))
+            {
+                $pac_tid=$bcd_del_row['bundle_number'];
+                $ims_log_delete="delete from $bai_pro3.ims_log where operation_id=$ims_operation and pac_tid=$pac_tid";
+                // echo $ims_log_delete.'<br/>';
+                mysqli_query($link,$ims_log_delete) or exit("While Delete".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+        }
+    }
+}
+
+?>
