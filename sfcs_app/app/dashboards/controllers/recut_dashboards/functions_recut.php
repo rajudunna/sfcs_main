@@ -184,7 +184,9 @@ function RecutProcess($recut_id_edit)
                 $size = $row_cat['size_id'];
                 $bcd_id = $row_cat['bcd_id'];
                 $recut_raised_qty = 0;
-                $get_details_qry1 = "SELECT sum(recut_raised_qty-recut_allocated_qty) as recut_raised_qty FROM `$bai_pro3`.`lay_plan_recut_track` rc  WHERE bcd_id = $bcd_id and size_id='$size'";
+                
+                $get_details_qry1 = "SELECT sum(recut_raised_qty-recut_allocated_qty) as recut_raised_qty FROM `$bai_pro3`.`lay_plan_recut_track` rc  WHERE bcd_id in ($bcd_id) and size_id='$size'";
+                // echo $get_details_qry1;
                 $result_get_details_qry1 = $link->query($get_details_qry1);
                 if($result_get_details_qry1){
                     while($row3 = $result_get_details_qry1->fetch_assoc()) 
