@@ -27,6 +27,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 	}
 </style>
 <script>
+
+	$(document).ready(function()
+	{
+		$("[name='hold']").prop("disabled",true);
+	});
 	function firstbox()
 	{
 		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value
@@ -47,6 +52,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 		if(isNaN(cartons) || cartons < 0){
 			sweetAlert('Cartons should not be negative','','warning');
 			element.value = 0;
+		}
+		else if(cartons!='' && cartons >= 0)
+		{
+			$("[name='hold']").prop("disabled",false);
+		}
+		else if(cartons == '')
+		{
+			$("[name='hold']").prop("disabled",true);
 		}
 	}
 </script>
