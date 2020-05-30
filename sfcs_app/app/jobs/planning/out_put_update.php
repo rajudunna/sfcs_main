@@ -137,7 +137,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$fcamca=$sql_row7['qty'];
 				}
-				
+				$shipped=0;
 				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $bai_pro3.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."'";
 				$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row8=mysqli_fetch_array($sql_result8))
@@ -152,22 +152,29 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$pendingcarts=$sql_row9['pendingcarts'];	
 					$fgqty=$sql_row9['fgqty'];
 				}
-
+                $output_array=[];
 				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $bai_pro.bai_log WHERE delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
+				//echo $sql10;
 				$sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql10."<br>";
 				while($sql_row10=mysqli_fetch_array($sql_result10))
 				{
 					$bac_sec=$sql_row10['bac_sec'];	
-					$output_total=$sql_row10['output'];
-					$sql11="update $table_ref set actu_sec".$bac_sec."='".$output_total."' where size_code='$size_ref' and shipment_plan_id='".$ship_tid."'";
-					// echo $sql11."------A<br/>";
-					$updated_data1=mysqli_query($link, $sql11) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if($updated_data1)
-					{
-						//  print("Updated Quantity in ".$table_ref."successfully")."\n" ;
-					}
+					$output_array[$sql_row10['bac_sec']]+=$sql_row10['output'];
+                    
+                    
+					// if($updated_data1)
+					// {
+					 	//  print("Updated Quantity in ".$table_ref."successfully")."\n" ;
+					// }
 				}
+
+				foreach($output_array as $key => $value)
+                    {
+                       $sql11="update $table_ref set actu_sec".$key."='".$value."' where size_code='$size_ref' and shipment_plan_id='".$ship_tid."'";
+					   // echo $sql11."------A<br/>";
+					   $updated_data1=mysqli_query($link, $sql11) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    }
 
 			}
 		}	
@@ -180,6 +187,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if($updated_data){
 			//  print("Updated ".$table_ref."successfully")."\n";
 		}
+		unset($output_array);
 	}
 }
 
