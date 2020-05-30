@@ -43,7 +43,7 @@ while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
 	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
-$sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" and schedule_no=746529 order by schedule_no*1,color,size";
+$sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by schedule_no*1,color,size";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
