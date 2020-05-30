@@ -30,7 +30,7 @@ else
 
 // $get_style_color_query="SELECT order_style_no as style,order_col_des as color,order_del_no as schedule FROM $bai_pro3.packing_summary_input where order_style_no='$style' and order_col_des='$color' and order_del_no='$schedule' limit 1";
 $get_style_color_query="SELECT order_style_no as style,order_col_des as color,order_del_no as schedule FROM $bai_pro3.packing_summary_input GROUP BY order_style_no,order_col_des,order_del_no";
-// echo $get_style_color_query.'<br/>';
+echo $get_style_color_query.'<br/>';
 $get_style_color_query_result=mysqli_query($link, $get_style_color_query) or exit("Sql Error212".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($get_style_color_query_result))
 {
@@ -66,14 +66,13 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
             $ims_operation = 0;
         }
     }
-    // echo $reported.'rep<br/>';
-    // echo $ims_operation.'ims_operation<br/>';
-    // echo $operation_code_routing.'operation_code_routing<br/>';
+    echo $ims_operation.'ims_operation<br/>';
+    echo $operation_code_routing.'operation_code_routing<br/>';
 
     if($ims_operation != $operation_code_routing){
         $get_bcd="SELECT * FROM $brandix_bts.bundle_creation_data where style='$style' and color='$color' and schedule='$schedule' and operation_id=$operation_code_routing AND send_qty>0 AND (recevied_qty+rejected_qty) > 0";
         
-        // echo $get_bcd."<br>";
+        echo $get_bcd."<br>";
         $get_bcd_result=mysqli_query($link, $get_bcd) or exit("Sql Error242".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($get_bcd_result) > 0) {
             while($bcd_row=mysqli_fetch_array($get_bcd_result))
@@ -94,7 +93,7 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                 $input_job_no_random_ref =$bcd_row['input_job_no_random_ref'];
                 $schedule =$bcd_row['schedule'];
                 $remarks =$bcd_row['remarks'];
-                
+                echo $bundle_number.'bundle_number<br/>';
                 $get_bcd_ims="SELECT send_qty,recevied_qty,rejected_qty FROM $brandix_bts.bundle_creation_data where bundle_number=$bundle_number and operation_id=$output_ops_code_out";
                 // echo $get_bcd_ims."<br>";
                 $get_bcd_ims_result=mysqli_query($link, $get_bcd_ims) or exit("Sql Error242".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -172,6 +171,54 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                 mysqli_query($link,$ims_log_delete) or exit("While Delete".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }
+
+
+        //plan dashboard input
+        $get_job_query="SELECT input_job_no_random FROM $bai_pro3.packing_summary_input WHERE order_style_no='$style' AND order_col_des='$color' AND order_del_no='$schedule' GROUP BY input_job_no_random";
+        $get_job_query_result=mysqli_query($link, $get_job_query) or exit("Sql Error212".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($job_row=mysqli_fetch_array($get_job_query_result))
+        {
+            $input_job_num = $job_row['input_job_no_random'];
+            echo $input_job_num.'input_job_num<br/>';
+            $sql="SELECT COALESCE(SUM(recevied_qty),0) AS rec_qty,COALESCE(SUM(rejected_qty),0) AS rej_qty,COALESCE(SUM(original_qty),0) AS org_qty,COALESCE(SUM(replace_in),0) AS replace_qty FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '".$input_job_num."' AND operation_id = $operation_code_routing";
+            $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+            //if planned
+            if(mysqli_num_rows($sql_result) > 0)
+            {
+                while($sql_row=mysqli_fetch_array($sql_result))
+                {
+                    $rec_qty1=$sql_row["rec_qty"];
+                    $rej_qty1=$sql_row["rej_qty"];
+                    $orginal_qty=$sql_row["org_qty"];
+                    $replace_in_qty=$sql_row["replace_qty"];
+                }
+    
+                if(($orginal_qty+$replace_in_qty)==($rec_qty1+$rej_qty1)) 
+                {
+                    $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
+                    $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_check_res)==0)
+                    {
+                        $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$input_job_num."'";
+                        mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                    }
+                    $sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
+                    mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+                } else {
+                    $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
+                    $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_check_res)==0)
+                    {
+                        $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref='".$input_job_num."'";
+                        mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                    }
+                    $sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
+                    mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+                }
+            }
+
+        }
+
     }
 }
 
