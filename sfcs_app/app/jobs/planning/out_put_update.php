@@ -144,7 +144,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$shipped=$sql_row8['shipped'];		
 				}
-				
+				$fgqty =0;
 				$sql9="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\",SUM(IF(status=\"DONE\",carton_act_qty,0)) as fgqty from $bai_pro3.packing_summary where order_del_no=$schedule and order_col_des='".$color."' and size_code='".$size_data_ref."' group by size_code";
 				$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row9=mysqli_fetch_array($sql_result9))
