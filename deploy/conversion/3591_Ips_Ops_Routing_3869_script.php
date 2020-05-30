@@ -133,11 +133,11 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                     // echo $get_rep_ims_bkp.'<br/>';
                     $get_rep_ims_bkp_result=mysqli_query($link, $get_rep_ims_bkp) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($get_rep_ims_bkp_result) == 0) {
-                        
-                        $insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,
-                                    ims_size,ims_qty,ims_pro_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id,ims_status) values ('".$scanned_date."','".$cat_ref."','".$docket_number."','".$assigned_module."','".$shift."','".$size_id."','".$recevied_qty."','".$recevied_qty_out."','".$scanned_date."','".$style."','".$schedule."','".$color."','".$docket_number."','".$bundle_op_id."','".$input_job_no_random_ref."','".$input_job_no."','".$bundle_number."','".$remarks."','".$operation_id."','".$ims_status."')";
-                        // echo $insert_imslog.'<br/>';
-                        mysqli_query($link,$insert_imslog) or exit("While updating status in ims_log3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if($recevied_qty > 0) {
+                            $insert_imslog="insert into $bai_pro3.ims_log (ims_date,ims_cid,ims_doc_no,ims_mod_no,ims_shift,ims_size,ims_qty,ims_pro_qty,ims_log_date,ims_style,ims_schedule,ims_color,rand_track,bai_pro_ref,input_job_rand_no_ref,input_job_no_ref,pac_tid,ims_remarks,operation_id,ims_status) values ('".$scanned_date."','".$cat_ref."','".$docket_number."','".$assigned_module."','".$shift."','".$size_id."','".$recevied_qty."','".$recevied_qty_out."','".$scanned_date."','".$style."','".$schedule."','".$color."','".$docket_number."','".$bundle_op_id."','".$input_job_no_random_ref."','".$input_job_no."','".$bundle_number."','".$remarks."','".$operation_id."','".$ims_status."')";
+                            // echo $insert_imslog.'<br/>';
+                            mysqli_query($link,$insert_imslog) or exit("While updating status in ims_log3".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }
                     }
                 }
                 $get_rep_ims_bkp="SELECT * FROM $bai_pro3.ims_log_backup where pac_tid=".$bundle_number;
