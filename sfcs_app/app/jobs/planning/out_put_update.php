@@ -43,7 +43,7 @@ while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
 	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
-$sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by schedule_no*1,color,size";
+$sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" and schedule_no=746529 order by schedule_no*1,color,size";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -96,7 +96,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$cat_ref=$sql_row5["tid"];
 				$cut_total=0;
-				$sql3="select distinct(p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
+				$sql3="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
 				// echo $sql3."<br/>";
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -104,7 +104,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$cut_total=$cut_total+$sql_row3['cut_total'];
 				}
 				
-				$sql4="select distinct(p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
+				$sql4="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
 				// echo $sql4."<br/>";
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row4=mysqli_fetch_array($sql_result4))
