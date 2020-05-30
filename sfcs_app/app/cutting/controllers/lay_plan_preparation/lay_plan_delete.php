@@ -348,8 +348,8 @@ if(isset($_POST["submit"]))
                         }     
                     } 
 
-                    $sql2="delete from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid[$i]."\""; 
-                    mysqli_query($link, $sql2) or die("Error=2".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                    // $sql2="delete from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid[$i]."\""; 
+                    // mysqli_query($link, $sql2) or die("Error=2".mysqli_error($GLOBALS["___mysqli_ston"])); 
                     // echo $sql2."<br>"; 
                     
                     // $sqldb="delete from $bai_pro3.bai_orders_db where order_tid=\"".$order_tid[$i]."\""; 
