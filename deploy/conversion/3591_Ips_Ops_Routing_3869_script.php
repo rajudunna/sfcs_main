@@ -119,12 +119,12 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                 echo $bundle_number.'bundle_number<br/>';
 
                 
-                $get_qty_details1="select sum(if(operation_id = $previous_operation,send_qty,0)) as input,sum(if(operation_id = $previous_operation,rejected_qty,0)) as input_rej,sum(if(operation_id = $output_ops_code_out,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code_out,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$bundle_number";
+                $get_qty_details1="select sum(if(operation_id = $previous_operation,send_qty,0)) as input,sum(if(operation_id = $previous_operation,replace_in,0)) as replace_in,sum(if(operation_id = $previous_operation,recut_in,0)) as recut_in,sum(if(operation_id = $previous_operation,rejected_qty,0)) as input_rej,sum(if(operation_id = $output_ops_code_out,recevied_qty,0)) as output,sum(if(operation_id = $output_ops_code_out,rejected_qty,0)) as output_rej From $brandix_bts.bundle_creation_data where  bundle_number=$bundle_number";
                 //echo $get_qty_details1;
                 $get_qty_result1=mysqli_query($link,$get_qty_details1) or exit("barcode status Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($qty_details1=mysqli_fetch_array($get_qty_result1))
                 {
-                    $previous_ops_send_qty = $qty_details1['input'];
+                    $previous_ops_send_qty = $qty_details1['input']+$qty_details1['replace_in']+$qty_details1['recut_in'];
                     $previous_ops_rej_qty = $qty_details1['input_rej'];
                     $recevied_qty_out =$qty_details1['output'];
                     $ims_operation_out_qty = $qty_details1['output'] + $qty_details1['output_rej'];
