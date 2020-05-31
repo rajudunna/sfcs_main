@@ -259,7 +259,7 @@ if ($order_joins>'0' or $order_joins>0) {
                 location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$tran_order_tid&color=$color&style=$style&schedule=$schedule\";
                 }
             </script>";
-}
+ }
 
 }
 else{
