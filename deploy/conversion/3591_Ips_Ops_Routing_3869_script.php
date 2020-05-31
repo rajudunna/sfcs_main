@@ -140,10 +140,12 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                 } 
 
                 $ims_status = '';
-                if($input_final_qty == $ims_operation_out_qty)
-                {
-                    $ims_status = 'DONE';
-                }
+                if($ims_operation_out_qty > 0) {
+                    if($input_final_qty == $ims_operation_out_qty)
+                    {
+                        $ims_status = 'DONE';
+                    }
+                } 
            
                 $bundle_op_id=$bundle_number."-".$operation_id."-".$input_job_no.'-'.$remarks;
 
