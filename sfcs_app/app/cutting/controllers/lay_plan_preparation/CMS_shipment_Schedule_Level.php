@@ -126,7 +126,7 @@ function isNumber($c)
 				if(mysqli_num_rows($sql_check_res)==0)
 				{
 					$sql22="insert into $bai_pro2.movex_styles (movex_style,style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
-					mysqli_query($link, $sql22) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+					mysqli_query($link, $sql22) or exit("sql movex".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}	
 				
 				$size_ref=0;	
