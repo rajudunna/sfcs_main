@@ -1610,7 +1610,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 			}
 			else
 			{
-				echo "No Shift";
+				echo " ";
 			}
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	  
@@ -1794,7 +1794,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 		}
 		else
 		{
-			echo "No Shift";
+			echo " ";
 		}
   }	  
                       
@@ -1859,7 +1859,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		}
 		else
 		{
-			echo "No Shift";
+			echo " ";
 		}
   }
   
@@ -2070,7 +2070,7 @@ while($rows=mysqli_fetch_array($sql))
 	}
 	else
 	{
-		echo "No Shift";
+		echo " ";
 	}
 } 
 
