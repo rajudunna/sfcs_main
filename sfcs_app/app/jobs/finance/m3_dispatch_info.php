@@ -45,18 +45,17 @@ fputcsv($file,$title_list);
 					$party_location=$sql_rowx1['location'];
 				}
 				
-				$sqlx1="select *, (ship_s_xs+ship_s_s+ship_s_m+ship_s_l+ship_s_xl+ship_s_xxl+ship_s_xxxl+ship_s_s01+ship_s_s02+ship_s_s03+ship_s_s04+ship_s_s05+ship_s_s06+ship_s_s07+ship_s_s08+ship_s_s09+ship_s_s10+ship_s_s11+ship_s_s12+ship_s_s13+ship_s_s14+ship_s_s15+ship_s_s16+ship_s_s17+ship_s_s18+ship_s_s19+ship_s_s20+ship_s_s21+ship_s_s22+ship_s_s23+ship_s_s24+ship_s_s25+ship_s_s26+ship_s_s27+ship_s_s28+ship_s_s29+ship_s_s30+ship_s_s31+ship_s_s32+ship_s_s33+ship_s_s34+ship_s_s35+ship_s_s36+ship_s_s37+ship_s_s38+ship_s_s39+ship_s_s40+ship_s_s41+ship_s_s42+ship_s_s43+ship_s_s44+ship_s_s45+ship_s_s46+ship_s_s47+ship_s_s48+ship_s_s49+ship_s_s50
-) as ship_out_qty, bai_pro3.stripSpeciaChars(ship_remarks,0,1,0,0) as ship_remarks from $bai_pro3.ship_stat_log where disp_note_no=$aod_no_value";
+				$sqlx1="select *, (ship_s_xs+ship_s_s+ship_s_m+ship_s_l+ship_s_xl+ship_s_xxl+ship_s_xxxl+ship_s_s01+ship_s_s02+ship_s_s03+ship_s_s04+ship_s_s05+ship_s_s06+ship_s_s07+ship_s_s08+ship_s_s09+ship_s_s10+ship_s_s11+ship_s_s12+ship_s_s13+ship_s_s14+ship_s_s15+ship_s_s16+ship_s_s17+ship_s_s18+ship_s_s19+ship_s_s20+ship_s_s21+ship_s_s22+ship_s_s23+ship_s_s24+ship_s_s25+ship_s_s26+ship_s_s27+ship_s_s28+ship_s_s29+ship_s_s30+ship_s_s31+ship_s_s32+ship_s_s33+ship_s_s34+ship_s_s35+ship_s_s36+ship_s_s37+ship_s_s38+ship_s_s39+ship_s_s40+ship_s_s41+ship_s_s42+ship_s_s43+ship_s_s44+ship_s_s45+ship_s_s46+ship_s_s47+ship_s_s48+ship_s_s49+ship_s_s50) as ship_out_qty, bai_pro3.stripSpeciaChars(ship_remarks,0,1,0,0) as ship_remarks from $bai_pro3.ship_stat_log where disp_note_no=$aod_no_value";
                 //var_dump($sqlx1);
 				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 				{
 					$ship_schedule=$sql_rowx1['ship_schedule'];
 					$ship_remarks=$sql_rowx1['ship_remarks'];
-					if(strlen($ship_remarks)>0)
-					{
-						$ship_schedule=$ship_remarks;
-					}
+					// if(strlen($ship_remarks)>0)
+					// {
+					// 	$ship_schedule=$ship_remarks;
+					// }
 					$ship_cartons=$sql_rowx1['ship_cartons'];
 					$ship_out_qty=$sql_rowx1['ship_out_qty'];
 					
@@ -68,15 +67,16 @@ fputcsv($file,$title_list);
 						$ship_style=$sql_rowx11['order_style_no'];
 						$color=$sql_rowx11['order_col_des_group'];
 						$destination=$sql_rowx11['destination'];
+						$MPO=$sql_rowx11['vpo'];
 					}
 					
 					
-					$sqlx11="select MPO from $bai_pro2.shipment_plan_summ where schedule_no='$ship_schedule'";
-					$sql_resultx11=mysqli_query($link, $sqlx11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
-					{
-						$MPO=$sql_rowx11['MPO'];
-					}
+					// $sqlx11="select MPO from $bai_pro2.shipment_plan_summ where schedule_no='$ship_schedule'";
+					// $sql_resultx11=mysqli_query($link, $sqlx11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
+					// {
+					// 	$MPO=$sql_rowx11['MPO'];
+					// }
 					
 					$sqlx11="select remarks from $bai_pro3.packing_summary where order_del_no='$ship_schedule' limit 1";
 					$sql_resultx11=mysqli_query($link, $sqlx11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -102,7 +102,7 @@ fputcsv($file,$title_list);
 						//$values[]=$ship_cartons." Cartons";
 						$values[]=$prepared_by;
 						$values[]=$ship_out_qty;
-						$values[]=$fab_uom;
+						$values[]='PCS';
 						$values[]=$ship_style;
 						$values[]=$ship_schedule;
 						$values[]=$color;
@@ -142,7 +142,7 @@ fputcsv($file,$title_list);
 							//$values[]=$ship_cartons." Cartons";
 							$values[]=$prepared_by;
 							$values[]=$item_val*$assortlist[$i];
-							$values[]=$fab_uom;
+							$values[]='PCS';
 							$values[]=$ship_style;
 							$values[]=$ship_schedule;
 							$values[]=$colorlist[$i];
