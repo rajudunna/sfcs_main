@@ -17,36 +17,34 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sql2_result=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql2_result)==0)
 	
-	{
-		$sql1="insert  into $bai_rm_pj1.store_in_backup select * from bai_rm_pj1.store_in where lot_no=\"$lot_no\"";
-		// echo $sql1."<br/>";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
+	$sql1="insert ignore into $bai_rm_pj1.store_in_backup select * from bai_rm_pj1.store_in where lot_no=\"$lot_no\"";
+	// echo "</br>Insert in backup : ".$sql1."</br>";
+	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_affected_rows($link)>0) {
 		$check1=1;
-
+		
 	}
 	
-	$sql3="select * from $bai_rm_pj1.store_out_backup where lot_no=\"$lot_no\"";
-	$sql3_result=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql3_result)==0)
-	{
-		$sql1="insert  into $bai_rm_pj1.store_out_backup select * from bai_rm_pj1.store_out where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=\"$lot_no\")";
-		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	}
+	$sql1="insert ignore into $bai_rm_pj1.store_out_backup select * from bai_rm_pj1.store_out where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=\"$lot_no\")";
+	// echo "</br>Insertout backup : ".$sql1."</br>";
+	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_affected_rows($link)>0){
 		$check2=1;
+      
 	}
-	
-	if($check1==1 and $check2==1)
+	//echo "</br>check1 :".$check1."- Chk2 : ".$check2."</br>";
+	if($check1==1 && $check2==1)
 	{
+		//echo "hi"."</br>";
 		$sql1="delete from $bai_rm_pj1.store_out where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no=\"$lot_no\")";
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql1="delete from $bai_rm_pj1.store_in where lot_no=\"$lot_no\"";
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql1="update $bai_rm_pj1.sticker_report set backup_status=1 where lot_no=\"$lot_no\"";
+		//echo "</br>Test".$sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	}
 	
 }
