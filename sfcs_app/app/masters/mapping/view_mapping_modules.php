@@ -1,8 +1,8 @@
 	
 <!-- then dataTables -->
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
+<link href="/sfcs_app/common/js/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
 
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="/sfcs_app/common/js/jquery.dataTables.min.js"></script>
 	<?php
 
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
