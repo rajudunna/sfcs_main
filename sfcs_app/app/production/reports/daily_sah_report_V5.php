@@ -1411,9 +1411,9 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;background: #1F497D;color:white;border:.5pt solid windowtext'>Section HOD</td>";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$sec_list[$i]."</td>";
+  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$sec_list[$i]."</td>";
   }
-  echo "<td colspan=9 rowspan=3 class=xl9313441 width=520 style='width:390pt;background: gray;color:white;border:.5pt solid windowtext;'>Factory</td>
+  echo "<td colspan=10 rowspan=3 class=xl9313441 width=520 style='width:390pt;background: gray;color:white;border:.5pt solid windowtext;'>Factory</td>
  </tr>
  
  <tr height=21 style='height:15.75pt'>
@@ -1421,7 +1421,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   Study</td>";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B)</td>";
+  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B) / (Shift - general)</td>";
   }
   echo "
  </tr>
@@ -1431,7 +1431,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   ";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=9 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B)</td>";
+  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B) / (Shift - general)</td>";
   }
   echo "
  </tr>
@@ -1442,7 +1442,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
 	  echo   "
 	  <td rowspan=2 class=xl9913441 style='border-top:none;background: #4F6228;color:white;border:.5pt solid windowtext;'><span
 	  style='mso-spacerun:yes'> </span>PLAN SAH</td>
-	  <td colspan=3 class=xl9913441 style='border-left:none;background: #4F6228;color:white;border:.5pt solid windowtext;'>ACTUAL SAH</td>
+	  <td colspan=4 class=xl9913441 style='border-left:none;background: #4F6228;color:white;border:.5pt solid windowtext;'>ACTUAL SAH</td>
 	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;border:.5pt solid windowtext;'>Actual
 	  %</td>
 	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;border:.5pt solid windowtext;'>EFF %</td>
@@ -1461,6 +1461,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   echo "<td height=21 class=xl9913441 style='height:15.75pt;border-top:none;
   border-left:none;    background: #4F6228;color:white;border:.5pt solid windowtext;'>A</td>
   <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>B</td>
+  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>General</td>
   <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>Total</td>";
   }
  echo "</tr>";
@@ -1468,28 +1469,35 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
  $plan_sah=0;
  $plan_sah_a=0;
  $plan_sah_b=0;
+ $plan_sah_general=0; 
  $act_sah=0;
  $act_sah_a=0;
  $act_sah_b=0;
+ $act_sah_general=0;
  $plan_clh=0;
  $plan_sah_sec=0;
  $plan_sah_sec_a=0;
+ $plan_sah_sec_general=0;
  $plan_sah_sec_b=0;
  $act_sah_sec=0;
  $act_sah_sec_a=0;
  $act_sah_sec_b=0;
+ $act_sah_sec_general=0;
  $plan_clh_sec=0;
  $plan_sah_fac=0;
  $plan_sah_fac_a=0;
  $plan_sah_fac_b=0;
+ $plan_sah_fac_general=0;
  $act_sah_fac=0;
  $act_sah_fac_a=0;
  $act_sah_fac_b=0;
+ $act_sah_fac_general=0;
  $plan_clh_fac=0;
  $total_plan_sah_fac=0;
  $total_act_sah_fac=0;
  $total_act_sah_fac_a=0;
  $total_act_sah_fac_b=0;
+ $total_act_sah_fac_general=0;
  $total_plan_clh_fac=0;
  $int_sah_loss=array();
  $ext_sah_loss=array();
@@ -1595,19 +1603,25 @@ for($i=0;$i<sizeof($sec_array);$i++)
 				$act_sah_b=$act_sah_b+$rows["act"];
 				$plan_sah_b=$plan_sah_b+round($rows["plan"],$decimal_factor);
 			}
+			else if($rows["shift"] == "general")
+			{
+				$act_sah_general=$act_sah_general+$rows["act"];
+				$plan_sah_general=$plan_sah_general+round($rows["plan"],$decimal_factor);
+			}
 			else
 			{
-				echo "No Shift";
+				echo " ";
 			}
 	  }
 	  if(!in_array($sec_array[$i],$exp_sec))	  
 	  {
-		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b,$decimal_factor)."</td>";
+		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general,$decimal_factor)."</td>";
 		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a,$decimal_factor)."</td>";
 		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a+$act_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_sah,1))*100,1)."%</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b)/div_by_zero($plan_clh,1))*100,1)."%</td>";
+		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_general,$decimal_factor)."</td>";
+		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a+$act_sah_b+$act_sah_general,$decimal_factor)."</td>";
+		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/div_by_zero($plan_sah,1))*100,1)."%</td>";
+		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/div_by_zero($plan_clh,1))*100,1)."%</td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
@@ -1748,11 +1762,11 @@ for($i=0;$i<sizeof($sec_array);$i++)
 	  if(!in_array($sec_array[$i],$exp_sec))	
 	  {
 	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($int_sah_loss_total,2)."</td>";
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b-($act_sah_a+$act_sah_b)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
+	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general-($act_sah_a+$act_sah_b+$act_sah_general)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
 	  }
 	  $total_int_sah=$total_int_sah+round($int_sah_loss_total,2);	  
 	  
-	  $plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0;
+	  $plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $act_sah_general=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0; $plan_sah_general=0;
 	  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 	  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 }
@@ -1773,13 +1787,18 @@ for($i=0;$i<sizeof($sec_array);$i++)
 			$act_sah_sec_b=$act_sah_sec_b+$rows["act"];
 			$plan_sah_sec_b=$plan_sah_sec_b+round($rows["plan"],$decimal_factor);
 		}
+		else if($rows["shift"] == "general")
+		{
+			$act_sah_sec_general=$act_sah_sec_general+$rows["act"];
+			$plan_sah_sec_general=$plan_sah_sec_general+round($rows["plan"],$decimal_factor);
+		}
 		else
 		{
-			echo "No Shift";
+			echo " ";
 		}
   }	  
                       
-$total_sah_first_tot= $plan_sah_sec_a+$plan_sah_sec_b-$act_sah_sec-($total_ext_sah+$total_ext_sahx)-$total_int_sah+$total_ext_sahx; 
+$total_sah_first_tot= $plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general-$act_sah_sec-($total_ext_sah+$total_ext_sahx)-$total_int_sah+$total_ext_sahx; 
 if($total_sah_first_tot>0)
 {
 	
@@ -1793,17 +1812,18 @@ $grandtotal_prod_loss=$grandtotal_prod_loss+$total_sah_first_tot;
 
 //echo "individual sum=".$total_sah_first_tot."<br/>";
 
-  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_sec_a+$plan_sah_sec_b,$decimal_factor)."</td>
+  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general,$decimal_factor)."</td>
   <td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_a,$decimal_factor)."</td>
   <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_b,$decimal_factor)."</td>
+  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_general,$decimal_factor)."</td>
   <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec,$decimal_factor)."</td>
   <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_sah_sec,1))*100,1)."%</td>
   <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_clh_sec,1))*100,1)."%</td>
   <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
   <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_int_sah,2)."</td>
   <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_sah_first_tot,2)."</td>";
-$today_plan_sah_x=$plan_sah_sec_a+$plan_sah_sec_b; 
- $plan_sah_sec=0; $act_sah_sec_a=0; $act_sah_sec_b=0;$act_sah_sec=0;$total_ext_sah=0;$total_ext_sahx=0;$total_int_sah=0;$plan_clh_sec=0;$plan_sah_sec_a=0;$plan_sah_sec_b=0;
+$today_plan_sah_x=$plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general; 
+ $plan_sah_sec=0; $act_sah_sec_a=0; $act_sah_sec_b=0; $act_sah_sec_general=0; $act_sah_sec=0;$total_ext_sah=0;$total_ext_sahx=0;$total_int_sah=0;$plan_clh_sec=0;$plan_sah_sec_a=0;$plan_sah_sec_b=0;$plan_sah_sec_general=0;
 
 echo "</tr>";	 
 } 
@@ -1832,9 +1852,14 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 			$act_sah_fac_b=$act_sah_fac_b+$rows["act"];
 			$plan_sah_fac_b=$plan_sah_fac_b+round($rows["plan"],$decimal_factor);
 		}
+		else if($rows["shift"] == "general")
+		{
+			$act_sah_fac_general=$act_sah_fac_general+$rows["act"];
+			$plan_sah_fac_general=$plan_sah_fac_general+round($rows["plan"],$decimal_factor);
+		}
 		else
 		{
-			echo "No Shift";
+			echo " ";
 		}
   }
   
@@ -1843,9 +1868,10 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   {
   $plan[]=$plan_sah_fac;  
   $eff_array[]=round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1);
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($plan_sah_fac_a+$plan_sah_fac_b,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general,$decimal_factor)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_a,$decimal_factor)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_b,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_general,$decimal_factor)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac,$decimal_factor)."</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1)."%</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($act_sah_fac/div_by_zero($plan_clh_fac,1))*100,1)."%</td>";
@@ -2014,14 +2040,14 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 	
   $int_sah_array[]=$int_sah_loss_total1;
   echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;border:.5pt solid windowtext;'>".round($int_sah_loss_total1,2)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;border:.5pt solid windowtext;'>".round($plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;border:.5pt solid windowtext;'>".round($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
   }
   
   $total_int_sah1=$total_int_sah1+round($int_sah_loss_total1,2);
   $int_sah_loss_total1=0;
   $ext_sah_loss_total1=0;
   $ext_sah_loss_total1s=0;
-  $plan_sah_fac=0; $act_sah_fac=0; $plan_clh_fac=0; $act_sah_fac_a=0; $act_sah_fac_b=0; $plan_sah_fac_a=0; $plan_sah_fac_b=0;
+  $plan_sah_fac=0; $act_sah_fac=0; $plan_clh_fac=0; $act_sah_fac_a=0; $act_sah_fac_b=0; $act_sah_fac_general=0; $plan_sah_fac_a=0; $plan_sah_fac_b=0; $plan_sah_fac_general=0;
   
 }
 $sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE section in (".implode(",",$sec_array).") and DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
@@ -2038,9 +2064,13 @@ while($rows=mysqli_fetch_array($sql))
 	{
 		$total_act_sah_fac_b=$total_act_sah_fac_b+$rows["act"];
 	}
+	else if($rows["shift"] == "general")
+	{
+		$total_act_sah_fac_general=$total_act_sah_fac_general+$rows["act"];
+	}
 	else
 	{
-		echo "No Shift";
+		echo " ";
 	}
 } 
 
@@ -2056,6 +2086,7 @@ $total_prod_loss=$grandtotal_prod_loss;
   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_plan_sah_fac,$decimal_factor)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_a,$decimal_factor)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_b,$decimal_factor)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_general,$decimal_factor)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac,$decimal_factor)."</td>
   <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($total_act_sah_fac/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
   <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($total_act_sah_fac/div_by_zero($total_plan_clh_fac,1))*100,1)."%</td>
