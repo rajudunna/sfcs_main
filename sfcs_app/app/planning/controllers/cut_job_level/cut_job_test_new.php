@@ -1,6 +1,7 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?> 
 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
@@ -16,17 +17,18 @@ body
 var url = '<?= getFullURLLevel($_GET['r'],'cut_job_test_new.php',0,'N'); ?>'; 
 function firstbox() 
 { 
-    window.location.href =url+"&style="+document.test.style.value 
+    window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))
 } 
 
 function secondbox() 
 { 
-    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+    window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value 
 } 
 
 function thirdbox() 
 { 
-    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value 
+
+    window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value)) 
 } 
 </script> 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> --> 
@@ -37,10 +39,9 @@ function thirdbox()
 
 <?php  
 
-$style=$_GET['style']; 
+$style=style_decode($_GET['style']); 
 $schedule=$_GET['schedule'];  
-$color=$_GET['color']; 
-
+$color=color_decode($_GET['color']);
 if(strlen($color) > 4){	
 	$split_verify = "SELECT group_concat(doc_no) as docs from 
 					$bai_pro3.plandoc_stat_log where order_tid='$style$schedule$color' and org_doc_no = 1";
@@ -159,7 +160,7 @@ echo "<div class='row'>";
 		}	 
 
 		$sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no"; 
-
+        //echo $sql;
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		$sql_num_check=mysqli_num_rows($sql_result); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -201,7 +202,6 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		$cat_ref=$_POST['cat_ref']; 
 		
 		$data_sym="$"; 
-		
 
 		$my_file = getFullURLLevel($_GET['r'],'cut_job_drag_drop_data.php',0,'R'); 
 
