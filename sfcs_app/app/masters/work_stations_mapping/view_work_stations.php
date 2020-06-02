@@ -2,7 +2,7 @@
 <!-- then dataTables -->
 <link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
 
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="/sfcs_app/common/js/jquery.dataTables.min.js"></script>
 	<?php
 	// $servername = "192.168.0.110:3326";
 	// $username = "baiall";
