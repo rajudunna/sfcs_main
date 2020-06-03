@@ -11,7 +11,14 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include("mail_config.php");
 error_reporting(0);
 $facility=$global_facility_code;
-$date=date("Y-m-d",strtotime('-1 days'));
+if(isset($_GET['date']))
+{
+	$date=date("Y-m-d",strtotime($_GET['date']));
+}
+else
+{
+	$date=date("Y-m-d",strtotime('-1 days'));
+}
 
 
 $title_list = array
