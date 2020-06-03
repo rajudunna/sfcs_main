@@ -69,7 +69,7 @@ if(isset($_POST['submit']))
 			echo "<th>Act PRO</th>"; 
 		echo "</tr>"; 
 			     
-		
+	/*
 	$sql222_new="select distinct bac_date from $table_name where bac_date between \"$sdate\" and \"$edate\""; 
 	//echo $sql222_new;
 	$sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -254,22 +254,7 @@ if(isset($_POST['submit']))
 									$nop=$sql_row2['nop']; 
 								} 
 							} 
-							//********** disabled due to reports discripency 
-							/*$sql13="select fix_nop as nop from $bai_pro.pro_plan where mod_no=$module and date=\"".$date."\" and shift=\"".$shift."\""; 
-							$result13=mysql_query($sql13,$link) or exit("Sql Error".mysql_error()); 
-							while($sql_row13=mysql_fetch_array($result13)) 
-							{ 
-								//$nop=$sql_row13["nop"]; 
-							} 
-								
-							//For Temp Check (Taking Allocated Operators as cadre to calculate Clock Hours) 
-							$sql13="select (avail_$shift-absent_$shift) as nop from pro_atten where module=$module and date=\"".$date."\""; 
-							$result13=mysql_query($sql13,$link) or exit("Sql Error".mysql_error()); 
-							while($sql_row13=mysql_fetch_array($result13)) 
-							{ 
-								//$nop=$sql_row13["nop"]; 
-							} 
-							*/ 
+							
 								
 							$days=0; 
 							$sql2="select days from $bai_pro.pro_style where style=\"$style_code_new\""; 
@@ -312,21 +297,6 @@ if(isset($_POST['submit']))
 								$act_nop=$sql_row2['nop']; 
 							} 
 							$act_clh=$act_nop*$hoursa_shift; 
-
-							/*// Table Start 
-							echo "<tr>"; 
-							echo "<td>$date</td>"; 
-							echo "<td>$module</td>"; 
-							echo "<td>$shift</td>"; 
-							echo "<td>$sec</td>"; 
-							echo "<td>$pln_output</td>"; 
-							echo "<td>$act_output</td>"; 
-							echo "<td>$pln_clh</td>"; 
-							echo "<td>$act_clh</td>"; 
-							echo "<td>$pln_sth</td>"; 
-							echo "<td>$act_sth</td>"; 
-							echo "</tr>"; 
-							// Table End */ 
 								
 							$code=$date."-".$module."-".$shift; 
 								
@@ -376,11 +346,12 @@ if(isset($_POST['submit']))
 		}
 	} //e 
 
-
+*/
 	//SECTION Breakup 
 	//Date:2013-11-20 
 	//Ticket #274262 
 	//Renmoved the where clause for section 
+	$decimal_factor=2;
 	$sql2="select distinct section from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by section";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error78".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -409,21 +380,21 @@ if(isset($_POST['submit']))
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error79".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
-				$plan_sth=$sql_row['plan_sth']; 
-				$plan_clh=$sql_row['plan_clh']; 
-				$act_sth=$sql_row['act_sth']; 
-				$act_clh=$sql_row['act_clh']; 
+				$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+				$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+				$act_sth=round($sql_row["act_sth"],$decimal_factor);
+				$act_clh=round($sql_row["act_clh"],$decimal_factor);
 				$plan_out=$sql_row['plan_out']; 
 				$act_out=$sql_row['act_out']; 
 			} 
 				
 			
-			echo "<td>".round(($plan_sth/$plan_clh)*100,0)."%</td>"; 
-			echo "<td>".round(($act_sth/$act_clh)*100,0)."%</td>"; 
-			echo "<td>".round($plan_sth,0)."</td>"; 
-			echo "<td>".round($act_sth,0)."</td>"; 
-			echo "<td>".round($plan_out,0)."</td>"; 
-			echo "<td>".round($act_out,0)."</td>"; 
+			echo "<td>".round(($plan_sth/$plan_clh)*100,$decimal_factor)."%</td>"; 
+			echo "<td>".round(($act_sth/$act_clh)*100,$decimal_factor)."%</td>"; 
+			echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
+			echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
+			echo "<td>".round($plan_out,$decimal_factor)."</td>"; 
+			echo "<td>".round($act_out,$decimal_factor)."</td>"; 
 			echo "</tr>"; 
 		} 
 			
@@ -453,21 +424,21 @@ if(isset($_POST['submit']))
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error75".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{ 
-			$plan_sth=$sql_row['plan_sth']; 
-			$plan_clh=$sql_row['plan_clh']; 
-			$act_sth=$sql_row['act_sth']; 
-			$act_clh=$sql_row['act_clh']; 
+			$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+			$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+			$act_sth=round($sql_row["act_sth"],$decimal_factor);
+			$act_clh=round($sql_row["act_clh"],$decimal_factor);
 			$plan_out=$sql_row['plan_out']; 
 			$act_out=$sql_row['act_out']; 
 		} 
 			
 		
-		echo "<td>".round(($plan_sth/$plan_clh)*100,0)."%</td>"; 
-		echo "<td>".round(($act_sth/$act_clh)*100,0)."%</td>"; 
-		echo "<td>".round($plan_sth,0)."</td>"; 
-		echo "<td>".round($act_sth,0)."</td>"; 
-		echo "<td>".round($plan_out,0)."</td>"; 
-		echo "<td>".round($act_out,0)."</td>"; 
+		echo "<td>".round(($plan_sth/$plan_clh)*100,$decimal_factor)."%</td>"; 
+		echo "<td>".round(($act_sth/$act_clh)*100,$decimal_factor)."%</td>"; 
+		echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
+		echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
+		echo "<td>".round($plan_out,$decimal_factor)."</td>"; 
+		echo "<td>".round($act_out,$decimal_factor)."</td>"; 
 		echo "</tr>"; 
 	} 
 					
@@ -480,21 +451,22 @@ if(isset($_POST['submit']))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error76".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
-		$plan_sth=$sql_row['plan_sth']; 
-		$plan_clh=$sql_row['plan_clh']; 
-		$act_sth=$sql_row['act_sth']; 
-		$act_clh=$sql_row['act_clh']; 
+		
+		$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+		$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+		$act_sth=round($sql_row["act_sth"],$decimal_factor);
+		$act_clh=round($sql_row["act_clh"],$decimal_factor);
 		$plan_out=$sql_row['plan_out']; 
 		$act_out=$sql_row['act_out']; 
 	} 
 		
 
-	echo "<td>".round(($plan_sth/$plan_clh)*100,0)."%</td>"; 
-	echo "<td>".round(($act_sth/$act_clh)*100,0)."%</td>"; 
-	echo "<td>".round($plan_sth,0)."</td>"; 
-	echo "<td>".round($act_sth,0)."</td>"; 
-	echo "<td>".round($plan_out,0)."</td>"; 
-	echo "<td>".round($act_out,0)."</td>"; 
+	echo "<td>".round(($plan_sth/$plan_clh)*100,$decimal_factor)."%</td>"; 
+	echo "<td>".round(($act_sth/$act_clh)*100,$decimal_factor)."%</td>"; 
+	echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
+	echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
+	echo "<td>".round($plan_out,$decimal_factor)."</td>"; 
+	echo "<td>".round($act_out,$decimal_factor)."</td>"; 
 	echo "</tr>"; 
 					
 	echo "</table>"; 
