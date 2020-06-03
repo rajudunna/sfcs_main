@@ -410,22 +410,22 @@ $tran_order_tid1=$tran_order_tid;
 $doc_generated_ids=array();
 foreach($cats_ids as $key=>$value)
 {
-    $get_cat_ref_query="SELECT cat_ref,tid FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and serial_no=$serial_no and cat_ref=$value and recut_lay_plan='yes' group by cat_ref ORDER BY tid";
+    $get_cat_ref_query="SELECT cat_ref,tid,cuttable_ref,mk_status,remarks FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and serial_no=$serial_no and cat_ref=$value and recut_lay_plan='yes' ORDER BY tid";
     $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($cat_row=mysqli_fetch_array($cat_ref_result))
     {
         $doc_generated_ids[]=$cat_row['tid'];
         $grand_tot_used_fab = 0;
         $grand_tot_used_binding = 0;
-        $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='yes' and serial_no=$serial_no ORDER BY ratio";
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row=mysqli_fetch_array($sql_result))
-        {
-            $cat_ref1=$sql_row['cat_ref'];
-            $cuttable_ref1=$sql_row['cuttable_ref'];
-            $allocate_ref1=$sql_row['tid'];
-            $mk_status1=$sql_row['mk_status'];
-            $remarks1=$sql_row['remarks'];
+        // $sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='yes' and serial_no=$serial_no ORDER BY ratio";
+        // $sql_result=mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+        // while($sql_row=mysqli_fetch_array($sql_result))
+        // {
+            $cat_ref1=$cat_row['cat_ref'];
+            $cuttable_ref1=$cat_row['cuttable_ref'];
+            $allocate_ref1=$cat_row['tid'];
+            $mk_status1=$cat_row['mk_status'];
+            $remarks1=$cat_row['remarks'];
                 
             $mklength1=0;
             $mkeff1=0;
@@ -572,7 +572,7 @@ foreach($cats_ids as $key=>$value)
                 // $marker_table .=  "<td class=\"word-wrap\"><center>".$remark4."</center></td>";
                 $marker_table .=  "
             </tr>";
-        }
+        // }
         // $marker_table .=  "<tr style='background-color: yellow;'><td colspan=3><center><b>Total ($category1) </b></center></td><td><center><b>$grand_tot_used_fab</b></center></td><td><center><b>$grand_tot_used_binding</b></center></td><td colspan=6></td></tr>";
     }
 }
