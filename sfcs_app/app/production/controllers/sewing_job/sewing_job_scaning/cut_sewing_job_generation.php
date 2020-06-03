@@ -297,7 +297,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
                 //alert("The text has been changed.");
                 var optionSelected = $("option:selected", this);
                var valueSelected = this.value;
-              window.location.href =url1+"&style="+valueSelected
+              window.location.href =url1+"&style="+encodeURIComponent(window.btoa(valueSelected))
             });
             $("#schedule").change(function(){
                // var input = $(this);
@@ -307,7 +307,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
              var optionSelected = $("option:selected", this);
                var valueSelected2 = this.value;
                var style1 = $("#style").val();
-               window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+               window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+valueSelected2
             });
 
             $("#color").change(function(){
@@ -316,7 +316,7 @@ if(isset($_POST) && isset($_POST['main_data'])){
                var valueSelected3 = this.value;
                var style1 = $("#style").val();
                var schedule = $("#schedule").val();
-               window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
+               window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(valueSelected3))
                //alert(valueSelected2); 
              //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
             });
@@ -326,11 +326,13 @@ if(isset($_POST) && isset($_POST['main_data'])){
 <div class = 'panel panel-primary'>
     <div class = 'panel-heading'><b>Cut Sewing Job Generation</b></div>
     <?php
-        $style=$_GET['style'];
-        $schedule=$_GET['schedule']; 
-        $color  = $_GET['color'];
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
+        $style=style_decode($_GET['style']); 
+        $schedule=$_GET['schedule'];  
+        $color=color_decode($_GET['color']);
+        
 
         echo '<div class = "panel-body">';
             $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
