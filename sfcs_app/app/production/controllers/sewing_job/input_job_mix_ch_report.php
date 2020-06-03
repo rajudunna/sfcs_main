@@ -18,6 +18,7 @@
         $style = $_GET['style'];
         include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
         include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+        include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
         $sql="select order_joins from $bai_pro3.bai_orders_db_confirm where order_joins='J$schedule'";
         //echo $sql."<br>";
@@ -173,9 +174,10 @@
                                             echo "<td>".strtoupper($size_codes)."</td>";
                                             echo "<td>".$sql_row['carton_act_qty']."</td>";
                                             echo "<td>";
-
+                                            //Style Encoded
+                                            $main_style=style_encode($style);
                                             $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
-                                            echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
+                                            echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$main_style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$main_style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
 
                                             echo"</td>";
                                             if($scanning_methods=='Bundle Level')
@@ -229,6 +231,7 @@
     else
     {
         error_reporting(0);
+        include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
         $schedule1=$schedule;
 
         // echo $c_ref;
@@ -426,9 +429,10 @@
                                             echo "<td>".strtoupper($size_codes)."</td>";
                                             echo "<td>".$sql_row['carton_act_qty']."</td>";
                                             echo "<td>";
-
+                                            //Style Encoded
+                                            $main_style=style_encode($style);
                                             $url4 = getFullURLLevel($_GET['r'],'new_job_sheet3.php',0,'R');
-                                            echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
+                                            echo "<a target='_blank' class='btn btn-info btn-sm' href='$url4?jobno=".$sql_row['input_job_no']."&style=$main_style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."' onclick=\"return popitup2('".$url4."?jobno=".$sql_row['input_job_no']."&style=$main_style&schedule=".$sql_row['order_del_no']."&color=".$sql_row['order_col_des']."&doc_no=".$sql_row['input_job_no_random']."')\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Job Sheet-<b>".$sql_row['input_job_no']."</b></a><br>";
 
                                             echo"</td>";
                                             if($scanning_methods=='Bundle Level')
