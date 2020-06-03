@@ -24,6 +24,8 @@ $emp_lists=implode(",",$emp_list);
 $sql="SELECT team,module, SUM(IF(attn_status='A',1,0)) AS absent, SUM(IF(attn_status='P',1,0)) AS present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND $database1.$month.emp_w_status in (".$emp_active_status.") AND module>0 GROUP BY module,team ORDER BY module+0" ;
 //echo $sql;
 
+$sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
+mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
  
 $sql_result=mysqli_query($link_hrms, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row1=mysqli_fetch_array($sql_result)) 
@@ -68,7 +70,7 @@ $sql_resulty=mysqli_query($link_hrms, $sqly) or exit("Sql Error".mysqli_error($G
 
 $sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
 	//echo $sql11."<br/>";
-	mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	
 while($sql_row1=mysqli_fetch_array($sql_resulty)) 
 { 
