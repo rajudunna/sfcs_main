@@ -140,6 +140,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$tot_forecast_sah_plantWise=array(); $tot_act_sah_plantWise=array(); $tot_sah_diff_plantWise=array();
 				$tot_plan_eff_plantWise=array(); $tot_act_eff_plantWise=array(); $tot_balance_plantWise=array();
 				$tot_hit_rate_plantWise=array();	$grand_tot_qty_time_array1 = array(); 
+				$avg_count=0;
 			
 			while($row=mysqli_fetch_array($res))
 			{
@@ -202,6 +203,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			  
 			  <tbody>
 				<tr>
+					<?php $avg_count++; ?>
 					<td><center><?php  echo $team;  ?></center></td>
 					<td><center><?php  echo $nop;  ?></center></td>
 					<td><center>
@@ -595,6 +597,9 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				<?php
 				
 			} 
+			if($avg_count == 0) {
+					$avg_count = 1;
+				}
 				for ($j=0; $j < sizeof($plant_name); $j++)
 				{
 					?>
@@ -633,8 +638,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						<?php 
 							if ($nop>0 && $hours>0)
 							{
-								$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100);
-								$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($nop*$hours))*100);
+								$tot_plan_eff_plantWise[$j]=round(((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100)/$avg_count);
+								$tot_act_eff_plantWise[$j]=round(((($tot_act_sah_plantWise[$j])/($nop*$hours))*100)/$avg_count);
 							}
 							else
 							{
