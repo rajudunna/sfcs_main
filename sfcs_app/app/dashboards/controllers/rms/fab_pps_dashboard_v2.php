@@ -742,7 +742,19 @@
                                 $rm_update_new=strtolower(chop($sql_row1['rm_date']));
                                 $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
                                 $doc_no=$sql_row1['doc_no'];
-                               
+                                $sq_mf="select manual_flag from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+                                $sql_result_mf=mysqli_query($link, $sq_mf) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+                                if(mysqli_num_rows($sql_result_mf)>0)
+                                {
+                                    while($sql_row_mf=mysqli_fetch_array($sql_result_mf))
+                                    {
+                                        $manual_flag_val=$sql_row_mf['manual_flag'];
+                                    }
+                                }
+                               // echo $doc_no."--".$manual_flag_val."<br/>";
+                                if($manual_flag_val == 0)
+                                {
+									
                                 $a_plies = $sql_row1['a_plies'];
                                 $p_plies = $sql_row1['p_plies'];
                               
@@ -1004,7 +1016,7 @@
                                 //         // echo "yellow or green 1";
                                 //         echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"$doc_no\" class=\"$final_cols\" style=\"font-size:12px; text-align:center; color:$final_cols\" title=\"$title\" ></div></div>";
                                 //     }
-                                // }
+                                 }
                             }
                             //Ticket #663887 dispaly the buyer name of module at the end of boxes
                             $sqly="select buyer_div from $bai_pro3.plan_modules where module_id='$module'";

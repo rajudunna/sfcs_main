@@ -112,6 +112,18 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$rm_update_new=strtolower(chop($sql_row1['rm_date']));
 			$input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
 			$doc_no=$sql_row1['doc_no'];
+			$sq_mf="select manual_flag from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+            $sql_result_mf=mysqli_query($link, $sq_mf) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+            if(mysqli_num_rows($sql_result_mf)>0)
+            {
+                while($sql_row_mf=mysqli_fetch_array($sql_result_mf))
+                {
+                    $manual_flag_val=$sql_row_mf['manual_flag'];
+                }
+            }
+            //echo $doc_no."--".$manual_flag_val."<br/>";
+            if($manual_flag_val == 0)
+            {
 			$order_tid=$sql_row1['order_tid'];
 			$fabric_status=$sql_row1['fabric_status_new'];
 			
@@ -285,7 +297,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: </br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
-
+			}
 		}
 		
 		for($i=1;$i<=14-$sql_num_check;$i++)
