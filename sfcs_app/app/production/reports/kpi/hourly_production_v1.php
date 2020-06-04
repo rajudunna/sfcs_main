@@ -133,6 +133,7 @@ if(isset($_GET['submit']))
 				// $grand_tot_plan_eff=0; $grand_tot_act_eff=0; $grand_tot_hitrate=0; $grand_tot_required=0; 
 				$section_count=0;
 				$section_wise_total = 0;
+				$total_avg_count = 0;
 				while($Sec=mysqli_fetch_array($section_result))
 				{
 					$section_wise_total++;
@@ -149,6 +150,7 @@ if(isset($_GET['submit']))
 					$res=mysqli_query($link,$sql);
 					if (mysqli_num_rows($res) > 0) 
 					{
+						$avg_count = 0;
 						while($row=mysqli_fetch_array($res))
 						{ 
 							$total_qty = 0;
@@ -202,6 +204,7 @@ if(isset($_GET['submit']))
 					  
 							<tbody>
 								<tr>
+									<?php $avg_count++; $total_avg_count++ ?>
 									<td><center><?php  echo $team;  ?></center></td>
 									<td><center><?php  echo $nop;  ?></center></td>
 									<td><center>
@@ -613,6 +616,13 @@ if(isset($_GET['submit']))
 							}
 							?>
 							<tr style="background-color:lightgreen;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
+								<?php 
+
+									if($avg_count == 0) {
+										$avg_count = 1;
+									}
+
+								?>
 								<td><?php  echo $section_display_name; ?></center></td>
 								<td></td>
 								<td></td>
@@ -684,7 +694,7 @@ if(isset($_GET['submit']))
 									<?php
 										if ($nop>0 && $hours>0)
 										{
-											$sec_plan_eff=round((($sec_tot_plan_sah)/($nop*$hours))*100);
+											$sec_plan_eff=round(((($sec_tot_plan_sah)/($nop*$hours))*100)/$avg_count);
 										}
 										else
 										{
@@ -697,7 +707,7 @@ if(isset($_GET['submit']))
 									<?php
 										if ($nop>0 && $hours>0)
 										{
-											$sec_act_eff = round((($sec_tot_act_sah)/($nop*$hours))*100);
+											$sec_act_eff = round(((($sec_tot_act_sah)/($nop*$hours))*100)/$avg_count);
 										}
 										else
 										{
@@ -730,6 +740,9 @@ if(isset($_GET['submit']))
 						</tbody>
 						<?php
 					}
+				}
+				if($total_avg_count == 0) {
+					$total_avg_count = 1;
 				}
 				
 				for ($j=0; $j < sizeof($plant_name); $j++)
@@ -770,8 +783,8 @@ if(isset($_GET['submit']))
 						<?php
 							if ($nop>0 && $hours>0)
 							{
-								$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100);
-								$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($nop*$hours))*100);
+								$tot_plan_eff_plantWise[$j]=round(((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100)/$total_avg_count);
+								$tot_act_eff_plantWise[$j]=round(((($tot_act_sah_plantWise[$j])/($nop*$hours))*100)/$total_avg_count);
 							}
 							else
 							{
