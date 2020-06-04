@@ -590,12 +590,12 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
                     $get_ips_op = get_ips_operation_code($link,$style,$color);
                     $operation_in_code=$get_ips_op['operation_code'];
 					
-                    $sqlwip12="SELECT sum(ims_qty) as in1 from $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
+                    $sqlwip12="SELECT sum(ims_qty) as in1,sum(ims_pro_qty) as out1 from $bai_pro3.ims_log WHERE ims_mod_no='$module' and ims_status<>'DONE' AND ims_remarks<>'Sample'";
                     //  echo $sqlwip12."<br>";
                       $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
                       while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
                       {
-                        $wip=$sql_rowwip12['in1'];
+                        $wip=$sql_rowwip12['in1']-$sql_rowwip12['out1'];
                       } 
                   }
 				  else
