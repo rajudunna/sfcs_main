@@ -1587,25 +1587,25 @@ echo "<tr height=21 style='height:15.75pt'>
 //echo implode(",",$sec_array);
 for($i=0;$i<sizeof($sec_array);$i++)
 {
-	 $sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,ROUND(SUM(act_clh),$decimal_factor) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");	 
+	 $sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");	 
       while($rows=mysqli_fetch_array($sql))
 	  {
 			$plan_sah=$plan_sah+round($rows["plan"],$decimal_factor);
-			$act_sah=$act_sah+$rows["act"];
-			$plan_clh=$plan_clh+$rows["clh"];
+			$act_sah=$act_sah+round($rows["act"],$decimal_factor);
+			$plan_clh=$plan_clh+round($rows["clh"],$decimal_factor);
 			if($rows["shift"] == "A")
 			{
-				$act_sah_a=$act_sah_a+$rows["act"];
+				$act_sah_a=$act_sah_a+round($rows["act"],$decimal_factor);
 				$plan_sah_a=$plan_sah_a+round($rows["plan"],$decimal_factor);
 			}
 			else if($rows["shift"] == "B")
 			{
-				$act_sah_b=$act_sah_b+$rows["act"];
+				$act_sah_b=$act_sah_b+round($rows["act"],$decimal_factor);
 				$plan_sah_b=$plan_sah_b+round($rows["plan"],$decimal_factor);
 			}
 			else if($rows["shift"] == "general")
 			{
-				$act_sah_general=$act_sah_general+$rows["act"];
+				$act_sah_general=$act_sah_general+round($rows["act"],$decimal_factor);
 				$plan_sah_general=$plan_sah_general+round($rows["plan"],$decimal_factor);
 			}
 			else
@@ -1771,25 +1771,25 @@ for($i=0;$i<sizeof($sec_array);$i++)
 	  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 }
 
- $sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,ROUND(SUM(act_clh),$decimal_factor) as clh,shift FROM $bai_pro.grand_rep WHERE section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
+ $sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
   while($rows=mysqli_fetch_array($sql))
   {
-		$plan_sah_sec=$plan_sah_sec+$rows["plan"];
-		$act_sah_sec=$act_sah_sec+$rows["act"];
-		$plan_clh_sec=$plan_clh_sec+$rows["clh"];
+		$plan_sah_sec=$plan_sah_sec+round($rows["plan"],$decimal_factor);
+		$act_sah_sec=$act_sah_sec+round($rows["act"],$decimal_factor);
+		$plan_clh_sec=$plan_clh_sec+round($rows["clh"],$decimal_factor);
 		if($rows["shift"] == "A")
 		{
-			$act_sah_sec_a=$act_sah_sec_a+$rows["act"];
+			$act_sah_sec_a=$act_sah_sec_a+round($rows["act"],$decimal_factor);
 			$plan_sah_sec_a=$plan_sah_sec_a+round($rows["plan"],$decimal_factor);
 		}
 		else if($rows["shift"] == "B")
 		{
-			$act_sah_sec_b=$act_sah_sec_b+$rows["act"];
+			$act_sah_sec_b=$act_sah_sec_b+round($rows["act"],$decimal_factor);
 			$plan_sah_sec_b=$plan_sah_sec_b+round($rows["plan"],$decimal_factor);
 		}
 		else if($rows["shift"] == "general")
 		{
-			$act_sah_sec_general=$act_sah_sec_general+$rows["act"];
+			$act_sah_sec_general=$act_sah_sec_general+round($rows["act"],$decimal_factor);
 			$plan_sah_sec_general=$plan_sah_sec_general+round($rows["plan"],$decimal_factor);
 		}
 		else
