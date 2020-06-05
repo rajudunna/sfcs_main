@@ -1279,15 +1279,15 @@ collapse;table-layout:fixed;width:3204pt'>
 mso-width-alt:2340;width:48pt'>
 <tr height=21 style='height:15.75pt'>
 <td colspan=2 height=21 class=xl10113441 style='height:15.75pt'>Buyer Name</td>
-<td colspan=9 class=xl9313441 style='border-left:none'>VS</td>
-<td colspan=9 class=xl9313441 style='border-left:none'>M&S</td>
-<td colspan=9 class=xl9313441 style='border-left:none'>Factory</td>
+<td colspan=10 class=xl9313441 style='border-left:none'>VS</td>
+<td colspan=10 class=xl9313441 style='border-left:none'>M&S</td>
+<td colspan=10 class=xl9313441 style='border-left:none'>Factory</td>
 </tr>
 <tr height=36 style='mso-height-source:userset;height:27.0pt'>
 <td colspan=2 rowspan=2 height=57 class=xl10213441 style='height:42.75pt'>DATE</td>
 <td rowspan=2 class=xl9913441 style='border-top:none'><span
 style='mso-spacerun:yes'>�</span>PLAN SAH</td>
-<td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
+<td colspan=4 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
 %</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>EFF %</td>
@@ -1298,7 +1298,7 @@ SAH loss</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
 <td rowspan=2 class=xl9913441 style='border-top:none'><span
 style='mso-spacerun:yes'>�</span>PLAN SAH</td>
-<td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
+<td colspan=4 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
 %</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>EFF %</td>
@@ -1309,7 +1309,7 @@ SAH loss</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Production loss</td>
 <td rowspan=2 class=xl9913441 style='border-top:none'><span
 style='mso-spacerun:yes'>�</span>PLAN SAH</td>
-<td colspan=3 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
+<td colspan=4 class=xl9913441 style='border-left:none'>ACTUAL SAH</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>Actual
 %</td>
 <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt'>EFF %</td>
@@ -1323,12 +1323,15 @@ SAH loss</td>
 <td height=21 class=xl9913441 style='height:15.75pt;border-top:none;
 border-left:none'>A</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>B</td>
+<td class=xl9913441 style='border-top:none;border-left:none'>General</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>Total</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>A</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>B</td>
+<td class=xl9913441 style='border-top:none;border-left:none'>General</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>Total</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>A</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>B</td>
+<td class=xl9913441 style='border-top:none;border-left:none'>General</td>
 <td class=xl9913441 style='border-top:none;border-left:none'>Total</td>
 </tr>";
 
@@ -1339,6 +1342,8 @@ $act_sah_a=0;
 $plan_sah_a=0;
 $act_sah_b=0;
 $plan_sah_b=0;
+$act_sah_general=0;
+$plan_sah_general=0;
 $plan_clh_fac=0;
 $act_sah_fac=0;
 $plan_sah_fac=0;
@@ -1346,6 +1351,8 @@ $act_sah_a_fac=0;
 $plan_sah_a_fac=0;
 $act_sah_b_fac=0;
 $plan_sah_b_fac=0;
+$act_sah_general_fac=0;
+$plan_sah_general_fac=0;
 $total_ext_sah=0; 
 $ext_sah_loss_total=0;
 $ext_sah_loss_totalx=0;
@@ -1355,28 +1362,35 @@ $total_int_sah=0;
 $plan_sah=0;
 $plan_sah_a=0;
 $plan_sah_b=0;
+$plan_sah_general=0;
 $act_sah=0;
 $act_sah_a=0;
 $act_sah_b=0;
+$act_sah_general=0;
 $plan_clh=0;
 $plan_sah_sec=0;
 $plan_sah_sec_a=0;
 $plan_sah_sec_b=0;
+$plan_sah_sec_general=0;
 $act_sah_sec=0;
 $act_sah_sec_a=0;
 $act_sah_sec_b=0;
+$act_sah_sec_general=0;
 $plan_clh_sec=0;
 $plan_sah_fac=0;
 $plan_sah_fac_a=0;
 $plan_sah_fac_b=0;
+$plan_sah_fac_general=0;
 $act_sah_fac=0;
 $act_sah_fac_a=0;
 $act_sah_fac_b=0;
+$act_sah_fac_general=0;
 $plan_clh_fac=0;
 $total_plan_sah_fac=0;
 $total_act_sah_fac=0;
 $total_act_sah_fac_a=0;
 $total_act_sah_fac_b=0;
+$total_act_sah_fac_general=0;
 $total_plan_clh_fac=0;
 $int_sah_loss=array();
 $ext_sah_loss=array();
@@ -1490,18 +1504,24 @@ while($row=mysqli_fetch_array($sql_dat))
 				$act_sah_b=$act_sah_b+$rows["act"];
 				$plan_sah_b=$plan_sah_b+round($rows["plan"],0);
 			}
+			else if($rows["shift"] == "general")
+			{
+				$act_sah_general=$act_sah_general+$rows["act"];
+				$plan_sah_general=$plan_sah_general+round($rows["plan"],0);
+			}
 			else
 			{
-				echo "No Shift";
+				echo " ";
 			}
 	   } 
 	   
-	  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b,0)."</td>";
+	  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general,0)."</td>";
 	  echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_a,0)."</td>";
 	  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_b,0)."</td>";
-	  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a+$act_sah_b,0)."</td>";
-	  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_sah)*100,1)."%</td>";
-	  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b)/$plan_clh)*100,1)."%</td>";	
+	  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_general,0)."</td>";
+	  echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a+$act_sah_b+$act_sah_general,0)."</td>";
+	  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/$plan_sah)*100,1)."%</td>";
+	  echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/$plan_clh)*100,1)."%</td>";	
 	  
 	  $sql1="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where $sections_in and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
 	  $result1=mysqli_query($link, $sql1) or die("Error4 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1626,7 +1646,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  }
 	  
 	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($int_sah_loss_total,2)."</td>";
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b-($act_sah_a+$act_sah_b)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
+	  echo "<td class=xl10813441 style='border-top:none;border-left:none'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general-($act_sah_a+$act_sah_b+$act_sah_general)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
 	  $total_int_sah=$total_int_sah+round($int_sah_loss_total,2);	  
 	  
 	  $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx =0;  
@@ -1657,21 +1677,27 @@ while($rows_fac=mysqli_fetch_array($sql_fac))
 		$act_sah_b_fac=$act_sah_b_fac+$rows_fac["act"];
 		$plan_sah_b_fac=$plan_sah_b_fac+round($rows_fac["plan"],0);
 	}
+	else if($rows_fac["shift"] == "general")
+	{
+		$act_sah_general_fac=$act_sah_general_fac+$rows_fac["act"];
+		$plan_sah_general_fac=$plan_sah_general_fac+round($rows_fac["plan"],0);
+	}	
 	else
 	{
-		echo "No Shift";
+		echo " ";
 	}
 } 
 	   
-echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a_fac+$plan_sah_b_fac,0)."</td>";
+echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($plan_sah_a_fac+$plan_sah_b_fac+$plan_sah_general_fac,0)."</td>";
 echo "<td class=xl10513441 style='border-top:none;border-left:none'>".number_format($act_sah_a_fac,0)."</td>";
 echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_b_fac,0)."</td>";
-echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a_fac+$act_sah_b_fac,0)."</td>";
-echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a_fac+$act_sah_b_fac)/$plan_sah_fac)*100,1)."%</td>";
-echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a_fac+$act_sah_b_fac)/$plan_clh_fac)*100,1)."%</td>";	  
+echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_general_fac,0)."</td>";
+echo "<td class=xl10613441 style='border-top:none;border-left:none'>".number_format($act_sah_a_fac+$act_sah_b_fac+$act_sah_general_fac,0)."</td>";
+echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a_fac+$act_sah_b_fac+$act_sah_general_fac)/$plan_sah_fac)*100,1)."%</td>";
+echo "<td class=xl10713441 style='border-top:none;border-left:none'>".round((($act_sah_a_fac+$act_sah_b_fac+$act_sah_general_fac)/$plan_clh_fac)*100,1)."%</td>";	  
 echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
 <td class=xl10813441 style='border-top:none;border-left:none'>".round($total_int_sah,2)."</td>
-<td class=xl10813441 style='border-top:none;border-left:none'>".round($plan_sah_a_fac+$plan_sah_b_fac-$act_sah_fac-($total_ext_sah+$total_ext_sahx)-$total_int_sah,2)."</td></tr>";
+<td class=xl10813441 style='border-top:none;border-left:none'>".round($plan_sah_a_fac+$plan_sah_b_fac+$plan_sah_general_fac-$act_sah_fac-($total_ext_sah+$total_ext_sahx)-$total_int_sah,2)."</td></tr>";
 echo "</tr>";
 
 $plan_clh_fac=0;
@@ -1681,6 +1707,8 @@ $act_sah_a_fac=0;
 $plan_sah_a_fac=0;
 $act_sah_b_fac=0;
 $plan_sah_b_fac=0;
+$act_sah_general_fac=0;
+$plan_sah_general_fac=0;
 $total_ext_sah=0;
 $total_ext_sahx=0;
 $total_int_sah=0;
@@ -1728,9 +1756,14 @@ for($i=0;$i<sizeof($buyer);$i++)
 			$act_sah_fac_b=$act_sah_fac_b+$rows["act"];
 			$plan_sah_fac_b=$plan_sah_fac_b+round($rows["plan"],0);
 		}
+		else if($rows["shift"] == "general")
+		{
+			$act_sah_fac_general=$act_sah_fac_general+$rows["act"];
+			$plan_sah_fac_general=$plan_sah_fac_general+round($rows["plan"],0);
+		}
 		else
 		{
-			echo "No Shift";
+			echo " ";
 		}
   }
 
@@ -1738,9 +1771,10 @@ for($i=0;$i<sizeof($buyer);$i++)
   if($plan_sah_fac != 0){
     $eff_array[]=round(($act_sah_fac/$plan_sah_fac)*100,1);
   } 
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($plan_sah_fac_a+$plan_sah_fac_b,0)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general,0)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_a,0)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_b,0)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac_general,0)."</td>";
   echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($act_sah_fac,0)."</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_sah_fac)*100,1)."%</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none'>".round(($act_sah_fac/$plan_clh_fac)*100,1)."%</td>";
@@ -1894,23 +1928,23 @@ for($i=0;$i<sizeof($buyer);$i++)
   }
   
  
-  if(($plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1)<0)
+  if(($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1)<0)
   {
   	$total_prod_loss_array[]=0;
   }
   else{
-  	$total_prod_loss_array[]=$plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1;
+  	$total_prod_loss_array[]=$plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1;
   
   }
   $int_sah_array[]=$int_sah_loss_total1;
   echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($int_sah_loss_total1,2)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($plan_sah_fac_a+$plan_sah_fac_b-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general-$act_sah_fac-$ext_sah_loss_total1-$int_sah_loss_total1,2)."</td>";
   
   $total_int_sah1=$total_int_sah1+round($int_sah_loss_total1,2);
   $int_sah_loss_total1=0;
   $ext_sah_loss_total1=0;
   $ext_sah_loss_total1s=0;
-  $plan_sah_fac=0; $act_sah_fac=0; $plan_clh_fac=0; $act_sah_fac_a=0; $act_sah_fac_b=0; $plan_sah_fac_a=0; $plan_sah_fac_b=0;
+  $plan_sah_fac=0; $act_sah_fac=0; $plan_clh_fac=0; $act_sah_fac_a=0; $act_sah_fac_b=0; $act_sah_fac_general=0; $plan_sah_fac_a=0; $plan_sah_fac_b=0; $plan_sah_fac_general=0;
   
 }
 
@@ -1928,9 +1962,13 @@ while($rows=mysqli_fetch_array($sql))
 	{
 		$total_act_sah_fac_b=$total_act_sah_fac_b+$rows["act"];
 	}
+	else if($rows["shift"] == "general")
+	{
+		$total_act_sah_fac_general=$total_act_sah_fac_general+$rows["act"];
+	}	
 	else
 	{
-		echo "No Shift";
+		echo " ";
 	}
 } 
 
@@ -1944,6 +1982,7 @@ $total_prod_loss=$total_plan_sah_fac-$total_act_sah_fac-($total_ext_sah1+$total_
   echo "<td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_plan_sah_fac,0)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_a,0)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_b,0)."</td>
+  <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac_general,0)."</td>
   <td class=xl9713441 style='border-top:none;border-left:none'>".number_format($total_act_sah_fac,0)."</td>
   <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_sah_fac)*100,1)."%</td>
   <td class=xl9813441 style='border-top:none;border-left:none'>".round(($total_act_sah_fac/$total_plan_clh_fac)*100,1)."%</td>

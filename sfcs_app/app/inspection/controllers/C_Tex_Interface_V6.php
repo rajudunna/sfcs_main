@@ -2296,7 +2296,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	if(in_array($authorized,$has_permission))
 	{
 
-		if ($temp[16] > 0 && $temp[4] > 0) 
+		if ($temp[16]+$temp[17] > 0 && $temp[4] > 0) 
 		{
 			$readonly = 'readonly';
 			$dropdown_read = 'disabled';

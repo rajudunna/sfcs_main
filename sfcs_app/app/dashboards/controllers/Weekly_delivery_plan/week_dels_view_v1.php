@@ -247,6 +247,7 @@ $Hourly_Style_Break = getFullURL($_GET['r'],'Hourly_Style_Break.php','N');
 
 
     $sql="select * from $bai_pro4.week_delivery_plan_ref  where ex_factory_date_new between \"$start_date_w\" and \"$end_date_w\" $query_add AND schedule_no > 0 order by priority,ex_factory_date_new,style,schedule_no,color";
+    // echo $sql;
     // $sql="select * from bai_pro4.week_delivery_plan_ref where ex_factory_date_new between '".'2017-03-19'."' and '".'2018-03-05'."' $query_add order by priority,ex_factory_date_new,style,schedule_no,color";
 	// echo $sql."<br>";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));

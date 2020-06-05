@@ -643,9 +643,9 @@ $table.=$table_temp;
 // $table_temp="<td class=xl15326424>&nbsp;</td>"; 
 // echo $table_temp; 
 // $table.=$table_temp; 
-if(($pclha_total+$pclhb_total)>0) 
+if(($clha_total+$clhb_total)>0) 
 { 
-$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>".round((($stha_total+$sthb_total)/($pclha_total+$pclhb_total))*100,0)."%</td>"; 
+$table_temp="<td colspan=4 class=xl17326424 style='border-right:1.0pt solid black'>".round((($stha_total+$sthb_total)/($clha_total+$clhb_total))*100,0)."%</td>"; 
 echo $table_temp; 
 $table.=$table_temp; 
 } 
