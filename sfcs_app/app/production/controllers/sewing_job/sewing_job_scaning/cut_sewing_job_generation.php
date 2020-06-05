@@ -18,13 +18,13 @@ if($_POST['modal_submit'])
     $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
     $inserted_id = mysqli_insert_id($link);
     $sewing_bundle_generation = sewing_bundle_generation($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-    // if($sewing_bundle_generation)
-	// {
-	// 	insertMOQuantitiesSewing($schedule,$inserted_id);		
-	// 	return true;
-    // } else {
-	// 	return false;
-	// }   
+    if($sewing_bundle_generation)
+	{
+		insertMOQuantitiesSewing($schedule,$inserted_id);		
+		return true;
+    } else {
+		return false;
+	}   
 }
 
 if(isset($_POST) && isset($_POST['del_recs'])){
@@ -692,12 +692,12 @@ function delet(docs_id){
             }
         });
         $("#bundle-qty").change(function(){
-            if(Number($("#bundle-qty").val()) > $("#bundle-qty1").val()) {
-                if($("#clubbed").val() != 'clubbed'){
-                    swal('Invalid Garment per Bundle quantity.');
-                    $("#bundle-qty").val($("#bundle-qty1").val());
-                }
-            }
+            // if(Number($("#bundle-qty").val()) > $("#bundle-qty1").val()) {
+            //     if($("#clubbed").val() != 'clubbed'){
+            //         swal('Invalid Garment per Bundle quantity.');
+            //         $("#bundle-qty").val($("#bundle-qty1").val());
+            //     }
+            // }
             if(Number($("#job-qty").val())<Number($("#bundle-qty").val())) {
                 swal('Garment per Bundle Qty should be less then Garment per Sewing Job Qty');
                 $("#job-qty").val($("#job-qty1").val());
@@ -727,7 +727,6 @@ function delet(docs_id){
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
 					}
-					
 				}
 			  });
 		 });
