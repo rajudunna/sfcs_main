@@ -10,7 +10,13 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 	{
 		$order_tid = $sql_row1['order_tid'];
 	}	
-	
+	$get_operations="select operation_code from $brandix_bts.tbl_orders_ops_ref where operation_name='Cutting'";
+	//echo $get_operations;
+	$sql_result111=mysqli_query($link, $get_operations) or exit("Operation ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row1 = mysqli_fetch_array($sql_result111))
+	{
+		$operation_code = $sql_row1['operation_code'];
+	}
 	// Getting Order
 	$get_exact_size_code = "SELECT * FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid = '".$order_tid."'";
 	$sql_query_size_code = mysqli_query($link,$get_exact_size_code) or exit("Issue while selecting the Bai_order_db");
@@ -163,7 +169,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			{
 				for($i=0;$i<sizeof($check_upto);$i++)
 				{	
-					$cps_log_qry = "SELECT * FROM $bai_pro3.cps_log WHERE doc_no=$docket_no and size_code='".$sizes_array[$i]."' and operation_code=10 order by id desc";
+					$cps_log_qry = "SELECT * FROM $bai_pro3.cps_log WHERE doc_no=$docket_no and size_code='".$sizes_array[$i]."' and operation_code=$operation_code order by id desc";
 					$cps_log_qry_res = mysqli_query($link, $cps_log_qry) or exit("Issue while Selecting PCB".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($cps_row = mysqli_fetch_array($cps_log_qry_res))
 					{
@@ -272,7 +278,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 		$bundle_seq=1;
 		$plan_jobcount1= $plan_jobcount;
 		$input_job_num_rand=$schedule.date("ymd").$input_job_num;
-		$cps_log_qry = "SELECT * FROM $bai_pro3.cps_log WHERE doc_no=$dono AND operation_code=10";
+		$cps_log_qry = "SELECT * FROM $bai_pro3.cps_log WHERE doc_no=$dono AND operation_code=$operation_code";
 		// echo $cps_log_qry.'<br/>';
 		$cps_log_res = mysqli_query($link, $cps_log_qry) or exit("Issue while Selecting PCB".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($cps_log_res)>0)
