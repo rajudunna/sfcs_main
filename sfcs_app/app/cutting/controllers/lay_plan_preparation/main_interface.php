@@ -30,7 +30,7 @@ if(isset($_POST['style']))
 }
 else
 {
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 }
 
 if(isset($_POST['schedule']))
@@ -862,11 +862,12 @@ if ($sql_result)
 				// {
 				//To get Encoded Color
 			     $main_color = color_encode($color);
+			     $main_style = style_encode($style);
 					if($sql_row['mo_status']=="Y")
 					{
 						echo "<td>
 								<center>
-									<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$style."&schedule=".$schedule."&color=".$main_color."'>Edit</a>
+									<a class='btn btn-info btn-xs' href='".getFullURL($_GET['r'], "order_cat_edit_form.php", "N")."&cat_tid=".$sql_row['tid']."&style=".$main_style."&schedule=".$schedule."&color=".$main_color."'>Edit</a>
 								</center>
 							</td>";
 					}
@@ -899,10 +900,11 @@ if ($sql_result)
 							$get_schedule = $rows['order_del_no'];
 							$get_color = $rows['order_col_des'];
 						}
+						$main_style = style_encode($get_style);
 						$main_color = color_encode($color);
 						echo "<td>
 								<center>
-									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule'>Go To</a>
 								</center>
 							</td>";
 					}
@@ -932,6 +934,7 @@ if ($sql_result)
 							$get_schedule = $rows['order_del_no'];
 							$get_color = $rows['order_col_des'];
 						}
+						$main_style = style_encode($get_style);
                         $main_color = color_encode($color);
 						// Control
 						echo "<td class=\"  \"><center>N/A</center></td>";
@@ -939,7 +942,7 @@ if ($sql_result)
 						// Go To
 						echo "<td>
 								<center>
-									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule'>Go To</a>
+									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule'>Go To</a>
 								</center>
 							</td>";
 					}
@@ -1261,9 +1264,10 @@ if($check2==1)
 	else{
 		//Encoding order_tid
         $main_tran_order_tid=order_tid_encode($tran_order_tid);
-	    //To get Encoded Color
+	    //To get Encoded Color & style
+	    $main_style = style_encode($style);
 	    $main_color = color_encode($color);
-		echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_cut_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$check_id&style=$style&schedule=$schedule&color=$main_color\">Update</a></center></td>";
+		echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_cut_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$check_id&style=$main_style&schedule=$schedule&color=$main_color\">Update</a></center></td>";
 	}
 	//echo "<td class=\"b1\"><a href=\"dumindu/order_cut_form2.php?tran_order_tid=$tran_order_tid&check_id=$check_id\">Update</a></td>";
 	echo "</tr>";
@@ -1442,9 +1446,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	//Encoding order_tid
 	$main_tran_order_tid=order_tid_encode($tran_order_tid);
-	//Encoding color
+	//Encoding color & style
+	$main_style = style_decode($style);
 	$main_color = color_encode($color);
-	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$style&schedule=$schedule&color=$main_color\">Add Ratios</a></center></td>";
+	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$main_style&schedule=$schedule&color=$main_color\">Add Ratios</a></center></td>";
 	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";
     // echo $sql17;
     $sql_result27=mysqli_query($link, $sql17) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2210,11 +2215,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td class=\"  \"><center>"; if($check_new4==1){echo $correct_icon;} else {echo $wrong_icon;} echo "</center></td>";
 	//Encoding order_tid
     $main_tran_order_tid=order_tid_encode($tran_order_tid);
-	
+	$main_style = style_encode($style);
 	 $path="".getFullURL($_GET['r'], "Book1_print.php", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&excess_cut=$excess_cut";
 	//$path="http://localhost/sfcs/projects/Beta/cut_plan_new_ms/new_doc_gen/Book1_print.php";
 
-	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$style";
+	$path3="".getFullURL($_GET['r'], "Book2_pdf.php", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing&color=$color&schedule=$schedule&style=$main_style";
 	$path1="".getFullURL($_GET['r'], "Book1_print_fabric.php", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_tid_new&cat_title=$category_new&clubbing=$clubbing";
 	if($clubbing>0)
 	{

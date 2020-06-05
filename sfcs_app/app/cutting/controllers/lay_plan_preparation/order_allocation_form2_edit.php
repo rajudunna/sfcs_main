@@ -765,8 +765,9 @@ $allocate_s50=$sql_row['allocate_s50'];
 }
 //Encoding color
 $main_color = color_encode($color_back);
+$main_style = style_encode($style_back);
 echo "<div class=\"block\">";
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style_back&schedule=$schedule_back\"><< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back\"><< Click here to Go Back</a>";
 echo "<br><br>";
 echo "<table class=\"table table-bordered\">";
 echo "<tr><th>Ratio</th><td>:</td><td> ".$ratiocount."</td></tr>";

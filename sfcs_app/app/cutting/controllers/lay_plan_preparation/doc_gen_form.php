@@ -417,11 +417,12 @@ while($sql_row=mysqli_fetch_array($order_joins_result))
 $main_tran_order_tid=order_tid_encode($tran_order_tid);
 //Encoding color
 $main_color = color_encode($color);
+$main_style = style_encode($style);
 if ($order_joins>'0' or $order_joins>0) {
  echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
             sweetAlert('Successfully Generated','','success');
-            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\";
+            location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
             }
         </script>";
         
@@ -433,7 +434,7 @@ if ($order_joins>'0' or $order_joins>0) {
 } else {
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
             function Redirect() {
-                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid&color=$main_color&style=$style&schedule=$schedule\";
+                location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',0,'N')."&order_tid=$main_tran_order_tid&color=$main_color&style=$main_style&schedule=$schedule\";
                 }
             </script>";
 }
@@ -457,10 +458,11 @@ else{
 	$main_tran_order_tid=order_tid_encode($tran_order_tid);
 	//Encoding color
 	$main_color = color_encode($color);
+	$main_style = style_encode($style);
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			sweetAlert('Dockets Already Generated','','warning');
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\";
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
 			}
 		</script>";
 

@@ -92,9 +92,10 @@ if(isset($_POST['Update']))
 		}
 		//Color Encoded
 		$main_color = color_encode($color);
+		$main_style = style_encode($style);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
 				sweetAlert('Allocated Successfully','','success');	 
-				location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
+				location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
 	}else{	
 		echo "<script type='text/javascript'>
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');

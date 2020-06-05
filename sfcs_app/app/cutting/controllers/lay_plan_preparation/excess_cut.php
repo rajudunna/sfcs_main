@@ -56,11 +56,12 @@
 				}
 				//Encoding color
                 $main_color = color_encode($color);
+                $main_style = style_encode($style);
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Updated','','success');
                 setTimeout(\"Redirect()\",0); 
                 function Redirect(){	 
-                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
                     }
                 </script>";	
             }
@@ -112,11 +113,12 @@
 			}
 			//Encoding color
             $main_color = color_encode($color);
+            $main_style = style_encode($style);
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Inserted','','success');
                 setTimeout(\"Redirect()\",0); 
                 function Redirect(){	 
-                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
                     }
             </script>";	
         }

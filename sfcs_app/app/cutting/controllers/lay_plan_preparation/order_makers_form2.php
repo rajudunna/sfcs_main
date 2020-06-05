@@ -75,12 +75,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 //Encoding color
 $main_color = color_encode($color);
+$main_style = style_encode($style);
 ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Form</div>
 <div class="panel-body">
-<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
+<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process.php", "N"); ?>">
 <?php
 

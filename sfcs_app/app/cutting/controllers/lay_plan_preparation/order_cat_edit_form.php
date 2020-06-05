@@ -59,10 +59,11 @@ if(isset($_GET['cat_tid']))
 {
 	$cat_tid=$_GET['cat_tid'];
 	$get_color=color_decode($_GET['color']);
-	$get_style=$_GET['style'];
+	$get_style=style_decode($_GET['style']);
 	$get_schedule=$_GET['schedule'];
 	// echo "Cat Tid = ".$cat_tid.'<br>';
     $main_color = color_encode($get_color);
+    $main_style = style_encode($get_style);
 	$colors_array = array();	$array1= array();	$array2= array();
 	$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
 	// echo $sql."<br>";
@@ -114,7 +115,7 @@ if(isset($_GET['cat_tid']))
 			if(sizeof($array1) == 0 || sizeof($array2) == 0){
 				echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -127,7 +128,7 @@ if(isset($_GET['cat_tid']))
 				echo "<script>swal('Operation codes does not match','','warning');</script>";
 				$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -138,7 +139,7 @@ if(isset($_GET['cat_tid']))
 			if(!mysqli_num_rows($mo_result) > 0){
 				echo "<script>swal('MO Details Does not Exist','','warning');</script>";
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -146,7 +147,7 @@ if(isset($_GET['cat_tid']))
 		}
 	}
 }
-echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
 <div class="panel-body">
@@ -242,11 +243,12 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 
 		// var_dump($_POST);die();
         $main_color = color_encode($get_color);
+        $main_style = style_encode($get_style);
 		$cat_exist = verify_category($tran_order_tid,$in_cat);
 		if($cat_exist == 1)
 		{
 			echo "<script>swal('The Category Cant Be Updated','','error')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"; }</script>";
 			exit();
 		}
 
@@ -291,7 +293,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 					//echo "<script>swal('Category Already selected. Please Select Other.','','warning');</script>";
 					echo "<script>swal('Category Already selected. Please Select Other.')
 					.then((value) => {
-							location.href = '".getFullURLLevel($_GET['r'], "order_cat_edit_form.php", "0", "N")."&cat_tid=".$cat_tid."&style=".$get_style."&schedule=".$get_schedule."&color=".$main_color."'; 
+							location.href = '".getFullURLLevel($_GET['r'], "order_cat_edit_form.php", "0", "N")."&cat_tid=".$cat_tid."&style=".$main_style."&schedule=".$get_schedule."&color=".$main_color."'; 
 					});
 					</script>";
 					$flag=0;
@@ -333,7 +335,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		if($flag == 1)
 		{
 			echo "<script>swal('Order category Updated Successfully','','success')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$get_style&schedule=$get_schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"; }</script>";
 		}
 	}
 ?>

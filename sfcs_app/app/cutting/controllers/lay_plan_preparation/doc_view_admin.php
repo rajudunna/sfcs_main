@@ -165,7 +165,8 @@ mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_s
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //Encoding color
 $main_color = color_encode($color_back);
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style_back&schedule=$schedule_back\"><<<<< Click here to Go Back</a>";
+$main_style = style_encode($style_back);
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back\"><<<<< Click here to Go Back</a>";
 echo "<br><br>";
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 

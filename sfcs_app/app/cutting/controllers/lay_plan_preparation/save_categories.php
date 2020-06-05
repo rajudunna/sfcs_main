@@ -125,20 +125,21 @@ if(mysqli_num_rows($sql_result)>0)
 }
 //Encoding color
 $main_color = color_encode($color);
+$main_style = style_encode($style);
 if($ii >0 && $temp1==1){
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
     			sweetAlert('Copied Successfully','','success');	 
-   			 location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\"; }</script>";
+   			 location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 }else{
     if($total_allocated==0){
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('can\'t copy','','warning');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
     }
     else {
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('Already Allocated ','','error');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$style&schedule=$schedule\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
     }
 }
                   
