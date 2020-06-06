@@ -55,7 +55,7 @@
 	}
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading">Hourly Production Report- Section Wise <?php  echo $frdate;  ?></div>
+<div class="panel-heading">Hourly Production Report - Section Wise New <?php  echo $frdate;  ?></div>
 <div class="panel-body">
 	<form  action="index.php"  method='GET' class="form-inline">
 		<div class='row'>
@@ -188,7 +188,24 @@ if(isset($_GET['submit']))
 							{
 								$nop = $result['fix_nop'].'<br>';
 							}
-
+							$plan_nop_tot=$plan_nop_tot+$nop;
+							
+							$get_nop_query1="SELECT sum(present+jumper) as act_nop FROM $bai_pro.pro_attendance WHERE date='$frdate' and module='$team'";
+							// echo $get_nop_query;
+							$nop_result1=mysqli_query($link,$get_nop_query1);
+							while($result1=mysqli_fetch_array($nop_result1))
+							{
+								$act_nop = $result1['act_nop'].'<br>';
+							}
+							$act_nop_tot=$act_nop_tot+$act_nop;
+							for ($i=0; $i < sizeof($plant_name); $i++) 
+							{
+								if (in_array($team, $plant_modules[$i]))
+								{
+									$plan_nops[$i] = $plan_nops[$i] + $nop;
+									$act_nops[$i] = $act_nops[$i] + $act_nop;
+								}							 	
+							}
 							$sumscqty=0;
 							unset($out);
 							$sql3="SELECT time_parent_id,sum(qty) as outqty FROM $bai_pro2.hout2 where out_date='$frdate' AND team='$team' and trim(style)='".$style."' and smv='".$row12['smv']."' group by time_parent_id";
@@ -208,7 +225,7 @@ if(isset($_GET['submit']))
 								<tr>
 									<?php $avg_count++; $total_avg_count++ ?>
 									<td><center><?php  echo $team;  ?></center></td>
-									<td><center><?php  echo $nop;  ?></center></td>
+									<td><center><?php  echo $act_nop;  ?></center></td>
 									<td><center>
 										<?php 
 											//while($row1=mysqli_fetch_array($res1))
@@ -552,9 +569,9 @@ if(isset($_GET['submit']))
 									</center></td>
 									<td><center>
 										<?php
-											if ($nop>0 && $hours>0)
+											if ($act_nop>0 && $hours>0)
 											{
-												$act_eff=round((($total_qty*$smv)/($nop*$hours*60))*100);
+												$act_eff=round((($total_qty*$smv)/($act_nop*$hours*60))*100);
 											}
 											else
 											{
@@ -630,7 +647,7 @@ if(isset($_GET['submit']))
 
 								?>
 								<td><?php  echo $section_display_name; ?></center></td>
-								<td></td>
+								<td><?php echo $act_nop_tot; ?></td>
 								<td></td>
 								<td><center><?php  echo $sec_tot_fr_qty; $grand_tot_fr_qty = $grand_tot_fr_qty + $sec_tot_fr_qty; ?></center></td>
 								<td><center><?php  echo $sec_tot_forecast_qty; $grand_tot_forecast_qty = $grand_tot_forecast_qty + $sec_tot_forecast_qty ?></center></td>
@@ -698,9 +715,9 @@ if(isset($_GET['submit']))
 								</center></td>
 								<td><center>
 									<?php
-										if ($nop>0 && $hours>0)
+										if ($plan_nop_tot>0 && $hours>0)
 										{
-											$sec_plan_eff=round((($sec_tot_plan_sah)/($nop*$hours))*100)/$avg_count;
+											$sec_plan_eff=round((($sec_tot_plan_sah)/($plan_nop_tot*$hours))*100);
 										}
 										else
 										{
@@ -711,9 +728,9 @@ if(isset($_GET['submit']))
 								</center></td>
 								<td><center>
 									<?php
-										if ($nop>0 && $hours>0)
+										if ($act_nop_tot>0 && $hours>0)
 										{
-											$sec_act_eff = round((($sec_tot_act_sah)/($nop*$hours))*100)/$avg_count;
+											$sec_act_eff = round((($sec_tot_act_sah)/($act_nop_tot*$hours))*100);
 										}
 										else
 										{
@@ -745,6 +762,10 @@ if(isset($_GET['submit']))
 							</tr>
 						</tbody>
 						<?php
+						$nop=0;
+						$plan_nop_tot=0;
+						$act_nop=0;
+						$act_nop_tot=0;
 					}
 				}
 				
@@ -756,7 +777,7 @@ if(isset($_GET['submit']))
 					?>
 					<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
 						<td><center><?php  echo $plant_name[$j]; ?></center></td>
-						<td></td>
+						<td><?php  echo $act_nops[$j]; ?></td>
 						<td></td>
 						<td><center><?php  echo $tot_frqty_plantWise[$j]; ?></center></td>
 						<td><center><?php  echo $tot_forecast_qty_plantWise[$j]; ?></center></td>
@@ -787,10 +808,26 @@ if(isset($_GET['submit']))
 						<td><center><?php echo $tot_act_sah_plantWise[$j];  ?></center></td>
 						<td><center><?php echo $tot_sah_diff_plantWise[$j];  ?></center></td>
 						<?php
-							if ($nop>0 && $hours>0)
+							if($hours>0)
 							{
-								$tot_plan_eff_plantWise[$j]=round(((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100)/$total_avg_count);
-								$tot_act_eff_plantWise[$j]=round(((($tot_act_sah_plantWise[$j])/($nop*$hours))*100)/$total_avg_count);
+								//act
+								if($act_nops[$j]>0)
+								{
+									$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($act_nops[$j]*$hours))*100);
+								}
+								else{
+									$tot_act_eff_plantWise[$j]=0;
+								}
+								// Plan
+								if($plan_nops[$j]>0)
+								{
+									$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($plan_nops[$j]*$hours))*100);
+								}
+								else{
+									$tot_plan_eff_plantWise[$j]=0;
+								}
+								
+								
 							}
 							else
 							{
