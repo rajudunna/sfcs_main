@@ -2,6 +2,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 <body> 
 <!-- <div class="panel panel-primary">
@@ -383,12 +384,14 @@
 		}
 	}
 	//echo "</table>";
+	//Encoded Style
+	$main_style = style_encode($style);
 	if($status_generation==0)
 	{
 		echo "<script>sweetAlert('Packing List Not Generated.','Eligible Quantity Not available.','warning');</script>";
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",75);
 					function Redirect() {
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 	}
@@ -400,7 +403,7 @@
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing List Generated.','','success');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 		}
@@ -409,7 +412,7 @@
 			echo "<script>sweetAlert('Mo Sharing not completed.','Please delete and Re-Generate','warning');</script>";
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",75);
 					function Redirect() {
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 		}

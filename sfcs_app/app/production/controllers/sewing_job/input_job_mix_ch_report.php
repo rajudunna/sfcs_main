@@ -13,12 +13,12 @@
 
     if (isset($_GET['schedule']) && isset($_GET['seq_no']))
     {
-        $schedule = $_GET['schedule'];
-        $seq_no = $_GET['seq_no'];
-        $style = $_GET['style'];
         include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
         include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
         include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
+        $schedule = $_GET['schedule'];
+        $seq_no = $_GET['seq_no'];
+        $style = style_decode($_GET['style']);
 
         $sql="select order_joins from $bai_pro3.bai_orders_db_confirm where order_joins='J$schedule'";
         //echo $sql."<br>";
@@ -40,8 +40,10 @@
                 $schedule=$sql_row['order_del_no'];
             }
         }
+        //Encoded Style
+        $main_style = style_encode($style);
         $back_url = getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N');
-        echo "<a class='btn btn-primary' href='$back_url&schedule=$schedule&style=$style'>Go Back</a>";
+        echo "<a class='btn btn-primary' href='$back_url&schedule=$schedule&style=$main_style'>Go Back</a>";
 
         $url1 = getFullURLLevel($_GET['r'],'print_input_sheet.php',0,'R');
         $url2 = getFullURLLevel($_GET['r'],'print_input_sheet_mm.php',0,'R');
