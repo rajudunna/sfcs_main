@@ -80,7 +80,7 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 <th>Label Pending</th><th>Shade Group Pending</th><th>C-Tax Pending</th><th>Location Tran. Pending</th><th>Rolls</th></tr></thead><tbody>';
 
 
-	$sql1="SELECT *,sticker_report.inv_no ,sticker_report.po_no,sticker_report.rec_no,sticker_report.supplier,sticker_report.batch_no,sticker_report.item,sticker_report.item_name,sticker_report.item_desc,sticker_report.rec_qty FROM $bai_rm_pj1.grn_track_pendings LEFT JOIN $bai_rm_pj1.sticker_report ON grn_track_pendings.lot_no=sticker_report.lot_no where trim(grn_track_pendings.product) in ('Fabric') and left(grn_track_pendings.lot_no,4)>1111 and date='2020-06-01' order by grn_track_pendings.date";
+	$sql1="SELECT *,sticker_report.inv_no ,sticker_report.po_no,sticker_report.rec_no,sticker_report.supplier,sticker_report.batch_no,sticker_report.item,sticker_report.item_name,sticker_report.item_desc,sticker_report.rec_qty FROM $bai_rm_pj1.grn_track_pendings LEFT JOIN $bai_rm_pj1.sticker_report ON grn_track_pendings.lot_no=sticker_report.lot_no where trim(grn_track_pendings.product) in ('Fabric') and left(grn_track_pendings.lot_no,4)>1111 order by grn_track_pendings.date";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	
