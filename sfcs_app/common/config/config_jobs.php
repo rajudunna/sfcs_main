@@ -20,6 +20,9 @@ $user=$mysql_details['db_user'];
 $pass=$mysql_details['db_pass'];
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//Link For 2.0
+$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 // Schedules Operations Capturing
 $serverName=$conf->get('mssql-server-name');
 $uid=$conf->get('mssql-user-name');
@@ -131,6 +134,11 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $bai_kpi="bai_kpi";
 $bai_ict="bai_ict";
+$pps="pps";
+$pms="pms";
+$oms="oms";
+$mdm="mdm";
+$sms="sms";
 ?>
 <?php
 $path=$include_path."/sfcs_app/app";
