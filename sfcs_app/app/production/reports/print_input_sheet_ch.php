@@ -549,7 +549,7 @@
                             // }
                             // else
                             // {
-                                $sqlwip12="SELECT color,size_title,size_id,assigned_module,DATE(MIN(date_time)) AS input_date,
+                                $sqlwip12="SELECT color,size_title,size_id,assigned_module,MIN(DATE(IF(operation_id = $operation_in_code,date_time,0))) AS input_date,
                                 SUM(IF(operation_id = $operation_in_code,recevied_qty,0)) AS input,
                                 SUM(IF(operation_id = $operation_out_code,recevied_qty,0)) AS output FROM 
                                 $brandix_bts.bundle_creation_data_temp WHERE input_job_no_random_ref='".$sql_row["input_job_no_random"]."' GROUP BY color,size_title";
@@ -561,7 +561,12 @@
 
 
                                     <tr>
-                                    <td><?php echo $sql_rowwip12["input_date"]; ?></td>
+                                    <td><?php 
+                                    if($sql_rowwip12["input_date"] == '' || $sql_rowwip12["input_date"] == NULL) 
+                                    {echo "Input Not yet reported";}
+                                    else
+                                    {echo $sql_rowwip12["input_date"]; }
+                                    ?></td>
                                     <td><?php echo $sql_rowwip12["assigned_module"]; ?></td>
                                     <?php $temp_module=$sql_rowwip12["assigned_module"]; ?>
                                     <td><?php echo $sql_rowwip12["color"]; ?></td>

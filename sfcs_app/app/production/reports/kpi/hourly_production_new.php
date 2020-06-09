@@ -21,7 +21,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 <html lang="en">
 <head>
     <meta http-equiv="refresh" content="120">
-	<title>Hourly Production Report</title>  
+	<title>Hourly Production Report New</title>  
 </head>
 <body>
 
@@ -63,7 +63,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					}
 				?>
 <div class="panel panel-primary">
-	<div class="panel-heading">Hourly Production Report</div>
+	<div class="panel-heading">Hourly Production Report New</div>
 	<div class="panel-body">
 		<form  action="index.php"  method='GET' class="form-inline">
 			<div class='row'>
@@ -105,7 +105,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 			<thead>
 				<tr style="background:#337ab7;color:white;"> 
 					<th>Team</th>
-					<th>NOP</th>
+					<th>Act NOP</th>
 					<th>Style</th>
 					<th style='display:none;'>Sch</th>
 					<th>FR Plan</th>
@@ -149,7 +149,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$tot_balance_plantWise=array();
 				$tot_hit_rate_plantWise=array();	
 				$grand_tot_qty_time_array1 = array(); 
-			
+			$avg_count=0;
 			while($row=mysqli_fetch_array($res))
 			{
 				$module_count++;
@@ -183,14 +183,30 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				{
 					$nop = $result['fix_nop'].'<br>';
 				}
-			
+				$get_nop_query1="SELECT sum(present+jumper) as act_nop FROM $bai_pro.pro_attendance WHERE date='$frdate' and module='$team'";
+				// echo $get_nop_query;
+				$nop_result1=mysqli_query($link,$get_nop_query1);
+				while($result1=mysqli_fetch_array($nop_result1))
+				{
+					$act_nop = $result1['act_nop'].'<br>';
+				}
+				$act_nop_tot=$act_nop_tot+$act_nop;
+				for ($i=0; $i < sizeof($plant_name); $i++) 
+				{
+					if (in_array($team, $plant_modules[$i]))
+					{
+						$plan_nops[$i] = $plan_nops[$i] + $nop;
+						$act_nops[$i] = $act_nops[$i] + $act_nop;
+					}							 	
+				}
 				?>
 
 			  
 			  <tbody>
 				<tr>
+					<?php $avg_count++; ?>
 					<td><center><?php  echo $team;  ?></center></td>
-					<td><center><?php  echo $nop;  ?></center></td>
+					<td><center><?php  echo $act_nop;  ?></center></td>
 					<td><center><?php  echo $style;  ?>	</center></td>
 					<td><center>
 						<?php 
@@ -495,8 +511,8 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 					</center></td>
 					<td><center>
 						<?php
-							if ($nop >0 && $hours >0) {
-								$act_eff=round((($total_qty*$smv)/($nop*$hours*60))*100);
+							if ($act_nop >0 && $hours >0) {
+								$act_eff=round((($total_qty*$smv)/($act_nop*$hours*60))*100);
 							} else {
 								$act_eff=0;
 							}
@@ -555,12 +571,15 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				<?php
 				
 			} 
+			if($avg_count == 0) {
+					$avg_count = 1;
+				}
 				for ($j=0; $j < sizeof($plant_name); $j++)
 				{
 					?>
 					<tr style="background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;">
 						<td><center><?php  echo $plant_name[$j]; ?></center></td>
-						<td></td>
+						<td><?php  echo $act_nops[$j]; ?></td>
 						<td></td>
 						<td><center><?php  echo $tot_frqty_plantWise[$j]; ?></center></td>
 						<td><center><?php  echo $tot_forecast_qty_plantWise[$j]; ?></center></td>
@@ -591,10 +610,26 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 						<td><center><?php echo $tot_act_sah_plantWise[$j];  ?></center></td>
 						<td><center><?php echo $tot_sah_diff_plantWise[$j];  ?></center></td>
 						<?php 
-							if ($nop>0 && $hours>0)
+							if($hours>0)
 							{
-								$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($nop*$hours))*100);
-								$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($nop*$hours))*100);
+								//act
+								if($act_nops[$j]>0)
+								{
+									$tot_act_eff_plantWise[$j]=round((($tot_act_sah_plantWise[$j])/($act_nops[$j]*$hours))*100);
+								}
+								else{
+									$tot_act_eff_plantWise[$j]=0;
+								}
+								// Plan
+								if($plan_nops[$j]>0)
+								{
+									$tot_plan_eff_plantWise[$j]=round((($tot_fr_sah_plantWise[$j])/($plan_nops[$j]*$hours))*100);
+								}
+								else{
+									$tot_plan_eff_plantWise[$j]=0;
+								}
+								
+								
 							}
 							else
 							{
