@@ -37,7 +37,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 	}
 	
 	// Getting Plan
-	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE order_tid = '".$order_tid."' order by doc_no desc";
+	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE order_tid = '".$order_tid."' and doc_no in (".$doc_list.") order by doc_no desc";
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 	{
@@ -71,6 +71,16 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 	// var_dump($cut_plan_qty,'cut_plan_qty<br/>');
 	// var_dump($cut_plan_docket[392],'cut_plan_docket<br/>');
 	// die();
+	$query = "select excess_cut_qty from $bai_pro3.excess_cuts_log where schedule_no='".$schedule."' and color='".$color."'";
+	// echo $query;
+	$query_result = mysqli_query($link,$query) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($query_result)>0){
+		while($sql_rows1=mysqli_fetch_array($query_result))
+		{
+			$excess_cut =$sql_rows1['excess_cut_qty'];
+		}
+	}
+	// echo $excess_cut.'$excess_cut<br/>';
 	$usage_from_plan_id=array();
 	if(sizeof($excess)>0)
 	{	
@@ -138,29 +148,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			}
 		}
 		$remaval_dockets=array_values(array_unique($remaval_dockets));		
-		//get input job number for each schedule
-        $old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%".$schedule."%'";
-        // echo $old_jobs_count_qry;
-		$old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($old_jobs_count_res)>0)
-		{
-			while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
-			{
-				if($max_oldqty_jobcount['result'] > 0) 
-				{
-					$input_job_num=$max_oldqty_jobcount['result'];
-				} 
-				else 
-				{
-					$input_job_num=1;
-				}
-			}
-		} 
-		else 
-		{
-			$input_job_num=1;
-        }
-        // echo $input_job_num;
+		
         
 		
 		foreach($remaval_dockets as $key => $docket_no)
@@ -220,26 +208,54 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 					}	
 				}
 				$cps_ids=array_values(array_unique($cps_ids));
-				// Executing the Bundles		
-				for($j=2;$j<4;$j++) 
-				{				
-					$bundle_seq=1;
-					$input_job_no=$input_job_num;
-					$input_job_num_rand=$schedule.date("ymd").$input_job_no;
-					for($jj=0;$jj<sizeof($cps_ids);$jj++)
+				
+				if($excess_cut == 1){
+					//get input job number for each schedule
+					$old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%".$schedule."%'";
+					// echo $old_jobs_count_qry;
+					$old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($old_jobs_count_res)>0)
 					{
-						if($fill_qty[$cps_ids[$jj]][$j]>0)
+						while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
 						{
-							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-							// echo $ins_qry."<br>";
-							$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
-							
-							$bundle_seq++;							
+							if($max_oldqty_jobcount['result'] > 0) 
+							{
+								$input_job_num=$max_oldqty_jobcount['result'];
+							} 
+							else 
+							{
+								$input_job_num=1;
+							}
 						}
+					} 
+					else 
+					{
+						$input_job_num=1;
 					}
-					$input_job_num++;					
+					// echo $input_job_num;
+					
+					// Executing the Bundles
+					
+					for($j=2;$j<4;$j++) 
+					{				
+						$bundle_seq=1;
+						$input_job_no=$input_job_num;
+						$input_job_num_rand=$schedule.date("ymd").$input_job_no;
+						for($jj=0;$jj<sizeof($cps_ids);$jj++)
+						{
+							if($fill_qty[$cps_ids[$jj]][$j]>0)
+							{
+								$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+								// echo $ins_qry."<br>";
+								$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+								
+								$bundle_seq++;							
+							}
+						}
+						$input_job_num++;					
+					}
+					unset($cps_ids);
 				}
-				unset($cps_ids);
 			}			
 		}	
 	}
@@ -334,6 +350,54 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			// echo $update_query;
 			$update_result = mysqli_query($link,$update_query) or exit("Problem while updating to sewing jobs ref");
 		}		
+	}
+
+	if($excess_cut == 2 && $excess > 0){
+		//get input job number for each schedule
+		$old_jobs_count_qry = "SELECT MAX(CAST(input_job_no AS DECIMAL))+1 as result FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random LIKE '%".$schedule."%'";
+		// echo $old_jobs_count_qry;
+		$old_jobs_count_res = mysqli_query($link, $old_jobs_count_qry) or exit("Issue while Selecting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($old_jobs_count_res)>0)
+		{
+			while($max_oldqty_jobcount = mysqli_fetch_array($old_jobs_count_res))
+			{
+				if($max_oldqty_jobcount['result'] > 0) 
+				{
+					$input_job_num=$max_oldqty_jobcount['result'];
+				} 
+				else 
+				{
+					$input_job_num=1;
+				}
+			}
+		} 
+		else 
+		{
+			$input_job_num=1;
+		}
+		// echo $input_job_num;
+		
+		// Executing the Bundles
+		
+		for($j=2;$j<4;$j++) 
+		{				
+			$bundle_seq=1;
+			$input_job_no=$input_job_num;
+			$input_job_num_rand=$schedule.date("ymd").$input_job_no;
+			for($jj=0;$jj<sizeof($cps_ids);$jj++)
+			{
+				if($fill_qty[$cps_ids[$jj]][$j]>0)
+				{
+					$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+					// echo $ins_qry."<br>";
+					$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+					$bundle_seq++;							
+				}
+			}
+			$input_job_num++;					
+		}
+		unset($cps_ids);
 	}
 	return true;
 }
