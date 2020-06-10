@@ -216,10 +216,6 @@ $oms="oms";
 $pps="pps";
 $pms="pms";
 $module_limit = 32;
-$pps="pps";
-$pms="pms";
-$oms="oms";
-$mdm="mdm";
 $sms="sms";
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
