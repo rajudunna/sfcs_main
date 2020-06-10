@@ -1,13 +1,14 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));  ?>
 <?php
 
 $html1 = '';
 $tabledata = '';
 $sizes_reference="";
 $cuttable_sum=0;
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule'];
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_dashboard_view.php", "0", "N")."\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";
 $html1 .= "<div class='panel panel-primary'>
     <div class='panel-heading'>Recut Layplan Request</div>
@@ -74,7 +75,10 @@ $html1 .= "<div class='panel panel-primary'>
             $o_total12 += $sql_row1_recut2["cuttable_s_s".$sizes_code[$s]];
         }
         $serial_no=$sql_row1_recut2['serial_no'];
-        $html1 .= "<tr ><th><a class=\"btn btn-info btn-xs\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\">Request - $i</a></th>";
+        //To get Encoded Color & style
+        $main_style = style_encode($style);
+        $main_color = color_encode($color);
+        $html1 .= "<tr ><th><a class=\"btn btn-info btn-xs\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\">Request - $i</a></th>";
         for($s=0;$s<sizeof($s_tit);$s++)
         {
             $html1 .= "<td class=\"sizes\">".$s_ord12[$s]."</td>";

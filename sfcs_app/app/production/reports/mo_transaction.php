@@ -105,7 +105,7 @@
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url1 ?>?style='+style,
+			url: '<?= $url1 ?>?style='+encodeURIComponent(window.btoa(style)),
 			dataType: "json",
 			success: function (response) {	
                 $('select[name="schedule"]').append('<option value="" selected disabled>Select Schedule</option>'); 
@@ -167,7 +167,7 @@
 
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url ?>?style='+style +'&schedule='+schedule  +'&submit='+submit,
+				url: '<?= $url ?>?style='+encodeURIComponent(window.btoa(style)) +'&schedule='+schedule  +'&submit='+submit,
 				success: function(response) 
 				{
 					$('#excel_form').css({'display':'block'});
