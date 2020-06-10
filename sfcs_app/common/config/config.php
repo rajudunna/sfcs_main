@@ -210,6 +210,11 @@ $brandix_bts_uat="brandix_bts_uat";
 $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
+/*These all are related 2.0 integration databses*/
+$mdm="mdm";
+$oms="oms";
+$pps="pps";
+$pms="pms";
 $module_limit = 32;
 $pps="pps";
 $pms="pms";

@@ -134,11 +134,19 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $bai_kpi="bai_kpi";
 $bai_ict="bai_ict";
+<<<<<<< HEAD
 $pps="pps";
 $pms="pms";
 $oms="oms";
 $mdm="mdm";
 $sms="sms";
+=======
+/*These all are related 2.0 integration databses*/
+$mdm="mdm";
+$oms="oms";
+$pps="pps";
+$pms="pms";
+>>>>>>> d930c0584333a8cec5320825205d01397f2812a3
 ?>
 <?php
 $path=$include_path."/sfcs_app/app";
