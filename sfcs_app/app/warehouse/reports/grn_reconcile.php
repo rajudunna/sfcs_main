@@ -139,7 +139,7 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 		}
 		else
 		{
-			if($sql_row1['label_pending']>0 or $sql_row1['location_pending']>0 and $sql_row1['balance']>0)
+			if($sql_row1['label_pending']>0 or $sql_row1['location_pending']>0 or $sql_row1['ctax_pending']>0 and $sql_row1['balance']>0)
 			{
 				if($sql_row1['label_pending']>0)
 				{
