@@ -78,9 +78,9 @@ table{
 echo '<div class="table-responsive"><table class="table table-bordered" id="table1" name="table1"><thead><tr ><th>Lot #</th><th>Invoice #</th><th>PO #</th><th>Receiving #</th><th>Supplier</th><th>Batch</th><th>Item Code</th><th>Item Color</th><th>Item Description</th><th>Qty</th><th>GRN Date</th><th>Product</th>
 <th>PKG #</th>
 <th>Label Pending</th><th>Shade Group Pending</th><th>C-Tax Pending</th><th>Location Tran. Pending</th><th>Rolls</th></tr></thead><tbody>'
-=======
+
 	$sql1="SELECT *,sticker_report.inv_no ,sticker_report.po_no,sticker_report.rec_no,sticker_report.supplier,sticker_report.batch_no,sticker_report.item,sticker_report.item_name,sticker_report.item_desc,sticker_report.rec_qty FROM $bai_rm_pj1.grn_track_pendings LEFT JOIN $bai_rm_pj1.sticker_report ON grn_track_pendings.lot_no=sticker_report.lot_no where trim(grn_track_pendings.product) in ('Fabric') and left(grn_track_pendings.lot_no,4)>1111 order by grn_track_pendings.date";
->>>>>>> 3952-no-status-updated-in-grn-to-production-pending-fd-20075
+
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
