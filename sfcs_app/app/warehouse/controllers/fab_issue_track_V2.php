@@ -206,37 +206,25 @@ if(isset($_POST["submit"]) or $flag==1)
 		else
 		{
 			$docket_type="recut";
-		}
-	
+		}	
 		
-		if($cat == "D")
-		{
-			$table="$bai_pro3.plandoc_stat_log";
-		}
-		else
-		{
-			$table="$bai_pro3.recut_v2";
-		}
-		
-		$sql1="select doc_no,plan_lot_ref,lastup from $table where doc_no=\"".$docket."\"";
+		$sql1="SELECT DISTINCT lot_no FROM bai_rm_pj1.fabric_cad_allocation AS fca 
+		LEFT JOIN bai_rm_pj1.store_in AS si ON fca.roll_id=si.tid WHERE fca.doc_no=".$docket."";
 		// echo $sql1;
 		$result1=mysqli_query($link, $sql1) or die("Error1234 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$doc_rows = mysqli_num_rows($result1);
 		
 		if($doc_rows > 0)
 		{
+			$lot_no=array();
 			echo "<br/><div clas==row''><div class='col-md-4'><table class='table table-bordered table-striped'>";
 			echo "<tr><th>".ucwords($docket_type)." Docket No</th><td>".$docket."</td></tr>";
 			echo "</table></div></div><br/><br/><br/>";
 			while($row1=mysqli_fetch_array($result1))
 			{
-				$lot_no=$row1["plan_lot_ref"];
-				$lastup=$row1["lastup"];
+				$lot_no[]=$row1["lot_no"];
 			}
-			if($lot_no)
-			{
-				$lot_nos=explode(";",$lot_no);
-			}
+			
 			$lot_no_finals[]=0;
 			for($i=0;$i<sizeof($lot_nos);$i++)
 			{
