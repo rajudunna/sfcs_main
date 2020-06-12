@@ -37,7 +37,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 	}
 	
 	// Getting Plan
-	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE order_tid = '".$order_tid."' and doc_no in (".$doc_list.") order by doc_no desc";
+	$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log WHERE order_tid = '".$order_tid."' order by doc_no desc";
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	while($row = $result_qry_cut_qty_check_qry->fetch_assoc()) 
 	{
