@@ -2337,12 +2337,12 @@ tags will be replaced.-->
 	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
-	  		$reject_reason_query="select * from bai_rm_pj1.reject_reasons ";
+	  		$reject_reason_query="select * from mdm.reasons ";
 			$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($reject_reasons))
 			{
-				if ($temp[15] == $row1['tid']) {
-					echo $row1["reject_desc"];
+				if ($temp[15] == $row1['reason_id']) {
+					echo $row1["external_reason_description"];
 				}
 			}
 			
@@ -2353,9 +2353,9 @@ tags will be replaced.-->
 	    		while($row1=mysqli_fetch_array($reject_reasons2))
 	    		{
 					if ($temp[15] == $row1['tid']) {
-						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
+						echo "<option value=".$row1['reason_id'].">".$row1["external_reason_description"]."</option>";
 					} else {
-						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
+						echo "<option value=".$row1['reason_id'].">".$row1["external_reason_description"]."</option>";
 					}
 				}
 		echo "</select>
