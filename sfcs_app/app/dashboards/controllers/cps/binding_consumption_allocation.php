@@ -276,6 +276,9 @@ echo "<th>Schedule</th>";
 echo "<th>Color</th>";
 echo "</tr>";
 
+	//For internal testing asshned hardcoded values here 
+	$plant_code="L01";
+	$doc_num=4;
 	if($doc_num!=" " && $plant_code!=' '){
 		//this is function to get style,color,and cutjob
 		$result_jmdockets=getdata_jm_dockets($doc_num,$plant_code);
@@ -295,11 +298,12 @@ echo "</tr>";
 		$remark2 =$result_jmdockets['remark2'];
 		$remark3 =$result_jmdockets['remark3'];
 		$remark4 =$result_jmdockets['remark4'];
+		$material_required_qty=$plies*$length;
 	}
 
 	//to get component po_num and ratio id from
-	$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE jm_cut_job_id=$jm_cut_job_id AND plant_code='$plant_code'";
-	$jm_cut_job_result=mysqli_query($link_v2, $qry_jm_cut_job) or exit("Sql Errorat_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+	$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
 	if($jm_cut_job_num>0){
 		while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
@@ -308,10 +312,10 @@ echo "</tr>";
 			$po_number=$sql_row1['po_number'];
 		}
 	}
-	
 	//this is function to get schedule
 	if($po_number!=" " & $plant_code!=' '){
 		$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+		$schedule =$result_mp_mo_qty['schedule'];
 	}
 
 	//this is a function to get component group id and ratio id
@@ -321,7 +325,6 @@ echo "</tr>";
 		$material_item_code =$result_ratio_component_group['material_item_code'];
 		$master_po_details_id =$result_ratio_component_group['master_po_details_id'];
 	}
-
 	//this is a function to get descrip and rm color from mp_fabric
 	if($material_item_code!='' && $master_po_details_id!=''){
 		$result_mp_fabric=getdata_mp_fabric($material_item_code,$master_po_details_id,$plant_code);
@@ -337,25 +340,12 @@ echo "</tr>";
 	} 
 
 
-	
-	
 
-
-$sql1= "SELECT * from $bai_pro3.binding_consumption where id=$doc_num";
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result1);
-$sizes_table ='';
-while($sql_row1=mysqli_fetch_array($sql_result1))
-{
-    $id = $sql_row1['id'];
-	$style=$sql_row1['style'];
-	$schedule=$sql_row1['schedule'];
-	$color=$sql_row1['color'];
-	$binding_consumption_qty=$sql_row1['tot_bindreq_qty'];
+if($style!='' && $fg_color!=''){
 	echo "<tr>";
-	echo "<td>".$sql_row1['style']."</td>";
-	echo "<td>".$sql_row1['schedule']."</td>";
-	echo "<td>".$sql_row1['color']."</td>";
+	echo "<td>".$style."</td>";
+	echo "<td>".implode(",",$schedule)."</td>";
+	echo "<td>".$fg_color."</td>";
 	echo "</tr>";
 }
 echo "</table>";
@@ -370,8 +360,6 @@ echo "<input type=\"hidden\" name=\"row_id\" value=\"".$doc_num."\">";
 
 
 echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th></tr>";
-$sql2 = "SELECT *,GROUP_CONCAT(doc_no) AS dockets_list from $bai_pro3.binding_consumption_items where parent_id=$id group by parent_id";
-$sql_result1=mysqli_query($link, $sql2) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $enable_allocate_button=0;
 $comp_printed=array();
 $docket_num=array();
@@ -382,40 +370,29 @@ $style_flag=0;
 $Disable_allocate_flag=0;
 $print_validation=0;
 $print_status=1;
-while($sql_row1=mysqli_fetch_array($sql_result1))
+if($fabric_category!='')
 {	
-	{
-		$docno_lot=$sql_row1['doc_no'];
-		$componentno_lot=$sql_row1['compo_no'];
+
+		//$docno_lot=$sql_row1['doc_no'];
+		$seperated_lots='';
+		//function to get lot numbers based on component and style
+		$result_lots=getdata_stickerdata($material_item_code,$style);
+		$lotnos =$result_lots['lotnos'];	
+		if(sizeof($lotnos)>0)
+		{
+			$seperated_lots= trim(implode(",", $lotnos));	
+		}
 		
-		$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style' and item='$componentno_lot' and s.product_group='Fabric' group by s.lot_no";
-		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
-		{
-		
-			$lotnos_array[]=$sql_lotrow['lot_no'];
-		}
-	
-		if(sizeof($lotnos_array) =='')
-		{
-			
-		}
-		else 
-		{
-			$seperated_lots= trim(implode(",", $lotnos_array));
-		}
-	}
-	echo "<tr><td>Binding</td>";
-	echo "<td>".$sql_row1['compo_no']."</td>";
-	echo "<td>".$color.'-'.$sql_row1['dockets_list']."</td>";
+	echo "<tr><td>".$fabric_category."</td>";
+	echo "<td>".$material_item_code."</td>";
+	echo "<td>".$rm_description.'-'.$doc_num."</td>";
 	$extra=0;
-	echo "<td>".$binding_consumption_qty."</td>";
+	echo "<td>".$material_required_qty."</td>";
 	$doc_cat=$sql_row1['category'];
 	$doc_com=$sql_row1['compo_no'];
 	$doc_mer=$binding_consumption_qty;
 	$cat_ref='B';
-	$total = $binding_consumption_qty;
+	$total = $material_required_qty;
 	$docket_num[]=$sql_row1['doc_no'];
 	{	
 		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
