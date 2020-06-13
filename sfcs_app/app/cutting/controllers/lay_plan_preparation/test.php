@@ -7,6 +7,7 @@ Service Request #861761 / kirang/ 2015-03-17  :  Add New buyer CK for Cut Plan g
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <script>
 
@@ -57,9 +58,9 @@ $(document).ready(function() {
 
 <?php
 	//include("menu_content.php");
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule']; 
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 ?>
 
 <div class = "panel panel-primary">

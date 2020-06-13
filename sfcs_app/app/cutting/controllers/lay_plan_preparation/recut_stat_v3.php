@@ -396,8 +396,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$type=2; // For normal recut
 	}
-	
-	echo "<td class=\"  \"><center><button class=\"btn btn-info btn-xs\" href=\"$path?order_tid=".$sql_row['order_tid']."&cat_ref=".$sql_row['cat_ref']."&doc_id=".$sql_row['doc_no']."&type=$type\"  onclick=\"return popitup("."'"."$path?order_tid=".$sql_row['order_tid']."&cat_ref=".$sql_row['cat_ref']."&doc_id=".$sql_row['doc_no']."&type=$type"."')\">"."R".leading_zeros($doc_no,8)."</button></center></td>";
+	//Encoding order_tid
+	$main_tran_order_tid=order_tid_encode($tran_order_tid);
+	echo "<td class=\"  \"><center><button class=\"btn btn-info btn-xs\" href=\"$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row['cat_ref']."&doc_id=".$sql_row['doc_no']."&type=$type\"  onclick=\"return popitup("."'"."$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row['cat_ref']."&doc_id=".$sql_row['doc_no']."&type=$type"."')\">"."R".leading_zeros($doc_no,8)."</button></center></td>";
 	echo "<td class=\"  \"><center>"."R".leading_zeros($cut_no,3)."</center></td>";
 	echo "<td class=\"  \"><center>".$sql_row['remarks']."</center></td>";
 	for($i=0;$i<sizeof($orde_qtys);$i++)
