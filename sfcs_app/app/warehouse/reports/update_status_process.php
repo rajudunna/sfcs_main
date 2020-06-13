@@ -45,7 +45,7 @@ if(isset($_POST['submit1']))
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$style=$sql_row['style'];
-		$schedule=$sql_row['schedule'];
+		$schedule=$sql_row['po_des'];
 		$color=$sql_row['color'];
 		$category=$sql_row['category'];
 		$req_by=$sql_row['req_from'];
@@ -56,7 +56,7 @@ if(isset($_POST['submit1']))
 	}
 	
 	$table="Dear All, <br/><br/> Please find below details of manual request for RM.<br/><br/>";
-	$table.="Style:$style<br/>Schedule:$schedule<br/>Color:$color<br/>Requested By:$req_by<br/>Approved By:$username<br/><br/>";
+	$table.="Style:$style<br/>Po Description:$schedule<br/>Color:$color<br/>Requested By:$req_by<br/>Approved By:$username<br/><br/>";
 	$table.="<table><tr><th>Item</th><th>Reason</th><th>Qty</th></tr>";
 	$count=0;
 	

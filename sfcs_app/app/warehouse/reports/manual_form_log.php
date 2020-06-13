@@ -118,7 +118,7 @@ echo '<div style=\"overflow:scroll;\">
 
 
 echo "<tr>
-<th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Requested Qty</th><th>Status</th><th>Point Person</th><th>Req. From</th><th>App./Rej. By</th><th>App./Rej. Date</th><th>Reference</th><th>Category</th><th>Manually Issued Date</th></tr>";
+<th>Date</th>	<th>Style</th>	<th>Po Description</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Requested Qty</th><th>Status</th><th>Point Person</th><th>Req. From</th><th>App./Rej. By</th><th>App./Rej. Date</th><th>Reference</th><th>Category</th><th>Manually Issued Date</th></tr>";
 
 
 $sql="select * from $bai_rm_pj2.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") order by status";
@@ -130,7 +130,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<tr>";
 	echo "<td>".$sql_row['log_date']."</td>";
 	echo "<td>".$sql_row['style']."</td>";
-	echo "<td>".$sql_row['schedule']."</td>";
+	echo "<td>".$sql_row['po_des']."</td>";
 	echo "<td>".$sql_row['color']."</td>";
 	echo "<td>".$sql_row['buyer']."</td>";
 	echo "<td>".$sql_row['item']."</td>";

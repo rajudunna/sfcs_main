@@ -84,7 +84,7 @@ if(mysqli_num_rows($sql_result)>0)
 	echo "<div class='table table-responsive'>";
 	echo "<table class='table table-bordered'>";
 	echo "<thead>";
-	echo "<tr class='success'><th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr></thead>";
+	echo "<tr class='success'><th>Date</th>	<th>Style</th>	<th>Po Description</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Qty</th><th>Status</th><th>Req. From</th><th>Approved By</th></tr></thead>";
 	echo "<tbody>";
 	
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -93,7 +93,7 @@ if(mysqli_num_rows($sql_result)>0)
 		echo "<tr>";
 		echo "<td>".$sql_row['log_date']."</td>";
 		echo "<td>".$sql_row['style']."</td>";
-		echo "<td>".$sql_row['schedule']."</td>";
+		echo "<td>".$sql_row['po_des']."</td>";
 		echo "<td>".$sql_row['color']."</td>";
 		echo "<td>".$sql_row['buyer']."</td>";
 		echo "<td>".$sql_row['item']."</td>";

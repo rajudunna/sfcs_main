@@ -13,7 +13,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	{
 		//alert(e);
 		var style=document.getElementById('style').value;
-		var schedule=document.getElementById('schedule').value;
+		var schedule=document.getElementById('po_des').value;
 		var color=document.getElementById('color').value;
 		if(style=='NIL')
 		{
@@ -21,7 +21,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			return false;
 		}
 		if(schedule=='NIL'){
-			sweetAlert('Please Select Schedule','','warning');
+			sweetAlert('Please Select PO','','warning');
 			return false;
 		}
 		if(color=='NIL'){
@@ -54,12 +54,12 @@ function firstbox()
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&color="+document.test.color.value
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&color="+document.test.color.value+"&po_des="+document.test.po_des.value
 }
 
 
@@ -79,7 +79,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 ?>
 <?php
 $style=$_GET['style'];
-$schedule=$_GET['schedule']; 
+$po_des=$_GET['po_des']; 
 $color=$_GET['color'];
 
 ?>
@@ -88,7 +88,7 @@ $color=$_GET['color'];
 <?php
 
 echo "<table class=\"table table-bordered\" align=\"center\"><tr><td width=\"800\">";
-if(sizeof($color)>0)
+if(sizeof($po_des)>0)
 {
 	echo "<table align=\"center\" class=\"table table-bordered\"><tr><th>Sno</th><th>M3 Item Code</th><th>Reason</th><th>Quantity</th></tr>";
 	for($i=0;$i<20;$i++)
@@ -122,7 +122,7 @@ echo "Style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select name=\"style\" id=
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db";	
+	$sql="select distinct style from pps_2.mp_color_detail";	
 //}
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -132,13 +132,13 @@ echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+if(str_replace(" ","",$sql_row['style'])==str_replace(" ","",$style))
 {
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+	echo "<option value=\"".$sql_row['style']."\" selected>".$sql_row['style']."</option>";
 }
 else
 {
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+	echo "<option value=\"".$sql_row['style']."\">".$sql_row['style']."</option>";
 }
 
 }
@@ -147,45 +147,12 @@ echo "</select><br/><br/>";
 ?>
 
 <?php
-
-echo "Schedule <select name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" >";
-
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-
-}
-
-
-echo "</select><br/><br/>";
-?>
-
-<?php
-
-echo "Color&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"color\" id=\"color\" onchange=\"thirdbox();\" >";
+echo "Color&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"color\" id=\"color\" onchange=\"secondbox();\" >";
 
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+	$sql="select distinct color from pps_2.mp_color_detail where style=\"$style\"";
 //}
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -196,19 +163,53 @@ echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 
-if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+if(str_replace(" ","",$sql_row['color'])==str_replace(" ","",$color))
 {
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+	echo "<option value=\"".$sql_row['color']."\" selected>".$sql_row['color']."</option>";
 }
 else
 {
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+	echo "<option value=\"".$sql_row['color']."\">".$sql_row['color']."</option>";
 }
 
 }
 
 
 echo "</select><br/><br/>";
+?>
+
+<?php
+echo "PO<select name=\"po_des\" id=\"po_des\" onchange=\"thirdbox();\" >";
+$get_master_po="select master_po_number from pps_2.mp_color_detail where style=\"$style\" and color=\"$color\"";
+$get_result=mysqli_query($link, $get_master_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($po_row=mysqli_fetch_array($get_result))
+{
+  $main_po[]=$po_row['master_po_number'];
+}	
+$master_po="'" . implode ( "', '", $main_po ) . "'";
+
+$sql_po="select po_description,po_number from pps_2.mp_sub_order where master_po_number IN ($master_po)";
+$sql_result=mysqli_query($link, $sql_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result);
+
+echo "<option value=\"NIL\" selected>NIL</option>";
+while($sql_row=mysqli_fetch_array($sql_result))
+{
+  $po_number=$sql_row['po_number'];
+if(str_replace(" ","",$sql_row['po_description'])==str_replace(" ","",$po_des))
+{
+	echo "<option value=\"".$sql_row['po_description']."\" selected>".$sql_row['po_description']."</option>";
+}
+else
+{
+	echo "<option value=\"".$sql_row['po_description']."\">".$sql_row['po_description']."</option>";
+}
+
+}
+
+
+echo "</select><br/><br/>";
+echo "<input type=\"hidden\" name=\"po_no\" value=\"$po_number\">";
 
 echo "Trims&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;<select name=\"category\" id=\"category\" >";
 echo "<option value=\"1\">Accessories</option>";
@@ -252,19 +253,19 @@ echo "<font color=red>Point Person</font><br/><select id=\"spoc\"  name=\"spoc\"
 echo "</select><br/><br/><br/><br/><br/>";
 
 
-$sql="select order_tid,order_div from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-//echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$order_tid=$sql_row['order_tid'];
-	$customer=$sql_row['order_div'];
-}
-echo "<p align=\"right\"><input type=\"hidden\" name=\"division\" value=\"$customer\"><input type=\"submit\" class=\"btn btn-success\" value=\"Submit\" name=\"submit\" onclick=\"return check_all(event);\"></p>";
+// $sql="select order_tid,order_div from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+// //echo $sql;
+// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $sql_num_check=mysqli_num_rows($sql_result);
+// while($sql_row=mysqli_fetch_array($sql_result))
+// {
+// 	$order_tid=$sql_row['order_tid'];
+// 	$customer=$sql_row['order_div'];
+// }
+//echo "<input type=\"hidden\" name=\"division\" value=\"$customer\">";
+echo "<p align=\"right\"><input type=\"submit\" class=\"btn btn-success\" value=\"Submit\" name=\"submit\" onclick=\"return check_all(event);\"></p>";
 echo "</td></tr></table>";
-
 ?>
 
 
@@ -283,15 +284,16 @@ if(isset($_POST['submit']))
 {
 	$style=$_POST['style'];
 	$color=$_POST['color'];
-	$schedule=$_POST['schedule'];
+	$po_des=$_POST['po_des'];
 	
 	$rand=date("Hi").rand();
-	$division=$_POST['division'];
+	//$division=$_POST['division'];
 	$item=$_POST['item'];
 	$reason=$_POST['reason'];
 	$qty=$_POST['qty'];
 	$category=$_POST['category'];
 	$spoc=$_POST['spoc'];
+	$po_number=$_POST['po_no'];
 
 	
 	//echo sizeof($item);
@@ -304,7 +306,7 @@ if(isset($_POST['submit']))
 		if(strlen($item[$i])>0)
 		{
 			$count=1;
-			$sql="insert into $bai_rm_pj2.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\")";
+			$sql="insert into $bai_rm_pj2.manual_form(po_number,buyer,style,po_des,color,item,reason,qty,req_from,status,rand_track,category,spoc) values (\"$po_number\",'',\"$style\",\"$po_des\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\")";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
