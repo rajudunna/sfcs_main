@@ -217,7 +217,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
 
                         //schedule club docket validation end.JUST FOR CPS LOG WE ARE GETTING CHILD DOCKETS
                         $rep_status ='';
-                        $sql44="SELECT reported_status,remaining_qty FROM $bai_pro3.cps_log WHERE doc_no IN ($doc_no)  AND operation_code=".$operation_code;
+                        $sql44="SELECT reported_status,remaining_qty FROM $bai_pro3.cps_log WHERE doc_no IN ($doc_no)  AND operation_code=$operation_code ORDER BY reported_status ASC";
                         $sql_result12=mysqli_query($link, $sql44) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($sql_result12)>0)
                         {

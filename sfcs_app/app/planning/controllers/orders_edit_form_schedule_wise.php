@@ -108,7 +108,7 @@ if(isset($_POST["Update"]) || isset($_POST["update"])){
 			}
 			else
 			{
-				$sql_check1="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+				$sql_check1="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 ";
 				$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_check_res1)==0)
 				{

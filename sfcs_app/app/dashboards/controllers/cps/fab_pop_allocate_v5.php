@@ -1216,7 +1216,7 @@ if(isset($_POST['allocate']))
 				$mrn_iss_qty=$sql_row221['iss_qty1'];
 			}
 
-			echo "<td>".($sql_row['qty_rec']-$sql_row['qty_issued']+$sql_row['qty_ret']-$fab_cad_allocated_qty-$sql_row['partial_appr_qty']-$mrn_iss_qty)."</td>";
+			echo "<td>".(round(($sql_row['qty_rec']+$sql_row['qty_ret']-$sql_row['qty_issued']),2)-$fab_cad_allocated_qty-$sql_row['partial_appr_qty'])."</td>";
 			echo "<td><input class='form-control float' name=\"issued_new".$doc_ref."[$j]\" type = 'number' min='0' step='any' id=\"issued".$doc_ref."[$j]\" value = '0' onchange='filling($doc_ref,$j,$i);' readonly></input></td>";
 			
 			//echo "</br>Allotment Status".$sql_row['allotment_status']."</br>";

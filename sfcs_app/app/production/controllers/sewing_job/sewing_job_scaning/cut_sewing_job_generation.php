@@ -295,11 +295,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
             if($old_ratio==$row['ratio']){
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -367,11 +367,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 $old_cut_status = '';
                 echo "<tr style='display:none'>
                     <td>".$row['ratio']."</td>
-                    <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                    <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                     <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }

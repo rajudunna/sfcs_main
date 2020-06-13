@@ -790,7 +790,7 @@
 						
 					
 						//echo "PAC TID = $b_tid + $value";
-						if($b_op_id == $input_ops_code)
+						// if($b_op_id == $input_ops_code)
 						{
 							$searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid' AND ims_mod_no='$b_module[$key]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors' AND input_job_rand_no_ref='$b_job_no' AND operation_id='$input_ops_code' AND ims_remarks = '$remarks'";
 							$result_searching_query_in_imslog = $link->query($searching_query_in_imslog);

@@ -708,7 +708,7 @@
                 $pre_ops_code_temp[] = $row_ops['operation_code'];
             }
         }
-        $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code NOT IN (10,200,15) ORDER BY operation_order ASC LIMIT 1";
+        $post_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) > '$ops_order' and operation_code NOT IN (10,200,15) ORDER BY LENGTH(operation_order) ASC LIMIT 1";
         $result_post_ops_check = $link->query($post_ops_check);
         if($result_post_ops_check->num_rows > 0)
         {
@@ -1430,8 +1430,8 @@
                        {
                            $previous_operation = $row23['operation_code'];
                        }
-                        
-                        if($operation_code == 100 || $operation_code == 129)
+
+                        // if($operation_code == 100 || $operation_code == 129)
                         {
                             //updating ims_pro_qty against the input
                             $searching_query_in_imslog = "SELECT * FROM $bai_pro3.ims_log WHERE pac_tid = '$b_tid[$i]' AND ims_mod_no='$b_module[$i]' AND ims_style='$b_style' AND ims_schedule='$b_schedule' AND ims_color='$b_colors[$i]' AND input_job_rand_no_ref=$b_job_no AND operation_id=$operation_code AND ims_remarks = '$b_remarks[$i]'";

@@ -219,7 +219,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
       if($_POST["schedule"] != '' || $_POST["dat"] != '' && $_POST["dat1"] != '')
       {
          $shour='00:00:00';
-         $ehour='11:59:59';
+         $ehour='23:59:59';
          $sdate=$_POST['dat'];
          $edate=$_POST['dat1'];
          $schedule=$_POST['schedule'];

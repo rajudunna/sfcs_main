@@ -6,7 +6,7 @@ include('cut_rejections_save.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/cutting/controllers/cut_reporting_without_rolls/emb_reporting.php');
 //include('emb_reporting.php');
 error_reporting(0);
-$LEFT_THRESHOLD = 10000;
+$LEFT_THRESHOLD = 50000;
 $THRESHOLD = 200; //This Constant ensures the loop to force quit if it was struck in an infinte loop
 $LEFT = 0;
 

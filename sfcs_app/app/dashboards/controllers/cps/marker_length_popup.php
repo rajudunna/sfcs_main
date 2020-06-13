@@ -22,7 +22,7 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 			$sql_marker_result=mysqli_query($link, $sql_marker) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$mk_ref_id=mysqli_insert_id($link);
 			// echo $mk_ref_id."<br>";
-			$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set date='".$date."',marker_details_id='".$mk_id."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][13]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."' where tid=$mk_ref_id";			
+			$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set date='".$date."',marker_details_id='".$mk_id."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][13]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."',mk_ver ='".$date_maker[$i][7]."' where tid=$mk_ref_id";			
 			mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// echo $sql_update_marker_length_id."<br>";
 			$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$mk_id.",mk_ref=".$mk_ref_id." where doc_no=".$date_maker[$i][2]."";
@@ -73,7 +73,7 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 					mysqli_query($link, $sql) or exit("Sql Error1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql."<br>";
 					$iLastid=mysqli_insert_id($link);
-					$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$date_maker[$i][1]."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][14]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."' where tid=$iLastid";
+					$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$date_maker[$i][1]."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][14]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."',mk_ver ='".$date_maker[$i][7]."' where tid=$iLastid";
 					// echo $sql_update_marker_length_id."<br>";
 					mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$iLastid." where doc_no=".$date_maker[$i][2]."";
