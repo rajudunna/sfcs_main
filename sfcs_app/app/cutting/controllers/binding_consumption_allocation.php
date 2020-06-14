@@ -572,9 +572,18 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	echo "<td>".$sql_row1['compo_no']."</td>";
 	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
 	$extra=0;
-	//echo "<br>1=".$sql_row1['material_req'];
-	//if(substr($style_ref,0,1)=="M") { $extra=round(($material_req*0.01),2); }
-	{ $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
+
+	//this is function to get savinggs value
+	$date=$sql_row1['date'];
+	$cat_ref=$sql_row1['cat_ref'];
+	$order_del_no=$sql_row1['order_del_no'];
+	$order_col_des=$sql_row1['order_col_des'];
+	if($doc_no!='' && $plant_code!=''){
+		$result_fn_savings_per_cal=fn_savings_per_cal($doc_no,$plant_code);
+		$savings_value=result_fn_savings_per_cal['savings'];
+	}
+	
+	{ $extra=round(($material_requirement_orig*$savings_value),2); }
 	echo "<td>".($material_requirement_orig+$extra)."</td>";
 	$temp_tot=$material_requirement_orig+$extra;
 	$total+=$temp_tot;
