@@ -1033,7 +1033,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		echo "<td>".$hoursa_shift."</td>"; 
 		echo "<td>".round($peff_a,2)."%</td>";
-		$plan_sah_hr=round(($psth*$hoursa_shift/$work_hours),0); 
+		//$plan_sah_hr=round(($psth*$hoursa_shift/$work_hours),0);
+		$plan_sah_hr=$psth; 		
 		$sah_per=round(($stha*100/$plan_sah_hr),0); 
 		$plan_sah_hr_total=$plan_sah_hr_total+$plan_sah_hr; 
 		if($sah_per < 90) 
@@ -1056,9 +1057,9 @@ for ($j=0;$j<sizeof($sections);$j++)
         echo "<td>".round($clha_shift,0)."</td>"; 
         $clha_total=$clha_total+$clha_shift; 
         $clhg_total=$clha_total; 
-        echo "<td>".round($plan_sah_hr)."</td>"; 
+        echo "<td>".round($plan_sah_hr,2)."</td>"; 
         $stha_total=$stha_total+round($stha,2); 
-        $sthg_total=$stha_total; 
+        $sthg_total=round($stha_total,2); 
         $act_eff=round((round(($effa)*100,0)/$peff_a)*100,2); 
         $color=""; 
         if(round(($effa*100))>=70) 
@@ -1071,8 +1072,8 @@ for ($j=0;$j<sizeof($sections);$j++)
         { 
           $color="#ff0915"; 
         }
-        echo "<td>".round($stha,0)."</td>";
-        echo "<td bgcolor=\"$color\">".round(($effa*100),0)."%</td>";
+        echo "<td>".round($stha,2)."</td>";
+        echo "<td bgcolor=\"$color\">".round(($effa*100),2)."%</td>";
         $effa_total=$effa_total+round(($effa*100),2); 
         $effg_total=$effa_total; 
         echo "<td>".round(($atotal-$ppro_a),0)."</td>";
@@ -1270,7 +1271,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{ 
 		$color_per_fac1="#ff0915"; 
 	} 
-	$stha_total_sum_total=$stha_total_sum_total+$stha_total;
+	$stha_total_sum_total=$stha_total_sum_total+round($stha_total,2);
 	$avgpcstotal_sum_total=$avgpcstotal_sum_total+$avgpcstotal;
 	//echo "<td rowspan=4>".round($stha_total,0)."</td>"; 
 	$fac_sah_total=$fac_sah_total+$plan_sah_hr_total; 
@@ -1332,17 +1333,27 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{ 
 		$peffresulta_sum_total=(round(($pstha_sum_total/$pclha_sum_total),2)*100); 
 	}
+	
+	$sql212="select round((sum(plan_sth)/sum(plan_clh))*100,2) as 'peff',round((sum(act_sth)/sum(act_clh))*100,2) as 'aeff' from $grand_rep where section in ($sections_group) and date=\"$date\" and shift in ($team)";
+	 $sql_result212=mysqli_query($link, $sql212) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	 while($sql_row212=mysqli_fetch_array($sql_result212)) 
+	 {
+		 $peffsecresult=$sql_row212['peff'];
+		 $aeffsecresult=$sql_row212['aeff'];
+	 }
 
 	echo "<td id='table1Tots".($var_val)."' style='background-color:#FFFFCC;'>".$sum_total_final."</td>";
 	echo "<td id='table1Tots".($var_val+1)."' style='background-color:#FFFFCC;'>".$hoursa_shift_sum_total."</td>";
-	echo "<td id='table1Tots".($var_val+2)."' style='background-color:#FFFFCC;'>".$peffresulta_sum_total."%</td>";
+	//echo "<td id='table1Tots".($var_val+2)."' style='background-color:#FFFFCC;'>".round($peffresulta_sum_total,2)."%</td>";
+	echo "<td id='table1Tots".($var_val+2)."' style='background-color:#FFFFCC;'>".round($peffsecresult,2)."%</td>";
 	$plan_eff_avg=$var_val+2;
 	echo "<td id='table1Tots".($var_val+3)."' style='background-color:#FFFFCC;'>".$ppro_a_total_sum_total."</td>";
 	echo "<td id='table1Tots".($var_val+4)."' style='background-color:#FFFFCC;'>".$clha_total_sum_total."</td>";
-	echo "<td id='table1Tots".($var_val+5)."' style='background-color:#FFFFCC;'>".$plan_sah_hr_total_sum_total."</td>";
-	echo "<td id='table1Tots".($var_val+6)."' style='background-color:#FFFFCC;'>".$stha_total_sum_total."</td>";
+	echo "<td id='table1Tots".($var_val+5)."' style='background-color:#FFFFCC;'>".round($plan_sah_hr_total_sum_total,2)."</td>";
+	echo "<td id='table1Tots".($var_val+6)."' style='background-color:#FFFFCC;'>".round($stha_total_sum_total,2)."</td>";
 	$xa_sum_total=round(($stha_total_sum_total/$clha_total_sum_total)*100,2);
-	echo "<td id='table1Tots".($var_val+7)."' style='background-color:#FFFFCC;'>".round($xa_sum_total,0)."%</td>";
+	//echo "<td id='table1Tots".($var_val+7)."' style='background-color:#FFFFCC;'>".round($xa_sum_total,2)."%</td>";
+	echo "<td id='table1Tots".($var_val+7)."' style='background-color:#FFFFCC;'>".round($aeffsecresult,2)."%</td>";
 	$act_eff_avg=$var_val+7;
 	echo "<td id='table1Tots".($var_val+8)."' style='background-color:#FFFFCC;'>".round(($sum_total_final-$ppro_a_total_sum_total),0)."</td>";
 	echo "<td id='table1Tots".($var_val+9)."' style='background-color:#FFFFCC;'>".$avgpcstotal_sum_total."</td>";
@@ -1355,7 +1366,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$val21[]=$j+4;
 		if(($j==$plan_eff_avg) || ($j==$act_eff_avg))
 		{
-				$val31[]="avg";
+				$val31[]="mean";
 		}
 		else
 		{
@@ -1466,19 +1477,27 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$pstha=$pstha+($plan_pro*$smv)/60; 
 	} 
 	$peffresulta=0; 
-	$sql21="select avg(plan_eff) as eff from $pro_plan where sec_no in ($sections_group) and date=\"$date\" and shift in ($team)";      
-	$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
-	while($sql_row21=mysqli_fetch_array($sql_result21)) 
-	{
-		$peffresulta=$sql_row21['eff'];
-	}
+	
+	$sql21="select round((sum(plan_sth)/sum(plan_clh))*100,2) as 'peff',round((sum(act_sth)/sum(act_clh))*100,2) as 'aeff' from $grand_rep where section in ($sections_group) and date=\"$date\" and shift in ($team)";
+	 $sql_result21=mysqli_query($link, $sql21) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	 while($sql_row21=mysqli_fetch_array($sql_result21)) 
+	 {
+		 $peffresulta=$sql_row21['peff'];
+		 $aeffresulta=$sql_row21['aeff'];
+	 }
+	// $sql21="select avg(plan_eff) as eff from $pro_plan where sec_no in ($sections_group) and date=\"$date\" and shift in ($team)";      
+	// $sql_result21=mysqli_query($link, $sql21) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	// while($sql_row21=mysqli_fetch_array($sql_result21)) 
+	// {
+		//$peffresulta=$sql_row21['eff'];
+	// }
 	/* 20100226factory view */ 
 	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$atotal."</td>"; 
 	$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$hoursa_shift."</td>"; 
 
 	
 
-		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$peffresulta."%</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($peffresulta,2)."%</td>"; 
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($ppro_a_total_sum_total,0)."</td>"; 
 		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".$clha_total_sum_total."</td>"; //Change 20100819 
 		  
@@ -1496,14 +1515,15 @@ for ($j=0;$j<sizeof($sections);$j++)
 			$color_per_fac1="#1cfe0a"; 
 		} 
 		
-		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($fac_sah_total,0)."</td>"; 
-		$total_factory_summery .="<td rowspan=4>".round($stha_total_sum_total,0)."</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:white;color:black'>".round($fac_sah_total,2)."</td>"; 
+		$total_factory_summery .="<td rowspan=4>".round($stha_total_sum_total,2)."</td>"; 
 
 		$xa=0; 
 		$xb=0; 
 		if($clha_total_sum_total>0) 
 		{ 
-			$xa=round(($stha_total_sum_total/$clha_total_sum_total)*100,2); //Change 20100819 
+			//$xa=round(($stha_total_sum_total/$clha_total_sum_total)*100,2); //Change 20100819 
+			$xa=$aeffresulta;  
 		}
 
 		if($xa>=70) 
@@ -1519,7 +1539,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			$color_per_fac2="#ff0915"; 
 		} 
 		$avgpcstotal=$ppro_a_total_sum_total/$hoursa_shift;
-		$total_factory_summery .="<td rowspan=4 style='background-color:$color_per_fac2; color:black; font-weight:bold; '>".round($xa,0)."%</td>"; 
+		$total_factory_summery .="<td rowspan=4 style='background-color:$color_per_fac2; color:black; font-weight:bold; '>".round($xa,2)."%</td>"; 
 		$total_factory_summery .="<td  rowspan=4 style='background-color:white;color:black'>".round(($atotal-$ppro_a_total),0)."</td>"; 
 		$total_factory_summery .="<td  rowspan=4>".round($avgpcstotal,0)."</td>"; 
 			

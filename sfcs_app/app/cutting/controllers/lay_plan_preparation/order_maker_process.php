@@ -245,14 +245,14 @@ if(isset($_POST['update']))
 						$in_mklength[]=$in_mklen;
 						$in_pwidth[]=$in_width;
 
-						$sql_check="select parent_id from $bai_pro3.maker_details where parent_id=$allocate_ref";
-						$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_check_res)==0)
-						{
+						//$sql_check="select parent_id from $bai_pro3.maker_details where parent_id=$allocate_ref";
+						//$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+						//if(mysqli_num_rows($sql_check_res)==0)
+						//{
 							$sql="insert into $bai_pro3.maker_details (parent_id, marker_type, marker_version, shrinkage_group, width, marker_length, marker_name, pattern_name, marker_eff, perimeters, remarks1, remarks2, remarks3, remarks4) values('".$allocate_ref."','".$in_mktype."', '".$in_mkver."', '".$in_skgrp."', '".$in_width."', '".$in_mklen."', '".$in_mkname."', '".$in_ptrname."', '".$in_mkeff."', '".$in_permts."',  '".$in_rmks1."',  '".$in_rmks2."',  '".$in_rmks3."',  '".$in_rmks4."')";
 							//echo $sql."<bR>";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-						}	
+						//}	
 					
 						//$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 
@@ -286,7 +286,7 @@ if(isset($_POST['update']))
 					{
 						$sql_check1="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$iLastid."-".$in_pwidth[$i]."'";
 						$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($sql_check_res)==0)
+						if(mysqli_num_rows($sql_check_res1)==0)
 						{
 							$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$iLastid."-".$in_pwidth[$i]."')";
 							mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -28,6 +28,11 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	}
 </style>
 <script>
+
+	$(document).ready(function()
+	{
+		$("[name='hold']").prop("disabled",true);
+	});
 	function firstbox()
 	{
 		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))
@@ -48,6 +53,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		if(isNaN(cartons) || cartons < 0){
 			sweetAlert('Cartons should not be negative','','warning');
 			element.value = 0;
+		}
+		else if(cartons!='' && cartons >= 0)
+		{
+			$("[name='hold']").prop("disabled",false);
+		}
+		else if(cartons == '')
+		{
+			$("[name='hold']").prop("disabled",true);
 		}
 	}
 </script>
@@ -334,7 +347,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	//echo "<tr><td><input type=\"checkbox\" value=\"1\" name=\"sel[$x]\"><input type=\"hidden\" name=\"ship_id[$x]\" value=\"".$sql_row['ship_tid']."\"></td>";
 	echo "<tr>";
-	if($sql_row['ship_cartons']){
+	if($sql_row['ship_cartons']!='' || $sql_row['ship_cartons'] != NULL){
 	$unset_url = getFullURL($_GET['r'],'unset.php','N').'&ship_tid='.$sql_row['ship_up_date'];
 	echo "<td><input type=\"checkbox\" value=\"".$sql_row['ship_up_date']."\" id='chk' onchange='check_clicked()' name=\"sel[$x]\"></td>";
 	echo "<td><a class='btn btn-xs btn-info' href='$unset_url'>Un-Set</a></td>";

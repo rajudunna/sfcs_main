@@ -90,7 +90,16 @@ $html1 .= "<div class='panel panel-primary'>
         // echo $plndoc_qry;
         if(mysqli_num_rows($plndoc_qry_res)>0)
         {
-            $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Generated</a></th>";
+            $get_cat_ref_query="SELECT cat_ref,tid,cuttable_ref,mk_status,remarks FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid\" and serial_no=$serial_no";
+            // echo $get_cat_ref_query;
+            $cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $rows_count = mysqli_num_rows($cat_ref_result);
+            
+            if(mysqli_num_rows($cat_ref_result) == mysqli_num_rows($plndoc_qry_res)){
+                $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Generated</a></th>";
+            } else {
+                $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Partially Generated</a></th>";
+            }
         } else {
             $html1 .= "<th><a class='btn btn-primary btn-xs' disabled>Docket Not Generated</a></th>";
 

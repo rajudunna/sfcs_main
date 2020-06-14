@@ -9,6 +9,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 
 $order_quantity_mail=$conf1->get('order_quantity_mail');
+
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 // $view_access=user_acl("SFCS_0135",$username,1,$group_id_sfcs);
@@ -179,6 +180,7 @@ echo "<div class=\"col-sm-12\"><div class=\"row\"><div class=\"col-sm-3\">
 $sql="select distinct order_style_no from $bai_pro3.bai_orders_db where $order_joins_not_in";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
+
 
 echo "<option value='' selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1083,7 +1085,7 @@ if(isset($_POST["update"]))
 		// white-space:nowrap;
 		// text-align:center;
 		// }
-		
+
 		
 		// td.style
 		// {
@@ -1133,5 +1135,6 @@ if(isset($_POST["update"]))
 											
 	// send_email1("baiict@brandix.com",$order_quantity_mail,"",$subject1,$message1);
 //}
+
 
 ?>

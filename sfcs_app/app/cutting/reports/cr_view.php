@@ -451,8 +451,9 @@ if(isset($_POST['submit']))
 		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,1);
 		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
 		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);	
+		unset($act_s);
 	}
-
+    
 	echo "</table>";
 
 	/* NEW */

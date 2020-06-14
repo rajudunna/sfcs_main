@@ -740,7 +740,7 @@ $(document).ready(function(){
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
 						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2 where tid=".$tid_ref[$j];
+						$sql="update bai_rm_pj1.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=".$tid_ref[$j];
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
@@ -748,6 +748,24 @@ $(document).ready(function(){
 				$sql3="update bai_rm_pj1.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=\"".$tid_ref[$j]."\"";
+				//echo $query_status;
+				$query_status_res=mysqli_query($link, $query_status) or exit("Sql Error6: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($qry_status_result=mysqli_fetch_array($query_status_res))
+				{
+					$qty_received[$j]=$qry_status_result['qty_rec'];
+					$qty_issue[$j]=$qry_status_result['qty_issued'];
+					$qty_returned[$j]=$qry_status_result['qty_ret'];
+					$qty_allocate[$j]=$qry_status_result['qty_allocated'];
+					$balance_qty[$j]=($qty_received[$j]+$qty_returned[$j])-($qty_issue[$j]+$qty_allocate[$j]);
+				}
+				if($balance_qty[$j]==0)
+				{
+					$status_new=2;
+					$sql44="update bai_rm_pj1.store_in set status=$status_new, allotment_status=$status_new where tid=\"".$tid_ref[$j]."\"";
+					//echo $sql44."</br>";
+					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
 			}
 		}
 		

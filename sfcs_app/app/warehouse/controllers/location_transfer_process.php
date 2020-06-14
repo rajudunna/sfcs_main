@@ -53,7 +53,7 @@ if($_POST['put'])
 			}
 			else
 			{
-				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",'0',\"".$ref_tid[$i]."\" from $bai_rm_pj1.store_in where barcode_number='$barcode_number[$i]'";
+				$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks,log_user,barcode_number,ref_tid,ref4,supplier_no,four_point_status,shade_grp) select lot_no,\"".$n_location[$i]."\",ref2,ref3,".$qty_issued[$i].",\"$date\",\"Transfer-".$remarks[$i]."\",\"$username\",'0',\"".$ref_tid[$i]."\",ref4,supplier_no,four_point_status,shade_grp from $bai_rm_pj1.store_in where barcode_number='$barcode_number[$i]'";
 //echo $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
