@@ -2342,7 +2342,7 @@ if($num_check>0)
 	  <td class=xl9624082 colspan=14 width=98 style='border-left:none;width:130pt'>";
 
 	  			$reject_reason_query = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
-				$reject_reasons=mysqli_query($link_v2, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$reject_reasons=mysqli_query($link_new, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
 					if ($temp[15] == $row1['internal_reason_code']) {

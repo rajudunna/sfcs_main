@@ -454,7 +454,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                 <tbody>
                     <?php 
                         $select_resons = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
-                        $get_reasons = mysqli_query($link_v2, $select_resons) or exit("get_parent_id Error--6" .mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $get_reasons = mysqli_query($link_new, $select_resons) or exit("get_parent_id Error--6" .mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         while ($row122 = mysqli_fetch_array($get_reasons)) 
                         {

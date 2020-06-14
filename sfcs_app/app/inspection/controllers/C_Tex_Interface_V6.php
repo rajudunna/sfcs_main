@@ -2398,7 +2398,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox rej_reason rej_reason_select2' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' ".$style.">
 	  			<option value='' selected >NIL</option>";
-				$reject_reasons2=mysqli_query($link_v2, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$reject_reasons2=mysqli_query($link_new, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    		while($row1=mysqli_fetch_array($reject_reasons2))
 	    		{
 					$dd_value = $row1['internal_reason_code'].'~~'. $row1['external_reason_code'];
