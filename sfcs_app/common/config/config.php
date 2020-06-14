@@ -216,7 +216,7 @@ $oms="oms";
 $pps="pps";
 $pms="pms";
 $module_limit = 32;
-
+$sms="sms";
 
 // reasons department enum
 
@@ -225,7 +225,8 @@ $department_reasons = ['Cutting' => 'Cutting', 'Sewing' => 'Sewing', 'Packing' =
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$link_v2= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//Link For 2.0
+$link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size");
