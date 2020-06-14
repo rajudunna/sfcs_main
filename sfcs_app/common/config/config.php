@@ -218,6 +218,10 @@ $pms="pms";
 $module_limit = 32;
 
 
+// reasons department enum
+
+$department_reasons = ['Cutting' => 'Cutting', 'Sewing' => 'Sewing', 'Packing' => 'Packing', 'Inspection' => 'Inspection', 'Embellishment' => 'Embellishment', 'Machine' => 'Machine', 'AQL' => 'AQL', 'CIF' => 'CIF'];
+
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 

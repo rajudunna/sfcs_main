@@ -2341,12 +2341,12 @@ if($num_check>0)
 	  echo "<td class=xl12824082 colspan=6 width=98 style='border-left:none;width:130pt'>".wordwrap($temp[14],10,"<br>\n")."</td>
 	  <td class=xl9624082 colspan=14 width=98 style='border-left:none;width:130pt'>";
 
-	  			$reject_reason_query="select * from $bai_rm_pj1.reject_reasons ";
-				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	  			$reject_reason_query = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
+				$reject_reasons=mysqli_query($link_v2, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
-					if ($temp[15] == $row1['tid']) {
-						echo wordwrap($row1["reject_desc"],25,"<br>\n");
+					if ($temp[15] == $row1['internal_reason_code']) {
+						echo wordwrap($row1["internal_reason_description"],25,"<br>\n");
 					}
 				}
 	 echo "</td>
