@@ -45,7 +45,8 @@ function gettabledata($params)
 	include("../../../../../common/config/functions_dashboard.php");
 
     $main_color = color_decode($params[0]);
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$main_color' order by CAST(tos.operation_order AS CHAR)";
+    $main_style = style_decode($params[1]);
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$main_style' and color = '$main_color' order by CAST(tos.operation_order AS CHAR)";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
@@ -53,7 +54,7 @@ function gettabledata($params)
 		{
 			
 			//validation for operations if exists in schedule operations master #2864
-			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$params[1]' AND ColorId='$main_color' and OperationNumber='$row[operation_code]'";
+			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$main_style' AND ColorId='$main_color' and OperationNumber='$row[operation_code]'";
 			$qry_ops_validation_data = $link->query($qry_ops_validation);
 			if ($qry_ops_validation_data->num_rows > 0) {
 				//echo "</br>validation working..!</br>";
@@ -93,8 +94,10 @@ if(isset($_GET['pro_style_schedule']))
 function getscheduledata($pro_style)
 {
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
-	$query_get_schedule_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$pro_style' group by style,color";
+    $main_style= style_decode($pro_style);
+	$query_get_schedule_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$main_style' group by style,color";
 	//echo $query_get_schedule_data;exit;
 	$result = $link->query($query_get_schedule_data);
 	$json = array();
