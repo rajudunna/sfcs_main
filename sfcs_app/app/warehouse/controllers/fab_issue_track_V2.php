@@ -625,7 +625,7 @@ if(isset($_POST['new_entry']))
 				*/
 				
 				$docket_details=getdata_jm_dockets($doc_no,$facility_code);
-				$material_req=$docket_details['plies']+$docket_details['length'];
+				$material_req=round($docket_details['plies']*$docket_details['length'],2);
 				
 				$sql="select COALESCE(sum(qty_issued),0) as qty_issued_sofar from $bai_rm_pj1.store_out where cutno='".$cat.$doc_no."'";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
