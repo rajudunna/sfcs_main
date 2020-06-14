@@ -935,7 +935,7 @@ if ($sql_result)
 							$get_color = $rows['order_col_des'];
 						}
 						$main_style = style_encode($get_style);
-                        $main_color = color_encode($color);
+                        $main_color = color_encode($get_color);
 						// Control
 						echo "<td class=\"  \"><center>N/A</center></td>";
 
