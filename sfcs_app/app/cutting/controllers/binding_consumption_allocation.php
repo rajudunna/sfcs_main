@@ -3,6 +3,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 
@@ -669,22 +670,44 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
 
 		}
-		
-
+		if($tid!=''){
+			$result_cat_stat_log=getdata_cat_stat_log($tid);
+			$ref1 =$result_fabric_status['ref1'];
+			$lot_no =$result_fabric_status['lot_no'];
 			
-		//if($clubbing==0) //Disabled auto finding of lots, if color is clubbed
-		{
+		}
+
+		function getdata_cat_stat_log($tid){
 			//Commented due to performance issue 20120319
-			 $sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-			$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1x=mysqli_fetch_array($sql_result1x))
-			{
+			 $sql1x_cat_stat_log="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+			$sql_result1x=mysqli_query($link_v2, $sql1x_cat_stat_log) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+			$cat_stat_log_num=mysqli_num_rows($sql_result1x);
+			if($cat_stat_log_num>0){
+				while($sql_row1=mysqli_fetch_array($sql_result1x))
+				{
+					$ref1 = $sql_row1['ref1'];
+					$lot_no=$sql_row1['lot_no'];
+				}
+	
+				return array(
+				'ref1' => $ref1,
+				'lot_no' => $lot_no,
+				);
+			}
+		}
+		//function getdata_cat_stat_log($tid){
+			//Commented due to performance issue 20120319
+			// $sql1x_cat_stat_log="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
+			//$sql_result1x=mysqli_query($link_v2, $sql1x_cat_stat_log) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//while($sql_row1x=mysqli_fetch_array($sql_result1x))
+			//{
 				//Disabled because of taking values from PMS040
 				//echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
 				
-			} 
+			//} 
 			//Commented due to performance issue 20120319
-		}
+		//}
 		
 		/* //Disabled because of taking values from PMS040
 		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
