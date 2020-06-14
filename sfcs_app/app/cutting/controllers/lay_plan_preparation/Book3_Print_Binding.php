@@ -1,88 +1,23 @@
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 //getting style and scheduele and color
-$bindid=$_GET['binding_id'];
+$doc=$_GET['binding_id'];
+$plant_code="L01";
 
-$gettingstyle="select style,schedule,color,category from $bai_pro3.binding_consumption where id='$bindid'";
-$sql_result=mysqli_query($link, $gettingstyle) or exit("gettingstyle Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$style=$sql_row['style'];
-	$schedule=$sql_row['schedule'];
-	$color=$sql_row['color'];
-	$category=$sql_row['category'];
-}
+	$doc_id[]=$doc;
 
-
-//getting order tid
-$sql="select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$order_tid=$sql_row['order_tid'];
-}
-
-//getting catref
-$catrefqty="select cat_ref from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid' and category='$category'";
-$sql_result_cat=mysqli_query($link, $catrefqty) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result_cat))
-{
-	$cat_ref=$sql_row['cat_ref'];
-}
-
-
-//getting doc ids
-$docsqry="select doc_no from $bai_pro3.binding_consumption_items where parent_id='$bindid'";
-$sql_result_doc=mysqli_query($link, $docsqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result_doc))
-{
-	$doc_id[]=$sql_row['doc_no'];
-}
 $doc_id=implode(',',$doc_id);
 
 $divide = 15;
 
-//print status
-$printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
-$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result_print))
-{
-	$printstatus=$sql_row['status'];
-}
-
-
-
-// $order_tid=$_GET['order_tid'];
-// $cat_ref=$_GET['cat_ref'];	
-// $doc_id=$_GET['doc_id'];
-// if($_GET['print_status']<>'')
+// //print status
+// $printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
+// $sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result_print))
 // {
-    // $print=$_GET['print_status'];
-// }
-// else
-// {
-	// $print=2;
-// }
-// $sql12="select MIN(mini_order_num) as min_no,MAX(mini_order_num) as max_no from $brandix_bts.tbl_miniorder_data where docket_number='".$doc_id."'";
-// $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// if(mysqli_num_rows($sql_result12)>0)
-// {
-	// while($sql_row12=mysqli_fetch_array($sql_result12))
-	// {
-		// if($sql_row12['min_no']== $sql_row12['max_no'])
-		// {
-			// $mini_order_num=$sql_row12['min_no'];
-		// }
-		// else
-		// {
-			// $mini_order_num=$sql_row12['min_no']."-".$sql_row12['max_no'];
-		// }
-	// }
-// }
-// else
-// {
-	// $mini_order_num=0;
+// 	$printstatus=$sql_row['status'];
 // }
 
 $sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
@@ -162,61 +97,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
 			}
 		}	
-
-			$size01 = $sql_row['title_size_s01'];
-			$size02 = $sql_row['title_size_s02'];
-			$size03 = $sql_row['title_size_s03'];
-			$size04 = $sql_row['title_size_s04'];
-			$size05 = $sql_row['title_size_s05'];
-			$size06 = $sql_row['title_size_s06'];
-			$size07 = $sql_row['title_size_s07'];
-			$size08 = $sql_row['title_size_s08'];
-			$size09 = $sql_row['title_size_s09'];
-			$size10 = $sql_row['title_size_s10'];
-			$size11 = $sql_row['title_size_s11'];
-			$size12 = $sql_row['title_size_s12'];
-			$size13 = $sql_row['title_size_s13'];
-			$size14 = $sql_row['title_size_s14'];
-			$size15 = $sql_row['title_size_s15'];
-			$size16 = $sql_row['title_size_s16'];
-			$size17 = $sql_row['title_size_s17'];
-			$size18 = $sql_row['title_size_s18'];
-			$size19 = $sql_row['title_size_s19'];
-			$size20 = $sql_row['title_size_s20'];
-			$size21 = $sql_row['title_size_s21'];
-			$size22 = $sql_row['title_size_s22'];
-			$size23 = $sql_row['title_size_s23'];
-			$size24 = $sql_row['title_size_s24'];
-			$size25 = $sql_row['title_size_s25'];
-			$size26 = $sql_row['title_size_s26'];
-			$size27 = $sql_row['title_size_s27'];
-			$size28 = $sql_row['title_size_s28'];
-			$size29 = $sql_row['title_size_s29'];
-			$size30 = $sql_row['title_size_s30'];
-			$size31 = $sql_row['title_size_s31'];
-			$size32 = $sql_row['title_size_s32'];
-			$size33 = $sql_row['title_size_s33'];
-			$size34 = $sql_row['title_size_s34'];
-			$size35 = $sql_row['title_size_s35'];
-			$size36 = $sql_row['title_size_s36'];
-			$size37 = $sql_row['title_size_s37'];
-			$size38 = $sql_row['title_size_s38'];
-			$size39 = $sql_row['title_size_s39'];
-			$size40 = $sql_row['title_size_s40'];
-			$size41 = $sql_row['title_size_s41'];
-			$size42 = $sql_row['title_size_s42'];
-			$size43 = $sql_row['title_size_s43'];
-			$size44 = $sql_row['title_size_s44'];
-			$size45 = $sql_row['title_size_s45'];
-			$size46 = $sql_row['title_size_s46'];
-			$size47 = $sql_row['title_size_s47'];
-			$size48 = $sql_row['title_size_s48'];
-			$size49 = $sql_row['title_size_s49'];
-			$size50 = $sql_row['title_size_s50'];
 			$flag = $sql_row['title_flag'];
 }
 
-    $order_tidss=array();    $original_details = array(); $doc_no_child = Array();
+	$order_tidss=array();
+	$original_details = array();
+	$doc_no_child = Array();
     if($ord_joins<>'0')
     {
         if(strlen($delivery)<8)
@@ -276,203 +162,106 @@ while($sql_row=mysqli_fetch_array($sql_result))
         $order_tidss[]=$order_tid;
     }
 
-$sql="select * from $bai_pro3.plan_dashboard where doc_no in ($doc_id)";
-// echo $sql;
-// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="select * from $bai_pro3.plan_dashboard where doc_no in ($doc)";
+//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$plan_log_time=$sql_row['log_time'];
 }
-	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$category=$sql_row['category'];
+
+if($doc!=" " && $plant_code!=' '){
+	//this is function to get style,color,and cutjob
+	$result_jmdockets=getdata_jm_dockets($doc,$plant_code);
+	$style =$result_jmdockets['style'];
+	$fg_color =$result_jmdockets['fg_color'];
+	$plies =$result_jmdockets['plies'];
+	$jm_cut_job_id =$result_jmdockets['jm_cut_job_id'];
+	$ratio_comp_group_id =$result_jmdockets['ratio_comp_group_id'];
+	$length =$result_jmdockets['length'];
+	$purwidth =$result_jmdockets['width'];
+	$efficiency =$result_jmdockets['efficiency'];
+	$marker_version =$result_jmdockets['marker_version'];
+	$marker_type_name =$result_jmdockets['marker_type_name'];
+	$pattern_version =$result_jmdockets['pattern_version'];
+	$perimeter =$result_jmdockets['perimeter'];
+	$remark1 =$result_jmdockets['remark1'];
+	$remark2 =$result_jmdockets['remark2'];
+	$remark3 =$result_jmdockets['remark3'];
+	$remark4 =$result_jmdockets['remark4'];
+	$created_at =$result_jmdockets['created_at'];
+	$material_required_qty=$plies*$length;
+}else{
+	echo "Plese verify Docket No & Plant code";exit;
+}
+//to get component po_num and ratio id from
+$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
+if($jm_cut_job_num>0){
+	while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
+	{
+		$ratio_id = $sql_row1['ratio_id'];
+		$po_number=$sql_row1['po_number'];
+		$cut_number=$sql_row1['cut_number'];
+	}
+}
+//this is function to get schedule
+if($po_number!=" " & $plant_code!=' '){
+	$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+	$schedule =$result_mp_mo_qty['schedule'];
+}else{
+	echo "Plese verify po number & Plant code";exit;
+}
+
+//this is a function to get component group id and ratio id
+if($ratio_comp_group_id!=' '){
+	$result_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+	$category =$result_ratio_component_group['fabric_category'];
+	$compo_no =$result_ratio_component_group['material_item_code'];
+	$master_po_details_id =$result_ratio_component_group['master_po_details_id'];
+}else{
+	echo "Plese verify Ratio component group id";exit;
+}
+//this is a function to get descrip and rm color from mp_fabric
+if($compo_no!='' && $master_po_details_id!=''){
+	$result_mp_fabric=getdata_mp_fabric($compo_no,$master_po_details_id,$plant_code);
+	$fab_des =$result_mp_fabric['rm_description'];
+	$rm_color =$result_mp_fabric['rm_color'];
+	$consumption =$result_mp_fabric['consumption'];
+	$wastage =$result_mp_fabric['wastage'];
+
+
+}else{
+	echo "Plese verify component No & Po details id";exit;
+}
+
+//this is function to get sizes ratio based on ratio id
+if($ratio_id!=' ' && $plant_code!=''){
+	$result_size_ratios=getdata_size_ratios($ratio_id,$plant_code);
+	$size_tit =$result_size_ratios['size_tit'];
+	$ratioof =$result_size_ratios['ratioof'];
+}else{
+	echo "Plese verify ratio id & Plant details";exit;
+}
+	//$category=$sql_row['category'];
 	$gmtway=$sql_row['gmtway'];
-	$fab_des=$sql_row['fab_des'];
+	//$fab_des=$sql_row['fab_des'];
 	$body_yy=$sql_row['catyy'];
 	$waist_yy=$sql_row['Waist_yy'];
 	$leg_yy=$sql_row['Leg_yy'];
-	$purwidth=$sql_row['purwidth'];
-	$compo_no=$sql_row['compo_no'];
+	//$purwidth=$sql_row['purwidth'];
+	//$compo_no=$sql_row['compo_no'];
 	$strip_match=$sql_row['strip_match'];
 	$gusset_sep=$sql_row['gusset_sep'];
 	$patt_ver=$sql_row['patt_ver'];
 	$col_des=$sql_row['col_des'];
-}
-// var_dump($sizes_code);
-$sql="select *,cuttable_wastage, sum(cuttable_s_xs) as \"cuttable_s_xs\", sum(cuttable_s_s) as \"cuttable_s_s\", sum(cuttable_s_m) as \"cuttable_s_m\", sum(cuttable_s_l) as \"cuttable_s_l\", sum(cuttable_s_xl) as \"cuttable_s_xl\", sum(cuttable_s_xxl) as \"cuttable_s_xxl\", sum(cuttable_s_xxxl) as \"cuttable_s_xxxl\" from $bai_pro3.cuttable_stat_log where order_tid=\"$order_tid\" and cat_id=$cat_ref";
-//echo $sql;
-// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			if($sql_row["cuttable_s_s".$sizes_code[$s].""]>0)
-			{
-				$c_o[$sizes_code[$s]]=$sql_row["cuttable_s_s".$sizes_code[$s]];
-			}
-		}
-	$cuttable_wastage = $sql_row['cuttable_wastage'];
-	$c_s01=$sql_row['cuttable_s_s01'];
-	$c_s02=$sql_row['cuttable_s_s02'];
-	$c_s03=$sql_row['cuttable_s_s03'];
-	$c_s04=$sql_row['cuttable_s_s04'];
-	$c_s05=$sql_row['cuttable_s_s05'];
-	$c_s06=$sql_row['cuttable_s_s06'];
-	$c_s07=$sql_row['cuttable_s_s07'];
-	$c_s08=$sql_row['cuttable_s_s08'];
-	$c_s09=$sql_row['cuttable_s_s09'];
-	$c_s10=$sql_row['cuttable_s_s10'];
-	$c_s11=$sql_row['cuttable_s_s11'];
-	$c_s12=$sql_row['cuttable_s_s12'];
-	$c_s13=$sql_row['cuttable_s_s13'];
-	$c_s14=$sql_row['cuttable_s_s14'];
-	$c_s15=$sql_row['cuttable_s_s15'];
-	$c_s16=$sql_row['cuttable_s_s16'];
-	$c_s17=$sql_row['cuttable_s_s17'];
-	$c_s18=$sql_row['cuttable_s_s18'];
-	$c_s19=$sql_row['cuttable_s_s19'];
-	$c_s20=$sql_row['cuttable_s_s20'];
-	$c_s21=$sql_row['cuttable_s_s21'];
-	$c_s22=$sql_row['cuttable_s_s22'];
-	$c_s23=$sql_row['cuttable_s_s23'];
-	$c_s24=$sql_row['cuttable_s_s24'];
-	$c_s25=$sql_row['cuttable_s_s25'];
-	$c_s26=$sql_row['cuttable_s_s26'];
-	$c_s27=$sql_row['cuttable_s_s27'];
-	$c_s28=$sql_row['cuttable_s_s28'];
-	$c_s29=$sql_row['cuttable_s_s29'];
-	$c_s30=$sql_row['cuttable_s_s30'];
-	$c_s31=$sql_row['cuttable_s_s31'];
-	$c_s32=$sql_row['cuttable_s_s32'];
-	$c_s33=$sql_row['cuttable_s_s33'];
-	$c_s34=$sql_row['cuttable_s_s34'];
-	$c_s35=$sql_row['cuttable_s_s35'];
-	$c_s36=$sql_row['cuttable_s_s36'];
-	$c_s37=$sql_row['cuttable_s_s37'];
-	$c_s38=$sql_row['cuttable_s_s38'];
-	$c_s39=$sql_row['cuttable_s_s39'];
-	$c_s40=$sql_row['cuttable_s_s40'];
-	$c_s41=$sql_row['cuttable_s_s41'];
-	$c_s42=$sql_row['cuttable_s_s42'];
-	$c_s43=$sql_row['cuttable_s_s43'];
-	$c_s44=$sql_row['cuttable_s_s44'];
-	$c_s45=$sql_row['cuttable_s_s45'];
-	$c_s46=$sql_row['cuttable_s_s46'];
-	$c_s47=$sql_row['cuttable_s_s47'];
-	$c_s48=$sql_row['cuttable_s_s48'];
-	$c_s49=$sql_row['cuttable_s_s49'];
-	$c_s50=$sql_row['cuttable_s_s50'];
-
-	$cuttable_total=$c_s01+$c_s02+$c_s03+$c_s04+$c_s05+$c_s06+$c_s07+$c_s08+$c_s09+$c_s10+$c_s11+$c_s12+$c_s13+$c_s14+$c_s15+$c_s16+$c_s17+$c_s18+$c_s19+$c_s20+$c_s21+$c_s22+$c_s23+$c_s24+$c_s25+$c_s26+$c_s27+$c_s28+$c_s29+$c_s30+$c_s31+$c_s32+$c_s33+$c_s34+$c_s35+$c_s36+$c_s37+$c_s38+$c_s39+$c_s40+$c_s41+$c_s42+$c_s43+$c_s44+$c_s45+$c_s46+$c_s47+$c_s48+$c_s49+$c_s50;
-
-}
-
-
 ?>
 
 <?php
-$a_s=array();
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,'$delivery','$color') as savings from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no in ($doc_id)";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$mk_ref=$sql_row['mk_ref'];
-	$plies=$sql_row['p_plies'];
-for($s=0;$s<sizeof($sizes_code);$s++)
-{
-	//if($sql_row["a_s".$sizes_code[$s].""]>0)
-	//{
-	$a_s[$sizes_code[$s]]=$a_s[$sizes_code[$s]]+($sql_row["p_s".$sizes_code[$s].""]*$plies);
-	//}
-}
-$a_s01=$sql_row['a_s01'];
-$a_s02=$sql_row['a_s02'];
-$a_s03=$sql_row['a_s03'];
-$a_s04=$sql_row['a_s04'];
-$a_s05=$sql_row['a_s05'];
-$a_s06=$sql_row['a_s06'];
-$a_s07=$sql_row['a_s07'];
-$a_s08=$sql_row['a_s08'];
-$a_s09=$sql_row['a_s09'];
-$a_s10=$sql_row['a_s10'];
-$a_s11=$sql_row['a_s11'];
-$a_s12=$sql_row['a_s12'];
-$a_s13=$sql_row['a_s13'];
-$a_s14=$sql_row['a_s14'];
-$a_s15=$sql_row['a_s15'];
-$a_s16=$sql_row['a_s16'];
-$a_s17=$sql_row['a_s17'];
-$a_s18=$sql_row['a_s18'];
-$a_s19=$sql_row['a_s19'];
-$a_s20=$sql_row['a_s20'];
-$a_s21=$sql_row['a_s21'];
-$a_s22=$sql_row['a_s22'];
-$a_s23=$sql_row['a_s23'];
-$a_s24=$sql_row['a_s24'];
-$a_s25=$sql_row['a_s25'];
-$a_s26=$sql_row['a_s26'];
-$a_s27=$sql_row['a_s27'];
-$a_s28=$sql_row['a_s28'];
-$a_s29=$sql_row['a_s29'];
-$a_s30=$sql_row['a_s30'];
-$a_s31=$sql_row['a_s31'];
-$a_s32=$sql_row['a_s32'];
-$a_s33=$sql_row['a_s33'];
-$a_s34=$sql_row['a_s34'];
-$a_s35=$sql_row['a_s35'];
-$a_s36=$sql_row['a_s36'];
-$a_s37=$sql_row['a_s37'];
-$a_s38=$sql_row['a_s38'];
-$a_s39=$sql_row['a_s39'];
-$a_s40=$sql_row['a_s40'];
-$a_s41=$sql_row['a_s41'];
-$a_s42=$sql_row['a_s42'];
-$a_s43=$sql_row['a_s43'];
-$a_s44=$sql_row['a_s44'];
-$a_s45=$sql_row['a_s45'];
-$a_s46=$sql_row['a_s46'];
-$a_s47=$sql_row['a_s47'];
-$a_s48=$sql_row['a_s48'];
-$a_s49=$sql_row['a_s49'];
-$a_s50=$sql_row['a_s50'];
 
-	$a_ratio_tot=$a_s01+$a_s02+$a_s03+$a_s04+$a_s05+$a_s06+$a_s07+$a_s08+$a_s09+$a_s10+$a_s11+$a_s12+$a_s13+$a_s14+$a_s15+$a_s16+$a_s17+$a_s18+$a_s19+$a_s20+$a_s21+$a_s22+$a_s23+$a_s24+$a_s25+$a_s26+$a_s27+$a_s28+$a_s29+$a_s30+$a_s31+$a_s32+$a_s33+$a_s34+$a_s35+$a_s36+$a_s37+$a_s38+$a_s39+$a_s40+$a_s41+$a_s42+$a_s43+$a_s44+$a_s45+$a_s46+$a_s47+$a_s48+$a_s49+$a_s50;
 	
-	$cutno=$sql_row['acutno'];
-	$plies=$sql_row['p_plies']; //20110911
-	$docketno=$sql_row['doc_no'];
-	$docketdate=$sql_row['date'];
-	$mk_ref=$sql_row['mk_ref'];
-	$print_status=$sql_row['print_status'];
-	$remarks=$sql_row['remarks'];
-	$plan_module=$sql_row['plan_module'];
-	$lot_ref=$sql_row['plan_lot_ref'];
-	$allocate_ref=$sql_row['allocate_ref'];
-	$savings=$sql_row['savings'];
-}
-$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
-// echo $sql2."<br>";
-$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysql_error());
-
-while($sql_row2=mysqli_fetch_array($sql_result2))
-{
-	$mklength=$sql_row2['mklength'];
-	$mk_remarks=$sql_row2['remarks'];
-	$remark1=$sql_row2['remark1'];
-	$remark2=$sql_row2['remark2'];
-	$remark3=$sql_row2['remark3'];
-	$remark4=$sql_row2['remark4'];
-	$patt_ver=$sql_row2['mk_ver'];
-}	
-$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
+	$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
 	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
 //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -481,114 +270,14 @@ $doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
 		$system_width=round($sql_row1x['width'],2);
 	}
 	$actwidth=$system_width;
-	// $ctexlength=$sql_row1x['allocated_qty'];
 	
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
-	// echo $sql2."<br>";
-	// mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		$mklength=$sql_row2['mklength'];
-		$mk_file=$sql_row2['remarks'];
-		$remark1=$sql_row2['remark1'];
-		$remark2=$sql_row2['remark2'];
-		$remark3=$sql_row2['remark3'];
-		$remark4=$sql_row2['remark4'];
-	
-		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
-		// echo $sql22."<br>";
-		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row22=mysqli_fetch_array($sql_result22))
-		{
-			$actwidth=$sql_row22['marker_width'];
-			$act_mk_length=$sql_row22['marker_length'];
-		}
-		$act_mk_length=0;
-		$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref and cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
-		// echo $sql22."<br>";
-		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row22=mysqli_fetch_array($sql_result22))
-		{
-			$purlength=$sql_row22['marker_length'];
-		}
-		if(mysqli_num_rows($sql_result22)==0)
-		{
-			$purlength=$mklength;
-		}
-	}
-	// echo "Pur Length=".$purlength."<br>";
-	//Binding Consumption / YY Calculation
-	
-	$sql="select COALESCE(binding_consumption,0) as \"binding_consumption\" from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	if($sql_num_check > 0)
-	{
-		while($sql_row2=mysqli_fetch_array($sql_result))
-		{
-			$binding_con = $sql_row2['binding_consumption'];
-			$bind_con= $binding_con *($a_ratio_tot*$plies);
-
-
-		}
-	}
-	else
-	{
-		$binding_con=0;
-		$bind_con=0;
-
-	}
-	
-//chr($color_code).leading_zeros($cutno, 3)	
-
-
-//To allocate Lot Number for RM Issuing
-/*
-if($print_status==NULL)
-{
-	$req_qty=($mklength*$plies);
-	$temp=$req_qty;
-	$lot_ref="";
-	
-	$sql1="select * from bai_rm_pj1.fabric_status where item=\"$compo_no\" and (rec_qty-allocated_qty)>0";
-	mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-	$sql_result1=mysql_query($sql1,$link) or exit("Sql Error".mysql_error());
-	while($sql_row1=mysql_fetch_array($sql_result1))
-	{
-		$lot_no=$sql_row1['lot_no'];
-		$location=$sql_row1['ref1'];
-		$available=$sql_row1['rec_qty']-$sql_row1['allocated_qty'];
-		if($available>0 and $temp>0)
-		{
-			if($available>=$temp and $temp>0)
-			{
-				$sql11="update bai_rm_pj1.sticker_report set allocated_qty=".($sql_row1['allocated_qty']+$temp)." where lot_no=\"$lot_no\"";
-				$sql_result11=mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
-				$lot_ref.=$lot_no.">".$location.";";
-				$temp=0;
-			}
-			else
-			{
-				$temp-=$available;
-				$sql11="update bai_rm_pj1.sticker_report set allocated_qty=".($sql_row1['rec_qty'])." where lot_no=\"$lot_no\"";
-				$sql_result11=mysql_query($sql11,$link) or exit("Sql Error".mysql_error());
-				$lot_ref.=$lot_no.">".$location.";";
-			}
-		}
-	}
-}
-
-*/
-// echo $docketno.'<br>';
 $child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
 $child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
 while($sql_row=mysqli_fetch_array($child_dockets_result))
 {
 	$original_docs[]=$sql_row['doc_no'];
 }
-// var_dump($original_docs).'<br>';
+
 ?>
 
 
@@ -2113,19 +1802,7 @@ body { zoom:72%;}
 <script>
 function printpr()
 {
-	window.print();
-	// var OLECMDID = 7;
-	// /* OLECMDID values:
-	// * 6 - print
-	// * 7 - print preview
-	// * 1 - open window
-	// * 4 - Save As
-	// */
-	// var PROMPT = 1; // 2 DONTPROMPTUSER
-	// var WebBrowser = '<OBJECT ID="WebBrowser1" WIDTH=0 HEIGHT=0 CLASSID="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></OBJECT>';
-	// document.body.insertAdjacentHTML('beforeEnd', WebBrowser);
-	// WebBrowser1.ExecWB(OLECMDID, PROMPT);
-	// WebBrowser1.outerHTML = "";
+	//window.print();
 }
 </script>
 
@@ -2136,56 +1813,10 @@ function printpr()
 
 <body onload="printpr();">
 
-<script language="JavaScript">
-<!--
-
-//Disable right mouse click Script
-//By Maximus (maximus@nsimail.com) w/ mods by DynamicDrive
-//For full source code, visit http://www.dynamicdrive.com
-
-//var message="Function Disabled!";
-
-///////////////////////////////////
-// function clickIE4(){
-// if (event.button==2){
-// alert(message);
-// return false;
-// }
-// }
-
-// function clickNS4(e){
-// if (document.layers||document.getElementById&&!document.all){
-// if (e.which==2||e.which==3){
-// alert(message);
-// return false;
-// }
-// }
-// }
-
-// if (document.layers){
-// document.captureEvents(Event.MOUSEDOWN);
-// document.onmousedown=clickNS4;
-// }
-// else if (document.all&&!document.getElementById){
-// document.onmousedown=clickIE4;
-// }
-
-// document.oncontextmenu=new Function("alert(message);return false")
-
-// --> 
+<script language="JavaScript"> 
 </script>
-
-<!--[if !excel]>&nbsp;&nbsp;<![endif]-->
-<!--The following information was generated by Microsoft Excel's Publish as Web
-Page wizard.-->
-<!--If the same item is republished from Excel, all information between the DIV
-tags will be replaced.-->
-<!----------------------------->
-<!--START OF OUTPUT FROM EXCEL PUBLISH AS WEB PAGE WIZARD -->
-<!---->
 <div style='height:50px'><br/><br/></div>
 <div id="DOCKET_NEW_4118" align=center x:publishsource="Excel">
-
 <table border=0 cellpadding=0 cellspacing=0 style='border-collapse: collapse;width:1000px'>
  <col width=24 style='mso-width-source:userset;mso-width-alt:877;width:18pt'>
  <col class=xl654118 width=64 span=6 style='mso-width-source:userset;
@@ -2265,7 +1896,7 @@ tags will be replaced.-->
   <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
-  border-left:none'>B<?php echo leading_zeros($bindid,9); ?></td>
+  border-left:none'><?php echo $doc; ?></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=23 style='mso-height-source:userset;height:17.25pt'>
@@ -2337,7 +1968,7 @@ tags will be replaced.-->
   ?>--->
   </td>
   <td class=xl924118>Date:</td>
-  <td class=xl944118><?php echo $docketdate; ?></td>
+  <td class=xl944118><?php echo $created_at; ?></td>
   <td class=xl964118></td>
   <td colspan=2 class=xl914118>Category :</td>
   <td colspan=2 class=xl1214118>Binding</td>
@@ -2359,9 +1990,9 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Sch No :</td>
-  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo $delivery.chr($color_code); ?></td>
+  <td colspan=2 class=xl954118 style='border-right:.5pt solid black'><?php echo implode(",",$schedule); ?></td>
   <td class=xl904118x>Consumption:</td>
-  <td class=xl954118><?php echo $binding_con; ?></td>
+  <td class=xl954118><?php echo $consumption; ?></td>
   <td class=xl904118></td>
   <td colspan=2 class=xl904118>Fab Descrip :</td>
   <td colspan=6 style='padding-top : 12px;border-right:.5pt solid black'><?php echo $fab_des; ?></td>
@@ -2369,7 +2000,7 @@ tags will be replaced.-->
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl904118>Color :</td>
-  <td colspan=4 style='padding-top : 12px;border-right:.5pt solid black;font-size:18px'><?php echo $color." / ".$col_des; ?></td>
+  <td colspan=4 style='padding-top : 12px;border-right:.5pt solid black;font-size:18px'><?php echo $fg_color." / ".$fab_des; ?></td>
   <td class=xl954118></td>
   <td colspan=2 class=xl904118>MK Name :</td>
   <td colspan=4 class=xl954118>N/A</td>
@@ -2390,23 +2021,26 @@ tags will be replaced.-->
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >(Docket - Cut No):
   <?php
-	$sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row33=mysqli_fetch_array($sql_result33))
-	{
-		$color_code=$sql_row33['color_code']; //Color Code
-	}
+	// $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	// mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row33=mysqli_fetch_array($sql_result33))
+	// {
+	// 	$color_code=$sql_row33['color_code']; //Color Code
+	// }
   
-	$docsqry="select doc_no,cutno from $bai_pro3.binding_consumption_items where parent_id=$bindid";
-	$sql_result_doc=mysqli_query($link, $docsqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result_doc))
-	{
-		$doc_id=$sql_row['doc_no'];
-		$cutno=$sql_row['cutno'];
+	// $docsqry="select doc_no,cutno from $bai_pro3.binding_consumption_items where parent_id=$bindid";
+	// $sql_result_doc=mysqli_query($link, $docsqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row=mysqli_fetch_array($sql_result_doc))
+	// {
+	// 	$doc_id=$sql_row['doc_no'];
+	// 	$cutno=$sql_row['cutno'];
 		
-		$finresult[]=$doc_id.'-'.chr($color_code).leading_zeros($cutno,3);
-	}
+	// 	$finresult[]=$doc_id.'-'.chr($color_code).leading_zeros($cutno,3);
+	// }
+	//$finresult[]=$doc.'-'.chr($color_code).leading_zeros($cut_number,3);
+	$finresult[]=$doc.'-'.$cut_number;
+
 	$findata=implode(',',$finresult);
 	echo $findata;
   ?>
@@ -2475,11 +2109,12 @@ tags will be replaced.-->
 	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 	  <td height=20 class=xl654118 style='height:10.0pt'></td>
 	  <?php
-		if($flag == 1)
-		{
+		// if($flag == 1)
+		// {
 			
 			//number of sizes-which excludes null
-			$total_size = sizeof($s_tit);
+			$total_size = sizeof($size_tit);
+			//echo $total_size;
 			// $total_size = 50;
 			for($s=0;$s<$total_size;$s++)
 			{
@@ -2488,22 +2123,22 @@ tags will be replaced.-->
 					echo "<td class=xl654118>Size</td>";
 					$temp = 1;
 				}
-				echo  "<td class=xl694118>".$s_tit[$sizes_code[$s]]."</td>";
+				echo  "<td class=xl694118>".$size_tit[$s]."</td>";
 				if(($s+1) % $divide == 0){
 					$temp_len = $s+1;
 					echo "</tr>";
 					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 						<td height=20 class=xl654118 style='height:10.0pt'></td>
 						<td class=xl654118>Ratio</td>";
-					for($i=$temp_len1;$i<$temp_len;$i++) {
+					for($i=$temp_len1;$i<$total_size;$i++) {
 							echo "<td class=xl734118>N/A</td>";
 						}
 					echo "</tr>";
 					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
 					<td height=20 class=xl654118 style='height:10.0pt'></td>
 					<td class=xl654118>Quantity</td>";
-					for($i=$temp_len1;$i<$temp_len;$i++) {
-						echo "<td class=xl734118 >".($a_s[$sizes_code[$i]])."</td>";
+					for($i=0;$i<$total_size;$i++) {
+						echo "<td class=xl734118 >".($ratioof[$i])."</td>";
 					}
 					echo "</tr>";
 					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'></tr><td></td>";
@@ -2522,13 +2157,13 @@ tags will be replaced.-->
 					<td height=20 class=xl654118 style='height:10.0pt'></td>
 					<td class=xl654118>Quantity</td>";
 					for($i=$temp_len1;$i<$total_size;$i++) {
-						echo "<td class=xl734118 >".($a_s[$sizes_code[$i]])."</td>";
+						echo "<td class=xl734118 >".($ratioof[$i]*$plies)."</td>";
 					}
-					echo "<td class=xl754118>".(array_sum($a_s))."</td>";
+					echo "<td class=xl754118>".(array_sum($ratioof)*$plies)."</td>";
 					echo "</tr>";
 				}
 			}
-		}
+		// }
 	  ?>
 	  </tr>
 	  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
@@ -2587,16 +2222,16 @@ tags will be replaced.-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $purwidth; ?></td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'>N/A</td>
   <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'>N/A</td>
-  <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $binding_con; ?></td>
+  <td rowspan=2 class=xl1184118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo $consumption; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'>N/A</td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $binding_con*array_sum($a_s); echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php $fab_bind = $consumption*array_sum($ratioof); echo round($fab_bind,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php echo round($fab_bind+$fab_lay,2).'<br/>('.$fab_uom.')'; ?></td>
   <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $actwidth; ?></td> 
-  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $act_mk_length; ?></td>
-  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php if($act_mk_length > 0){$fab_revised_lay = $act_mk_length*(1+$cuttable_wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';} else { echo "0";}?></td>
+  <td rowspan=2 class=xl1124118 width=67 style='border-bottom:.5pt solid black;  border-top:none;width:50pt'><?php echo $length; ?></td>
+  <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;  border-top:none;width:48pt'><?php if($length > 0){$fab_revised_lay = $length*(1+$wastage)*$plies; echo round($fab_revised_lay+$fab_bind,2).'<br/>('.$fab_uom.')';} else { echo "0";}?></td>
 <!--<td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'><?php //if(substr($style,0,1)=="M") 
-{ $extra=round((($act_mk_length*$plies)*$savings),2); }  echo round((($act_mk_length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
+{ $extra=round((($length*$plies)*$savings),2); }  echo round((($length*$plies)+$extra+$bind_con),2); //Extra 1% added to avoid cad saving manual mrn claims. ?></td>-->
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>&nbsp;</td>
   <td rowspan=2 class=xl1124118 width=64 style='border-bottom:.5pt solid black;
@@ -2644,28 +2279,30 @@ tags will be replaced.-->
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-  $sql="select * from $bai_rm_pj1.docket_ref where doc_no=\"B".$bindid."\" and doc_type='binding'  group by roll_id order by batch_no,ref4 asc";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
 
-$roll_det[]=$sql_row['ref2'];
-$width_det[]=round($sql_row['roll_width'],2);
-$leng_det[]=$sql_row['allocated_qty'];
-$batch_det[]=trim($sql_row['batch_no']);
-$shade_det[]=$sql_row['ref4'];
-$location_det[]=$sql_row['ref1'];
-$invoice_no[]=$sql_row['inv_no'];
-$locan_det[]=$sql_row['ref1'];
-$lot_det[]=$sql_row['lot_no'];
-$roll_id[]=$sql_row['roll_id'];
-$ctex_len[]=$sql_row['ref5'];
-$tkt_len[]=$sql_row['qty_rec'];
-$ctex_width[]=$sql_row['ref3'];
-$tkt_width[]=$sql_row['ref6'];
-$item_name[] = $sql_row['item'];
-} 
+//function to get docket 
+$doc=4;
+$doc_ype="binding";
+if($doc!='' && $doc_ype!=''){
+	$result_docketinfo=getdata_docketinfo($doc,$doc_ype);
+	$roll_det =$result_docketinfo['roll_det'];
+	$width_det =$result_docketinfo['width_det'];
+	$leng_det =$result_docketinfo['leng_det'];
+	$batch_det =$result_docketinfo['batch_det'];
+	$shade_det =$result_docketinfo['shade_det'];
+	$location_det =$result_docketinfo['location_det'];
+	$invoice_no =$result_docketinfo['invoice_no'];
+	$locan_det =$result_docketinfo['locan_det'];
+	$lot_det =$result_docketinfo['lot_det'];
+	$roll_id =$result_docketinfo['roll_id'];
+	$ctex_len =$result_docketinfo['ctex_len'];
+	$tkt_len =$result_docketinfo['tkt_len'];
+	$ctex_width =$result_docketinfo['ctex_width'];
+	$tkt_width =$result_docketinfo['tkt_width'];
+	$item_name =$result_docketinfo['item_name'];
+}
+
+  
   //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
    if(sizeof($batch_det) > 0)
    {
@@ -2679,7 +2316,7 @@ $item_name[] = $sql_row['item'];
 	    $batchs=array_unique($batchs);
 	    $sql="select group_concat(sp_rem) as rem from $bai_rm_pj1.inspection_db where batch_ref in (".implode(",",$batchs).")";
    	    //echo $sql;
-	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error at inspection".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
 	    	$rem=$sql_row["rem"];

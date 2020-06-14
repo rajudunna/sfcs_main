@@ -333,14 +333,7 @@ echo "</tr>";
 
 	}
 
-	//this is function to get sizes ratio based on ratio id
-	if($ratio_id!=' ' && $plant_code!=''){
-		$result_size_ratios=getdata_size_ratios($ratio_id,$plant_code);
-		$size_ratios =$result_mp_fabric['size_ratios'];
-	} 
-
-
-
+	
 if($style!='' && $fg_color!=''){
 	echo "<tr>";
 	echo "<td>".$style."</td>";
@@ -388,19 +381,20 @@ if($fabric_category!='')
 	echo "<td>".$rm_description.'-'.$doc_num."</td>";
 	$extra=0;
 	echo "<td>".$material_required_qty."</td>";
-	$doc_cat=$sql_row1['category'];
-	$doc_com=$sql_row1['compo_no'];
-	$doc_mer=$binding_consumption_qty;
+	$doc_cat=$fabric_category;
+	$doc_com=$material_item_code;
+	$doc_mer=$material_required_qty;
 	$cat_ref='B';
 	$total = $material_required_qty;
-	$docket_num[]=$sql_row1['doc_no'];
+	$docket_num[]=$doc_num;
 	{	
-		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
+		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_num0."\">";
 		//For New Implementation
 		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$doc_cat."\">";
 		echo "<input type=\"hidden\" name=\"doc_com[]\" value=\"".$doc_com."\">";
 		echo "<input type=\"hidden\" name=\"doc_mer[]\" value=\"".$doc_mer."\">";
 		echo "<input type=\"hidden\" name=\"cat_ref[]\" value=\"".$cat_ref."\">";
+		echo "<input type=\"hidden\" name=\"width[]\" value=\"".$width."\">";
 		//For New Implementation
 		
 		if($style_flag==0){
