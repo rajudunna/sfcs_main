@@ -526,42 +526,17 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
 		}
 
-
-		
-		// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
-		//getting lot numbers with reference style code and component no
-		/*$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE p.doc_no='$docno_lot' and item='$componentno_lot'";*/
-		
-		
-		$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style_ref' and item='$componentno_lot' and  p.doc_no='$docno_lot' and s.product_group='Fabric'";
-		// echo "<br>LOt qry : ".$qry_lotnos;
-		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
+		//$docno_lot=$sql_row1['doc_no'];
+		$seperated_lots='';
+		//function to get lot numbers based on component and style
+		$result_lots=getdata_stickerdata($componentno_lot,$style_ref);
+		$lotnos =$result_lots['lotnos'];	
+		if(sizeof($lotnos)>0)
 		{
-			//echo "</br>lot numbers :".$sql_lotrow['lot_no'];
-			$lotnos_array[]=$sql_lotrow['lot_no'];
-		}
-		// var_dump($lotnos_array);
-		// echo sizeof($lotnos_array);
-		if(sizeof($lotnos_array) =='')
-		{
-			//echo "<h2>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp NO LOT NUMBERS FOR THIS STYLE</h2>";
-			//echo '<script>window.location.href = "http://192.168.0.110:8080/master/projects/beta/production_planning/fab_priority_dashboard.php";</script>';
-			//echo '<h1><font color="red">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp No lot numbers for this style !!!</font><br/></h1>';
-			// die();
-		}
-		else 
-		{
-			$seperated_lots= trim(implode(",", $lotnos_array));
+			$seperated_lots= trim(implode(",", $lotnos));	
 		}
 	}
-	//$output_trimmed = array_map("trim", explode(',', $input));
-	// echo "</br>Seperated--".$seperate_docket;
-	// echo "</br>material_req--".$sql_row1['material_req'];
-	// echo "</br>binding_consumption_qty--".$binding_consumption_qty;
-
+	
 	if($seperate_docket=='No'){
 		$material_requirement_orig=$sql_row1['material_req'];
 	}else{
