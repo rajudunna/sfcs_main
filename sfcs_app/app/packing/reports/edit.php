@@ -128,7 +128,7 @@ td{ color : #000}
 					</tr>
 					<tr>
 					<td class='info'>Seal No</td>
-					<td><input class='form-control integer' required type="text" name="sno"/></td>
+					<td><input class='form-control' required type="text" name="sno"/></td>
 					</tr>
 					<tr>
 					</tr>
