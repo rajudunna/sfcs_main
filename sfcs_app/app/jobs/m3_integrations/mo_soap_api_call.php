@@ -199,6 +199,10 @@ set_time_limit(6000000);
 	$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
 	$file_data_request = $log;
 	fwrite($handle,"\n".$file_data_request); 
+	
+	$file_to_delete=$fileName.'_'.date('Y-m-d-H-i-s', strtotime('-15 days')).'.html';
+	$my_file_path=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_to_delete;
+	unlink("$my_file_path");
 
 	fclose($handle); 
 	$end_timestamp = microtime(true);

@@ -268,7 +268,13 @@ $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
 $file_data_request = $log;
 fwrite($handle,"\n".$file_data_request); 
 
-fclose($handle); 
+fclose($handle);
+
+
+$file_to_delete=$fileName.'_'.date('Y-m-d-H-i-s', strtotime('-15 days')).'.html';
+$my_file_path=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_to_delete;
+unlink("$my_file_path");
+ 
 $end_timestamp = microtime(true);
 $duration = $end_timestamp - $start_timestamp;
 print("mo_api_order_details_orig file Execution took ".$duration." seconds.");
