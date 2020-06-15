@@ -124,9 +124,7 @@ echo "Style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select name=\"style\" id=
 //{
 	$sql="select distinct style from pps_2.mp_color_detail";	
 //}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link_new, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -154,9 +152,7 @@ echo "Color&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"color\" id=\"colo
 //{
 	$sql="select distinct color from pps_2.mp_color_detail where style=\"$style\"";
 //}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link_new, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value=\"NIL\" selected>NIL</option>";
 	
@@ -181,7 +177,7 @@ echo "</select><br/><br/>";
 <?php
 echo "PO<select name=\"po_des\" id=\"po_des\" onchange=\"thirdbox();\" >";
 $get_master_po="select master_po_number from pps_2.mp_color_detail where style=\"$style\" and color=\"$color\"";
-$get_result=mysqli_query($link, $get_master_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$get_result=mysqli_query($link_new, $get_master_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($po_row=mysqli_fetch_array($get_result))
 {
   $main_po[]=$po_row['master_po_number'];
@@ -189,8 +185,7 @@ while($po_row=mysqli_fetch_array($get_result))
 $master_po="'" . implode ( "', '", $main_po ) . "'";
 
 $sql_po="select po_description,po_number from pps_2.mp_sub_order where master_po_number IN ($master_po)";
-$sql_result=mysqli_query($link, $sql_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+$sql_result=mysqli_query($link_new, $sql_po) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -308,7 +303,7 @@ if(isset($_POST['submit']))
 			$count=1;
 			$sql="insert into $bai_rm_pj2.manual_form(po_number,buyer,style,po_des,color,item,reason,qty,req_from,status,rand_track,category,spoc) values (\"$po_number\",'',\"$style\",\"$po_des\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\")";
 			//echo $sql;
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			mysqli_query($link, $sql) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$table.="<tr><td>".$item[$i]."</td><td>".$reason[$i]."</td><td>".$qty[$i]."</td></tr>";
 		}
