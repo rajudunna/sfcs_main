@@ -1,9 +1,9 @@
 <?php
 /*
-	=========== Create By Chandu =============
-	Created at : 09-10-2018
-	Updated at : 11-10-2018
-	Input : data from bai_pro3.mo_details with status 0.
+    =========== Create By Chandu =============
+    Created at : 09-10-2018
+    Updated at : 11-10-2018
+    Input : data from bai_pro3.mo_details with status 0.
     Output : populate the data in m3_inputs.order_details_original.
     V2 : save bom details.
 */
@@ -13,6 +13,9 @@ $total_api_calls_duration=0;
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
+
+$log="";
+$log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';   
 $basic_auth = base64_encode($api_username.':'.$api_password);
 
 
@@ -25,6 +28,7 @@ $qry_get_soap_data = "SELECT * FROM $bai_pro3.`mo_details` WHERE material_master
 $res_get_soap_data = mysqli_query($link, $qry_get_soap_data) or exit("Sql Error select bai_pro3.mo_details".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i=0; $call_count=0;
 while($result_data = mysqli_fetch_array($res_get_soap_data)){
+    $i++;
     $res_order_details = false;
     $mo_no = trim($result_data['mo_no']);
     $api_url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials;returncols=MTNO,ITDS,CNQT,MSEQ,PRNO,MFNO,OPNO?CONO=$comp_no&FACI=$global_facility_code&MFNO=".$mo_no;
@@ -41,7 +45,11 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
     print("response1 ".$call_count." API call Duration : ".($moac2-$moac1)."milliseconds")."\n";
 
     if($response1['status'] && isset($response1['response'][0]['PRNO'])){
+        $j=0;
+
         foreach($response1['response'] as $resp_resp){
+            $j++;
+
             $response['response'] = $resp_resp;
             $item_code = urlencode($response['response']['MTNO']);
             $item_description = $response['response']['ITDS'];
@@ -53,6 +61,12 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
             $mfno = trim($response['response']['MFNO']);
             $prno = urlencode($response['response']['PRNO']);
             $url_wastage = $api_hostname.":".$api_port_no."/m3api-rest/execute/MDBREADMI/GetMWOMATX3;returncols=WAPC,PEUN?CONO=$comp_no&FACI=$global_facility_code&MFNO=$mfno&PRNO=$prno&MSEQ=$sequence_no";
+
+
+            $log.="<tr><th>".$i."--".$j."</th><th>".$url_wastage."</th>";
+            $msc10=microtime(true);
+            $log.="<th>".$msc10."</th>";
+        
             //echo $url_wastage;die();
             $call_sub_count++;
             $moac3=microtime(true);
@@ -115,6 +129,10 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
                     print("z_feature_description ".$call_count*$call_sub_count." API Call Start: ".$moac11." milliseconds. Parameters: ".$option_des_url_all."".$optz."; ")."\n";
             
                     $z_feature_description = getCurlAuthRequestLocal($option_des_url_all.$optz,$basic_auth)['response']['TX30'] ?? '';
+                    $msc23=microtime(true);
+                    $log.="<th>".$msc23."</th>";
+                    $msc24=$msc23-$msc22;
+                    $log.="<th>".$msc24."</th></tr>";
 
                     $moac12=microtime(true);
                     print("z_feature_description ".$call_count*$call_sub_count." API call End : ".$moac12."milliseconds")."\n";
@@ -177,7 +195,7 @@ while($result_data = mysqli_fetch_array($res_get_soap_data)){
         $i++;
     }
 }
-echo "Excuted Records : ".$i;
+// echo "Excuted Records : ".$i;
 function getCurlAuthRequestLocal($url,$basic_auth){
     $include_path=getenv('config_job_path');
     include_once($include_path.'\sfcs_app\common\config\rest_api_calls.php'); 

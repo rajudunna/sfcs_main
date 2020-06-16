@@ -11,6 +11,9 @@ print("\n mo_soad_api_call file start : ".$start_timestamp." milliseconds.")."\n
 $total_api_calls_duration=0;
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+
+$log="";
+$log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';	
 set_time_limit(6000000);
 
 	error_reporting(E_ALL);
@@ -62,7 +65,7 @@ set_time_limit(6000000);
 			// 	echo "<td>".$value->COLORCODE."</td>";
 			// 	echo "<td>".$value->ZCODE."</td>";
 			// echo "</tr>";
-
+			$i++;
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
 			
@@ -72,6 +75,11 @@ set_time_limit(6000000);
 			print("rest_call ".$call_count." API Call Start: ".$moac1." milliseconds. Parameters: ".$args."; ")."\n";
 			
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
+			$msc5=microtime(true);
+			$log.="<th>".$msc5."</th>";
+			$msc6=$msc5-$msc4;
+			$log.="<th>".$msc6."</th></tr>";
+
 			
 			$moac2=microtime(true);
 			print("rest_call ".$call_count." API call End : ".$moac2."milliseconds")."\n";
@@ -148,7 +156,8 @@ set_time_limit(6000000);
 
 			}
 		}
-		echo "</table>";
+		// echo "</table>";
+		
 	}
 	catch(Exception $e){
 		var_dump($e->getMessage());
