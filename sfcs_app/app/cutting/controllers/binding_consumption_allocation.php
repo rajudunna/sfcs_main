@@ -58,22 +58,6 @@ else{
 <script src="../../../../common/js/sweetalert.min.js"></script>
 <script type="text/javascript">
 
-// function verify_num(t,e){
-	
-// 		if(e.keyCode == 8){
-// 			return false;
-// 		}
-// 		var c = /^[0-9, ]+$/;
-// 		var id = t.id;
-// 		var n = document.getElementById(id);
-// 		var lot_length=n.value;
-// 		if( !((n.value).match(c)) ){
-// 			n.value ="";
-// 			//alert('Please enter only numerics');
-// 			return false;
-// 		}
-// 	}
-
 function check_validate()
 {
 	var print_valid=document.getElementById("print_validation").value;
@@ -122,18 +106,11 @@ function check_validate()
 					numb = diff.toFixed(2);
 					if(confirm("You are sending lessthan required quantity :" +numb+ " Yrds. \n Are you Sure,You want to proceed..?"))
 					{
-						//alert("Test3");
-						//window.open("update.php?docket="+docket+"&check=check_out&flag=1", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-						//documnet.getElementById("dvremark").style.display='block';
-						//documnet.getElementById("dvremark").style.display= '';
 						document.getElementById('dvremark').style.display = "block";
 					}
 					else
 					{
-						//alert("Test4");
-						//window.open("update.php?docket="+docket+"check=check_out", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-						//return false;
-						//documnet.getElementById("dvremark").style.display= '';
+						
 						document.getElementById("validate").checked=false;
 						document.getElementById("submit").disabled=true;
 						document.getElementById("remarks").value="";
@@ -225,22 +202,13 @@ if (!isset($_GET['group_docs'])) {
 }
 $pop_restriction=$_GET['pop_restriction'];
 $group_docs=$_GET['group_docs'];
+$doc_num=$group_docs;
 //echo $group_docs;
 ?>
 
 
 <?php
 
-//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=$username_list[1];
-
-
-// $authorized=array("kirang","rameshk","santhoshbo","bhupalv","vemanas","srinivasaraot","kishorek","rajud","baiadmn","lovakumarig","dharmarajua","eswararaop","bhanul","gowthamis","lovarajub","pavang","rajinig","ramud","revathil","varalakshmik","dharanid","gowthamis","rajinig","revathil","lovarajub","eswarraok","babjim","ramunaidus","nagendral","sivaramakrishnat");
-//Added for view purpose
-//$authorized=array("kirang");
-//echo $username."<br>"; 
-//echo $authorized[0]."<br>"; 
 if(!(in_array($authorized,$has_permission)))
 {
 	header($_GET['r'],'restrict.php?group_docs=$group_docs','N');
@@ -357,140 +325,101 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$check_sql = "SELECT * from $bai_pro3.cutting_table_plan where doc_no=$doc_no";
-$check_sql_res=mysqli_query($link, $check_sql) or exit("check_sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-$check_sql_res_check=mysqli_num_rows($check_sql_res);
-if($check_sql_res_check >0){
-	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,acutno,order_tid,order_style_no,order_del_no,clubbing from $bai_pro3.cut_tbl_dash_doc_summ where doc_no=$doc_no";
-}else{
-	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,acutno,order_tid,order_style_no,order_del_no,clubbing from $bai_pro3.plan_dash_doc_summ where doc_no=$doc_no";
+//deleted cutting_table_plan this view bcoz not using this view
+
+
+if($doc_num!=" " && $plant_code!=' '){
+	//this is function to get style,color,and cutjob
+	$result_jmdockets=getdata_jm_dockets($doc_num,$plant_code);
+	$style =$result_jmdockets['style'];
+	$fg_color =$result_jmdockets['fg_color'];
+	$plies =$result_jmdockets['plies'];
+	$jm_cut_job_id =$result_jmdockets['jm_cut_job_id'];
+	$ratio_comp_group_id =$result_jmdockets['ratio_comp_group_id'];
+	$length =$result_jmdockets['length'];
+	$width =$result_jmdockets['width'];
+	$efficiency =$result_jmdockets['efficiency'];
+	$marker_version =$result_jmdockets['marker_version'];
+	$marker_type_name =$result_jmdockets['marker_type_name'];
+	$pattern_version =$result_jmdockets['pattern_version'];
+	$perimeter =$result_jmdockets['perimeter'];
+	$remark1 =$result_jmdockets['remark1'];
+	$remark2 =$result_jmdockets['remark2'];
+	$remark3 =$result_jmdockets['remark3'];
+	$remark4 =$result_jmdockets['remark4'];
+	$material_required_qty=$plies*$length;
 }
-$sql1="SELECT bodc.order_style_no,bodc.order_del_no,bodc.order_col_des,bodc.color_code,psl.acutno,bodc.order_tid,csl.clubbing,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE psl.order_tid= bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND csl.tid= psl.cat_ref AND psl.doc_no = $doc_no";
-// echo $sql1;
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result1);
-$sizes_table ='';
-while($sql_row1=mysqli_fetch_array($sql_result1))
-{
-	$docket_remarks=$sql_row1['remarks'];
-	if(strtolower($sql_row1['remarks']) == 'recut')
-		$appender = 'R';
-	else	
-		$appender = chr($sql_row1['color_code']);
-	$style=$sql_row1['order_style_no'];
-	$schedule=$sql_row1['order_del_no'];
+
+//to get component po_num and ratio id from
+$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
+if($jm_cut_job_num>0){
+	while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
+	{
+		$ratio_id = $sql_row1['ratio_id'];
+		$po_number=$sql_row1['po_number'];
+		$cut_number=$sql_row1['cut_number'];
+	}
+}
+//this is function to get schedule
+if($po_number!=" " & $plant_code!=' '){
+	$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+	$schedule =$result_mp_mo_qty['schedule'];
+}
+
+//this is a function to get component group id and ratio id
+if($ratio_comp_group_id!=' '){
+	$result_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+	$fabric_category =$result_ratio_component_group['fabric_category'];
+	$material_item_code =$result_ratio_component_group['material_item_code'];
+	$master_po_details_id =$result_ratio_component_group['master_po_details_id'];
+}
+//this is a function to get descrip and rm color from mp_fabric
+if($material_item_code!='' && $master_po_details_id!=''){
+	$result_mp_fabric=getdata_mp_fabric($material_item_code,$master_po_details_id,$plant_code);
+	$rm_description =$result_mp_fabric['rm_description'];
+	$rm_color =$result_mp_fabric['rm_color'];
+
+}
+
+// $sql1="SELECT bodc.order_style_no,bodc.order_del_no,bodc.order_col_des,bodc.color_code,psl.acutno,bodc.order_tid,csl.clubbing,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl,bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE psl.order_tid= bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND csl.tid= psl.cat_ref AND psl.doc_no = $doc_no";
+// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $sql_num_check=mysqli_num_rows($sql_result1);
+// $sizes_table ='';
+// while($sql_row1=mysqli_fetch_array($sql_result1))
+// {
+	// $docket_remarks=$sql_row1['remarks'];
+	// if(strtolower($sql_row1['remarks']) == 'recut')
+	// 	$appender = 'R';
+	// else	
+	// 	$appender = chr($sql_row1['color_code']);
+	$style=$style;
+	$schedule=$schedule;
 	echo "<tr>";
-	echo "<td>".$sql_row1['order_style_no']."</td>";
-	echo "<td>".$sql_row1['order_del_no']."</td>";
-	echo "<td>".$sql_row1['order_col_des']."</td>";
-	echo "<td>".$appender.leading_zeros($sql_row1['acutno'],3)."</td>";
+	echo "<td>".$style."</td>";
+	echo "<td>".implode(",",$schedule)."</td>";
+	echo "<td>".$fg_color."</td>";
+	echo "<td>".$appender.leading_zeros($cut_number,3)."</td>";
 	echo "</tr>";
-	$act_cut_no=$sql_row1['acutno'];
-	$cut_no_ref=$sql_row1['acutno'];
+	$act_cut_no=$cut_number;
+	$cut_no_ref=$cut_number;
 	$order_id_ref=$sql_row1['order_tid'];
-	
-	$sql1="SELECT binding_consumption,seperate_docket from $bai_pro3.cat_stat_log where order_tid='$order_id_ref'";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result1))
-	{
-		$binding_consumption=$sql_row2['binding_consumption'];
-		$seperate_docket=$sql_row2['seperate_docket'];
-	}
-	// echo "order_tid".$order_id_ref."<br>";
-	// echo "binding_consumption".$binding_consumption."<br>";
-
-	$sql2="SELECT (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty FROM plandoc_stat_log WHERE order_tid='$order_id_ref'";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
-	{
-		$p_qty=$sql_row2['qty'];
-	}
-	// echo "p_qty".$p_qty."<br>";
-
-	// if($binding_consumption && $p_qty){
-		$binding_consumption_qty = $binding_consumption * $p_qty;
-	// }
-	
-	/* $order_id_ref1 = explode(" ",$sql_row1['order_tid']);
-	echo $order_id_ref1[0];
-	echo $order_id_ref1[7]; */
-	//var_dump($order_id_ref1);
-	$style_ref=$sql_row1['order_style_no'];
-	// echo $style_ref." is style-ref";
-	$del_ref=$sql_row1['order_del_no'];
-	
-	// $sizes_table.="<table><tr><th>Size</th><th>Qty</th></tr>";
-	// if($sql_row1['xs']>0){ $sizes_table.="<tr><td>XS</td><td>".$sql_row1['xs']."</td></tr>";}
-	// if($sql_row1['s']>0){ $sizes_table.="<tr><td>S</td><td>".$sql_row1['s']."</td></tr>";}
-	// if($sql_row1['m']>0){ $sizes_table.="<tr><td>M</td><td>".$sql_row1['m']."</td></tr>";}
-	// if($sql_row1['l']>0){ $sizes_table.="<tr><td>L</td><td>".$sql_row1['l']."</td></tr>";}
-	// if($sql_row1['xl']>0){ $sizes_table.="<tr><td>XL</td><td>".$sql_row1['xl']."</td></tr>";}
-	// if($sql_row1['xxl']>0){ $sizes_table.="<tr><td>XXL</td><td>".$sql_row1['xxl']."</td></tr>";}
-	// if($sql_row1['xxxl']>0){ $sizes_table.="<tr><td>XXXL</td><td>".$sql_row1['xxxl']."</td></tr>";}
-	// if($sql_row1['s06']>0){ $sizes_table.="<tr><td>S06</td><td>".$sql_row1['s06']."</td></tr>";}
-	// if($sql_row1['s08']>0){ $sizes_table.="<tr><td>S08</td><td>".$sql_row1['s08']."</td></tr>";}
-	// if($sql_row1['s10']>0){ $sizes_table.="<tr><td>S10</td><td>".$sql_row1['s10']."</td></tr>";}
-	// if($sql_row1['s12']>0){ $sizes_table.="<tr><td>S12</td><td>".$sql_row1['s12']."</td></tr>";}
-	// if($sql_row1['s14']>0){ $sizes_table.="<tr><td>S14</td><td>".$sql_row1['s14']."</td></tr>";}
-	// if($sql_row1['s16']>0){ $sizes_table.="<tr><td>S16</td><td>".$sql_row1['s16']."</td></tr>";}
-	// if($sql_row1['s18']>0){ $sizes_table.="<tr><td>S18</td><td>".$sql_row1['s18']."</td></tr>";}
-	// if($sql_row1['s20']>0){ $sizes_table.="<tr><td>S20</td><td>".$sql_row1['s20']."</td></tr>";}
-	// if($sql_row1['s22']>0){ $sizes_table.="<tr><td>S22</td><td>".$sql_row1['s22']."</td></tr>";}
-	// if($sql_row1['s24']>0){ $sizes_table.="<tr><td>S24</td><td>".$sql_row1['s24']."</td></tr>";}
-	// if($sql_row1['s26']>0){ $sizes_table.="<tr><td>S26</td><td>".$sql_row1['s26']."</td></tr>";}
-	// if($sql_row1['s28']>0){ $sizes_table.="<tr><td>S28</td><td>".$sql_row1['s28']."</td></tr>";}
-	// if($sql_row1['s30']>0){ $sizes_table.="<tr><td>S30</td><td>".$sql_row1['s30']."</td></tr>";}
-	// $sizes_table.="<tr><td>Total QTY</td><td>".$sql_row1['total']."</td>";
-	// $sizes_table.="</table>";
-
-	// $mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
-	
+	$binding_consumption_qty =$material_required_qty;
+	$style_ref=$style;
+	$del_ref=$schedule;
 	//To Identify Clubbed Colors/Items
 	$clubbing=$sql_row1['clubbing'];
-}
-
+// }
 echo "</table>";
-
-//echo $sizes_table;
-
-
-
-
 //NEW Implementation for Docket generation from RMS
-
 echo "<h2>Cut Docket Print</h2>";
-
 echo "<form name=\"ins\" method=\"post\" action=\"fab_pop_allocate_v5.php\">"; //new_Version
 echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to identify recut or normal processing of docket (1 for normal 2 for recut)
 echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 
 echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
-//$sql1="SELECT plandoc_stat_log.plan_lot_ref,plandoc_stat_log.cat_ref,plandoc_stat_log.print_status,plandoc_stat_log.doc_no,cat_stat_log.category from plandoc_stat_log left join cat_stat_log on plandoc_stat_log.cat_ref=cat_stat_log.tid  where plandoc_stat_log.order_tid=\"$order_id_ref\" and plandoc_stat_log.acutno=$cut_no_ref";
-
-if(strtolower($docket_remarks) == 'normal')
-{
-  $sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.remarks='Normal' and act_cut_status<>'DONE' and org_doc_no <=1 ";
-}
-else
-{
-	$sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.doc_no=$doc_no and order_cat_doc_mk_mix.acutno=$cut_no_ref and act_cut_status<>'DONE' and org_doc_no <=1 ";
-}
-
-// $sql1="SELECT order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid=\"$order_id_ref\" and order_cat_doc_mk_mix.acutno=$cut_no_ref and order_cat_doc_mk_mix.doc_no=$doc_no";
-
-//Color Clubbing New Code
-if($clubbing>0)
-{
-   if(strtolower($docket_remarks) == 'normal')
-   {
-	 $sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.acutno=$cut_no_ref  and org_doc_no <=1";
-   }
-   else
-   {
-   	$sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.doc_no=$doc_no and order_cat_doc_mk_mix.acutno=$cut_no_ref  and org_doc_no <=1";
-   }
-}
 
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -508,14 +437,14 @@ $style_flag=0;
 $Disable_allocate_flag=0;
 $print_validation=0;
 $print_status=1;
-while($sql_row1=mysqli_fetch_array($sql_result1))
-{	
+// while($sql_row1=mysqli_fetch_array($sql_result1))
+// {	
 	if($style_flag==0)
 	{
-		$docno_lot=$sql_row1['doc_no'];
-		$componentno_lot=$sql_row1['compo_no'];
+		$docno_lot=$doc_num;
+		$componentno_lot=$material_item_code;
 		
-		$clubbing=$sql_row1['clubbing'];
+		//$clubbing=$sql_row1['clubbing'];
 		//echo $docno_lot."--".$clubbing."<br>";
 		if($clubbing>0)
 		{
@@ -525,14 +454,6 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
 		}
-
-
-		
-		// echo "<br>DocNo: ".$docno_lot.'Component No: '.$componentno_lot;
-		//getting lot numbers with reference style code and component no
-		/*$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
-		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE p.doc_no='$docno_lot' and item='$componentno_lot'";*/
-		
 		
 		$qry_lotnos="SELECT p.order_tid,p.doc_no,c.compo_no,s.style_no,s.lot_no,s.batch_no FROM $bai_pro3.plandoc_stat_log p LEFT JOIN bai_pro3.cat_stat_log c ON 
 		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE style_no='$style_ref' and item='$componentno_lot' and  p.doc_no='$docno_lot' and s.product_group='Fabric'";
@@ -557,51 +478,41 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 			$seperated_lots= trim(implode(",", $lotnos_array));
 		}
 	}
-	//$output_trimmed = array_map("trim", explode(',', $input));
-	// echo "</br>Seperated--".$seperate_docket;
-	// echo "</br>material_req--".$sql_row1['material_req'];
-	// echo "</br>binding_consumption_qty--".$binding_consumption_qty;
-
-	if($seperate_docket=='No'){
-		$material_requirement_orig=$sql_row1['material_req'];
-	}else{
-		$material_requirement_orig=$sql_row1['material_req']-$binding_consumption_qty;
-	}
-	echo "<tr><td>".$sql_row1['category']."</td>";
-	echo "<td>".$sql_row1['compo_no']."</td>";
-	echo "<td>".$sql_row1['col_des'].'-'.$sql_row1['doc_no']."</td>";
+	
+	echo "<tr><td>".$fabric_category."</td>";
+	echo "<td>".$componentno_lot."</td>";
+	echo "<td>".$rm_description.'-'.$doc_num."</td>";
 	$extra=0;
-
 	//this is function to get savinggs value
 	$date=$sql_row1['date'];
 	$cat_ref=$sql_row1['cat_ref'];
-	$order_del_no=$sql_row1['order_del_no'];
-	$order_col_des=$sql_row1['order_col_des'];
+	$order_del_no=$schedule;
+	$order_col_des=$rm_description;
 	if($doc_no!='' && $plant_code!=''){
-		$result_fn_savings_per_cal=fn_savings_per_cal($doc_no,$plant_code);
+		$result_fn_savings_per_cal=fn_savings_per_cal($doc_num,$plant_code);
 		$savings_value=result_fn_savings_per_cal['savings'];
 	}
 	
-	{ $extra=round(($material_requirement_orig*$savings_value),2); }
-	echo "<td>".($material_requirement_orig+$extra)."</td>";
-	$temp_tot=$material_requirement_orig+$extra;
+	{ $extra=round(($material_required_qty*$savings_value),2); }
+	echo "<td>".($material_required_qty+$extra)."</td>";
+	$temp_tot=$material_required_qty+$extra;
 	$total+=$temp_tot;
 	$temp_tot=0;
-	$club_id=$sql_row1['clubbing'];
+	// $club_id=$sql_row1['clubbing'];
 	//For new implementation
 	
 	$newOrderTid=$sql_row1['order_tid'];
 	$doc_cat=$sql_row1['category'];
 	$doc_com=$sql_row1['compo_no'];
-	$doc_mer=($material_requirement_orig+$extra);
-	$cat_ref=$sql_row1['cat_ref'];
+	$doc_mer=($material_required_qty+$extra);
+	// $cat_ref=$sql_row1['cat_ref'];
 	
 	//For new implementation
 	
 	//echo "<td><a href=\"$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=$order_id_ref&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 
 
-	$docket_num[]=$sql_row1['doc_no'];
+	$docket_num[]=$doc_num;
 	//echo var_dump($docket_num);
 	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
 	//if(strlen($sql_row1['plan_lot_ref'])>0)
@@ -633,28 +544,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	}
 	else
 	{
-		//This was with limitation that we cannt execute for reclassified schedules
-		/*echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
-		$sql1x="select ref1,lot_no from bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-		$sql_result1x=mysql_query($sql1x,$link) or exit("Sql Error".mysql_error());
-		if(mysql_num_rows($sql_result1x)==0)
-		{
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";		
-		}
-		else
-		{
-			while($sql_row1x=mysql_fetch_array($sql_result1x))
-			{
-				echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
-				
-			}
-		}
-		echo "</td>"; */
+		
 		
 		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
 		//For New Implementation
@@ -679,63 +569,10 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 
 		}
 		
-
-			
-		//if($clubbing==0) //Disabled auto finding of lots, if color is clubbed
-		{
-			//Commented due to performance issue 20120319
-			 $sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-			$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1x=mysqli_fetch_array($sql_result1x))
-			{
-				//Disabled because of taking values from PMS040
-				//echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
-				
-			} 
-			//Commented due to performance issue 20120319
-		}
+		//fabric_status this view not using so deleted that cmmented code
 		
-		/* //Disabled because of taking values from PMS040
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-		*/
 		echo "</td>";
-		
-		
-		/* echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
-		$sql1x="select ref1,lot_no from bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
-		$sql_result1x=mysql_query($sql1x,$link) or exit("Sql Error".mysql_error());
-		if(mysql_num_rows($sql_result1x)==0)
-		{
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
-			echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";		
-		}
-		else
-		{
-			while($sql_row1x=mysql_fetch_array($sql_result1x))
-			{
-				echo "<input type=\"checkbox\" value=\"".$sql_row1x['lot_no'].">".$sql_row1x['ref1']."\" name=\"".$sql_row1['doc_no']."[]\">".$sql_row1x['lot_no']."<br/>";
-				
-			}
-		}
-		echo "</td>"; */
-		
-		
-		
+	
 		$enable_allocate_button=1;
 	} 
 	
@@ -748,16 +585,8 @@ if($sql_row1['print_status']>0)
 }
 else
 {
-	// echo "Club Status==".$clubbing."</br>";
-	// if($clubbing>0)
-	// {
-		// echo "<td><img src=\"correct.png\"></td>";
-		// $print_validation=$print_validation+1;
-	// }
-	// else
-	// {
-		echo "<td><img src=\"Wrong.png\"></td>";
-	//}
+	
+	echo "<td><img src=\"Wrong.png\"></td>";
 }
 echo "<td>";	
 	getDetails("D",$sql_row1['doc_no']);
@@ -765,7 +594,7 @@ echo "<td>";
 
 echo "</tr>";
 unset($lotnos_array);	
-}
+// }
 echo "<tr><td colspan=3><center>Total Required Material</center></td><td>$total</td><td></td><td></td><td></td></tr>";
 echo "</table>";
 //echo $Disable_allocate_flag;
@@ -829,17 +658,7 @@ if($Disable_allocate_flag==$for_Staus_dis){
 ?>
 <form method="post" onsubmit=" return validate_but();">
 <table class="table table-bordered"><tr><th>Fabric Issue Status:</th><td> <select name="issue_status" id="issue_status" class="select2_single form-control">
-<?php
-// if($fabric_status!="5" && $fabric_status!="1")
-// {
-	// echo '<option value="1" >Ready For Issuing</option>';
-	
-// }
-// if($fabric_status=="1")
-// {
-// 	echo '<option value="1" disabled>Ready For Issuing</option>';
-// }
-?>
+
 <option value="1" <?php if($fabric_status=="1") { echo " selected"; }?>>Ready For Issuing</option>
 <option value="5" <?php if($fabric_status=="5") { echo " selected"; }?>>Issue to Cutting</option>
 </select></td><td>
