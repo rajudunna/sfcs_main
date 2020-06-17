@@ -509,7 +509,7 @@ if(isset($_POST['submit']))
 							<th>Cut Status</th>
 							<th>Docket Date</th>
 							<th>Cut Date</th>
-							<th>Section</th>
+							<th>Cut Table Name</th>
 							<th>Shift</th>
 							<th>Input Stats</th>
 							<th>Input <span style='mso-spacerun:yes'></span>Date(Minimum Date)</th>
@@ -643,4 +643,3 @@ if(isset($_POST['submit']))
 </div><!-- panel body
 </div><!-  panel -->
 </div>
-
