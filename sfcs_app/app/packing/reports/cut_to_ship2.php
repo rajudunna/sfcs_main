@@ -305,6 +305,62 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 					$order_tid=$sql_row1['order_tid'];
 					$schedule=$sql_row1['order_del_no'];
 					$color=$sql_row1['order_col_des'];
+					$main_size[]=$sql_row1['title_size_xs'];
+					$main_size[]=$sql_row1['title_size_s'];
+					$main_size[]=$sql_row1['title_size_m'];
+					$main_size[]=$sql_row1['title_size_l'];
+					$main_size[]=$sql_row1['title_size_xl'];
+					$main_size[]=$sql_row1['title_size_xxl'];
+					$main_size[]=$sql_row1['title_size_xxxl'];
+					$main_size[]=$sql_row1['title_size_s01'];
+					$main_size[]=$sql_row1['title_size_s02'];
+					$main_size[]=$sql_row1['title_size_s03'];
+					$main_size[]=$sql_row1['title_size_s04'];
+					$main_size[]=$sql_row1['title_size_s05'];
+					$main_size[]=$sql_row1['title_size_s06'];
+					$main_size[]=$sql_row1['title_size_s07'];
+					$main_size[]=$sql_row1['title_size_s08'];
+					$main_size[]=$sql_row1['title_size_s09'];
+					$main_size[]=$sql_row1['title_size_s10'];
+					$main_size[]=$sql_row1['title_size_s11'];
+					$main_size[]=$sql_row1['title_size_s12'];
+					$main_size[]=$sql_row1['title_size_s13'];
+					$main_size[]=$sql_row1['title_size_s14'];
+					$main_size[]=$sql_row1['title_size_s15'];
+					$main_size[]=$sql_row1['title_size_s16'];
+					$main_size[]=$sql_row1['title_size_s15'];
+					$main_size[]=$sql_row1['title_size_s18'];
+					$main_size[]=$sql_row1['title_size_s19'];
+					$main_size[]=$sql_row1['title_size_s20'];
+					$main_size[]=$sql_row1['title_size_s21'];
+					$main_size[]=$sql_row1['title_size_s22'];
+					$main_size[]=$sql_row1['title_size_s23'];
+					$main_size[]=$sql_row1['title_size_s24'];
+					$main_size[]=$sql_row1['title_size_s25'];
+					$main_size[]=$sql_row1['title_size_s26'];
+					$main_size[]=$sql_row1['title_size_s27'];
+					$main_size[]=$sql_row1['title_size_s28'];
+					$main_size[]=$sql_row1['title_size_s29'];
+					$main_size[]=$sql_row1['title_size_s30'];
+					$main_size[]=$sql_row1['title_size_s31'];
+					$main_size[]=$sql_row1['title_size_s32'];
+					$main_size[]=$sql_row1['title_size_s33'];
+					$main_size[]=$sql_row1['title_size_s34'];
+					$main_size[]=$sql_row1['title_size_s35'];
+					$main_size[]=$sql_row1['title_size_s36'];
+					$main_size[]=$sql_row1['title_size_s37'];
+					$main_size[]=$sql_row1['title_size_s38'];
+					$main_size[]=$sql_row1['title_size_s39'];
+					$main_size[]=$sql_row1['title_size_s41'];
+					$main_size[]=$sql_row1['title_size_s42'];
+					$main_size[]=$sql_row1['title_size_s43'];
+					$main_size[]=$sql_row1['title_size_s44'];
+					$main_size[]=$sql_row1['title_size_s45'];
+					$main_size[]=$sql_row1['title_size_s46'];
+					$main_size[]=$sql_row1['title_size_s47'];
+					$main_size[]=$sql_row1['title_size_s48'];
+					$main_size[]=$sql_row1['title_size_s49'];
+					$main_size[]=$sql_row1['title_size_s50'];
 				}
 				
 				
@@ -898,7 +954,7 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 						echo "<td>".$sql_row['schedule_no']."</td>";
 						echo "<td class=\"lef\">".$sql_row['color']."</td>";
 						echo "<td>".substr($sql_row['sections'],0,-1)."</td>";
-						echo "<td>".$sizes_db[$i]."</td>";
+						echo "<td>".$main_size[$i]."</td>";
 						echo "<td>".$order_qtys[$i]."</td>";
 						echo "<td>".($act_cut_new+$recut_qty)."</td>";
 						echo "<td>".($act_in_new+$replaced_panels_new+($recut_qty-($recut_qty-$recut_req)))."</td>";
@@ -922,7 +978,7 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 						$display_total_rejected_panels+=abs($rejected);
 					}
 				}
-			
+			    unset($main_size);
 				unset($order_qtys);
 				unset($out_qtys);
 				unset($recut_qty_db);
