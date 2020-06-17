@@ -622,17 +622,33 @@ echo "
 	$result=mysqli_query($link, $sql) or exit("Sql Error1g".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
-		$issued_qty=$row["qty"];
+		$issued_qty1=$row["qty"];
+	}
+	$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$docketnos).")";
+	//echo $sql."<br>";
+	$result=mysqli_query($link, $sql) or exit("Sql Error1g".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($result))
+	{
+		$issued_qty2=$row["qty"];
 	}
 
+	$issued_qty=$issued_qty1+$issued_qty2;
 	$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
 	//echo $sql."<br>";
 	$result=mysqli_query($link, $sql) or exit("Sql Error1xx".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
 	{
-		$recut_issued_qty=$row["qty"];
+		$recut_issued_qty1=$row["qty"];
+	}
+	$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$recut_docketnos).")";
+	//echo $sql."<br>";
+	$result=mysqli_query($link, $sql) or exit("Sql Error1xx".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($result))
+	{
+		$recut_issued_qty2=$row["qty"];
 	}
 
+	$recut_issued_qty=$recut_issued_qty1+$recut_issued_qty2;
 	$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=\"$schedule\" and color like \"%".$color."%\" and product=\"FAB\"";
 	//echo $sql;
 	$result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
