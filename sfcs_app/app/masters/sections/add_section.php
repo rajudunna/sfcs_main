@@ -18,8 +18,10 @@
     <!-- Fav and touch icons -->
     
 </head>
-
-<body>
+<div class="panel panel-primary">
+<div class="panel-heading">Module and Section</div>
+<div class="panel-body">
 <?php include('view_sections.php'); ?>
-</body>
+</div>
+</div>
 </html>

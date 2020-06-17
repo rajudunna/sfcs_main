@@ -67,8 +67,17 @@
 			    <label class="control-label control-label-left col-sm-3" for="product_code">Product Code<span class="req"> *</span></label>
 			    <div class="controls col-sm-9">
 				<select id="product_code" class="form-control" data-role="select" selected="selected" name="product_code" data-parsley-errors-container="#errId2">
-					<option value="fabric" selected>Fabric</option>
-					<option value="Trim">Trim</option></select>
+					 <?php
+							if($product_code=="fabric"){
+								echo '<option  value="fabric" selected>Fabric</option>';
+								echo '<option value="Trim">Trim</option>';
+							}else{
+								echo '<option value="fabric">Fabric</option>';
+								echo '<option value="Trim" selected>Trim</option>';
+							}
+
+						?>
+				</select>
                 <!-- <input id="product_code" type="text" class="form-control k-textbox" data-role="text" required="required" placeholder="Product Code" name="product_code" value=<?php echo $product_code; ?> > -->
 				<span id="errId1" class="error"></span></div>
                 
