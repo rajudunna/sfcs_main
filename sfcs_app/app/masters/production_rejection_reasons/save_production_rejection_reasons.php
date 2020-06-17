@@ -65,12 +65,51 @@
 			    <label class="control-label control-label-left col-sm-3" for="reason_cat">Reason Catagory:</label>
 			    <div class="controls col-sm-9">
 				<select id="reason_cat" class="form-control" data-role="select" selected="selected" name="reason_cat" value=<?php echo $reason_cat; ?>  data-parsley-errors-container="#errId2">
-					<option <?php if ($reason_cat == 'fabric' ) echo 'selected' ; ?>  value="fabric" >Fabric</option>
+					<!---<option <?php if ($reason_cat == 'fabric' ) echo 'selected' ; ?>  value="fabric" >Fabric</option>
 					<option <?php if ($reason_cat == 'cutting' ) echo 'selected' ; ?>  value="cutting">cutting</option>
 					<option <?php if ($reason_cat == 'sewing' ) echo 'selected' ; ?>  value="sewing" >sewing</option>
 					<option <?php if ($reason_cat == 'machine damages' ) echo 'selected' ; ?>  value="machine damages">machine damages</option>
-                    <option <?php if ($reason_cat == 'emblishment' ) echo 'selected' ; ?>  value="emblishment" >emblishment</option></select>
-                
+                    <option <?php if ($reason_cat == 'emblishment' ) echo 'selected' ; ?>  value="emblishment" >emblishment</option>--->
+					<?php
+							if($reason_cat=="Fabric"){
+								echo '<option  value="fabric" selected>Fabric</option>';
+								echo '<option value="cutting">cutting</option>';
+								echo '<option value="sewing">sewing</option>';
+								echo '<option value="machine damages">machine damages</option>';
+								echo '<option value="emblishment">emblishment</option>';
+							}else if($reason_cat=="Cutting"){
+								echo '<option  value="fabric" >Fabric</option>';
+								echo '<option value="cutting" selected>cutting</option>';
+								echo '<option value="sewing">sewing</option>';
+								echo '<option value="machine damages">machine damages</option>';
+								echo '<option value="emblishment">emblishment</option>';
+							}
+							else if($reason_cat=="Sewing"){
+								echo '<option  value="fabric" >Fabric</option>';
+								echo '<option value="cutting" >cutting</option>';
+								echo '<option value="sewing" selected>sewing</option>';
+								echo '<option value="machine damages">machine damages</option>';
+								echo '<option value="emblishment">emblishment</option>';
+							}
+							else if($reason_cat=="Machine Damages"){
+								echo '<option  value="fabric" >Fabric</option>';
+								echo '<option value="cutting" >cutting</option>';
+								echo '<option value="sewing">sewing</option>';
+								echo '<option value="machine damages" selected>machine damages</option>';
+								echo '<option value="emblishment" >emblishment</option>';
+							}
+							else
+							{
+								echo '<option  value="fabric" >Fabric</option>';
+								echo '<option value="cutting" >cutting</option>';
+								echo '<option value="sewing">sewing</option>';
+								echo '<option value="machine damages" >machine damages</option>';
+								echo '<option value="emblishment" selected>emblishment</option>';
+							}
+							
+
+						?>
+                </select>
                 <!-- <input id="product_code" type="text" class="form-control k-textbox" data-role="text" required="required" placeholder="Product Code" name="product_code" > -->
 				<span id="errId1" class="error"></span></div>
                 

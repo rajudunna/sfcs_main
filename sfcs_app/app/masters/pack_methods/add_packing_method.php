@@ -58,7 +58,7 @@
                     
                 <select id="packing_status" class="form-control" data-role="select" required="required" selected="selected" name="packing_status" data-parsley-errors-container="#errId2">
 				<?php
-				if($status==1){
+				if($status=='Active'){
 					echo '<option value="1" selected>Active</option>';
 					echo '<option value="2">In-Active</option>';
 				}else{
