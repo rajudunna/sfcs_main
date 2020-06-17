@@ -2,30 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 
-if($_POST['modal_submit'])
-{    
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/cut_sewing_job_gen_function.php');
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
-    $jobcount = $_POST['jobcount'];
-    $bundle_qty = $_POST['bundleqty'];
-    $docs = $_POST['docs'];
-    $cuts = $_POST['cuts'];
-    $schedule = $_POST['schedule1'];
-    $style = $_POST['style1'];
-    $color = $_POST['color1'];
 
-    $ins_qry2 = "INSERT INTO $bai_pro3.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
-    $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $inserted_id = mysqli_insert_id($link);
-    $sewing_bundle_generation = sewing_bundle_generation($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-    if($sewing_bundle_generation)
-	{
-		insertMOQuantitiesSewing($schedule,$inserted_id);		
-		return true;
-    } else {
-		return false;
-	}   
-}
 
 if(isset($_POST) && isset($_POST['del_recs'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
@@ -102,7 +79,7 @@ if(isset($_POST) && isset($_POST['del_recs'])){
     echo 'success';
 }
 function calculate_ratio($doc,$link){
-    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no=$doc
+    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in (".implode(',',$doc).")
     and operation_code = 15";
     $sum_ratio_result = mysqli_query($link,$sum_ratio_query);
     $row = mysqli_fetch_array($sum_ratio_result);
@@ -353,7 +330,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 //Till here 
                 $display_qty = 0;
                 $bundle_qty = 0;
-                $display_qty = calculate_ratio($old_doc_nos[0],$link);
+                $display_qty = calculate_ratio($old_doc_nos,$link);
                 $bundle_qty = $old_pplice[0];
                 echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
                 echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -398,7 +375,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
         }
         $display_qty = 0;
         $bundle_qty = 0;
-        $display_qty = calculate_ratio($old_doc_nos[0],$link);
+        $display_qty = calculate_ratio($old_doc_nos,$link);
         $bundle_qty = $old_pplice[0];
         echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
         echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -705,24 +682,36 @@ function delet(docs_id){
             }
         });
 		
+        
+        var url2 = "<?php echo getFullURL($_GET['r'],'cut_sewing_job_gen_function.php','R'); ?>";
+        
 		 $("#markers").click(function(e) {
 			 $("#generate_message").css("display","block");
 			 $("#markers").prop("disabled", true);
 			 e.preventDefault();
 			  $.ajax({
 				type: 'post',
-				url: url1,
+				url: url2,
 				data: $('#modal_form').serialize()+'&'+$.param({ 'modal_submit': 'modal_submit' }),
 				success: function (res) {
 					$("#generate_message").css("display","none");
-                    // console.log(res)
+                    // console.log(res);
 					if(res) {
-						sweetAlert('Cut Sewing jobs generated successfully','','');
-						var optionSelected = $("option:selected", this);
-						var color = $("#color").val();
-						var style = $("#style").val();
-						var schedule = $("#schedule").val();
-						window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+                        if(res['status'] == true){
+                            sweetAlert('Cut Sewing jobs generated successfully','','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+                        } else {
+                            sweetAlert('Cant generate sewing Jobs',' Lay Plan Not Prepared for Complete Qty.','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            setTimeout(function(){window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color} , 2000);
+                        }
 					} else {
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
