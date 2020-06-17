@@ -320,7 +320,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 								if($fill_qty[$cps_ids[$jj]][$j]>0)
 								{
 									$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-									echo $ins_qry." excess<br>";
+									// echo $ins_qry." excess<br>";
 									$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
 									
 									$count++;
@@ -415,7 +415,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 							}
 							//Plan Logical Bundle				
 							$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence)VALUES(".$dono.", '".$size."', ".$logic_qty.", '".$input_job_num."', '".$input_job_num_rand."', '".$destination."', '".$packing_mode."', '".$size_code."','".$doc_type."', '-1', $inserted_id,$bundle_seq)";
-							echo $ins_qry.'<br/>';
+							// echo $ins_qry.'<br/>';
 							$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB".mysqli_error($GLOBALS["___mysqli_ston"]));
 							
 							$size_plies = $size_plies - $logic_qty;
@@ -424,10 +424,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 						}
 					}while ($size_plies > 0);   
 				}
-				// update count of plan logical bundles for each sewing job
-				$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
-				// echo $update_query;
-				$update_result = mysqli_query($link,$update_query) or exit("Problem while updating to sewing jobs ref");
+				
 			}		
 		}
 	
@@ -480,6 +477,12 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			}
 			unset($cps_ids);
 		}
+
+		// update count of plan logical bundles for each sewing job
+		$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
+		$update_result = mysqli_query($link,$update_query) or exit("Problem while updating to sewing jobs ref");
+
+		
 		return true;
 	} else {
 		return false;
