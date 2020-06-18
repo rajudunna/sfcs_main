@@ -279,7 +279,7 @@ if(isset($_POST['search']))
 		$trim_tot=0;
 		$mac_tot=0;
 		$sql="select sum(act_out) as \"output\", sum(rework_qty) as \"rework\", group_concat(distinct module) as \"module\",section from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" and shift in ($team) group by section";
-		// echo $sql;
+		 // echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -293,7 +293,7 @@ if(isset($_POST['search']))
 			
 					
 			$sql1="select ref1, qms_qty from $bai_pro3.bai_qms_db where qms_tran_type=3 and substring_index(remarks,\"-\",1) in (".$sql_row['module'].") and log_date between \"$sdate\" and \"$edate\" and substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in ($team)";
-			// echo $sql1;
+			 // echo $sql1;
 			
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -318,13 +318,13 @@ if(isset($_POST['search']))
 			}
 			$fab_tot+= $vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16];
 			$cut_tot+= $vals[6]+$vals[7]+$vals[8];
-			$sew_tot+= $vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10];
+			$sew_tot+= $vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[35]+$vals[36];
 			$trim_tot= $trim_tot + ($vals[21]+$vals[20]);
 			$sew_exces_tot= $sew_exces_tot + ($vals[22]);
 			$emb_tot+= $vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32];
 			$mac_tot+= $vals[23]+$vals[24]+$vals[25];
 			//$qms_qty= $vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[20]+$vals[21]+$vals[22];
-			$qms_qty = $vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16]+$vals[6]+$vals[7]+$vals[8]+$vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[20]+$vals[21]+$vals[22]+$vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]+$vals[23]+$vals[24]+$vals[25];
+			$qms_qty = $vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16]+$vals[6]+$vals[7]+$vals[8]+$vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[20]+$vals[21]+$vals[22]+$vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]+$vals[23]+$vals[24]+$vals[25]+$vals[35]+$vals[36];
 			//$qms_qty=array_sum($vals);
 			unset($vals);
 			
