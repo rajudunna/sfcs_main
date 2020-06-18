@@ -428,10 +428,10 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			}		
 		}
 		
-		foreach($remaval_dockets as $key => $docket_no)
-		{
-			if(in_array($docket_no,$doc_list_new))
-			{
+		// foreach($remaval_dockets as $key => $docket_no)
+		// {
+		// 	if(in_array($docket_no,$doc_list_new))
+		// 	{
 				if($excess_cut == 2 && $excess > 0){
 					// echo 'excess2';
 					//get input job number for each schedule
@@ -481,8 +481,8 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 					}
 					unset($cps_ids);
 				}
-			}
-		}
+		// 	}
+		// }
 
 		// update count of plan logical bundles for each sewing job
 		$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
