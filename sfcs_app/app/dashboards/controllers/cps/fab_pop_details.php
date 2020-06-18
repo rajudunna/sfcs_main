@@ -963,7 +963,7 @@ if(isset($_POST['submit']))
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$sql11112="select remarks from $bai_rm_pj1.plandoc_stat_log where doc_no='".$doc_num[$i]."'";
+		$sql11112="select remarks from $bai_pro3.plandoc_stat_log where doc_no='".$doc_num[$i]."'";
 		//echo $sql111."</br>";
 		$sql_result11112=mysqli_query($link, $sql11112) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row212=mysqli_fetch_array($sql_result11112))
