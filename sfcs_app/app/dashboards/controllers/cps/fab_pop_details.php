@@ -962,7 +962,23 @@ if(isset($_POST['submit']))
 		$sql2="update $bai_pro3.plandoc_stat_log set fabric_status=$issue_status where doc_no='".$doc_num[$i]."'";
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$doc_no_loc="D".$doc_num[$i];
+
+		$sql11112="select remarks from $bai_rm_pj1.plandoc_stat_log where doc_no='".$doc_num[$i]."'";
+		//echo $sql111."</br>";
+		$sql_result11112=mysqli_query($link, $sql11112) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row212=mysqli_fetch_array($sql_result11112))
+		{	
+			if($row212['remarks']=='Normal')
+			{
+				$doc_no_loc="D".$doc_num[$i];	
+			}
+			else
+			{
+				$doc_no_loc="R".$doc_num[$i];
+			}
+			
+		}
+		
 		$sql111="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_num[$i]."' and status=1";
 		//echo $sql111."</br>";
 		$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
