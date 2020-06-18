@@ -149,10 +149,10 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 	// var_dump($excess_cut,'excess_cut<br/>');
 	// var_dump($excess,'excess<br/>');
 	// var_dump($order_qty,'order_qty<br/>');
-	// var_dump($cut_plan_excess,'cut_plan_excess<br/>');
 	// var_dump($cut_plan_qty,'cut_plan_qty<br/>');
-	// var_dump($cut_plan_docket[407],'cut_plan_docket<br/>');
+	// var_dump($cut_plan_docket,'cut_plan_docket<br/>');
 	// var_dump($cut_plan_docket[408],'cut_plan_docket<br/>');
+	// die();
 	if($eligible_to_generate == 1){
 		if(sizeof($excess)>0)
 		{	
@@ -171,26 +171,58 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			}
 					
 			// Verifying from whcih docket we need remove execess & Samples
-			for($s=0;$s<sizeof($dockets);$s++)
-			{
-				for($ss=0;$ss<sizeof($check_upto);$ss++)
-				{		
-					if($excess[$sizes_array[$ss]]>0 && $cut_plan_docket[$dockets[$s]][$sizes_array[$ss]]>0)
-					{
-						if($excess[$sizes_array[$ss]]<$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]])
+			if($excess_cut == 1){
+				for($s=0;$s<sizeof($dockets);$s++)
+				{
+					for($ss=0;$ss<sizeof($check_upto);$ss++)
+					{		
+						if($excess[$sizes_array[$ss]]>0 && $cut_plan_docket[$dockets[$s]][$sizes_array[$ss]]>0)
 						{
-							$remove_from_excess[$dockets[$s]][$sizes_array[$ss]] = $excess[$sizes_array[$ss]];
-							$excess[$sizes_array[$ss]]=0;
+							if($excess[$sizes_array[$ss]]<$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]])
+							{
+								$remove_from_excess[$dockets[$s]][$sizes_array[$ss]] = $excess[$sizes_array[$ss]];
+								$excess[$sizes_array[$ss]]=0;
+							}
+							else
+							{
+								$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]=$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+								$excess[$sizes_array[$ss]]=$excess[$sizes_array[$ss]]-$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+							}
+							$remaval_dockets[]=$dockets[$s];
 						}
-						else
+					}
+				}
+			} else {
+				// var_dump($dockets,'doc<br/>');
+				for($s=sizeof($dockets)-1;$s>-1;$s--)
+				{
+					// var_dump($dockets[$s],'docchild<br/>');
+					// var_dump($s,'sno<br/>');
+
+					for($ss=0;$ss<sizeof($check_upto);$ss++)
+					{	
+						
+						if($excess[$sizes_array[$ss]]>0 && $cut_plan_docket[$dockets[$s]][$sizes_array[$ss]]>0)
 						{
-							$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]=$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
-							$excess[$sizes_array[$ss]]=$excess[$sizes_array[$ss]]-$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+							// echo $excess[$sizes_array[$ss]]."excesstest<br/>";	
+							// echo $cut_plan_docket[$dockets[$s]][$sizes_array[$ss]]."cut_plan_dockettest<br/>";	
+							if($excess[$sizes_array[$ss]]<$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]])
+							{
+								$remove_from_excess[$dockets[$s]][$sizes_array[$ss]] = $excess[$sizes_array[$ss]];
+								$excess[$sizes_array[$ss]]=0;
+							}
+							else
+							{
+								$remove_from_excess[$dockets[$s]][$sizes_array[$ss]]=$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+								$excess[$sizes_array[$ss]]=$excess[$sizes_array[$ss]]-$cut_plan_docket[$dockets[$s]][$sizes_array[$ss]];
+							}
+							$remaval_dockets[]=$dockets[$s];
 						}
-						$remaval_dockets[]=$dockets[$s];
 					}
 				}
 			}
+			// var_dump($excess,'new_excess<br/>');
+			// var_dump($remove_from_excess,'remove_from_excess<br/>');
 			
 			
 			// Verifying from whcih docket we need remove Samples
@@ -220,7 +252,6 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 				}
 			}
 			$remaval_dockets=array_values(array_unique($remaval_dockets));		
-			
 			
 			
 			foreach($remaval_dockets as $key => $docket_no)
@@ -280,6 +311,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 						}	
 					}
 					$cps_ids=array_values(array_unique($cps_ids));
+					$cps_ids1=array_values(array_unique($cps_ids));
 					
 					if($excess_cut == 1){
 						// var_dump('excess');
@@ -315,24 +347,29 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 							$bundle_seq=1;
 							$input_job_no=$input_job_num;
 							$input_job_num_rand=$schedule.date("ymd").$input_job_no;
-							for($jj=0;$jj<sizeof($cps_ids);$jj++)
+							for($jj=0;$jj<sizeof($cps_ids1);$jj++)
 							{
-								if($fill_qty[$cps_ids[$jj]][$j]>0)
+								if($fill_qty[$cps_ids1[$jj]][$j]>0)
 								{
-									$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-									// echo $ins_qry." excess<br>";
-									$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
-									
-									$count++;
-									$bundle_seq++;							
+									$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids1[$jj]";
+									$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+									if(mysqli_num_rows($sql_resutlt_cps)>0){
+
+										$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids1[$jj]]."', ".$fill_qty[$cps_ids1[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids1[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+										// echo $ins_qry." excess<br>";
+										$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+										
+										$count++;
+										$bundle_seq++;	
+									}						
 								}
 							}
 							$input_job_num++;					
 						}
-						unset($cps_ids);
 					}
 				}			
 			}	
+			unset($cps_ids1);
 		}
 		// var_dump($excess);
 		// die();
@@ -428,10 +465,13 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 			}		
 		}
 		
+		// var_dump($remaval_dockets,'remaval_dockets<br/>');
+
 		foreach($remaval_dockets as $key => $docket_no)
 		{
 			if(in_array($docket_no,$doc_list_new))
 			{
+				// var_dump($docket_no,'excess_docket<br/>');
 				if($excess_cut == 2 && $excess > 0){
 					// echo 'excess2';
 					//get input job number for each schedule
@@ -457,6 +497,7 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 						$input_job_num=1;
 					}
 					// echo $input_job_num;
+					// var_dump($input_job_num,'input_job_num<br/>');
 					
 					// Executing the Bundles
 					
@@ -467,22 +508,28 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 						$input_job_num_rand=$schedule.date("ymd").$input_job_no;
 						for($jj=0;$jj<sizeof($cps_ids);$jj++)
 						{
+							// var_dump($fill_qty[$cps_ids[$jj]][$j],'fill_qtyt<br/>');
 							if($fill_qty[$cps_ids[$jj]][$j]>0)
 							{
-								$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
-								// echo $ins_qry."<br>";
-								$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
-								
-								$count++;
-								$bundle_seq++;							
+								$sql_cps_query="select * from $bai_pro3.cps_log where doc_no=$docket_no and id=$cps_ids[$jj]";
+								$sql_resutlt_cps=mysqli_query($link, $sql_cps_query) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($sql_resutlt_cps)>0){
+									// echo "hello<br>";
+									$ins_qry =  "INSERT INTO `bai_pro3`.`pac_stat_log_input_job`(doc_no,size_code,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,doc_type,pac_seq_no,sref_id,barcode_sequence,type_of_sewing)VALUES(".$docket_no.", '".$sizes[$cps_ids[$jj]]."', ".$fill_qty[$cps_ids[$jj]][$j].", '".$input_job_no."', '".$input_job_num_rand."', '".$destination."', 1, '".$size_codes[$cps_ids[$jj]]."','N', '-1', $inserted_id,$bundle_seq,$j)";
+									// echo $ins_qry."<br>";
+									$result_ins_qry=mysqli_query($link, $ins_qry) or exit("Issue in Inserting SPB.".mysqli_error($GLOBALS["___mysqli_ston"]));
+									
+									$count++;
+									$bundle_seq++;							
+								}
 							}
 						}
 						$input_job_num++;					
 					}
-					unset($cps_ids);
 				}
 			}
 		}
+		unset($cps_ids);
 
 		// update count of plan logical bundles for each sewing job
 		$update_query = "UPDATE `bai_pro3`.`sewing_jobs_ref` set bundles_count = $count where id = $inserted_id";
