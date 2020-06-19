@@ -705,7 +705,7 @@ function delet(docs_id){
                             var schedule = $("#schedule").val();
                             window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
                         } else {
-                            sweetAlert('Cant generate sewing Jobs',' Lay Plan Not Prepared for Complete Qty.','');
+                            sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
