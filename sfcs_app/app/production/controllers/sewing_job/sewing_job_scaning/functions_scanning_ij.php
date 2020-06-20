@@ -397,22 +397,11 @@ function getjobdetails($job_number)
                 $min_val_doc_wise = array();
                 $row_bundle_wise_qty =0;
                 $bundle_tot_qty =0;
-
-                if(sizeof($parellel_ops)<=0){
-                $qry_parellel_ops="select operation_code from $brandix_bts.tbl_style_ops_master where style='$job_number[1]' and color = '$maped_color' and ops_dependency='$job_number[4]'";
-                $qry_parellel_ops_result=mysqli_query($link,$qry_parellel_ops);
-                    if($qry_parellel_ops_result->num_rows > 0){
-                        while ($row_prellel = mysqli_fetch_array($qry_parellel_ops_result))
-                        { 
-                            $parellel_ops[] = $row_prellel['operation_code'];
-                        }
-                    }
-                }
-                if(sizeof($parellel_ops)>0){
-                    //$parellel_operations = implode(',',$parellel_ops);
-                    $retreving_remaining_qty_qry = "select min(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code in (".implode(',',$parellel_ops).") group by doc_no";
-                }else{
-                     $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
+                if ($bg != 1) {
+                    $act_bal_to_report = getElegiblereportFromACB($actual_input_job_number = '', $row['tid']);
+                    $act_bal_to_report = $act_bal_to_report[$row['size_code']];
+                } else {
+                    $act_bal_to_report = $eligible_to_report_size_wise[$row['size_code']];
                 }
                 /* COMMENTING BECAUSE OF #2932 
 				// if(sizeof($parellel_ops)<=0){
@@ -448,7 +437,7 @@ function getjobdetails($job_number)
                             }
 
                             //get Current operation alaready scanned qty
-                            $current_recieved_qty="SELECT (SUM(recevied_qty)+SUM(rejected_qty)) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id = '$job_number[4]'";
+                            $current_recieved_qty="SELECT ((send_qty+recut_in+replace_in)-(recevied_qty+rejected_qty)) AS current_recieved_qty FROM brandix_bts.bundle_creation_data WHERE docket_number = $doc_no AND size_id ='$size' AND operation_id = '$job_number[4]'";
                             $result_current_recieved_qty = $link->query($current_recieved_qty);
                             if($result_current_recieved_qty->num_rows > 0)
                             {
@@ -731,6 +720,8 @@ function getreversalscanningdetails($job_number)
         $post_ops_code = 0;
     }
     $result_array['post_ops'][] = $post_ops_code;
+    $flag='';
+    $category_act='';
     if($post_ops_code > 0)
     {
         $checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$post_ops_code'";
