@@ -163,7 +163,7 @@
 														</tr>
 													</thead>
 													<tbody>';
-														$section_array = array();	$acheivement_array = array();
+														$section_array = array();	$acheivement_array = array(); $plan_pcs_granstot = 0; $act_pcs_grandtot = 0;
 														$plan_pcs_fact1 = 0;	$act_pcs_fact1 = 0;	$variation_fact =0;	$acheivement_fact = 0;
 														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` $sec_add_variable_sec_master order by sec_name*1";
 														$section_result=mysqli_query($link,$section_query);
@@ -173,7 +173,7 @@
 															$section = $Sec['sec_name'];
 															$section_display_name = $Sec['section_display_name'];
 															$section_array[] = $Sec['section_display_name'];
-															$sql="SELECT module_name FROM $bai_pro3.`module_master` WHERE section='".$section."' ORDER BY module_name*1;";
+															$sql="SELECT module_name FROM $bai_pro3.`module_master` WHERE section='".$section."' and status='Active' ORDER BY module_name*1;";
 															// echo $sql.'<br>';
 															$res=mysqli_query($link,$sql);
 															if (mysqli_num_rows($res) > 0) 
@@ -210,7 +210,9 @@
 																			<td>$acheivement%</td>
 																		</tr>";
 																	$plan_pcs_tot = $plan_pcs_tot+$plan_pcs;
+																	$plan_pcs_granstot=$plan_pcs_granstot+$plan_pcs;
 																	$act_pcs_tot = $act_pcs_tot+$act_pcs;
+																	$act_pcs_grandtot=$act_pcs_grandtot+$act_pcs;
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
@@ -239,12 +241,12 @@
 														{
 															$plan_pcs_fact1 = $res12['PlanPcs'];
 														}
-														$variation_fact=$act_pcs_fact1-$plan_pcs_fact1;
-														$acheivement_fact = round($act_pcs_fact1*100/div_by_zero($plan_pcs_fact1),0);
+														$variation_fact=$act_pcs_grandtot-$plan_pcs_granstot;
+														$acheivement_fact = round($act_pcs_grandtot*100/div_by_zero($plan_pcs_granstot),0);
 														echo "<tr style=\"background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>Total</td>
-																	<td>$plan_pcs_fact1</td>
-																	<td>$act_pcs_fact1</td>
+																	<td>$plan_pcs_granstot</td>
+																	<td>$act_pcs_grandtot</td>
 																	<td>$variation_fact</td>
 																	<td>$acheivement_fact%</td>
 																</tr>";
@@ -342,7 +344,7 @@
 														</tr>
 													</thead>
 													<tbody>';
-														$plan_pcs_fact2 = 0;	$act_pcs_fact2 = 0;	$variation_fact =0;	$acheivement_fact = 0;
+														$plan_pcs_fact2 = 0;	$act_pcs_fact2 = 0;	$variation_fact =0;	$acheivement_fact = 0; $plan_pcs_granstot = 0; $act_pcs_grandtot = 0;
 														$section_query = "SELECT DISTINCT sec_name, section_display_name FROM $bai_pro3.`sections_master` $sec_add_variable_sec_master order by sec_name*1";
 														$section_result=mysqli_query($link,$section_query);
 														while($Sec=mysqli_fetch_array($section_result))
@@ -350,7 +352,7 @@
 															$plan_pcs_tot = 0;	$act_pcs_tot = 0;	$variation_tot =0;	$acheivement_tot = 0;
 															$section = $Sec['sec_name'];
 															$section_display_name = $Sec['section_display_name'];
-															$sql="SELECT module_name FROM $bai_pro3.`module_master` WHERE section='".$section."' ORDER BY module_name*1;";
+															$sql="SELECT module_name FROM $bai_pro3.`module_master` WHERE section='".$section."' and status='Active' ORDER BY module_name*1;";
 															// echo $sql.'<br>';
 															$res=mysqli_query($link,$sql);
 															if (mysqli_num_rows($res) > 0) 
@@ -387,7 +389,9 @@
 																			<td>$acheivement%</td>
 																		</tr>";
 																	$plan_pcs_tot = $plan_pcs_tot+$plan_pcs;
+																	$plan_pcs_granstot = $plan_pcs_granstot+$plan_pcs;
 																	$act_pcs_tot = $act_pcs_tot+$act_pcs;
+																	$act_pcs_grandtot = $act_pcs_grandtot+$act_pcs;
 																}
 															}
 															$variation_tot=$act_pcs_tot-$plan_pcs_tot;
@@ -415,12 +419,12 @@
 														{
 															$plan_pcs_fact2 = $res12['PlanPcs'];
 														}
-														$variation_fact=$act_pcs_fact2-$plan_pcs_fact2;
-														$acheivement_fact = round($act_pcs_fact2*100/div_by_zero($plan_pcs_fact2),0);
+														$variation_fact=$act_pcs_grandtot-$plan_pcs_granstot;
+														$acheivement_fact = round($act_pcs_grandtot*100/div_by_zero($plan_pcs_granstot),0);
 														echo "<tr style=\"background-color:green;color:white;font-weight: bold; border-bottom:2px solid black; border-top:2px solid black;\">
 																	<td colspan=2>Total</td>
-																	<td>$plan_pcs_fact2</td>
-																	<td>$act_pcs_fact2</td>
+																	<td>$plan_pcs_granstot</td>
+																	<td>$act_pcs_grandtot</td>
 																	<td>$variation_fact</td>
 																	<td>$acheivement_fact%</td>
 																</tr>";
