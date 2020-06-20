@@ -12,6 +12,7 @@ $total_api_calls_duration=0;
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
+
 $log="";
 $log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';	
 set_time_limit(6000000);
