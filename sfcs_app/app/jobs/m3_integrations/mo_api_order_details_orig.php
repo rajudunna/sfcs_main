@@ -12,6 +12,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(6000000);
 
+
 $log="";
 $log.='<table border=1><tr><th>SL no</th><th>Query</th><th>Start Time</th><th>End Time</th><th>Difference</th></tr>';   
 $basic_auth = base64_encode($api_username.':'.$api_password);
