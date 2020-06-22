@@ -472,4 +472,29 @@ function getMpos($get_schedule,$get_color,$plantcode){
 
  }
 
+ /*
+    Function to get savings
+    @params:doc_no,plant_code
+    @returns:savings
+*/
+function getFnSavings($doc_no,$plant_code){
+    /*By using doc number ratio component group id*/
+    if($doc_no!='' && $$plant_code!=''){
+        $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
+        $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
+    }
+    
+    if($ratio_comp_group_id!='' && $plant_code!=''){
+        /*By using ratio component group id fabric saving value*/
+        $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+        $savings=$result_getdata_ratio_component_group['fabric_saving'];
+    }
+
+    return array(
+        'savings' => $savings
+    );
+
+
+}
+
 ?>
