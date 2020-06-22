@@ -1,6 +1,10 @@
 <?php
-//function to get data from jn_dockets
-function getdata_jm_dockets($doc_num,$plant_code){
+/*
+    function to get data from jn_dockets
+    @params:doc_num,plant_code
+    @returns:Docket information and its marker information
+*/
+function getJmDockets($doc_num,$plant_code){
     global $link_new;
     global $pps;
     $style='';
@@ -23,6 +27,7 @@ function getdata_jm_dockets($doc_num,$plant_code){
     $qry_jm_dockets="SELECT `style`,`fg_color`,`plies`,`jm_cut_job_id`,`ratio_comp_group_id`,DATE(created_at) as created_at FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND docket_number=$doc_num";
     $jm_dockets_result=mysqli_query($link_new, $qry_jm_dockets) or exit("Sql Error_at_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_dockets_num=mysqli_num_rows($jm_dockets_result);
+    /**From this above query we can get ratio compo group id */
     if($jm_dockets_num>0){
         while($sql_row1=mysqli_fetch_array($jm_dockets_result))
         {
@@ -35,7 +40,8 @@ function getdata_jm_dockets($doc_num,$plant_code){
         }
         
         if($ratio_comp_group_id!=''){
-            //getting marker length from lp_markers
+            /**By using ratio component group we can get marker details */
+            /**NOte :we can take only default_marker_version=1 details only */
             $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);
@@ -80,9 +86,12 @@ function getdata_jm_dockets($doc_num,$plant_code){
     }
 }
 
-
-//function to get schedule from mp_mo_qty
-function getdata_mp_mo_qty($po_number,$plant_code){
+/*
+    function to get schedule from mp_mo_qty
+    @params:po_number,plant_code
+    @returns:schdule information only
+*/
+function getMpMoQty($po_number,$plant_code){
     global $link_new;
     global $pps;
     $schedule='';
@@ -90,12 +99,12 @@ function getdata_mp_mo_qty($po_number,$plant_code){
     $qry_mp_sub_mo_qty="SELECT master_po_details_mo_quantity_id FROM $pps.mp_sub_mo_qty WHERE po_number='$po_number' AND plant_code='$plant_code'";
     $mp_sub_mo_qty_result=mysqli_query($link_new, $qry_mp_sub_mo_qty) or exit("Sql Errorat_mp_sub_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
         $mp_sub_mo_qty_num=mysqli_num_rows($mp_sub_mo_qty_result);
+        /**By using above query we will get master po details mo quantity id to get schedules*/
         if($mp_sub_mo_qty_num>0){
             while($sql_row1=mysqli_fetch_array($mp_sub_mo_qty_result))
             {
                 $master_po_details_mo_quantity_id = $sql_row1['master_po_details_mo_quantity_id'];
-            
-                //qry to get schedules wrt master_po_details_mo_quantity_id from mp_mo_qty
+                /**So basedon master po details id's we will get schedules */
                 $qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE `master_po_details_mo_quantity_id`='$master_po_details_mo_quantity_id' AND plant_code='$plant_code'";
                 $qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $qry_mp_mo_qty_num=mysqli_num_rows($qry_mp_mo_qty_result);
@@ -113,10 +122,12 @@ function getdata_mp_mo_qty($po_number,$plant_code){
         }
 }
 
-
-
-//function to get component group id and ratio id
-function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
+/*
+    function to get component group id and ratio id
+    @params:ratio_comp_group_id,plant_code
+    @returns:fabric_category,material_item_code and master_po_details_id information only
+*/
+function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
     global $link_new;
     global $pps;
     $fabric_category='';
@@ -132,7 +143,7 @@ function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
                 $ratio_id = $sql_row1['ratio_id'];
                 $component_group_id = $sql_row1['component_group_id'];
             }
-            //qry to get category  amd material item code and po details id
+            /**Getting fabric categoery and item code by using component group from lp_ratio_component_group */
             $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
             $qry_component_group_result=mysqli_query($link_new, $qry_component_group) or exit("Sql Errorat_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
             $component_group_num=mysqli_num_rows($qry_component_group_result);
@@ -156,8 +167,12 @@ function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
 }
 
 
-//this is function to get rm sku and rm color descript from mp_fabric
-function getdata_mp_fabric($material_item_code,$master_po_details_id,$plant_code){
+/*
+    this is function to get rm sku and rm color descript from mp_fabric
+    @params:ratio_comp_group_id,plant_code
+    @returns:fabric_category,material_item_code and master_po_details_id information only
+*/
+function getMpFabric($material_item_code,$master_po_details_id,$plant_code){
     global $link_new;
     global $pps;
     $rm_description='';
@@ -184,26 +199,26 @@ function getdata_mp_fabric($material_item_code,$master_po_details_id,$plant_code
         }
 }
 
-//this is function to get size wise ratio's
-function getdata_size_ratios($ratio_id,$plant_code){
+/*
+    this is function to get sizes and size wise ratio's
+    @params:ratio_id,plant_code
+    @returns:size and size ratios
+*/
+function getSizeRatios($ratio_id,$plant_code){
     global $link_new;
     global $pps;
     $size_ratios='';
     $qry_ratio_size="SELECT size,size_ratio FROM $pps.lp_ratio_size WHERE ratio_id='$ratio_id' AND plant_code='$plant_code'";
-    //echo $qry_ratio_size;
     $qry_ratio_size_result=mysqli_query($link_new, $qry_ratio_size) or exit("Sql Errorat_size_ratios".mysqli_error($GLOBALS["___mysqli_ston"]));
         $qry_ratio_size_num=mysqli_num_rows($qry_ratio_size_result);
         if($qry_ratio_size_num>0){
             $s=0;
             while($sql_row1=mysqli_fetch_array($qry_ratio_size_result))
             {   
-
-                // echo "</br>Test".$i."-".$sql_row1['size']."</br>";
                 $size_tit[$s] = $sql_row1['size'];
                 $ratioof[$s] = $sql_row1['size_ratio'];
               $s++;
             }
-            //var_dump($ratioof);
             return array(
                 'size_tit' => $size_tit,
                 'ratioof' => $ratioof
@@ -212,8 +227,12 @@ function getdata_size_ratios($ratio_id,$plant_code){
 
 }
 
-//function to get lots based on component item and style
-function getdata_stickerdata($material_item_code,$style){
+/*
+    function to get lots based on component item and style
+    @params:material_item_code,plant_code
+    @returns:lots
+*/
+function getStickerData($material_item_code,$style){
     global $link_new;
     global $bai_rm_pj1;
     $lotnos=array();
@@ -233,13 +252,16 @@ function getdata_stickerdata($material_item_code,$style){
         );
 }
 
-//function for docket_ref
-function getdata_docketinfo($doc_num,$doc_type){
+/*
+    this is function to get docket wise allcated rolls info
+    @params:doc_num,doc_type,plant_code
+    @returns:docket wise allocated rolls info
+*/
+function getDocketInfo($doc_num,$doc_type){
     global $link_new;
     global $bai_rm_pj1;
-    //$sql="select * from $bai_rm_pj1.docket_ref where doc_no=\"B".$bindid."\" and doc_type='binding'  group by roll_id order by batch_no,ref4 asc";
-    $sql="SELECT `fabric_cad_allocation`.`tran_pin` AS `tran_pin`,`fabric_cad_allocation`.`doc_no` AS `doc_no`,`fabric_cad_allocation`.`roll_id` AS `roll_id`,`fabric_cad_allocation`.`roll_width` AS `roll_width`,`fabric_cad_allocation`.`plies` AS `plies`,`fabric_cad_allocation`.`mk_len` AS `mk_len`,`fabric_cad_allocation`.`doc_type` AS `doc_type`,`fabric_cad_allocation`.`log_time` AS `log_time`,`fabric_cad_allocation`.`allocated_qty` AS `allocated_qty`,`store_in`.`ref1` AS `ref1`,`store_in`.`lot_no` AS `lot_no`,`sticker_report`.`batch_no`  AS `batch_no`,`sticker_report`.`item_desc` AS `item_desc`,`sticker_report`.`item_name` AS `item_name`,`sticker_report`.`item` AS `item`,`sticker_report`.`inv_no` AS `inv_no`,`store_in`.`ref2` AS `ref2`,`store_in`.`ref3` AS `ref3`,`store_in`.`ref4` AS `ref4`,`store_in`.`ref5` AS `ref5`,`store_in`.`ref6` AS `ref6`,`sticker_report`.`pkg_no` AS `pkg_no`,`store_in`.`status` AS `status`,`sticker_report`.`grn_date` AS `grn_date`,`store_in`.`remarks` AS `remarks`,`store_in`.`tid` AS `tid`,`store_in`.`qty_rec` AS `qty_rec`,`store_in`.`qty_issued` AS `qty_issued`,`store_in`.`qty_ret` AS `qty_ret`,`store_in`.`barcode_number` AS `barcode_number` FROM ($bai_rm_pj1.`fabric_cad_allocation` LEFT JOIN $bai_rm_pj1.`store_in` ON  (`fabric_cad_allocation`.`roll_id` = `store_in`.`tid`) LEFT JOIN $bai_rm_pj1.`sticker_report` ON (`store_in`.`lot_no`=`sticker_report`.`lot_no`)) where doc_no='$doc_num' and doc_type='binding'  group by roll_id order by batch_no,ref4 asc";
-    //echo $sql;
+    $sql="SELECT `fabric_cad_allocation`.`tran_pin` AS `tran_pin`,`fabric_cad_allocation`.`doc_no` AS `doc_no`,`fabric_cad_allocation`.`roll_id` AS `roll_id`,`fabric_cad_allocation`.`roll_width` AS `roll_width`,`fabric_cad_allocation`.`plies` AS `plies`,`fabric_cad_allocation`.`mk_len` AS `mk_len`,`fabric_cad_allocation`.`doc_type` AS `doc_type`,`fabric_cad_allocation`.`log_time` AS `log_time`,`fabric_cad_allocation`.`allocated_qty` AS `allocated_qty`,`store_in`.`ref1` AS `ref1`,`store_in`.`lot_no` AS `lot_no`,`sticker_report`.`batch_no`  AS `batch_no`,`sticker_report`.`item_desc` AS `item_desc`,`sticker_report`.`item_name` AS `item_name`,`sticker_report`.`item` AS `item`,`sticker_report`.`inv_no` AS `inv_no`,`store_in`.`ref2` AS `ref2`,`store_in`.`ref3` AS `ref3`,`store_in`.`ref4` AS `ref4`,`store_in`.`ref5` AS `ref5`,`store_in`.`ref6` AS `ref6`,`sticker_report`.`pkg_no` AS `pkg_no`,`store_in`.`status` AS `status`,`sticker_report`.`grn_date` AS `grn_date`,`store_in`.`remarks` AS `remarks`,`store_in`.`tid` AS `tid`,`store_in`.`qty_rec` AS `qty_rec`,`store_in`.`qty_issued` AS `qty_issued`,`store_in`.`qty_ret` AS `qty_ret`,`store_in`.`barcode_number` AS `barcode_number` FROM ($bai_rm_pj1.`fabric_cad_allocation` LEFT JOIN $bai_rm_pj1.`store_in` ON  (`fabric_cad_allocation`.`roll_id` = `store_in`.`tid`) LEFT JOIN $bai_rm_pj1.`sticker_report` ON (`store_in`.`lot_no`=`sticker_report`.`lot_no`)) where doc_no='$doc_num' and doc_type='$doc_type'  group by roll_id order by batch_no,ref4 asc";
+    /**Prevously we have vew called docket_ref and instead of that we will use above query to get allocted rolls data wrt dokets */
     $sql_result=mysqli_query($link_new, $sql) or exit("Sql Error at Doscket roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num=mysqli_num_rows($sql_result);
         if($sql_num>0){
@@ -282,5 +304,172 @@ function getdata_docketinfo($doc_num,$doc_type){
         );
 }
 
+/*
+    function to get style from mo_color_details
+    @params:plantcode
+    @returns:styles
+*/
+function getMpColorDetail($plantcode){
+    global $link_new;
+    global $pps;
+    $style=array();
+    $qry_mp_color_detail="SELECT style FROM $pps.mp_color_detail WHERE plant_code='$plantcode'";
+    $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+    if($mp_color_detail_num>0){
+        while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+            {
+                
+                $style[]=$mp_color_detail_row["style"];
+            }
+            
+            $style=array_unique($style);
+    }
+    return array(
+        'style' => $style
+    );
+}
+
+/*
+    function to get schedules from mp_mo_qty
+    @params:style and plantcode
+    @returns:schedules
+*/
+function getBulkSchedules($get_style,$plantcode){
+    global $link_new;
+    global $pps;
+    $master_po_details_id=array();
+    $qry_mp_color_detail="SELECT master_po_details_id FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND style='$get_style'";
+    $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+    if($mp_color_detail_num>0){
+        while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+            {
+                
+                $master_po_details_id[]=$mp_color_detail_row["master_po_details_id"];
+            }
+
+        $schedule=array();
+        $qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
+        $mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
+        if($mp_mo_qty_num>0){
+            while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
+                {
+                    
+                    $schedule[]=$mp_mo_qty_row["schedule"];
+                }
+                $bulk_schedule=array_unique($schedule);
+        }
+    }
+    return array(
+        'bulk_schedule' => $bulk_schedule
+    );
+
+}
+
+/*
+    function to get bulk colors from mo_order_qty based on schedules
+    @params:get_schedule and plantcode
+    @returns:color_bulk
+*/
+function getBulkColors($get_schedule,$plantcode){
+    global $link_new;
+    global $pps;
+    $color=array();
+    $qry_mp_mo_qty="SELECT color FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND schedule='$get_schedule'";
+    $mp_color_detail_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+    if($mp_color_detail_num>0){
+        while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+            {
+                
+                $color[]=$mp_color_detail_row["color"];
+            }
+        }
+        $color_bulk=array_unique($color);
+        return array(
+            'color_bulk' => $color_bulk
+        );
+
+}
+
+/*
+    function to get Master PO's based on schedule and color
+    @params:get_schedule,color and plantcode
+    @returns:master PO's
+*/ 
+function getMpos($get_schedule,$get_color,$plantcode){
+    global $link_new;
+    global $pps;
+    $master_po_details_id=array();
+    $qry_mmp_mo_qty="SELECT master_po_details_id FROM $pps.`mp_mo_qty` WHERE plant_code='$plantcode' AND color='$get_color' AND schedule='$get_schedule'";
+    $mp_mo_qty_result=mysqli_query($link_new, $qry_mmp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
+    /**From above query we get master po details id */
+    if($mp_mo_qty_num>0){
+        while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
+            {
+                
+                $master_po_details_id[]=$mp_mo_qty_row["master_po_details_id"];
+            }
+        }
+        $master_po_details_id=array_unique($master_po_details_id);
+    /**Based master po details id we can get masetr po number */    
+    $master_po_number=array();
+    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
+    $mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_color_details_num=mysqli_num_rows($mp_color_details_result);
+    if($mp_color_details_num>0){
+        while($mp_color_details_row=mysqli_fetch_array($mp_color_details_result))
+            {
+                
+                $master_po_number[]=$mp_color_details_row["master_po_number"];
+            }
+    }
+    $master_po_number=array_unique($master_po_number);
+
+    /**So we will show master description based on masetr po number */
+    $master_po_description=array();
+    $qry_toget_podescri="SELECT master_po_description,master_po_number FROM $pps.mp_order WHERE master_po_number IN ('".implode("','" , $master_po_number)."')";
+    $toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_podescri_num=mysqli_num_rows($toget_podescri_result);
+    if($mp_color_details_num>0){
+        while($toget_podescri_row=mysqli_fetch_array($toget_podescri_result))
+            {
+                
+                $master_po_description[$toget_podescri_row["master_po_description"]]=$toget_podescri_row["master_po_number"];
+            }
+    }
+    return array(
+        'master_po_description' => $master_po_description
+    );
+}
+
+/*
+    function to get sub po's from master po's from sub orders
+    @params:get_mpo and plantcode
+    @returns:Sub PO's
+*/
+ function getBulkSubPo($get_mpo,$plantcode){
+    global $link_new;
+    global $pps;
+    $sub_po_description=array();
+    /**Below query to get sub po's by using master po's */
+    $qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE master_po_number='$get_mpo' AND plant_code='$plantcode'";
+    $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
+    if($toget_podescri_num>0){
+        while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
+            {
+                
+                $sub_po_description[$toget_sub_order_row["po_description"]]=$toget_sub_order_row["po_number"];
+            }
+    }
+    return array(
+        'sub_po_description' => $sub_po_description
+    );
+
+ }
 
 ?>

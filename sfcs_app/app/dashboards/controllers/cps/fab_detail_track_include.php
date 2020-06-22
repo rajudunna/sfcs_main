@@ -5,16 +5,11 @@
 	function getDetails($cat,$docket)
 	{
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-		// include('..'.getFullURL($_GET['r'],'dbconf.php','R'));
 		$total_issue_qty=0;		
 		echo "<table class='table tabel-bordered'>";
 		echo "<tr><th>Inv No</th><th>Batch No</th><th>Lotno</th><th>Shade</th><th>Roll No</th><th>Qty Allocated</th></tr>";
-		
-		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$docket";
-			$doc=4;
-			$doc_ype="binding";
 			if($doc!='' && $doc_ype!=''){
-				$result_docketinfo=getdata_docketinfo($doc,$doc_ype);
+				$result_docketinfo=getDocketInfo($doc,$doc_ype);
 				$roll_det =$result_docketinfo['roll_det'];
 				$leng_det =$result_docketinfo['leng_det'];
 				$batch_det =$result_docketinfo['batch_det'];

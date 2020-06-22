@@ -276,12 +276,9 @@ echo "<th>Schedule</th>";
 echo "<th>Color</th>";
 echo "</tr>";
 
-	//For internal testing asshned hardcoded values here 
-	$plant_code="L01";
-	$doc_num=4;
 	if($doc_num!=" " && $plant_code!=' '){
 		//this is function to get style,color,and cutjob
-		$result_jmdockets=getdata_jm_dockets($doc_num,$plant_code);
+		$result_jmdockets=getJmDockets($doc_num,$plant_code);
 		$style =$result_jmdockets['style'];
 		$fg_color =$result_jmdockets['fg_color'];
 		$plies =$result_jmdockets['plies'];
@@ -314,20 +311,20 @@ echo "</tr>";
 	}
 	//this is function to get schedule
 	if($po_number!=" " & $plant_code!=' '){
-		$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+		$result_mp_mo_qty=getMpMoQty($po_number,$plant_code);
 		$schedule =$result_mp_mo_qty['schedule'];
 	}
 
 	//this is a function to get component group id and ratio id
 	if($ratio_comp_group_id!=' '){
-		$result_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+		$result_ratio_component_group=getRatioComponentGroup($ratio_comp_group_id,$plant_code);
 		$fabric_category =$result_ratio_component_group['fabric_category'];
 		$material_item_code =$result_ratio_component_group['material_item_code'];
 		$master_po_details_id =$result_ratio_component_group['master_po_details_id'];
 	}
 	//this is a function to get descrip and rm color from mp_fabric
 	if($material_item_code!='' && $master_po_details_id!=''){
-		$result_mp_fabric=getdata_mp_fabric($material_item_code,$master_po_details_id,$plant_code);
+		$result_mp_fabric=getMpFabric($material_item_code,$master_po_details_id,$plant_code);
 		$rm_description =$result_mp_fabric['rm_description'];
 		$rm_color =$result_mp_fabric['rm_color'];
 
@@ -369,7 +366,7 @@ if($fabric_category!='')
 		//$docno_lot=$sql_row1['doc_no'];
 		$seperated_lots='';
 		//function to get lot numbers based on component and style
-		$result_lots=getdata_stickerdata($material_item_code,$style);
+		$result_lots=getStickerData($material_item_code,$style);
 		$lotnos =$result_lots['lotnos'];	
 		if(sizeof($lotnos)>0)
 		{

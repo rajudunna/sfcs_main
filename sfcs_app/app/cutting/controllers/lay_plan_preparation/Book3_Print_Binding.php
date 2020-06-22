@@ -172,7 +172,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 if($doc!=" " && $plant_code!=' '){
 	//this is function to get style,color,and cutjob
-	$result_jmdockets=getdata_jm_dockets($doc,$plant_code);
+	$result_jmdockets=getJmDockets($doc,$plant_code);
 	$style =$result_jmdockets['style'];
 	$fg_color =$result_jmdockets['fg_color'];
 	$plies =$result_jmdockets['plies'];
@@ -208,7 +208,7 @@ if($jm_cut_job_num>0){
 }
 //this is function to get schedule
 if($po_number!=" " & $plant_code!=' '){
-	$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+	$result_mp_mo_qty=getMpMoQty($po_number,$plant_code);
 	$schedule =$result_mp_mo_qty['schedule'];
 }else{
 	echo "Plese verify po number & Plant code";exit;
@@ -216,7 +216,7 @@ if($po_number!=" " & $plant_code!=' '){
 
 //this is a function to get component group id and ratio id
 if($ratio_comp_group_id!=' '){
-	$result_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+	$result_ratio_component_group=getRatioComponentGroup($ratio_comp_group_id,$plant_code);
 	$category =$result_ratio_component_group['fabric_category'];
 	$compo_no =$result_ratio_component_group['material_item_code'];
 	$master_po_details_id =$result_ratio_component_group['master_po_details_id'];
@@ -225,7 +225,7 @@ if($ratio_comp_group_id!=' '){
 }
 //this is a function to get descrip and rm color from mp_fabric
 if($compo_no!='' && $master_po_details_id!=''){
-	$result_mp_fabric=getdata_mp_fabric($compo_no,$master_po_details_id,$plant_code);
+	$result_mp_fabric=getMpFabric($compo_no,$master_po_details_id,$plant_code);
 	$fab_des =$result_mp_fabric['rm_description'];
 	$rm_color =$result_mp_fabric['rm_color'];
 	$consumption =$result_mp_fabric['consumption'];
@@ -238,7 +238,7 @@ if($compo_no!='' && $master_po_details_id!=''){
 
 //this is function to get sizes ratio based on ratio id
 if($ratio_id!=' ' && $plant_code!=''){
-	$result_size_ratios=getdata_size_ratios($ratio_id,$plant_code);
+	$result_size_ratios=getSizeRatios($ratio_id,$plant_code);
 	$size_tit =$result_size_ratios['size_tit'];
 	$ratioof =$result_size_ratios['ratioof'];
 }else{
@@ -2284,7 +2284,7 @@ function printpr()
 $doc=4;
 $doc_ype="binding";
 if($doc!='' && $doc_ype!=''){
-	$result_docketinfo=getdata_docketinfo($doc,$doc_ype);
+	$result_docketinfo=getDocketInfo($doc,$doc_ype);
 	$roll_det =$result_docketinfo['roll_det'];
 	$width_det =$result_docketinfo['width_det'];
 	$leng_det =$result_docketinfo['leng_det'];
