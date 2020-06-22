@@ -56,7 +56,7 @@ function verify_date(){
 
 			?>
 			<div class="col-md-2">
-				<label>Section: </label>
+				<label>Cut Table: </label>
 				<select name="section" class="form-control" required>
 					<!-- <option value=''>Please Select</option> -->
 					<?php if($all_secs){
@@ -175,6 +175,12 @@ function verify_date(){
 				for($ii=0;$ii<sizeof($cut_remarks_explode);$ii++)
 				{
 					$cut_details_explode=explode("^",$cut_remarks_explode[$ii]);
+					$cut_tbl = $cut_details_explode[1];
+					$tbl_query = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $cut_tbl ";
+					$tbl_result = mysqli_query($link,$tbl_query) or exit('Unable to get table data');
+					while($tbl = mysqli_fetch_array($tbl_result)){
+						$cut_tbl_val = $tbl['tbl_name'];
+					}
 					$cut_plies=$cut_details_explode[8];
 					$cut_date=$cut_details_explode[0];
 					$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";					
@@ -219,7 +225,7 @@ function verify_date(){
 							echo "<tr>
 							<td>".$cut_details_explode[0]."</td> 
 							<td>".$cut_details_explode[2]."</td> 
-							<td>".$cut_details_explode[1]."</td> 
+							<td>".$cut_tbl_val."</td> 
 							<td>".leading_zeros($doc_no,9)."</td> 
 							<td>$style</td> 
 							<td>$schedule</td> 
@@ -261,7 +267,7 @@ function verify_date(){
 				echo "<div class='table-responsive'><table class='table table-bordered'>";
 				echo "<tr class='warning'>
 						<th class='tblheading'>Date 2</th><th class='tblheading'>Shift 2</th>
-						<th class='tblheading' >Section</th>
+						<th class='tblheading' >Cut table</th>
 						<th class='tblheading'>Docket No</th>
 						<th class='tblheading'>Style</th>
 						<th class='tblheading'>Schedule</th>
@@ -362,7 +368,11 @@ function verify_date(){
 							
 					// $act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 				}
-	
+				$tbl_query1 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $act_section ";
+				$tbl_result1 = mysqli_query($link,$tbl_query1) or exit('Unable to get table data');
+				while($tbl1 = mysqli_fetch_array($tbl_result1)){
+					$cut_tbl_val1 = $tbl1['tbl_name'];
+				}
 				// $sql1="select * from cat_stat_log where tid=$cat_ref";
 				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -393,7 +403,7 @@ function verify_date(){
 				$inner_count = 0;
 				echo "<td>$date</td>
 						<td>$act_shift</td> 
-						<td>$act_section</td> 
+						<td>$cut_tbl_val1</td> 
 						<td>".leading_zeros($doc_no,9)."</td> 
 						<td>$style</td> 
 						<td>$schedule</td> 
@@ -414,7 +424,7 @@ function verify_date(){
 							echo "<tr>
 								<td>".$cut_details_explode[0]."</td> 
 								<td>".$cut_details_explode[2]."</td> 
-								<td>".$cut_details_explode[1]."</td> 
+								<td>".$cut_tbl_val."</td> 
 								<td>".leading_zeros($doc_no,9)."</td> 
 								<td>$style</td> 
 								<td>$schedule</td> 
@@ -452,7 +462,7 @@ function verify_date(){
 			echo"
 		  <table class='table table-bordered' >
 		  <tr class='warning'>
-		  <th class='tblheading'>Section</th>
+		  <th class='tblheading'>Cut Table</th>
 		  <th class='tblheading'>Shift</th>
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Cut Qty</th>
@@ -513,8 +523,13 @@ function verify_date(){
 						{
 							$cut_qty=$sql_row3['cut_qty'];
 						}
+						$tbl_query2 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $section_new ";
+						$tbl_result2 = mysqli_query($link,$tbl_query2) or exit('Unable to get table data');
+						while($tbl2 = mysqli_fetch_array($tbl_result2)){
+							$cut_tbl_val2 = $tbl2['tbl_name'];
+						}
 	 					echo "<tr >";
-					    echo "<td >$section_new</td>";
+					    echo "<td >$cut_tbl_val2</td>";
 					  	echo "<td >$shift_new</td>";
 					  	echo "<td >$category</td>";
 					  	echo "<td >$cut_qty</td>";
@@ -601,9 +616,14 @@ function verify_date(){
 						{
 							$cut_qty=$sql_row3['cut_qty'];
 						}
+						$tbl_query3 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $section_new ";
+						$tbl_result3 = mysqli_query($link,$tbl_query3) or exit('Unable to get table data');
+						while($tbl3 = mysqli_fetch_array($tbl_result3)){
+							$cut_tbl_val3 = $tbl3['tbl_name'];
+						}
 						$row_count++;
 	 					echo "<tr >";
-					    echo "<td >$section_new</td>";
+					    echo "<td >$cut_tbl_val3</td>";
 					  	echo "<td >$shift_new</td>";
 					  	echo "<td >$category</td>";
 					  	echo "<td >$cut_qty</td>";
