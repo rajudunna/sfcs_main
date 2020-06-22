@@ -72,8 +72,7 @@ set_time_limit(6000000);
 			$mo_number=trim($value->MONUMBER);
 			$basic_auth = base64_encode($api_username.':'.$api_password);
 			$log.="<tr><th>".$i."</th><th>".($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE)."--To get ORST</th>";
-			$
-			=microtime(true);
+			$msc4=microtime(true);
 			$log.="<th>".$msc4."</th>";
 			$rest_call = getCurlAuthRequestLocal($api_hostname.":".$api_port_no.'/m3api-rest/execute/OIS100MI/GetLine?CONO='.$company_no.'&ORNO='.$value->REFERENCEORDER.'&PONR='.$value->REFORDLINE,$basic_auth);
 			$msc5=microtime(true);
