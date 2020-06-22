@@ -321,7 +321,7 @@ else
 
 $sql1="select fabric_status,order_tid,print_status,cat_ref,allocate_ref,doc_no, plan_lot_ref,cat_ref,order_tid
       from $bai_pro3.plandoc_stat_log 
-       where LENGTH(plan_lot_ref)>0 and lastup='0000-00-00 00:00:00' and act_cut_status<>'DONE'";
+       where LENGTH(plan_lot_ref)>0 and lastup='0000-00-00 00:00:00' and short_shipment_status = '0' and act_cut_status<>'DONE'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //echo mysqli_num_rows($sql_result1);
 echo "<div class='col-sm-12' style='max-height:600px;overflow-x:scroll;overflow-y:scroll'>";
