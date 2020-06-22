@@ -330,7 +330,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$style_no = 0;
 				if($doc_num!=" " && $plant_code!=' '){
 					//this is function to get style,color,and cutjob
-					$result_jmdockets=getdata_jm_dockets($doc_num,$plant_code);
+					$result_jmdockets=getJmDockets($doc_num,$plant_code);
 					$jm_cut_job_id =$result_jmdockets['jm_cut_job_id'];
 					//to get component po_num and ratio id from
 					$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
@@ -345,7 +345,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					}
 					//this is function to get schedule
 					if($po_number!=" " & $plant_code!=' '){
-						$result_mp_mo_qty=getdata_mp_mo_qty($po_number,$plant_code);
+						$result_mp_mo_qty=getMpMoQty($po_number,$plant_code);
 						$schedule =$result_mp_mo_qty['schedule'];
 					}
 				}
