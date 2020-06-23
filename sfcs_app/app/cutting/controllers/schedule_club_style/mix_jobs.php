@@ -693,7 +693,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						//echo $sqlx351."<br>";
 						$sql_result351=mysqli_query( $link, $sqlx351) or exit(message_sql());
 						$docn=mysqli_insert_id($link);	
-						
+						/*
 						$sql_tt="select count(*) as cnt from  $bai_pro3.plandoc_stat_log where  order_tid='".$sql_row1x['order_tid']."'";
 						$sql_resulttt=mysqli_query( $link, $sql_tt) or exit(message_sql());
 						while($sql_rowx1256=mysqli_fetch_array($sql_resulttt)) 
@@ -704,7 +704,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 							$sql_result471_tt=mysqli_query( $link, $sql471_tt) or exit(message_sql()); 
 						}
 
-
+						*/
 						for($j=0;$j<sizeof($size_p);$j++)
 						{
 							if($size_q[$j]>0)

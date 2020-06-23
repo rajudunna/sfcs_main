@@ -700,7 +700,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <button class="btn btn-success" id="sub-mit" ng-click="getjobs()">Confirm..</button>
+                            <input type="button" id='markers' onclick="return check_all();" class="btn btn-success" value="Confirm.." name="modal_submit">
                         </div>
                         <!--<div class='col-sm-2'>
                             <br/><br/>
@@ -1092,8 +1092,113 @@ function delet(docs_id){
         }
     });
 
-}
+        $("#color").change(function(){
+            //alert("The text has been changed.");
+            var optionSelected = $("option:selected", this);
+            var valueSelected3 = this.value;
+            var style1 = $("#style").val();
+            var schedule = $("#schedule").val();
+            window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
+            //alert(valueSelected2); 
+            //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+        });
+        $("#job-qty").change(function(){
+            if(Number($("#job-qty").val())<=0) {
+                swal('Garment per Sewing Job should be grater then zero.');
+                $("#job-qty").val($("#job-qty1").val());
+            }
+            if(Number($("#job-qty").val()) > $("#job-qty1").val()) {
+                swal('Invalid Garment per Sewing Job Quantity.');
+                $("#job-qty").val($("#job-qty1").val());
+            }
+            if(Number($("#job-qty").val()) < Number($("#bundle-qty").val())) {
+                swal('Garment per Sewing Job Qty should be greater then Garment per Bundle Qty');
+                $("#job-qty").val($("#job-qty1").val());
+                $("#bundle-qty").val($("#bundle-qty1").val());
+
+            }
+        });
+        $("#bundle-qty").change(function(){
+            // if(Number($("#bundle-qty").val()) > $("#bundle-qty1").val()) {
+            //     if($("#clubbed").val() != 'clubbed'){
+            //         swal('Invalid Garment per Bundle quantity.');
+            //         $("#bundle-qty").val($("#bundle-qty1").val());
+            //     }
+            // }
+            if(Number($("#job-qty").val())<Number($("#bundle-qty").val())) {
+                swal('Garment per Bundle Qty should be less then Garment per Sewing Job Qty');
+                $("#job-qty").val($("#job-qty1").val());
+                $("#bundle-qty").val($("#bundle-qty1").val());
+            }
+        });
+		
+        
+        var url2 = "<?php echo getFullURL($_GET['r'],'cut_sewing_job_gen_function.php','R'); ?>";
+        
+		 $("#markers").click(function(e) {
+			 $("#generate_message").css("display","block");
+			 $("#markers").prop("disabled", true);
+			 e.preventDefault();
+			  $.ajax({
+				type: 'post',
+				url: url2,
+				data: $('#modal_form').serialize()+'&'+$.param({ 'modal_submit': 'modal_submit' }),
+				success: function (res) {
+					$("#generate_message").css("display","none");
+                    // console.log(res);
+					document.getElementById("loading-image").style.display = "none";
+					if(res) {
+						
+						if(res['status'] == true){
+                            sweetAlert('Cut Sewing jobs generated successfully','','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+                        } else {
+							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            setTimeout(function(){window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color} , 2000);
+                        }
+					} else {
+						
+						sweetAlert('Cut Sewing jobs generation failed','','');
+						$("#markers").prop("disabled", false);
+					}
+				}
+			  });
+		 });
+    });
 </script>
+<style>
+	#loading-image{
+	  position:fixed;
+	  top:0px;
+	  right:0px;
+	  width:100%;
+	  height:100%;
+	  background-color:#666;
+	  /* background-image:url('ajax-loader.gif'); */
+	  background-repeat:no-repeat;
+	  background-position:center;
+	  z-index:10000000;
+	  opacity: 0.4;
+	  filter: alpha(opacity=40); /* For IE8 and earlier */
+	}
+	</style>
+	<script>
+	function check_all()
+	{
+		document.getElementById("loading-image").style.display = "block";
+	}
+	</script>	
+		<div class="ajax-loader" id="loading-image" style="display: none">
+		<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
 <style>
 #print_labels{
     display:none;
