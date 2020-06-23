@@ -514,7 +514,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <input type="button" id='markers' class="btn btn-success" value="Confirm.." name="modal_submit">
+                            <input type="button" id='markers' onclick="return check_all();" class="btn btn-success" value="Confirm.." name="modal_submit">
                         </div>
                         </form>
                     </div>
@@ -696,8 +696,10 @@ function delet(docs_id){
 				success: function (res) {
 					$("#generate_message").css("display","none");
                     // console.log(res);
+					document.getElementById("loading-image").style.display = "none";
 					if(res) {
-                        if(res['status'] == true){
+						
+						if(res['status'] == true){
                             sweetAlert('Cut Sewing jobs generated successfully','','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
@@ -705,7 +707,7 @@ function delet(docs_id){
                             var schedule = $("#schedule").val();
                             window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
                         } else {
-                            sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
@@ -713,6 +715,7 @@ function delet(docs_id){
                             setTimeout(function(){window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color} , 2000);
                         }
 					} else {
+						
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
 					}
@@ -721,6 +724,31 @@ function delet(docs_id){
 		 });
     });
 </script>
+<style>
+	#loading-image{
+	  position:fixed;
+	  top:0px;
+	  right:0px;
+	  width:100%;
+	  height:100%;
+	  background-color:#666;
+	  /* background-image:url('ajax-loader.gif'); */
+	  background-repeat:no-repeat;
+	  background-position:center;
+	  z-index:10000000;
+	  opacity: 0.4;
+	  filter: alpha(opacity=40); /* For IE8 and earlier */
+	}
+	</style>
+	<script>
+	function check_all()
+	{
+		document.getElementById("loading-image").style.display = "block";
+	}
+	</script>	
+		<div class="ajax-loader" id="loading-image" style="display: none">
+		<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
 <style>
 #print_labels{
     display:none;
