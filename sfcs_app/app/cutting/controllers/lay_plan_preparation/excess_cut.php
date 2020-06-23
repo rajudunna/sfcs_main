@@ -1,6 +1,7 @@
 
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     if(isset($_POST["submit"])) 
     { 
        
@@ -53,11 +54,14 @@
 					$query1 = "update $bai_pro3.excess_cuts_log set excess_cut_qty='".$_POST['cut1']."' where schedule_no='".$order_del_no[$i]."' and color='".$order_col_des[$i]."'";
 					$query_result1 = mysqli_query($link,$query1) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
 				}
+				//Encoding color
+                $main_color = color_encode($color);
+                $main_style = style_encode($style);
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Updated','','success');
                 setTimeout(\"Redirect()\",0); 
                 function Redirect(){	 
-                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
                     }
                 </script>";	
             }
@@ -107,11 +111,14 @@
 				$excess_cut_log_qry = "insert into $bai_pro3.excess_cuts_log(schedule_no,color,excess_cut_qty,date,user) values('".$order_del_no[$i]."','".$order_col_des[$i]."',".$excess_cut.",NOW(),'".$user."')";
 				$excess_cut_log_result = mysqli_query($link,$excess_cut_log_qry) or exit(" Error7".mysqli_error ($GLOBALS["___mysqli_ston"]));
 			}
+			//Encoding color
+            $main_color = color_encode($color);
+            $main_style = style_encode($style);
                 echo "<script type=\"text/javascript\"> 
                 sweetAlert('Excess Cut Inserted','','success');
                 setTimeout(\"Redirect()\",0); 
                 function Redirect(){	 
-                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
                     }
             </script>";	
         }

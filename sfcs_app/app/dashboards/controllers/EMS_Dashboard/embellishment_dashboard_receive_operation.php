@@ -24,6 +24,7 @@
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R')); 
+  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); 
   set_time_limit(200000);
 ?>
 
@@ -537,9 +538,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           {
             $id="red";
           }
-
+          //To get Encoded Color & style
+          $main_style = style_encode($style);
+          $main_color = color_encode($color);
           $page_flag = 'receive';
-          $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$style&schedule=$schedule&color=$color&tablename=$section_mods&doc_no=$doc_no&operation_id=$receive_op_code&page_flag=$page_flag";
+          $emb_url = getFullURLLevel($_GET["r"],'cutting/controllers/emb_cut_scanning/emb_cut_scanning.php',3,'N')."&style=$main_style&schedule=$schedule&color=$main_color&tablename=$section_mods&doc_no=$doc_no&operation_id=$receive_op_code&page_flag=$page_flag";
 
           //For Color Clubbing
           unset($club_c_code);

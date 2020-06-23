@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R'));
@@ -16,13 +17,14 @@
             $schedule=$_GET['schedule']; 
             $carton_no=$_GET['cartonno']; 
             $seq_no=$_GET['seq_no']; 
-			$style=$_GET['style'];
+			$style=style_decode($_GET['style']);
 			$packmethod=$_GET['packmethod'];
-			
+			//Encoded Style
+            $main_style = style_encode($style);
             $url_s = getFullURLLevel($_GET['r'],'carton_split.php',0,'N');
             //echo $schedule.' '.$job_no; 
             echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>'; 
-            echo '<a href="'.$url_s.'&schedule='.$schedule.'&style='.$style.'" class="btn btn-primary pull-right"><i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp;&nbsp;Click here to go Back</a>'; 
+            echo '<a href="'.$url_s.'&schedule='.$schedule.'&style='.$main_style.'" class="btn btn-primary pull-right"><i class="fa fa-arrow-left" aria-hidden="true"></i> &nbsp;&nbsp;Click here to go Back</a>'; 
 			
             $sql2="SELECT carton_qty FROM $bai_pro3.pac_stat WHERE schedule='$schedule' AND carton_no =$carton_no AND pac_seq_no =$seq_no";
             // echo $sql2.'<br>';

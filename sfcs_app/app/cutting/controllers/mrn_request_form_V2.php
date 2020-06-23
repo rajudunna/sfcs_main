@@ -3,6 +3,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 
     $flag=1;
 
@@ -126,19 +127,19 @@
     var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
     function firstbox()
     {
-        window.location.href = pgurl+"&style="+document.test.style.value
+        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))
     }
 
     function secondbox()
     {
-        window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value
     }
 
     function thirdbox()
     {
         
 
-        window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))
     }
 
     function fourthbox()
@@ -149,7 +150,7 @@
 
     function fifthbox()
     {
-        window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
+        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
     }
 	
 	
@@ -311,9 +312,9 @@ $(document).ready(function(){
             <?php
                 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
 
-                $style=$_GET['style'];
+                $style=style_decode($_GET['style']);
                 $schedule=$_GET['schedule']; 
-                $color=$_GET['color'];
+                $color=color_decode($_GET['color']);
                 $cutno=$_GET["cutno"];
                 $batch=$_GET["batchno"];
                 //echo $cutno."<br>";

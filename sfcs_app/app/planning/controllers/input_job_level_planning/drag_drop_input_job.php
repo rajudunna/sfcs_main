@@ -596,9 +596,9 @@ $module_limit=14;
 
 
 <?php
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule'];
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 	$cutno=$_GET['cutno'];
 	$module_ref_no=$_GET["module"];
 

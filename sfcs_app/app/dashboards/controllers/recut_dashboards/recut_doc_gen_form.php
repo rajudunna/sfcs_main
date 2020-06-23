@@ -22,6 +22,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 <?php
 
     function mofillingforrecutreplace($qty,$bcd_id)
@@ -113,11 +114,11 @@
         }
     }
 
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $mk_ref=$_GET['mkref'];
 $allocate_ref=$_GET['allocate_ref'];
 $cat_ref2=$_GET['cat_ref'];
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $schedule=$_GET['schedule'];
 $serial_no=$_GET['serial_no'];
 $sql44="select marker_details_id as marker_details_id from $bai_pro3.maker_stat_log where tid='$mk_ref'";
@@ -144,7 +145,7 @@ if($sql_result1_res==0){
     ?>
     <h3><font face="verdana" color="green">Please wait <br> Docket is Generating...</font></h3>
     <?php
-    $tran_order_tid=$_GET['tran_order_tid'];
+    $tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
     $mk_ref=$_GET['mkref'];
     $allocate_ref=$_GET['allocate_ref'];
     $cat_ref2=$_GET['cat_ref'];
@@ -706,12 +707,14 @@ if($sql_result1_res==0){
             mysqli_query($link, $sql4312) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
     }
-
+    //To get Encoded Color & style
+    $main_style = style_encode($style);
+    $main_color = color_encode($color);
     
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
         function Redirect() {
             sweetAlert('Successfully Generated','','success');
-            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\";
+            location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\";
             }
         </script>";
    
@@ -729,10 +732,13 @@ else
 		$style=$sql_row['order_style_no'];
 		$schedule=$sql_row['order_del_no'];
 	}
+    //To get Encoded Color & style
+    $main_style = style_encode($style);
+    $main_color = color_encode($color);
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
 			sweetAlert('Dockets Already Generated','','warning');
-			location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+			location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
 			}
 		</script>";
 }

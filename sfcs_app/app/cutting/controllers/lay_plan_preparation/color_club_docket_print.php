@@ -13,6 +13,7 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 ?>   
 <?php
 	for ($i=0; $i < sizeof($sizes_array); $i++)
@@ -33,7 +34,7 @@ Chnaged the Data type from int to decimal for Capturing Actual Width in points m
 			$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
 		}
 	}	
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 if($_GET['print_status']<>'')
 {
     $print=$_GET['print_status'];
