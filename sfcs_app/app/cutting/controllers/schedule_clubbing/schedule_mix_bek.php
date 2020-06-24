@@ -191,7 +191,7 @@ if((isset($_POST['submit']) || $_GET['schedule']>0) && short_shipment_status($_P
     $schedule=$_POST['schedule']; 
     if($_GET['schedule']>0)
 	{
-		$style=$_GET['style']; 
+		$style=style_decode($_GET['style']); 
 		$schedule=$_GET['schedule']; 
 	}	
     if ($style=='NIL' or $schedule=='NIL') 

@@ -131,8 +131,8 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 	$color=$_POST['color'];
 	if($_GET['color']<>'')
 	{
-		$style=$_GET['style']; 
-		$color=$_GET['color']; 
+		$style=style_decode($_GET['style']); 
+		$color=color_decode($_GET['color']); 
 	}
 	$size_array=array();
 	$orginal_size_array=array();
