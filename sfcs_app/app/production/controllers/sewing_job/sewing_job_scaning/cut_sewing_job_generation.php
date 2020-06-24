@@ -397,7 +397,8 @@ if(isset($_POST) && isset($_POST['main_data'])){
             echo "<div class='col-sm-3'>";
                 if($schedule!='' && $style!='')
                 {
-                    echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."' id='print_labels'>Print Labels</a>";
+                    $main_style=style_encode($style);
+                    echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$main_style."' id='print_labels'>Print Labels</a>";
                 }
             echo "</div>
             <br/>";
