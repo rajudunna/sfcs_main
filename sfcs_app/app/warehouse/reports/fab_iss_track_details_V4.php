@@ -60,14 +60,7 @@ if(isset($_POST["submit"]))
 		$sdate=$_POST["sdat"];
 		$edate=$_POST["sdat"];
 
-		// $filename = "FabricIssuedDetails_".$sdate.".html";
-
-		// if(file_exists($filename)) 
-		// {
-		// 	echo  file_get_contents("FabricIssuedDetails_".$sdate.".html");
-		// }
-		// else
-		// {
+		
 			$sHTML_Content="<br/><hr/><div class=\"table-responsive\"><table class=\"table table-bordered\" id=\"table1\" >
 			<thead><tr class='success'>
 			<th>Date</th>
@@ -78,8 +71,8 @@ if(isset($_POST["submit"]))
 			<th>DocketNo</th>
 			<th>Mode</th>
 			<th>CutNo</th>
-			<th>Body/Gusset</th>
-			<th>Mod No</th>
+			<th>Category</th>
+			<th>Workstation Id</th>
 			<th>Quantity</th>
 			<th>LOT No</th>
 			<th>BATCH</th>
@@ -94,8 +87,7 @@ if(isset($_POST["submit"]))
 			<th>Movex Status</th>
 			</tr></thead>";
 
-			//old query: $sql="SELECT DISTINCT(UPPER(cutno)) as cut FROM store_out WHERE DATE BETWEEN \"".$sdate."\" AND \"".$edate."\" AND (cutno LIKE \"D%\" OR cutno LIKE \"R%\") AND LENGTH(style)=0 ORDER BY CUTNO";
-			//07-09-2016/SR#31461598 removed condition 'LENGTH(style)=0' in where clause to get the total fabric issued to details on selected dates.
+			
 			$sql="SELECT DISTINCT(UPPER(cutno)) as cut FROM $bai_rm_pj1.store_out WHERE DATE BETWEEN \"".$sdate."\" AND \"".$edate."\" AND (cutno LIKE \"D%\" OR cutno LIKE \"R%\") ORDER BY CUTNO";
 			// echo $sql."<br>";
 			$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -125,30 +117,13 @@ if(isset($_POST["submit"]))
 					$qty_issued=round($row1Z["qty"],3);
 				}
 				
-				/*$sql2Z="select sum(qty_issued) as qty from store_out_backup where cutno=\"".$cutno."\"";
-				$result2Z=mysql_query($sql2Z,$link) or die("Error=".mysql_error());
-				while($row2Z=mysql_fetch_array($result2Z))
-				{
-					$qty_issued+=round($row2Z["qty"],2);
-				}*/
+				
 				
 				$cutno_explode=explode("$cutn",$cutno);
 				
-				// if($cutn=="D")
-				// {
-				// 	//$sHTML_Content.="<td>Normal</td>";
-				// 	$table="$bai_pro3.plandoc_stat_log";
-				// 	$table1="$bai_pro3.order_cat_doc_mk_mix";
-				// }
-				// else
-				// {
-				// 	//$sHTML_Content.="<td>Recut</td>";
-				// 	$table=" $bai_pro3.recut_v2";
-				// 	$table1="$bai_pro3.order_cat_recut_doc_mk_mix";
-				// }
+				
 				$doc_no=$cutno_explode[1];
-				$plant_code="L01";
-				//To get style,color,jm_cut_job_id,plies,length
+				//To get style,fg_color,jm_cut_job_id,plies,length,ratio_comp_group_id by from getdata_jm_dockets($doc_no,$plant_code) in function_v2.php 
 				$result_to_get_details=getdata_jm_dockets($doc_no,$plant_code);
 				$style=$result_to_get_details['style'];
 				$color=$result_to_get_details['fg_color'];
@@ -158,53 +133,38 @@ if(isset($_POST["submit"]))
 				$ratio_comp_group_id=$result_to_get_details['ratio_comp_group_id'];
 				
 				$tot_qty=$plies*$length;
-				//To get category
+				$req_qty=$plies*$length;
+				//To get fabric_category from getdata_ratio_component_group($ratio_comp_group_id,$plant_code) in function_v2.php 
 				$result_to_get_category=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
 				$category=$result_to_get_category['fabric_category'];
 
+                //To get schedules from  getdata_mp_mo_qty($po_number,$plant_code) in function_v2.php
+				$result_to_get_schedules=getdata_mp_mo_qty($po_number,$plant_code);
+				$schedule=$result_to_get_schedules['schedule'];
+
 				//To get po number and cut number
-                $sql212="select cut_number,po_number from $pps_2.jm_cut_job where jm_cut_job_id='$jm_cut_job_id'";
+                $sql212="select cut_number,po_number from $pps.jm_cut_job where jm_cut_job_id='$jm_cut_job_id'";
 				$result212=mysqli_query($link, $sql212) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row212=mysqli_fetch_array($result212))
 				{
 				  $cut_number=$row212['cut_number'];
 				  $po_number=$row212['po_number'];
 				}
-				// $sql2="select order_tid,acutno,cat_ref,plan_module,plan_lot_ref from $table where doc_no=\"".$cutno_explode[1]."\"";
-				// //echo $sql2."<br>";
-				// $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// $rows_count=mysqli_num_rows($result2);
-				// if($rows_count > 0)
-				// {
-				// while($row2=mysqli_fetch_array($result2))
-				// {
-				// 	$order_tid=$row2["order_tid"];
-				// 	$cut_nos=$row2["acutno"];
-				// 	$cat_id=$row2["cat_ref"];
-				// 	$module=$row2["plan_module"];
-				// 	$lot_no=$row2["plan_lot_ref"];
-				// }
+				//To get jm_docket_id from jm_dockets based on docket_number
+				$sql213="select cut_number,po_number from $pps.jm_dockets where docket_number=$doc_no";
+				$result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row213=mysqli_fetch_array($result213))
+				{
+				  $jm_docket_id=$row213['jm_docket_id'];
+				}
+				//To get resource_id From task_jobs
+				$get_refrence_no="SELECT resource_id FROM $tms.task_jobs WHERE task_job_reference='$jm_docket_id' AND task_type='DOCKET' AND plant_code='$plantcode'";
+				$get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+				{
+					$resource_id = $refrence_no_row['resource_id'];
+				}
 				
-				// $sql2="select order_style_no,order_del_no,order_col_des,order_div,color_code from $bai_pro3.bai_orders_db_confirm where order_tid=\"".$order_tid."\"";
-				// $sql_result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($row2=mysqli_fetch_array($sql_result2))
-				// {
-				// 	$style=$row2["order_style_no"];
-				// 	$schedule=$row2["order_del_no"];
-				// 	$color=$row2["order_col_des"];
-				// 	$buyer=$row2["order_div"];
-				// 	$color_code=$row2["color_code"];
-				// }
-				
-				// $sql2="select * from $bai_pro3.cat_stat_log where tid=\"".$cat_id."\"";
-				// $sql_result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($row2=mysqli_fetch_array($sql_result2))
-				// {
-				// 	$category=$row2["category"];
-				// }
-				
-				//old query
-				//$sql5="SELECT MAX(TIME(log_stamp)) AS maxlog FROM store_out WHERE cutno=\"".$cutno_explode[1]."\"";
 				
 				$sql5="SELECT MAX(TIME(log_stamp)) AS maxlog FROM $bai_rm_pj1.store_out WHERE cutno=\"".$cutno."\" and date=\"".$date."\"";
 				
@@ -213,11 +173,12 @@ if(isset($_POST["submit"]))
 				{
 					$log_time=$row5["maxlog"];
 				}
+				$schedules=(implode("','" , $schedule));
 				$sHTML_Content.="<tr>";
 				$sHTML_Content.="<td class=\"  \">".$date."</td>";
 				$sHTML_Content.="<td class=\"  \">".$log_time."</td>";
 				$sHTML_Content.="<td class=\"  \">".$style."</td>";
-				$sHTML_Content.="<td class=\"  \">".$schedule."</td>";
+				$sHTML_Content.="<td class=\"  \">".$schedules."</td>";
 				$sHTML_Content.="<td class=\"  \">".$color."</td>";
 				$sHTML_Content.="<td class=\"  \">".$buyer."</td>";
 				$sHTML_Content.="<td class=\"  \">".$cutno_explode[1]."</td>";
@@ -234,13 +195,8 @@ if(isset($_POST["submit"]))
 				$sHTML_Content.="<td class=\"  \">".$cut_number."</td>";
 				
 				$sHTML_Content.="<td class=\"  \">".$category."</td>";
-				$sHTML_Content.="<td class=\"  \">".round($module,0)."</td>";
-				// $sqlr="select * from $table where doc_no=\"".$cutno_explode[1]."\"";
-				// $resultr=mysqli_query($link, $sqlr) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($rowr=mysqli_fetch_array($resultr))
-				// {
-				// 	$total_cut_qty=($rowr["a_xs"]+$rowr["a_s"]+$rowr["a_m"]+$rowr["a_l"]+$rowr["a_xl"]+$rowr["a_xxl"]+$rowr["a_xxxl"]+$rowr["a_s01"]+$rowr["a_s02"]+$rowr["a_s03"]+$rowr["a_s04"]+$rowr["a_s05"]+$rowr["a_s06"]+$rowr["a_s07"]+$rowr["a_s08"]+$rowr["a_s09"]+$rowr["a_s10"]+$rowr["a_s11"]+$rowr["a_s12"]+$rowr["a_s13"]+$rowr["a_s14"]+$rowr["a_s15"]+$rowr["a_s16"]+$rowr["a_s17"]+$rowr["a_s18"]+$rowr["a_s19"]+$rowr["a_s20"]+$rowr["a_s21"]+$rowr["a_s22"]+$rowr["a_s23"]+$rowr["a_s24"]+$rowr["a_s25"]+$rowr["a_s26"]+$rowr["a_s27"]+$rowr["a_s28"]+$rowr["a_s29"]+$rowr["a_s30"]+$rowr["a_s31"]+$rowr["a_s32"]+$rowr["a_s33"]+$rowr["a_s34"]+$rowr["a_s35"]+$rowr["a_s36"]+$rowr["a_s37"]+$rowr["a_s38"]+$rowr["a_s39"]+$rowr["a_s40"]+$rowr["a_s41"]+$rowr["a_s42"]+$rowr["a_s43"]+$rowr["a_s44"]+$rowr["a_s45"]+$rowr["a_s46"]+$rowr["a_s47"]+$rowr["a_s48"]+$rowr["a_s49"]+$rowr["a_s50"])*($rowr["p_plies"]);
-				// }
+				$sHTML_Content.="<td class=\"  \">".$resource_id."</td>";
+				
 				$sHTML_Content.="<td class=\"  \">".round($tot_qty,0)."</td>";
 				$sql5="SELECT GROUP_CONCAT(DISTINCT lot_no SEPARATOR '/') AS lot_no,GROUP_CONCAT(ref2 SEPARATOR '/') AS roll,SUM(qty_issued) AS qty_issued FROM  $bai_rm_pj1.store_in WHERE tid IN($tids)";
 				//echo $sql5."<br>";
@@ -262,17 +218,10 @@ if(isset($_POST["submit"]))
 				$sHTML_Content.="<td class=\"  \">".$lot_no."</td>";
 				$sHTML_Content.="<td class=\"  \">".$batch_no."</td>";
 				$sHTML_Content.="<td class=\"  \">".$roll_no."</td>";
-				$sql6="SELECT material_req as req FROM $table1 WHERE doc_no=\"".$cutno_explode[1]."\" and acutno=$cut_nos";
-				$result6=mysqli_query($link, $sql6) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$no_rows6=mysqli_num_rows($result6);
-				while($row6=mysqli_fetch_array($result6))
-				{
-					$req_qty=round($row6["req"],3);
-				}	
+				
 				$sHTML_Content.="<td class=\"  \">".$req_qty."</td>";
 				$sHTML_Content.="<td class=\"  \">".$qty_issued."</td>";
-				//old query
-				//$sql6="select section,picking_list,delivery_no,issued_by,movex_update,issued_by from $database.m3_fab_issue_track where doc_ref=\"".$cutno_explode[1]."\"";
+				
 				
 				$sql6="select section,picking_list,delivery_no,issued_by,movex_update,issued_by from $bai_rm_pj1.m3_fab_issue_track where doc_ref=\"".$cutno."\"";
 				$sql_result=mysqli_query($link, $sql6) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
