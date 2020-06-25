@@ -2,88 +2,11 @@
 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	$has_perm=haspermission($_GET['r']);
 	$module_limit=14;
 
-
-	// Added This Code From Refrence drag_drop_old.php
-	function title_des($link,$doc_no)
-	{
-		$ret_str="<table><tr><th>Size</th><th>Qty</th></tr>";
-		//New Extra Shipment Order Quantities
-		$sql1="select p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s01,p_s02,p_s03,p_s04,p_s05,p_s06,p_s07,p_s08,p_s09,p_s10,p_s11,p_s12,p_s13,p_s14,p_s15,p_s16,p_s17,p_s18,p_s19,p_s20,p_s21,p_s22,p_s23,p_s24,p_s25,p_s26,p_s27,p_s28,p_s29,p_s30,p_s31,p_s32,p_s33,p_s34,p_s35,p_s36,p_s37,p_s38,p_s39,p_s40,p_s41,p_s42,p_s43,p_s44,p_s45,p_s46,p_s47,p_s48,p_s49,p_s50,p_plies from plandoc_stat_log where doc_no=$doc_no";
-		$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error11".mysqli_error());
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$ret_str.=($sql_row1['p_xs']>0?'<tr><td>XS</td><td>'.($sql_row1['p_xs']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_s']>0?'<tr><td>S</td><td>'.($sql_row1['p_s']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_m']>0?'<tr><td>M</td><td>'.($sql_row1['p_m']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_l']>0?'<tr><td>L</td><td>'.($sql_row1['p_l']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xl']>0?'<tr><td>XL</td><td>'.($sql_row1['p_xl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xxl']>0?'<tr><td>XXL</td><td>'.($sql_row1['p_xxl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_xxxl']>0?'<tr><td>XXXL</td><td>'.($sql_row1['p_xxxl']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s01"']>0?'<tr><td>"s01"</td><td>'.($sql_row1['p_"s01"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s02"']>0?'<tr><td>"s02"</td><td>'.($sql_row1['p_"s02"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s03"']>0?'<tr><td>"s03"</td><td>'.($sql_row1['p_"s03"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s04"']>0?'<tr><td>"s04"</td><td>'.($sql_row1['p_"s04"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s05"']>0?'<tr><td>"s05"</td><td>'.($sql_row1['p_"s05"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s06"']>0?'<tr><td>"s06"</td><td>'.($sql_row1['p_"s06"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s07"']>0?'<tr><td>"s07"</td><td>'.($sql_row1['p_"s07"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s08"']>0?'<tr><td>"s08"</td><td>'.($sql_row1['p_"s08"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s09"']>0?'<tr><td>"s09"</td><td>'.($sql_row1['p_"s09"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s10"']>0?'<tr><td>"s10"</td><td>'.($sql_row1['p_"s10"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s11"']>0?'<tr><td>"s11"</td><td>'.($sql_row1['p_"s11"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s12"']>0?'<tr><td>"s12"</td><td>'.($sql_row1['p_"s12"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s13"']>0?'<tr><td>"s13"</td><td>'.($sql_row1['p_"s13"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s14"']>0?'<tr><td>"s14"</td><td>'.($sql_row1['p_"s14"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s15"']>0?'<tr><td>"s15"</td><td>'.($sql_row1['p_"s15"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s16"']>0?'<tr><td>"s16"</td><td>'.($sql_row1['p_"s16"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s17"']>0?'<tr><td>"s17"</td><td>'.($sql_row1['p_"s17"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s18"']>0?'<tr><td>"s18"</td><td>'.($sql_row1['p_"s18"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s19"']>0?'<tr><td>"s19"</td><td>'.($sql_row1['p_"s19"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s20"']>0?'<tr><td>"s20"</td><td>'.($sql_row1['p_"s20"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s21"']>0?'<tr><td>"s21"</td><td>'.($sql_row1['p_"s21"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s22"']>0?'<tr><td>"s22"</td><td>'.($sql_row1['p_"s22"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s23"']>0?'<tr><td>"s23"</td><td>'.($sql_row1['p_"s23"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s24"']>0?'<tr><td>"s24"</td><td>'.($sql_row1['p_"s24"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s25"']>0?'<tr><td>"s25"</td><td>'.($sql_row1['p_"s25"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s26"']>0?'<tr><td>"s26"</td><td>'.($sql_row1['p_"s26"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s27"']>0?'<tr><td>"s27"</td><td>'.($sql_row1['p_"s27"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s28"']>0?'<tr><td>"s28"</td><td>'.($sql_row1['p_"s28"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s29"']>0?'<tr><td>"s29"</td><td>'.($sql_row1['p_"s29"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s30"']>0?'<tr><td>"s30"</td><td>'.($sql_row1['p_"s30"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s31"']>0?'<tr><td>"s31"</td><td>'.($sql_row1['p_"s31"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s32"']>0?'<tr><td>"s32"</td><td>'.($sql_row1['p_"s32"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s33"']>0?'<tr><td>"s33"</td><td>'.($sql_row1['p_"s33"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s34"']>0?'<tr><td>"s34"</td><td>'.($sql_row1['p_"s34"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s35"']>0?'<tr><td>"s35"</td><td>'.($sql_row1['p_"s35"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s36"']>0?'<tr><td>"s36"</td><td>'.($sql_row1['p_"s36"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s37"']>0?'<tr><td>"s37"</td><td>'.($sql_row1['p_"s37"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s38"']>0?'<tr><td>"s38"</td><td>'.($sql_row1['p_"s38"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s39"']>0?'<tr><td>"s39"</td><td>'.($sql_row1['p_"s39"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s40"']>0?'<tr><td>"s40"</td><td>'.($sql_row1['p_"s40"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s41"']>0?'<tr><td>"s41"</td><td>'.($sql_row1['p_"s41"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s42"']>0?'<tr><td>"s42"</td><td>'.($sql_row1['p_"s42"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s43"']>0?'<tr><td>"s43"</td><td>'.($sql_row1['p_"s43"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s44"']>0?'<tr><td>"s44"</td><td>'.($sql_row1['p_"s44"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s45"']>0?'<tr><td>"s45"</td><td>'.($sql_row1['p_"s45"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s46"']>0?'<tr><td>"s46"</td><td>'.($sql_row1['p_"s46"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s47"']>0?'<tr><td>"s47"</td><td>'.($sql_row1['p_"s47"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s48"']>0?'<tr><td>"s48"</td><td>'.($sql_row1['p_"s48"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s49"']>0?'<tr><td>"s49"</td><td>'.($sql_row1['p_"s49"']*$sql_row1['p_plies']).'</td></tr>':'');
-			$ret_str.=($sql_row1['p_"s50"']>0?'<tr><td>"s50"</td><td>'.($sql_row1['p_"s50"']*$sql_row1['p_plies']).'</td></tr>':'');
-
-
-		}
-		
-		$ret_str.="</table>";
-		
-		return $ret_str;
-	}
-
 ?>
-
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 
 <html>
 
@@ -639,11 +562,15 @@
 			$style=$style_ref;
 			$schedule=$schedule_ref;
 			$color=$color_ref;
-			$code=$code_ref;
-			$cat_ref=$cat_ref_ref;
-
-			$code_db=array();
-			$code_db=explode("*",$code);
+			$mpo=$mpo;
+			$sub_po=$sub_po;
+            $tasktype='EMBJOB';
+            //Function to get status from getJobsStatus based on subpo,tasktype,plantcode 
+            if($plantcode!='')
+            {
+            	$result_get_task_status=getJobsStatus($sub_po,$tasktype,$plantcode);
+		        $status=$result_get_task_status['task_status'];
+            }
 		?>
 
 		<br/>
@@ -655,9 +582,7 @@
 				<div class="panel-heading">
 
 					<?php 
-						// $url2 = getFullURLLevel($_GET['r'],'jobs_movement_track.php',0,'N');
 						echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color"; 
-						// echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url2' onclick=\"return popitup2('$url2')\" target='_blank'>Sewing Jobs Movement Track</a>";
 					?>
 
 				</div>
@@ -687,26 +612,22 @@
 									<!-- Data1 -->
 
 									<?php
-
-										
-
-										for($i=0;$i<sizeof($code_db)-1;$i++)
-										{
-											$code_db_new=array();
-											$code_db_new=explode("-",$code_db[$i]);
-											
-											if($code_db_new[2]=="DONE")
-											{
-												$check="blue";
-											}
+                                        //To get dockets from getDocketDetails based on subpo,plantcode
+									    $result_emb_dockets=getDocketDetails($sub_po,$plantcode);
+		                                $dockets=$result_emb_dockets['docket_number'];
+                                         // var_dump($dockets);
+                                        foreach($dockets as $dok_num=>$jm_dok_id){
+											$check="blue";
+											if($status=='OPEN')
+	                                        {
+                                               echo "<li id=\"".$jm_dok_id."\" style=\" background-color:$check; color:white;\"  
+											   data-color='$check'  class='apply-remove'><strong>".$dok_num."</strong></li>";
+	                                        }
 											else
 											{
-												$check="blue"; // red
+												
 											}
-											
-											$title=title_des($link,$code_db_new[0]);
-											// <li data-color="green" style="background-color:green; color:white;">
-											echo "<li  class='apply-remove' id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  data-color='blue' title=\"$title\"><strong>".$code_db_new[1]."</strong></li>";
+
 										}
 									?>
 								
@@ -715,7 +636,6 @@
 
 							<form action="<?= getFullURLLevel($_GET['r'],'embellishment_drag_drop_process.php',0,'N'); ?>" method="post" name="myForm" onclick="saveDragDropNodes()" style="position: fixed;margin-left: 47px;">
 								<input type="hidden" name="listOfItems" value="">
-								<input type="hidden" name="sche" id="sche" value="<?php echo $schedule; ?>">
 								<input class="btn btn-success btn-sm pull-right" type="button" name="saveButton" id="saveButton" onclick="do_disable()" value="Save">
 							</form>
 
@@ -728,120 +648,72 @@
 							<!-- Data2 -->
 
 							<?php
+								//Function to get workstations from getWorkstations based on department,plant_code
+								$task_type='EMB_DOCKET';
+								$department='Embellishment';
+								$result_worksation_id=getWorkstations($department,$plantcode);
+								$workstations=$result_worksation_id['workstation'];
+					            
+					            foreach($workstations as $work_id=>$work_des)
+					            {
+                                  echo "<div style=\"width:170px;\" align=\"center\"><h4>$work_des</h4>";
 								
-								
-								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
-								// mysqli_query($link,$sqlx) or exit("Sql Error".mysqli_error());
-								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysqli_error());
-								while($sql_rowx=mysqli_fetch_array($sql_resultx))
-								{
-									// $section=$sql_rowx['sec_id'];
-									// $section_head=$sql_rowx['sec_head'];
-									$emb_table_id=$sql_rowx['emb_table_id'];
-									$emb_tbl_name=$sql_rowx['emb_table_name'];
-								
-									echo "<div style=\"width:170px;\" align=\"center\"><h4>$emb_tbl_name</h4>";
-								
-										$mods=array();
-										$mods=explode(",",$emb_table_id);
-										
-										// echo "<script>lis_limit('".sizeof($mods)."','".json_encode($mods)."')</script>";
-										for($x=0;$x<sizeof($mods);$x++)
-										{
-									
-											echo '<ul id="'.$mods[$x].'" style="width:150px">';
-													//<li id="node16">Student P</li>
-													
-													$module=$mods[$x];
-													$sql1="SELECT act_cut_status,act_cut_issue_status,rm_date,cut_inp_temp,doc_no,order_style_no,order_del_no,order_col_des,total,acutno,color_code from $bai_pro3.plan_dash_doc_summ_embl where module=$module and short_shipment_status = 0 and remarks != 'Recut' order by priority"; //KK223422
+	                               echo "<ul id='".$work_id."' style='width:150px'>";
+									 //To get taskrefrence from task_jobs based on resourceid 
+							         $task_job_reference=array(); 
+								     $get_refrence_no="SELECT task_job_reference FROM $tms.task_jobs WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$task_type' AND plant_code='$plantcode'";
+								     $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+								     while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+								     {
+								     	$task_job_reference[] = $refrence_no_row['task_job_reference'];
+								     }
+								     //To get dockets from jm_dockets based on jm_docket_id
+								     $docket_no=array();
+							         $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_docket_id in ('".implode("','" , $task_job_reference)."') AND plant_code='$plantcode' order by docket_number ASC";
+							         $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
+							         while($dockets_row=mysqli_fetch_array($toget_dockets_result))
+							         {
+							           $docket_no[$dockets_row['docket_number']]=$dockets_row['jm_docket_id'];
+							         }
+							         //Function to get cut numbers from getCutDetails based on subpo,plantcode
+							         $result_cuts=getCutDetails($sub_po,$plantcode);
+							         $cuts=$result_cuts['cut_number'];
+							         $cut_details=implode("','" , $cuts);
 
-													// echo $sql1;
-													// die();
-													// mysql_query($sql1,$link) or exit("Sql Error".mysqli_error());
-													$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error7".mysqli_error());
-													$sql_num_check=mysqli_num_rows($sql_result1);
-													while($sql_row1=mysqli_fetch_array($sql_result1))
-													{
-														$cut_new=$sql_row1['act_cut_status'];
-														$cut_input_new=$sql_row1['act_cut_issue_status'];
-														$rm_new=strtolower(chop($sql_row1['rm_date']));
-														$rm_update_new=strtolower(chop($sql_row1['rm_date']));
-														$input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
-														$doc_no=$sql_row1['doc_no'];
-														
-														$style1=$sql_row1['order_style_no'];
-														$schedule1=$sql_row1['order_del_no'];
-														$color1=$sql_row1['order_col_des'];
-														$total_qty1=$sql_row1['total'];
-														$cut_no1=$sql_row1['acutno'];
-														$color_code1=$sql_row1['color_code'];
-														
-														$sql="select color_code,acutno,order_style_no,order_del_no,order_col_des from $bai_pro3.plan_doc_summ where doc_no=$doc_no";
-														// echo $sql."<br>";
-														// mysql_query($sql,$link) or exit("Sql Error".mysqli_error());
-														$sql_result=mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
-														$sql_num_check=mysqli_num_rows($sql_result);
-														
-														//docketno-colorcode cutno-cut_status
-														while($sql_row=mysqli_fetch_array($sql_result))
-														{
-															$color_code=$sql_row['color_code'];
-															$act_cut_no=$sql_row['acutno'];
-															
-															$style_new=$sql_row['order_style_no'];
-															$schedule_new=$sql_row['order_del_no'];
-															$color_new=$sql_row['order_col_des'];
-														}
-														
-														$id="#33AADD"; //default existing color
-																										
-														if($style==$style_new and $color==$color_new and $schedule==$schedule_new)
-														{
-															$id="red";
-														}
-														else
-														{
-															$id="#008080";
-														}
-																										
-														
-														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".chr($color_code1).leading_zeros($acutno1,3),50)."\n".str_pad("Qty:".$total_qty1,50);
-                                                        
-                                                        $emb_category = 'Send PF';
-                                                        $get_operations = " SELECT tor.operation_code FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tsm.style='$style_new' AND tsm.color='$color_new' AND tor.category='$emb_category' order by tsm.operation_code LIMIT 1;";
-													    //echo $get_operations;
-													    $result_ops = $link->query($get_operations);
-													    while($row_ops = $result_ops->fetch_assoc())
-													    {
-													      $emb_operations = $row_ops['operation_code'];
-													    }
-                                                      
-														$sql2="select send_qty from $bai_pro3.embellishment_plan_dashboard where doc_no=$doc_no and send_op_code =$emb_operations";
-                                                        //echo $sql2;
-														$sql_resultx1=mysqli_query($link,$sql2) or exit("Sql Error2".mysqli_error());
-														while($sql_rowx=mysqli_fetch_array($sql_resultx1))
-														{
-														  $send_qty=$sql_rowx['send_qty'];
-														}
-														
-														if($total_qty1<>$send_qty)
-														{
-                                                          echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-														  //echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';
-														}
-														else
-														{
-														
-														}	
-														
-														
-													}
-													
-												echo '</ul>';
-											
+							         //Function to get schedules from getBulkSchedules based on style,plantcode
+							         $result_schedules=getBulkSchedules($style,$plantcode);
+							         $schedule_details=$result_schedules['bulk_schedule'];
+							         $schedule1=implode("," , $schedule_details);
+							         $doc_qty=0;	
+							         foreach($docket_no as $dok_num=>$jm_dok_id)
+	                                 {
+                                        //Function to get style,color,docket_qty from getJmDockets based on docket and plantcode
+							         	$result_get_details=getJmDockets($dok_num,$plantcode);
+							         	$style1=$result_get_details['style'];
+							         	$color1=$result_get_details['fg_color'];
+							         	$plies=$result_get_details['plies'];
+							         	$length=$result_get_details['length'];
+						                $doc_qty=$plies*$length;
+
+						                $id="#33AADD"; //default existing color
+																								
+										if($style==$style1 and $color==$color1)
+										{
+											$id="red";
 										}
-									echo "</div>";
-								}
+										else
+										{
+											$id="#008080";
+										}
+										$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$cut_details,50)."\n".str_pad("Qty:".$doc_qty,50);
+
+	                                    echo '<li id="'.$jm_dok_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$dok_num.'</strong></li>';	
+
+								      }
+									  echo "</ul>";
+									 echo "</div>";
+
+					            }
 								
 							?>
 						
