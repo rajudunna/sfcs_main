@@ -610,89 +610,95 @@ function getDocketDetails($sub_po,$plantcode){
     global $link_new;
     global $pps;
     global $tms;
-    $list_db=array();
-	$list_db=explode(";",$list);
-	$taskStatus="PLANNED";
-    if($jobtype == 'CUTJOB')
+    try
     {
-        $task_type='DOCKET';
-    }
-    else if($jobtype == 'EMBJOB')
-    {
-         $task_type='EMB_DOCKET';
-    }
-	for($i=0;$i<sizeof($list_db);$i++)
-	{
-        $items=array();
-        $items=explode("|",$list_db[$i]);
-        if($items[0]=="allItems")
+        $list_db=array();
+        $list_db=explode(";",$list);
+        $taskStatus="PLANNED";
+        if($jobtype == 'CUTJOB')
         {
-            /**updtae resource id tasks jobs with work sation id's*/
-            $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='OPEN' WHERE task_job_reference='$items[1]'";
-            $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $task_type='DOCKET';
         }
-        else
-        {   
-            /**Getting task jobs details from task jobs */
-            $Qry_taskjobs="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$items[1]'";
-            $Qry_taskjobs_result=mysqli_query($link_new, $Qry_taskjobs) or exit("Sql Error at task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $taskjobs_num=mysqli_num_rows($Qry_taskjobs_result);
-            if($taskjobs_num>0){
-                while($taskjobs_row=mysqli_fetch_array($Qry_taskjobs_result))
-                {
-                    $header_id=$taskjobs_row['task_header_id']; 
-                }
-            }
-            /**validate with work station mapping in task header*/
-            $Qry_taskheader="SELECT resource_id,task_type,task_ref,task_progress,short_desc,priority,planned_date_time,delivery_date_time,sla,is_active,plant_code,created_at,created_user,updated_at,updated_user,version_flag FROM $tms.task_header WHERE task_header_id='$header_id'";
-            $Qry_taskheader_result=mysqli_query($link_new, $Qry_taskheader) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $taskheader_num=mysqli_num_rows($Qry_taskheader_result);
-            if($taskheader_num>0){
-                while($taskheader_row=mysqli_fetch_array($Qry_taskheader_result))
-                {
-                    $resource_id=$taskheader_row['resource_id']; 
-                    $task_type=$taskheader_row['task_type']; 
-                    $task_ref=$taskheader_row['task_ref'];  
-                    $task_progress=$taskheader_row['task_progress']; 
-                    $short_desc=$taskheader_row['short_desc']; 
-                    $priority=$taskheader_row['priority']; 
-                    $planned_date_time=$taskheader_row['planned_date_time']; 
-                    $delivery_date_time=$taskheader_row['delivery_date_time']; 
-                    $sla=$taskheader_row['sla']; 
-                    $is_active=$taskheader_row['is_active']; 
-                    $plant_code=$taskheader_row['plant_code']; 
-                    $created_at=$taskheader_row['created_at'];
-                    $created_user=$taskheader_row['created_user'];
-                    $updated_at=$taskheader_row['updated_at'];
-                    $updated_user=$taskheader_row['updated_user'];
-                    $version_flag=$taskheader_row['version_flag'];
-                }
-            }
-
-            if($resource_id==''){
-                /**resource id update */
-                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$jobtype'";
-                $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+        else if($jobtype == 'EMBJOB')
+        {
+             $task_type='EMB_DOCKET';
+        }
+        for($i=0;$i<sizeof($list_db);$i++)
+        {
+            $items=array();
+            $items=explode("|",$list_db[$i]);
+            if($items[0]=="allItems")
+            {
                 /**updtae resource id tasks jobs with work sation id's*/
-                $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='$items[0]',task_status='$taskStatus' WHERE task_job_reference='$items[1]' AND task_type='$task_type'";
-                $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='OPEN' WHERE task_job_reference='$items[1]'";
+                $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+            }
+            else
+            {   
+                /**Getting task jobs details from task jobs */
+                $Qry_taskjobs="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$items[1]'";
+                $Qry_taskjobs_result=mysqli_query($link_new, $Qry_taskjobs) or exit("Sql Error at task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $taskjobs_num=mysqli_num_rows($Qry_taskjobs_result);
+                if($taskjobs_num>0){
+                    while($taskjobs_row=mysqli_fetch_array($Qry_taskjobs_result))
+                    {
+                        $header_id=$taskjobs_row['task_header_id']; 
+                    }
+                }
+                /**validate with work station mapping in task header*/
+                $Qry_taskheader="SELECT resource_id,task_type,task_ref,task_progress,short_desc,priority,planned_date_time,delivery_date_time,sla,is_active,plant_code,created_at,created_user,updated_at,updated_user,version_flag FROM $tms.task_header WHERE task_header_id='$header_id'";
+                $Qry_taskheader_result=mysqli_query($link_new, $Qry_taskheader) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $taskheader_num=mysqli_num_rows($Qry_taskheader_result);
+                if($taskheader_num>0){
+                    while($taskheader_row=mysqli_fetch_array($Qry_taskheader_result))
+                    {
+                        $resource_id=$taskheader_row['resource_id']; 
+                        $task_type=$taskheader_row['task_type']; 
+                        $task_ref=$taskheader_row['task_ref'];  
+                        $task_progress=$taskheader_row['task_progress']; 
+                        $short_desc=$taskheader_row['short_desc']; 
+                        $priority=$taskheader_row['priority']; 
+                        $planned_date_time=$taskheader_row['planned_date_time']; 
+                        $delivery_date_time=$taskheader_row['delivery_date_time']; 
+                        $sla=$taskheader_row['sla']; 
+                        $is_active=$taskheader_row['is_active']; 
+                        $plant_code=$taskheader_row['plant_code']; 
+                        $created_at=$taskheader_row['created_at'];
+                        $created_user=$taskheader_row['created_user'];
+                        $updated_at=$taskheader_row['updated_at'];
+                        $updated_user=$taskheader_row['updated_user'];
+                        $version_flag=$taskheader_row['version_flag'];
+                    }
+                }
 
-            }elseif($resource_id!=$items[0]){
-                /**Insert new record in header for if new reource id alloacted with in cut job */
-                $Qry_insert_taskheader="INSERT INTO $tms.task_header (`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_at`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES (
-                    '".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','".$items[0]."','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_at."','".$created_user."','".$updated_at."','".$updated_user."',NOW())";
-                  //  $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $last_id = $Qry_taskheader_result->insert_id;
+                if($resource_id==''){
+                    /**resource id update */
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$jobtype'";
+                    $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     /**updtae resource id tasks jobs with work sation id's*/
-                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='$taskStatus',task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$task_type'";
-                    $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
-            }
+                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='$items[0]',task_status='$taskStatus' WHERE task_job_reference='$items[1]' AND task_type='$task_type'";
+                    $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
 
+                }elseif($resource_id!=$items[0]){
+                    /**Insert new record in header for if new reource id alloacted with in cut job */
+                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_at`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES (
+                        '".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','".$items[0]."','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_at."','".$created_user."','".$updated_at."','".$updated_user."',NOW())";
+                      //  $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $last_id = $Qry_taskheader_result->insert_id;
+
+                        /**updtae resource id tasks jobs with work sation id's*/
+                        $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='$taskStatus',task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$task_type'";
+                        $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                }
+
+            }
         }
+     return true;
+    } catch (Exception $e) {
+        return false;
     }
-    return 1;
+        
   }
 
   /**Getting work stations based on department wise */
