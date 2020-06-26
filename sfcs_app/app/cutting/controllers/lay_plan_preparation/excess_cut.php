@@ -101,7 +101,8 @@
                         location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
                     }
                 </script>";	
-            }
+			}
+		}
             
         }else {
             $excess_cut = $_POST['excess_cut'];
