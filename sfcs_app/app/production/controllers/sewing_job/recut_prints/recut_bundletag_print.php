@@ -120,7 +120,7 @@ if(isset($_POST['submit']))
 				echo "<td><a class='btn btn-info btn-xs' href='$url?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Out Operation 4*2</span></a></td>";
 				
 				$url1 = getFullURLLevel($_GET['r'],'sewing_job/recut_prints/barcode_2_1.php',2,'R');
-				echo "<td><a class='btn btn-info btn-xs' href='$url1?recut_id=".$recut."&sticker_type=1sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Operation 2*1</span></a></td>";
+				echo "<td><a class='btn btn-info btn-xs' href='$url1?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=1&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Operation 2*1</span></a></td>";
 				// $url2 = getFullURLLevel($_GET['r'],'sewing_job/reprint_tagwithout_operation.php',2,'R');
 				echo "<td><a class='btn btn-info btn-xs' href='$url1?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."' onclick=\"return popitup2('$url1?recut_id=".$recut."&sticker_type=2&sequence=".$sql_row_value['status']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;<span>Print With Out Operation 2*1</span></a></td>";
 				echo "</tr>";
