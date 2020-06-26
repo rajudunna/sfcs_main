@@ -3,8 +3,6 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R')); 	
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 	
 	$userName = getrbac_user()['uname'];
-	getWorkstations('Cutting','L01');
-	exit;
 
 	$list=$_POST['listOfItems'];
 	
@@ -14,7 +12,7 @@
 		   $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 	}else{
-		echo "<script>swal('Error in planning')</script>";
+		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
 	}
 	
 	
