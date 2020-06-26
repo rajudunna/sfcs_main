@@ -510,15 +510,15 @@ if(isset($_POST['submit']))
 		$newyy2=$newyy/$new_order_qty;
 	}
 	if($cat_yy>0){
-		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,0);
+		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,2);
 	}
 	if($act_total_sum>0){
 		$act_con_summ=($fab_rec_total-$fab_ret_total)/$act_total_sum;
 		$net_con_summ=($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total)/$act_total_sum;
 	}
 	if($cat_yy>0){
-		$act_con_summ_sav=round((($cat_yy-$act_con_summ)/$cat_yy)*100,0);
-		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,0);
+		$act_con_summ_sav=round((($cat_yy-$act_con_summ)/$cat_yy)*100,2);
+		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,2);
 	}	
 ?>
 <hr>
@@ -606,27 +606,27 @@ if(isset($_POST['submit']))
 	<table class="table table-bordered table-responsive">
 			<tr>
 				<th class='success'>Ordered Fabric:</th>
-				<td><?php echo round(($cat_yy*$o_total),0); ?></td>
+				<td><?php echo round(($cat_yy*$o_total),2); ?></td>
 			</tr> 
 			<tr>
 				<th class='success'>Allocated Fabric:</th>
-				<td><?php echo round(($newyy2*$act_total_sum),0); ?></td>
+				<td><?php echo round(($cat_yy*$o_total),2); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Actual Utilization:</th>
-				<td><?php echo round(($fab_rec_total-$fab_ret_total),0); ?></td>
+				<td><?php echo round(($fab_rec_total-$fab_ret_total),2); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Net Utilization:</th>
-				<td><?php echo round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),0); ?></td>
+				<td><?php echo round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),2); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Fabric Shortage:</th>
-				<td><?php echo ($shortages_total); ?></td>
+				<td><?php echo round($shortages_total,2); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Fabric Damage:</th>
-				<td><?php echo ($damages_total); ?></td>
+				<td><?php echo round($damages_total,2); ?></td>
 			</tr>
 	</table>
 </div>
