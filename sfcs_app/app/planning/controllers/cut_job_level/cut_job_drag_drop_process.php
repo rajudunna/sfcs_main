@@ -8,11 +8,11 @@
 	
 	/** Function to send */
 	$planned_respo=getPlanDocketJobs($list,$jobtype);
-	if($planned_respo=1){
+	if($planned_respo==1){
 		   $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 	}else{
-		echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
+		echo "<script>swal('Error in Planning','Please Verify dockets Once','danger');</script>";
 	}
 	
 	
