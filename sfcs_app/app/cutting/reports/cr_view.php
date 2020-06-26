@@ -515,7 +515,7 @@ if(isset($_POST['submit']))
 		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,2);	
 	}
 	
-// }
+// } 
 	?>
 	<!--
 	<div class="col-sm-12">
