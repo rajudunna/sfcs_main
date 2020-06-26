@@ -2,10 +2,8 @@
 <?php
 //include"header.php";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//$view_access=user_acl("SFCS_0074",$username,1,$group_id_sfcs); 
-// $table_filter = getFullURLLevel($_GET['r'],'TableFilter_EN/tablefilter.js',1,'R');
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
+
 
 ?>
 
@@ -90,7 +88,7 @@ if(isset($_POST["submit"]))
 			
 			$sql="SELECT DISTINCT(UPPER(cutno)) as cut FROM $bai_rm_pj1.store_out WHERE DATE BETWEEN \"".$sdate."\" AND \"".$edate."\" AND (cutno LIKE \"D%\" OR cutno LIKE \"R%\") ORDER BY CUTNO";
 			// echo $sql."<br>";
-			$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result=mysqli_query($link, $sql) or die("Error=1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows_num=mysqli_num_rows($result);
 
 			while($row=mysqli_fetch_array($result))
@@ -99,7 +97,7 @@ if(isset($_POST["submit"]))
 				
 				
 				$sql1="select GROUP_CONCAT(tran_tid) AS tids,GROUP_CONCAT(DISTINCT DATE) AS dat,LEFT(UPPER(cutno),1) AS cutn from $bai_rm_pj1.store_out where cutno=\"".$cutno."\" and DATE BETWEEN \"".$sdate."\" AND \"".$edate."\"";
-				$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result1=mysqli_query($link, $sql1) or die("Error=2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($result1))
 				{
 					$tids=$row1["tids"];
@@ -111,7 +109,7 @@ if(isset($_POST["submit"]))
 				
 				$qty_issued=0;
 				$sql1Z="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno=\"".$cutno."\"";
-				$result1Z=mysqli_query($link, $sql1Z) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result1Z=mysqli_query($link, $sql1Z) or die("Error=3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1Z=mysqli_fetch_array($result1Z))
 				{
 					$qty_issued=round($row1Z["qty"],3);
@@ -124,7 +122,7 @@ if(isset($_POST["submit"]))
 				
 				$doc_no=$cutno_explode[1];
 				//To get style,fg_color,jm_cut_job_id,plies,length,ratio_comp_group_id by from getdata_jm_dockets($doc_no,$plant_code) in function_v2.php 
-				$result_to_get_details=getdata_jm_dockets($doc_no,$plant_code);
+				$result_to_get_details=getJmDockets($doc_no,$plant_code);
 				$style=$result_to_get_details['style'];
 				$color=$result_to_get_details['fg_color'];
 				$jm_cut_job_id=$result_to_get_details['jm_cut_job_id'];
@@ -135,11 +133,11 @@ if(isset($_POST["submit"]))
 				$tot_qty=$plies*$length;
 				$req_qty=$plies*$length;
 				//To get fabric_category from getdata_ratio_component_group($ratio_comp_group_id,$plant_code) in function_v2.php 
-				$result_to_get_category=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+				$result_to_get_category=getRatioComponentGroup($ratio_comp_group_id,$plant_code);
 				$category=$result_to_get_category['fabric_category'];
 
                 //To get schedules from  getdata_mp_mo_qty($po_number,$plant_code) in function_v2.php
-				$result_to_get_schedules=getdata_mp_mo_qty($po_number,$plant_code);
+				$result_to_get_schedules=getMpMoQty($po_number,$plant_code);
 				$schedule=$result_to_get_schedules['schedule'];
 
 				//To get po number and cut number
@@ -152,7 +150,7 @@ if(isset($_POST["submit"]))
 				}
 				//To get jm_docket_id from jm_dockets based on docket_number
 				$sql213="select cut_number,po_number from $pps.jm_dockets where docket_number=$doc_no";
-				$result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result213=mysqli_query($link, $sql213) or die("Error = 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row213=mysqli_fetch_array($result213))
 				{
 				  $jm_docket_id=$row213['jm_docket_id'];
@@ -168,7 +166,7 @@ if(isset($_POST["submit"]))
 				
 				$sql5="SELECT MAX(TIME(log_stamp)) AS maxlog FROM $bai_rm_pj1.store_out WHERE cutno=\"".$cutno."\" and date=\"".$date."\"";
 				
-				$sql_result5=mysqli_query($link, $sql5) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result5=mysqli_query($link, $sql5) or die("Error = 5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row5=mysqli_fetch_array($sql_result5))
 				{
 					$log_time=$row5["maxlog"];
@@ -200,7 +198,7 @@ if(isset($_POST["submit"]))
 				$sHTML_Content.="<td class=\"  \">".round($tot_qty,0)."</td>";
 				$sql5="SELECT GROUP_CONCAT(DISTINCT lot_no SEPARATOR '/') AS lot_no,GROUP_CONCAT(ref2 SEPARATOR '/') AS roll,SUM(qty_issued) AS qty_issued FROM  $bai_rm_pj1.store_in WHERE tid IN($tids)";
 				//echo $sql5."<br>";
-				$result5=mysqli_query($link, $sql5) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result5=mysqli_query($link, $sql5) or die("Error = 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$no_rows5=mysqli_num_rows($result5);
 				while($row5=mysqli_fetch_array($result5))
 				{
@@ -209,7 +207,7 @@ if(isset($_POST["submit"]))
 					//$qty_issued=$row5["qty_issued"];	
 				}
 				$sql6="select GROUP_CONCAT(DISTINCT trim(batch_no) SEPARATOR '/') AS batch_no from $bai_rm_pj1.sticker_report where lot_no=$lot_no";
-				$result6=mysqli_query($link, $sql6) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result6=mysqli_query($link, $sql6) or die("Error = 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row6=mysqli_fetch_array($result6))
 				{
 					$batch_no=$row6["batch_no"];
@@ -224,7 +222,7 @@ if(isset($_POST["submit"]))
 				
 				
 				$sql6="select section,picking_list,delivery_no,issued_by,movex_update,issued_by from $bai_rm_pj1.m3_fab_issue_track where doc_ref=\"".$cutno."\"";
-				$sql_result=mysqli_query($link, $sql6) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql6) or die("Error = 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$no_rowsx=mysqli_num_rows($sql_result);
 				if($no_rowsx > 0)
 				{
