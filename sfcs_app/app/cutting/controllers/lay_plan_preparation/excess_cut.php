@@ -57,6 +57,7 @@
             $query_result = mysqli_query($link,$query) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
 			if($rows>0)
 			{
+				
 				echo "<script type=\"text/javascript\"> 
 					sweetAlert('Already sewing Job Generated','You cannot update.','warning');
 					setTimeout(\"Redirect()\",0); 
