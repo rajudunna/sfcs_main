@@ -1,7 +1,8 @@
 <?php
 
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	$has_perm=haspermission($_GET['r']);
 	$module_limit=30;
 
@@ -646,11 +647,14 @@
 			$style=$style_ref;
 			$schedule=$schedule_ref;
 			$color=$color_ref;
-			$code=$code_ref;
-			$cat_ref=$cat_ref_ref;
-
-			$code_db=array();
-			$code_db=explode("*",$code);
+			$mpo=$mpo;
+			$sub_po=$sub_po;
+            $jobtype=$jobtype;
+            if($sub_po!='')
+            {
+            	$result_get_task_status=getJobsStatus($sub_po,$jobtype,$plantcode);
+		        $status=$result_get_task_status['task_status'];
+			}
 		?>
 
 		<br/>
@@ -658,13 +662,9 @@
 		<div class="col-md-12">
 
 			<div class="panel panel-primary">
-
 				<div class="panel-heading">
-
 					<?php 
-						// $url2 = getFullURLLevel($_GET['r'],'jobs_movement_track.php',0,'N');
-						echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color"; 
-						// echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url2' onclick=\"return popitup2('$url2')\" target='_blank'>Sewing Jobs Movement Track</a>";
+						echo "<b>Style:</b> $style | <b>Schedule:</b> $schedule | <b>Color:</b> $color | <b>PO:</b> $color"; 
 					?>
 
 				</div>
@@ -697,32 +697,22 @@
 									<!-- Data1 -->
 
 									<?php
-
-										
-
-										for($i=0;$i<sizeof($code_db)-1;$i++)
-										{
-											$code_db_new=array();
-											$code_db_new=explode("-",$code_db[$i]);
-											
-											if($code_db_new[2]=="DONE")
-											{
-												$check="blue";
-											}
+									    //To get dockets
+									    $result_get_dockets=getDocketDetails($sub_po,$plantcode);
+		                                $dockets=$result_get_dockets['docket_number'];
+										//sort($dockets);
+										foreach($dockets as $dok_num=>$jm_dok_id){
+											$check="blue";
+											if($status=='OPEN')
+	                                        {
+                                               echo "<li id=\"".$jm_dok_id."\" style=\" background-color:$check; color:white;\"  
+											   data-color='$check'  class='apply-remove'><strong>".$dok_num."</strong></li>";
+	                                        }
 											else
 											{
-												$check="blue"; // red
+												
 											}
-											
-											$title=title_des($link,$code_db_new[0]);
-											// <li data-color="green" style="background-color:green; color:white;">
-											$real_docket = $code_db_new[1];
-											if($real_docket[0] == 'R')
-											{
-												$check = 'PINK';
-											}
-											echo "<li id=\"".$code_db_new[0]."\" style=\" background-color:$check; color:white;\"  
-											data-color='$check'  class='apply-remove'><strong>".$code_db_new[1]."</strong></li>";
+
 										}
 									?>
 								
@@ -830,10 +820,6 @@
 														
 														$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Cut No:".$cut_str.''.leading_zeros($act_cut_no,3),50)."\n".str_pad("Doc No:".$doc_no,50)."\n".str_pad("Qty:".$total_qty1,50);
 														
-														 // echo '<li id="'.$doc_no.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.chr($color_code).leading_zeros($act_cut_no,3).'</strong></li>';
-														//echo '<li id="'.$doc_no.'" style="background-color:'.$id.';  color:white;"><strong>'.$check_string.'</strong></li>';	
-
-
 														// To get fabric request details
 														$get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=$doc_no ";
 														$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));

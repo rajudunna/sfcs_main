@@ -1,6 +1,7 @@
 <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R'));  
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 ?> 
 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
@@ -27,7 +28,15 @@ function secondbox()
 function thirdbox() 
 { 
     window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value 
-} 
+}
+function forthbox() 
+{ 
+    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value 
+}
+function fifthbox() 
+{ 
+    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
+}
 </script> 
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> --> 
 
@@ -37,155 +46,135 @@ function thirdbox()
 
 <?php  
 
-$style=$_GET['style']; 
-$schedule=$_GET['schedule'];  
-$color=$_GET['color']; 
-
-if(strlen($color) > 4){	
-	$split_verify = "SELECT group_concat(doc_no) as docs from 
-					$bai_pro3.plandoc_stat_log where order_tid='$style$schedule$color' and org_doc_no = 1";
-	$split_result = mysqli_query($link,$split_verify);
-	$row = mysqli_fetch_array($split_result);
-	$docs = $row['docs'];
-	if(strlen($docs) > 0){
-		$child_docs_verify = "SELECT doc_no from $bai_pro3.plandoc_stat_log where org_doc_no IN ($docs)";
-		if(mysqli_num_rows(mysqli_query($link,$child_docs_verify)) == 0){
-			echo "<script>swal('Split the Clubbed Schedule Before Planning','','error');
-			window.location.href = url+'&style=$style&schedule=$schedule';</script>";
-			exit();
-		}
-	}
-}
-
-
+$get_style=$_GET['style']; 
+$get_schedule=$_GET['schedule'];  
+$get_color=$_GET['color']; 
+$get_mpo=$_GET['mpo']; 
+$get_sub_po=$_GET['sub_po']; 
 ?> 
 
 <div class="panel panel-primary"> 
 <div class="panel-heading">Cut Job Production Planning Panel</div> 
 <div class="panel-body"> 
 <form name="test" action="index.php?r=<?php echo $_GET['r'];  ?>" method="post"> 
-<?php 
-
-echo "<div class='row'>"; 
+<?php
+	//function to get style from mp_color_details
+	if($plantcode!=''){
+		$result_mp_color_details=getMpColorDetail($plantcode);
+		$style=$result_mp_color_details['style'];
+	}
+	echo "<div class='row'>"; 
 	echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
-	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm"; 
-	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	echo "<option value=\"\" selected>NIL</option>"; 
-	while($sql_row=mysqli_fetch_array($sql_result)) 
-	{ 
-	    if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style)) 
+	echo "<option value=\"\" selected>NIL</option>";
+	foreach ($style as $style_value) {
+		if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
 	    { 
-	        echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>"; 
+	        echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
 	    } 
 	    else 
 	    { 
-	        echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>"; 
-	    } 
+	        echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
+	    }
 	} 
-	echo "</select></div>"; 
-
-	$sql="SELECT distinct order_del_no from $bai_pro3.bai_orders_db_confirm boc
-		left join $bai_pro3.plandoc_stat_log pl ON pl.order_tid = boc.order_tid
-		where order_style_no=\"$style\"   ";     
-	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>"; 
-	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	echo "<option value=\"\" selected>NIL</option>"; 
-	while($sql_row=mysqli_fetch_array($sql_result)) 
-	{ 
-	    if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)) 
-	    { 
-	        echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>"; 
-	    } 
-	    else 
-	    { 
-	        echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>"; 
-	    } 
-	} 
-	
-	
 	echo "</select></div>";
-	echo "<div class='col-sm-3'><label>Select Color: </label>"; 
-	// $sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
-	$sql="SELECT GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,order_col_des FROM bai_pro3.bai_orders_db_confirm LEFT JOIN bai_pro3.plandoc_stat_log ON bai_orders_db_confirm.order_tid=plandoc_stat_log.order_tid WHERE order_style_no=\"$style\" AND order_del_no=\"$schedule\" AND ( $order_joins_in_full OR remarks='Recut') group by order_col_des";
-	// echo $sql;
-	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	//qry to get schedules form mp_mo_qty based on master_po_details_id 
+	if($get_style!=''&& $plantcode!=''){
+		$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+		$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+	}  
+	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+	echo "<option value=\"\" selected>NIL</option>";
+	foreach ($bulk_schedule as $bulk_schedule_value) {
+		if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
+	    { 
+	        echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+	    } 
+	    else 
+	    { 
+	        echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
+	    }
+	} 
+	echo "</select></div>";
+	
+	//function to get color form mp_mo_qty based on schedules and plant code from mp_mo_qty
+	if($get_schedule!='' && $plantcode!=''){
+		$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+		$bulk_color=$result_bulk_colors['color_bulk'];
+	}
+	echo "<div class='col-sm-3'><label>Select Color: </label>";  
 	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
-			<option value=\"NIL\" selected>NIL</option>"; 
-				while($sql_row=mysqli_fetch_array($sql_result)) 
-				{ 
-					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)) 
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($bulk_color as $bulk_color_value) {
+					if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
 					{ 
-						echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['disp']."</option>"; 
+						echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
 					} 
 					else 
 					{ 
-						echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['disp']."</option>"; 
+						echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+	
+	//function to get master po's from mp_mo_qty based on schedule and color
+	if($get_schedule!='' && $get_color!='' && $plantcode!=''){
+		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+		$master_po_description=$result_bulk_MPO['master_po_description'];
+	}
+	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
+	echo "<select name=\"mpo\" onchange=\"forthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($master_po_description as $key=>$master_po_description_val) {
+					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
 					} 
-				}
-	echo "</select></div>"; 
-
-	$check_status = echo_title('bai_pro3.bai_orders_db_confirm', 'order_joins', "order_style_no='$style' and order_del_no='$schedule' and order_col_des", $color, $link); 
-	if ($check_status < 3 )
-	{
-		$code=""; 
-		//$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from  $bai_pro3.cutting_table_plan) and ( act_cut_status='') order by doc_no"; 
-		$sql="SELECT psl.doc_no,bodc.color_code,psl.acutno,psl.act_cut_status,psl.cat_ref,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl, bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE bodc.order_style_no=\"$style\" and bodc.order_del_no=\"$schedule\" and bodc.order_col_des=\"$color\" AND psl.order_tid=bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND csl.category IN ('Body','Front') AND csl.`tid` = psl.`cat_ref` AND doc_no NOT IN (SELECT doc_no FROM bai_pro3.cutting_table_plan) AND ( psl.act_cut_status='') AND psl.remarks='Normal' and psl.org_doc_no in (0,1)
-			UNION 
-			SELECT psl.doc_no,bodc.color_code,psl.acutno,psl.act_cut_status,psl.cat_ref,psl.remarks FROM bai_pro3.plandoc_stat_log AS psl, bai_pro3.bai_orders_db_confirm AS bodc,bai_pro3.cat_stat_log AS csl WHERE bodc.order_style_no=\"$style\" and bodc.order_del_no=\"$schedule\" and bodc.order_col_des=\"$color\" AND psl.order_tid=bodc.order_tid AND csl.order_tid = bodc.order_tid AND csl.order_tid=psl.order_tid AND csl.`tid` = psl.`cat_ref` AND doc_no NOT IN (SELECT doc_no FROM bai_pro3.cutting_table_plan) AND ( psl.act_cut_status='') AND psl.remarks='Recut' and psl.org_doc_no in (0,1)";
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_row=mysqli_fetch_array($sql_result)) 
-		{ 
-			$doc_no_for_recut = $sql_row['doc_no'];
-			$remarks_query = "select * from $bai_pro3.plandoc_stat_log where doc_no = $doc_no_for_recut";
-			$remarks_query_result=mysqli_query($link,$remarks_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			while($remarks_row=mysqli_fetch_array($remarks_query_result)) 
-			{
-				$remarks = $remarks_row['remarks'];
-				$approve = $remarks_row['fabric_status'];
-			}
-			if(strtolower($remarks) == 'recut')
-			{
-				if($approve == 99)
-				{
-					$code.=$sql_row['doc_no']."-R".leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-					$cat_ref= $sql_row['cat_ref']; 
-				}
-			}
-			else if(strtolower($remarks) != 'recut')
-			{
-				$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*"; 
-				$cat_ref= $sql_row['cat_ref']; 
-			}
-		}	 
-
-		$sql= "select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by doc_no"; 
-
-		$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		$sql_num_check=mysqli_num_rows($sql_result); 
-		while($sql_row=mysqli_fetch_array($sql_result)) 
-		{ 
-		    $cat_ref=$sql_row['cat_ref']; 
-		} 
-		echo "</br><div class='col-sm-3'>"; 
-		if($sql_num_check>0) 
-		{ 
-		    echo "Cut Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
-		    echo "<input type=\"hidden\" name=\"code\" value=\"$code\">"; 
-		    echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">"; 
-		    echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";     
-		} 
-		else 
-		{ 
-		    echo "Cut Jobs Available: <font color=RED size=5>No</font>"; 
-		} 
-		echo "</div>"; 
-
-		 
+					else 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+	
+	//function to get sub po's from mp_mo_qty based on master PO's
+	if($get_mpo!='' && $plantcode!=''){
+		$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
-	else
-	{
-		echo "<font color=RED size=5>Not Eligible (Because Schedule Clubbed)</font>"; 
-	}
+	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
+	echo "<select name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($sub_po_description as $key=>$sub_po_description_val) {
+					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+	//Function to check status
+
+	$jobtype="CUTJOB";
+    if($get_sub_po!='')
+    {
+    	$result_get_task_status=getJobsStatus($get_sub_po,$jobtype,$plantcode);
+        $status=$result_get_task_status['task_status'];
+    }
+    echo "</br><div class='col-sm-3'>"; 
+    if($status=='OPEN')
+    {
+	  echo "Cut Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>";
+	  echo "<input type=\"hidden\" id=\"jobtype\" name=\"jobtype\" value=\"CUTJOB\">"; 
+      echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
+    }
+    else
+    {
+      echo "Cut Jobs Available: <font color=RED size=5>No</font>"; 
+    }		
+	echo "</div>";
 	echo "</div></div></form>";
 
 ?> 
@@ -196,9 +185,9 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
     $style=$_POST['style']; 
     $color=$_POST['color']; 
 	$schedule=$_POST['schedule']; 
-		$code=$_POST['code']; 
-
-		$cat_ref=$_POST['cat_ref']; 
+	$mpo=$_POST['mpo'];
+	$sub_po=$_POST['sub_po']; 
+	$jobtype=$_POST['jobtype']; 
 		
 		$data_sym="$"; 
 		
@@ -207,7 +196,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 
 		$handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file); 
 
-		$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."cat_ref_ref=\"".$cat_ref."\"; ".$data_sym."code_ref=\"".$code."\"; ?>"; 
+		$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."mpo=\"".$mpo."\"; ".$data_sym."sub_po=\"".$sub_po."\";".$data_sym."jobtype=\"".$jobtype."\"; ?>"; 
 
 		fwrite($handle, $stringData); 
 		fclose(handle); 
