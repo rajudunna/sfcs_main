@@ -2337,27 +2337,32 @@ tags will be replaced.-->
 	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
-	  		$reject_reason_query="select * from bai_rm_pj1.reject_reasons ";
-			$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row1=mysqli_fetch_array($reject_reasons))
-			{
-				if ($temp[15] == $row1['tid']) {
-					echo $row1["reject_desc"];
-				}
-			}
-			
+	  		$reject_reason_query="select * FROM $mdm.reasons where department_type = '".$department_reasons['Inspection'] ."'";			
 	  echo "
 	  	<select name=\"rejection_reason[$i]\"  class='listbox' id='rejection_reason[$i]' onchange='change_body(2,this.name,$i)' style='display:none'>
 	  			<option value='NIL' selected >NIL</option>";
-				$reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$reject_reasons2=mysqli_query($link_v2, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    		while($row1=mysqli_fetch_array($reject_reasons2))
 	    		{
-					if ($temp[15] == $row1['tid']) {
-						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
-					} else {
-						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
+					$dd_value = $row1['internal_reason_code'].'~~'. $row1['external_reason_code'];
+
+					$dd_lable = $row1['internal_reason_code'] . '-' . $row1["internal_reason_description"];
+
+					if ($temp[15] == $row1['internal_reason_code']) 
+					{
+						echo "<option value=". $dd_value." selected>". $dd_lable."</option>";
+					} 
+					else 
+					{
+						echo "<option value=". $dd_value.">" . $dd_lable."</option>";
 					}
 				}
+				$sgroup = $temp[13];
+				if($sgroup=='')
+				{
+					$sgroup=0;
+				}
+
 		echo "</select>
 	  </td>
 
@@ -2650,8 +2655,15 @@ if($_POST['put'] || $_POST['confirm'])
 			{
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
+// 			ALTER TABLE `bai_rm_pj1`.`store_in`   
+//   CHANGE `rejection_reason` `rejection_reason` VARCHAR(255) CHARSET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT 'internal_reason_code from mdm.reasons',
+//   ADD COLUMN `external_reason_code` VARCHAR(20) NULL COMMENT 'external_reason_code from mdm.reasons' AFTER `rejection_reason`;
+			$rejection_code_explode = explode("~~", $rejection_reason[$i]);
+			$internal_code = $rejection_code_explode[0];
+			$external_code = $rejection_code_explode[1];
+
 			// echo $rejection_reason[$i];
-			$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+			$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$internal_code."\", external_reason_code= \"".$external_code."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
