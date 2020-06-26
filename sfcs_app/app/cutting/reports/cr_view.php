@@ -447,10 +447,10 @@ if(isset($_POST['submit']))
 		$net_util=$fab_rec-$fab_ret-$damages-$shortages;
 		$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
 		$net_con=round($net_util/$act_total,4);
-		$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
-		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,1);
-		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
-		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);	
+		$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),2);
+		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,2);
+		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),2);
+		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,2);	
 		unset($act_s);
 	}
     
@@ -499,7 +499,7 @@ if(isset($_POST['submit']))
 	$savings_new=0;
 	if($cat_yy > 0)
 	{
-		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,0);
+		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,2);
 	}
 	$act_con_summ=0;
 	$net_con_summ=0;
@@ -512,11 +512,11 @@ if(isset($_POST['submit']))
 	$net_con_summ_sav=0;
 	if($cat_yy > 0)
 	{
-		$act_con_summ_sav=round((($cat_yy-$act_con_summ)/$cat_yy)*100,0);
-		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,0);	
+		$act_con_summ_sav=round((($cat_yy-$act_con_summ)/$cat_yy)*100,2);
+		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,2);	
 	}
 	
-// }
+// } 
 	?>
 	<!--
 	<div class="col-sm-12">

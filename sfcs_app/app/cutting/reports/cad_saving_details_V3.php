@@ -508,7 +508,7 @@ echo "<td>".$style."</td>";
 echo "<td>".$schedule."</td>";
 echo "<td>".$category."</td>";
 echo "<td>".$compo_no."</td>";
-echo "<td>".$color."</td>";
+echo "<td>".$color."</td>"; 
 echo "<td>".$plan_start_date."</td>";
 echo "<td>".$ex_factory_date_new."</td>";
 echo "<td>".$old_order_total."</td>";
