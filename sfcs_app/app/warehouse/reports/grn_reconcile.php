@@ -100,8 +100,8 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 		echo "<td>".$sql_row1['date']."</td>";
 		echo "<td>".$sql_row1['product']."</td>";
 		echo "<td>".$sql_row1['pkg_no']."</td>";
-
-	  if((strtolower(trim($sql_row1['product'])))=="fabric" and ($sql_row1['label_pending']>0 or $sql_row1['shade_pending']>0 or $sql_row1['location_pending']>0) or $sql_row1['ctax_pending']!='NULL' and $sql_row1['balance']>0)
+		
+		if((strtolower(trim($sql_row1['product'])))=="fabric" and ($sql_row1['label_pending']>0 or $sql_row1['shade_pending']>0 or $sql_row1['location_pending']>0) or $sql_row1['ctax_pending']>0  and $sql_row1['balance']>0)
 		{
 			if($sql_row1['label_pending']>0)
 			{
