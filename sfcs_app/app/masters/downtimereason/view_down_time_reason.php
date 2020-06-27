@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $bai_pro2.`downtime_reason`";
+	$sql = "SELECT * FROM $bai_pro2.`downtime_reason` order by id desc";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
