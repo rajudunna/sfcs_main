@@ -5,7 +5,7 @@
 	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db`";
+	$sql = "SELECT * FROM bai_rm_pj1.`inspection_supplier_db` ORDER BY tid DESC";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1;
