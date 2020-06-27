@@ -1344,10 +1344,10 @@ for ($k=0; $k < sizeof($color_array); $k++)
 			echo "<tr><td>".$color_array[$k]."</td><td>".$size_value[$i]."</td><td>".$order_qty."</td><td>".$fg_qty."</td><td>".$ship_qty."</td><td>".$available_qty."</td>";
 			if($available_qty>0)
 			{
-				echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
-				      onkeyup='validateshipqty(this)'>
-				<input type='hidden'  value='$available_qty' id='".$i."_avl'>
-			    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
+				echo "<td><input type='text' class='integer' id='".$i."_".$x."' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
+                      onkeyup='validateshipqty(this)'>
+                <input type='hidden'  value='$available_qty' id='".$i."_".$x."_avl'>
+                <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
 			}
 			else
 			{
