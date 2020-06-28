@@ -60,7 +60,7 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table";
+$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table where status = 'active' ";
 $cut_table_result = mysqli_query($link,$cut_table_query);
 while($row = mysqli_fetch_array($cut_table_result)){
     $cut_tables[$row['tbl_id']] = $row['tbl_name'];
