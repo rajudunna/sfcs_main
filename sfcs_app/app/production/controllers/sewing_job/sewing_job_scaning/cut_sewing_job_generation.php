@@ -123,9 +123,9 @@ function assign_to_gets($ars,$data_samps){
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
-        $style=style_decode($_GET['style']); 
-        $schedule=$_GET['schedule'];  
-        $color=color_decode($_GET['color']);
+        $style=style_decode($_GET['style']);
+        $schedule=$_GET['schedule']; 
+        $color  = color_decode($_GET['color']);
         
         echo '<div class = "panel-body">';
             $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
