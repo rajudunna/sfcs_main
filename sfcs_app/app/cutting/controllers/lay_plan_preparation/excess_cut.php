@@ -52,7 +52,9 @@
 				$rows=mysqli_num_rows($query_result12);			
 			
 			}
-			
+			//Encoding color
+            $main_color = color_encode($color);
+            $main_style = style_encode($style);
 		    $query = "select * from $bai_pro3.excess_cuts_log where schedule_no='".$schedule."' and color='".$color."'";
             // echo $query;
             $query_result = mysqli_query($link,$query) or exit(" Error78".mysqli_error ($GLOBALS["___mysqli_ston"]));
@@ -63,7 +65,7 @@
 					sweetAlert('Already sewing Job Generated','You cannot update.','warning');
 					setTimeout(\"Redirect()\",0); 
 					function Redirect(){	 
-							location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+							location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
 						}
 					</script>";	
 			}
@@ -84,7 +86,7 @@
 					sweetAlert('Excess Cut Updated','','success');
 					setTimeout(\"Redirect()\",0); 
 					function Redirect(){	 
-							location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color&style=$style&schedule=$schedule&excess_cut=$excess_cut\"; 
+							location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule&excess_cut=$excess_cut\"; 
 						}
 					</script>";	
 				}
