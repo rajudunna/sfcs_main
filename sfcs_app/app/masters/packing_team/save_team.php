@@ -10,9 +10,9 @@
     $packing_team=$_POST['packing_team'];
     $team_leader=$_POST['team_leader'];
     $status=$_POST['status'];
-    if($packing_team!='' || $team_leader!=''|| $status!='') {
+        if(strlen(trim($packing_team)) > 0 && strlen(trim($team_leader)) > 0) {
        
-        if($row_id > 0){
+            if($row_id > 0){
             $query1="select * from $brandix_bts.packing_team_master where packing_team='$packing_team'";
             $sql_result1=mysqli_query($conn, $query1);
             $count = mysqli_num_rows($sql_result1);
