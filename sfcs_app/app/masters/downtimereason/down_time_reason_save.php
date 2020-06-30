@@ -21,7 +21,8 @@ $reason=$_REQUEST['reason'];
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-if (empty($code) || empty($department) || empty($reason)) 
+
+if (strlen(trim($code)) ==0 || strlen(trim($department)) == 0 || strlen(trim($reason)) == 0) 
 {
 	$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
 	echo"<script>setTimeout(function () { 

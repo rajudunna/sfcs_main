@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 error_reporting(0);
 ?>
 
@@ -306,7 +307,14 @@ if(isset($_POST['submit']))
 							$supplier=$sql_row['supplier_name'];
 							$check = 1;
 						}
-							
+						
+						// $supplier_url = $api_hostname.":63925/m3api-rest/v2/execute/CRS620MI/GetBasicData?SUNO=".$supplier;
+						// $supplier_data = $obj->getCurlAuthRequest($supplier_url);                               
+						// $supplier_result = json_decode($supplier_data, true); 
+						// if($supplier_result&&$supplier_result['results']&&$supplier_result['results']['records']){
+						// 	$supplier=$supplier_result['results']['records']['SUNM'];
+						// }
+						
 
 						if($check == 0){
 							echo "<td></td>";
