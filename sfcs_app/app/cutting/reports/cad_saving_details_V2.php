@@ -195,6 +195,7 @@ if(isset($_POST["submit"]))
 				<th>Utilization(CAD YY)</th>
 				<th>Fabric Allocated</th>
 				<th>Fabric Issued Docket</th>
+				<th>Fabric Issued Recut</th>
 				<th>Fabric Issued MRN</th>
 				<th>Fabric Issued Total</th>
 				<th>Difference</th>
@@ -360,13 +361,23 @@ if(isset($_POST["submit"]))
 					}
 					$newyy=$newyy+($mk_new_length*$new_plies);
 				}
-
+					
+				//Binding Consumption / YY Calculation
+				$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row11=mysqli_fetch_array($sql_result11))
+				{
+					$cat_yy=$sql_row11['catyy'];
+					$binding_consumption=$sql_row11['binding_consumption'];
+				}	
+					
 				$cad_yy=0;
 
 				if($order_no==1)
 				{
 					if($old_order_total > 0)
 					{
+						$newyy+=($old_order_total*$binding_consumption);
 						$cad_yy=$newyy/$old_order_total;
 					}	
 				}
@@ -374,6 +385,7 @@ if(isset($_POST["submit"]))
 				{
 					if($order_total_qty > 0)
 					{
+						$newyy+=($order_total_qty*$binding_consumption);
 						$cad_yy=$newyy/$order_total_qty;
 					}	
 				}
@@ -388,7 +400,7 @@ if(isset($_POST["submit"]))
 				$savings_new=0;
 				if($order_yy > 0)
 				{
-					$savings_new=round((($order_yy-$cad_yy)/$order_yy)*100,1);
+					$savings_new=round((($order_yy-$cad_yy)/$order_yy)*100,2);
 				}
 
 				//echo "<td>".."</td>";
@@ -398,17 +410,33 @@ if(isset($_POST["submit"]))
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
-					$issued_qty=$row["qty"];
+					$issued_qty1=$row["qty"];
 				}
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$docketnos).")";
+				////echo $sql."<br>";
+				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row=mysqli_fetch_array($result))
+				{
+					$issued_qty2=$row["qty"];
+				}
+				$issued_qty=$issued_qty1+$issued_qty2;
 
 				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
-					$recut_issued_qty=$row["qty"];
+					$recut_issued_qty1=$row["qty"];
 				}
 
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$recut_docketnos).")";
+				////echo $sql."<br>";
+				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row=mysqli_fetch_array($result))
+				{
+					$recut_issued_qty2=$row["qty"];
+				}
+                $recut_issued_qty=$recut_issued_qty1+$recut_issued_qty2;
 				$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=$schedule and color like \"%".$color."%\" and product=\"FAB\"";
 				////echo $sql;
 				$result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -449,10 +477,6 @@ if(isset($_POST["submit"]))
 				{
 					$recut_damages_qty=$row["dam"];
 					$recut_shortages_qty=$row["shrt"];
-						
-	
-					
-
 				}
 
 	   
@@ -515,24 +539,25 @@ if(isset($_POST["submit"]))
 				echo "<td>".round(round($cad_yy,4)*$cut_comp_iss_qty,2)."</td>";
 				echo "<td>".round(($order_yy*$old_order_total),2)."</td>";
 				echo "<td>".round($issued_qty,2)."</td>";
-				echo "<td>".round($recut_issued_qty+$mrn_issued_qty,2)."</td>";
+				echo "<td>".round($recut_issued_qty,2)."</td>";
+				echo "<td>".round($mrn_issued_qty,2)."</td>";
 				//$issued_qty=round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2);
 				echo "<td>".round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)."</td>";
 				$difference=round((round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)-round(round($cad_yy,4)*$cut_comp_iss_qty,2)),2);
 				echo "<td>".round((round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)-round(round($cad_yy,4)*$cut_comp_iss_qty,2)),2)."</td>"; 
 				if(round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2) > 0)
 				{
-					echo "<td>".round(((round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)-round(round($cad_yy,4)*$cut_comp_iss_qty,2))*100/round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)),0)."%</td>"; 
+					echo "<td>".round(((round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)-round(round($cad_yy,4)*$cut_comp_iss_qty,2))*100/round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)),2)."%</td>"; 
 				}else{
 					echo "<td>0%</td>";
 				}
-				echo "<td>".round($damages_qty+$recut_damages_qty,0)."</td>";
-				echo "<td>".round($shortages_qty+$recut_shortages_qty,0)."</td>";
+				echo "<td>".round($damages_qty+$recut_damages_qty,2)."</td>";
+				echo "<td>".round($shortages_qty+$recut_shortages_qty,2)."</td>";
 				echo "<td>".$joints."</td>";
 				echo "<td>".round($endbits,4)."</td>";
 			
-				echo "<td>".(round(($order_yy*$old_order_total),0)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0))."</td>";
-				echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),0)."</td>";
+				echo "<td>".(round(($order_yy*$old_order_total),2)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2))."</td>";
+				echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),2)."</td>";
 				echo "<td>".$ship_status."</td>";
 				echo "</tr>";
 				$mrn_issued_qty=0;

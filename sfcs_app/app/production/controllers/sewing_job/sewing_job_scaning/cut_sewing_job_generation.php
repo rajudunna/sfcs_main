@@ -2,30 +2,6 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 
-if($_POST['modal_submit'])
-{    
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/bundle_filling.php');
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/mo_filling.php');
-    $jobcount = $_POST['jobcount'];
-    $bundle_qty = $_POST['bundleqty'];
-    $docs = $_POST['docs'];
-    $cuts = $_POST['cuts'];
-    $schedule = $_POST['schedule1'];
-    $style = $_POST['style1'];
-    $color = $_POST['color1'];
-
-    $ins_qry2 = "INSERT INTO $bai_pro3.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
-    $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $inserted_id = mysqli_insert_id($link);
-    $plan_logical_bundles = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-    if($plan_logical_bundles)
-	{
-		insertMOQuantitiesSewing($schedule,$inserted_id);		
-		return true;
-    } else {
-		return false;
-	}   
-}
 
 if(isset($_POST) && isset($_POST['del_recs'])){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
@@ -102,7 +78,7 @@ if(isset($_POST) && isset($_POST['del_recs'])){
     echo 'success';
 }
 function calculate_ratio($doc,$link){
-    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no=$doc
+    $sum_ratio_query = "SELECT SUM(cut_quantity) as ratio from bai_pro3.cps_log where doc_no in (".implode(',',$doc).")
     and operation_code = 15";
     $sum_ratio_result = mysqli_query($link,$sum_ratio_query);
     $row = mysqli_fetch_array($sum_ratio_result);
@@ -295,11 +271,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
             if($old_ratio==$row['ratio']){
                 echo "<tr style='display:none'>
                 <td>".$row['ratio']."</td>
-                <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."' data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                 <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -353,7 +329,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 //Till here 
                 $display_qty = 0;
                 $bundle_qty = 0;
-                $display_qty = calculate_ratio($old_doc_nos[0],$link);
+                $display_qty = calculate_ratio($old_doc_nos,$link);
                 $bundle_qty = $old_pplice[0];
                 echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
                 echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -367,11 +343,11 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                 $old_cut_status = '';
                 echo "<tr style='display:none'>
                     <td>".$row['ratio']."</td>
-                    <td id='datarc".$row['ratio']."a".$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
+                    <td id='datarc".$row['ratio'].$end."' data-ratio = '".$row['ratio']."' data-cut='".$row['pcutno']."'data-destination='".$row['destination']."' data-dono='".$row['doc_no']."'>".$row['pcutno']."</td>
                     <td>".$row['p_plies']."</td>";
                 for($k=1;$k<=$max;$k++){
                     $sno = str_pad($k,2,"0",STR_PAD_LEFT);
-                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio']."a".$k."a".$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
+                    echo "<td data-sample=0 data-excess=0 id='dataval".$row['ratio'].$k.$end."' data-title='s".$sno."' data-value='".($row['p_s'.$sno]*$row['p_plies'])."'>".($row['p_s'.$sno]*$row['p_plies'])."</td>";
                     $raw['s'.$sno] = $row['p_s'.$sno]*$row['p_plies'];
                     $old_qty[$sno]+=($row['p_s'.$sno]*$row['p_plies']);
                 }
@@ -398,7 +374,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
         }
         $display_qty = 0;
         $bundle_qty = 0;
-        $display_qty = calculate_ratio($old_doc_nos[0],$link);
+        $display_qty = calculate_ratio($old_doc_nos,$link);
         $bundle_qty = $old_pplice[0];
         echo "<input id='".$old_ratio."_display_qty' type='hidden' value='$display_qty'>";
         echo "<input id='".$old_ratio."_bundle_qty' type='hidden' value='$bundle_qty'>";
@@ -537,7 +513,7 @@ if($schedule != "" && $color != "" &&  short_shipment_status($style,$schedule,$l
                         </div>
                         <div class='col-sm-2'>
                             <br/><br/>
-                            <input type="button" id='markers' class="btn btn-success" value="Confirm.." name="modal_submit">
+                            <input type="button" id='markers' onclick="return check_all();" class="btn btn-success" value="Confirm.." name="modal_submit">
                         </div>
                         </form>
                     </div>
@@ -606,41 +582,6 @@ function assigndata(s,max,end,old_doc_nos,cut_nos,schedule){
     $('#schedule1').val(schedule);
     $('#style1').val($('#style').val());
     $('#color1').val($('#color').val());
-    // console.log($('#style').val());
-    // for(var jpg=1;Number(jpg)<Number(end);jpg++){
-    //     var dummy = [];
-    //     var pl_cut_id = document.getElementById('datarc'+s+jpg);
-    //     dummy['cut'] = pl_cut_id.getAttribute('data-cut');
-    //     dummy['ratio'] = pl_cut_id.getAttribute('data-ratio');
-    //     dummy['destination'] = pl_cut_id.getAttribute('data-destination');
-    //     dummy['dono'] = pl_cut_id.getAttribute('data-dono');
-    //     dummy['size_details'] = [];
-    //     for(var i=1;Number(i)<=Number(max);i++){
-    //         var sp_title = document.getElementById('datatitle'+i);
-    //         var sp_values = document.getElementById('dataval'+s+i+jpg);
-    //         a = sp_title.getAttribute('data-title');
-    //         b = sp_values.getAttribute('data-title');
-
-    //         c = sp_title.getAttribute('data-value');
-    //         d = sp_values.getAttribute('data-value');
-
-    //         e=sp_values.getAttribute('data-sample');
-    //         f=sp_values.getAttribute('data-excess');
-    //         var val = {title : c, key : a, value : d, sample : e, excess : f};
-    //         dummy['size_details'].push(val);
-    //     }
-    //     details.push(dummy);
-    // }
-    // var controllerElement = document.querySelector('[ng-controller="cutjobcontroller"]');
-    // var scope = angular.element(controllerElement).scope();
-    // scope.$apply(function () {
-    //     scope.details_all = details;
-    //     scope.jobcount = 0;
-    //     scope.bundleqty = 0;
-    //     scope.details = [];
-    //     scope.jobs   = [];
-    //     scope.fulljob = [];
-    // });
 }
 
 function show_view_form(docs_id){
@@ -740,33 +681,73 @@ function delet(docs_id){
             }
         });
 		
+        
+        var url2 = "<?php echo getFullURL($_GET['r'],'cut_sewing_job_gen_function.php','R'); ?>";
+        
 		 $("#markers").click(function(e) {
 			 $("#generate_message").css("display","block");
 			 $("#markers").prop("disabled", true);
 			 e.preventDefault();
 			  $.ajax({
 				type: 'post',
-				url: url1,
+				url: url2,
 				data: $('#modal_form').serialize()+'&'+$.param({ 'modal_submit': 'modal_submit' }),
 				success: function (res) {
 					$("#generate_message").css("display","none");
+                    // console.log(res);
+					document.getElementById("loading-image").style.display = "none";
 					if(res) {
-						sweetAlert('Cut Sewing jobs generated successfully','','');
-						var optionSelected = $("option:selected", this);
-						var color = $("#color").val();
-						var style = $("#style").val();
-						var schedule = $("#schedule").val();
-						window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+						
+						if(res['status'] == true){
+                            sweetAlert('Cut Sewing jobs generated successfully','','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+                        } else {
+							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+                            var optionSelected = $("option:selected", this);
+                            var color = $("#color").val();
+                            var style = $("#style").val();
+                            var schedule = $("#schedule").val();
+                            setTimeout(function(){window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color} , 2000);
+                        }
 					} else {
+						
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
 					}
-					
 				}
 			  });
 		 });
     });
 </script>
+<style>
+	#loading-image{
+	  position:fixed;
+	  top:0px;
+	  right:0px;
+	  width:100%;
+	  height:100%;
+	  background-color:#666;
+	  /* background-image:url('ajax-loader.gif'); */
+	  background-repeat:no-repeat;
+	  background-position:center;
+	  z-index:10000000;
+	  opacity: 0.4;
+	  filter: alpha(opacity=40); /* For IE8 and earlier */
+	}
+	</style>
+	<script>
+	function check_all()
+	{
+		document.getElementById("loading-image").style.display = "block";
+	}
+	</script>	
+		<div class="ajax-loader" id="loading-image" style="display: none">
+		<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',3,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
 <style>
 #print_labels{
     display:none;
