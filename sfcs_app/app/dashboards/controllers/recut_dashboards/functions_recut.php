@@ -330,10 +330,15 @@ function ReplaceProcess($replace_id_edit)
                 // $input_job_no_excess1[] = $replace_row['input_job_no_random_ref'];
                 $doc_nos = $replace_row['doc_nos'];
                 $exces_qty_org =$replace_row['excess_qty'];
+                
                 $total_replaced_qty = 0;
                 $exces_qty=0;
+                // echo $new_logic.'new_logic'; 
+
                 if($input_job_no_excess){
-                    $bcd_checking_qry1 = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_job_no_excess) and color = '$color' and operation_id = $input_ops_code";
+                    $input_excess = explode(",",$input_job_no_excess);
+                    $input_excess_job1 = "'" . implode ( "', '", $input_excess ) . "'";
+                    $bcd_checking_qry1 = "select sum(recevied_qty)+sum(rejected_qty)as rec_qty,sum(send_qty)as send_qty from $brandix_bts.bundle_creation_data where input_job_no_random_ref in ($input_excess_job1) and color = '$color' and operation_id = $input_ops_code";
                     $result_bcd_checking_qry1 = $link->query($bcd_checking_qry1);
                     if($result_bcd_checking_qry1->num_rows > 0)
                     {
@@ -381,6 +386,7 @@ function ReplaceProcess($replace_id_edit)
                     $exces_qty = min($exces_qty_org-$total_replaced_qty,$cps_row_excess);
                 }
             }
+            // echo $can_replace.'$can_replace<br/>';
             //checking that inputjob already scanned or not
             if($exces_qty > 0)
             {
