@@ -15,6 +15,7 @@
 
 	$input_job=$_GET['input_job'];
 	$schedule=$_GET['schedule'];
+	$doc_type=$_GET['doc_type'];
 	?>
 
 	<?php
@@ -44,7 +45,7 @@
 				</head>
 				<body>';
 
-		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' order by doc_no*1,barcode_sequence*1";
+		$barcode_qry="select * from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job."' and doc_type='$doc_type'  order by doc_no*1,barcode_sequence*1";
 
 		$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
