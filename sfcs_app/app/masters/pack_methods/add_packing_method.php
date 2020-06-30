@@ -61,9 +61,12 @@
 				if($status==1){
 					echo '<option value="1" selected>Active</option>';
 					echo '<option value="2">In-Active</option>';
-				}else{
+				}else if($status==2){
 					echo '<option value="1">Active</option>';
 					echo '<option value="2" selected>In-Active</option>';
+				}else {
+					echo '<option value="1" selected>Active</option>';
+					echo '<option value="2">In-Active</option>';
 				}
 				
 				?>

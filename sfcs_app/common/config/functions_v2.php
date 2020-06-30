@@ -142,6 +142,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
             {
                 $ratio_id = $sql_row1['ratio_id'];
                 $component_group_id = $sql_row1['component_group_id'];
+                $fabric_saving = $sql_row1['fabric_saving'];
             }
             /**Getting fabric categoery and item code by using component group from lp_ratio_component_group */
             $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
@@ -160,7 +161,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
                     'fabric_category' => $fabric_category,
                     'material_item_code' => $material_item_code,
                     'master_po_details_id' => $master_po_details_id,
-                    'master_po_details_id' => $master_po_details_id
+                    'fabric_saving' => $fabric_saving
                 );
             }
         }
@@ -496,5 +497,27 @@ function getFnSavings($doc_no,$plant_code){
 
 
 }
+
+//This is function to get savings from fn_savings_per_cal
+
+function fn_savings_per_cal($doc_no,$plant_code){
+        //using this function  we can get ratio component group id
+        if($doc_no!='' && $$plant_code!=''){
+            $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
+            $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
+        }
+        
+        if($ratio_comp_group_id!='' && $plant_code!=''){
+            $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+            $savings=$result_getdata_ratio_component_group['fabric_saving'];
+        }
+
+        return array(
+            'savings' => $savings
+        );
+
+
+}
+
 
 ?>

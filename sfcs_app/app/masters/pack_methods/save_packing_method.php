@@ -23,7 +23,7 @@ $pack_id=$_REQUEST['pack_id'];
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-if (empty($pack_method_name) || empty($status)) {
+if (strlen(trim($pack_method_name)) == 0) {
 	$url=getFullURL($_GET['r'],'add_packing_method.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
