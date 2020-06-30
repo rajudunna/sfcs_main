@@ -2,6 +2,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
 ?>
@@ -36,28 +37,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	}
 
 ?>
-<?php  
 
-// $auth_members=array();
-// $sql="select auth_members from $bai_pro3.menu_index where list_id=165";
-// //echo $sql;
-// $sql_result=mysqli_query($link, $sql) or exit("Sql Error-a".mysqli_error($GLOBALS["___mysqli_ston"]));
-// while($sql_row=mysqli_fetch_array($sql_result))
-// {
-// 	$auth_members=explode(",",$sql_row['auth_members']);
-// }
-
-// if(in_array($authorized,$has_permission))
-// {
-		
-// }
-// else
-// {
-// 	$url=getFullURLLevel($_GET['r'],'controllers/restrict.php',1,'N');
-// 	header("Location: $url");
-// }
-
-?>
 <?php include("functions.php"); ?>
 
 
@@ -324,61 +304,32 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$cutno=$sql_row['jobno'];
 				$doc_no = preg_replace('/[^0-9]+/', '', $cutno);
 				$doc_str = preg_replace('/[^a-zA-Z]+/', '', $cutno);
-				if($doc_str == 'D' || $doc_str == 'd')
-				{
-					$sql = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.plandoc_stat_log where doc_no = '$doc_no');";
-					// echo $sql." six<br>";
-					$result = mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($result)>0)
-					{
-						while($row = mysqli_fetch_array($result))
+
+				$schedule_no = 0;
+				$style_no = 0;
+				if($doc_num!=" " && $plant_code!=' '){
+					//this is function to get style,color,and cutjob
+					$result_jmdockets=getJmDockets($doc_num,$plant_code);
+					$jm_cut_job_id =$result_jmdockets['jm_cut_job_id'];
+					//to get component po_num and ratio id from
+					$qry_jm_cut_job="SELECT ratio_id,po_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+					$jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
+					if($jm_cut_job_num>0){
+						while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
 						{
-							$schedule_no = $row['order_del_no'];
-							$style_no = $row['order_style_no'];
+							$ratio_id = $sql_row1['ratio_id'];
+							$po_number=$sql_row1['po_number'];
 						}
 					}
-					else
-					{
-						$schedule_no = 0;
-						$style_no = 0;
+					//this is function to get schedule
+					if($po_number!=" " & $plant_code!=' '){
+						$result_mp_mo_qty=getMpMoQty($po_number,$plant_code);
+						$schedule =$result_mp_mo_qty['schedule'];
 					}
-					
 				}
-				else
-				{
-					$sql11 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2 where doc_no = '$doc_no')";
-					// echo $sql11.' seven <br>';
-					$result11 = mysqli_query($link, $sql11) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($result11)>0)
-					{
-						while($row = mysqli_fetch_array($result11))
-						{
-							$schedule_no = $row['order_del_no'];
-							$style_no = $row['order_style_no'];
-						}
-					}
-					else
-					{
-						$sql22 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2_archive where doc_no = '$doc_no')";
-						// echo $sql22.' eight<br/>';
-						$result22 = mysqli_query($link, $sql22) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($result22)>0)
-						{
-							while($row = mysqli_fetch_array($result22))
-							{
-								$schedule_no = $row['order_del_no'];
-								$style_no = $row['order_style_no'];
-							}
-						}
-						else
-						{
-							$schedule_no = 0;
-							$style_no = 0;
-						}
-						
-					}
-					
-				}
+				
+
 				$remarks=$sql_row['remarks'];
 				$user=$sql_row['user'];
 				$box_number=$sql_row['ref2'];
@@ -397,13 +348,21 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			// echo $mr_tid."<br>";
 			if($mr_tid!='')
 			{
-				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $bai_rm_pj2.mrn_out_allocation left join $bai_rm_pj1.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.lable_id in (select tid from $bai_rm_pj1.store_in where tid in ($mr_tid))";
-				// echo $sql2."  nine<br>";
+				//$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $bai_rm_pj2.mrn_out_allocation left join $bai_rm_pj1.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.lable_id in (select tid from $bai_rm_pj1.store_in where tid in ($mr_tid))";
+				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,mrn_out_allocation.lable_id FROM $bai_rm_pj2.mrn_out_allocation WHERE mrn_out_allocation.lable_id in (select tid from $bai_rm_pj1.store_in where tid in ($mr_tid))";
 				$sql_result=mysqli_query($link, $sql2) or exit("No Data In MRN Transaction Log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			echo "<tbody>";
 			while($sql_row=mysqli_fetch_array($sql_result))
-			{
+			{	
+				$lable_id=$sql_row['lable_id'];
+				//getting ref2 from store_in tables based mrn out allocation labe_id
+				$qry_store_in="select ref2 FROM store_in where tid=$lable_id";
+				$result_store_in=mysqli_query($link, $qry_store_in) or exit("No Data In MRN Transaction Log".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($store_in_row=mysqli_fetch_array($result_store_in))
+				{
+					$mrn_ref2=$store_in_row['ref2'];
+				}
 				$mrn_date=$sql_row['dat'];	
 				$mrn_time=$sql_row['tim'];	
 				$mrn_tid=$sql_row['tid'];	
@@ -412,7 +371,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$mrn_qty=$sql_row['qty'];	
 				$mrn_user=$sql_row['username'];	
 				$mrn_host=$sql_row['hostname'];	
-				$mrn_ref2 = $sql_row['ref2'];
+				//$mrn_ref2 = $sql_row['ref2'];
 				
 				$sql3="select style,schedule,remarks from $bai_rm_pj2.mrn_track where tid=".$mrn_tid."";
 				// echo $sql3.' ten <br/>';
