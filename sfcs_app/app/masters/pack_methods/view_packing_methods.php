@@ -12,7 +12,7 @@
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	} 
-	$sql = "SELECT * FROM $bai_pro3.`pack_methods`";
+	$sql = "SELECT * FROM $bai_pro3.`pack_methods` ORDER BY pack_id DESC";
 	$result = $conn->query($sql);
 	$url=getFullURL($_GET['r'],'add_packing_method.php','N');
 	$url1=getFullURL($_GET['r'],'delete_packing_methods.php','N');
