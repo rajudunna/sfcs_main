@@ -11,7 +11,8 @@
     $smv=$_POST['smv'];
     $status=$_POST['status'];
     $packing_description=$_POST['packing_description'];
-    if($packing_method_code!='' || $smv!=''|| $status!=''|| $packing_description!='') {
+    
+    if(strlen(trim($packing_method_code)) > 0 && strlen(trim($smv)) > 0 && strlen(trim($packing_description)) > 0) {
        
         if($row_id > 0){
             $query1="select * from $brandix_bts.packing_method_master where packing_method_code='$packing_method_code'";
@@ -91,7 +92,18 @@
 
         
     } else {
-
+             echo"<script>setTimeout(function () { 
+                    swal({
+                    title: 'Please Fill The Values!',
+                    text: 'Message!',
+                    type: 'warning',
+                    confirmButtonText: 'OK'
+                    },
+                    function(isConfirm){
+                    if (isConfirm) {
+                        window.location.href = \"$url\";
+                    }
+                    }); }, 100);</script>";
     }
     
 ?>

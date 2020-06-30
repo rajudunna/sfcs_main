@@ -11,14 +11,24 @@ $tran_pin=$_GET["s"];
 	echo "<div class='panel-heading'>Fabric Issuing Qty Edition Option</div>";
 	echo "<div class='panel-body'>";
 
-	$sql1="select tran_pin,doc_no,inv_no,roll_id,doc_type,batch_no,lot_no,ref2 as rollno,ref4 as shade,roll_width,allocated_qty as qty from $bai_rm_pj1.docket_ref where tran_pin=\"$tran_pin\" order by ref4 ";	
-	// echo $_GET['r'];
-	// $url=getFullURL($_GET['r'],'fab_issue_track_V2.php','R');
-	
+	$sql1="SELECT
+		store_in.lot_no          AS lot_no,
+		sticker_report.batch_no  AS batch_no,
+		sticker_report.inv_no    AS inv_no,
+		store_in.ref2            AS ref2,
+		store_in.ref4            AS ref4,
+		fabric_cad_allocation.tran_pin      AS tran_pin,
+		fabric_cad_allocation.doc_no        AS doc_no,
+		fabric_cad_allocation.roll_id       AS roll_id,
+		fabric_cad_allocation.roll_width    AS roll_width,
+		fabric_cad_allocation.doc_type      AS doc_type,
+		fabric_cad_allocation.allocated_qty AS allocated_qty as qty
+		FROM store_in LEFT JOIN sticker_report ON store_in.lot_no = sticker_report.lot_no
+		LEFT JOIN fabric_cad_allocation ON fabric_cad_allocation.roll_id = store_in.tid where tran_pin=\"$tran_pin\"  order by ref4";	
+
 	echo '<form method="POST" name="form2" action="index.php?r='.$_GET['r'].'">';
 
 	echo "<table class='table table-bordered table-striped'>";
-	//echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll ID</th><th>Lable ID</th><th>Roll Width</th><th>Qty Issued</th><th>Time</th></tr>";
 	echo "<tr><th>Inv No</th><th>Batch No</th><th>Shade</th><th>Roll ID</th><th>Lable ID</th><th>Issued Qty</th><th>Time</th></tr>";
 
 	$result1=mysqli_query($link, $sql1) or exit("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
