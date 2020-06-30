@@ -2,6 +2,7 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
 
@@ -21,22 +22,22 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value));
 }
 
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
 }
 
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
 }
 
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&category="+document.test.category.value;
 }
 
 
@@ -93,9 +94,9 @@ $(document).ready(function() {
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/menu_content.php',1,'R')); ?>
 
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $category=$_GET['category'];
 
 if(isset($_POST['style']))

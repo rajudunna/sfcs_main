@@ -1,8 +1,9 @@
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
+include('../../../../common/config/functions_dashboard.php');
 $divide = 15;
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
 if($_GET['print_status']<>'')

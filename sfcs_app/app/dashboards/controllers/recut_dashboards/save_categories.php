@@ -1,8 +1,9 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 <?php
 $cat_id = $_GET['cat_id'];
 $check_id=$_GET['check_id'];
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $total_allocated=$_GET['total_allocated'];
 $serial_no=$_GET['serial_no'];
 // var_dump($_GET);
@@ -125,21 +126,23 @@ if(mysqli_num_rows($sql_result)>0)
         }
     }
 }
-
+//To get Encoded Color & style
+$main_style = style_encode($style);
+$main_color = color_encode($color);
 if($ii >0 && $temp1==1){
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
     			sweetAlert('Copied Successfully','','success');	 
-   			 location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
+   			 location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
 }else{
     if($total_allocated==0){
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('can\'t copy','','warning');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
     }
     else {
         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
             sweetAlert('Already Allocated ','','error');	 
-             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
+             location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";
     }
 }
                   

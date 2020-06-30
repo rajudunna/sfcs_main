@@ -2,6 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',3,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
 <body>
@@ -9,8 +10,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			<div class="panel-body">
 <?php
     //$order_tid=$_GET['order_tid'];
-    $color=$_GET['color'];
-    $style=$_GET['style'];
+    $color=color_decode($_GET['color']);
+    $style=style_decode($_GET['style']);
     $schedule=$_GET['schedule'];
     $club_status=$_GET['club_status'];
 
@@ -234,11 +235,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	// 			location.href = \"".getFullURLLevel($_GET['r'], 'production/controllers/sewing_job/sewing_job_mo_fill.php',2,'N')."&order_tid_arr=$impdata&club=clubbing&process_name=cutting&filename=$filename\";
 	// 			}
 	// 		</script>";
-	
+	$main_style = style_encode($style);
+    $main_color = color_encode($color);
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 			function Redirect() {
 				sweetAlert('Splitting Completed','','success');
-				location.href = \"".$url_back."&color=$color&style=$style&schedule=$schedule\";
+				location.href = \"".$url_back."&color=$main_color&style=$main_style&schedule=$schedule\";
 			}
 		</script>";	
 ?>

@@ -1,4 +1,5 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));        ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));        
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
 
@@ -14,17 +15,17 @@
 var url = "<?= getFullURL($_GET['r'],'cut_to_ship2.php','N'); ?>";
 function firstbox()
 {
-	window.location.href = url+"&style="+document.input.style.value;
+	window.location.href = url+"&style="+encodeURIComponent(window.btoa(document.input.style.value));
 }
 
 function secondbox()
 {
-	window.location.href =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value
+	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
+	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value+"&color="+encodeURIComponent(window.btoa(document.input.color.value))
 }
 </script>
 
@@ -58,9 +59,9 @@ if(isset($_POST['filter2']))
 }
 else
 {
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule']; 
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 }
 ?>
 <?php

@@ -7,6 +7,7 @@ Service Request #861761 / kirang/ 2015-03-17  :  Add New buyer CK for Cut Plan g
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/menu_content.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <script>
 
@@ -14,18 +15,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
@@ -57,9 +58,9 @@ $(document).ready(function() {
 
 <?php
 	//include("menu_content.php");
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule']; 
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 ?>
 
 <div class = "panel panel-primary">

@@ -1,17 +1,21 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));?>
 <?php
 
 $html = '';
 $tabledata = '';
 $sizes_reference="";
 $cuttable_sum=0;
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule'];
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $serial_no=$_GET['serial_no'];
+//To get Encoded Color & style
+$main_style = style_encode($style);
+$main_color = color_encode($color);
 
-echo "<a class=\"btn btn-warning btn-xs\" href=\"".getFullURLLevel($_GET['r'], "recut_layplan_request.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";
+echo "<a class=\"btn btn-warning btn-xs\" href=\"".getFullURLLevel($_GET['r'], "recut_layplan_request.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";
 // echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "recut_layplan_request.php", "0", "N")."\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";
 
 $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$schedule' AND order_col_des = '$color'";
@@ -129,6 +133,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
         }
     }
 }
+//Encoding order_tid
+$main_tran_order_tid=order_tid_encode($tran_order_tid);
 $allocate_table = " <div class=\"row col-md-12\">
                             <div class=\"panel panel-info\">
                             <div class=\"panel-heading\" style=\"text-align:center;\">
@@ -191,7 +197,7 @@ foreach($cats_ids as $key=>$value)
         {
             $allocate_table .= "<td class=\"b1\" style='background-color:#4cff4c'><center>".$total_cuttable_qty."</center></td>";
         }
-        $allocate_table .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&serial_no=$serial_no\">Add Ratios</a></center></td>";
+        $allocate_table .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&serial_no=$serial_no\">Add Ratios</a></center></td>";
 
         $pliespercut=0;
         $sql15="select * from bai_pro3.allocate_stat_log where cat_ref=$cat_id and recut_lay_plan='yes' and serial_no=$serial_no";
@@ -215,7 +221,7 @@ foreach($cats_ids as $key=>$value)
                 $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs' disabled>Copy to Other</a></center></td>";
             }
             else {
-                $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated&serial_no=$serial_no\">Copy to Other</a></center></td>";
+                $allocate_table .= "<td class=\"  \"><center><a class='btn btn-info btn-xs'  href=\"".getFullURL($_GET['r'], "save_categories.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&total_allocated=$total_allocated&serial_no=$serial_no\">Copy to Other</a></center></td>";
             }
         }
         else {
@@ -256,6 +262,8 @@ else
 	<th class=\"column-title\"><center>Ratio Total</center></th><th class=\"column-title\"><center>Controls</center></th><th class=\"column-title\"><center>Current Status</center></th><th class=\"column-title\"><center>Remarks</center></th></tr></thead><tbody>";
 }
 $used_fabric =0;
+//Encoding order_tid
+$main_tran_order_tid=order_tid_encode($tran_order_tid);
 foreach($cats_ids as $key=>$value)
 {
 			
@@ -307,7 +315,7 @@ foreach($cats_ids as $key=>$value)
 			$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result21)==0)
 			{
-				$ratios_table .= "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."&serial_no=$serial_no\">Edit</a>";
+				$ratios_table .= "<a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2_edit.php", "N")."&check_id=".$check_id."&tran_order_tid=".$main_tran_order_tid."&cat_id=".$cat_id."&ref_id=".$sql_row['tid']."&serial_no=$serial_no\">Edit</a>";
 			}
 			else
 			{
@@ -477,7 +485,7 @@ foreach($cats_ids as $key=>$value)
 
                 if($mk_ref1==0)
                 {
-                    $marker_table .=  "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&serial_no=$serial_no\">Create</a>";
+                    $marker_table .=  "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&serial_no=$serial_no\">Create</a>";
                 }
                 else
                 {
@@ -489,7 +497,7 @@ foreach($cats_ids as $key=>$value)
                 if(mysqli_num_rows($sql_result21)==0)
                 {
                     $dummy++;
-                    $marker_table .=  "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&serial_no=$serial_no\">Delete</a>";
+                    $marker_table .=  "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1&serial_no=$serial_no\">Delete</a>";
                 }
                 else
                 {
@@ -671,7 +679,7 @@ if(sizeof($doc_generated_ids) > 0){
         {
             if($sql_row2['count']==0 && $mo_status=="Y" && $cutcount>0 && $totalplies>0)
             {
-                $docket_creation .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "recut_doc_gen_form.php", "N")."&tran_order_tid=$tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref&color=$color&schedule=$schedule&serial_no=$serial_no\">Generate</a></center></td>";
+                $docket_creation .= "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "recut_doc_gen_form.php", "N")."&tran_order_tid=$main_tran_order_tid&mkref=$mkref&allocate_ref=$allocate_ref&cat_ref=$cat_ref&color=$main_color&schedule=$schedule&serial_no=$serial_no\">Generate</a></center></td>";
             }
             else
             {

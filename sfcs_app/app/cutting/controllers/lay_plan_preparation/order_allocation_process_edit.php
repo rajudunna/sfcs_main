@@ -1,4 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php
 
@@ -88,12 +89,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$color=$sql_row['order_col_des'];
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
-	
-
 }
+//Encoding color
+$main_color = color_encode($color);
+$main_style = style_encode($style);
+
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  
 		sweetAlert('Successfully Updated','','success');	
-		location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+		location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 }
 
 
