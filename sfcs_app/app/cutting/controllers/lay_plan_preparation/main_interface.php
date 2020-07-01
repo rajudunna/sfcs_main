@@ -901,7 +901,7 @@ if ($sql_result)
 							$get_color = $rows['order_col_des'];
 						}
 						$main_style = style_encode($get_style);
-						$main_color = color_encode($color);
+						$main_color = color_encode($get_color);
 						echo "<td>
 								<center>
 									<a class='btn btn-success btn-xs' href='".getFullURL($_GET['r'], "main_interface.php", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule'>Go To</a>

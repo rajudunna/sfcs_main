@@ -4,6 +4,7 @@
 //To update Form.
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
        if (isset($_POST['Submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link)) {
            //For Bulk Upload
         
@@ -19,7 +20,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
         //    echo "<br>".var_dump($sizes_reference);
            $tran_order_tid=$_POST['tran_order_tid'];
             // var_dump($cuttable_sum);
-           
+           $main_style = style_encode($style);
+          $main_color = color_encode($color);
           
            $sql="SELECT order_tid FROM bai_pro3.bai_orders_db WHERE order_style_no='".$style."' AND order_del_no='".$schedule."' AND order_col_des='".$color."'";
            $sql_result=mysqli_query($link, $sql) or exit("Sql Error");
@@ -188,7 +190,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
                 swal('Data successfully inserted', 'Thank You', 'success');
                 setTimeout(\"Redirect()\",3000); 
                 function Redirect(){	 
-                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$color&style=$style&schedule=$schedule\"; 
+                        location.href = \"".getFullURL($_GET['r'], "main_interface.php","N")."&color=$main_color&style=$main_style&schedule=$schedule\"; 
                     }
             </script>";	
 
