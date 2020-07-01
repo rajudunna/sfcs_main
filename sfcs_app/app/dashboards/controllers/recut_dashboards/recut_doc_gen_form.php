@@ -29,7 +29,7 @@
     {
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         //retreaving next operation of 15 for that style and color
-        $selcting_qry = "SELECT bcd.style,mapped_color,operation_id,bundle_number,operation_order,`ops_sequence` FROM 
+        $selcting_qry = "SELECT bcd.style,mapped_color,operation_id,bundle_number,operation_order,`ops_sequence`,category FROM 
         $brandix_bts.bundle_creation_data bcd LEFT JOIN $brandix_bts.tbl_orders_ops_ref ops ON ops.operation_code=bcd.operation_id 
         LEFT JOIN $brandix_bts.tbl_style_ops_master ts ON ts.operation_code=bcd.operation_id AND ts.`style` = bcd.`style` AND ts.`color` = bcd.`mapped_color`
         WHERE bcd.id = $bcd_id";
@@ -58,55 +58,56 @@
                 LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
                 WHERE style = '$style' AND color = '$color'
                 AND category IN (".implode(',',$category).")";
-            }
-            else
-            {
-                $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name,operation_order,ops_sequence FROM `$brandix_bts`.`tbl_style_ops_master` tm 
-                LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
-                WHERE style = '$style' AND color = '$color'
-                AND category NOT IN (".implode(',',$category).") AND tm.operation_code NOT IN (10,200,15) AND CAST(operation_order AS CHAR) <= '$ops_order' 
-                AND ops_sequence = '$ops_seq'
-                ORDER BY operation_order";
-            }
-            //echo $operation_mapping_qry.'</br>';
-            $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($ops_row=mysqli_fetch_array($result_operation_mapping_qry)) 
-            {
-                $op_codes[] = $ops_row['operation_code'];
-            }
-            //var_dump($op_codes).'</br>';
-            $multiple_mos_tot_qty = $qty;
-            $moq_qry = "SELECT id,mo_no,ref_no,op_code,bundle_quantity,SUM(bundle_quantity)AS bundle_quantity,SUM(good_quantity)AS good_quantity,
-            SUM(rejected_quantity)AS rejected_quantity,(SUM(rejected_quantity)-(SUM(bundle_quantity)-bundle_quantity))AS rem FROM 
-            $bai_pro3.`mo_operation_quantites` 
-            WHERE ref_no=$bundle_number AND op_code=$operation_id GROUP BY mo_no,ref_no,op_code 
-            ORDER BY id";
-            //echo $moq_qry.'</br>';
-            $moq_qry_res = $link->query($moq_qry);
-            while($row_moq = $moq_qry_res->fetch_assoc()) 
-            {
-                $max_mo_no = $row_moq['mo_no'];
-                $bundle_quantity_mo = $row_moq['rem'] - $array_mos[$max_mo_no];
-                if($bundle_quantity_mo < $multiple_mos_tot_qty)
+                // else
+                // {
+                //     $operation_mapping_qry = "SELECT tm.operation_code,tr.operation_name,operation_order,ops_sequence FROM `$brandix_bts`.`tbl_style_ops_master` tm 
+                //     LEFT JOIN `$brandix_bts`.`tbl_orders_ops_ref` tr ON tr.operation_code = tm.`operation_code`
+                //     WHERE style = '$style' AND color = '$color'
+                //     AND category NOT IN (".implode(',',$category).") AND tm.operation_code NOT IN (10,200,15) AND CAST(operation_order AS CHAR) <= '$ops_order' 
+                //     AND ops_sequence = '$ops_seq'
+                //     ORDER BY operation_order";
+                // }
+                // echo $operation_mapping_qry.'</br>';
+                $result_operation_mapping_qry=mysqli_query($link, $operation_mapping_qry) or die("Mo Details not available.".mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($ops_row=mysqli_fetch_array($result_operation_mapping_qry)) 
                 {
-          
-                    $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
-                    $to_add_mo = $bundle_quantity_mo;
-                    $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                    $op_codes[] = $ops_row['operation_code'];
+                    $operation_name[$ops_row['operation_code']] = $ops_row['operation_name'];
                 }
-                else
+                //var_dump($op_codes).'</br>'; 
+                $multiple_mos_tot_qty = $qty;
+                $moq_qry = "SELECT id,mo_no,ref_no,op_code,bundle_quantity,SUM(bundle_quantity)AS bundle_quantity,SUM(good_quantity)AS good_quantity,
+                SUM(rejected_quantity)AS rejected_quantity,(SUM(rejected_quantity)-(SUM(bundle_quantity)-bundle_quantity))AS rem FROM 
+                $bai_pro3.`mo_operation_quantites` 
+                WHERE ref_no=$bundle_number AND op_code=$operation_id GROUP BY mo_no,ref_no,op_code 
+                ORDER BY id";
+                //echo $moq_qry.'</br>';
+                $moq_qry_res = $link->query($moq_qry);
+                while($row_moq = $moq_qry_res->fetch_assoc()) 
                 {
-                    $to_add_mo = $multiple_mos_tot_qty;
-                    $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
-                    $multiple_mos_tot_qty = 0;
-                }
-                if($to_add_mo > 0)
-                {
-                    //insert qry
-                    foreach($op_codes as $key=>$value)
+                    $max_mo_no = $row_moq['mo_no'];
+                    $bundle_quantity_mo = $row_moq['rem'] - $array_mos[$max_mo_no];
+                    if($bundle_quantity_mo < $multiple_mos_tot_qty)
                     {
-                        $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$to_add_mo."', '$value', 'Cutting')";
-                        mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+            
+                        $multiple_mos_tot_qty = $multiple_mos_tot_qty - $bundle_quantity_mo;
+                        $to_add_mo = $bundle_quantity_mo;
+                        $array_mos[$max_mo_no]  = $bundle_quantity_mo;
+                    }
+                    else
+                    {
+                        $to_add_mo = $multiple_mos_tot_qty;
+                        $array_mos[$max_mo_no]  = $multiple_mos_tot_qty;
+                        $multiple_mos_tot_qty = 0;
+                    }
+                    if($to_add_mo > 0)
+                    {
+                        //insert qry
+                        foreach($op_codes as $key=>$value)
+                        {
+                            $updae_moq_qry="INSERT INTO $bai_pro3.`mo_operation_quantites` (`date_time`, `mo_no`, `ref_no`, `bundle_quantity`, `op_code`, `op_desc`) VALUES ('".date("Y-m-d H:i:s")."', '".$max_mo_no."', '".$bundle_number."','".$to_add_mo."', '$value', $operation_name[$value])";
+                            mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }
                     }
                 }
             }
