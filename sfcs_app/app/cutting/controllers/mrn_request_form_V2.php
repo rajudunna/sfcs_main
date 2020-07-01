@@ -249,8 +249,8 @@ $(document).ready(function(){
 			// var reasoniddb=document.getElementById('reasonid').value;
 			// var reasoncodedb=document.getElementById('reasoncode').value;
 			//alert(sty_id);
-            var sty_id=encodeURIComponent(window.btoa(sty_id1));
-		    var color_id=encodeURIComponent(window.btoa(color_id1));
+      //       var sty_id=encodeURIComponent(window.btoa(sty_id1));
+		    // var color_id=encodeURIComponent(window.btoa(color_id1));
 		$('input[name^="qty"]').each(function(){
 			var i= $(this).attr("data-id");
 			console.log(i);
