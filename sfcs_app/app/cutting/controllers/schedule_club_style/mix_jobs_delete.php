@@ -9,7 +9,7 @@
 
     function firstbox() 
     { 
-        window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+encodeURIComponent(window.btoa(document.test.style.value)) 
+        window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
     } 
 
     </script> 

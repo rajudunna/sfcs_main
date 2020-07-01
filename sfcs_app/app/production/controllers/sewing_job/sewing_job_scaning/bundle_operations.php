@@ -293,9 +293,9 @@ $(document).ready(function(){
 			var oper_name= $('#oper_name').val();
 			// var color_name = $('#color option:selected').text();
 			// var style_name = $('#pro_style option:selected').text();
-			
-			var style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
-			var color_name = encodeURIComponent(window.btoa($('#color option:selected').text()));
+		
+			var style_name = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
+			var color_name = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
 			
 			
 			var seq = $('#oper_seq2').val();
@@ -338,9 +338,10 @@ $(document).ready(function(){
 	{
 		$("#dynamic_table1").html(" ");
 		$('#loading-image').show();
-		var color_name = encodeURIComponent(window.btoa($('#color option:selected').text()));
+			
+		var color_name = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
 		//var color_name = $('#color option:selected').text();
-		var style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+		var style_name = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
 		$('#m3_smv').empty();
 		$('select[name="m3_smv"]').append('<option value="0">Select M3_SMV</option>');
 		$('#m3_ops').empty();
@@ -512,7 +513,7 @@ $(document).ready(function(){
 		$('#m3_ops').empty();
 		$('select[name="m3_ops"]').append('<option value="0">Select M3_SMV</option>');
 		$('#loading-image').show();
-		var pro_style_schedule =encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+		var pro_style_schedule =window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
 
 		//var function_file = "<?php echo getFullURL($_GET['r'],'functions.php','R'); ?>";
 		//console.log(function_file);
@@ -578,8 +579,8 @@ $(document).ready(function(){
 			var style = $('#style option:selected').text();
 			// var color = $('#color option:selected').text();
 			
-			var pro_style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
-			var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
+			var pro_style_name = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
+			var color = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
 			
 			var m3_smv =$('#m3_smv1').val();
 
@@ -859,8 +860,8 @@ $("#edit").click(function()
 	// var style = $('#pro_style option:selected').text();
 	// var color = $('#color option:selected').text();
 	
-	var style = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
-	var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
+	var style = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
+	var color = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
 	
 	var component1 = "'"+component+"'";
 	var color = "'"+color+"'";
@@ -1275,8 +1276,8 @@ function default_oper(value,btn)
 	var dep = value+"ops_code";
 	console.log(dep);
 	var dependency_ops = document.getElementById(dep).innerText;
-	var style = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
-	var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
+	var style = window.btoa(unescape(encodeURIComponent(($('#pro_style option:selected').text()))));
+	var color = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
 	var dependency_ops_ary = [dependency_ops,style,color];
 	$.ajax
 		({

@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.mini_order_report.style.value))
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.mini_order_report.style.value))+"&schedule="+document.mini_order_report.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))+"&schedule="+document.mini_order_report.schedule.value
 	}
 
 </script>

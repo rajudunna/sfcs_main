@@ -77,26 +77,26 @@ body
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.test.style.value));
+	window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value
 }
 
 function secondbox()
 {
 	var url2 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url2+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
+	window.location.href =url2+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 { 
 	var url3 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url3+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+	window.location.href =url3+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function fourthbox()
 {
 	var url4 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url4+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&cutno="+document.test.cutno.value;
+	window.location.href =url4+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&cutno="+document.test.cutno.value;
 }
 
 $(document).ready(function() {

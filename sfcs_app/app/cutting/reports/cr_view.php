@@ -22,22 +22,22 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value));
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 }
 
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 }
 
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 }
 
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&category="+document.test.category.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&category="+document.test.category.value;
 }
 
 

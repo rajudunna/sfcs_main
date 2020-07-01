@@ -5,22 +5,22 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+encodeURIComponent(window.btoa(document.test.style.value));
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	}
 
 	function midbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&po="+document.test.po.value;
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&po="+document.test.po.value;
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&po="+document.test.po.value
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&po="+document.test.po.value
 	}
 
 	function SetAllCheckBoxes(FormName, FieldName, CheckValue)

@@ -19,7 +19,7 @@
         var url1 = '<?= getFullURL($_GET['r'],'carton_split.php','N'); ?>';
         function firstbox()
         {
-            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.mini_order_report.style.value))
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
         }
     </script>
 

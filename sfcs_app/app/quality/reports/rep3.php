@@ -15,17 +15,17 @@ $shifts='"'.implode('", "',$shifts_array).'"';
 
 	function firstbox()
 	{
-		window.location.href = "index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.input.style.value));
+		window.location.href = "index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)));
 	}
 
 	function secondbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value+"&color="+encodeURIComponent(window.btoa(document.input.color.value))
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.input.color.value)))
 	}
 </script>
 <script >

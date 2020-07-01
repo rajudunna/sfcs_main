@@ -21,7 +21,7 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.mini_order_report.style.value))
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function check_val()
@@ -231,7 +231,7 @@
 									echo "<td><center>Confirmed</center></td>";
 									if(in_array($authorized,$has_permission))
 									{ 
-										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$main_style&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
+										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=".$main_style."&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
 									}
 									else{
 										echo "<td></td>";
@@ -265,7 +265,7 @@
 									    //To get Encoded style
 	                                    $main_style = style_encode($style);
 										if($sql_num_check_count>0 or $ims_log_backup_count>0 or $sql_num_check_count_new>0){
-										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$main_style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=".$main_style."&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 										echo "<td></td>";
 										}else{
 											echo"<td><center>Plan Not Done</center></td>";
@@ -299,7 +299,7 @@
 					//added m3 db in query
 					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
@@ -444,7 +444,7 @@
 						}
 					}
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					
@@ -473,7 +473,9 @@
 							$log_time=$sql_row76['log_time'];
 							$input_module=$sql_row76['input_module'];
 						}
-					}				
+					}
+					//To get Encoded style
+	                 $main_style = style_encode($style);				
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
@@ -567,8 +569,7 @@
 						{
 							$schedule_id=$sql_row11['id'];
 						}
-						//To get Encoded style
-	                    $main_style = style_encode($style);
+						
 						if($sql_num_check5>0)
 						{
 							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
