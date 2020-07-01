@@ -262,7 +262,8 @@
 										$sql58="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' limit 1";
 										$sql_result58=mysqli_query($link, $sql58) or exit("Sql Error58".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check_count_new=mysqli_num_rows($sql_result58);
-									
+									    //To get Encoded style
+	                                    $main_style = style_encode($style);
 										if($sql_num_check_count>0 or $ims_log_backup_count>0 or $sql_num_check_count_new>0){
 										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$main_style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 										echo "<td></td>";
