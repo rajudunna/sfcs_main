@@ -240,9 +240,9 @@ $(document).ready(function(){
 		$("#loading-image").addClass("ajax-loader");
 		var ItemArray= new Array(); 
 		
-			var sty_id1=document.getElementById('styles').value;
+			var sty_id=document.getElementById('styles').value;
 			var sch_id=document.getElementById('schedules').value;
-			var color_id1=document.getElementById('colors').value;
+			var color_id=document.getElementById('colors').value;
 			var cut_no=document.getElementById('cutnos').value;
 			var batch_ref=document.getElementById('batch_refs').value;
 			var section=document.getElementById('sections').value;
