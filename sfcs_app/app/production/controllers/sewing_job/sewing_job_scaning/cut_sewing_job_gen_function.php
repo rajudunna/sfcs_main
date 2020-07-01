@@ -555,11 +555,11 @@ function plan_logical_bundles($doc_list,$plan_jobcount,$plan_bundleqty,$inserted
 	// Getting Plan
 	if($excess_cut==1)
 	{	
-		$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log psl LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref  WHERE psl.order_tid = '".$order_tid."' and csl.category IN ('Body','Front') order by psl.doc_no asc";
+		$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log psl LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref  WHERE psl.order_tid = '".$order_tid."' and csl.category IN ('Body','Front') and psl.remarks='Normal' order by psl.doc_no asc";
 	}
 	else
 	{
-		$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log psl LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref  WHERE psl.order_tid = '".$order_tid."' and csl.category IN ('Body','Front') order by psl.doc_no desc";
+		$qry_cut_qty_check_qry = "SELECT * FROM $bai_pro3.plandoc_stat_log psl LEFT JOIN bai_pro3.cat_stat_log csl ON csl.tid = psl.cat_ref  WHERE psl.order_tid = '".$order_tid."' and csl.category IN ('Body','Front') and psl.remarks='Normal' order by psl.doc_no desc";
 	}	
 	$result_qry_cut_qty_check_qry = $link->query($qry_cut_qty_check_qry);
 	$cut_plan_qty = [];
