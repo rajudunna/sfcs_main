@@ -52,7 +52,7 @@ function firstbox(){
 } 
 
 function secondbox() { 
-    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 } 
 
 function verify_sch(){  

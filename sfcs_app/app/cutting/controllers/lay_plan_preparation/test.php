@@ -15,18 +15,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))
+	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href = uriVal;
 }
 $(document).ready(function() {

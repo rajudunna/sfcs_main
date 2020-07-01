@@ -14,13 +14,13 @@ function firstbox()
 
 function secondbox()
 {
-	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href =ur1;
 }
 
 function thirdbox()
 {
-	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&category="+document.test.category.value;
+	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&category="+document.test.category.value;
 	window.location.href = uri; 
 	//document.testx.submit();
 }
