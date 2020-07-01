@@ -479,7 +479,9 @@ if(isset($_POST['submit2']))
 			$customer_div=$sql_row['order_div'];
 			$flag = $sql_row['title_flag'];
 		}
-		
+		//To get Encoded Color
+	     $main_color = color_encode($color);
+	     $main_style = style_encode($style);
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
 		switch ($customer)
 		{
@@ -646,7 +648,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 								}
 							</script>";
 					}
@@ -655,7 +657,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									location.href = '".getFullURLLevel($_GET['r'], 'main_interface.php', '0', 'N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 								}
 							</script>";
 					}
@@ -669,7 +671,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 								}
 							</script>";
 					}
@@ -678,7 +680,7 @@ if(isset($_POST['submit2']))
 						echo "<script> 
 								setTimeout(\"Redirect()\",0); 
 								function Redirect() {  
-									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$color&style=$style&schedule=$schedule'; 
+									location.href = '".getFullURL($_GET['r'],'main_interface.php', 'N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 								}
 							</script>";
 					}
@@ -731,6 +733,9 @@ if(isset($_POST['submit3']))
 		$customer_div=$sql_row['order_div']; //NEW Implementation for M&S as Men Wear having size codes different. 20110428
 		$flag = $sql_row['title_flag'];
 	}
+	//To get Encoded Color
+	     $main_color = color_encode($color);
+	     $main_style = style_encode($style);
 		if($schedule>0)
 {
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
@@ -899,7 +904,7 @@ if(isset($_POST['submit3']))
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); 
 							function Redirect() {  
-								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$color&style=$style&schedule=$schedule'; 
+								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 							}
 						</script>";
 				}
@@ -908,7 +913,7 @@ if(isset($_POST['submit3']))
 					echo "<script type=\"text/javascript\"> 
 							setTimeout(\"Redirect()\",0); 
 							function Redirect() {  
-								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$color&style=$style&schedule=$schedule'; 
+								location.href = '".getFullURLLevel($_GET['r'],'main_interface.php','0','N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 							}
 						</script>";
 				}
@@ -920,7 +925,7 @@ if(isset($_POST['submit3']))
 				{
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); function Redirect() {  
-								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$color&style=$style&schedule=$schedule'; 
+								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 							}
 						</script>";
 				}
@@ -928,7 +933,7 @@ if(isset($_POST['submit3']))
 				{
 					echo "<script> 
 							setTimeout(\"Redirect()\",0); function Redirect() {  
-								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$color&style=$style&schedule=$schedule'; 
+								location.href = '".getFullURL($_GET['r'],'main_interface.php','N')."&color=$main_color&style=$main_style&schedule=$schedule'; 
 							}
 						</script>";
 				}

@@ -145,7 +145,7 @@
     function fourthbox()
     {
         
-        window.location.href = pgurl+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value
+        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&cutno="+document.test.cutno.value
     }
 
     function fifthbox()
@@ -249,7 +249,8 @@ $(document).ready(function(){
 			// var reasoniddb=document.getElementById('reasonid').value;
 			// var reasoncodedb=document.getElementById('reasoncode').value;
 			//alert(sty_id);
-		
+      //       var sty_id=encodeURIComponent(window.btoa(sty_id1));
+		    // var color_id=encodeURIComponent(window.btoa(color_id1));
 		$('input[name^="qty"]').each(function(){
 			var i= $(this).attr("data-id");
 			console.log(i);
