@@ -28,7 +28,7 @@ function job_rec_status($input_job_no,$op_code)
 		$rej_qty=$sql_row["rej_qty"];
 	}
 
-	$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$input_job_no."' and doc_type='N'";
+	$sql2="SELECT COALESCE(SUM(carton_act_qty),0) as job_qty FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random='".$input_job_no."' ";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
