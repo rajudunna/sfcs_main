@@ -5,7 +5,9 @@ Change Log:
 2. Service Request #716897/ kirang / 2015-5-16:  Add the User Style ID and Packing Method validations at Cut Plan generation 
 -->
 
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
+?>
 
 <?php
 $log_date=date("Y-m-d"); 
@@ -20,11 +22,10 @@ if(isset($_POST['update']))
 	//var_dump($in_mkeff);
 	$row_count = sizeof($_POST['in_mktype']);
 	$cat_ref=$_POST['cat_ref'];
-	$tran_order_tid=$_POST['tran_order_tid'];
+	$tran_order_tid=order_tid_decode($_POST['tran_order_tid']);
 	$cuttable_ref=$_POST['cuttable_ref'];
 	$allocate_ref=$_POST['allocate_ref'];
 
-		$tran_order_tid=$_POST['tran_order_tid'];
 		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 		// echo "<br/>Sql=".$sql;
 		// die();
@@ -89,13 +90,16 @@ if(isset($_POST['update']))
 			$size50 = $sql_row['title_size_s50'];
 			$title_flag = $sql_row['title_flag'];
 		}
+		//Encoding color
+        $main_color = color_encode($color);
+        $main_style = style_encode($style);
 		if($style_code=="")
 		{
 				echo "<script type=\"text/javascript\"> 
 						sweetAlert('Error','User Style ID was not available for this schedule, Please check with the Planning Team.','error');
 						setTimeout(\"Redirect()\",2000); 
 						function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; 
 						}
 					</script>";
 		}
@@ -104,7 +108,7 @@ if(isset($_POST['update']))
 				echo "<script type=\"text/javascript\"> 
 						sweetAlert('Error','Packing Method was not available for this schedule, Please update the Shipment Plan for this schedule.','error');
 						setTimeout(\"Redirect()\",2000); function Redirect() {  
-							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; 
+							location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; 
 						}
 					</script>";
 		}
@@ -112,7 +116,7 @@ if(isset($_POST['update']))
 		{
 			
 		$cat_ref=$_POST['cat_ref'];
-		$tran_order_tid=$_POST['tran_order_tid'];
+		$tran_order_tid=order_tid_decode($_POST['tran_order_tid']);
 		$cuttable_ref=$_POST['cuttable_ref'];
 		$allocate_ref=$_POST['allocate_ref'];
 		// $remarks=$_POST['remarks'];
@@ -293,15 +297,16 @@ if(isset($_POST['update']))
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
-				 
-							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";
+							echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {   sweetAlert('Successfully Updated','','success'); location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 		}else{
 			//echo "<h2 class='label label-danger'>Marker Version is not available.</h2>";
+			//Encoding order_tid
+            $main_tran_order_tid=order_tid_encode($tran_order_tid);
 			echo "<script type='text/javascript'>
 					sweetAlert('Error','Marker Version is not available.','error');
 					setTimeout('Redirect()',2000);
 					function Redirect(){
-							location.href='".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid&cat_ref=$cat_ref&cuttable_ref=$cuttable_ref&allocate_ref=$allocate_ref';
+							location.href='".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref&cuttable_ref=$cuttable_ref&allocate_ref=$allocate_ref';
 					}                                     
 					</script>";	
 		}

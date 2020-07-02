@@ -119,12 +119,13 @@ function assign_to_gets($ars,$data_samps){
 <div class = 'panel panel-primary'>
     <div class = 'panel-heading'><b>Cut Sewing Job Generation</b></div>
     <?php
-        
-        $style=$_GET['style'];
-        $schedule=$_GET['schedule']; 
-        $color  = $_GET['color'];
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
+        $style=style_decode($_GET['style']);
+        $schedule=$_GET['schedule']; 
+        $color  = color_decode($_GET['color']);
+        
         echo '<div class = "panel-body">';
             $sql="select distinct order_style_no from bai_pro3.bai_orders_db_confirm";
             $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -188,7 +189,8 @@ function assign_to_gets($ars,$data_samps){
             echo "<div class='col-sm-3'>";
                 if($schedule!='' && $style!='')
                 {
-                    echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$style."' id='print_labels'>Print Labels</a>";
+                    $main_style=style_encode($style);
+                    echo "<a class='btn btn-success pull-right' href='?r=L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL3Nld2luZ19qb2IvaW5wdXRfam9iX21peF9jaF9yZXBvcnQucGhw&schedule=".$schedule."&seq_no=-1&style=".$main_style."' id='print_labels'>Print Labels</a>";
                 }
             echo "</div>
             <br/>";
@@ -628,7 +630,7 @@ function delet(docs_id){
             //alert("The text has been changed.");
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
-            window.location.href =url1+"&style="+valueSelected
+            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(valueSelected))
         });
         $("#schedule").change(function(){
             // var input = $(this);
@@ -638,7 +640,7 @@ function delet(docs_id){
             var optionSelected = $("option:selected", this);
             var valueSelected2 = this.value;
             var style1 = $("#style").val();
-            window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+valueSelected2
         });
 
         $("#color").change(function(){
@@ -647,7 +649,7 @@ function delet(docs_id){
             var valueSelected3 = this.value;
             var style1 = $("#style").val();
             var schedule = $("#schedule").val();
-            window.location.href =url1+"&style="+style1+"&schedule="+schedule+"&color="+valueSelected3
+            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(valueSelected3))
             //alert(valueSelected2); 
             //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
         });
@@ -704,14 +706,14 @@ function delet(docs_id){
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
-                            window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color
+                            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(color))
                         } else {
 							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
-                            setTimeout(function(){window.location.href =url1+"&style="+style+"&schedule="+schedule+"&color="+color} , 2000);
+                            setTimeout(function(){window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(color))} , 2000);
                         }
 					} else {
 						

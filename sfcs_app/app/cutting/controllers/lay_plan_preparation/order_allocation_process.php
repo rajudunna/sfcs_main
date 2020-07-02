@@ -1,4 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php
 
@@ -89,10 +90,12 @@ if(isset($_POST['Update']))
 			$style=$sql_row['order_style_no'];
 			$schedule=$sql_row['order_del_no'];
 		}
-		
+		//Color Encoded
+		$main_color = color_encode($color);
+		$main_style = style_encode($style);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
 				sweetAlert('Allocated Successfully','','success');	 
-				location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
+				location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
 	}else{	
 		echo "<script type='text/javascript'>
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');

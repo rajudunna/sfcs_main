@@ -111,7 +111,7 @@
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style,
+			url: '<?= $url ?>?style='+encodeURIComponent(window.btoa(style)),
 			dataType: "json",
 			success: function (response) {	
                 $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
@@ -139,7 +139,7 @@
         var style = $('#style').val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
+			url: '<?= $url ?>?style='+encodeURIComponent(window.btoa(style))+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
 				 $('select[name="color"]').append('<option value=all>ALL</option>'); 
@@ -180,7 +180,7 @@
           }
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url1 ?>?style='+style +'&schedule='+schedule +'&color='+color +'&size='+size,
+				url: '<?= $url1 ?>?style='+encodeURIComponent(window.btoa(style)) +'&schedule='+schedule +'&color='+encodeURIComponent(window.btoa(color)) +'&size='+size,
 				success: function(response) 
 				{
 					$('#dynamic_table1').show();

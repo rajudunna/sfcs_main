@@ -31,17 +31,18 @@
 </head>
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));  
 	$has_permission=haspermission($_GET['r']);
 	if ($_GET['operation_id'])
 	{
         $doc_no=$_GET['doc_no'];
         $operation_code=$_GET['operation_id'];
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 		$module=$_GET['tablename'];
         $operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
-        $color = $_GET['color'];
+        $color = color_decode($_GET['color']);
 
 	} else {
         echo '<script> swal({

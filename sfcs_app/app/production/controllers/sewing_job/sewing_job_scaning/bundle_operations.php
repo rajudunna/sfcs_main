@@ -291,8 +291,13 @@ $(document).ready(function(){
 	{
 			//var url = "getdata()";
 			var oper_name= $('#oper_name').val();
-			var color_name = $('#color option:selected').text();
-			var style_name = $('#pro_style option:selected').text();
+			// var color_name = $('#color option:selected').text();
+			// var style_name = $('#pro_style option:selected').text();
+			
+			var style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+			var color_name = encodeURIComponent(window.btoa($('#color option:selected').text()));
+			
+			
 			var seq = $('#oper_seq2').val();
 			if(seq == '')
 			{
@@ -333,8 +338,9 @@ $(document).ready(function(){
 	{
 		$("#dynamic_table1").html(" ");
 		$('#loading-image').show();
-		var color_name = $('#color option:selected').text();
-		var style_name = $('#pro_style option:selected').text();
+		var color_name = encodeURIComponent(window.btoa($('#color option:selected').text()));
+		//var color_name = $('#color option:selected').text();
+		var style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
 		$('#m3_smv').empty();
 		$('select[name="m3_smv"]').append('<option value="0">Select M3_SMV</option>');
 		$('#m3_ops').empty();
@@ -506,7 +512,8 @@ $(document).ready(function(){
 		$('#m3_ops').empty();
 		$('select[name="m3_ops"]').append('<option value="0">Select M3_SMV</option>');
 		$('#loading-image').show();
-		var pro_style_schedule = $('#pro_style option:selected').text();
+		var pro_style_schedule =encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+
 		//var function_file = "<?php echo getFullURL($_GET['r'],'functions.php','R'); ?>";
 		//console.log(function_file);
 		$.ajax
@@ -569,7 +576,11 @@ $(document).ready(function(){
 			var oper_name = $('#oper_name option:selected').text();
 			//var oper_def = $('#oper_def1').val();
 			var style = $('#style option:selected').text();
-			var color = $('#color option:selected').text();
+			// var color = $('#color option:selected').text();
+			
+			var pro_style_name = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+			var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
+			
 			var m3_smv =$('#m3_smv1').val();
 
 			var manual_smv_ins =$('#manual_smv_insert').val();
@@ -651,6 +662,7 @@ $(document).ready(function(){
 						data: {saving: $('#saving').val()},
 						success: function(response)
 						{
+							console.log(response);
 
 							if(response == 'None')
 							{
@@ -844,8 +856,12 @@ $("#edit").click(function()
 	var component = $('#component1').val();
 	var manual_smv_up = $('#manual_smv_update').val();
 	var ops_code1 = $('#ops_code1').val();
-	var style = $('#pro_style option:selected').text();
-	var color = $('#color option:selected').text();
+	// var style = $('#pro_style option:selected').text();
+	// var color = $('#color option:selected').text();
+	
+	var style = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+	var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
+	
 	var component1 = "'"+component+"'";
 	var color = "'"+color+"'";
 	var style = "'"+style+"'";
@@ -1259,8 +1275,8 @@ function default_oper(value,btn)
 	var dep = value+"ops_code";
 	console.log(dep);
 	var dependency_ops = document.getElementById(dep).innerText;
-	var style = $('#pro_style option:selected').text();
-	var color = $('#color option:selected').text();
+	var style = encodeURIComponent(window.btoa($('#pro_style option:selected').text()));
+	var color = encodeURIComponent(window.btoa($('#color option:selected').text()));
 	var dependency_ops_ary = [dependency_ops,style,color];
 	$.ajax
 		({

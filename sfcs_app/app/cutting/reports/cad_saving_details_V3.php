@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
 <title>CAD Saving Details</title>
@@ -13,13 +14,13 @@ function firstbox()
 
 function secondbox()
 {
-	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
 	window.location.href =ur1;
 }
 
 function thirdbox()
 {
-	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&category="+document.test.category.value;
 	window.location.href = uri; 
 	//document.testx.submit();
 }
@@ -94,7 +95,7 @@ function check_sch()
 				<label for="color">Select Color</label>
 				<?php
 				$schedule=$_GET['schedule'];
-				$color=$_GET["color"];
+				$color=color_decode($_GET["color"]);
 				if($schedule==""){
 					$schedule=-1;
 				}
@@ -115,7 +116,7 @@ function check_sch()
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 
-					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$_GET['color']))
+					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
 					{
 						echo "<option value=\"".rtrim($sql_row['order_col_des']," ")."\" selected>".$sql_row['order_col_des']."</option>";
 					}
@@ -133,7 +134,7 @@ function check_sch()
 				<label for="category">Select Category</label>
 				<?php
 				$schedule=$_GET['schedule'];
-				$color=$_GET["color"];
+				$color=color_decode($_GET["color"]);
 				if($color){
 					//echo $schedule;
 					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category != ''  order by category";

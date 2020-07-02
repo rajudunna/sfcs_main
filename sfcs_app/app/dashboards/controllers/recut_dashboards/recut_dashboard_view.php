@@ -1050,7 +1050,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         <div class='panel-body'>
            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Replaced Quantity</th><th>Eligibility to allow recut</th><th>View</th><th>Recut</th><th>Replace</th><th>Layplan</th>
             </thead>
-            <?php  
+            <?php 
+            include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php'); 
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
             LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE short_shipment_status=0
@@ -1099,10 +1100,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                     {
                         $order_tid = $row_row_row['order_tid'];
                     } 
+                    //To get Encoded Color & style
+                    $main_style = style_encode($style);
+                    $main_color = color_encode($color);
                     $sql111="select * from $bai_pro3.cuttable_stat_log_recut where order_tid=\"$order_tid\"";   
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0){
-                        echo "<td><a class=\"btn btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_layplan_request.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\">Lay Plan</a></td>";
+                        echo "<td><a class=\"btn btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_layplan_request.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\">Lay Plan</a></td>";
                     } else {
                         echo "<td><a class=\"btn btn-warning pull-left\" disabled>Lay Plan</a></td>";
                     }

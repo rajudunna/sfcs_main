@@ -1,10 +1,11 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 error_reporting(0);
 
 if(isset($_GET['style']))
-    $styles = $_GET['style'];
+    $styles = style_decode($_GET['style']);
 else
 {
     $get_style="SELECT DISTINCT(order_style_no) FROM $bai_pro3.bai_orders_db_confirm WHERE order_tid IN(SELECT order_tid FROM $bai_pro3.plandoc_stat_log )";
@@ -31,7 +32,7 @@ else
   $schedules = '"'.$schedules.'"';
   if(isset($_GET['style']) && isset($_GET['schedule']))
   {
-    $style1=$_GET['style'];
+    $style1=style_decode($_GET['style']);
     $schedule1=$_GET['schedule'];
     $get_color="select DISTINCT(order_col_des) from $bai_pro3.bai_orders_db_confirm where order_style_no='$style1' and order_del_no='$schedule1'";
   }
