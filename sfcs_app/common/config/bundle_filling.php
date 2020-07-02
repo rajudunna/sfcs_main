@@ -1155,7 +1155,7 @@ function plan_cut_bundle_gen_club($docket_no,$style,$color)
 		$order_tid[$row['order_del_no']] = $row['order_tid'];
 		$cut = $row['cutno'];
 		$cat_ref = $row['cat_ref'];
-		$size=$row['size'];
+		$size = ltrim($row['size'],'p_');
 		$fill_qty[$row['order_del_no']][$size] += $row['qty'];
 	}
 	
