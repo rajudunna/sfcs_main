@@ -299,7 +299,7 @@
 					//added m3 db in query
 					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
@@ -328,6 +328,8 @@
 							$input_module=$sql_row76['input_module'];
 						}
 					}
+					//To get Encoded style
+	                $main_style = style_encode($style);
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno' AND mrn_status ='1'";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check1=mysqli_num_rows($sql_result01);
@@ -379,8 +381,6 @@
 						{
 							$schedule_id=$sql_row11['id'];
 						}
-						//To get Encoded style
-	                    $main_style = style_encode($style);
 						if($sql_num_check5>0)
 						{
 							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='0' where input_job_no_random='$inputjobno'";
@@ -444,7 +444,7 @@
 						}
 					}
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					
@@ -473,7 +473,9 @@
 							$log_time=$sql_row76['log_time'];
 							$input_module=$sql_row76['input_module'];
 						}
-					}				
+					}
+					//To get Encoded style
+	                $main_style = style_encode($style);				
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
@@ -567,8 +569,7 @@
 						{
 							$schedule_id=$sql_row11['id'];
 						}
-						//To get Encoded style
-	                    $main_style = style_encode($style);
+						
 						if($sql_num_check5>0)
 						{
 							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
