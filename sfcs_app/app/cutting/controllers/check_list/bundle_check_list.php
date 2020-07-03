@@ -20,7 +20,7 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.check_list_select.style.value))
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.check_list_select.style.value)))
 	}
 </script>
 <style>

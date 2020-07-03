@@ -12,12 +12,12 @@
 		var url1 = '<?= getFullURL($_GET['r'],'release_sj_barcodes.php','N'); ?>';
 		function firstbox()
 		{
-			window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.form_name.style.value))
+			window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.form_name.style.value)))
 		}
 
 		function secondbox()
 		{
-			window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.form_name.style.value))+"&schedule="+document.form_name.schedule.value
+			window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.form_name.style.value)))+"&schedule="+document.form_name.schedule.value
 		}
 	</script>
 <?php

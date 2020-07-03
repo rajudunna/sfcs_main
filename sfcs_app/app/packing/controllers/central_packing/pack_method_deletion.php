@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.pack_load.style.value))
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.pack_load.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.pack_load.style.value))+"&schedule="+document.pack_load.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.pack_load.style.value)))+"&schedule="+document.pack_load.schedule.value
 	}
 
 	

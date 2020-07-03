@@ -37,16 +37,16 @@ $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+encodeURIComponent(window.btoa(document.test.style.value)) 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
 } 
 function secondbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value 
 } 
 
 function thirdbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value)) 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value))) 
 } 
 </script> 
 </head> 

@@ -116,18 +116,18 @@
 	console.log(url);
 	function firstbox()
 	{
-		window.location.href = url+"&style="+encodeURIComponent(window.btoa(document.test.style.value));
+		window.location.href = url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	}
 
 	function secondbox()
 	{
-		window.location.href = url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value;
+		window.location.href = url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 	}
 
 	function thirdbox()
 	{
-		window.location.href = url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
-		var url001 = url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+		window.location.href = url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
+		var url001 = url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	}
 </script>
 <?php //echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>

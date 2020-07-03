@@ -127,30 +127,30 @@
     var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
     function firstbox()
     {
-        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))
+        window.location.href = pgurl+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
     }
 
     function secondbox()
     {
-        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value
+        window.location.href = pgurl+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
     }
 
     function thirdbox()
     {
         
 
-        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))
+        window.location.href = pgurl+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
     }
 
     function fourthbox()
     {
         
-        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&cutno="+document.test.cutno.value
+        window.location.href = pgurl+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&cutno="+document.test.cutno.value
     }
 
     function fifthbox()
     {
-        window.location.href = pgurl+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
+        window.location.href = pgurl+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&cutno="+document.test.cutno.value+"&batchno="+document.test.batchno.value
     }
 	
 	

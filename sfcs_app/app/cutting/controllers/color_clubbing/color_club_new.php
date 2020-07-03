@@ -14,17 +14,17 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <script>	
 	function firstbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 	}
 
 	function secondbox()
 	{		
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&category="+document.test.category.value		
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&category="+document.test.category.value		
 	}
 
 	function check_style()
