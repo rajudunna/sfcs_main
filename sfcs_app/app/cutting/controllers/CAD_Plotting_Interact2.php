@@ -283,7 +283,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$allocate_ref=$sql_row1['allocate_ref'];
 					$cutno=$sql_row1["acutno"];
 					$sql="select purwidth,clubbing,category from $bai_pro3.cat_stat_log where tid=$cat_ref";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -297,11 +297,10 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$print_date=$sql_row1['print_status'];
 					
 					$mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
+					//Encoding order_tid
 					$tran_order_tid=$sql_row1['order_tid'];
-					$tran_order_tid1=$sql_row1x['order_tid'];
-                    	//Encoding order_tid
-                     $main_tran_order_tid=order_tid_encode($tran_order_tid);
-                     $main_tran_order_tid1=order_tid_encode($tran_order_tid1);
+                    $main_tran_order_tid=order_tid_encode($tran_order_tid);
+                     
 					if($clubbing>0)
 					{
 						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
@@ -318,6 +317,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1x=mysqli_fetch_array($sql_result1x))
 					{
+						$tran_order_tid1=$sql_row1x['order_tid'];
+						$main_tran_order_tid1=order_tid_encode($tran_order_tid1);
 						$tab.="<br/>[+]&nbsp;<a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$main_tran_order_tid1."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$main_tran_order_tid1."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$sql_row1x['acutno']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1x['doc_no']."</a>";
 					}
 					$tab.="</center></td>";
