@@ -35,22 +35,22 @@ function secondbox()
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+encodeURIComponent(window.btoa(document.test.style.value));
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	window.location.href = uriVal;
 }
 function fourthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&style_id="+encodeURIComponent(window.btoa(document.test.style_id.value));
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)));
 	window.location.href = uriVal;
 }
 function fifthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&style_id="+encodeURIComponent(window.btoa(document.test.style_id.value))+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)))+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 function sixthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&style_id="+encodeURIComponent(window.btoa(document.test.style_id.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value));
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href = uriVal;
 }
 $(document).ready(function() {

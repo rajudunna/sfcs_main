@@ -55,17 +55,17 @@ body
 var url = '<?= getFullURLLevel($_GET['r'],'embellishment_test_new.php',0,'N'); ?>';
 function firstbox()
 {
-	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 }
 </script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->

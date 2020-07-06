@@ -10,7 +10,7 @@
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+encodeURIComponent(window.btoa(document.test.style.value)) 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
 } 
 
 function SetAllCheckBoxes(FormName, FieldName, CheckValue) 

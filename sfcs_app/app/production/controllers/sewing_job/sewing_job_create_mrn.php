@@ -21,7 +21,7 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+encodeURIComponent(window.btoa(document.mini_order_report.style.value))
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function check_val()
@@ -231,7 +231,7 @@
 									echo "<td><center>Confirmed</center></td>";
 									if(in_array($authorized,$has_permission))
 									{ 
-										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$main_style&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
+										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=".$main_style."&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
 									}
 									else{
 										echo "<td></td>";
@@ -265,7 +265,7 @@
 									    //To get Encoded style
 	                                    $main_style = style_encode($style);
 										if($sql_num_check_count>0 or $ims_log_backup_count>0 or $sql_num_check_count_new>0){
-										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$main_style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=".$main_style."&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 										echo "<td></td>";
 										}else{
 											echo"<td><center>Plan Not Done</center></td>";
@@ -475,7 +475,7 @@
 						}
 					}
 					//To get Encoded style
-	                $main_style = style_encode($style);				
+	                 $main_style = style_encode($style);				
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();

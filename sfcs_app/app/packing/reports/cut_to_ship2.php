@@ -15,17 +15,17 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 var url = "<?= getFullURL($_GET['r'],'cut_to_ship2.php','N'); ?>";
 function firstbox()
 {
-	window.location.href = url+"&style="+encodeURIComponent(window.btoa(document.input.style.value));
+	window.location.href = url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)));
 }
 
 function secondbox()
 {
-	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href =url+"&style="+encodeURIComponent(window.btoa(document.input.style.value))+"&schedule="+document.input.schedule.value+"&color="+encodeURIComponent(window.btoa(document.input.color.value))
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.input.color.value)))
 }
 </script>
 

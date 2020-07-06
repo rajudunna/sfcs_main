@@ -630,7 +630,7 @@ function delet(docs_id){
             //alert("The text has been changed.");
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
-            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(valueSelected))
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(valueSelected)))
         });
         $("#schedule").change(function(){
             // var input = $(this);
@@ -640,7 +640,7 @@ function delet(docs_id){
             var optionSelected = $("option:selected", this);
             var valueSelected2 = this.value;
             var style1 = $("#style").val();
-            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+valueSelected2
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+valueSelected2
         });
 
         $("#color").change(function(){
@@ -649,7 +649,7 @@ function delet(docs_id){
             var valueSelected3 = this.value;
             var style1 = $("#style").val();
             var schedule = $("#schedule").val();
-            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(valueSelected3))
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(valueSelected3)))
             //alert(valueSelected2); 
             //window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
         });
@@ -706,14 +706,14 @@ function delet(docs_id){
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
-                            window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(color))
+                            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
                         } else {
 							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
-                            setTimeout(function(){window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style))+"&schedule="+schedule+"&color="+encodeURIComponent(window.btoa(color))} , 2000);
+                            setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
                         }
 					} else {
 						

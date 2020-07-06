@@ -12,14 +12,14 @@ include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected = this.value;
-	  window.location.href =url1+"&style="+encodeURIComponent(window.btoa(valueSelected))
+	  window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(valueSelected)))
     });
 	 $("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
-	   window.location.href =url1+"&style="+encodeURIComponent(window.btoa(style1))+"&schedule="+valueSelected2
+	   window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+valueSelected2
 	  });
 });
 </script>

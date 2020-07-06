@@ -51,17 +51,17 @@ session_start();
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+encodeURIComponent(window.btoa(document.test.style.value))+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(window.btoa(document.test.color.value))
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 }
 
 function active_update()
