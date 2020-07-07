@@ -1,6 +1,8 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0139",$username,1,$group_id_sfcs);
 /*
@@ -227,10 +229,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$table="<tr class=\"foo\" id=\"rowchk$x\">";
 	$table.="<td><input type=\"checkbox\" name=\"chk[$x]\" id=\"chk[$x]\" value='1' onclick=\"selectind($x)\"/>".($x-1)."</td>";
+	$size_value=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
 	$table.="<td>".$sql_row['qms_style']."</td>";
 	$table.="<td>".$sql_row['qms_schedule']."</td>";
 	$table.="<td>".$sql_row['qms_color']."</td>";
-	$table.="<td>".$sql_row['qms_size']."</td>";
+	$table.="<td>".$size_value."</td>";
 	$table.="<td>".$sql_row['available']."</td>";
 	$table.="<td><input type=\"text\" name=\"qty[$x]\" value=\"".$sql_row['available']."\" onchange='if(this.value<0 || this.value>".$sql_row['available'].") { this.value=0; alert(\"Please enter correct value\"); }'>
 <input type=\"hidden\" name=\"style[$x]\" value=\"".$sql_row['qms_style']."\">
@@ -249,7 +252,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$export_table.="<td>".$sql_row['qms_style']."</td>";
 	$export_table.="<td>".$sql_row['qms_schedule']."</td>";
 	$export_table.="<td>".$sql_row['qms_color']."</td>";
-	$export_table.="<td>".$sql_row['qms_size']."</td>";
+	$export_table.="<td>".$size_value."</td>";
 	$export_table.="<td>".$sql_row['available']."</td>";
 	$export_table.="<td></td>";
 	$export_table.="</tr>";
