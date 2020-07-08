@@ -235,7 +235,8 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                     $orginal_qty=$sql_row["org_qty"];
                     $replace_in_qty=$sql_row["replace_qty"];
                 }
-                if($orginal_qty > 0){
+                if($orginal_qty > 0)
+                {
                     if(($orginal_qty+$replace_in_qty)==($rec_qty1+$rej_qty1)) 
                     {
                         $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
