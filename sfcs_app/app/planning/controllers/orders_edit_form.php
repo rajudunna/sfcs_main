@@ -6,8 +6,10 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 
 $order_quantity_mail=$conf1->get('order_quantity_mail');
+
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 // $view_access=user_acl("SFCS_0135",$username,1,$group_id_sfcs);
@@ -39,7 +41,7 @@ else
 session_start();
 	if($_GET['style'])
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 	}
 	else
 	{
@@ -47,7 +49,7 @@ session_start();
 	}
 	if($_GET['color'])
 	{
-		$color=$_GET['color'];
+		$color=color_decode($_GET['color']);
 	}
 	else
 	{
@@ -82,12 +84,12 @@ function validate_qty(ele)
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value;
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 }
 
 function secondbox()
 {
-		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 
 	function check_style()
@@ -178,6 +180,7 @@ echo "<div class=\"col-sm-12\"><div class=\"row\"><div class=\"col-sm-3\">
 $sql="select distinct order_style_no from $bai_pro3.bai_orders_db where $order_joins_not_in";	
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
+
 
 echo "<option value='' selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1082,7 +1085,7 @@ if(isset($_POST["update"]))
 		// white-space:nowrap;
 		// text-align:center;
 		// }
-		
+
 		
 		// td.style
 		// {
@@ -1132,5 +1135,6 @@ if(isset($_POST["update"]))
 											
 	// send_email1("baiict@brandix.com",$order_quantity_mail,"",$subject1,$message1);
 //}
+
 
 ?>

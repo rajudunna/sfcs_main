@@ -1,4 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R')); ?>
 <!-- <script src="https://code.jquery.com/jquery.min.js"></script> -->
 <link rel="stylesheet" href="<?=getFullURLLevel($_GET['r'],'common/lib/TableFilter_EN/filtergrid.css',3,'R');?>" type="text/css" media="all" />
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',3,'R');?>"></script><!-- External script -->
@@ -265,7 +266,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$doc_refs[]=$sql_row2["doc_ref"];	
 				}
 
-				$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status in (1,5) and length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" ";
+				$sql1="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where doc_no in (".implode(",",$doc_refs).") and fabric_status in (1,5) and length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and short_shipment_status = '0' and act_cut_status<>\"DONE\" ";
 				// echo $sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -282,7 +283,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$allocate_ref=$sql_row1['allocate_ref'];
 					$cutno=$sql_row1["acutno"];
 					$sql="select purwidth,clubbing,category from $bai_pro3.cat_stat_log where tid=$cat_ref";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -296,7 +297,10 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 					$print_date=$sql_row1['print_status'];
 					
 					$mns_status=$sql_row1['xs']+$sql_row1['s']+$sql_row1['m']+$sql_row1['l']+$sql_row1['xl']+$sql_row1['xxl']+$sql_row1['xxxl'];
-
+					//Encoding order_tid
+					$tran_order_tid=$sql_row1['order_tid'];
+                    $main_tran_order_tid=order_tid_encode($tran_order_tid);
+                     
 					if($clubbing>0)
 					{
 						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/color_club_docket_print.php";
@@ -306,14 +310,16 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
 					}
 					
-					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=$cutno\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$cutno."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
+					$tab= "<tr><td class=\"  \"><center><a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=$cutno\" onclick=\"Popup1=window.open('$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$cutno."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</a>";
 					
 					$sql1x="select acutno,order_tid,print_status,cat_ref,allocate_ref,mk_ref,doc_no, plan_lot_ref,cat_ref,order_tid,p_xs as xs,p_s as s,p_m as m,p_l as l,p_xl as xl,p_xxl as xxl,p_xxxl as xxxl from $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."' and doc_no not in ($doc_no) AND length(plan_lot_ref)>0 and lastup=\"0000-00-00 00:00:00\" and act_cut_status<>\"DONE\" and fabric_status IN (1,5) and acutno=$cutno";
 					//echo $sql1;
 					$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1x=mysqli_fetch_array($sql_result1x))
 					{
-						$tab.="<br/>[+]&nbsp;<a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1x['order_tid']."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$sql_row1x['acutno']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1x['doc_no']."</a>";
+						$tran_order_tid1=$sql_row1x['order_tid'];
+						$main_tran_order_tid1=order_tid_encode($tran_order_tid1);
+						$tab.="<br/>[+]&nbsp;<a class=\"btn btn-sm btn-primary\" href=\"$path?order_tid=".$main_tran_order_tid1."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path?order_tid=".$main_tran_order_tid1."&cat_ref=".$sql_row1x['cat_ref']."&doc_id=".$sql_row1x['doc_no']."&cat_title=".$category."&clubbing=".$clubbing."&cut_no=".$sql_row1x['acutno']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1x['doc_no']."</a>";
 					}
 					$tab.="</center></td>";
 					

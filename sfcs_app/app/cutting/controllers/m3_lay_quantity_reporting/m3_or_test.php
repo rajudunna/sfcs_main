@@ -2,6 +2,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/header_scripts.php',4,'R'));?>
@@ -10,17 +11,17 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 	function firstbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 	}
 
 	function secondbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 	}
 
 	function subview()
@@ -42,9 +43,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <?php //include("menu_content.php"); ?>
 
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 
 //echo $style.$schedule.$color;
 ?>
@@ -252,6 +253,9 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	// var_dump($path);
 	// $path+&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category
 	// die();
+	//To get Encoded Color
+	$main_color = color_encode($color);
+	$main_style = style_encode($style);
 	
 	switch ($customer)
 	{
@@ -264,13 +268,13 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 				echo "<script type=\"text/javascript\"> 
 						setTimeout(\"Redirect()\",0); 
 						function Redirect() {  
-							location.href = '$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category'; 
+							location.href = '$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category'; 
 						}
 					</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"'$path'&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"'$path'&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 			}
 			break;
 		}
@@ -279,11 +283,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"'$path'&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"'$path'&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 			}
 			break;
 		}
@@ -292,11 +296,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 			}
 			break;
 		}
@@ -307,11 +311,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 				}
 			}
 			else
@@ -319,12 +323,12 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
 					//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"../cut_plan_new_ms/new_doc_gen/m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 				}
 				else
 				{
 					//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"../cut_plan_new_ms/new_doc_gen/m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 				}
 			}
 			break;
@@ -332,7 +336,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		
 		default:
 		{
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$color&style=$style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$path&color=$main_color&style=$main_style&schedule=$schedule&order_tid=$order_tid&cat_ref=$category\"; }</script>";
 		}
 		
 	}
@@ -374,6 +378,9 @@ if(isset($_POST['submit2']))
 		}
 		
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
+		//To get Encoded Color
+	    $main_color = color_encode($color);
+	    $main_style = style_encode($style);
 	
 	switch ($customer)
 	{
@@ -381,11 +388,11 @@ if(isset($_POST['submit2']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -394,11 +401,11 @@ if(isset($_POST['submit2']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -407,11 +414,11 @@ if(isset($_POST['submit2']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -422,29 +429,29 @@ if(isset($_POST['submit2']))
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 			}
 			else
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 			}
 			break;
 		}
 		default:
 		{
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 		}
 		
 	}
@@ -494,6 +501,9 @@ if(isset($_POST['submit3']))
 		if($schedule>0)
 {
 		$customer=substr($customer,0,((strlen($customer)-2)*-1));
+		//To get Encoded Color
+	    $main_color = color_encode($color);
+	    $main_style = style_encode($style);
 	
 	switch ($customer)
 	{
@@ -501,11 +511,11 @@ if(isset($_POST['submit3']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -514,11 +524,11 @@ if(isset($_POST['submit3']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -527,11 +537,11 @@ if(isset($_POST['submit3']))
 		{
 			if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			else
 			{
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 			}
 			break;
 		}
@@ -543,22 +553,22 @@ if(isset($_POST['submit3']))
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 			}
 			else
 			{
 				if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 				else
 				{
-					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 				}
 			}
 			
@@ -567,7 +577,7 @@ if(isset($_POST['submit3']))
 		}
 		default:
 		{
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$color&style=$style&schedule=$schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"m3_lay_reporting_v2.php?color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";
 		}
 		
 	}

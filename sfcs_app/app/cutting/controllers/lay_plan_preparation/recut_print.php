@@ -1,7 +1,8 @@
 <?php include('../../../../common/config/config.php'); ?>
 <?php include('../../../../common/config/functions.php'); ?>
+<?php include('../../../../common/config/functions_dashboard.php'); ?>
 <?php
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
 if($_GET['print_status']<>'')

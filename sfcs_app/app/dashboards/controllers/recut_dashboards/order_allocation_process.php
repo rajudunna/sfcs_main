@@ -1,4 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php
 
@@ -98,16 +99,20 @@ if(isset($_POST['Update']))
 			$style=$sql_row['order_style_no'];
 			$schedule=$sql_row['order_del_no'];
 		}
-		
+	    //To get Encoded Color & style
+	    $main_style = style_encode($style);
+	    $main_color = color_encode($color);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
 				sweetAlert('Allocated Successfully','','success');	 
-				location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color&style=$style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
-	}else{	
+				location.href = \"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&serial_no=$serial_no\"; }</script>";	
+	}else{
+	    //Encoding order_tid
+        $main_tran_order_tid=order_tid_encode($tran_order_tid);	
 		echo "<script type='text/javascript'>
 				sweetAlert('Allocation Failed','Please Fill Max Plies Per Cut','error');
 			   setTimeout('Redirect()',0);
 			   function Redirect(){
-					location.href='".getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=$tran_order_tid&check_id=$check_id&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&serial_no=$serial_no';
+					location.href='".getFullURL($_GET['r'], 'order_allocation_form2.php', 'N')."&tran_order_tid=$main_tran_order_tid&check_id=$check_id&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&serial_no=$serial_no';
 			   }
 			   </script>";
 

@@ -873,10 +873,19 @@ else if($concurrent_flag == 0)
 				$bundle_individual_number = $value;
 				$remain_qty_key = $r_reasons[$reason_key];
 				$remain_qty_value = $r_qty[$reason_key];
+				//qry for get reason code
+				$rejection_code_fetech_qrys = "select reason_code,form_type from $bai_pro3.bai_qms_rejection_reason where sno= '$remain_qty_key'";
+				$result_rejection_code_fetech_qrys = $link->query($rejection_code_fetech_qrys);
+				while($rowresult_rejection_code_fetech_qrys = $result_rejection_code_fetech_qrys->fetch_assoc()) 
+				{
+					$reason_code = $rowresult_rejection_code_fetech_qrys['reason_code'];
+					$type = $rowresult_rejection_code_fetech_qrys['form_type'];
+				}
+				$remarks_var = $b_module[$key].'-'.$b_shift.'-'.$type;
 				if($remain_qty_value > 0)
 				{
 					$actual_rejection_reason_array_string[] =  $bundle_individual_number.'-'.$remain_qty_key.'-'. $remain_qty_value ;
-					$remarks_code = $remain_qty_key.'-'.$remain_qty_value;
+					$remarks_code = $reason_code.'-'.$remain_qty_value;
 					$bulk_insert_rej = "INSERT INTO $bai_pro3.bai_qms_db(`qms_style`, `qms_schedule`,`qms_color`,`log_user`, `log_date`, `qms_size`, `qms_qty`, `qms_tran_type`,`remarks`, `ref1`, `doc_no`, `input_job_no`, `operation_id`, `qms_remarks`, `bundle_no`) VALUES";
 					$bulk_insert_rej .= '("'.$b_style.'","'.$b_schedule.'","'.$b_colors[$key].'",user(),"'.date('Y-m-d').'","'.$b_size_code[$key].'","'.$remain_qty_value.'","3","'.$remarks_var.'","'.$remarks_code.'","'.$b_doc_num[$key].'","'.$b_job_no.'","'. $b_op_id.'","'. $b_remarks[$key].'","'.$bundle_individual_number.'")';
 					$rej_insert_result = $link->query($bulk_insert_rej) or exit('data error');

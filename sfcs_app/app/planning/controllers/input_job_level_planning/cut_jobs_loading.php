@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -76,26 +77,26 @@ body
 function firstbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url1+"&style="+document.test.style.value;
+	window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value
 }
 
 function secondbox()
 {
 	var url2 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url2+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	window.location.href =url2+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
-{
+{ 
 	var url3 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	window.location.href =url3+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function fourthbox()
 {
 	var url4 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+	window.location.href =url4+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&cutno="+document.test.cutno.value;
 }
 
 $(document).ready(function() {
@@ -168,9 +169,9 @@ $(document).ready(function() {
 <?php 
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));?>
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
@@ -420,12 +421,15 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	//$module=$_POST['modules'];
 	$color=$_POST['color'];
 	$cutno=$_POST['cutno'];
-
-
-	$color=$_POST['color'];
+    
+    //Encoded values
+    $main_style=style_encode($style);
+    $main_color=color_encode($color);
+ 
+	//$color=$_POST['color'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code\"; }</script>";
 	// echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
-	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color';</script>";
+	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$main_style&schedule=$schedule&cutno=$cutno&color=$main_color';</script>";
 	// echo "<script>window.close ();</script>";
 	
 	}

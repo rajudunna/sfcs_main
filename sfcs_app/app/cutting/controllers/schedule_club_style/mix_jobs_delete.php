@@ -1,14 +1,15 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));       
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));	       
 ?>  
 
 <script> 
 
     function firstbox() 
     { 
-        window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+document.test.style.value 
+        window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
     } 
 
     </script> 
@@ -19,7 +20,7 @@
     <form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs_delete.php',0,'R') ?>"> 
 
     <?php 
-        $style=$_GET['style'];
+        $style=style_decode($_GET['style']);
 
         if(isset($_POST['submit'])) 
         { 

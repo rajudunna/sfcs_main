@@ -42,8 +42,11 @@ function gettabledata($params)
 {
 	$params = explode(",",$params);
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
-	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$params[1]' and color = '$params[0]' order by CAST(tos.operation_order AS CHAR)";
+    $main_color = color_decode($params[0]);
+    $main_style = style_decode($params[1]);
+	$qry_get_table_data_oper_data = "select *,tor.id as operation_id,tor.operation_name as ops_name,tos.id as main_id,supplier_name,tos.operation_name as operation_id,tos.operation_code as operation_code from $brandix_bts.tbl_style_ops_master tos left join $brandix_bts.tbl_orders_ops_ref tor on tor.id=tos.operation_name left join $brandix_bts.tbl_suppliers_master tsm on tsm.id = tos.emb_supplier where style = '$main_style' and color = '$main_color' order by CAST(tos.operation_order AS CHAR)";
 	//echo $qry_get_table_data_oper_data;
 	$result_style_data = $link->query($qry_get_table_data_oper_data);
 	if ($result_style_data->num_rows > 0) {
@@ -51,7 +54,7 @@ function gettabledata($params)
 		{
 			
 			//validation for operations if exists in schedule operations master #2864
-			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$params[1]' AND ColorId='$params[0]' and OperationNumber='$row[operation_code]'";
+			$qry_ops_validation="SELECT * FROM $bai_pro3.schedule_oprations_master WHERE Style='$main_style' AND ColorId='$main_color' and OperationNumber='$row[operation_code]'";
 			$qry_ops_validation_data = $link->query($qry_ops_validation);
 			if ($qry_ops_validation_data->num_rows > 0) {
 				//echo "</br>validation working..!</br>";
@@ -91,13 +94,15 @@ if(isset($_GET['pro_style_schedule']))
 function getscheduledata($pro_style)
 {
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
-	$query_get_schedule_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$pro_style' group by style,color";
+    $main_style= style_decode($pro_style);
+	$query_get_schedule_data= "select id,color from $brandix_bts.tbl_style_ops_master where style='$main_style' group by style,color";
 	//echo $query_get_schedule_data;exit;
 	$result = $link->query($query_get_schedule_data);
 	$json = array();
    while($row = $result->fetch_assoc()){
-        $json[$row['id']] = $row['color'];
+        $json[$row['id']] =$row['color'];
    }
    echo json_encode($json);
 	
@@ -137,8 +142,13 @@ function Getdata($oper_name)
 {
 	error_reporting (0);
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
 	$oper_name = explode(",",$oper_name);
+	
+	$main_color = color_decode($oper_name[1]);
+    $main_style = style_decode($oper_name[2]);
+	
 	//var_dump($oper_name);
 	if($oper_name[3] == 100)
 	{
@@ -151,7 +161,7 @@ function Getdata($oper_name)
 	}
 	else
 	{
-		$operation_name_validation = "SELECT count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_name = $oper_name[0] and color = '$oper_name[1]' and style = '$oper_name[2]'";
+		$operation_name_validation = "SELECT count(*)as cnt from $brandix_bts.tbl_style_ops_master where operation_name = $oper_name[0] and color = '$main_color' and style = '$main_style'";
 		$result_validate = $link->query($operation_name_validation);
 		while($row_validate = $result_validate->fetch_assoc()) 
 		{
@@ -233,12 +243,19 @@ function savingdata($saving)
 {
 	error_reporting (0);
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
 	$saving1 = explode(",",$saving);
+
+	$main_color = color_decode($saving1[10]);
+    $main_style = style_decode($saving1[9]);
+
+
+	
 	if($saving1[15] != 0)
 	{
 		//echo "ops_dep".$saving1[15];
-		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$saving1[9] and color = $saving1[10] and operation_code=$saving1[15]";
+		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style='$main_style' and color = '$main_color' and operation_code=$saving1[15]";
 		//echo $qry_check_dependency;
 		$result_chck_cnt = $link->query($qry_check_dependency);
 		  while($row = $result_chck_cnt->fetch_assoc()){
@@ -253,7 +270,8 @@ function savingdata($saving)
    if($cnt > 0)
    {
 	    // var_dump("sssssiii".$saving);
-		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component,manual_smv) values ($saving)";
+		$saving_sub_oper_data_qry = "insert into $brandix_bts.tbl_style_ops_master (parent_id,operation_name,operation_order,smo,smv,m3_smv,operation_code,default_operration,priority,style,color,from_m3_check,barcode,emb_supplier,ops_sequence,previous_operation,ops_dependency,component,manual_smv) values ($saving1[0],'$saving1[1]','$saving1[2]','$saving1[3]','$saving1[4]','$saving1[5]','$saving1[6]',$saving1[7],'$saving1[8]','$main_style','$main_color','$saving1[11]',$saving1[12],'$saving1[13]','$saving1[14]',$saving1[15],$saving1[16],$saving1[17],'$saving1[18]')";
+		// echo $saving_sub_oper_data_qry;
 		// echo $saving_sub_oper_data_qry;
 		$spdr = $link->query($saving_sub_oper_data_qry);
 		//echo $saving_sub_oper_data_qry;
@@ -275,7 +293,7 @@ function savingdata($saving)
 				// echo "Hi".$temp."</br>";
 				//echo $sub_ops_code_compare;
 				$saving_sub_oper_data_qry = "bt into $brandix_bts.tbl_style_ops_master (operation_name,operation_code,operation_order,default_operration,ops_sequence,ops_dependency,component,barcode,manual_smv) values ($saving)";
-				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= '$saving1[2]' and id != $last_id and style = $saving1[9] and color = $saving1[10] and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
+				$checking_for_same_ops_order = "select id,operation_order from $brandix_bts.tbl_style_ops_master where CAST(operation_order AS CHAR) >= '$saving1[2]' and id != $last_id and style = '$main_style' and color = '$main_color' and CAST(operation_order AS CHAR) like '$sub_ops_code_compare' order by operation_order";
 			// echo $checking_for_same_ops_order;
 				$result_checking_for_same_ops_order = $link->query($checking_for_same_ops_order);
 				if($result_checking_for_same_ops_order->num_rows > 0)
@@ -297,7 +315,7 @@ function savingdata($saving)
 			}
 			else
 			{
-				$fetching_all_rows= "select * from $brandix_bts.tbl_style_ops_master where id != $last_id and style = $saving1[9] and color = $saving1[10] order by operation_order ASC";
+				$fetching_all_rows= "select * from $brandix_bts.tbl_style_ops_master where id != $last_id and style = '$main_style' and color = '$main_color' order by operation_order ASC";
 				//echo $fetching_all_rows;
 				$result_fetching_all_rows = $link->query($fetching_all_rows);
 				if($result_fetching_all_rows->num_rows > 0)
@@ -467,12 +485,16 @@ function updating($editable_data)
 {
 	$editable_data = explode(",",$editable_data);
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
+
+	$main_color = color_decode($editable_data[8]);
+    $main_style = style_decode($editable_data[7]);
 
 	//echo $editable_data[6];
 	if($editable_data[4] != ''|| $editable_data[4] !=0)
 	{
-		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style=$editable_data[7] and color = $editable_data[8] and operation_code=$editable_data[9]";
-		//echo $qry_check_dependency;
+		$qry_check_dependency = "select count(*)as cnt from $brandix_bts.tbl_style_ops_master where style='$main_style' and color = '$main_color' and operation_code=$editable_data[9]";
+		// echo $qry_check_dependency;
 		$result_chck_cnt = $link->query($qry_check_dependency);
 		  while($row = $result_chck_cnt->fetch_assoc()){
 			$cnt = $row['cnt'];
@@ -683,8 +705,12 @@ function dependency_ops_validation($dependency_ops_ary)
 	$dependency_ops_ary = explode(",",$dependency_ops_ary);
 	//var_dump($dependency_ops_ary);
 	include("../../../../../common/config/config_ajax.php");
+	include("../../../../../common/config/functions_dashboard.php");
 
-	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db where order_style_no='$dependency_ops_ary[1]' and order_col_des='$dependency_ops_ary[2]'";
+	$main_color = color_decode($dependency_ops_ary[2]);
+    $main_style = style_decode($dependency_ops_ary[1]);
+	
+	$check_for_order_id_query = "select order_tid from $bai_pro3.bai_orders_db where order_style_no='$main_style' and order_col_des='$main_color'";
 	//echo $check_for_order_id_query;
 	$check_for_order_id = $link->query($check_for_order_id_query);
     foreach($check_for_order_id as $key=> $value){
@@ -695,7 +721,7 @@ function dependency_ops_validation($dependency_ops_ary)
 			$flag = 4;
 		}
 		else {
-			$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and operation_id = '$dependency_ops_ary[0]'";
+			$smv_query = "select count(id)as cnt from $brandix_bts.bundle_creation_data where style='$main_style' and color = '$main_color' and operation_id = '$dependency_ops_ary[0]'";
 			//echo $smv_query;
 			$result_validation_smv_query = $link->query($smv_query);
 			//$flag = 0;
@@ -708,7 +734,7 @@ function dependency_ops_validation($dependency_ops_ary)
 			}
 			if($count_pre == 0)
 			{
-				$smv_query = "select count(ops_dependency)as cnt from $brandix_bts.tbl_style_ops_master where style='$dependency_ops_ary[1]' and color = '$dependency_ops_ary[2]' and ops_dependency = '$dependency_ops_ary[0]'";
+				$smv_query = "select count(ops_dependency)as cnt from $brandix_bts.tbl_style_ops_master where style='$main_style' and color = '$main_color' and ops_dependency = '$dependency_ops_ary[0]'";
 				$result_validation_smv_query = $link->query($smv_query);
 				//$flag = 0;
 				if(mysqli_num_rows($result_validation_smv_query) > 0)

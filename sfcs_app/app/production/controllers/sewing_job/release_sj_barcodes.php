@@ -1,22 +1,23 @@
 <?php
-	$style = $_GET['style'];
-	$schedule = $_GET['schedule'];
-    $sewing_job = $_GET['sewing_job'];
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
+    $style = style_decode($_GET['style']);
+	$schedule = $_GET['schedule'];
+    $sewing_job = $_GET['sewing_job'];
 ?>
 
 	<script type="text/javascript">
 		var url1 = '<?= getFullURL($_GET['r'],'release_sj_barcodes.php','N'); ?>';
 		function firstbox()
 		{
-			window.location.href =url1+"&style="+document.form_name.style.value
+			window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.form_name.style.value)))
 		}
 
 		function secondbox()
 		{
-			window.location.href =url1+"&style="+document.form_name.style.value+"&schedule="+document.form_name.schedule.value
+			window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.form_name.style.value)))+"&schedule="+document.form_name.schedule.value
 		}
 	</script>
 <?php

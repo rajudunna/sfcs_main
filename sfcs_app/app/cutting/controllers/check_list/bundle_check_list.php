@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
 
 	if(isset($_POST['style']))
@@ -10,7 +11,7 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 ?>
@@ -19,7 +20,7 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.check_list_select.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.check_list_select.style.value)))
 	}
 </script>
 <style>
@@ -144,6 +145,8 @@
 									{
 										$display_final_job = $ijno;
 									}
+									//Encoded style and color
+									$main_style = style_encode($style);
 									echo "<tr>
 											<td>".$rowcount."</td>
 											<td>".chr($m['color_code']).leading_zeros($m['acutno'],3)."</td>
@@ -153,7 +156,7 @@
 											<td>".$m['bundles']."</td>
 											<td>".$m['qty']."</td>
 											<td >
-												<a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
+												<a class='btn btn-warning' href='$url1?style=$main_style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."'' onclick=\"return popitup2('$url1?style=$main_style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
 											</td>
 										</tr>";
 									$rowcount++;

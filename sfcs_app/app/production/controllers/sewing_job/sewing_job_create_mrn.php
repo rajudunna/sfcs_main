@@ -21,7 +21,7 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.mini_order_report.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function check_val()
@@ -61,6 +61,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 	$has_permission=haspermission($_GET['r']);
 	if(isset($_POST['style']))
 	{
@@ -69,7 +70,7 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 	
@@ -138,10 +139,10 @@
 				{	
 					if ($_GET['style'] and $_GET['schedule'])
 					{
-						$style_id=$_GET['style'];
+						$style_id=style_decode($_GET['style']);
 						$sch_id=$_GET['schedule'];
 						$schedule1 = $_GET['schedule'];
-						$style1 = $_GET['style'];
+						$style1 = style_decode($_GET['style']);
 					} 
 					else if ($_POST['style'] and $_POST['schedule'])
 					{
@@ -222,13 +223,15 @@
 								echo "<td>".$cut_jobs_new."</td>";
 								echo "<td>".strtoupper($sql_row['size_code'])."</td>";
 								echo "<td>".$sql_row['carton_act_qty']."</td>";
-								$mrn_status=$sql_row['mrn_status']; 
+								$mrn_status=$sql_row['mrn_status'];
+								//To get Encoded style
+	                            $main_style = style_encode($style); 
 								if($mrn_status>0)
 								{							
 									echo "<td><center>Confirmed</center></td>";
 									if(in_array($authorized,$has_permission))
 									{ 
-										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=$style&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
+										echo "<td><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&inputjobno=".$sql_row['input_job_no_random']."&style=".$main_style."&schedule=".$schedule."&var1=1\" onclick=\"clickAndDisable(this);\" name=\"return\">Return</a></center></td>";
 									}
 									else{
 										echo "<td></td>";
@@ -259,9 +262,10 @@
 										$sql58="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' limit 1";
 										$sql_result58=mysqli_query($link, $sql58) or exit("Sql Error58".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check_count_new=mysqli_num_rows($sql_result58);
-									
+									    //To get Encoded style
+	                                    $main_style = style_encode($style);
 										if($sql_num_check_count>0 or $ims_log_backup_count>0 or $sql_num_check_count_new>0){
-										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=$style&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
+										echo "<td ><center><a class='btn btn-info btn-xs' href=\"".getFullURL($_GET['r'], "sewing_job_create_mrn.php", "N")."&style=".$main_style."&schedule=".$schedule."&inputjobno=".$sql_row['input_job_no_random']."&var1=2\" onclick=\"clickAndDisable(this);\">Confirm</a></center></td>";
 										echo "<td></td>";
 										}else{
 											echo"<td><center>Plan Not Done</center></td>";
@@ -295,7 +299,7 @@
 					//added m3 db in query
 					$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					$sql14="SELECT co_no FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule' and order_style_no='$style'";					
@@ -324,6 +328,8 @@
 							$input_module=$sql_row76['input_module'];
 						}
 					}
+					//To get Encoded style
+	                $main_style = style_encode($style);
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status  FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$inputjobno' AND mrn_status ='1'";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check1=mysqli_num_rows($sql_result01);
@@ -383,7 +389,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Reversal successfully Completed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 							}
 							</script>";
 						}
@@ -393,7 +399,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('Reversal Failed','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -438,7 +444,7 @@
 						}
 					}
 					$schedule=$_GET['schedule'];
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$inputjobno=$_GET['inputjobno'];
 					$op_code=1;
 					
@@ -467,7 +473,9 @@
 							$log_time=$sql_row76['log_time'];
 							$input_module=$sql_row76['input_module'];
 						}
-					}				
+					}
+					//To get Encoded style
+	                 $main_style = style_encode($style);				
 					$sql55="SELECT tid,input_job_no,order_del_no,mrn_status,type_of_Sewing  FROM $bai_pro3.packing_summary_input WHERE  input_job_no_random='$inputjobno' AND (mrn_status IS NULL OR mrn_status='0')";
 					$sql_result01=mysqli_query($link, $sql55) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// $tid=array();
@@ -561,6 +569,7 @@
 						{
 							$schedule_id=$sql_row11['id'];
 						}
+						
 						if($sql_num_check5>0)
 						{
 							$pass_update1="update $bai_pro3.pac_stat_log_input_job set mrn_status='1' where input_job_no_random='$inputjobno'";
@@ -569,7 +578,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Successfully','','success');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -580,7 +589,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Confirmed Failed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 
 							}
 							</script>";
@@ -604,7 +613,7 @@
 							$('#loading-image').hide();
 							function Redirect() {
 							sweetAlert('MRN Already Confirmed','','warning');
-							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$style&schedule=$schedule\";
+							location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_create_mrn.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 
 							}
 							</script>";

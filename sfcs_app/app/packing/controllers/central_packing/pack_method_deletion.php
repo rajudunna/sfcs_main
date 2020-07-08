@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.pack_load.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.pack_load.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+document.pack_load.style.value+"&schedule="+document.pack_load.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.pack_load.style.value)))+"&schedule="+document.pack_load.schedule.value
 	}
 
 	
@@ -44,6 +44,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
     $has_permission=haspermission($_GET['r']);
@@ -62,7 +63,7 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 		echo "<form name=\"pack_load\" action=\"#\" method=\"post\" >";

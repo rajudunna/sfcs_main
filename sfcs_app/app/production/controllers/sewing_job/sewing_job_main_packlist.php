@@ -40,6 +40,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 	// $carton_id=$_GET["id"];
 	$schedule=$_GET["schedule"];
 	$seq_no=$_GET["seq_no"];
@@ -1258,7 +1259,9 @@
 	}
 	echo "</table>";	
 	echo "<script>sweetAlert('Data Saved Successfully','','success')</script>";
-	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
+	//Encoded Style
+    $main_style = style_encode($style);
+	echo("<script>location.href = '".getFullURLLevel($_GET['r'],'create_sewing_job_packlist.php',0,'N')."&style=$main_style&schedule=$schedule';</script>");		
 ?> 
 </div></div>
 </body>

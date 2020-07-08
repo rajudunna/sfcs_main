@@ -7,6 +7,7 @@ Change Log:
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 
 <style>
@@ -61,7 +62,7 @@ Change Log:
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
 
 <?php	
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -72,12 +73,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$style=$sql_row['order_style_no'];
 	$schedule=$sql_row['order_del_no'];
 }
+//Encoding color
+$main_color = color_encode($color);
+$main_style = style_encode($style);
 ?>
 
 <div class="panel panel-primary">
 <div class="panel-heading">Marker Form</div>
 <div class="panel-body">
-<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
+<?php echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a>";?>	
 <FORM method="post" name="input" action="<?php echo getFullURL($_GET['r'], "order_maker_process.php", "N"); ?>">
 <?php
 

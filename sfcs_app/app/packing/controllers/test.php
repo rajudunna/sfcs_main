@@ -13,6 +13,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/user_acl_v1.php", 3, "R"));
 // $view_access=user_acl("SFCS_0122",$username,1,$group_id_sfcs); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/functions.php", 3, "R"));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 // include(getFullURL($_GET['r'],'header_script.php','R')); 
 
 ?>
@@ -27,19 +28,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 	}
 </style>
 <script>
+
+	$(document).ready(function()
+	{
+		$("[name='hold']").prop("disabled",true);
+	});
 	function firstbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value
+		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		window.location.href ="<?php echo 'index.php?r='.$_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 	}
 	function negative(){
 		var element = document.getElementById('crts');
@@ -48,12 +54,20 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config
 			sweetAlert('Cartons should not be negative','','warning');
 			element.value = 0;
 		}
+		else if(cartons!='' && cartons >= 0)
+		{
+			$("[name='hold']").prop("disabled",false);
+		}
+		else if(cartons == '')
+		{
+			$("[name='hold']").prop("disabled",true);
+		}
 	}
 </script>
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 ?>
 
 <div class="panel panel-primary">
@@ -333,7 +347,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	//echo "<tr><td><input type=\"checkbox\" value=\"1\" name=\"sel[$x]\"><input type=\"hidden\" name=\"ship_id[$x]\" value=\"".$sql_row['ship_tid']."\"></td>";
 	echo "<tr>";
-	if($sql_row['ship_cartons']){
+	if($sql_row['ship_cartons']!='' || $sql_row['ship_cartons'] != NULL){
 	$unset_url = getFullURL($_GET['r'],'unset.php','N').'&ship_tid='.$sql_row['ship_up_date'];
 	echo "<td><input type=\"checkbox\" value=\"".$sql_row['ship_up_date']."\" id='chk' onchange='check_clicked()' name=\"sel[$x]\"></td>";
 	echo "<td><a class='btn btn-xs btn-info' href='$unset_url'>Un-Set</a></td>";
@@ -1331,10 +1345,10 @@ for ($k=0; $k < sizeof($color_array); $k++)
 			echo "<tr><td>".$color_array[$k]."</td><td>".$size_value[$i]."</td><td>".$order_qty."</td><td>".$fg_qty."</td><td>".$ship_qty."</td><td>".$available_qty."</td>";
 			if($available_qty>0)
 			{
-				echo "<td><input type='text' class='integer' id='$i' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
-				      onkeyup='validateshipqty(this)'>
-				<input type='hidden'  value='$available_qty' id='".$i."_avl'>
-			    <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
+				echo "<td><input type='text' class='integer' id='".$i."_".$x."' name=\"qty[$x]\" id=\"qty\" value=\"$available_qty\" 
+                      onkeyup='validateshipqty(this)'>
+                <input type='hidden'  value='$available_qty' id='".$i."_".$x."_avl'>
+                <input type=\"hidden\" name=\"size[$x]\" value=\"".$sizes[$i]."\"></td>";
 			}
 			else
 			{

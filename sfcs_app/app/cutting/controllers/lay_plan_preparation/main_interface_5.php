@@ -112,6 +112,8 @@ echo "<div>
 						{
 							$ratio=$sql_row2['ratio'];
 						}
+						//Encoding order_tid
+                        $main_tran_order_tid=order_tid_encode($tran_order_tid1);
 						echo "
 						<tr class=\"  \">";
 							//echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
@@ -124,10 +126,11 @@ echo "<div>
 							
 							echo "<td class=\"  \"><center>".$mkeff1."</center></td>";
 							echo "<td class=\"  \"><center>".$mk_version."</center></td>";
-
+             
 							if($mk_ref1==0)
 							{
-								echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1\">Create</a>";
+								
+								echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1\">Create</a>";
 							}
 							else
 							{
@@ -136,7 +139,7 @@ echo "<div>
 									and order_tid='$tran_order_tid1' and print_status is not null ";
 								if(mysqli_num_rows(mysqli_query($link,$print_status_query)) > 0 ){
 									echo "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
-									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
+									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$main_tran_order_tid&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 								}else{
 									echo "<td class=\"  \"><center>Updated</center></td>";
 									// if($mk_status1==9)
@@ -156,7 +159,7 @@ echo "<div>
 							if(mysqli_num_rows($sql_result21)==0)
 							{
 								$dummy++;
-								echo "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
+								echo "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
 							}
 							else
 							{

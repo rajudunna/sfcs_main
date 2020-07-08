@@ -81,7 +81,7 @@ echo "<table class='table table-bordered'>";
 echo "<tr><th colspan=10>Production Plan for $section_display_name</th><th colspan=20 style='text-align:left;'>Date : ".date("Y-m-d H:i")."</th></tr>";
 echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Priority 2</th><th>Remarks</th><th>Priority 3</th><th>Remarks</th><th>Priority 4</th><th>Remarks</th><th>Priority 5</th><th>Remarks</th><th>Priority 6</th><th>Remarks</th><th>Priority 7</th><th>Remarks</th><th>Priority 8</th><th>Remarks</th><th>Priority 9</th><th>Remarks</th><th>Priority 10</th><th>Remarks</th><th>Priority 11</th><th>Remarks</th><th>Priority 12</th><th>Remarks</th><th>Priority 13</th><th>Remarks</th><th>Priority 14</th><th>Remarks</th></tr>";
 
-$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
+$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no and module_master.status='active' GROUP BY section ORDER BY section + 0";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -100,7 +100,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:</td>";
 		$module=$mods[$x];
 		
-		$sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module AND (act_cut_status<>'DONE' OR ( act_cut_status = 'DONE' AND a_plies <> p_plies)) GROUP BY doc_no order by priority LIMIT 14";
+		$sql1="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND (act_cut_status<>'DONE' OR ( act_cut_status = 'DONE' AND a_plies <> p_plies)) and short_shipment_status = 0 AND cat_ref != '' GROUP BY doc_no order by priority LIMIT 14";
 		// echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result1);
@@ -112,6 +112,18 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			$rm_update_new=strtolower(chop($sql_row1['rm_date']));
 			$input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
 			$doc_no=$sql_row1['doc_no'];
+			$sq_mf="select manual_flag from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+            $sql_result_mf=mysqli_query($link, $sq_mf) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+            if(mysqli_num_rows($sql_result_mf)>0)
+            {
+                while($sql_row_mf=mysqli_fetch_array($sql_result_mf))
+                {
+                    $manual_flag_val=$sql_row_mf['manual_flag'];
+                }
+            }
+            //echo $doc_no."--".$manual_flag_val."<br/>";
+            if($manual_flag_val == 0)
+            {
 			$order_tid=$sql_row1['order_tid'];
 			$fabric_status=$sql_row1['fabric_status_new'];
 			
@@ -285,7 +297,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 echo "<td>".$style."<br/><strong>".$schedule."<br/>".implode(", ",$club_c_code)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location / B.L.: </br>Col:".strtoupper($id)."</br><b>Ex-FT: $ex_factory</b><br/><b>DID: $doc_no</b></td>";
-
+			}
 		}
 		
 		for($i=1;$i<=14-$sql_num_check;$i++)

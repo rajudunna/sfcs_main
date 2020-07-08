@@ -8,6 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',1,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
 $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
 $authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
@@ -54,17 +55,17 @@ body
 var url = '<?= getFullURLLevel($_GET['r'],'embellishment_test_new.php',0,'N'); ?>';
 function firstbox()
 {
-	window.location.href =url+"&style="+document.test.style.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 }
 </script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
@@ -75,9 +76,9 @@ function thirdbox()
 
 <?php 
 
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 
 ?>
 

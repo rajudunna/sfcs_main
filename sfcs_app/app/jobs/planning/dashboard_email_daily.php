@@ -9,7 +9,16 @@ error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-$date=date("Y-m-d");
+if($_GET['date'])
+{
+	$date=$_GET['date'];
+}
+else
+{
+	$date=date("Y-m-d");
+}
+
+//$date=date("Y-m-d");
 $heading="Today";
 
 
@@ -52,6 +61,7 @@ white-space:nowrap;
 
 </style></head><body><table>';
 $sms="";
+$decimal_factor=2;
 	$message.="<tr><th colspan=6>SAH Report $date</th></tr>";
 	$message.="<tr><th>Section</th><th>Plan SAH</th><th>Actual SAH</th><th>Output</th><th>Rework</th><th>EFF %</th></tr>";
 	$sms.="S-P-A-O-E%\r\n";
@@ -89,10 +99,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$plan_sth=$sql_row['plan_sth'];
-			$plan_clh=$sql_row['plan_clh'];
-			$act_sth=$sql_row['act_sth'];
-			$act_clh=$sql_row['act_clh'];
+			$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+			$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+			$act_sth=round($sql_row["act_sth"],$decimal_factor);
+			$act_clh=round($sql_row["act_clh"],$decimal_factor);
 			$plan_out=$sql_row['plan_out'];
 			$act_out=$sql_row['act_out'];
 			$rework=$sql_row['rework'];
@@ -108,16 +118,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 		}
 
-		$message.="<tr><td align=center>".$sec_ids[$i]."</td><td align=right>".round($plan_sth,0)."</td><td align=right>".round($act_sth,0)."</td>";
-		$sms.=$sec_ids[$i]."-".round($plan_sth,0)."-".round($act_sth,0)."-".round($act_out,0);
+		$message.="<tr><td align=center>".$sec_ids[$i]."</td><td align=right>".round($plan_sth,$decimal_factor)."</td><td align=right>".round($act_sth,$decimal_factor)."</td>";
+		$sms.=$sec_ids[$i]."-".round($plan_sth,$decimal_factor)."-".round($act_sth,$decimal_factor)."-".round($act_out,$decimal_factor);
 
-		$message.="<td align=right>".round($act_out,0)."</td>";
-		$message.="<td align=right>".round($rework,0)."</td>";
+		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
+		$message.="<td align=right>".round($rework,$decimal_factor)."</td>";
 		
 		if($act_clh>0)
 		{
-			$message.="<td align=right>".round(($act_sth/$act_clh)*100,0)." %</td>";
-			$sms.="-".round(($act_sth/$act_clh)*100,0);
+			$message.="<td align=right>".round(($act_sth/$act_clh)*100,$decimal_factor)." %</td>";
+			$sms.="-".round(($act_sth/$act_clh)*100,$decimal_factor);
 		
 		}
 		else
@@ -130,15 +140,15 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 	}
 	
-	$message.="<tr><td align=center>$heading Factory</td><td align=right>".round($tot_plan_sth,0)."</td><td align=right>".round($tot_act_sth,0)."</td>";
-	$sms.="F-".round($tot_plan_sth,0)."-".round($tot_act_sth,0)."-".round($tot_act_out,0);
+	$message.="<tr><td align=center>$heading Factory</td><td align=right>".round($tot_plan_sth,$decimal_factor)."</td><td align=right>".round($tot_act_sth,$decimal_factor)."</td>";
+	$sms.="F-".round($tot_plan_sth,$decimal_factor)."-".round($tot_act_sth,$decimal_factor)."-".round($tot_act_out,$decimal_factor);
 
-	$message.="<td align=right>".round($tot_act_out,0)."</td>";
-	$message.="<td align=right>".round($tot_rework,0)."</td>";
+	$message.="<td align=right>".round($tot_act_out,$decimal_factor)."</td>";
+	$message.="<td align=right>".round($tot_rework,$decimal_factor)."</td>";
 	if($tot_act_clh>0)
 	{
-		$message.="<td align=right>".round(($tot_act_sth/$tot_act_clh)*100,0)." %</td>";
-		$sms.="-".round(($tot_act_sth/$tot_act_clh)*100,0);
+		$message.="<td align=right>".round(($tot_act_sth/$tot_act_clh)*100,$decimal_factor)." %</td>";
+		$sms.="-".round(($tot_act_sth/$tot_act_clh)*100,$decimal_factor);
 	}
 	else
 	{
@@ -156,10 +166,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$plan_sth=$sql_row['plan_sth'];
-		$plan_clh=$sql_row['plan_clh'];
-		$act_sth=$sql_row['act_sth'];
-		$act_clh=$sql_row['act_clh'];
+		$plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+		$plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+		$act_sth=round($sql_row["act_sth"],$decimal_factor);
+		$act_clh=round($sql_row["act_clh"],$decimal_factor);
 		$plan_out=$sql_row['plan_out'];
 		$act_out=$sql_row['act_out'];
 		$rework=$sql_row['rework'];
@@ -167,13 +177,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		$buyer=$sql_row['buyer'];
 		
-		$message.="<tr><td align=left>".$buyer."</td><td align=right>".round($plan_sth,0)."</td><td align=right>".round($act_sth,0)."</td>";
+		$message.="<tr><td align=left>".$buyer."</td><td align=right>".round($plan_sth,$decimal_factor)."</td><td align=right>".round($act_sth,$decimal_factor)."</td>";
 		//$message.="<td>".round($plan_out,0)."</td>";
-		$message.="<td align=right>".round($act_out,0)."</td>";
-		$message.="<td align=right>".round($rework,0)."</td>";
+		$message.="<td align=right>".round($act_out,$decimal_factor)."</td>";
+		$message.="<td align=right>".round($rework,$decimal_factor)."</td>";
 		if($act_clh>0)
 		{
-			$message.="<td align=right>".round(($act_sth/$act_clh)*100,0)." %</td>";
+			$message.="<td align=right>".round(($act_sth/$act_clh)*100,$decimal_factor)." %</td>";
 		
 		}
 		else
@@ -190,20 +200,20 @@ $sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(a
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$mtd_plan_sth=$sql_row['plan_sth'];
-		$mtd_plan_clh=$sql_row['plan_clh'];
-		$mtd_act_sth=$sql_row['act_sth'];
-		$mtd_act_clh=$sql_row['act_clh'];
+		$mtd_plan_sth=round($sql_row["plan_sth"],$decimal_factor);
+		$mtd_plan_clh=round($sql_row["plan_clh"],$decimal_factor);
+		$mtd_act_sth=round($sql_row["act_sth"],$decimal_factor);
+		$mtd_act_clh=round($sql_row["act_clh"],$decimal_factor);
 		$mtd_plan_out=$sql_row['plan_out'];
 		$mtd_act_out=$sql_row['act_out'];
 		$rework=$sql_row['rework'];
 	}
 	
-	$message.="<tr bgcolor=yellow><td align=center>Factory MTD</td><td align=right>".round($mtd_plan_sth,0)."</td><td align=right>".round($mtd_act_sth,0)."</td><td align=right>".round($mtd_act_out,0)."</td><td align=right>".round($rework,0)."</td>";
+	$message.="<tr bgcolor=yellow><td align=center>Factory MTD</td><td align=right>".round($mtd_plan_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_sth,$decimal_factor)."</td><td align=right>".round($mtd_act_out,$decimal_factor)."</td><td align=right>".round($rework,$decimal_factor)."</td>";
 	
 	if($mtd_act_clh>0)
 	{
-		$message.="<td align=right>".round(($mtd_act_sth/$mtd_act_clh)*100,0)." %</td>";
+		$message.="<td align=right>".round(($mtd_act_sth/$mtd_act_clh)*100,$decimal_factor)." %</td>";
 	
 	}
 	else

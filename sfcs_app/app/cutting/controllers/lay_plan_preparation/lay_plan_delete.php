@@ -12,6 +12,7 @@ Task: Lay Plan Delettion Validation (added IMS and Cut Completion Status)
 <?php    
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/m3Updations.php');
 $layplanmail = $conf1->get('layplanmail'); 
 //var_dump($layplanmail);
@@ -51,7 +52,7 @@ function firstbox(){
 } 
 
 function secondbox() { 
-    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+    window.location.href ="index.php?r=<?php echo $_GET['r']?>"+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 } 
 
 function verify_sch(){  
@@ -94,7 +95,7 @@ function myfunction ()
         } 
         else 
         { 
-            $color=$_GET['color']; 
+            $color=color_decode($_GET['color']); 
         } 
     }     
     elseif(isset($_POST['schedule'])) 

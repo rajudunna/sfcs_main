@@ -1,7 +1,8 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
     $id=$_GET['id'];
-    $style=$_GET['style'];
+    $style=style_decode($_GET['style']);
     $schedule=$_GET['schedule'];
     $rem_type=$_GET['rem_type'];
     $username = getrbac_user()['uname'];

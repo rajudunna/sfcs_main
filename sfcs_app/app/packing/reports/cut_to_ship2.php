@@ -1,4 +1,5 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));        ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));        
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header_scripts.php',1,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
 
@@ -14,17 +15,17 @@
 var url = "<?= getFullURL($_GET['r'],'cut_to_ship2.php','N'); ?>";
 function firstbox()
 {
-	window.location.href = url+"&style="+document.input.style.value;
+	window.location.href = url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)));
 }
 
 function secondbox()
 {
-	window.location.href =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
+	window.location.href =url+"&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.input.color.value)))
 }
 </script>
 
@@ -58,9 +59,9 @@ if(isset($_POST['filter2']))
 }
 else
 {
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule']; 
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 }
 ?>
 <?php
@@ -305,13 +306,68 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 					$order_tid=$sql_row1['order_tid'];
 					$schedule=$sql_row1['order_del_no'];
 					$color=$sql_row1['order_col_des'];
+					$main_size[]=$sql_row1['title_size_xs'];
+					$main_size[]=$sql_row1['title_size_s'];
+					$main_size[]=$sql_row1['title_size_m'];
+					$main_size[]=$sql_row1['title_size_l'];
+					$main_size[]=$sql_row1['title_size_xl'];
+					$main_size[]=$sql_row1['title_size_xxl'];
+					$main_size[]=$sql_row1['title_size_xxxl'];
+					$main_size[]=$sql_row1['title_size_s01'];
+					$main_size[]=$sql_row1['title_size_s02'];
+					$main_size[]=$sql_row1['title_size_s03'];
+					$main_size[]=$sql_row1['title_size_s04'];
+					$main_size[]=$sql_row1['title_size_s05'];
+					$main_size[]=$sql_row1['title_size_s06'];
+					$main_size[]=$sql_row1['title_size_s07'];
+					$main_size[]=$sql_row1['title_size_s08'];
+					$main_size[]=$sql_row1['title_size_s09'];
+					$main_size[]=$sql_row1['title_size_s10'];
+					$main_size[]=$sql_row1['title_size_s11'];
+					$main_size[]=$sql_row1['title_size_s12'];
+					$main_size[]=$sql_row1['title_size_s13'];
+					$main_size[]=$sql_row1['title_size_s14'];
+					$main_size[]=$sql_row1['title_size_s15'];
+					$main_size[]=$sql_row1['title_size_s16'];
+					$main_size[]=$sql_row1['title_size_s15'];
+					$main_size[]=$sql_row1['title_size_s18'];
+					$main_size[]=$sql_row1['title_size_s19'];
+					$main_size[]=$sql_row1['title_size_s20'];
+					$main_size[]=$sql_row1['title_size_s21'];
+					$main_size[]=$sql_row1['title_size_s22'];
+					$main_size[]=$sql_row1['title_size_s23'];
+					$main_size[]=$sql_row1['title_size_s24'];
+					$main_size[]=$sql_row1['title_size_s25'];
+					$main_size[]=$sql_row1['title_size_s26'];
+					$main_size[]=$sql_row1['title_size_s27'];
+					$main_size[]=$sql_row1['title_size_s28'];
+					$main_size[]=$sql_row1['title_size_s29'];
+					$main_size[]=$sql_row1['title_size_s30'];
+					$main_size[]=$sql_row1['title_size_s31'];
+					$main_size[]=$sql_row1['title_size_s32'];
+					$main_size[]=$sql_row1['title_size_s33'];
+					$main_size[]=$sql_row1['title_size_s34'];
+					$main_size[]=$sql_row1['title_size_s35'];
+					$main_size[]=$sql_row1['title_size_s36'];
+					$main_size[]=$sql_row1['title_size_s37'];
+					$main_size[]=$sql_row1['title_size_s38'];
+					$main_size[]=$sql_row1['title_size_s39'];
+					$main_size[]=$sql_row1['title_size_s41'];
+					$main_size[]=$sql_row1['title_size_s42'];
+					$main_size[]=$sql_row1['title_size_s43'];
+					$main_size[]=$sql_row1['title_size_s44'];
+					$main_size[]=$sql_row1['title_size_s45'];
+					$main_size[]=$sql_row1['title_size_s46'];
+					$main_size[]=$sql_row1['title_size_s47'];
+					$main_size[]=$sql_row1['title_size_s48'];
+					$main_size[]=$sql_row1['title_size_s49'];
+					$main_size[]=$sql_row1['title_size_s50'];
 				}
 				
 				
 				$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\", coalesce(sum(size_xs),0) as \"size_xs\", coalesce(sum(size_s),0) as \"size_s\", coalesce(sum(size_m),0) as \"size_m\", coalesce(sum(size_l),0) as \"size_l\", coalesce(sum(size_xl),0) as \"size_xl\", coalesce(sum(size_xxl),0) as \"size_xxl\", coalesce(sum(size_xxxl),0) as \"size_xxxl\", coalesce(sum(size_s01),0) as \"size_s01\", coalesce(sum(size_s02),0) as \"size_s02\", coalesce(sum(size_s03),0) as \"size_s03\", coalesce(sum(size_s04),0) as \"size_s04\", coalesce(sum(size_s05),0) as \"size_s05\", coalesce(sum(size_s06),0) as \"size_s06\", coalesce(sum(size_s07),0) as \"size_s07\", coalesce(sum(size_s08),0) as \"size_s08\", coalesce(sum(size_s09),0) as \"size_s09\", coalesce(sum(size_s10),0) as \"size_s10\", coalesce(sum(size_s11),0) as \"size_s11\", coalesce(sum(size_s12),0) as \"size_s12\", coalesce(sum(size_s13),0) as \"size_s13\", coalesce(sum(size_s14),0) as \"size_s14\", coalesce(sum(size_s15),0) as \"size_s15\", coalesce(sum(size_s16),0) as \"size_s16\", coalesce(sum(size_s17),0) as \"size_s17\", coalesce(sum(size_s18),0) as \"size_s18\", coalesce(sum(size_s19),0) as \"size_s19\", coalesce(sum(size_s20),0) as \"size_s20\", coalesce(sum(size_s21),0) as \"size_s21\", coalesce(sum(size_s22),0) as \"size_s22\", coalesce(sum(size_s23),0) as \"size_s23\", coalesce(sum(size_s24),0) as \"size_s24\", coalesce(sum(size_s25),0) as \"size_s25\", coalesce(sum(size_s26),0) as \"size_s26\", coalesce(sum(size_s27),0) as \"size_s27\", coalesce(sum(size_s28),0) as \"size_s28\", coalesce(sum(size_s29),0) as \"size_s29\", coalesce(sum(size_s30),0) as \"size_s30\", coalesce(sum(size_s31),0) as \"size_s31\", coalesce(sum(size_s32),0) as \"size_s32\", coalesce(sum(size_s33),0) as \"size_s33\", coalesce(sum(size_s34),0) as \"size_s34\", coalesce(sum(size_s35),0) as \"size_s35\", coalesce(sum(size_s36),0) as \"size_s36\", coalesce(sum(size_s37),0) as \"size_s37\", coalesce(sum(size_s38),0) as \"size_s38\", coalesce(sum(size_s39),0) as \"size_s39\", coalesce(sum(size_s40),0) as \"size_s40\", coalesce(sum(size_s41),0) as \"size_s41\", coalesce(sum(size_s42),0) as \"size_s42\", coalesce(sum(size_s43),0) as \"size_s43\", coalesce(sum(size_s44),0) as \"size_s44\", coalesce(sum(size_s45),0) as \"size_s45\", coalesce(sum(size_s46),0) as \"size_s46\", coalesce(sum(size_s47),0) as \"size_s47\", coalesce(sum(size_s48),0) as \"size_s48\", coalesce(sum(size_s49),0) as \"size_s49\", coalesce(sum(size_s50),0) as \"size_s50\" from $bai_pro.bai_log_buf where delivery=\"".$sql_row['schedule_no']."\" and color=\"".$color."\"";
 				//echo $sql2."<br/>";
-				mysqli_query($link,$sql1) or exit("Sql Error".mysqli_error());
-				$sql_result2=mysqli_query($link,$sql1) or exit("Sql Error".mysqli_error());
+				$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error".mysqli_error());
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
 					$out_qtys[]=$sql_row2['size_xs'];
@@ -898,7 +954,7 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 						echo "<td>".$sql_row['schedule_no']."</td>";
 						echo "<td class=\"lef\">".$sql_row['color']."</td>";
 						echo "<td>".substr($sql_row['sections'],0,-1)."</td>";
-						echo "<td>".$sizes_db[$i]."</td>";
+						echo "<td>".$main_size[$i]."</td>";
 						echo "<td>".$order_qtys[$i]."</td>";
 						echo "<td>".($act_cut_new+$recut_qty)."</td>";
 						echo "<td>".($act_in_new+$replaced_panels_new+($recut_qty-($recut_qty-$recut_req)))."</td>";
@@ -922,7 +978,7 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 						$display_total_rejected_panels+=abs($rejected);
 					}
 				}
-			
+			    unset($main_size);
 				unset($order_qtys);
 				unset($out_qtys);
 				unset($recut_qty_db);

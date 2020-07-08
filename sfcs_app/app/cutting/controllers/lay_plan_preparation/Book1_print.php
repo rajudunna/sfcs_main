@@ -6,11 +6,12 @@
 <?php include('../../../../common/config/config.php'); ?>
 <?php //include("../".getFullURL($_GET['r'], "", "R").""); ?>
 <?php include('../../../../common/config/functions.php'); ?> 
+<?php include('../../../../common/config/functions_dashboard.php'); ?> 
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php 
 
-    $order_tid=$_GET['order_tid'];  
+    $order_tid=order_tid_decode($_GET['order_tid']);  
     $cat_ref=$_GET['cat_ref']; 
     $cat_new = $_GET['category_new']; 
     $clubbing = $_GET['clubbing']; 

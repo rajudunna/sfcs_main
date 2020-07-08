@@ -6,11 +6,12 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 $order_quantity_mail=$conf1->get('order_quantity_mail');
 session_start();
 	if($_GET['style'])
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 	}
 	else
 	{
@@ -33,12 +34,12 @@ session_start();
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value;
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 }
 
 function secondbox()
 {
-		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value	
+		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value	
 }
 function check_style()
 {

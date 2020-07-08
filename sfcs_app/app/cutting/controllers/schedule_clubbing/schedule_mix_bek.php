@@ -3,13 +3,14 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 
 <script> 
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+document.test.style.value 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
 } 
 
 function SetAllCheckBoxes(FormName, FieldName, CheckValue) 
@@ -105,7 +106,7 @@ function check_sch_sty()
 <?php 
     error_reporting(E_ERROR | E_PARSE);
 
-    $style=$_GET['style']; 
+    $style=style_decode($_GET['style']); 
     $schedule=$_GET['schedule'];  
     //$color=$_GET['color']; 
     //$po=$_GET['po']; 
@@ -190,7 +191,7 @@ if((isset($_POST['submit']) || $_GET['schedule']>0) && short_shipment_status($_P
     $schedule=$_POST['schedule']; 
     if($_GET['schedule']>0)
 	{
-		$style=$_GET['style']; 
+		$style=style_decode($_GET['style']); 
 		$schedule=$_GET['schedule']; 
 	}	
     if ($style=='NIL' or $schedule=='NIL') 
@@ -627,7 +628,7 @@ if(isset($_POST['fix']))
 		{
 			$status=1;
 		}
-		
+		$main_style = style_encode($style);
 		if($status==0) 
 		{
 			$sql23="select MAX(SUBSTR(order_joins,-1))+1  as maxorder from $bai_pro3.bai_orders_db where  LENGTH(order_joins)<'5' and order_del_no=\"$schedule\" and $order_joins_in"; 
@@ -792,14 +793,14 @@ if(isset($_POST['fix']))
 						sweetAlert('Clubbing Successfully Done','','success');
 					</script>";	
 			
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$main_style&schedule=$schedule';</script>");
 		}                                                                                                 
 		else
 		{ 
 			echo "<script type=\"text/javascript\"> 
 						sweetAlert('You cannot proceed Schedule Clubbing.','Some of the Item Codes are not equal for selected colors.','warning');
 					</script>"; 
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");		
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$main_style&schedule=$schedule';</script>");		
 		}
 	} 
 	else 
@@ -808,7 +809,7 @@ if(isset($_POST['fix']))
 		echo "<script type=\"text/javascript\"> 
 						sweetAlert('You cannot proceed Schedule Clubbing with One Colour.','','warning');
 					</script>"; 
-		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$style&schedule=$schedule';</script>");			
+		echo("<script>location.href = '".getFullURLLevel($_GET['r'],'schedule_mix_bek.php',0,'N')."&style=$main_style&schedule=$schedule';</script>");			
 	}    
 } 
 
