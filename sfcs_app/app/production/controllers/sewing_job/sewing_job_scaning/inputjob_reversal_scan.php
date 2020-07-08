@@ -65,7 +65,7 @@
 					<label>Remarks:<span style="color:red">*</span></label>
 					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required>	
 					<?php
-					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix";
+					$get_remark = "select prefix_name from $mdm.tbl_sewing_job_prefix";
 					$get_remark_arry_req = $link->query($get_remark);
 					while($row_remark = $get_remark_arry_req->fetch_assoc()) 
 					{

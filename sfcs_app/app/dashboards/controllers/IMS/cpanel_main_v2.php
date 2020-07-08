@@ -699,7 +699,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
             {
             $rejected=$sql_row33['rejected']; 
             }   
-            $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+            $sewing_prefi=echo_title("$mdm.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
             $display = $sewing_prefi.leading_zeros($inputno,3);
            
             //To get tool-tip values
@@ -802,7 +802,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
             {
                   $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
                   $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
-                  $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
+                  $sewing_prefi=echo_title("$mdm.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
                   $display = $sewing_prefi.leading_zeros($inputno,3);
                   //   $sql33="select COALESCE(SUM(IF(qms_tran_type=3,qms_qty,0)),0) AS rejected from $bai_pro3.bai_qms_db where  input_job_no='".$pending[$kk]."' and  operation_id=$operation_out_code and SUBSTRING_INDEX(remarks,'-',1) = '$module' ";
                   //   $sql_result33=mysqli_query($link, $sql33) ;

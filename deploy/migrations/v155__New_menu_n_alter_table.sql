@@ -37,7 +37,7 @@ insert into central_administration_sfcs.rbac_role_menu ( `menu_pid`, `menu_descr
 insert into central_administration_sfcs.rbac_role_menu ( `menu_pid`, `menu_description`, `roll_id`) values('1632','Carton Handover Users List','1');
 insert into central_administration_sfcs.rbac_role_menu ( `menu_pid`, `menu_description`, `roll_id`) values('1633','Production Rejection Reasons','1');
 
-	ALTER TABLE brandix_bts.tbl_sewing_job_prefix MODIFY id INT AUTO_INCREMENT PRIMARY KEY;
+	ALTER TABLE mdm.tbl_sewing_job_prefix MODIFY id INT AUTO_INCREMENT PRIMARY KEY;
 
-	ALTER TABLE bai_rm_pj1.inspection_complaint_reasons ADD COLUMN tid INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+	ALTER TABLE mdm.inspection_complaint_reasons ADD COLUMN tid INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
  

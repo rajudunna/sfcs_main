@@ -186,7 +186,7 @@ return false;
 <div class="panel-body">
 <?php
 
-$sql="select emp_id,emp_call_name from $bai_pro3.tbl_fg_crt_handover_team_list where selected_user=user() order by lastup desc limit 1";
+$sql="select emp_id,emp_call_name from $pms.tbl_fg_crt_handover_team_list where selected_user=user() order by lastup desc limit 1";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error19=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0){

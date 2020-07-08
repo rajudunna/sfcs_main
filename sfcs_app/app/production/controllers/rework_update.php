@@ -463,7 +463,7 @@ if (isset($_POST['submit11']))
 						echo "<tr>";
 						if($rowcount_check==1)
 						{
-							$display_prefix3 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+							$display_prefix3 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
 							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix3."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];
 							// echo '<td><input type="text" name="qty[]" autocomplete="off" size="8" onchange="if(check(this.value, '.($sql_row12['ims_qty']-$sql_row12['ims_pro_qty']).')==1010){ this.value=0;}" value="0" tabindex="'.$j.'" style="background-color:green; color=white;"></td>';
@@ -472,7 +472,7 @@ if (isset($_POST['submit11']))
 						}
 						else
 						{
-							$display_prefix4 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+							$display_prefix4 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
 							
 							echo "<td>".$sql_row12['ims_style']."</td><td>".$sql_row12['ims_schedule']."</td><td>".$sql_row12['ims_color']."</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>".$display_prefix4."</td><td>".strtoupper($size_value)."</td><td>".$sql_row12['ims_qty']."</td><td>".$sql_row12['ims_pro_qty']."</td><td>".($sql_row12['ims_qty']-$sql_row12['ims_pro_qty'])."</td>";
 							$balance=$sql_row12['ims_qty']-$sql_row12['ims_pro_qty'];

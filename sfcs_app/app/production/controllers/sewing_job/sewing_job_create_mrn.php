@@ -193,7 +193,7 @@
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
 
-								$sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
+								$sql88="select type_of_sewing,prefix,bg_color from $mdm.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
 								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
 									while($sql_row88=mysqli_fetch_array($sql_result88))
 									{

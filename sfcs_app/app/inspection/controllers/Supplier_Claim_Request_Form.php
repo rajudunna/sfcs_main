@@ -444,7 +444,7 @@ if(isset($_POST['show']))
 			echo "<div class='col-md-6'>";
 			echo "<table class='table table-bordered'>";
 			echo "<tr ><th class=\"tblheading\">Reason</th><th>Effected Qty</th><th>Ratings</th><th>Remarks</th></tr>";	
-			$sql5="select * from $bai_rm_pj1.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\"";
+			$sql5="select * from $mdm.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\"";
 			// echo $sql5."<br>";
 			$result5=mysqli_query($link, $sql5) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5=mysqli_fetch_array($result5))

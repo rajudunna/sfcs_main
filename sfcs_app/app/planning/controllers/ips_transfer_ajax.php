@@ -108,7 +108,7 @@ function get_details($module){
         }
 
         // To get Prefix
-        $get_prefix="select * from  brandix_bts.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
+        $get_prefix="select * from  mdm.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
         //echo $get_prefix;
         $get_result=mysqli_query($link, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row3=mysqli_fetch_array($get_result))
@@ -124,7 +124,7 @@ function get_details($module){
         //echo $bcd_query;
         $bcd_result=mysqli_query($link, $bcd_query)or exit("recevied qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        // $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_name,$input_job,$link);
+        // $display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_name,$input_job,$link);
 
         $sql_num_check=mysqli_num_rows($bcd_result);
         if($sql_num_check >0)

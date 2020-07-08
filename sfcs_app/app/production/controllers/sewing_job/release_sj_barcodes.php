@@ -75,7 +75,7 @@
 							$sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
-								$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no'],$sql_row['input_job_no_random'],$link);
+								$display1 = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$sql_row['input_job_no'],$sql_row['input_job_no_random'],$link);
 								echo "<option value=\"".$sql_row['input_job_no_random']."\">".$display1."</option>";
 							}
 						?>

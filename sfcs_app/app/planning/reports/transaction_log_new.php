@@ -302,7 +302,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 							while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
 								$finalized_title_size_value = $sql_result_fetch["size"];
 							}
-							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+							$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
 							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
 							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];							

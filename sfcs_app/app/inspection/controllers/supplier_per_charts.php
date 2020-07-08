@@ -243,7 +243,7 @@ table{
 	
 	$text="";
 	
-	$sql2="select sno,complaint_reason FROM $bai_rm_pj1.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" ORDER BY sno";
+	$sql2="select sno,complaint_reason FROM $mdm.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" ORDER BY sno";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{

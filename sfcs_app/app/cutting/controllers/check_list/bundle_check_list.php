@@ -136,7 +136,7 @@
 									{
 										for ($i=0; $i < count($ij_array); $i++)
 										{ 
-											$display_sewing_job[] = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$ij_array[$i],$ijrand_array[$i],$link);
+											$display_sewing_job[] = get_sewing_job_prefix_inp('prefix','mdm.tbl_sewing_job_prefix',$ij_array[$i],$ijrand_array[$i],$link);
 										}
 										$display_final_job = implode(',', $display_sewing_job);
 									}

@@ -299,7 +299,7 @@ if(isset($_POST['submit']))
             while($row=mysqli_fetch_array($is_jobs_deactivated_result))
             {
                 $remarks = $row['remarks'];
-                $qry="select prefix from $brandix_bts.tbl_sewing_job_prefix where prefix_name='$remarks'";
+                $qry="select prefix from $mdm.tbl_sewing_job_prefix where prefix_name='$remarks'";
                 $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row123=mysqli_fetch_array($res))
                 {

@@ -287,8 +287,8 @@
 								$display_colors=str_replace(',',$totcount,$color);
 								//$totcount=0;
 								
-								$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
-								$bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+								$display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+								$bg_color1 = get_sewing_job_prefix("bg_color","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
 								echo "<tr height=20 style='height:15.0pt; background-color:$bg_color1;'>";
 								echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 								echo "<td height=20 style='height:15.0pt'>$po</td>";

@@ -38,7 +38,7 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $brandix_bts.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type' where id=$dr_id";
+		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type' where id=$dr_id";
 
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
@@ -65,7 +65,7 @@ else
 
 		
 
-		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and (prefix='$department' or bg_color='$type')";
+		$query1="select * from $mdm.tbl_sewing_job_prefix  where prefix_name='$code' and (prefix='$department' or bg_color='$type')";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
@@ -90,7 +90,7 @@ else
 
 
 
-		$sql = "INSERT INTO $brandix_bts.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
+		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
 		VALUES ('$code','$department','$reason','$type')";
   
 		if (mysqli_query($conn, $sql)) 

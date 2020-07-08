@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $bai_pro3.tbl_leader_name order by id desc";
+	$sql = "SELECT * FROM $pms.tbl_leader_name order by id desc";
 	$result = $conn->query($sql);
 	$sno =1;
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');

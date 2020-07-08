@@ -327,7 +327,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$endbits=$endbits+$values_joint[1];		
 		}
 
-			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
+			$s="select emp_name from $pms.tbl_leader_name where id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))

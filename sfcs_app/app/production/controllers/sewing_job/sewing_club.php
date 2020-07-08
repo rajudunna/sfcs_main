@@ -162,7 +162,7 @@ if($style != "" && $schedule != "")
 				echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>";
 				$url=getFullURL($_GET['r'],'small_popup.php','R');
 				$get_color = $sql_row["order_col_des"];
-				$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
+				$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row["order_del_no"],$get_color,$sql_row["input_job_no"],$link);
 				echo "<td height=20 style='height:15.0pt'> <a class='btn btn-success btn-sm' href='$url?schedule=$del_no_new&jobno=$job_new' onclick=\"return popitup2('$url?schedule=$del_no_new&jobno=$job_new')\" target='_blank'>".$display_prefix1."</a></td>";
 				echo "<td height=20 style='height:15.0pt'>".$sql_row["carton_act_qty"]."</td>"; 
 				if(($rows_count1 > 0) || ($plan_dash_count > 0))

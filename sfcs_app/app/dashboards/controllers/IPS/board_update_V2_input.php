@@ -350,7 +350,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				if($doc_no_ref == '')
 					$doc_no_ref = $doc_no_ref1;
 				
-			$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+			$sql="SELECT prefix as result FROM $mdm.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 			$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{

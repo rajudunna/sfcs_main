@@ -40,7 +40,7 @@
 				echo $table;
 				$i=1;
 
-				$sql="select * from $bai_pro3.bai_qms_location_db where location_type in (0,1) and active_status=0 order by qms_cur_qty desc,order_by desc";
+				$sql="select * from $pms.bai_qms_location_db where location_type in (0,1) and active_status=0 order by qms_cur_qty desc,order_by desc";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result)>0){
 					while($sql_row=mysqli_fetch_array($sql_result))

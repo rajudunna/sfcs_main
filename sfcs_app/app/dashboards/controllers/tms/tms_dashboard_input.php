@@ -618,7 +618,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				//echo $input_job_no;
 				$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);				
 				$trims_status=echo_title("$bai_pro3.bai_orders_db_confirm","min(st_status)"," order_col_des in ('".implode("','",explode(",",$order_col))."') and order_del_no",$schedule,$link);
-				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+				$sql="SELECT prefix as result FROM $mdm.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 				// echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -662,7 +662,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					}
 				}
 				
-				//$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
+				//$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
 				$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$co_no,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$order_col,80)."\n".str_pad("Job_No:".$display_prefix1,80)."\n".str_pad("Job Qty:".$qty,80);
 				$order_col='';
 				if(in_array($authorized,$has_permission))

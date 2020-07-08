@@ -37,7 +37,7 @@
             $date_n_time=$row21x["date_n_time"];
 
             $get_color = echo_title("$bai_pro3.packing_summary_input","order_col_des","order_del_no='$order_del_no' and input_job_no",$input_job_no,$link);
-            $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$get_color,$input_job_no,$link);
+            $display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$get_color,$input_job_no,$link);
 
             echo "<td>".$srno++."</td>";
             echo "<td>".$order_style_no."</td>";

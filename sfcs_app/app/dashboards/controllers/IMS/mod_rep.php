@@ -315,7 +315,7 @@
                                     $ims_doc_no=$sql_row12['ims_doc_no']; 
                                     $ims_size=$sql_row12['ims_size'];
                                     $ims_size2=substr($ims_size,2);
-                                    $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
+                                    $display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$sql_row12['ims_schedule'],$sql_row12['ims_color'],$sql_row12['input_job_no_ref'],$link);
                                     // $inputjobno=$sql_row12['input_job_no_ref'];
                                                     
                                     $sql22="SELECT plandoc_stat_log.order_tid, plandoc_stat_log.acutno, bai_orders_db_confirm.color_code FROM bai_pro3.plandoc_stat_log LEFT JOIN bai_pro3.bai_orders_db_confirm ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid where doc_no=$ims_doc_no and a_plies>0";

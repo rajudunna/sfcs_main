@@ -147,7 +147,7 @@ function enable_button()
 			$location_title=array();
 			$location_id[]="";
 			$location_title[]="";
-			$sql="select * from $bai_pro3.bai_qms_location_db where active_status=0 and qms_cur_qty<qms_location_cap order by qms_cur_qty desc,order_by desc";
+			$sql="select * from $pms.bai_qms_location_db where active_status=0 and qms_cur_qty<qms_location_cap order by qms_cur_qty desc,order_by desc";
 			//echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))

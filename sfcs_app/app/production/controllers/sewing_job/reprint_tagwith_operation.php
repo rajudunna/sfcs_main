@@ -71,8 +71,8 @@
 
 
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
-			//$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-			$display = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
+			//$display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+			$display = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 
 			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
 			
@@ -92,7 +92,7 @@
 				$sql_result=mysqli_query($link, $qry_validating_bcd) or exit($qry_validating_bcd."<br/> Error in section table ");
 				$no_rows=mysqli_num_rows($sql_result);
 				if($no_rows<=0){
-								$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
+								$display1 = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 								$html.= '<div>
 											<!--<div style="margin-left:50px;"><barcode code="'.$barcode.'-'.$opscode.'" type="C39"/ height="0.80" size="0.8" text="1"></div>-->
 											<table width="96%">

@@ -182,7 +182,7 @@ if(isset($_POST["trans_action"])){
                                             $job_number_reference = $row['type_of_sewing'];
                                         }
                                     }
-                                    $get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
+                                    $get_remark = "select prefix_name from $mdm.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
                                     $get_remark_arry_req = $link->query($get_remark);
                                     while($row_remark = $get_remark_arry_req->fetch_assoc()) 
                                     {
@@ -742,7 +742,7 @@ if(isset($_POST["trans_action"])){
                                     {
                                         
                                         $job_number_reference = $row['type_of_sewing'];
-                                        $get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
+                                        $get_remark = "select prefix_name from $mdm.tbl_sewing_job_prefix WHERE type_of_sewing= $job_number_reference";
                                         $get_remark_arry_req = $link->query($get_remark);
                                         while($row_remark = $get_remark_arry_req->fetch_assoc()) 
                                         {
@@ -2893,7 +2893,7 @@ if(isset($_POST["trans_action"])){
                                             $result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
                                             //reduce qty from location table based on location
                                             if($locationid != null) {
-                                                $sql3="update $bai_pro3.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
+                                                $sql3="update $pms.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
                                                 // echo $sql3."<br>";
                                                 $result3=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));
                                             }

@@ -22,7 +22,7 @@ CREATE TABLE  `bai_pro3`.`carton_packing_details`
 
 USE `brandix_bts`;
 
-CREATE TABLE `brandix_bts`.`packing_method_master`
+CREATE TABLE `mdm`.`packing_method_master`
 (
   `id` INT
 (11) NOT NULL AUTO_INCREMENT,

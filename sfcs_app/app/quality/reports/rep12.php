@@ -53,7 +53,7 @@ if(isset($_POST['filter'])){
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 
-	$sql="SELECT * FROM bai_qms_db LEFT JOIN $bai_pro3.bai_qms_location_db ON location_id=qms_location_id WHERE qms_location_id IS NOT NULL";
+	$sql="SELECT * FROM bai_qms_db LEFT JOIN $pms.bai_qms_location_db ON location_id=qms_location_id WHERE qms_location_id IS NOT NULL";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

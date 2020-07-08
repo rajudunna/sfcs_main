@@ -43,7 +43,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 }else{
 	if($tid>0){ 
 		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
+		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
 		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
@@ -66,7 +66,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
+		$count_qry= "select * from $mdm.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
@@ -90,7 +90,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $bai_rm_pj1.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status')";
+			$sql = "INSERT INTO $mdm.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 

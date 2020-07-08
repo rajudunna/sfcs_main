@@ -115,7 +115,7 @@
                                                 $temp+=$sql_row['carton_act_qty'];
                                                 $color=$sql_row['order_col_des'];
                                             }
-                                            $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                                            $bg_color = get_sewing_job_prefix("bg_color","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
                                             
                                             $budndle_print_sum =echo_title("$bai_pro3.packing_summary_input","sum(bundle_print_status)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
                                             $tid_count = echo_title("$bai_pro3.packing_summary_input","count(tid)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
@@ -368,7 +368,7 @@
                                                 $temp+=$sql_row['carton_act_qty'];
                                                 $color=$sql_row['order_col_des'];
                                             }
-                                            $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
+                                            $bg_color = get_sewing_job_prefix("bg_color","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row['input_job_no'],$link);
 
                                             $budndle_print_sum =echo_title("$bai_pro3.packing_summary_input","sum(bundle_print_status)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);
                                             $tid_count = echo_title("$bai_pro3.packing_summary_input","count(tid)","input_job_no='".$sql_row['input_job_no']."' and order_del_no",$schedule,$link);

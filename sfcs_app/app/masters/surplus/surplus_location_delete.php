@@ -19,7 +19,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'surplus_table.php','N');
 
-$delete="delete from $bai_pro3.bai_qms_location_db where q_id='$q_id'";
+$delete="delete from $pms.bai_qms_location_db where q_id='$q_id'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if (mysqli_query($conn, $delete)) {
   echo"<script>setTimeout(function () { 

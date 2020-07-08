@@ -1535,11 +1535,11 @@ tags will be replaced.-->
  </tr>";
  $j=0;
  $k=0;
- $sql1="select * from inspection_complaint_reasons where complaint_category=\"$product_categoy\" ORDER BY complaint_category,sno,Complaint_clasification";
+ $sql1="select * from mdm.inspection_complaint_reasons where complaint_category=\"$product_categoy\" ORDER BY complaint_category,sno,Complaint_clasification";
  $result1=mysqli_query($link, $sql1) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($result1))
  {	
- 	$sql2="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\"";
+ 	$sql2="select * from mdm.inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\"";
 	$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rows=mysqli_num_rows($result2);
 	
@@ -1664,13 +1664,13 @@ tags will be replaced.-->
   <td colspan=3 class=xl1094315 style='border-right:.5pt solid black;
   border-left:none'>COMMENT</td>
  </tr>";
- 	$sql1="select * from inspection_complaint_reasons where complaint_category=\"$product_categoy\" GROUP BY Complaint_clasification ORDER BY complaint_category,sno,Complaint_clasification";
+ 	$sql1="select * from mdm.inspection_complaint_reasons where complaint_category=\"$product_categoy\" GROUP BY Complaint_clasification ORDER BY complaint_category,sno,Complaint_clasification";
 	//echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
 		$htmlstr.="<tr height=20 style='height:15.0pt'><td colspan=6 height=20 class=xl1204315 style='border-right:.5pt solid black;height:15.0pt'>".$row1["Complaint_clasification"]."</td></tr>";
-		$sql2="select * from inspection_complaint_reasons where complaint_category=\"$product_categoy\" AND Complaint_clasification=\"".$row1["Complaint_clasification"]."\" ORDER BY complaint_category,sno,Complaint_clasification";
+		$sql2="select * from mdm.inspection_complaint_reasons where complaint_category=\"$product_categoy\" AND Complaint_clasification=\"".$row1["Complaint_clasification"]."\" ORDER BY complaint_category,sno,Complaint_clasification";
 		//echo $sql2;
 		$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($result2))

@@ -150,7 +150,7 @@ if(isset($_POST['submit']) || $module)
                     $wip=$input_qty-$output_qty;
                 }
                             
-                $qry="select prefix from $brandix_bts.tbl_sewing_job_prefix where prefix_name='$ims_remarks'";
+                $qry="select prefix from $mdm.tbl_sewing_job_prefix where prefix_name='$ims_remarks'";
                 $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row123=mysqli_fetch_array($res))
                 {
@@ -256,7 +256,7 @@ if(isset($_POST['submit']) || $module)
                     if($ims_date==''){
                         $ims_date=$ims_date1;
                     }			
-					$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
+					$sewing_prefi=echo_title("$mdm.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
 					$display = $sewing_prefi.leading_zeros($input_job_no,3);
 					echo "<tr>";
 					echo "<input type='hidden' name='ims_date[]' value=$ims_date>";

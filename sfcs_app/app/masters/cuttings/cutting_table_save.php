@@ -46,7 +46,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$tbl_id";
+		$sql = "update $pms.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$tbl_id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 
@@ -72,7 +72,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}
 	}else{
 		
-		$query="select emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id'  ";
+		$query="select emp_id from $pms.tbl_leader_name where emp_id='$emp_id'  ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -94,7 +94,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}else{
 
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.tbl_leader_name (emp_id,emp_name)
+		$sql = "INSERT INTO $pms.tbl_leader_name (emp_id,emp_name)
 			VALUES ('$emp_id','$emp_name')";
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');

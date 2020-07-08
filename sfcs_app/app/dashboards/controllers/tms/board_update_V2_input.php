@@ -126,7 +126,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			
 			$cut_no=$sql_row1['acutno'];
 			$color_code=$sql_row1['color_code'];
-			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row1['input_job_no'],$link);
+			$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row1['input_job_no'],$link);
 			//$jobno=$sql_row1['input_job_no'];
 			$bundle_location="";
 			if(sizeof(explode("$",$sql_row1['bundle_location']))>1)

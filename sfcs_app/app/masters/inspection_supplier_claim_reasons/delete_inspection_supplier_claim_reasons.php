@@ -13,7 +13,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
   
-$delete="delete from bai_rm_pj1.inspection_complaint_reasons where tid='$tid'";
+$delete="delete from mdm.inspection_complaint_reasons where tid='$tid'";
 
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo"<script>setTimeout(function () { 
@@ -22,7 +22,7 @@ echo"<script>setTimeout(function () {
     type: 'success',
     confirmButtonText: 'OK'
   },
-  function(isConfirm){
+  function(isConfi
     if (isConfirm) {
     window.location.href = \"$url\";
     }

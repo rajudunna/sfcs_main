@@ -421,8 +421,8 @@
 
                         //Display color
                         $display_colors=str_replace(',','<br>',$color);
-                        $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
-                        $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
+                        $display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$sql_row["job"],$link);
+                        $bg_color = get_sewing_job_prefix("bg_color","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
                         // echo $sql_row["job"];
                         
                         $total_qty1=0;

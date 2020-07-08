@@ -652,7 +652,7 @@ $module_limit=14;
 	//docketno-colorcode cutno-cut_status
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$sql_pre="select prefix from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
+		$sql_pre="select prefix from $mdm.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
 		$sql_result_pre=mysqli_query($link, $sql_pre) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_pre=mysqli_fetch_array($sql_result_pre))
 	  {
@@ -866,7 +866,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 							$get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$resulted_rows = mysqli_num_rows($get_fab_req_result);
 
-							$sql_pre1="select prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row1['type_of_sewing']."";
+							$sql_pre1="select prefix,bg_color from $mdm.tbl_sewing_job_prefix.tbl_sewing_job_prefix where type_of_sewing=".$sql_row1['type_of_sewing']."";
 							$sql_result_pre1=mysqli_query($link, $sql_pre1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row_pre1=mysqli_fetch_array($sql_result_pre1))
 							{

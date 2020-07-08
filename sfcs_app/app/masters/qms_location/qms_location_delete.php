@@ -30,7 +30,7 @@ $url=getFullURL($_GET['r'],'qms_location_add.php','N');
 			window.location.href = \"$url\";
 		  }
 		}); }, 100);</script>";
-$delete="delete from $bai_pro3.bai_qms_location_db where q_id='$q_id'";
+$delete="delete from $pms.bai_qms_location_db where q_id='$q_id'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
 			

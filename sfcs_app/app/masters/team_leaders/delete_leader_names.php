@@ -19,7 +19,7 @@ if (!$conn) {
 }
 if($rid!=''){
 	$url=getFullURL($_GET['r'],'create_leader_names.php','N');
-$delete="delete from bai_pro3.tbl_leader_name where id='$rid'";
+$delete="delete from pms.tbl_leader_name where id='$rid'";
 if (mysqli_query($conn, $delete)) {
 	echo"<script>setTimeout(function () { 
 		swal({

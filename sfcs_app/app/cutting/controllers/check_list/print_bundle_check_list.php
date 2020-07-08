@@ -802,7 +802,7 @@
 					<?php
 						foreach ($input_job_no_random_array as $key => $value)
 						{
-							$display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
+							$display_sewing_job = get_sewing_job_prefix_inp('prefix','mdm.tbl_sewing_job_prefix',$key,$value,$link);
 							$total_bundle_qty = 0;	$total_bundles = 0;
 							$location='';
 							$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";

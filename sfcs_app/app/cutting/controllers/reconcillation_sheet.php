@@ -152,7 +152,7 @@ if(isset($_POST['submit']))
 			$sewing_job_bundle[$sql_row12['input_job_no']]=$sql_row12['bundles']; 
 			$cuts=explode(",", $sql_row12['acutno']);
 			
-			$sql322="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$sql_row12['type_of_sewing']."";
+			$sql322="select prefix from $mdm.tbl_sewing_job_prefix where id=".$sql_row12['type_of_sewing']."";
 			$sql_result12321=mysqli_query($link, $sql322) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12213=mysqli_fetch_array($sql_result12321))
 			{				

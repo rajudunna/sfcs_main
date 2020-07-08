@@ -176,7 +176,7 @@ if(isset($_POST['filter']))
     $complaint_reason=array();
     $comaplint_sno=array();
     
-    $sql2="SELECT sno,complaint_reason FROM $bai_rm_pj1.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" ORDER BY sno";
+    $sql2="SELECT sno,complaint_reason FROM $mdm.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" ORDER BY sno";
     // echo "</br>".$sql2."<br>";
     $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error123".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -656,7 +656,7 @@ if(mysqli_num_rows($sql_result) > 0){
                     {
                         $reason_ref_explode_ex=explode("^",$reason_ref_explode[$i3]);
                         
-                        $sql33="select complaint_reason as res from $bai_rm_pj1.inspection_complaint_reasons where complaint_category=\"Fabric\" and sno=\"".$reason_ref_explode_ex[0]."\"";
+                        $sql33="select complaint_reason as res from $mdm.inspection_complaint_reasons where complaint_category=\"Fabric\" and sno=\"".$reason_ref_explode_ex[0]."\"";
                         //echo $sql33."</br>";
                         $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error33".$sql33.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row33=mysqli_fetch_array($sql_result33))

@@ -144,7 +144,7 @@ if(isset($_POST['submit']))
 		echo "<td>".$sql_row['ims_doc_no']."</td>";
 		echo "<td>".$sql_row['ims_shift']."</td>";
 		
-		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
+		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
 		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
 		//echo $sql1;
 	 	$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error Buyer Divisionsss".mysqli_error($GLOBALS["___mysqli_ston"]));

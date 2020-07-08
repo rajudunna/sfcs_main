@@ -202,7 +202,7 @@ if(isset($_POST['confirm'])){
 						$location_ref_id=$row3["location_id"];
 					}
 					
-					$sql2="UPDATE $bai_pro3.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
+					$sql2="UPDATE $pms.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
 					//echo "<br>23.".$sql2."<br>";
 					mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -229,7 +229,7 @@ if(isset($_POST['confirm'])){
 					$location_ref_id=$row3["location_id"];
 				}
 				
-				$sql2="UPDATE $bai_pro3.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$int_dest_qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
+				$sql2="UPDATE $pms.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$int_dest_qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
 				//echo "<br>23.".$sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -260,7 +260,7 @@ if(isset($_POST['confirm'])){
 						$location_ref_id=$row3["location_id"];
 					}
 					
-					$sql2="UPDATE $bai_pro3.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
+					$sql2="UPDATE $pms.bai_qms_location_db SET qms_cur_qty=qms_cur_qty-".$qty[$i]." WHERE qms_location_id='".$location_ref_id."'";
 					//echo "<br>23.".$sql2."<br>";
 					mysqli_query($link, $sql2) or exit("Sql Error$sql2 $i".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -323,7 +323,7 @@ if(isset($_POST['schsbt']))
 	$location_title1[]="";
 
 	//Enabling maximum capacity restriction
-	$sql="select * from $bai_pro3.bai_qms_location_db where location_type=1 and active_status=0 
+	$sql="select * from $pms.bai_qms_location_db where location_type=1 and active_status=0 
 			and qms_cur_qty < qms_location_cap order by qms_cur_qty desc,order_by desc";
 	//$sql="select * from bai_qms_location_db where location_type=1 and active_status=0 order by qms_cur_qty desc,order_by desc";
 	// echo $sql;
@@ -334,7 +334,7 @@ if(isset($_POST['schsbt']))
 		$location_title[]=$sql_row['qms_location_id']."-".$sql_row['qms_cur_qty'];
 	}
 
-	$sql1="select * from $bai_pro3.bai_qms_location_db where location_type=0 and qms_location_id like 'INT%'and active_status=0 and qms_cur_qty<qms_location_cap order by qms_location_id,qms_cur_qty desc,order_by desc";
+	$sql1="select * from $pms.bai_qms_location_db where location_type=0 and qms_location_id like 'INT%'and active_status=0 and qms_cur_qty<qms_location_cap order by qms_location_id,qms_cur_qty desc,order_by desc";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{	
@@ -484,7 +484,7 @@ if(isset($_POST['schsbt']))
 				// echo "<br>22.".$sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql2="UPDATE $bai_pro3.bai_qms_location_db SET qms_cur_qty=qms_cur_qty+".$resr_qty." WHERE qms_location_id='".$sql_row['location_id']."'";
+				$sql2="UPDATE $pms.bai_qms_location_db SET qms_cur_qty=qms_cur_qty+".$resr_qty." WHERE qms_location_id='".$sql_row['location_id']."'";
 				// echo "<br>23.".$sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}

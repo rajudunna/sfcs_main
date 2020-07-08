@@ -191,7 +191,7 @@ if(isset($_POST['submit']))
 		$sql_result1232=mysqli_query($link, $sql32) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1223=mysqli_fetch_array($sql_result1232))
 		{
-			$sql322="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$sql_row1223['type_of_sewing']."";
+			$sql322="select prefix from $mdm.tbl_sewing_job_prefix where id=".$sql_row1223['type_of_sewing']."";
 			$sql_result12321=mysqli_query($link, $sql322) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row12213=mysqli_fetch_array($sql_result12321))
 			{				

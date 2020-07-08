@@ -13,7 +13,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $bai_pro3.bai_qms_location_db";
+	$sql = "SELECT * FROM $pms.bai_qms_location_db";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'surplus_table.php','N');

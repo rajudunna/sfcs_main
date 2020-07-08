@@ -490,7 +490,7 @@ $club_status=0;$a_plies_qty=0;
         echo "</select></div></td></tr>"; 
     //} 
 
-    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+    $team_query="SELECT * FROM $pms.tbl_leader_name";
     $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
     echo "<tr>
             <td>Team Leader</td><td>:</td>

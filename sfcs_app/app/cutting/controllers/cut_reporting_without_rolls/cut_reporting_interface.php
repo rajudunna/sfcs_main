@@ -66,7 +66,7 @@ while($row = mysqli_fetch_array($cut_table_result)){
     $cut_tables[$row['tbl_id']] = $row['tbl_name'];
 }
 
-$team_leaders_query = "SELECT * from $bai_pro3.tbl_leader_name";
+$team_leaders_query = "SELECT * from $pms.tbl_leader_name";
 $team_leaders_result = mysqli_query($link,$team_leaders_query);
 while($row = mysqli_fetch_array($team_leaders_result)){
     $team_leaders[$row['id']] = $row['emp_name'];

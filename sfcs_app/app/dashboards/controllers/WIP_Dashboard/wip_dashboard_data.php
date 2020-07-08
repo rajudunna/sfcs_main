@@ -169,7 +169,7 @@ function getsewingJobsData($section,$module,$get_operation)
         }
 
         $prefix="";
-        $sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
+        $sql="SELECT prefix as result FROM $mdm.tbl_sewing_job_prefix WHERE type_of_sewing=$type_of_sewing";
         // echo $sql."<br>";
         $sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row=mysqli_fetch_array($sql_result))
@@ -178,7 +178,7 @@ function getsewingJobsData($section,$module,$get_operation)
         }
         $display_prefix1=$prefix.leading_zeros($inputno,3);
 
-        // $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
+        // $sewing_prefi=echo_title("$mdm.tbl_sewing_job_prefix","prefix","id",$type_of_sewing,$link);
         // $display = $sewing_prefi.leading_zeros($inputno,3);
 
         $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des in (".$color_ref.") and order_del_no",$schedule,$link);

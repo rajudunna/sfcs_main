@@ -274,9 +274,9 @@ CREATE TABLE `bai_rm_pj1`.`inspection_complaint_db_log` (
 
 /*Table structure for table `inspection_complaint_reasons` */
 
-DROP TABLE IF EXISTS `bai_rm_pj1`.`inspection_complaint_reasons`;
+DROP TABLE IF EXISTS `mdm`.`inspection_complaint_reasons`;
 
-CREATE TABLE `bai_rm_pj1`.`inspection_complaint_reasons` (
+CREATE TABLE `mdm`.`inspection_complaint_reasons` (
   `sno` double DEFAULT NULL,
   `complaint_reason` varchar(1350) DEFAULT NULL,
   `Complaint_clasification` varchar(2700) DEFAULT NULL,

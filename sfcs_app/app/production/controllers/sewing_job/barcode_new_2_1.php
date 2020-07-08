@@ -64,14 +64,14 @@
 			
 
 			$color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color."' and order_del_no",$schedule,$link);
-			//$display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+			//$display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 			$get_destination="select destination from bai_pro3.bai_orders_db where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."' ";
 			$destination_result=mysqli_query($link, $get_destination)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($dest_row = mysqli_fetch_array($destination_result))
             {
             	$destination=$dest_row['destination'];
 			}
-			$display1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
+			$display1 = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$input_job,$sewing_job_random_id,$link);
 			//A dummy sticker for each bundle
 			//echo $detailed_bundle_sticker.'-';
 			if((int)$detailed_bundle_sticker == 1)
@@ -128,7 +128,7 @@
 			{	
 				$operations=$ops['operation_name'];
 				$opscode=$ops['operation_code'];
-				//$display1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
+				//$display1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
 				
 				$html.= '<div>
 							<table width="98%" style="font-size:7px;">

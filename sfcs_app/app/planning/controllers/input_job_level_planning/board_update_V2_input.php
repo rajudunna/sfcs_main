@@ -393,7 +393,7 @@ trim_status,category,clubbing,plan_module,cat_ref,emb_stat1,SUM(carton_act_qty) 
 			$cut_no=$sql_row1['acutno'];
 			$color_code=$sql_row1['color_code'];
 			$jobno=$sql_row1['input_job_no'];
-			$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
+			$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
 			$bundle_location="";
 			if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
 			{

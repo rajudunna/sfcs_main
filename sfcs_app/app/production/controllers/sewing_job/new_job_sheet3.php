@@ -98,7 +98,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 
 
 
-    $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
+    $display = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$jobno,$link);
     $ssql12="SELECT COUNT( DISTINCT order_col_des) AS color_count,SUM(carton_act_qty) AS job_tot FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'  GROUP BY input_job_no_random"; 
     $result12=mysqli_query($link, $ssql12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($row12=mysqli_fetch_array($result12)) 

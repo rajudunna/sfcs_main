@@ -18,7 +18,7 @@ while($sql_row41=mysqli_fetch_array($sql_result41))
 	if($status==0)
 	{
 		
-		$sql322="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$sql_row41['type_of_sewing']."";
+		$sql322="select prefix from $mdm.tbl_sewing_job_prefix where id=".$sql_row41['type_of_sewing']."";
 		$sql_result12321=mysqli_query($link, $sql322) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12213=mysqli_fetch_array($sql_result12321))
 		{				

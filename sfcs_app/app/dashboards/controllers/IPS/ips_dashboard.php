@@ -249,10 +249,10 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$tstatus='Status Not update';
 				}			
 				$get_color = $order_col;
-				// $display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$input_job_no,$input_job_no_random_ref,$link);
+				// $display_prefix1 = get_sewing_job_prefix_inp("prefix","$mdm.tbl_sewing_job_prefix",$input_job_no,$input_job_no_random_ref,$link);
 				// $display_prefix1='J';
 				$prefix="";
-				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
+				$sql="SELECT prefix as result FROM $mdm.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
 				// echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))

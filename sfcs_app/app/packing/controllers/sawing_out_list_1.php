@@ -43,7 +43,7 @@
 			?>
 			<tr><td>
 				<?php
-					$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
+					$display_prefix1 = get_sewing_job_prefix("prefix","$mdm.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job_no,$link);
 					if($remark==""){
 					$url = getFullURLLevel($_GET['r'],'reports/pdfs/sawing_out_labels_v3.php',1,'R');
 					echo "<a href=\"$url?tid=$tid&job_no=$input_job_no&schedule=$schedule\" target=\"_blank\" class=\"btn btn-warning btn-sm\" onclick=\"return popitup("."'"."$url?tid=$tid&job_no=$input_job_no&schedule=$schedule"."'".")\">".$display_prefix1."</a><br/>";		

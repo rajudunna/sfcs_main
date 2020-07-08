@@ -213,7 +213,7 @@ if($reptype == 1) {
                     $size= '';
                     if($reptype == 1){
                         foreach($all_bundles as $key => $value){ 
-                            $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$bundle_data[$value][0]['remarks'],$link);
+                            $prefix = echo_title("$mdm.tbl_sewing_job_prefix","prefix","prefix_name",$bundle_data[$value][0]['remarks'],$link);
 							$job_number = $prefix.leading_zeros($bundle_data[$value][0]['input_job_no'],3);
                             ?>
                         <tr>
@@ -254,7 +254,7 @@ if($reptype == 1) {
 
                             foreach($sew_values as $size_key => $size_values){
                                
-                                $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[$size_key][0]['remarks'],$link);
+                                $prefix = echo_title("$mdm.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[$size_key][0]['remarks'],$link);
 								$job_number = $prefix.leading_zeros($size_values[$size_key][0]['input_job_no'],3);
                             ?>
                             <tr>
