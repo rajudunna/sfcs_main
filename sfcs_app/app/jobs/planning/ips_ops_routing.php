@@ -253,7 +253,7 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                         $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($sql_check_res)==0)
                         {
-                            $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref='".$input_job_num."'";
+                            $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref='".$input_job_num."' order by input_trims_status desc limit 1";
                             mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
                         }
                         $sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
