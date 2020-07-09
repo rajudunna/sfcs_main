@@ -132,7 +132,11 @@ if(isset($_POST['submit']))
 			<tr class='info'>
 				<th>Module</th>
 				<th>Team - $shift Available Emp</th>
-				<th>Team - $shift Absent Emp</th>";
+				<th>Team - $shift Absent Emp</th>
+				<th>Team - $shift Jumper</th>
+				<th>Team - $shift Break Hours(in minutes)</th>
+				<th>Team - $shift Adjustment Emps</th>
+				<th>Team - $shift Adjustment Hours(in minutes)</th>";
 				$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($sql_result1);
 				if($sql_num_check>0)
@@ -145,6 +149,10 @@ if(isset($_POST['submit']))
 						$date=$sql_row1['date'];
 						$avail_av=$sql_row1['present'];
 						$absent_ab=$sql_row1['absent'];
+						$jumper=$sql_row1['jumper'];
+						$break_hours=$sql_row1['break_hours'];
+						$emp_adjustment=$sql_row1['emp_adjustment'];
+						$adjustment_hours=$sql_row1['adjustment_hours'];
 						$module=$sql_row1['module'];
 						$k=$modules_id_array[$module];
 						echo "<tr>
@@ -165,10 +173,14 @@ if(isset($_POST['submit']))
 								}
 							?>
 								
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 140px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 140px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 140px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 140px;" value="<?php echo $break_hours; ?>" name="breakhours<?php echo $k; ?>"></td>
+								<td><input type="number" class="form-control" <?php echo $readonly; ?> style="width: 140px;" value="<?php echo $emp_adjustment; ?>" name="emp_adjustment<?php echo $k; ?>"></td>
+								<td><input type="number" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $adjustment_hours; ?>" name="adjustment_hours<?php echo $k; ?>"></td>
 								<?php
-								echo "<td>".($avail_av-$absent_ab)."</td>
+								echo "<td>".($avail_av-$absent_ab+$jumper+$emp_adjustment)."</td>
 							</tr>";
 					}
 					if(in_array($authorized,$has_permission))
@@ -188,8 +200,12 @@ if(isset($_POST['submit']))
 						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 							<tr>
 								<td> <?php echo $modules_array[$i]; ?> </td>
-								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 140px;" value="0" name="pra<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 140px;"value="0" name="aba<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 140px;"value="0" name="jumper<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 140px;"value="0" name="breakhours<?php echo $k; ?>"></td>
+								<td><input type="number" class="form-control" style="width: 140px;"value="0" name="emp_adjustment<?php echo $k; ?>"></td>
+								<td><input type="number" class="form-control" style="width: 100px;"value="0" name="adjustment_hours<?php echo $k; ?>"></td>
 							</tr>
 						<?php
 					}

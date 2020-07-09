@@ -29,6 +29,10 @@ for($i=0;$i<sizeof($modules_array);$i++)
 {
 	$pra_id = 'pra'.$modules_id_array[$modules_array[$i]];
 	$aba_id = 'aba'.$modules_id_array[$modules_array[$i]];
+	$jumper_id = 'jumper'.$modules_id_array[$modules_array[$i]];
+	$break_hours_id = 'breakhours'.$modules_id_array[$modules_array[$i]];
+	$emp_adjustment_id = 'emp_adjustment'.$modules_id_array[$modules_array[$i]];
+	$adjustment_hours_id = 'adjustment_hours'.$modules_id_array[$modules_array[$i]];
 	// echo $i."--present---".$_POST[$pra_id]."<br>";
 	// echo $i."--Absent---".$_POST[$aba_id]."<br>";
 	// $attenid=$date."-".$modules_array[$i];
@@ -40,11 +44,11 @@ for($i=0;$i<sizeof($modules_array);$i++)
 		$sql1="INSERT INTO $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$modules_array[$i]','".$shift."')";
 		// echo $sql1."</br>";
 		mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql23="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
+		$sql23="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST[$break_hours_id]."',emp_adjustment='".$_POST[$emp_adjustment_id]."' ,adjustment_hours='".$_POST[$adjustment_hours_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
 		// echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}else{
-		$sql22="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
+		$sql22="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST[$break_hours_id]."',emp_adjustment='".$_POST[$emp_adjustment_id]."' ,adjustment_hours='".$_POST[$adjustment_hours_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
