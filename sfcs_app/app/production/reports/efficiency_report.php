@@ -46,24 +46,28 @@ $(function(){
 	
 
 });
-function styleFunction() {
+
+   
+
+//function styleFunction() {
 
 
-  if (document.getElementById('checkbox').checked){
-     // alert('hii');
-    document.getElementById("demo").style.display='none';
-    document.getElementById("style").style.display='none';
-    document.getElementById("smv").style.display='none';
-    document.getElementById("days").style.display='none';
-  }else{
+//   if (document.getElementById('checkbox').checked){
+//     //   alert('hii');
+//     document.getElementById("test").style.display='none';
+//     // document.getElementById("style").style.display='none';
+//     // document.getElementById("smv").style.display='none';
+//     // document.getElementById("days").style.display='none';
+//   }else{
     
-    document.getElementById("demo").style.display='block';
-    document.getElementById("style").style.display='block';
-    document.getElementById("smv").style.display='block';
-    document.getElementById("days").style.display='block';
+//     document.getElementById("test").style.display='block';
+    
+//     // document.getElementById("style").style.display='block';
+//     // document.getElementById("smv").style.display='block';
+//     // document.getElementById("days").style.display='block';
 
-  }
-}
+//   }
+//}
 
 
 function verify(){
@@ -100,25 +104,27 @@ function verify(){
                 </form>
 			</br>
             
-			
+            
+  
  
 <?php
 
 if(isset($_POST['submit']))
 {
 	$fdat=$_POST['fdat'];
-	$tdat=$_POST['tdat'];
-    echo '<input type="checkbox" id="checkbox" name="checkbox" onclick="styleFunction()">
-    <label style="color:black;">Hide Style Info</label><br></br>';
+    $tdat=$_POST['tdat'];
+ 
+    echo '<div class="row"><div class="col-sm-2"><input type="checkbox"  id="checkbox" name="checkbox">&nbsp <b>Hide Style Info</b></div>';
+    echo'<div class="col-sm-2"><input type="checkbox"  id="checkbox1" name="checkbox1">&nbsp <b>Enable Summary</b></div></div>';
     echo "<div class='table-responsive'>
-   <table  class=\"table table-bordered\" id='example1' name='example1'>";
+   <table  class=\"table table-bordered\" id='example1' name='example1' style='border: 1px black solid'>";
     echo"<tr>
    <th  rowspan=2 >Line No</th>
    <th  rowspan=2 >Shift</th>
-   <th  id='demo'  rowspan=2>Customer</th>
-   <th id='style'  rowspan=2>Style</th>
-   <th id='smv'  rowspan=2>SMV</th>
-   <th id='days' rowspan=2>No of Days</th>
+   <th  id='demo'  style='background-color:#da7033;' rowspan=2>Customer</th>
+   <th id='style'   style='background-color:#da7033;' rowspan=2>Style</th>
+   <th id='smv'   style='background-color:#da7033;' rowspan=2>SMV</th>
+   <th id='days'  style='background-color:#da7033;' rowspan=2>No of Days</th>
    <th  id='team' colspan=2>No of TM</th>
    <th  colspan=2>Clock Hours</th>
    <th  colspan=3>Output</th>
@@ -155,10 +161,10 @@ while($row=mysqli_fetch_array($result))
     for ($i=0; $i < sizeof($shifts_array); $i++) {
     
     echo"<td>".$shifts_array[$i]."</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>";
+    <td class='test'></td>
+    <td class='style1'></td>
+    <td class='smv1'></td>
+    <td class='days1'></td>";
     $sql1="select SUM(plan_eff) as plan_eff,SUM(plan_pro) as plan_pro,SUM(plan_clh) as plan_clh,SUM(plan_sah) as plan_sah,SUM(nop) as nop from $bai_pro.tbl_freez_plan_log  where mod_no='$module_name' and date between \"$fdat\" and \"$tdat\" and shift=\"$shifts_array[$i]\" group by mod_no,shift";
     
     $result1=mysqli_query($link, $sql1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -198,23 +204,24 @@ echo" <td colspan=1>$nop</td>";
 
    
     }
-    echo"<tr>";
-    echo"<td>".$a."</td><td></td>";
-    echo" <td></td>
-    <td></td>
-    <td></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>
-    <td colspan=1></td>";
+    echo"<tr >";
+    echo"<td class='summary'>".$a."</td>
+    <td class='test1'></td>";
+    echo" <td class='style2'></td>
+    <td class='smv2'></td>
+    <td class='days2'></td>
+    <td colspan=1 class='summary1'></td>
+    <td colspan=1 class='summary2'></td>
+    <td colspan=1 class='summary3'></td>
+    <td colspan=1 class='summary4'></td>
+    <td colspan=1 class='summary5'></td>
+    <td colspan=1 class='summary6'></td>
+    <td colspan=1 class='summary7'></td>
+    <td colspan=1 class='summary8'></td>
+    <td colspan=1 class='summary9'></td>
+    <td colspan=1 class='summary10'></td>
+    <td colspan=1 class='summary11'></td>
+    <td colspan=1 class='summary12'></td>";
     echo"</tr>";
     
 }
@@ -248,17 +255,130 @@ function getCSVData() {
 }
 </script>
 
+<script>
+    $("#checkbox").click(function() {
+    if($(this).is(":checked")) {
+        $("#demo").hide();
+        $("#style").hide();
+        $("#smv").hide();
+        $("#days").hide();
+        $(".test").hide();
+        $(".style1").hide();
+        $(".smv1").hide();
+        $(".days1").hide();
+        $(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test1").hide();
+        $(".summary").show();
+        $(".summary1").show();
+        $(".summary2").show();
+        $(".summary3").show();
+        $(".summary4").show();
+        $(".summary5").show();
+        $(".summary6").show();
+        $(".summary7").show();
+        $(".summary8").show();
+        $(".summary9").show();
+        $(".summary10").show();
+        $(".summary11").show();
+        $(".summary12").show();
 
+    }
+     else
+     {
+        $("#demo").show();
+        $("#style").show();
+        $("#smv").show();
+        $("#days").show();
+        $(".test").show();
+        $(".style1").show();
+        $(".smv1").show();
+        $(".days1").show();
+        $(".style2").show();
+        $(".smv2").show();
+        $(".days2").show();
+        $(".test1").show();
+       
+        
+        
+    }
+    
+});
+
+$("#checkbox1").click(function() {
+    if($(this).is(":checked")) {
+        $(".summary").show();
+        $(".summary1").show();
+        $(".summary2").show();
+        $(".summary3").show();
+        $(".summary4").show();
+        $(".summary5").show();
+        $(".summary6").show();
+        $(".summary7").show();
+        $(".summary8").show();
+        $(".summary9").show();
+        $(".summary10").show();
+        $(".summary11").show();
+        $(".summary12").show();
+        $(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test1").hide();
+        
+
+
+        
+        
+    }else{
+        $(".summary").hide();
+        $(".summary1").hide();
+        $(".summary2").hide();
+        $(".summary3").hide();
+        $(".summary4").hide();
+        $(".summary5").hide();
+        $(".summary6").hide();
+        $(".summary7").hide();
+        $(".summary8").hide();
+        $(".summary9").hide();
+        $(".summary10").hide();
+        $(".summary11").hide();
+        $(".summary12").hide();
+        $(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test1").hide();
+        
+    }
+
+});
+ jQuery(document).ready(function($) {
+    $(".summary").hide();
+        $(".summary1").hide();
+        $(".summary2").hide();
+        $(".summary3").hide();
+        $(".summary4").hide();
+        $(".summary5").hide();
+        $(".summary6").hide();
+        $(".summary7").hide();
+        $(".summary8").hide();
+        $(".summary9").hide();
+        $(".summary10").hide();
+        $(".summary11").hide();
+        $(".summary12").hide();
+        $(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test1").hide();
+ });
+</script>
  <style>
-        table, tr, td {
-            border: 1px black solid;
-        }
+        
         th,td{
         text-align:center;
         color:black;
         }
-        #demo,#style,#smv,#days{
-            background-color:#da7033;
-        }
-    </style>
+        
+        
+            </style>
 
