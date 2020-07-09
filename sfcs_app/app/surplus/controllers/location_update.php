@@ -2,6 +2,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	$Page_Id = 'SFCS_0402';
 	// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 	// $username=strtolower($username_list[1]);
@@ -124,13 +125,14 @@ if(mysqli_num_rows($sql_result)>0) {
 		{
 			$resr_qty=$sql_row2["qty"];
 		}
+			$size_value=ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],strtoupper($sql_row['qms_size']),$link);
 			$table="<tr  id=\"rowchk$x\">";
 			$table.="<td>".($y+1)."</td>";
 			$table.="<td>".$sql_row['log_date']."</td>";
 			$table.="<td>".$sql_row['qms_style']."</td>";
 			$table.="<td>".$sql_row['qms_schedule']."</td>";
 			$table.="<td>".$sql_row['qms_color']."</td>";
-			$table.="<td>".$sql_row['qms_size']."</td>";
+			$table.="<td>".$size_value."</td>";
 			$table.="<td>".($sql_row['qms_qty']-$resr_qty)."</td>";
 			
 			$title="";
