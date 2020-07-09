@@ -12,7 +12,9 @@ $view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
-
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <script>
 
 $(function(){
@@ -48,7 +50,7 @@ function styleFunction() {
 
 
   if (document.getElementById('checkbox').checked){
-      alert('hii');
+     // alert('hii');
     document.getElementById("demo").style.display='none';
     document.getElementById("style").style.display='none';
     document.getElementById("smv").style.display='none';
@@ -90,10 +92,14 @@ function verify(){
                     <div class='col-sm-1'>
 						<br/><input type="submit" name="submit" onclick='verify()' value="Show" class="btn btn-primary">
 					</div>
+                    <div class='col-sm-1'>
+						<br/><input id="excel" type="button"  class="btn btn-success" value="Export To Excel" onclick="getCSVData()"> 
+					</div>
                     
 				</div>	
                 </form>
 			</br>
+            
 			
  
 <?php
@@ -102,14 +108,6 @@ if(isset($_POST['submit']))
 {
 	$fdat=$_POST['fdat'];
 	$tdat=$_POST['tdat'];
-   
-
-
-    echo '<form action="'.getFullURL($_GET['r'],'export_excel3.php','R').'" method ="post" > 
-            <input type="hidden" name="csv_text" id="csv_text">
-           
-            <input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
-            </form>';
     echo '<input type="checkbox" id="checkbox" name="checkbox" onclick="styleFunction()">
     <label style="color:black;">Hide Style Info</label><br></br>';
     echo "<div class='table-responsive'>
@@ -121,29 +119,29 @@ if(isset($_POST['submit']))
    <th id='style'  rowspan=2>Style</th>
    <th id='smv'  rowspan=2>SMV</th>
    <th id='days' rowspan=2>No of Days</th>
-   <th  id='team' colspan=4>No of TM</th>
-   <th  colspan=4>Clock Hours</th>
-   <th  colspan=9>Output</th>
-   <th colspan=9>SAH</th>
-   <th colspan=4>Efficiency</th>
+   <th  id='team' colspan=2>No of TM</th>
+   <th  colspan=2>Clock Hours</th>
+   <th  colspan=3>Output</th>
+   <th colspan=3>SAH</th>
+   <th colspan=2>Efficiency</th>
  
 
 
 
 </tr>";
 echo"<tr>
-<th style='background-color:#a6b0ec;' colspan=2>Plan</th>
-<th style='background-color:#90e6a4;' colspan=2>Actual</th>
-<th style='background-color:#a6b0ec;' colspan=2>Plan</th>
-<th style='background-color:#90e6a4;' colspan=2>Actual</th>
-<th style='background-color:#a6b0ec;' colspan=3>Plan</th>
-<th style='background-color:#90e6a4;' colspan=3>Actual</th>
-<th  colspan=3>Variance</th>
-<th style='background-color:#a6b0ec;' colspan=3>Plan</th>
-<th style='background-color:#90e6a4;' colspan=3>Actual</th>
-<th style='' colspan=3>Variance</th>
-<th style='background-color:#a6b0ec;' colspan=2>Plan</th>
-<th style='background-color:#90e6a4;' colspan=2>Actual</th>
+<th style='background-color:#a6b0ec;' colspan=1 rowspan=1>Plan</th>
+<th style='background-color:#90e6a4;' colspan=1 rowspan=1>Actual</th>
+<th style='background-color:#a6b0ec;' colspan=1 rowspan=1>Plan</th>
+<th style='background-color:#90e6a4;' colspan=1 rowspan=1>Actual</th>
+<th style='background-color:#a6b0ec;' colspan=1 rowspan=1>Plan</th>
+<th style='background-color:#90e6a4;' colspan=1 rowspan=1>Actual</th>
+<th  colspan=1 rowspan=1>Variance</th>
+<th style='background-color:#a6b0ec;' colspan=1 rowspan=1>Plan</th>
+<th style='background-color:#90e6a4;' colspan=1 rowspan=1>Actual</th>
+<th style='' colspan=1 rowspan=1>Variance</th>
+<th style='background-color:#a6b0ec;' colspan=1 rowspan=1>Plan</th>
+<th style='background-color:#90e6a4;' colspan=1 rowspan=1>Actual</th>
 </tr>";
 $sql="select * from $bai_pro3.module_master where status='Active'";
 $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -153,9 +151,9 @@ while($row=mysqli_fetch_array($result))
 {
     echo"<tr>";
     $module_name=$row["module_name"];
-    echo "<td rowspan=4>".$module_name."</td>";  
+    echo "<td rowspan=3>".$module_name."</td>";  
     for ($i=0; $i < sizeof($shifts_array); $i++) {
-    echo"<tr>";
+    
     echo"<td>".$shifts_array[$i]."</td>
     <td></td>
     <td></td>
@@ -182,50 +180,46 @@ while($row1=mysqli_fetch_array($result1))
     $plan_pro=" ";
     $nop=" ";
   }
-echo" <td colspan=2>$nop</td>";
+echo" <td colspan=1>$nop</td>";
     // while($row=mysqli_fetch_array($result)) {}  
-    echo"<td colspan=2></td>
-    <td colspan=2>$plan_clh</td>
-    <td colspan=2></td>
-    <td colspan=3>$plan_pro</td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=3>$plan_sah</td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=2>$plan_eff</td>
-    <td colspan=2></td>";
+    echo"<td colspan=1></td>
+    <td colspan=1>$plan_clh</td>
+    <td colspan=1></td>
+    <td colspan=1>$plan_pro</td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1>$plan_sah</td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1>$plan_eff</td>
+    <td colspan=1></td>";
     echo"</tr>";
     $a = implode("+", ($shifts_array));
 
    
     }
+    echo"<tr>";
     echo"<td>".$a."</td><td></td>";
     echo" <td></td>
     <td></td>
     <td></td>
-    <td colspan=2></td>
-    <td colspan=2></td>
-    <td colspan=2></td>
-    <td colspan=2></td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=3></td>
-    <td colspan=2></td>
-    <td colspan=2></td>";
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>
+    <td colspan=1></td>";
     echo"</tr>";
     
 }
 
 echo "</table></div>";
-// header("Content-type: application/x-msdownload"); 
-// header('Content-Disposition: attachment; filename="filename.xls"');
-// $data=stripcslashes($_REQUEST['csv_text']);
-// echo $data; 
-
 }
 
 ?>
@@ -233,30 +227,26 @@ echo "</table></div>";
 
        </div>
 </div>
-
-<script>
-// function getCSVData(){
-// 	var dummytable = $('.fltrow').html();
-// 	var dummytotal = $('.total_excel').html();
-// 	$('.fltrow').html('');
-// 	$('.total_excel').html('');
-// 	var csv_value= $("#report").table2CSV({delivery:'value',excludeRows: '.fltrow .total_excel'});
-// 	$("#csv_text").val(csv_value);	
-// 	$('.fltrow').html(dummytable);
-// 	$('.total_excel').html(dummytotal);
-
-// }
-
-	
+ <script type="text/javascript">
+function getCSVData() {
+  $('table').attr('border', '1');
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  
+    var table = document.getElementById('example1').innerHTML;
+    // $('thead').css({"background-color": "blue"});
+    var ctx = {worksheet: name || 'Efficiency Report', table : table}
+    //window.location.href = uri + base64(format(template, ctx))
+    var link = document.createElement("a");
+    link.download = "Efficiency Report.xls";
+    link.href = uri + base64(format(template, ctx));
+    link.click();
+    $('table').attr('border', '0');
+    $('table').addClass('table-bordered');
+}
 </script>
-<script language="javascript">
-   function getCSVData(){
-      var csv_value=$('#example1').table2CSV({delivery:'value'});
-      $("#csv_text").val(csv_value);	
-      }
-
- 
- </script>  
 
 
  <style>
