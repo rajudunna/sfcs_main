@@ -2667,7 +2667,7 @@ if(sizeof($shades)>0)
 { 
 	for($i=0;$i<sizeof($shades);$i++)
 	{ 
-		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
+		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no DESC, ref2 ASC";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
