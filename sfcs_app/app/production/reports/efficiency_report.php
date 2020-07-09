@@ -161,21 +161,9 @@ while($row=mysqli_fetch_array($result))
     <td></td>
     <td></td>
     <td></td>";
-    $sql1="select SUM(plan_eff) as plan_eff,SUM(plan_pro) as plan_pro,SUM(plan_clh) as plan_clh,SUM(plan_sah) as plan_sah,SUM(nop) as nop from $bai_pro.tbl_freez_plan_tmp  where mod_no='$module_name' and date between \"$fdat\" and \"$tdat\" and shift=\"$shifts_array[$i]\" group by mod_no,shift";
+    $sql1="select SUM(plan_eff) as plan_eff,SUM(plan_pro) as plan_pro,SUM(plan_clh) as plan_clh,SUM(plan_sah) as plan_sah,SUM(nop) as nop from $bai_pro.tbl_freez_plan_log  where mod_no='$module_name' and date between \"$fdat\" and \"$tdat\" and shift=\"$shifts_array[$i]\" group by mod_no,shift";
     
     $result1=mysqli_query($link, $sql1) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-    // foreach($result1 as $r)
-    // {
-
-    //     var_dump($r);
-    //     if($r["plan_eff"]!=''){
-    //              $plan_eff=$r["plan_eff"];
-    //             }else{
-    //                 $plan_eff=" ";  
-    //             }
-    // }
-  // echo $sql1."-".$plan_eff."</br>";
-  //echo (mysqli_num_rows($result1));
   if(mysqli_num_rows($result1)!=''){
 while($row1=mysqli_fetch_array($result1))
 {
