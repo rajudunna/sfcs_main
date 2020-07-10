@@ -186,7 +186,7 @@
 			}
 			
 			//getting data form embellishment_plan_dashboard
-			$quanforembdash=$diffqty+$rejctedqty;
+			$quanforembdash=$diffqty;
 			$get_data_embd_send_qry="select send_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$docket_no and send_op_code=$ops_code";
 			$check_qry_result=mysqli_query($link,$get_data_embd_send_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($qry_row=mysqli_fetch_array($check_qry_result))
@@ -202,13 +202,13 @@
 			if($sendop_code==$ops_code)
 			{
 				//update in emblishment dashboard
-				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$quanforembdash where doc_no =$docket_no and send_op_code=$ops_code";
+				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$quanforembdash+$rejctedqty where doc_no =$docket_no and send_op_code=$ops_code";
 				$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 			}
 			if($recop_code==$ops_code)
 			{
 				//update in emblishment dashboard
-				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$quanforembdash where doc_no =$docket_no and receive_op_code=$ops_code";
+				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$quanforembdash+$rejctedqty where doc_no =$docket_no and receive_op_code=$ops_code";
 				$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 			}
 			
@@ -256,7 +256,7 @@
 			}
 			
 			//getting data form embellishment_plan_dashboard
-			$quanforembdash=$diffqty+$rejctedqty;
+			$quanforembdash=$diffqty;
 			$get_data_embd_send_qry="select send_op_code from $bai_pro3.embellishment_plan_dashboard where doc_no=$docket_no and send_op_code=$ops_code";
 			$check_qry_result=mysqli_query($link,$get_data_embd_send_qry) or exit("while retriving data from embellishment_plan_dashboard".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($qry_row=mysqli_fetch_array($check_qry_result))
@@ -272,22 +272,22 @@
 			if($sendop_code==$ops_code)
 			{
 				//update in emblishment dashboard
-				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$quanforembdash where doc_no =$docket_no and send_op_code=$ops_code";
+				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `send_qty`= send_qty+$quanforembdash+$rejctedqty where doc_no =$docket_no and send_op_code=$ops_code";
 				$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 			}
 			if($recop_code==$ops_code)
 			{
 				//update in emblishment dashboard
-				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$quanforembdash where doc_no =$docket_no and receive_op_code=$ops_code";
+				$embellishment_plan_dashboard_qry = "UPDATE $bai_pro3.embellishment_plan_dashboard SET `receive_qty`= receive_qty+$quanforembdash+$rejctedqty where doc_no =$docket_no and receive_op_code=$ops_code";
 				$embellishment_plan_dashboard_result = $link->query($embellishment_plan_dashboard_qry) or exit('Embellishment Plan Dashboard query receive error');
 			}
 			
 			//update cps_log
-			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash-$rejctedqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $ops_code";
+			$update_qry_cps_log = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$quanforembdash where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $ops_code";
 			// echo $update_qry_cps_log;
 			$update_qry_cps_log_res = $link->query($update_qry_cps_log);
 			
-			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
+			$update_pre_qty= "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$quanforembdash+$rejctedqty where doc_no = ".$docket_no." and size_title='". $size."' AND operation_code = $pre_ops_code";   
 			$update_cps_log_res = $link->query($update_pre_qty);
 			
 		}
