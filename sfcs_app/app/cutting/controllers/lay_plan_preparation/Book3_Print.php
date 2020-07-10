@@ -2847,7 +2847,9 @@ $tot_alloc_qty=0;
 $tot_bind_len=0;
 $shade_tot=0;
 $previouse='0';
+$val=array_sum($leng_det);
 if(sizeof($roll_det)>0)
+
 {
 	for($i=0;$i<sizeof($roll_det);$i++)
 	{		
@@ -2874,7 +2876,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
-			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]/$val*$fab_bind),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]/$val*$fab_bind);?></td>
 			<td colspan=3 class=xl684118 style='border-left:none'></td>
 			<td class=xl654118></td>
 			</tr>
@@ -2914,7 +2916,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
-			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]/$val*$fab_bind),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]/$val*$fab_bind);?></td>
 			<td colspan=3 class=xl684118 style='border-left:none'></td>
 			<td class=xl654118></td>
 			</tr>
@@ -2946,7 +2948,7 @@ if(sizeof($roll_det)>0)
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
-		<td class=xl684118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+		<td class=xl684118 style='text-align:right;padding-bottom:5pt;'>".round ($tot_bind_len,2)."</td>
 		<td class=xl814118></td>";
 		?>
 		</tr>
