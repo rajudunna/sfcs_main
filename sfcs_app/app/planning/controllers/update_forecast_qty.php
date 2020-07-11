@@ -1,5 +1,6 @@
 <?php  
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	$has_permission=haspermission($_GET['r']);	
 ?> 
 <script type="text/javascript"> 
@@ -133,43 +134,46 @@ if(isset($_POST['submit']))
 <?php  
 	$frv=array(); 
 	$frv_id=array(); 
-	$mod_names=array(); 
-	$sql="select * from $bai_pro3.plan_modules GROUP BY module_id order by module_id*1 "; 
-	//echo $sql;
-	$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
-	while($row=mysqli_fetch_array($result)) 
-	{     
-		$mod_names[]=$row['module_id']; 
-		$sql1="SELECT *,SUM(fr_qty) AS qty FROM $bai_pro2.fr_data WHERE frdate='$today' AND team='".$row['module_id']."'"; 
-		//echo $sql1;
-		$result1=mysqli_query($link, $sql1) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
-		if(mysqli_num_rows($result1)) 
-		{ 
-			while($row1=mysqli_fetch_array($result1))
-			{				
-				$frv[$row['module_id']]=$row1['qty'];
-				$frv_id[$row['module_id']]=$row1['fr_id'];
-			}			
-		} 
+	$mod_names=array();
+	/** function to get work stations department sewing type
+	 * @param:department_type(sewing)
+	 * @return:workstations
+	 */
+	$department_type="Sewing";
+	$result_worksation_id=getWorkstations($department_type,$plantcode);
+	$workstations=$result_worksation_id['workstation'];
+	foreach($workstations as $work_id=>$work_des)
+	{
+		$mod_names[]=$work_des;
+		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE planned_date='$today' AND row_name='$work_des'";
+		$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
+		if($getPlannedQty_num>0){
+			while($workstations_row=mysqli_fetch_array($getPlannedQty_result))
+			{
+				$frv[$work_des]=$workstations_row['qty'];
+				$frv_id[$work_des]=$workstations_row['monthly_production_plan_id'];
+			}
+		}
 		else 
 		{ 
-			$frv[$row['module_id']]=0;
-			$frv_id[$row['module_id']]=0;			
-		} 
-		$sql12="SELECT * FROM $BAI_PRO3.line_forecast WHERE date='$today' AND module='".$row['module_id']."'"; 
+			$frv[$work_des]=0;
+			$frv_id[$work_des]=0;			
+		}
+		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."'"; 
 		$result12=mysqli_query($link, $sql12) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result12)) 
 		{ 
 			while($row12=mysqli_fetch_array($result12))
 			{				
-				$lfr_qty[$row['module_id']]=$row12['qty'];
-				$lfr_reason[$row['module_id']]=$row12['reason'];
+				$lfr_qty[$work_des]=$row12['qty'];
+				$lfr_reason[$work_des]=$row12['reason'];
 			}			
 		} 
 		else 
 		{ 
-			$lfr_qty[$row['module_id']]=0;
-		}	
+			$lfr_qty[$work_des]=0;
+		}
 	} 
     for($i=0;$i<sizeof($mod_names);$i++) 
     { 
@@ -192,18 +196,18 @@ if(isset($_POST['submit']))
         <td>         
         <?php 
 		echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
-        $sql="select * from $bai_pro3.line_reason order by id*1"; 
+		$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='Sewing'"; 
 		echo "<option value='NIL'>Select Reason</option>";
-        $result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"])); 
-        while($row=mysqli_fetch_array($result)) 
+        $ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
+        while($row=mysqli_fetch_array($ResultLineReasons)) 
         {
-        	if ($lfr_reason[$mod_names[$i]] == $row["reason_name"])
+        	if ($lfr_reason[$mod_names[$i]] == $row["internal_reason_description"])
         	{
         		$selected = 'selected';
         	} else {
         		$selected = '';
         	}
-			echo "<option value='".$row["reason_name"]."' $selected>".$row["reason_name"]."</option>";	
+			echo "<option value='".$row["internal_reason_description"]."' $selected>".$row["internal_reason_description"]."</option>";	
         } 
 		echo "</select>";
         ?> 
@@ -245,19 +249,19 @@ if(isset($_POST['update']))
 	{
 		if($fr_qty[$i]>0 || $fc_qty[$i]>0)
 		{
-			$sql1="select * from  $bai_pro3.`line_forecast` where date='$daten' and module='$fr_mod[$i]'";
+			$sql1="select * from  $pps.`line_forecast` where date='$daten' and module='$fr_mod[$i]'";
 			$result1=mysqli_query($link, $sql1) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql="INSERT INTO $bai_pro3.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				$sql="INSERT INTO $pps.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 			}
 			else
 			{
-				$sql="update $bai_pro3.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
+				$sql="update $pps.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));	
 				
