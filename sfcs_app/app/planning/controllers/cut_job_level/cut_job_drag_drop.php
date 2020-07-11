@@ -1,5 +1,5 @@
 <?php
-
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions_v2.php',4,'R'));
 //Function to get workstations from getWorkstations based on department,plant_code
 $task_type='DOCKET';
 $department='Cutting';
