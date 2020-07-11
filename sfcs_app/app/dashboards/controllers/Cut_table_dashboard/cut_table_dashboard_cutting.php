@@ -127,7 +127,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                   $sql2="select * from $bai_pro3.cutting_table_plan as ctp  left join $bai_pro3.`plandoc_stat_log` as psl 
                   on ctp.doc_no = psl.doc_no
                   where ctp.cutting_tbl_id =".$section_mods." and (psl.act_cut_status='' or psl.a_plies
-                  !=psl.p_plies) and ctp.short_shipment_status=0 and psl.org_doc_no=0 order by ctp.log_time asc";
+                  !=psl.p_plies) and ctp.short_shipment_status=0 order by ctp.log_time asc";
                   $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($row2=mysqli_fetch_array($result2))
                   {
