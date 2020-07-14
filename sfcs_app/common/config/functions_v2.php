@@ -90,7 +90,7 @@ function getdata_mp_mo_qty($po_number,$plant_code){
 
 //function to get component group id and ratio id
 function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
-    $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE ratio_wise_component_group_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
+    $qry_ratio_component_group="SELECT ratio_id,component_group_id,fabric_saving FROM $pps.lp_ratio_component_group WHERE ratio_wise_component_group_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
     $ratio_component_group_result=mysqli_query($link_v2, $qry_ratio_component_group) or exit("Sql Errorat_ratio_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
         $ratio_component_group_num=mysqli_num_rows($ratio_component_group_result);
         if($ratio_component_group_num>0){
@@ -98,6 +98,7 @@ function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
             {
                 $ratio_id = $sql_row1['ratio_id'];
                 $component_group_id = $sql_row1['component_group_id'];
+                $fabric_saving = $sql_row1['fabric_saving'];
             }
             //qry to get category  amd material item code and po details id
             $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
@@ -116,7 +117,7 @@ function getdata_ratio_component_group($ratio_comp_group_id,$plant_code){
                     'fabric_category' => $fabric_category,
                     'material_item_code' => $material_item_code,
                     'master_po_details_id' => $master_po_details_id,
-                    'master_po_details_id' => $master_po_details_id
+                    'fabric_saving' => $fabric_saving
                 );
             }
         }
@@ -156,6 +157,28 @@ function getdata_size_ratios($ratio_id,$plant_code){
                 'size_ratios' => $size_ratios
             );
         }
+
+}
+
+
+//This is function to get savings from fn_savings_per_cal
+
+function fn_savings_per_cal($doc_no,$plant_code){
+        //using this function  we can get ratio component group id
+        if($doc_no!='' && $$plant_code!=''){
+            $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
+            $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
+        }
+        
+        if($ratio_comp_group_id!='' && $plant_code!=''){
+            $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+            $savings=$result_getdata_ratio_component_group['fabric_saving'];
+        }
+
+        return array(
+            'savings' => $savings
+        );
+
 
 }
 
