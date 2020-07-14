@@ -52,7 +52,7 @@ $whoops->register();
                                 } else {                                    
                                     $url = base64_decode($_GET['r']);
                                     // Iframe for external links
-                                    echo '<iframe width="100%" frameborder="0" scrolling="auto" height="auto" src="' . $url . '?user='.getrbac_user()['uname'].'" title="W3Schools Free Online Web Tutorials"></iframe>';
+                                    echo '<iframe width="100%" frameborder="0" scrolling="auto" height="auto" src="' . $url . '?user='.getrbac_user()['uname'].'" title=""></iframe>';
                                 }
                             } elseif (isset($_GET['r'])) {
                                 echo "<div class='col-sm-12'>
