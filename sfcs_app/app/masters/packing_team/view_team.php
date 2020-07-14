@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM $brandix_bts.`packing_team_master`";
+$sql = "SELECT * FROM $brandix_bts.`packing_team_master` order by id desc";
 $result = $conn->query($sql);
 $sno =1;
 $url=getFullURL($_GET['r'],'create_team.php','N');
