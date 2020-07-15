@@ -47,7 +47,7 @@ if( strlen(trim($product_code))<=0 || strlen(trim($supplier_code))<=0 || strlen(
 					}); }, 100);
 				</script>";
 			}else{
-					$sql = "update $bai_rm_pj1.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
+					$sql = "update $mdm.inspection_supplier_db set product_code='$product_code',supplier_code='$supplier_code',complaint_no='$complaint_no',supplier_m3_code='$supplier_m3_code',color_code='$color_code',seq_no='$seq_no' where tid=$tid";
 					if(mysqli_query($conn, $sql)){
 						$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 						echo"<script>setTimeout(function () { 
@@ -67,7 +67,7 @@ if( strlen(trim($product_code))<=0 || strlen(trim($supplier_code))<=0 || strlen(
 					}
 			}
 		}else{	
-			$count_qry= "select * from $bai_rm_pj1.inspection_supplier_db where product_code = '$product_code' and (seq_no = '$seq_no') "; 
+			$count_qry= "select * from $mdm.inspection_supplier_db where product_code = '$product_code' and (seq_no = '$seq_no') "; 
 			$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 				if($count > 0){
 					$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
@@ -85,7 +85,7 @@ if( strlen(trim($product_code))<=0 || strlen(trim($supplier_code))<=0 || strlen(
 						}); }, 100);</script>";
 				}
 				else{
-					$sql = "INSERT INTO $bai_rm_pj1.inspection_supplier_db(product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
+					$sql = "INSERT INTO $mdm.inspection_supplier_db(product_code, supplier_code,complaint_no,supplier_m3_code,color_code,seq_no) VALUES('$product_code','$supplier_code','$complaint_no','$supplier_m3_code','$color_code','$seq_no')";
 					if (mysqli_query($conn, $sql)) {
 						$url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 						echo"<script>setTimeout(function () { 

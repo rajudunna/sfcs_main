@@ -13,7 +13,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_suppliers_master_data.php','N');
 	
-$delete="delete from $bai_rm_pj1.inspection_supplier_db where tid='$rid'";
+$delete="delete from $mdm.inspection_supplier_db where tid='$rid'";
 // echo $delete;
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     echo "<script>window.location = '".$url."'</script>";
