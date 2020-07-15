@@ -61,6 +61,9 @@ $local_mssql_password="Brandix@7";
 $global_facility_code=$conf1->get('plantcode');
 $facility_code=$global_facility_code;
 
+/**at the time of getting data from pms and pps tables we inlcude plantcode also */
+$plantcode=$global_facility_code;
+
 $plant_alert_code=$conf1->get('plant-alert-code');     //plant-alert-code
 $message_sent_via=$conf1->get('msg-sent-via');  //msg-sent-via
 $rms_request_time = $conf1->get('rms_request_time');
@@ -215,8 +218,9 @@ $mdm="mdm";
 $oms="oms";
 $pps="pps";
 $pms="pms";
-$module_limit = 32;
 $sms="sms";
+$tms="tms";
+$module_limit = 32;
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
