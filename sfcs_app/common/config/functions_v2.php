@@ -536,6 +536,10 @@ function getJobsStatus($sub_po,$type,$plantcode){
     {
          $task_type='EMB_DOCKET';
     }
+	else
+	{
+		$task_type='SEWING';
+	}
     $get_task_job_id="SELECT task_jobs_id FROM $tms.task_job_details WHERE po_number='$sub_po' AND plant_code='$plantcode'";
     $toget_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_task_job_id_num=mysqli_num_rows($toget_task_job_id_result);
@@ -624,6 +628,10 @@ function getDocketDetails($sub_po,$plantcode){
         {
              $task_type='EMB_DOCKET';
         }
+		else
+		{
+			$task_type='SEWING';
+		}
         for($i=0;$i<sizeof($list_db);$i++)
         {
             $items=array();
@@ -631,7 +639,7 @@ function getDocketDetails($sub_po,$plantcode){
             if($items[0]=="allItems")
             {
                 /**updtae resource id tasks jobs with work sation id's*/
-                $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='OPEN' WHERE task_job_reference='$items[1]'";
+                $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='OPEN' WHERE task_job_reference='$items[1]' AND task_type='$task_type'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             else
@@ -746,6 +754,50 @@ function getDocketDetails($sub_po,$plantcode){
 
   }
 
+  //function to get sewing jobs
+function getSewingJobs($sub_po,$job_type,$plantcode){
+    global $link_new;
+    global $pps;
+    global $tms;
+    $type='SEWING_BUNDLE';
+    $jobs=array();
+    $task_jobs_id=array();
+    $task_refrence=array();
+   
+    //Qry to fetch task_job_id from task_job_details
+    $qry_toget_task_job="SELECT task_job_id,style,color FROM $tms.task_job_details WHERE po_number='$sub_po' AND task_type='$type' AND plant_code='$plantcode'";
+    $toget_task_job_result=mysqli_query($link_new, $qry_toget_task_job) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_task_job_num=mysqli_num_rows($toget_task_job_result);
+      if($toget_task_job_num>0){
+        while($toget_task_id_row=mysqli_fetch_array($toget_task_job_result))
+        {
+           $task_jobs_id[]=$toget_task_id_row['task_job_id'];
+           $style=$toget_task_id_row['style'];
+           $color=$toget_task_id_row['color'];
+        }
+    //Qry to fetch taskrefrence from task_job  
+    $qry_toget_taskrefrence="SELECT task_ref FROM $tms.task_jobs WHERE task_type='$job_type' AND plant_code='$plantcode' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."')";
+    $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
+      if($toget_taskrefrence_num>0){
+        while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
+        {  
+           $task_refrence[]=$toget_taskrefrence_row['task_ref'];
+        }  
+    //Qry to get sewing jobs from jm_jobs_header
+    $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id FROM $pps.jm_jobs_header WHERE jm_job_header_id IN('".implode("','" , $task_refrence)."')";
+    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+      if($toget_sewing_jobs_num>0){
+        while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+        {
+		  $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_job_header_id']; 
+        }
+	  }
+        return array(
+        'job_number' => $job_number
+    );  
+}
 
 //This is function to get savings from fn_savings_per_cal
 
