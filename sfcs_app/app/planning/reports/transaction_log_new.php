@@ -171,14 +171,13 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		$modules=array();
 		$section_value="and bac_sec =$module";
 		$get_section="select module_name from $bai_pro3.module_master where section='$module'";
-		//echo $get_section;
 		$sql_result24=mysqli_query($link, $get_section) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row24=mysqli_fetch_array($sql_result24))
 		{
 		  $modules[]=$sql_row24['module_name'];
 		}
-		$modulesData = implode(',', $modules);
-		$section_value1 = "and assigned_module in ('$modulesData')";
+		$moduleOut = implode(', ', $modules);
+		$section_value1="and assigned_module in ($moduleOut)";
 	}
 	else 
 	{
@@ -355,10 +354,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				}
 				//echo $ims_out_ops;
 				//$output_qty = 0;
-				$bcd_qry="select sfcs_smv,assigned_module,schedule,date(date_time),cut_number,
-				shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,
-				size_title,color from $brandix_bts.bundle_creation_data_temp where date(date_time)='".$sdate."' AND 
-				sfcs_smv > 0 AND operation_id not in ($ims_out_ops) $time_query1 $shift_value1 $section_value1 GROUP BY size_title,assigned_module,style,schedule,input_job_no,operation_id,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				$bcd_qry="select sfcs_smv,assigned_module,schedule,date(date_time),cut_number,shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,size_title,color from $brandix_bts.bundle_creation_data_temp where date(date_time)='".$sdate."' AND sfcs_smv > 0 AND operation_id not in ($ims_out_ops) $time_query1 $shift_value1 $section_value1 GROUP BY size_title,assigned_module,style,schedule,input_job_no,operation_id,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				//echo $bcd_qry;
 				$sql_result23=mysqli_query($link, $bcd_qry) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23=mysqli_fetch_array($sql_result23))
 				{
@@ -375,6 +372,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				  $output_qty= $sql_row23['qty'];
 				  $opcode=$sql_row23['operation_id'];
 				  $cut_number=$sql_row23['cut_number'];
+                  //echo $output_qty;
 				  //To get section from module master
 				  $get_section="select section from $bai_pro3.module_master where module_name='$assigned_module'";
 				  $sql_result24=mysqli_query($link, $get_section) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
