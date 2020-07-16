@@ -603,11 +603,11 @@ function getDocketDetails($sub_po,$plantcode){
   }
 
 
-  /**Function to update planned cut/Emb jobs 
-   * 
-
-   */
-  function getPlanDocketJobs($list,$jobtype){
+  /** Function to update jobs using workstations
+   * @param:inputjobs and work stations
+   * @return:true/false
+   * */
+  function updatePlanDocketJobs($list,$jobtype){
     global $link_new;
     global $pps;
     global $tms;
@@ -631,6 +631,7 @@ function getDocketDetails($sub_po,$plantcode){
             if($items[0]=="allItems")
             {
                 /**updtae resource id tasks jobs with work sation id's*/
+
                 $Qry_update_taskjobs="UPDATE $tms.task_jobs SET resource_id='',task_status='OPEN' WHERE task_job_reference='$items[1]'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at task_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
