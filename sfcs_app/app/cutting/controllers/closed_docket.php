@@ -2,7 +2,7 @@
 include("../../../common/config/config_ajax.php");
 if(isset($_GET['date']))
 {
-    $query = "select * from $bai_pro3.binding_consumption where status='Close' and date(status_at)='".$_GET['date']."'";
+    $query = "select * from $pps.binding_consumption where status='Close' and date(status_at)='".$_GET['date']."'";
     $sql_result = mysqli_query($link,$query);
 
     $response_table = '<tr>

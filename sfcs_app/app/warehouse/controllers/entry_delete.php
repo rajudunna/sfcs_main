@@ -1,15 +1,3 @@
-<!--
-Change log:
-
-2014-03-20/ kirang / Ticket #482209 : Add demudun user in $authorized array.
-
-2016-05-17/kirang/SR#10750119/Task: authorised user can delete lot numbers though transactions are availble for the lot number. but issued and returned quantity should be matached. then it will allow authorised user to delete the lot number
-
--->
-
-<?php
-	// require_once('phplogin/auth.php');
-?>
 
 <?php 	
     $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
@@ -22,26 +10,7 @@ Change log:
 
 <?php
 $has_permission = haspermission($_GET['r']);
-// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
-// $authorised_user=user_acl("SFCS_0147",$username,7,$group_id_sfcs);
-/*
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=$username_list[1];
 
-$sql="select * from menu_index where list_id=164";
-	$result=mysql_query($sql,$link1) or mysql_error("Error=".mysql_error());
-	while($row=mysql_fetch_array($result))
-	{
-		$users=$row["auth_members"];
-	}
-
-	$auth_users=explode(",",$users);
-//$authorized=array("kirang","herambaj","ravipu","demudun","apparaoo","kirang","narasingaraon","ramprasadk","kirang");
-*/
 if(!(in_array($view,$has_permission)))
 {
 	header("Location:restrict.php");
@@ -90,7 +59,7 @@ if(!(in_array($view,$has_permission)))
 if(isset($_POST['submit']))
 {
 	$lid=$_POST['lid'];
-	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
+	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $wms.store_in where barcode_number=\"$lid\"";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_affected_rows($link)>0)
@@ -105,7 +74,7 @@ if(isset($_POST['submit']))
 			$lot_no=$sql_row['lot_no'];
 		}
 	
-		$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"$lot_no\"";
+		$sql="select * from $wms.sticker_report where lot_no=\"$lot_no\"";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -168,7 +137,7 @@ if(isset($_POST['delete']))
 	$reason=$_POST['reason'];
 		
 
-	$query = "select qty_issued,qty_allocated from $bai_rm_pj1.store_in where barcode_number='$lid'";
+	$query = "select qty_issued,qty_allocated from $wms.store_in where barcode_number='$lid'";
 	
 	$result = mysqli_query($link,$query);
 	while($row = mysqli_fetch_array($result)){
@@ -185,20 +154,20 @@ if(isset($_POST['delete']))
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500); function Redirect() {  location.href = \"$url\"; }</script>";
 	
 	}else{
-		$sql="insert into $bai_rm_pj1.store_in_deleted select * from $bai_rm_pj1.store_in where barcode_number='$lid'";
+		$sql="insert into $wms.store_in_deleted select * from $wms.store_in where barcode_number='$lid'";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error4=".mysqli_error($link));
 		
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
-		$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW() where barcode_number=".$id;
+		$sql3="update $wms.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW() where barcode_number=".$id;
 		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
 		
 
 		
-		$sql_store_in="select lot_no from $bai_rm_pj1.store_in where barcode_number='$lid'";
+		$sql_store_in="select lot_no from $wms.store_in where barcode_number='$lid'";
 		$sql_result_store_in=mysqli_query($link, $sql_store_in) or exit($sql_store_in."<br/>Sql Error_store_in=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		while($sql_row_store_in=mysqli_fetch_array($sql_result_store_in))
@@ -206,7 +175,7 @@ if(isset($_POST['delete']))
 			$lot_no=$sql_row_store_in['lot_no'];
 		}
 		
-		$sql_lot="select sum(qty_rec) as 'qty_rec' FROM $bai_rm_pj1.store_in_deleted where lot_no='$lot_no' group by lot_no";
+		$sql_lot="select sum(qty_rec) as 'qty_rec' FROM $wms.store_in_deleted where lot_no='$lot_no' group by lot_no";
 		$sql_result_lot=mysqli_query($link, $sql_lot) or exit($sql_lot."<br/>Sql Error_lot=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		while($sql_row_lot=mysqli_fetch_array($sql_result_lot))
@@ -214,7 +183,7 @@ if(isset($_POST['delete']))
 			$qty_rec=$sql_row_lot['qty_rec'];
 		}
 		
-		$sql_sticker="select rec_qty from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+		$sql_sticker="select rec_qty from $wms.sticker_report where lot_no='$lot_no'";
 		$sql_result_sticker=mysqli_query($link, $sql_sticker) or exit($sql_sticker."<br/>Sql Error_sticker=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		while($sql_row_sticker=mysqli_fetch_array($sql_result_sticker))
@@ -228,17 +197,17 @@ if(isset($_POST['delete']))
 		
 		if(round($qty_rec,2)==round($rec_qty,2))
 		{
-			$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * from $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+			$sql6="insert into $wms.sticker_report_deleted select * from $wms.sticker_report where lot_no='$lot_no'";
 			//echo "<br/>".$sql6;	 
 			$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num6=mysqli_affected_rows($link);
 			if($num6>0)
 			{
-				$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+				$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no'";
 				$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$num8=mysqli_affected_rows($link);
 
-				$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+				$sql7="delete FROM $wms.sticker_report where lot_no='$lot_no'";
 				//echo "<br/>".$sql7;
 				$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
@@ -248,11 +217,11 @@ if(isset($_POST['delete']))
 			$label_id = explode('-',$lid);
 			// echo $label_id[1];
 
-			$sql9="delete FROM $bai_rm_pj1.stock_report_inventory where tid='$label_id[1]'";
+			$sql9="delete FROM $wms.stock_report_inventory where tid='$label_id[1]'";
 			$sql_result8=mysqli_query($link, $sql9) or exit($sql9."<br/>Sql Error label_id".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $num9=mysqli_affected_rows($link);
 		}
-			$sql1="delete from $bai_rm_pj1.store_in where barcode_number=\"$lid\"";
+			$sql1="delete from $wms.store_in where barcode_number=\"$lid\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		// echo "<table class='table table-bordered'><tr class='success'><td>Label Id Successfully Deleted</td></tr></table>";
@@ -267,7 +236,7 @@ if(isset($_POST['submit2']))
 {
 	$lot_no=$_POST['lot_no_ref'];
 
-	$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+	$sql="select * from $wms.sticker_report where lot_no=\"".trim($lot_no)."\"";
     $sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($sql_result)>0)
@@ -295,7 +264,7 @@ if(isset($_POST['submit2']))
 			}		
 		}
 		
-	$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+	$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -366,7 +335,7 @@ if(isset($_POST['put']))
 	
 	//$sql="select * from store_in where lot_no=".$lot_no;
 	
-	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned,sum(qty_allocated) as total_qty_allocated FROM $bai_rm_pj1.store_in where lot_no='$lot_no' group by lot_no";
+	$sql="SELECT sum(qty_issued) as total_issued,sum(qty_ret) as total_returned,sum(qty_allocated) as total_qty_allocated FROM $wms.store_in where lot_no='$lot_no' group by lot_no";
 	
 	// echo "<br/>".$sql;
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -387,20 +356,20 @@ if(isset($_POST['put']))
 		$check=0;
 		if(mysqli_num_rows($sql_result)>0)
 		{
-			$sql2="insert into $bai_rm_pj1.store_in_deleted SELECT * FROM $bai_rm_pj1.store_in where lot_no='$lot_no'"; 
+			$sql2="insert into $wms.store_in_deleted SELECT * FROM $wms.store_in where lot_no='$lot_no'"; 
 			// echo "<br/>".$sql2;
 		 	
 			$sql_result2=mysqli_query($link, $sql2) or exit($sql2."<br/>Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num2=mysqli_affected_rows($link);
 		
-			$sql3="update $bai_rm_pj1.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW() where lot_no='$lot_no'";
+			$sql3="update $wms.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW() where lot_no='$lot_no'";
 			// echo  "<br/>".$sql3;
 		 
 			$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num3=mysqli_affected_rows($link);
 		
 		 
-			$sql4="delete FROM $bai_rm_pj1.store_in where lot_no='$lot_no'";
+			$sql4="delete FROM $wms.store_in where lot_no='$lot_no'";
 			// echo  "<br/>".$sql4;
 		
 			$sql_result4=mysqli_query($link, $sql4) or exit($sql4."<br/>Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -413,20 +382,20 @@ if(isset($_POST['put']))
 		
 		}																									
 		
-			$sql1="SELECT * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+			$sql1="SELECT * FROM $wms.sticker_report where lot_no='$lot_no'";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count1=mysqli_num_rows($sql_result1);
 			$num7=0;
 			if($count1>0)
 			{
-			 	$sql5="select * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+			 	$sql5="select * FROM $wms.sticker_report where lot_no='$lot_no'";
 			 	// "<br/>".$sql5;
 			 
 				$sql_result5=mysqli_query($link, $sql5) or exit($sql5."<br/>Sql Error 5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$num5=mysqli_affected_rows($link);
 				
 				
-				$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+				$sql6="insert into $wms.sticker_report_deleted select * FROM $wms.sticker_report where lot_no='$lot_no'";
 			 	// "<br/>".$sql6;
 			 
 				$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -434,11 +403,11 @@ if(isset($_POST['put']))
 				
 				if($num5==$num6)
 				{
-					$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+					$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no'";
 					$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$num8=mysqli_affected_rows($link);
 
-					$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+					$sql7="delete FROM $wms.sticker_report where lot_no='$lot_no'";
 			 		// "<br/>".$sql7;
 			 
 					$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -478,20 +447,20 @@ if(isset($_POST['put']))
 			$sql_result=mysql_query($sql,$link) or exit($sql."<br/>Sql Error2=".mysql_error());
 			*/
 			
-			$sql1="SELECT * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+			$sql1="SELECT * FROM $wms.sticker_report where lot_no='$lot_no'";
 			$sql_result1=mysqli_query($link, $sql1) or exit($sql1."<br/>Sql Error at count".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count1=mysqli_num_rows($sql_result1);
 			$num7=0;
 				if($count1>0)
 				{
-			 		$sql5="select * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+			 		$sql5="select * FROM $wms.sticker_report where lot_no='$lot_no'";
 			 		// "<br/>".$sql5;
 			 
 					$sql_result5=mysqli_query($link, $sql5) or exit($sql5."<br/>Sql Error 5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$num5=mysqli_affected_rows($link);
 				
 				
-					$sql6="insert into $bai_rm_pj1.sticker_report_deleted select * FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+					$sql6="insert into $wms.sticker_report_deleted select * FROM $wms.sticker_report where lot_no='$lot_no'";
 			 		// "<br/>".$sql6;
 					
 					$sql_result6=mysqli_query($link, $sql6) or exit($sql6."<br/>Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -499,11 +468,11 @@ if(isset($_POST['put']))
 				
 					if($num5==$num6)
 					{
-						$sql8="delete FROM $bai_rm_pj1.stock_report_inventory where lot_no='$lot_no'";
+						$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no'";
 						$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num8=mysqli_affected_rows($link);
 
-						$sql7="delete FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+						$sql7="delete FROM $wms.sticker_report where lot_no='$lot_no'";
 						$sql_result7=mysqli_query($link, $sql7) or exit($sql7."<br/>Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num7=mysqli_affected_rows($link);
 					}

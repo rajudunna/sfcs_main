@@ -2861,7 +2861,7 @@ $(document).ready(function(){
 </script>
 
 <?php
-$printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
+$printqry="select status from $pps.binding_consumption where id='$bindid'";
 $sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_print))
 {
@@ -2870,7 +2870,7 @@ while($sql_row=mysqli_fetch_array($sql_result_print))
 
 if($printstatus!='Close')
 {
-	$query = "UPDATE $bai_pro3.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."' where id = $bindid";
+	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."' where id = $bindid";
     $update_query = mysqli_query($link,$query);
 }
 ?>

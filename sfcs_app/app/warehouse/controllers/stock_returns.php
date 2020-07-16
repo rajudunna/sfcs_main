@@ -110,7 +110,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+$sql="select * from $wms.sticker_report where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -130,7 +130,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$pkg_no=$sql_row['pkg_no'];
 }
 
-$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -208,7 +208,7 @@ switch (trim($product_group))
 	}
 }
 
-$sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+$sql="select * from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -267,7 +267,7 @@ if(isset($_POST['put']))
 		{
 			$qty_returned_new=0;
 			
-			$sql1="select qty_issued from $bai_rm_pj1.store_in where tid=".$tid[$i];
+			$sql1="select qty_issued from $wms.store_in where tid=".$tid[$i];
 			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check1=mysqli_num_rows($sql_result1);
@@ -276,7 +276,7 @@ if(isset($_POST['put']))
 				$qty_issued=$sql_row1['qty_issued'];
 			}
 				
-			$sql="select qty_ret from $bai_rm_pj1.store_in where tid=".$tid[$i];
+			$sql="select qty_ret from $wms.store_in where tid=".$tid[$i];
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -290,20 +290,20 @@ if(isset($_POST['put']))
 			//echo $qty_issued>=$qty_returned_new;
 			if($qty_issued>=$qty_returned_new)
 			{
-				$sql="insert into $bai_rm_pj1.store_returns (tran_tid, qty_returned, date, remarks, updated_by) values (".$tid[$i].",".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','$username')";
+				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, updated_by) values (".$tid[$i].",".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','$username')";
 				//echo "<br/>".$sql."<br/>";
 				//die();
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($status[$i]==1)
 				{
-					$sql="update $bai_rm_pj1.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0 where tid=".$tid[$i];
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0 where tid=".$tid[$i];
 					echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				else
 				{
-					$sql="update $bai_rm_pj1.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0 where tid=".$tid[$i];
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0 where tid=".$tid[$i];
 					//echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

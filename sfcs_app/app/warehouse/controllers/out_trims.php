@@ -132,7 +132,7 @@ if(isset($_POST['cartonid']))
 				$schedule=$sql_row1['order_del_no'];
 			}
 			$code=ltrim($code,"0");
-			$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+			$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $wms.store_in where roll_status in (0,2) and tid=\"$code\"";
 			// echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -157,11 +157,11 @@ if(isset($_POST['cartonid']))
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
 				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-				$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
+				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql1="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$code\", ".($qty_iss).", \"$location\",\"".date("Y-m-d")."\",'".$username."_online','".date("Y-m-d H:i:s")."',\"$style\",\"$schedule\")";
+				$sql1="insert into $wms.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$code\", ".($qty_iss).", \"$location\",\"".date("Y-m-d")."\",'".$username."_online','".date("Y-m-d H:i:s")."',\"$style\",\"$schedule\")";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo "<h4>Status  : <span class='label label-success'>Success!</span> $code</h4>";
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"?r=".$_GET['r']."&location=$location\"; }</script>";
@@ -230,7 +230,7 @@ if(isset($_POST['check2']))
 			}
 			$code=ltrim($code,"0");
 			
-			$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$code\"";
+			$sql="select qty_rec,qty_issued,qty_ret,partial_appr_qty from $wms.store_in where roll_status in (0,2) and tid=\"$code\"";
 			// echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -255,11 +255,11 @@ if(isset($_POST['check2']))
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
 				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-				$sql1="update $bai_rm_pj1.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
+				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status where tid=\"$code\"";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
-				$sql1="insert into $bai_rm_pj1.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$code\", ".($qty_iss).", \"$location\",\"".date("Y-m-d")."\",'".$username."_online','".date("Y-m-d H:i:s")."',\"$style\",\"$schedule\")";
+				$sql1="insert into $wms.store_out (tran_tid,qty_issued,cutno,date,updated_by,log_stamp,Style,Schedule) values (\"$code\", ".($qty_iss).", \"$location\",\"".date("Y-m-d")."\",'".$username."_online','".date("Y-m-d H:i:s")."',\"$style\",\"$schedule\")";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				echo "<h4>Status  : <span class='label label-success'>Success!</span> $code</h4>";
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"".getFullURL($_GET['r'],'out_trims.php','N')."&location=$location\"; }</script>";

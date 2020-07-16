@@ -17,12 +17,12 @@ if(isset($_POST['submit2']))
 	{
 		if($status[$i]==4)
 		{
-			$sql="update $bai_rm_pj2.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\"  where tid=".$tid[$i];
+			$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\"  where tid=".$tid[$i];
 			
 		}
 		else
 		{
-			$sql="update $bai_rm_pj2.manual_form set status=".$status[$i].", remarks=\"$username\" where tid=".$tid[$i];
+			$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\" where tid=".$tid[$i];
 		}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
@@ -40,7 +40,7 @@ if(isset($_POST['submit1']))
 	$item_db=array();
 	$reason_db=array();
 	$qty_db=array();
-	$sql="select * from $bai_rm_pj2.manual_form where status=1 and tid in (".implode(",",$tid).")";
+	$sql="select * from $wms.manual_form where status=1 and tid in (".implode(",",$tid).")";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -65,14 +65,14 @@ if(isset($_POST['submit1']))
 
 		if($status[$i]==2 or $status[$i]==3)
 		{
-			$sql="update $bai_rm_pj2.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\"  where tid=".$tid[$i];
+			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\"  where tid=".$tid[$i];
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			if($status[$i]==2)
 			{
 				$count=1;
 				
-				$sql="update $bai_rm_pj2.manual_form set comm_status=1 where tid=".$tid[$i];
+				$sql="update $wms.manual_form set comm_status=1 where tid=".$tid[$i];
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 				$table.="<tr><td>".$item_db[$i]."</td><td>".$reason_db[$i]."</td><td>".$qty_db[$i]."</td></tr>";

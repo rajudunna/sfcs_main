@@ -57,7 +57,7 @@ margin-bottom: 5px;
 </style>
 </head>
 <body>';
-$sql="SELECT * FROM $bai_rm_pj1.location_db where status=1 order by sno ASC";
+$sql="SELECT * FROM $wms.location_db where status=1 order by sno ASC";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);

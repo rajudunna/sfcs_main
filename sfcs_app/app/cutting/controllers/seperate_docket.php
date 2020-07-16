@@ -5,7 +5,7 @@
 
     $close_url = getFullURLLevel($_GET['r'],'closed_docket.php',0,'R');
     
-    $query = "select * from $bai_pro3.binding_consumption where status='Allocated'";
+    $query = "select * from $pps.binding_consumption where status='Allocated'";
     $sql_result = mysqli_query($link,$query);
     if(mysqli_num_rows($sql_result)>0){
         $count = mysqli_num_rows($sql_result);
@@ -66,7 +66,7 @@ th{
                         </thead>
                         <tbody>
                         <?php
-                            $query = "select * from $bai_pro3.binding_consumption where status='Open'";
+                            $query = "select * from $pps.binding_consumption where status='Open'";
                             $sql_result = mysqli_query($link,$query);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
@@ -112,7 +112,7 @@ th{
                         <?php   
                                 $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
                              
-                                $query = "select * from $bai_pro3.binding_consumption where status='Allocated'";
+                                $query = "select * from $pps.binding_consumption where status='Allocated'";
                                 $sql_result = mysqli_query($link,$query);
                                 $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -171,7 +171,7 @@ th{
         </div>
 
   <?php
-    $query = "select * from $bai_pro3.binding_consumption";
+    $query = "select * from $pps.binding_consumption";
     $sql_result = mysqli_query($link,$query) or exit('Cant  run');
     while($sql_row=mysqli_fetch_array($sql_result))
     {
@@ -183,7 +183,7 @@ th{
                     <button type='button' class='close'  id = 'cancel' data-dismiss='modal'>&times;</button>
                 </div>";
         echo "<div class='modal-body'>";
-                    $child_query = "select * from $bai_pro3.binding_consumption_items as c LEFT JOIN $bai_pro3.binding_consumption p ON p.id=c.parent_id where parent_id='".$i."'";
+                    $child_query = "select * from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where parent_id='".$i."'";
                     $child_result = mysqli_query($link,$child_query);
                     // var_dump(mysqli_num_rows($child_result));
                     if(mysqli_num_rows($child_result) > 0){

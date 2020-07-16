@@ -66,7 +66,7 @@ else
 
 <?php
 
-$sql="select * from $bai_rm_pj2.manual_form where rand_track=$tid and status=$check";
+$sql="select * from $wms.manual_form where rand_track=$tid and status=$check";
 //echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

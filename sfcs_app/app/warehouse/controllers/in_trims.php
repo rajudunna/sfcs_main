@@ -38,7 +38,7 @@ body
 		{
 			$location=$_GET['location'];
 			
-			$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0 and status=1";
+			$sql="select * from $wms.location_db where location_id=\"$location\" and sno>0 and status=1";
 			//echo "$sql";
 			$sql_result=mysqli_query($link, $sql);
 			if(mysqli_num_rows($sql_result)>0)
@@ -95,13 +95,13 @@ echo "<br><div>
 			$location=$_POST['location'];
 			if(is_numeric(substr($code,0,1)))
 			{
-				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+				$sql="select * from $wms.location_db where location_id=\"$location\" and sno>0";
 				//echo "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql);
 				if(mysqli_num_rows($sql_result)>0)
 				{
 					$code=ltrim($code,"0");
-					$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
+					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
 					//echo "<br/>".$sql1."<br/>";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_affected_rows($link)>0)
@@ -109,7 +109,7 @@ echo "<br><div>
 						echo "<div id='status'>Status: <span class='label label-success'>Success!</span> $code</div>";
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",500); function Redirect() {  location.href = \"in_trims.php?location=$location\"; }</script>";
 					}else{
-						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
+						$sql1="select * from $wms.store_in_deleted where tid=\"$code\" ";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{
@@ -118,7 +118,7 @@ echo "<br><div>
 						}
 						else
 						{
-							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql2="select * from $wms.store_in where tid=\"$code\" ";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result2)>0)
 							{
@@ -159,12 +159,12 @@ echo "<br><div>
 			
 			if(is_numeric(substr($code,0,1)))
 			{
-				$sql="select * from $bai_rm_pj1.location_db where location_id=\"$location\" and sno>0";
+				$sql="select * from $wms.location_db where location_id=\"$location\" and sno>0";
 				$sql_result=mysqli_query($link, $sql);
 				if(mysqli_num_rows($sql_result)>0)
 				{
 					$code=ltrim($code,"0");
-					$sql1="update $bai_rm_pj1.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
+					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0 where tid=\"$code\"";
 					$sql_result1=mysqli_query($link, $sql1);
 					if(mysqli_affected_rows($link)>0)
 					{
@@ -173,7 +173,7 @@ echo "<br><div>
 					}
 					else
 					{
-						$sql1="select * from $bai_rm_pj1.store_in_deleted where tid=\"$code\" ";
+						$sql1="select * from $wms.store_in_deleted where tid=\"$code\" ";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{
@@ -182,7 +182,7 @@ echo "<br><div>
 						}
 						else
 						{
-							$sql2="select * from $bai_rm_pj1.store_in where tid=\"$code\" ";
+							$sql2="select * from $wms.store_in where tid=\"$code\" ";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result2)>0)
 							{
