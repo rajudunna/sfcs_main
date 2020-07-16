@@ -200,9 +200,15 @@ set_time_limit(6000000);
 	$file_data_request = $log;
 	fwrite($handle,"\n".$file_data_request); 
 	
-	$file_to_delete=$fileName.'_'.date('Y-m-d-H-i-s', strtotime('-15 days')).'.html';
-	$my_file_path=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_to_delete;
-	unlink("$my_file_path");
+	$files = glob($include_path.'\sfcs_app\app\jobs\log\mo_soap_api_call_'."*");
+    $now   = time();
+    foreach ($files as $file) {
+		 if (is_file($file)) {
+			if ($now - filemtime($file) >= 60 * 60 * 24 * 15) { // 15 days
+				 unlink($file);
+		}
+	  }
+	}
 
 	fclose($handle); 
 	$end_timestamp = microtime(true);
