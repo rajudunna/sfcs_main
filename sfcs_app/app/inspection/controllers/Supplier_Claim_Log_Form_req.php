@@ -6,7 +6,7 @@ $reject_len_qty_sum=0;
 echo "<div class='panel panel-primary'>";
 echo "<div class='panel-heading'>Previous Claims</div>";
 echo "<div class='panel-body'>";
-$countqry="select count(*) as cnt from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
+$countqry="select count(*) as cnt from $wms.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
 $count=mysqli_query($link, $countqry) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1=mysqli_fetch_array($count))
 {
@@ -32,7 +32,7 @@ while ($row1=mysqli_fetch_array($count))
 		}
 	
 		echo "</tr></thead>";
-		$sql11="select * from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
+		$sql11="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch_no."\" OR reject_inv_no=\"".$batch_no."\"";
 		$result11=mysqli_query($link, $sql11) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			while($row=mysqli_fetch_array($result11))
@@ -83,7 +83,7 @@ while ($row1=mysqli_fetch_array($count))
 				}
 						
 				$batch_lots=0;
-				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $bai_rm_pj1.sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
+				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $wms.sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
 				$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($result1);
 				if($rowsx > 0)
@@ -94,7 +94,7 @@ while ($row1=mysqli_fetch_array($count))
 					}
 				}
 
-				$sql3="select unique_id as uid,log_date as upd from  $bai_rm_pj1.inspection_db where batch_ref=\"".$reject_batch_no."\"";
+				$sql3="select unique_id as uid,log_date as upd from  $wms.inspection_db where batch_ref=\"".$reject_batch_no."\"";
 				$result3=mysqli_query($link, $sql3) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row3=mysqli_fetch_array($result3))
 				{

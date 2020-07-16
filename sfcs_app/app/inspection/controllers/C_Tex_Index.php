@@ -60,8 +60,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <?php
 
 
-		$sql = "select distinct lot_no AS \"lot_ref_batch\" from $bai_rm_pj1.store_in 
-				WHERE lot_no IN(select DISTINCT lot_no from $bai_rm_pj1.sticker_report WHERE batch_no=\"".trim($lot_no)."\" and product_group ='Fabric' ) 
+		$sql = "select distinct lot_no AS \"lot_ref_batch\" from $wms.store_in 
+				WHERE lot_no IN(select DISTINCT lot_no from $wms.sticker_report WHERE batch_no=\"".trim($lot_no)."\" and product_group ='Fabric' ) 
 				GROUP BY lot_no";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows=mysqli_num_rows($sql_result);
@@ -125,7 +125,7 @@ if(isset($_POST['submit1']))
 {
 	$lot_no1=$_POST['lot_no1'];
 	
-	$sql_query = "select count(*) as count from $bai_rm_pj1.store_in where lot_no="."'".$lot_no1."'";
+	$sql_query = "select count(*) as count from $wms.store_in where lot_no="."'".$lot_no1."'";
 	$res_query = mysqli_query($link, $sql_query);
 	while($sql_row=mysqli_fetch_array($res_query))
 	{
@@ -133,7 +133,7 @@ if(isset($_POST['submit1']))
 	}
 	if($count >0)
 	{
-		$sql="select distinct batch_no as \"batch_no\" from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no1)."\" and product_group ='Fabric'";
+		$sql="select distinct batch_no as \"batch_no\" from $wms.sticker_report where lot_no=\"".trim($lot_no1)."\" and product_group ='Fabric'";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -142,7 +142,7 @@ if(isset($_POST['submit1']))
 		$num_rows=mysqli_num_rows($sql_result);
 		if ($num_rows == 0)
 		{
-			$sql1="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no1)."\" and product_group not in ('Fabric')";
+			$sql1="select * from $wms.sticker_report where lot_no=\"".trim($lot_no1)."\" and product_group not in ('Fabric')";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num_rows1=mysqli_num_rows($sql_result1);
 			if($num_rows1 > 0)

@@ -107,7 +107,7 @@ $flag = false;
 								<table class="table table-bordered" id="myTable">  
 								<?php
 									echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
-									$sql_query = "select * from $bai_rm_pj1.inspection_population where parent_id=$parent_id and status = 0";
+									$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id and status = 0";
 									$k=0;
 									$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 									if (mysqli_num_rows($sql_result) == 0) {
@@ -207,7 +207,7 @@ $flag = false;
 								</tr>
 					      <tr>
 							  <?php
-								$get_details_main="select * from $bai_rm_pj1.main_population_tbl where id=$parent_id";					
+								$get_details_main="select * from $wms.main_population_tbl where id=$parent_id";					
 								$details1_result=mysqli_query($link,$get_details_main) or exit("get_details_main Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row1=mysqli_fetch_array($details1_result))
 								{
@@ -237,7 +237,7 @@ $flag = false;
 					"<input type='hidden' name='po_four_point' value='".$po."'>";
 					"<input type='hidden' name='lot_four_point' value='".$lot_no."'>";
 					$url = getFullURLLevel($_GET['r'],'4_point_roll_inspection_child.php',0,'N');
-					$get_details12="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0";
+					$get_details12="select * from $wms.`inspection_population` where parent_id=$parent_id and status<>0";
 					$details1_result22=mysqli_query($link,$get_details12) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$val=mysqli_num_rows($details1_result22);
 					?>
@@ -279,7 +279,7 @@ $flag = false;
 							$val2=0;
 							$val2_1=0;
 							$val2_2=0;
-							$get_details1="select * from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status<>0 order by sno";
+							$get_details1="select * from $wms.`inspection_population` where parent_id=$parent_id and status<>0 order by sno";
 							$details1_result=mysqli_query($link,$get_details1) or exit("get_details1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$path= getFullURLLevel($_GET['r'], "fabric_inspection_report.php", "0", "R")."?id=$parent_id";
 							while($row2=mysqli_fetch_array($details1_result))
@@ -294,7 +294,7 @@ $flag = false;
 								$status=$row2['status'];
 								$main_points=0;
 									
-								$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$store_in_id";
+								$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id=$store_in_id";
 								$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row522=mysqli_fetch_array($details_result_points))
 								{ 
@@ -306,7 +306,7 @@ $flag = false;
 										$invoice_qty;
 									}
 								}
-								$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$store_in_id";
+								$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid=$store_in_id";
 								$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row_min=mysqli_fetch_array($min_value_result))
 								{
@@ -320,7 +320,7 @@ $flag = false;
                                 // echo $inch_value."</br>";
                                 // echo $invoice_qty;
 								$back_color="";		
-								$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$store_in_id."";
+								$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$store_in_id."";
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($status_details_result2)>0)
 								{	
@@ -469,7 +469,7 @@ if (isset($_POST['bindingdata'])) {
 			$exp = explode("$", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
-			$insertbinditems = "update $bai_rm_pj1.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
+			$insertbinditems = "update $wms.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
 			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$lot_array = implode(",", $lot_num);
@@ -487,7 +487,7 @@ if(isset($_POST['confirm']))
 	$insp_id=$_POST['insp_id'];
 	$sno_array = implode(",", $insp_id);
 
-	$update_inspection="update $bai_rm_pj1.`inspection_population` set status=2 where sno in ($sno_array)";
+	$update_inspection="update $wms.`inspection_population` set status=2 where sno in ($sno_array)";
 	$result_query_update = $link->query($update_inspection) or exit('query error in updating111');
 	$flag = true;
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";

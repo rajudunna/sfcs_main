@@ -109,11 +109,11 @@ if(isset($_POST['show']) || isset($_GET['show']))
 		if($batch=="")
 		{
 		
-		$sql="select * from $bai_rm_pj1.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\" and complaint_status=\"".$status."\"";
+		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\" and complaint_status=\"".$status."\"";
 		}
 		else
 		{
-			$sql="select * from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
+			$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
 		}
 	}
 	else
@@ -121,11 +121,11 @@ if(isset($_POST['show']) || isset($_GET['show']))
 		
 		if($batch=="")
 		{
-		$sql="select * from $bai_rm_pj1.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\"";
+		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\"";
 		}
 		else
 		{
-		$sql="select * from $bai_rm_pj1.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
+		$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
 		}	
 	}
 	$result=mysqli_query($link, $sql) or die("Error=".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -195,7 +195,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				}
 						
 				$batch_lots=0;
-				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $bai_rm_pj1.sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
+				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $wms.sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
 				$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($result1);
 				if($rowsx > 0)
@@ -206,7 +206,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 					}
 				}
 
-				$sql3="select unique_id as uid,log_date as upd from  $bai_rm_pj1.inspection_db where batch_ref=\"".$reject_batch_no."\"";
+				$sql3="select unique_id as uid,log_date as upd from  $wms.inspection_db where batch_ref=\"".$reject_batch_no."\"";
 				$result3=mysqli_query($link, $sql3) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row3=mysqli_fetch_array($result3))
 				{

@@ -23,7 +23,7 @@ $Page_Id='SFCS_0051';
 			if(isset($_POST['submit1']))
 			{
 				$lot_no1=$_POST['lot_no1'];
-				$sql="select batch_no as 'batch_num' from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no1)."\" 
+				$sql="select batch_no as 'batch_num' from $wms.sticker_report where lot_no=\"".trim($lot_no1)."\" 
 					and product_group <> 'Fabric' ";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
