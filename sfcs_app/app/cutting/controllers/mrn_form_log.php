@@ -152,9 +152,9 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 						}
 
 						$reasonsdb_array=array("ALL","1-Requested","2-Approved","3-Rejected","4-Informed/On Progress","5-RM Approved","6-Canceled","7-Doc Printed ","8-Doc Issued","9-Doc Closed");
-						//$sql="select * from bai_rm_pj2.mrn_track where year(req_date)=year(\"$date\") and status=1 group by rand_track_id";
+						//$sql="select * from wms.mrn_track where year(req_date)=year(\"$date\") and status=1 group by rand_track_id";
 						$total=0;
-						$sql="select status,count(rand_track_id) as count from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") group by status";
+						$sql="select status,count(rand_track_id) as count from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") group by status";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<br><b>Status wise Pending List:";
 						echo "</div><br>";
@@ -201,13 +201,13 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 
 						if($_GET['status_filter']==0)
 						{
-							$sql="select * from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") order by status,req_date desc";
+							$sql="select * from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") order by status,req_date desc";
 						}
 						else
 						{
 							
 
-						$sql="select * from $bai_rm_pj2.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and status=".$_GET['status_filter']." order by status,req_date desc";
+						$sql="select * from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and status=".$_GET['status_filter']." order by status,req_date desc";
 						
 						}
 						//echo $sql;
@@ -236,7 +236,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<td>".$sql_row['item_code']."</td>";
 							echo "<td>".$sql_row['item_desc']."</td>";
 							$reason_code = $sql_row['reason_code'];
-							$sql_reason = "SELECT * FROM $bai_rm_pj2.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
+							$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid = \"$reason_code\"";
 							$result_reason = mysqli_query($link,$sql_reason);
 							$reason_row = mysqli_fetch_assoc($result_reason);
 							echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
@@ -244,7 +244,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							//Add the new column as other remarks as a popup to display the all the remarks in each level.
 							$link_remarks=getFullURL($_GET['r'],'remarks_log.php','N');
 							echo "<td><a class='btn btn-info btn-xs' href=\"$link_remarks&ref_tid=$ref_tid\" onclick=\"return popituprem('$link_remarks&ref_tid=$ref_tid')\">Remarks</a></td>";
-								$sql_ref_tid="select * from $bai_rm_pj2.remarks_log where tid=\"$ref_tid\" and level=\"Approved\"";
+								$sql_ref_tid="select * from $wms.remarks_log where tid=\"$ref_tid\" and level=\"Approved\"";
 								$sql_result_ref_tid=mysqli_query($link, $sql_ref_tid) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$row1=mysqli_num_rows($sql_result_ref_tid);
 								$rem='';

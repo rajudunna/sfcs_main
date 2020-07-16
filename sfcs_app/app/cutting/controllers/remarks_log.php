@@ -18,7 +18,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 
 
-$sql="select * from $bai_rm_pj2.remarks_log where tid=\"$tran_id\"";
+$sql="select * from $wms.remarks_log where tid=\"$tran_id\"";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $row1=mysqli_num_rows($sql_result);

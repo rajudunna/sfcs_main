@@ -89,7 +89,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         </thead>
                         <?php
                             $doc_nos=array();    
-                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status='Open'";
+                            $query = "select * from $wms.material_deallocation_track where status='Open'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
                             while($sql_row=mysqli_fetch_array($sql_result))
@@ -155,7 +155,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                             </tr>
                         </thead>
                         <?php
-                            $query = "select * from $bai_rm_pj1.material_deallocation_track where status<>'Open'";
+                            $query = "select * from $wms.material_deallocation_track where status<>'Open'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
                             $index=0;
@@ -327,18 +327,18 @@ if(isset($_POST['formSubmit']))
                 $allocate_ref = $sql_row0['allocate_ref'];
             }
         
-            $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
+            $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no'";
             $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
             if(mysqli_num_rows($fab_qry_result)>0)
             {     
                 if($fabric_status != 5)
                 {
-                    $is_requested="SELECT * FROM $bai_rm_pj1.material_deallocation_track WHERE doc_no=$doc_no and status='Open'";
+                    $is_requested="SELECT * FROM $wms.material_deallocation_track WHERE doc_no=$doc_no and status='Open'";
                     $is_requested_result=mysqli_query($link, $is_requested) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     if(mysqli_num_rows($is_requested_result)==0)
                     {
-                        $fab_qry="SELECT * FROM $bai_rm_pj1.fabric_cad_allocation WHERE doc_no='$doc_no'";
+                        $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no'";
                         $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $allocated_qty=0;
                         while($sql_row1=mysqli_fetch_array($fab_qry_result))
@@ -346,7 +346,7 @@ if(isset($_POST['formSubmit']))
                             $allocated_qty+=$sql_row1['allocated_qty'];  
                         }
                         $req_at = date("Y-m-d H:i:s");
-                        $insert_req_qry = "INSERT INTO $bai_rm_pj1.material_deallocation_track(doc_no,qty,requested_by,requested_at,status) values ($doc_no,$allocated_qty,'$username','$req_at','Open')";
+                        $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status) values ($doc_no,$allocated_qty,'$username','$req_at','Open')";
                         $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');

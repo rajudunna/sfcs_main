@@ -296,7 +296,7 @@ $inp_1=$_POST['style'];
 $inp_2=$_POST['schedule'];
 $inp_3=str_replace("^","&",$_POST['color']);
 
-$sql="select distinct rand_track_id from $bai_rm_pj2.mrn_track where style=\"$inp_1\" and schedule=\"$inp_2\" and color=\"$inp_3\"";
+$sql="select distinct rand_track_id from $wms.mrn_track where style=\"$inp_1\" and schedule=\"$inp_2\" and color=\"$inp_3\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".mysqli_num_rows($sql_result)."</b><br/>";
@@ -452,7 +452,7 @@ if(isset($_POST['update']))
 	{
 		if($qty[$i]>0)
 		{
-			$sql="insert into $bai_rm_pj2.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$product[$i]."\",\"".$item_code[$i]."\",\"".$item_desc[$i]."\",\"".$co[$i]."\",\"".$price[$i]."\",\"".$uom[$i]."\",\"".$qty[$i]."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$reason[$i]."\",\"".$remarks[$i]."\")";
+			$sql="insert into $wms.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$product[$i]."\",\"".$item_code[$i]."\",\"".$item_desc[$i]."\",\"".$co[$i]."\",\"".$price[$i]."\",\"".$uom[$i]."\",\"".$qty[$i]."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$reason[$i]."\",\"".$remarks[$i]."\")";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$test=1;
 			$cost+=($qty[$i]*$price[$i]);
