@@ -45,7 +45,7 @@
                     <select class='form-control' name="module">
                         <option value='NIL'>Select Module</option>
                         <?php  
-                            $sql = "SELECT * FROM $bai_pro3.plan_modules";
+                            $sql = "SELECT * FROM $pts.plan_modules";
                             $sql_result = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                             while($sql_row=mysqli_fetch_array($sql_result)){
@@ -108,7 +108,7 @@
                         $style_id_new=$sql_row_id["sid"];
                     }
                         
-                    $get_fab_req_details="SELECT * FROM $bai_pro3.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+                    $get_fab_req_details="SELECT * FROM $pms.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
                     $get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $resulted_rows = mysqli_num_rows($get_fab_req_result);
 
@@ -116,8 +116,8 @@
                     // add by Chathuranga	
                     
                     
-                    $display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-                    $bg_color1 = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+                    $display_prefix1 = get_sewing_job_prefix("prefix","$pms.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
+                    $bg_color1 = get_sewing_job_prefix("bg_color","$pms.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
 
                     $title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);   
                     if($style1){
