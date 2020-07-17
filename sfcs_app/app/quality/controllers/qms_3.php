@@ -48,7 +48,7 @@ td{ padding:2px; white-space: nowrap;}
 <!---<div id="page_heading"><span style="float"><h3>Rejection Deleted Log</h3></span><span style="float: right">&nbsp;</span></div>--->
 <br/>
 <?php 
-$sql="select * from $bai_pro3.bai_qms_db_deleted";
+$sql="select * from $pms.bai_qms_db_deleted";
 $result=mysqli_query($link, $sql) or die("Sql error--1".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
 echo "<div class='panel panel-primary'>";
 echo "<div class='panel-heading'>";echo"Rejection Deleted Log";echo "</div>";
