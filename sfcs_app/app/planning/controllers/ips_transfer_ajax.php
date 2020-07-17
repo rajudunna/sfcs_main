@@ -108,7 +108,7 @@ function get_details($module){
         }
 
         // To get Prefix
-        $get_prefix="select * from  brandix_bts.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
+        $get_prefix="select * from  $pms.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
         //echo $get_prefix;
         $get_result=mysqli_query($link, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row3=mysqli_fetch_array($get_result))
@@ -185,10 +185,10 @@ function save_details($data,$module,$module1){
         $bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
         mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry="insert into bai_pro3.ips_job_transfer (job_no,module,transfered_module,user) values (".$job.",".$module1.",".$module.",'".$username."')";
+        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user) values (".$job.",".$module1.",".$module.",'".$username."')";
         mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry1="insert into $bai_pro3.job_transfer_details (sewing_job_number,transfered_module,status) values (".$job.",".$module.",'P')";
+        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status) values (".$job.",".$module.",'P')";
         mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
