@@ -71,7 +71,7 @@
                     $ims_update="update $bai_pro3.ims_log set ims_mod_no='$module' where pac_tid='$barcode_number' and operation_id='$operation_code_ims'";
                     $ims_update_result=mysqli_query($link,$ims_update) or exit("while retriving assigned_module".mysqli_error($GLOBALS["___mysqli_ston"]));
                    
-                    $insert_log="insert into $brandix_bts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module',NOW())";
+                    $insert_log="insert into $pts.module_transfer_track (username,bundle_number,operation_code,from_module,to_module,time) values ('$user','$barcode_number','$ops_code','$from_module','$module',NOW())";
                     $sql_result0=mysqli_query($link, $insert_log) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $result_array['flag']=0; 
                     $result_array['status'] = 'Module Transferred Successfully';
