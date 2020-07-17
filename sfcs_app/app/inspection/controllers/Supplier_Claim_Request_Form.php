@@ -684,7 +684,7 @@ if(isset($_POST['submitx']))
 	
 	$max_complaint_nos=0;
 	
-	$sql12="select * from $wms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\"";
+	$sql12="select * from $pms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\"";
 	$result12=mysqli_query($link, $sql12) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row12=mysqli_fetch_array($result12))
 	{

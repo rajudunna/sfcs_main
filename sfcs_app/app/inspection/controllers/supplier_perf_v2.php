@@ -21,7 +21,7 @@ body{
 <?php  
 
 
-//$sql="select * from $wms.inspection_supplier_db where product_code=\"Fabric\"";
+//$sql="select * from $pms.inspection_supplier_db where product_code=\"Fabric\"";
 $sql="SELECT * FROM $wms.sticker_report WHERE product_group='Fabric' GROUP BY supplier";
 $sql_result=mysqli_query($link, $sql) or exit("No Data Avaiable".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

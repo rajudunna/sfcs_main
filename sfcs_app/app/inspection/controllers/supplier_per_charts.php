@@ -76,7 +76,7 @@ table{
 	$mon1=date('F(Y)', strtotime($sdate));
     $mon2=date('F(Y)', strtotime($edate));
 	
-	$sql_sup_ref="select * from $wms.inspection_supplier_db WHERE PRODUCT_CODE=\"Fabric\" order by seq_no";
+	$sql_sup_ref="select * from $pms.inspection_supplier_db WHERE PRODUCT_CODE=\"Fabric\" order by seq_no";
 	$sql_result_ref=mysqli_query($link, $sql_sup_ref) or exit("Sql Error".$sql_sup_ref.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_ref=mysqli_fetch_array($sql_result_ref))
 	{
@@ -104,7 +104,7 @@ table{
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$rec_qty[]=$sql_row["qty"];
-		$sql_sup="select * from $wms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["supplier"]."\" and product_code=\"Fabric\"";
+		$sql_sup="select * from $pms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["supplier"]."\" and product_code=\"Fabric\"";
 		$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error".$sql_sup.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_sup) > 0)
 		{
@@ -119,7 +119,7 @@ table{
 		}
 		$supplier[]=$supplier_name_ref;
 		
-		$sql_col1="select * FROM $wms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref."\" and product_code=\"Fabric\""; 
+		$sql_col1="select * FROM $pms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref."\" and product_code=\"Fabric\""; 
 		//echo $sql_col."<br>";
 		$sql_result_col1=mysqli_query($link, $sql_col1) or exit("Sql Error".$sql_col1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_col1) > 0)
@@ -266,7 +266,7 @@ table{
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$supplier_name=$sql_row["sup"];
-		$sql_sup1="select * from $wms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["sup"]."\" and product_code=\"Fabric\"";
+		$sql_sup1="select * from $pms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["sup"]."\" and product_code=\"Fabric\"";
 		$sql_result_sup1=mysqli_query($link, $sql_sup1) or exit("Sql Error".$sql_sup1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_sup1) > 0)
 		{
@@ -280,7 +280,7 @@ table{
 			$supplier_name_ref1=$sql_row["sup"];
 		}
 		
-		$sql_col="select * FROM $wms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref1."\" and product_code=\"Fabric\""; 
+		$sql_col="select * FROM $pms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref1."\" and product_code=\"Fabric\""; 
 		//echo $sql_col."<br>";
 		$sql_result_col=mysqli_query($link, $sql_col) or exit("Sql Error".$sql_col.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_col) > 0)

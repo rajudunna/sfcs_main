@@ -206,7 +206,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 					}
 				}
 
-				$sql3="select unique_id as uid,log_date as upd from  $wms.inspection_db where batch_ref=\"".$reject_batch_no."\"";
+				$sql3="select unique_id as uid,log_date as upd from  $pps.inspection_db where batch_ref=\"".$reject_batch_no."\"";
 				$result3=mysqli_query($link, $sql3) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row3=mysqli_fetch_array($result3))
 				{
