@@ -58,7 +58,7 @@ if(isset($_POST['submit']) || isset($_GET['schedule']))
             $order_col_des=$sql_row['order_col_des'];
 	        $input_job_no=$sql_row['input_job_no'];
 	        $input_job_no_ran=$sql_row['input_job_no_random'];
-            $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$order_col_des,$input_job_no,$link);
+            $display = get_sewing_job_prefix("prefix","$pms.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$order_col_des,$input_job_no,$link);
 	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
 			if($sql_row['mrn_status']==1)
 			{
