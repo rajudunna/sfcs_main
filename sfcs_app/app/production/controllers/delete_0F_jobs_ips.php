@@ -9,7 +9,7 @@
         $job = $_GET['job'];
 
         //Back up jobs
-        $insert_log = "Insert into $bai_pro3.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`) 
+        $insert_log = "Insert into $pms.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`) 
                     values('$job_r','$username','".date('Y-m-d H:i:s')."')";
         mysqli_query($link,$insert_log);
 
@@ -27,7 +27,6 @@
                 </script>";
         
     }
-
 
 ?>
 <div class='panel panel-primary'>
