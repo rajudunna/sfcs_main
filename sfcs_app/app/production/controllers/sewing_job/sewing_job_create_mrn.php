@@ -193,7 +193,7 @@
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
 
-								$sql88="select type_of_sewing,prefix,bg_color from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
+								$sql88="select type_of_sewing,prefix,bg_color from $pms.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
 								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
 									while($sql_row88=mysqli_fetch_array($sql_result88))
 									{
@@ -250,7 +250,7 @@
 									$sql_result50=mysqli_query($link, $mo_operation_quantites_query1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$mo_operation_count=mysqli_num_rows($sql_result50);
 									if($mo_operation_count>0){
-										$sql98="SELECT input_job_rand_no_ref FROM $bai_pro3.ims_log_backup WHERE input_job_rand_no_ref='".$sql_row['input_job_no_random']."'";
+										$sql98="SELECT input_job_rand_no_ref FROM $pms.ims_log_backup WHERE input_job_rand_no_ref='".$sql_row['input_job_no_random']."'";
 										$sql_result011=mysqli_query($link, $sql98) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$ims_log_backup_count=mysqli_num_rows($sql_result011);
 										$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."'";
