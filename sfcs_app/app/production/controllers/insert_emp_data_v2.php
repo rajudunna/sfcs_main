@@ -6,6 +6,8 @@ $date=$_POST['date'];
 $shift=$_POST['shift'];
 $shift_start_time=$_POST['shift_start_time'];
 $shift_end_time=$_POST['shift_end_time'];
+
+  
 $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift'";
 $sql_res=mysqli_query($link, $sql) or exit("Sql Errora $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count=mysqli_num_rows($sql_res);
@@ -27,12 +29,14 @@ while($module_row=mysqli_fetch_array($modules_result))
 
 for($i=0;$i<sizeof($modules_array);$i++)
 {
-	$pra_id = 'pra'.$modules_id_array[$modules_array[$i]];
-	$aba_id = 'aba'.$modules_id_array[$modules_array[$i]];
+	// $pra_id = 'pra'.$modules_id_array[$modules_array[$i]];
+	// $aba_id = 'aba'.$modules_id_array[$modules_array[$i]];
 	$jumper_id = 'jumper'.$modules_id_array[$modules_array[$i]];
-	$break_hours_id = 'breakhours'.$modules_id_array[$modules_array[$i]];
-	$emp_adjustment_id = 'emp_adjustment'.$modules_id_array[$modules_array[$i]];
-	$adjustment_hours_id = 'adjustment_hours'.$modules_id_array[$modules_array[$i]];
+	$adjustment_type = 'adjustment_type'.$modules_id_array[$modules_array[$i]];
+	$adjustment_smo = 'adjustment_smo'.$modules_id_array[$modules_array[$i]];
+	$working_hours_min = 'working_hours_min'.$modules_id_array[$modules_array[$i]];
+	$adjustment_min = 'adjustment_min'.$modules_id_array[$modules_array[$i]];
+	$adjustment_hours = 'adjustment_hours'.$modules_id_array[$modules_array[$i]];
 	// echo $i."--present---".$_POST[$pra_id]."<br>";
 	// echo $i."--Absent---".$_POST[$aba_id]."<br>";
 	// $attenid=$date."-".$modules_array[$i];
@@ -44,20 +48,66 @@ for($i=0;$i<sizeof($modules_array);$i++)
 		$sql1="INSERT INTO $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$modules_array[$i]','".$shift."')";
 		// echo $sql1."</br>";
 		mysqli_query($link, $sql1) or exit("Sql Errore $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql23="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST[$break_hours_id]."',emp_adjustment='".$_POST[$emp_adjustment_id]."' ,adjustment_hours='".$_POST[$adjustment_hours_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
-		// echo $sql23."</br>";
+		$sql23="update $bai_pro.pro_attendance set jumper='".$_POST[$jumper_id]."',adjustment_type='".$_POST[$adjustment_type]."',adjustment_smo='".$_POST[$adjustment_smo]."' ,working_hours_min='".$_POST[$working_hours_min]."',adjustment_min='".$_POST[$adjustment_min]."',adjustment_hours='".$_POST[$adjustment_hours]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
+		//  echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}else{
-		$sql22="update $bai_pro.pro_attendance set present='".$_POST[$pra_id]."',absent='".$_POST[$aba_id]."',jumper='".$_POST[$jumper_id]."',break_hours='".$_POST[$break_hours_id]."',emp_adjustment='".$_POST[$emp_adjustment_id]."' ,adjustment_hours='".$_POST[$adjustment_hours_id]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
+		$sql22="update $bai_pro.pro_attendance  set jumper='".$_POST[$jumper_id]."',adjustment_type='".$_POST[$adjustment_type]."',adjustment_smo='".$_POST[$adjustment_smo]."' ,working_hours_min='".$_POST[$working_hours_min]."',adjustment_min='".$_POST[$adjustment_min]."',adjustment_hours='".$_POST[$adjustment_hours]."' where date='".$date."' and module='$modules_array[$i]' and shift='".$shift."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	
 }
+if(isset($_POST['data'])) 
+  {
+	$date1=$_POST['date1'];
+	$team=$_POST['team'];
+	$module=$_POST['module'];
+	$store_in_id=$_POST['store_id'];
+	$dataArray = json_decode($_POST['data'], true);
+	$check_val = "select * from $bai_pro.pro_attendance_adjustment where date=\"$date1\" and shift='".$team."' and module='".$module."'";
+	$check_val_ref = mysqli_query($link, $check_val) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	$rows_id = mysqli_num_rows($check_val_ref);
+	if($rows_id>0){
+		$delete_child = "Delete from  $bai_pro.`pro_attendance_adjustment` where date='" .$date1. "' and shift='" .$team. "'";
+		$roll_inspection_delete = $link->query($delete_child) or exit('query error in deleteing222---2');
+	}
+	$insert_four_points = "INSERT IGNORE INTO $bai_pro.`pro_attendance_adjustment` (`date`,`module`, `shift`, `smo`, `adjustment_type`, `smo_minutes`,`smo_adjustment_min`,`smo_adjustment_hours`) VALUES ";
+	foreach ($dataArray as $key => $value) 
+	{
+		
+			
+				$insert_four_points .= "('".$date1."','".$value['module']."','".$team."','".$value['adjustment_smo']."','".$value['adjustment_type']."','".$value['working_min']."','".$value['adjustment_min']."','".$value['adjustment_hours']."'),";
+			
+		
+	 }
+	 $insert_four_points = rtrim($insert_four_points, ",");
+	//  $insert_four_points = ltrim($insert_four_points, " ");
+	 $success_query = mysqli_query($link, $insert_four_points) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	 if ($success_query) 
+        {
+            $responseObject = array(
+                            'status' => 200,
+                            'message' => 'success'
+                            );
+                return json_encode($responseObject);
+        } else {
+            $responseObject = array(
+            'status' => 404,
+            'message' => "error"
+        );
+            return json_encode($responseObject);
+		}
+		
+	
+  }
   echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Attandance Details Sucessfully Updated','','success');
   			location.href = \"".getFullURLLevel($_GET['r'], "update_emp_details_v2.php", "0", "N")."\";
   			}
-  		</script>";
+		  </script>";
+
+		 
+		 
 ?>
