@@ -207,7 +207,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		echo "<div>";
 		echo "<div  class ='table-responsive'>";
-		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Operation Name</th><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
+		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'>
+		<th>Operation Code</th><th>Operation Name</th><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
 		$total_qty=0;
 		do{
 			for($ii=$hour_from;$ii<=$hour_to;$ii++)
@@ -410,7 +411,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 									$operationName = $sql_result_fetch["operation_name"];
 								}
 						
-					   echo "<tr bgcolor=\"$bgcolor\"><td>$operationName</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$assigned_module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cut_number,3)."</td><td>$display</td><td>$size_title</td><td>$smv</td>
+					   echo "<tr bgcolor=\"$bgcolor\"><td>$opcode</td><td>$operationName</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$assigned_module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cut_number,3)."</td><td>$display</td><td>$size_title</td><td>$smv</td>
 					   <td>".$output_qtys."</td><td>".$sahs."</td></tr>";
 					   $total_qty=$total_qty+$output_qtys;							
 					   $total_qty_sah=$total_qty_sah+$sahs;	
@@ -424,7 +425,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 		}
 		while (strtotime($sdate) <= strtotime($edate)); 
-		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=13>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
+		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=14>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
 	}
 	else
 	{
@@ -462,7 +463,7 @@ var fnsFilters = {
 		btn_reset_text: "Clear",
 	col_operation: {						
 						id: ["table1Tot1","table1Tot2"],
-						col: [12,13],  
+						col: [14,15],  
 						operation: ["sum","sum"],
 						decimal_precision: [1,1],
 						write_method: ["innerHTML","innerHTML"] 
