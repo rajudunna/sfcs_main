@@ -355,10 +355,18 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				*/
 				//echo $ims_out_ops;
 				//$output_qty = 0;
+				$tblQuery = "select operation_code from $brandix_bts.tbl_orders_ops_ref where category = 'sewing'";
+				$sql_result23=mysqli_query($link, $tblQuery) or exit("Sql Error898".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row29=mysqli_fetch_array($sql_result23))
+				{
+					$operations[]=$sql_row29['operation_code'];
+				}
+					$sewing_operations = implode(',', $operations);
 				$bcd_qry="select sfcs_smv,assigned_module,schedule,date(date_time),cut_number,
 				shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,
 				size_title,color,input_job_no_random_ref from $brandix_bts.bundle_creation_data_temp where $time_query1
-				sfcs_smv > 0 $shift_value1 $section_value1 GROUP BY operation_id,assigned_module,style,schedule,input_job_no,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				sfcs_smv > 0 $shift_value1 $section_value1 and operation_id in ($sewing_operations) GROUP BY operation_id,
+				assigned_module,style,schedule,input_job_no,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
 				$sql_result23=mysqli_query($link, $bcd_qry) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result23)>0)
 				{
@@ -410,7 +418,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 								while($sql_result_fetch = mysqli_fetch_array($sql_opcode)){
 									$operationName = $sql_result_fetch["operation_name"];
 								}
-						
+					   //echo $operationQuery;
 					   echo "<tr bgcolor=\"$bgcolor\"><td>$opcode</td><td>$operationName</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$assigned_module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cut_number,3)."</td><td>$display</td><td>$size_title</td><td>$smv</td>
 					   <td>".$output_qtys."</td><td>".$sahs."</td></tr>";
 					   $total_qty=$total_qty+$output_qtys;							
