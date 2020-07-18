@@ -189,18 +189,18 @@ set_time_limit(6000000);
 	$rerer=$end_timestamp-$start_timestamp;
 	$log.="<th>".$rerer."</th></tr>";
 	//$include_path=getenv('config_job_path');
-	$directory = $include_path.'\sfcs_app\app\jobs\\'.'log';
+	$directory = $include_path.'\sfcs_app\app\jobs\log\\'.'soap_call';
 	if (!file_exists($directory)) {
 		mkdir($directory, 0777, true);
 	}
 	$fileName="mo_soap_api_call";
 	$file_name_string = $fileName.'_'.date("Y-m-d-H-i-s").'.html';
-	$my_file=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_name_string;
+	$my_file=$include_path.'\sfcs_app\app\jobs\log\\'.'soap_call\\'.$file_name_string;
 	$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
 	$file_data_request = $log;
 	fwrite($handle,"\n".$file_data_request); 
 	
-	$files = glob($include_path.'\sfcs_app\app\jobs\log\mo_soap_api_call_'."*");
+	$files = glob($include_path.'\sfcs_app\app\jobs\log\soap_call\mo_soap_api_call_'."*");
     $now   = time();
     foreach ($files as $file) {
 		 if (is_file($file)) {

@@ -257,14 +257,14 @@ $log.="<th>".$duration."</th></tr>";
 
 //$include_path=getenv('config_job_path');
 //$directory = $include_path.'\sfcs_app\app\jobs\log\\'.'mo_api_order_details_orig';
-$directory = $include_path.'\sfcs_app\app\jobs\\'.'log';
+$directory = $include_path.'\sfcs_app\app\jobs\log\\'.'order_details';
 if (!file_exists($directory)) {
     mkdir($directory, 0777, true);
 }
 $fileName="mo_api_order_details_orig";
 $file_name_string = $fileName.'_'.date("Y-m-d-H-i-s").'.html';
 //$my_file=$include_path.'\sfcs_app\app\jobs\log\\'.'mo_api_order_details_orig\\'.$file_name_string;
-$my_file=$include_path.'\sfcs_app\app\jobs\\'.'log\\'.$file_name_string;
+$my_file=$include_path.'\sfcs_app\app\jobs\log\\'.'order_details\\'.$file_name_string;
 $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
 $file_data_request = $log;
 fwrite($handle,"\n".$file_data_request); 
@@ -272,7 +272,7 @@ fwrite($handle,"\n".$file_data_request);
 fclose($handle);
 
 
-	$files = glob($include_path.'\sfcs_app\app\jobs\log\mo_api_order_details_orig_'."*");
+	$files = glob($include_path.'\sfcs_app\app\jobs\log\order_details\mo_api_order_details_orig_'."*");
     $now   = time();
     foreach ($files as $file) {
 		 if (is_file($file)) {
