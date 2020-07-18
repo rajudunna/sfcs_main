@@ -201,7 +201,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		$end_check=$rows125['end_time'];
 	}
-	$sql="select id from $brandix_bts.bundle_creation_data_temp where date_time between '".$sdate." ".$start_check."' and '".$edate." ".$end_check."' ".$shift_value." ".$section_value1." and sfcs_smv>0";
+	$sql="select id from $brandix_bts.bundle_creation_data_temp where date_time between '".$sdate." ".$start_check."' and '".$edate." ".$end_check."' ".$shift_value1." ".$section_value1." and sfcs_smv>0";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error311".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0)
 	{
