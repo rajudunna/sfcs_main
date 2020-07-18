@@ -69,7 +69,7 @@ if(isset($_POST['data']))
 	$check_val_ref = mysqli_query($link, $check_val) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rows_id = mysqli_num_rows($check_val_ref);
 	if($rows_id>0){
-		$delete_child = "Delete from  $bai_pro.`pro_attendance_adjustment` where date='" .$date1. "' and shift='" .$team. "'";
+		$delete_child = "Delete from  $bai_pro.`pro_attendance_adjustment` where date='" .$date1. "' and shift='" .$team. "' and module='" .$module. "'";
 		$roll_inspection_delete = $link->query($delete_child) or exit('query error in deleteing222---2');
 	}
 	$insert_four_points = "INSERT IGNORE INTO $bai_pro.`pro_attendance_adjustment` (`date`,`module`, `shift`, `smo`, `adjustment_type`, `smo_minutes`,`smo_adjustment_min`,`smo_adjustment_hours`) VALUES ";

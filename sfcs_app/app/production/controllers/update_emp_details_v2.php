@@ -285,7 +285,7 @@ if(isset($_POST['submit']))
 						?>
 						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" id="add_name">
 							<tr id='dynamic<?php echo $k; ?>' class='dynamic-<?php echo $k; ?>'>
-								<td> <?php echo $modules_array[$i]; ?> </td>
+								<td> <?php echo trim($modules_array[$i]); ?> </td>
 								<?php 
 								while($sql_row1=mysqli_fetch_array($sql_result1))
 								{
@@ -356,8 +356,14 @@ if(isset($_POST['submit']))
 
 	   var date1=$('#demo1').val();
 	   var team = $('#team option:selected').text();
-		
+	//    $('#dynamic_field tr').each(function() {
+	// 						var button_id1 = $(this).attr("class"); 	
+	// 						var rowId1= ($(this).attr('class').split('-')[1]);
+	// 						var module_no = $(this).closest('tr').children('td:eq(0)').text();
+	// 						alert(rowId1);
+	//    });
 	   var params1 =[date1,team];
+	   
 
 $.ajax
 ({
@@ -372,7 +378,7 @@ success: function(response)
 	var data = jQuery.parseJSON(response);
 						if(response.length >0)
 						{
-							for(var i=1;i<data.length;i++)
+							for(var i=0;i<data.length;i++)
 							{
 
 								var j = $.trim(data[i]['module']);
@@ -398,7 +404,7 @@ success: function(response)
 	var rowCount = $('#dynamic_field tr').length;
 	for(var i=0; i<=rowCount-2; i+=1){
       $('#add-'+i).click(function(){  
-		var td1 =  $(this).closest('tr').children('td:eq(0)').text();
+		var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
 		 var rowId = (this.id.split('add-')[1] );
            $('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type'+rowId+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+'" value="0"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+'" onchange=" working_hours()" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove">X</button></td><td style="visibility:hidden;">'+rowId+'</td></tr>');  
       }); 
@@ -422,7 +428,6 @@ success: function(response)
 						var $td =  $('td input', this);
 						return {
                                     module:$(this).closest('tr').children('td:eq(0)').text(),
-								
 										present_emp: $td.eq(0).val(),
 										jumper: $td.eq(1).val(),
 										adjustment_type: $(this).find("select").val(),
@@ -437,7 +442,7 @@ success: function(response)
 					}).get();
                    var module1 = $(this).closest('tr').children('td:eq(0)').text();
 				   var postData = JSON.stringify(valueArray);
-
+                    //alert(postData);
 					}
 
 					var date1=$('#demo1').val();
