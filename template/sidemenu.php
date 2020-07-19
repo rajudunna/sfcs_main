@@ -39,8 +39,8 @@
                     }
                     ?>
                     <?php
-                    // role_id 1 is super user and 30 is super admin
-                    if (getrbac_user()['role_id'] == '1' || '30') {
+                    // role_id 1 is super user 
+                    if (getrbac_user()['role_id'] == '1') {
                         $ma = 'User Access';
                         global $link_ui;
                         $query = "SELECT * FROM tbl_menu_list WHERE parent_id=(SELECT menu_pid FROM tbl_menu_list WHERE link_description='" . $ma . "')";
