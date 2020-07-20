@@ -167,6 +167,9 @@ while($row=mysqli_fetch_array($result))
     $plan_output_total=0;
     $plan_sah_total=0;
     $actual_clock_hours_total=0;
+    $actual_bac_qty_total=0;
+    $actual_sah_total=0;
+    $actual_eff_total=0;
     for ($i=0; $i < sizeof($shifts_array); $i++) {
 
         $sql3="SELECT GROUP_CONCAT(DISTINCT \"'\",style,\"'\")  AS style,GROUP_CONCAT(DISTINCT color SEPARATOR ',') AS color,GROUP_CONCAT(DISTINCT sfcs_smv SEPARATOR ',') AS smv    FROM $brandix_bts.`bundle_creation_data_temp` 
@@ -250,11 +253,7 @@ while($row1=mysqli_fetch_array($result1))
         $plan_pro=$row1["plan_pro"];
         $nop=$row1["nop"];
 
-        if($plan_clh==''){
-            $plan_clh='0';
-        }else{
-            $plan_clh=$plan_clh;
-        }
+       
        // $plant_clh_total+=$row1["plan_clh"];
 
        // $plan_clh_count+=count($plan_clh);
@@ -267,11 +266,11 @@ while($row1=mysqli_fetch_array($result1))
           
 }  
 }else{
-    $plan_eff=" ";
-    $plan_clh=" ";
-    $plan_sah=" ";
-    $plan_pro=" ";
-    $nop=" ";
+    $plan_eff="0";
+    $plan_clh="0";
+    $plan_sah="0";
+    $plan_pro="0";
+    $nop="0";
   }
 echo" <td colspan=1>$nop</td>";
         $sql7="select sum(present) as present,sum(jumper) as jumper from $bai_pro.`pro_attendance` WHERE  date between \"$fdat\" and \"$tdat\" and module=\"$module_name\"  and shift=\"$shifts_array[$i]\" ";
@@ -295,8 +294,9 @@ echo" <td colspan=1>$nop</td>";
 
                 }
                 $effective_shift_working_hours=(($end_time-$start_time)-$breakhours/60);
-                //echo $effective_shift_working_hours;
+               // echo $effective_shift_working_hours;
                 $sql91="select SUM(CASE WHEN adjustment_type='Positive' THEN smo_adjustment_hours ELSE 0 END) as Positivetotal,SUM(CASE WHEN adjustment_type='Negative' THEN smo_adjustment_hours ELSE 0 END) as Negativetotal,module,COUNT(*) AS count from $bai_pro.`pro_attendance_adjustment` WHERE  date between \"$fdat\" and \"$tdat\" and module=\"$module_name\"  and shift=\"$shifts_array[$i]\" ";
+
                 //echo  $sql9;
                         $result91=mysqli_query($link, $sql91) or die("Sql Error671: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         $adjustment_count=mysqli_num_rows($result91);
@@ -323,35 +323,30 @@ echo" <td colspan=1>$nop</td>";
             
                         }
                       }
-                      else{
-                        $sql10="select sum(present) as present,sum(jumper) as jumper,SUM(CASE WHEN adjustment_type='Positive' THEN adjustment_min ELSE 0 END) as Positivetotal,SUM(CASE WHEN adjustment_type='Negative' THEN adjustment_min ELSE 0 END) as Negativetotal from $bai_pro.`pro_attendance` WHERE  date between \"$fdat\" and \"$tdat\" and module=\"$module_name1\"  and shift=\"$shifts_array[$i]\" ";
-                       // echo  $sql10;
-                                $result10=mysqli_query($link, $sql10) or die("Sql Error67: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                while($row10=mysqli_fetch_array($result10)){
-                                    $jumper1=$row10["jumper"];
-                                    $present1=$row10["present"];
-                                    $Positivetotal=$row10["Positivetotal"];
-                                    $Negativetotal=$row10["Negativetotal"];
-                                }    
-    
-                      $actual_clock_hours=($present1*($effective_shift_working_hours))+($Positivetotal-$Negativetotal);
-
-                      }
+                   
                       $sql11="select  sum(bac_Qty) as bac_Qty,smv FROM $bai_pro.bai_log WHERE  bac_date between \"$fdat\" and \"$tdat\" and bac_no=\"$module_name\"  and bac_shift=\"$shifts_array[$i]\" ";
                       $sql_result8=mysqli_query($link, $sql11) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
                       //echo $sql11;
+                      if( mysqli_num_rows($sql_result8)!=''){
                       while($sql_row8=mysqli_fetch_array($sql_result8))
                       {
                           $bac_Qty=$sql_row8['bac_Qty'];
                           $actual_smv=$sql_row8['smv'];
-                        
+                          $actual_bac_qty_total+=$bac_Qty;
       
                       }
+
+                    }else{
+                        $bac_Qty="0";
+                        $actual_smv="0";
+                    }
+
                       $output_variance=round(($plan_pro-$bac_Qty),2);
                       $sah=round((($actual_smv*$bac_Qty)/60),2);
                       $sah_variance=round(($plan_sah-$sah),2);
                       $plan_eff=round((($plan_sah/$plan_clh)*100),2);
                       $actual_eff=round((($sah/$actual_clock_hours)*100),2);
+                      $actual_sah_total+=$sah;
     // while($row=mysqli_fetch_array($result)) {}  
     echo"<td colspan=1>".$actual_team."</td>
     <td colspan=1>$plan_clh</td>
@@ -371,6 +366,7 @@ echo" <td colspan=1>$nop</td>";
     }
     $total_no_of_days=round(($no_of_days1)/($no_of_days_count),2);
     $plan_eff_total=round(($plan_sah_total)/($plan_clock_hours_total),2);
+    $actual_eff_total=round(($actual_sah_total)/($actual_clock_hours_total),2);
     //$plant_clh_avg=round(($plant_clh_total)/($plan_clh_count),2);
     //echo $plant_clh_total;
     echo"<tr >";
@@ -383,14 +379,14 @@ echo" <td colspan=1>$nop</td>";
     <td colspan=1 class='summary2'></td>
     <td colspan=1 class='summary3'><b>Total:&nbsp$plan_clock_hours_total</b></td>
     <td colspan=1 class='summary4'><b>Total:&nbsp$actual_clock_hours_total</b></td>
-    <td colspan=1 class='summary5'>Total:&nbsp$plan_output_total</b></td>
-    <td colspan=1 class='summary6'></td>
+    <td colspan=1 class='summary5'><b>Total:&nbsp$plan_output_total</b></td>
+    <td colspan=1 class='summary6'><b>Total:&nbsp$actual_bac_qty_total</b></td>
     <td colspan=1 class='summary7'></td>
     <td colspan=1 class='summary8'><b>Total:&nbsp$plan_sah_total</b></td>
-    <td colspan=1 class='summary9'></td>
+    <td colspan=1 class='summary9'><b>Total:&nbsp$actual_sah_total</b></td>
     <td colspan=1 class='summary10'></td>
     <td colspan=1 class='summary11'><b>Total:&nbsp$plan_eff_total</b></td>
-    <td colspan=1 class='summary12'></td>";
+    <td colspan=1 class='summary12'><b>Total:&nbsp$actual_eff_total</b></td>";
     echo"</tr>";
     
 }

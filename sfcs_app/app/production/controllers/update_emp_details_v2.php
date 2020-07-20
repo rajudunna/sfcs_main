@@ -160,6 +160,7 @@ if(isset($_POST['submit']))
 
 	$date=$_POST['dat'];
 	$shift=$_POST['team'];
+	$break_hours=$_POST['break_hours'];
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
 	$now_date=date('Y-m-d');
@@ -178,10 +179,15 @@ if(isset($_POST['submit']))
 		}
 	
 		$modules = implode("','", $modules_array);
-		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
+		// $sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
+		 $sql1="SELECT *,pro_attendance.module as module_name FROM bai_pro.pro_attendance LEFT JOIN bai_pro.pro_attendance_adjustment 
+		 ON pro_attendance.module=pro_attendance_adjustment.module  AND pro_attendance.shift=pro_attendance_adjustment.shift  WHERE  pro_attendance_adjustment.id 
+ IN (SELECT MIN(id) FROM bai_pro.pro_attendance_adjustment
+ WHERE module=pro_attendance.module AND shift='$shift' AND DATE='$date' ) and pro_attendance.date='$date' AND pro_attendance.shift='$shift' AND pro_attendance.module IN ('$modules') GROUP BY pro_attendance.module order by pro_attendance.module*1 ";
+		//echo $sql1;
 		echo "
 		<table border=1 class='table table-bordered' id='dynamic_field'>
-			<tr class='info'>
+			<tr class='info' id='header'>
 				<th style='text-align:center;'>Module</th>
 				<th style='text-align:center;'>Present Emp</th>
 				<th style='text-align:center;'>Jumper</th>
@@ -205,11 +211,11 @@ if(isset($_POST['submit']))
 						$jumper=$sql_row1['jumper'];
 						$adjustment_type=$sql_row1['adjustment_type'];
 						$break_hours=$sql_row1['break_hours'];
-						$adjustment_smo=$sql_row1['adjustment_smo'];
-						$working_hours_min=$sql_row1['working_hours_min'];
-						$adjustment_min=$sql_row1['adjustment_min'];
-						$adjustment_hours=$sql_row1['adjustment_hours'];
-						$module=$sql_row1['module'];
+						$adjustment_smo=$sql_row1['smo'];
+						$working_hours_min=$sql_row1['smo_minutes'];
+						$adjustment_min=$sql_row1['smo_adjustment_min'];
+						$adjustment_hours=$sql_row1['smo_adjustment_hours'];
+						$module=$sql_row1['module_name'];
 						$k=$modules_id_array[$module];
 						echo "<tr id='dynamic$k' class='dynamic-$k'>
 								<td>".$module."</td>"; 
@@ -221,7 +227,8 @@ if(isset($_POST['submit']))
 										echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
 										echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
 										echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";			
+										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";	
+										echo "<input type=\"hidden\" name=\"break_hours\" value=\"$break_hours\">";		
 								}
 								else
 								{
@@ -230,7 +237,7 @@ if(isset($_POST['submit']))
 							?>
 								<input type="hidden"  name="count" id="count"  value=<?php echo $k ?>>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>" readonly></td>
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
 								<td><select  id="adjustment_type" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
 								<option value="Negative" <?php if($adjustment_type == "Negative") { echo "SELECTED"; } ?>>Negative</option>	
@@ -239,7 +246,7 @@ if(isset($_POST['submit']))
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 130px;" value="<?php echo $working_hours_min; ?>" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onchange=" working_hours()"></td>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $adjustment_min; ?>" name="adjustment_min<?php echo $k; ?>" id="adjustment_min<?php echo $k; ?>" readonly></td>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $adjustment_hours; ?>" name="adjustment_hours<?php echo $k; ?>" id="adjustment_hours<?php echo $k; ?>" readonly></td>
-								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success">Add</button></td>  
+								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"> <span class="glyphicon glyphicon-plus"></span></button></td>  
 								<?php
 							echo"</tr>";
 					}
@@ -295,7 +302,7 @@ if(isset($_POST['submit']))
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
 								<td><input type="text" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $avail_av; ?>" readonly></td>
-								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
@@ -304,7 +311,7 @@ if(isset($_POST['submit']))
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onchange=" working_hours()"></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_min<?php echo $k; ?>" id="adjustment_min<?php echo $k; ?>" readonly></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_hours<?php echo $k; ?>" id="adjustment_hours<?php echo $k; ?>" readonly></td>
-								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success">Add</button></td>  
+								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button></td>  
 							</tr>
 						<?php
 					}
@@ -312,6 +319,7 @@ if(isset($_POST['submit']))
 					echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
 					echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
 					echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
+					echo "<input type=\"hidden\" name=\"break_hours\" value=\"$break_hours\">";
 					 ?>
 					 <?php
 					 
@@ -356,12 +364,6 @@ if(isset($_POST['submit']))
 
 	   var date1=$('#demo1').val();
 	   var team = $('#team option:selected').text();
-	//    $('#dynamic_field tr').each(function() {
-	// 						var button_id1 = $(this).attr("class"); 	
-	// 						var rowId1= ($(this).attr('class').split('-')[1]);
-	// 						var module_no = $(this).closest('tr').children('td:eq(0)').text();
-	// 						alert(rowId1);
-	//    });
 	   var params1 =[date1,team];
 	   
 
@@ -371,42 +373,49 @@ type: "POST",
 
 url:"<?= getFullURLLevel($_GET['r'],'emp_attendance_repeated.php',0,'R'); ?>?r=getshiftdata&params1="+params1,
 data: {},
-success: function(response)
+	success: function(response)
 {
-	//alert(response);
-//console.log(response);
+	
+	//alert(response); 
 	var data = jQuery.parseJSON(response);
+	//console.log(response);
 						if(response.length >0)
 						{
 							for(var i=0;i<data.length;i++)
+							
 							{
-
-								var j = $.trim(data[i]['module']);
 								
-								var markup ='<tr id="row'+j+'" class="dynamic-'+data[i]['module']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['adjustment_type']+'" id="adjustment_type'+data[i]['adjustment_type']+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['module']+'" value='+data[i]['smo']+' onchange=" working_hours()"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['module']+'" onchange=" working_hours()" value='+data[i]['smo_minutes']+' onchange=" working_hours()"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['module']+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['module']+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+j+'" class="btn btn-danger btn_remove">X</button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
-
-								$('#dynamic'+data[i]['module']).after(markup);
-
-
 								
+						
+								
+                                   
+								var markup ='<tr id="row'+data[i]['id']+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['adjustment_type']+'" id="adjustment_type'+data[i]['adjustment_type']+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['module']+'" value='+data[i]['smo']+' onchange=" working_hours()"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['module']+'" onchange=" working_hours()" value='+data[i]['smo_minutes']+' onchange=" working_hours()"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['module']+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['module']+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
+
+								$('#dynamic'+data[i]['id']).after(markup);
 								//alert(data[i]['adjustment_type']);
-							}	
+							}
+		
 
 						}
-						
-						 
+	// }
+				  	
 
+// var oper_code = data["operation_code"];
+// $("#oper_code1").val(oper_code);
+// $("#oper_def1").val(data["default_operation"]);
 
 }
 
 });
+
+
 	 
 	var rowCount = $('#dynamic_field tr').length;
 	for(var i=0; i<=rowCount-2; i+=1){
       $('#add-'+i).click(function(){  
 		var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
 		 var rowId = (this.id.split('add-')[1] );
-           $('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type'+rowId+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+'" value="0"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+'" onchange=" working_hours()" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove">X</button></td><td style="visibility:hidden;">'+rowId+'</td></tr>');  
+           $('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type'+rowId+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+'" value="0"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+'" onchange=" working_hours()" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>');  
       }); 
 	}
       $(document).on('click', '.btn_remove', function(){  
@@ -416,35 +425,38 @@ success: function(response)
 	
          $('#submit').click(function(){ 
 		
-					$('#dynamic_field tr').each(function() {
-							var button_id1 = $(this).attr("class"); 	
-							var rowId1= ($(this).attr('class').split('-')[1]);
-							var id2 = $(this).closest('tr').children('td:eq(9)').text();
-					// alert(id2);
-					if(rowId1==id2){
-
-					var valueArray = $('.dynamic-'+rowId1).map(function() {
-						var id1 = $(this).attr("class");
-						var $td =  $('td input', this);
+					// $('#dynamic_field tr').each(function() {
+					// 		var button_id1 = $(this).attr("class"); 	
+					// 		var rowId1= ($(this).attr('class').split('-')[1]);
+					// 		var id2 = $(this).closest('tr').children('td:eq(9)').text();
+							
+							
+					var tbl = $('#dynamic_field tr:has(td)').map(function(i, v) {
+					var $td =  $('td input', this);
+					var $td1 =  $('td', this);
+		
+	
+		
 						return {
-                                    module:$(this).closest('tr').children('td:eq(0)').text(),
-										present_emp: $td.eq(0).val(),
-										jumper: $td.eq(1).val(),
-										adjustment_type: $(this).find("select").val(),
-										adjustment_smo: $td.eq(2).val(),
-										working_min: $td.eq(3).val(),
-										adjustment_min: $td.eq(4).val(),
-										adjustment_hours: $td.eq(5).val()
-										
-													
-								}
+							module:$(this).closest('tr').children('td:eq(0)').text().trim(),
+								present_emp: $td.eq(0).val(),
+								jumper: $td.eq(1).val(),
+								adjustment_type: $(this).find("select").val(),
+								adjustment_smo: $td.eq(2).val(),
+								working_min: $td.eq(3).val(),
+								adjustment_min: $td.eq(4).val(),
+								adjustment_hours: $td.eq(5).val()
+								
+											
+							}
+							}).get();
+							var postData = JSON.stringify(tbl);
+							//alert(postData);
 
-					}).get();
                    var module1 = $(this).closest('tr').children('td:eq(0)').text();
-				   var postData = JSON.stringify(valueArray);
-                    //alert(postData);
-					}
-
+				 
+					
+					
 					var date1=$('#demo1').val();
 					var team=$('#team').val();
 					var url="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>";
@@ -459,41 +471,55 @@ success: function(response)
 							} 
 								
 					}); 
-	        }); 
+	       // }); 
 		
       });  
-	  
-	 
+	  $('#dynamic_field tr').each(function() {
+							var button_id1 = $(this).attr("class"); 	
+							var rowId1= ($(this).attr('class').split('-')[1]);
+							$('#adjustment_smo'+rowId1).on('mouseenter', function() {
+							var row3=$(this).val();
+							if(row3==0){
+								$(this).val('');
+							}
+							});
+							
+							$('#adjustment_smo'+rowId1).on('mouseleave', function() {
+								
+							var row5=$(this).val();
+							if(row5==0){
+								$(this).val('0');
+							}
+							});
+						
+							$('#working_hours_min'+rowId1).on('mouseenter', function() {
+							var row4=$(this).val();
+							if(row4==0){
+								$(this).val('');
+							}
+							});
+							$('#working_hours_min'+rowId1).on('mouseleave', function() {
+							var row6=$(this).val();
+							if(row6==0){
+								$(this).val('0');
+							}
+							});
+							$('#jumper'+rowId1).on('mouseenter', function() {
+							var row8=$(this).val();
+							if(row8==0){
+								$(this).val('');
+							}
+							});
+							$('#jumper'+rowId1).on('mouseleave', function() {
+							var row7=$(this).val();
+							if(row7==0){
+								$(this).val('0');
+							}
+							});
+							
+					// 		var id2 = $(this).closest('tr').children('td:eq(9)').text();
+	  });
  });  
 
-// $(document).ready(function(){
-// $("#filter").click(function()
-// {
-	
-//        var date1=$('#demo1').val();
-// 	   var team = $('#team option:selected').text();
-		
-// 		var params1 =[date1,team];
 
-// $.ajax
-// ({
-// type: "POST",
-
-// url:"<?= getFullURLLevel($_GET['r'],'demo.php',0,'R'); ?>?r=getshiftdata&params1="+params1,
-// data: {params1: $('#params1').val()},
-// success: function(response)
-// {
-// 	//var data = jQuery.parseJSON(response);
-	
-
-// alert(response);
-// // var oper_code = data["operation_code"];
-// // $("#oper_code1").val(oper_code);
-// // $("#oper_def1").val(data["default_operation"]);
-
-// }
-
-// });
-// });
-// });
  </script>
