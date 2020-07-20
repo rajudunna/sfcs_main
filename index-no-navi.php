@@ -44,6 +44,12 @@ $whoops->register();
                                     if ($_GET['userName']) {
                                         $_SESSION['userName'] = $_GET['userName'];
                                     }
+                                    if ($_GET['poNumber']) {
+                                        $_SESSION['poNumber'] = $_GET['poNumber'];
+                                    }
+                                    if ($_GET['masterPoNumber']) {
+                                        $_SESSION['masterPoNumber'] = $_GET['masterPoNumber'];
+                                    }
                                     include($_SERVER["DOCUMENT_ROOT"] . $get_file_path['path']);
                                 } else {
                                     if ($get_file_path['type'] == 'xlsm') {
