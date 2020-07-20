@@ -34,23 +34,18 @@ function check_hrs(){
 	return true;
 }
 
- </script>
- <script>
  function working_hours(){
 	var table = document.getElementById('dynamic_field');
 	var rowLength = table.rows.length;
-	//alert(rowLength);
-	
-
-	for(var i=0; i<rowLength-2; i+=1){
 		
 		$('#dynamic_field tr').each(function() {
 		var button_id1 = $(this).attr("class"); 
 		
 		var rowId1= ($(this).attr('class').split('-')[1]);
-
-		 var id2 = $(this).closest('tr').children('td:eq(9)').text();
+		var table1= $('.dynamic-'+rowId1).length;
+	    var rowLength = table1.length;
 		 var adjustment= $('#adjustment_smo-'+rowId1).val();
+		 //alert(table1);
 		 var work= $('#working_hours_min-'+rowId1).val();
 		 var adjustment1= $('#adjustment_smo'+rowId1).val();
 		 var work1= $('#working_hours_min'+rowId1).val();
@@ -65,7 +60,6 @@ function check_hrs(){
 		 $('#adjustment_hours'+rowId1).val(final_hours);
 		 $('#adjustment_hours-'+rowId1).val(final_hours1);
 		});
-	   }
 
 	
 }
@@ -103,51 +97,68 @@ $username=strtolower($username_list[1]);
 	<div class="panel-heading">Employee Attendance Update</div>
 	<div class="panel-body">
 		<form method="POST" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" >
-			<div class='col-md-2 col-sm-3 col-xs-12'>
-				Select Date: <input id="demo1" type="text" class="form-control datepicker"  size="10" name="dat"  value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>
-			</div>
+				<div class='col-md-2 col-sm-3 col-xs-12'>
+					Select Date: <input id="demo1" type="text" class="form-control datepicker"  size="10" name="dat"  value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>
+				</div>
 			
-			<div class='col-md-2 col-sm-3 col-xs-12'>
-				Select Team : 
-				<select name="team" id="team" class="select2_single form-control" required>
-					<option value=''>Please Select</option>
-					<?php 
-					for ($i=0; $i < sizeof($shifts_array); $i++)
+				<div class='col-md-2 col-sm-3 col-xs-12'>
+					Select Team : 
+					<select name="team" id="team" class="select2_single form-control" required>
+						<option value=''>Please Select</option>
+						<?php 
+						for ($i=0; $i < sizeof($shifts_array); $i++)
+						{
+						?>
+						<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+						<?php 
+										}
+						?>
+					</select>
+				</div>
+				<?php
+					$plant_timings_array=array();
+					$sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings";
+					$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
-					?>
-					<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-					<?php 
-									}
-					?>
-				</select>
-			</div>
-			<?php
-		
-			
-			$sql1="select  plant_start_time,plant_end_time FROM $pms.plant where plant_code='$facility_code' and plant_name='$plant_name'";
-			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
-				$start_time=$sql_row1['plant_start_time'];
-				$end_time=$sql_row1['plant_end_time'];
-			}
-			?>	
-			<div class='col-md-2 col-sm-3 col-xs-12'>
-				Select Shift Start Time: 
-					<input name="shift_start" id="shift_start" class="select2_single form-control" value='<?php echo $start_time; ?>' readonly required>
+						$plant_timings_array[]=$sql_row1['plant_time'];
+					}
+				?>
 
+				<div class='col-md-2 col-sm-3 col-xs-12'>
+					Select Shift Start Time: 
+					<select name="shift_start" id="shift_start"  class="select2_single form-control" required>
+						<option value=''>Please Select</option>
+						<?php 
+							for ($i=0; $i < sizeof($plant_timings_array); $i++)
+							{
+						?>
+						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_start==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+						<?php 
+							}
+						?>
+					</select>
+			    </div>
+				<div class='col-md-2 col-sm-3 col-xs-12'>
+					Select Shift End Time:
+					<select name="shift_end" id="shift_end" class="select2_single form-control" onchange="return check_hrs();" required>
+						<option value=''>Please Select</option>
+						<?php 
+							for ($i=0; $i < sizeof($plant_timings_array); $i++)
+							{
+								?>
+						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_end==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+								<?php 
+							}
+						?>
+					</select>
+				</div>
+
+				<div class='col-md-2 col-sm-3 col-xs-12'>
+					Break Hours(Min):
+					<input name="break_hours" id="break_hours" class="break_hours form-control" value='<?php echo $breakhours; ?>' readonly>
 					
-			</div>
-			<div class='col-md-2 col-sm-3 col-xs-12'>
-				Select Shift End Time:
-					<input name="shift_end" id="shift_end" class="select2_single form-control" value='<?php echo $end_time; ?>' readonly required>
-				
-			</div>
-			<div class='col-md-2 col-sm-3 col-xs-12'>
-				Break Hours(Min):
-				<input name="break_hours" id="break_hours" class="break_hours form-control" value='<?php echo $breakhours; ?>' readonly>
-				
-			</div>
+				</div>
 
 			<div class='col-md-2 col-sm-3 col-xs-12' style='margin-top: 18px;'>
 				<input type="submit" class="btn btn-primary" name="submit" onclick="return check_hrs();" value="Submit" id="filter"/> 
@@ -179,11 +190,9 @@ if(isset($_POST['submit']))
 		}
 	
 		$modules = implode("','", $modules_array);
-		// $sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
+
 		 $sql1="SELECT *,pro_attendance.module as module_name FROM bai_pro.pro_attendance LEFT JOIN bai_pro.pro_attendance_adjustment 
-		 ON pro_attendance.module=pro_attendance_adjustment.module  AND pro_attendance.shift=pro_attendance_adjustment.shift  WHERE  pro_attendance_adjustment.id 
- IN (SELECT MIN(id) FROM bai_pro.pro_attendance_adjustment
- WHERE module=pro_attendance.module AND shift='$shift' AND DATE='$date' ) and pro_attendance.date='$date' AND pro_attendance.shift='$shift' AND pro_attendance.module IN ('$modules') GROUP BY pro_attendance.module order by pro_attendance.module*1 ";
+		 ON pro_attendance.module=pro_attendance_adjustment.module  AND pro_attendance.shift=pro_attendance_adjustment.shift  WHERE  pro_attendance_adjustment.id IN (SELECT MIN(id) FROM bai_pro.pro_attendance_adjustment WHERE module=pro_attendance.module AND shift='$shift' AND DATE='$date' ) and pro_attendance.date='$date' AND pro_attendance.shift='$shift' AND pro_attendance.module IN ('$modules') GROUP BY pro_attendance.module order by pro_attendance.module*1 ";
 		//echo $sql1;
 		echo "
 		<table border=1 class='table table-bordered' id='dynamic_field'>
@@ -236,9 +245,9 @@ if(isset($_POST['submit']))
 								}
 							?>
 								<input type="hidden"  name="count" id="count"  value=<?php echo $k ?>>
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>" readonly></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
-								<td><select  id="adjustment_type" class="form-control" name="adjustment_type<?php echo $k; ?>" >
+								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
 								<option value="Negative" <?php if($adjustment_type == "Negative") { echo "SELECTED"; } ?>>Negative</option>	
 							     </select></td>
@@ -250,12 +259,12 @@ if(isset($_POST['submit']))
 								<?php
 							echo"</tr>";
 					}
-		   if(in_array($authorized,$has_permission))
+		        if(in_array($authorized,$has_permission))
 					{ ?>
-						 <?php
+					<?php
 						
-			?>	
-			 <?php
+					?>	
+					<?php
 					  $get_working_days="select *  FROM $pms.plant_calendar where plant_code='$facility_code' and calendar_date>=\"$next_date\"  and day_status='Working Day' limit 1";
 					  
 					  $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -267,16 +276,11 @@ if(isset($_POST['submit']))
 								
 								if($now_date==$final_date || $now_date==$date){
 									echo'<tr>
-									<th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit"> </th>
+									<th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
 									 </tr>';
 								}
 					
-			  
-	  
-			  ?>	
-						<!-- <tr>
-							<th colspan=9><input type="submit" id="submit"  class="btn btn-primary" value="Submit"> </th>
-						</tr>  -->
+			           ?>	
 						
 						 <?php
 					}
@@ -301,9 +305,9 @@ if(isset($_POST['submit']))
 						?>
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
-								<td><input type="text" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $avail_av; ?>" readonly></td>
+								<td><input type="text" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
-								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>">
+								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
 								</select></td>
@@ -333,17 +337,15 @@ if(isset($_POST['submit']))
 							    
 							   if($now_date==$final_date ||$now_date==$date){
 								   echo'<tr>
-								   <th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit"> </th>
+								   <th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
 									</tr>';
 							   }
 			
 	
-			?>	
-				 <!-- <tr>
-						<th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit"> </th>
-					</tr> -->
+			         ?>	
 				
-						</table>
+				
+		          </table>
 					</form>
 					</div>
 					</div>
@@ -360,84 +362,106 @@ if(isset($_POST['submit']))
 </body>
 </html>
 <script>  
- $(document).ready(function(){  
+$(document).ready(function(){  
 
-	   var date1=$('#demo1').val();
-	   var team = $('#team option:selected').text();
-	   var params1 =[date1,team];
+		var date1=$('#demo1').val();
+		var team = $('#team option:selected').text();
+		var params1 =[date1,team];
 	   
 
-$.ajax
-({
-type: "POST",
+			$.ajax
+			  ({
+					type: "POST",
 
-url:"<?= getFullURLLevel($_GET['r'],'emp_attendance_repeated.php',0,'R'); ?>?r=getshiftdata&params1="+params1,
-data: {},
-	success: function(response)
-{
-	
-	//alert(response); 
-	var data = jQuery.parseJSON(response);
-	//console.log(response);
+					url:"<?= getFullURLLevel($_GET['r'],'emp_attendance_repeated.php',0,'R'); ?>?r=getshiftdata&params1="+params1,
+					data: {},
+						success: function(response)
+					{	
+					//console.log(response);
+						var data = jQuery.parseJSON(response);
+						var $data = jQuery.parseJSON(response);		
 						if(response.length >0)
 						{
 							for(var i=0;i<data.length;i++)
 							
 							{
 								
-								
-						
-								
-                                   
-								var markup ='<tr id="row'+data[i]['id']+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['adjustment_type']+'" id="adjustment_type'+data[i]['adjustment_type']+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['module']+'" value='+data[i]['smo']+' onchange=" working_hours()"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['module']+'" onchange=" working_hours()" value='+data[i]['smo_minutes']+' onchange=" working_hours()"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['module']+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['module']+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
+								 var adjustment_type=data[i]['adjustment_type'];
+								if(adjustment_type=='Positive'){
+								var	select='selected';
+								}else{
+									var select='';
+								}
+								if(adjustment_type=='Negative'){
+								var	select1='selected';
+								}else{
+									var select1='';
+								}
 
-								$('#dynamic'+data[i]['id']).after(markup);
-								//alert(data[i]['adjustment_type']);
+								//$('#adjustment_type-'+data[i]['id']).val(data[i]['adjustment_type']);
+								
+								var add_row ='<tr id="row'+data[i]['id']+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['module']+'" id="adjustment_type-'+data[i]['id']+'"><option value="Positive" '+select+'>Positive</option><option value="Negative" '+select1+'>Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['module']+'" value='+data[i]['smo']+' onchange=" working_hours()"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['module']+'" onchange=" working_hours()" value='+data[i]['smo_minutes']+' onchange=" working_hours()"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['module']+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['module']+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
+
+								$('#dynamic'+data[i]['id']).after(add_row);
+						
 							}
 		
 
 						}
-	// }
-				  	
 
-// var oper_code = data["operation_code"];
-// $("#oper_code1").val(oper_code);
-// $("#oper_def1").val(data["default_operation"]);
+                   }
 
-}
-
-});
+              });
 
 
 	 
-	var rowCount = $('#dynamic_field tr').length;
-	for(var i=0; i<=rowCount-2; i+=1){
-      $('#add-'+i).click(function(){  
-		var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
-		 var rowId = (this.id.split('add-')[1] );
-           $('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type'+rowId+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+'" value="0"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+'" onchange=" working_hours()" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>');  
-      }); 
-	}
-      $(document).on('click', '.btn_remove', function(){  
-           var button_id = $(this).attr("id");   
-           $('#row'+button_id+'').remove();  
-      });  
-	
-         $('#submit').click(function(){ 
-		
-					// $('#dynamic_field tr').each(function() {
-					// 		var button_id1 = $(this).attr("class"); 	
-					// 		var rowId1= ($(this).attr('class').split('-')[1]);
-					// 		var id2 = $(this).closest('tr').children('td:eq(9)').text();
+	         var rowCount = $('#dynamic_field tr').length;
+				for(var i=0; i<=rowCount-2; i+=1){
+					$('#add-'+i).click(function(){  
+						var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
+						var rowId = (this.id.split('add-')[1] );
+						$('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+'"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+'" value="0"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+'" onchange="working_hours()" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
+
+						    $('#adjustment_smo-'+rowId).on('mouseenter', function() {
+							var adjustment_smo=$(this).val();
+							if(adjustment_smo==0){
+								$(this).val('');
+							}
+							});
 							
-							
-					var tbl = $('#dynamic_field tr:has(td)').map(function(i, v) {
-					var $td =  $('td input', this);
-					var $td1 =  $('td', this);
+							$('#adjustment_smo-'+rowId).on('mouseleave', function() {
+								
+							var adjustment_smo=$(this).val();
+							if(adjustment_smo==0){
+								$(this).val('0');
+							}
+							$('#working_hours_min-'+rowId).on('mouseenter', function() {
+							var working_hours_min=$(this).val();
+							if(working_hours_min==0){
+								$(this).val('');
+							}
+							});
+							$('#working_hours_min-'+rowId).on('mouseleave', function() {
+							var working_hours_min=$(this).val();
+							if(working_hours_min==0){
+								$(this).val('0');
+							}
+							});
+						}); 
+					}); 
+				}
+				$(document).on('click', '.btn_remove', function(){  
+					var button_id = $(this).attr("id");   
+					$('#row'+button_id+'').remove();  
+				});  
 		
-	
+				$('#submit').click(function(){ 
+
+				var tbl = $('#dynamic_field tr:has(td)').map(function(i, v) {
+				var $td =  $('td input', this);
+				var $td1 =  $('td', this);
 		
-						return {
+					return {
 							module:$(this).closest('tr').children('td:eq(0)').text().trim(),
 								present_emp: $td.eq(0).val(),
 								jumper: $td.eq(1).val(),
@@ -466,60 +490,89 @@ data: {},
 							data:{'data':postData,'date1':date1,'team':team,'module':module1},  
 							success:function(data)  
 							{  
-								//alert(data);  
+								
 								
 							} 
 								
-					}); 
-	       // }); 
+					});  
 		
       });  
 	  $('#dynamic_field tr').each(function() {
 							var button_id1 = $(this).attr("class"); 	
 							var rowId1= ($(this).attr('class').split('-')[1]);
+							// $(document).on('change','#adjustment_type'+rowId1,function(){
+							// var adjustment_smo=$('#adjustment_smo'+rowId1).val();
+							// var type= $(this).val();
+							// if(type=='Positive'){
+							// 	$('#adjustment_smo'+rowId1).val('+'+adjustment_smo);
+							// }
+							//  if(type=='Negative'){
+							
+							// 	$('#adjustment_smo'+rowId1).val('-'+adjustment_smo);
+							// }
+							
+							// }); 	
 							$('#adjustment_smo'+rowId1).on('mouseenter', function() {
-							var row3=$(this).val();
-							if(row3==0){
+							var adjustment_smo=$(this).val();
+							if(adjustment_smo==0){
 								$(this).val('');
 							}
 							});
 							
 							$('#adjustment_smo'+rowId1).on('mouseleave', function() {
 								
-							var row5=$(this).val();
-							if(row5==0){
+							var adjustment_smo=$(this).val();
+							if(adjustment_smo==0){
 								$(this).val('0');
 							}
 							});
 						
 							$('#working_hours_min'+rowId1).on('mouseenter', function() {
-							var row4=$(this).val();
-							if(row4==0){
+							var working_hours_min=$(this).val();
+							if(working_hours_min==0){
 								$(this).val('');
 							}
 							});
 							$('#working_hours_min'+rowId1).on('mouseleave', function() {
-							var row6=$(this).val();
-							if(row6==0){
+							var working_hours_min=$(this).val();
+							if(working_hours_min==0){
 								$(this).val('0');
 							}
 							});
 							$('#jumper'+rowId1).on('mouseenter', function() {
-							var row8=$(this).val();
-							if(row8==0){
+							var jumper=$(this).val();
+							if(jumper==0){
 								$(this).val('');
 							}
 							});
 							$('#jumper'+rowId1).on('mouseleave', function() {
-							var row7=$(this).val();
-							if(row7==0){
+							var jumper=$(this).val();
+							if(jumper==0){
 								$(this).val('0');
 							}
 							});
+							$('#pra'+rowId1).on('mouseenter', function() {
+							var present=$(this).val();
+							if(present==0){
+								$(this).val('');
+							}
+							});
+							$('#pra'+rowId1).on('mouseleave', function() {
+							var present=$(this).val();
+							if(present==0){
+								$(this).val('0');
+							}
+							});
+												 		
 							
-					// 		var id2 = $(this).closest('tr').children('td:eq(9)').text();
+	                	
 	  });
+	 
  });  
 
-
+//  $('#submit').on('click', function(){
+                
+//                 $('#submit').attr("disabled", true);
+				
+//             });
  </script>
