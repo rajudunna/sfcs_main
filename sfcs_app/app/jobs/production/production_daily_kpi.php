@@ -4,9 +4,10 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $today=date("Y-m-d",strtotime("-1 day"));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
-
-$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -20,7 +21,7 @@ sum(plan_clh) as aeff,
 sum(plan_sth) as psah,
 sum(act_sth) as asah,
 sum(rework_qty) as rework,section
- from $bai_pro.grand_rep where date=\"$today\" group by section";
+ from $pts.grand_rep where plant_code='$plantcode' and date=\"$today\" group by section";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -34,7 +35,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$first_hr_clh=0;
 	$first_hr_sah=0;
 		
-	$sql1="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style, ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*2) AS clh  FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND HOUR(bac_lastup) IN (6,14) AND bac_date BETWEEN \"$today\" AND \"$today\" and bac_sec=$section GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no";
+	$sql1="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style, ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*2) AS clh  FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty>0 AND HOUR(bac_lastup) IN (6,14) AND bac_date BETWEEN \"$today\" AND \"$today\" and bac_sec=$section GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no";
 //echo $sql1;
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -44,7 +45,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 	
 	$sah_fall=0;
-	$sql1="SELECT COALESCE(ROUND(SUM((bac_qty*smv)/60),2),0) AS sah FROM $bai_pro.bai_log_buf WHERE bac_date=\"$today\" and bac_sec=$section and date(log_time)=\"".date("Y-m-d")."\"GROUP BY bac_sec";
+	$sql1="SELECT COALESCE(ROUND(SUM((bac_qty*smv)/60),2),0) AS sah FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date=\"$today\" and bac_sec=$section and date(log_time)=\"".date("Y-m-d")."\"GROUP BY bac_sec";
 	//echo $sql1;
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))

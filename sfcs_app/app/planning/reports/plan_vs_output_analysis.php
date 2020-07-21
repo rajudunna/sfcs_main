@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 // $view_access=user_acl("SFCS_0045",$username,1,$group_id_sfcs); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -91,7 +93,7 @@ if($section!=0)
 	$criteria=" and section=".$section;
 }
 $module_db=array();
-$sql_new1="select distinct module from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" $criteria order by module*1";
+$sql_new1="select distinct module from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" $criteria order by module*1";
 $sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
 {
@@ -139,7 +141,7 @@ echo "</tr>";
 $table.="</tr>";
 
 
-$sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
+$sql222_new="select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" order by date";
 //mysql_query($sql222_new,$link) or exit("Sql Error".mysql_error());
 $sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
@@ -171,7 +173,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$check=0;
 		}
 		
-		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
+		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and date=\"$date\" and module=$mod group by module";
 		//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))

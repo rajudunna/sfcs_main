@@ -1,5 +1,6 @@
 <html>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+$plantcode=$_SESSION['plantCode'];
 if(isset($_POST['module_name']))
 {
 	$module=$_POST['module_name'];
@@ -140,7 +141,7 @@ if(mysqli_num_rows($sql_result1)>0)
 		}		
 	}
 }
-$sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $bai_pro.bai_log_buf where bac_date='".$date_check."' and bac_no=$module and bac_shift in ('".$shifts."')";
+$sql="select sum(bac_qty) as act_out,GROUP_CONCAT(DISTINCT bac_style) as styles from $pts.bai_log_buf where plant_code='$plantcode' and bac_date='".$date_check."' and bac_no=$module and bac_shift in ('".$shifts."')";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)
 {
@@ -269,7 +270,7 @@ for($j=0;$j<sizeof($hours_main);$j++)
 		$time_value[] = $sql_row['time_value'];
 		$time_display[$sql_row['time_value']]=$sql_row['time_display'];
 		$time_prefix[$sql_row['time_value']]=$sql_row['day_part'];
-		$sql2="SELECT SUM(bac_qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
+		$sql2="SELECT SUM(bac_qty) as outp FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date='".$date_check."' AND bac_no=$module and Hour(bac_lastup)>= Hour('".$sql_row['start_time']."') AND Hour(bac_lastup)< Hour('".$sql_row['end_time']."')";
 		//echo $sql2;
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))

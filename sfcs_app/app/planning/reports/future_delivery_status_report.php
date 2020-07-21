@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
-
+$plantcode=$_SESSION['plantCode'];
 
 // include("header.php");
 set_time_limit(60000);
@@ -343,7 +343,7 @@ $table_flag = false;
 					{
 						$status="Sewing";
 					}	
-					$sql14="select max(bac_date) as date1 from $bai_pro.bai_log where delivery='".$schedule."' and bac_qty>0";
+					$sql14="select max(bac_date) as date1 from $pts.bai_log where plant_code='$plantcode' and delivery='".$schedule."' and bac_qty>0";
 					$result14=mysqli_query($link, $sql14) or die("sql error--PED--".$sql14.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row11=mysqli_fetch_array($result14))
 					{

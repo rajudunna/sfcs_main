@@ -14,7 +14,7 @@
 
 <?php
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-
+	$plantcode=$_SESSION['plantCode'];
 	$selected_date = $_GET['date'];
 	$selected_hour = $_GET['hour'];
 
@@ -28,7 +28,7 @@
 		$time_display = $row['time_display'].' '.$row['day_part'];
 	}
 
-	$bai_log_qry="SELECT * FROM $bai_pro.bai_log WHERE bac_date='$selected_date' AND TIME(bac_lastup) BETWEEN '$start_time' AND '$end_time'";
+	$bai_log_qry="SELECT * FROM $pts.bai_log WHERE plant_code='$plantcode' and bac_date='$selected_date' AND TIME(bac_lastup) BETWEEN '$start_time' AND '$end_time'";
 	// echo $bai_log_qry.';<br>';
 	$bai_log_result=mysqli_query($link,$bai_log_qry);
 

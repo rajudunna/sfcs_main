@@ -3,6 +3,7 @@ include("../../../../common/config/config.php");
 set_time_limit(2000);
 $sec_x=$_GET['sec_x'];
 include("../../../../common/js/Charts/FusionCharts.php");
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <html>
@@ -91,7 +92,7 @@ if($sec_x == 4 || $sec_x == 3)
 	}
 }
 
-$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-$time_def AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-$time_def)*nop AS clh FROM $bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".date("Y-m-d")."\" GROUP BY bac_no+0";
+$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-$time_def AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-$time_def)*nop AS clh FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_sec=$sec_x AND bac_date=\"".date("Y-m-d")."\" GROUP BY bac_no+0";
 //$sqly="SELECT bac_no,bac_style AS style, couple,nop,smv, SUM(bac_qty) AS qty,COUNT(DISTINCT bac_lastup)-0.5 AS hrs,ROUND(smv*SUM(bac_qty)/60) AS sth,(COUNT(DISTINCT bac_lastup)-0.5)*nop AS clh FROM bai_pro.bai_log_buf WHERE bac_sec=$sec_x AND bac_date=\"".date("Y-m-d")."\" GROUP BY bac_no+0";
 
 //echo $sqly;
@@ -123,7 +124,7 @@ else
 }
 
 
-$sqlx="select date,plan_sth,act_sth,shift,plan_clh,act_clh from $bai_pro.grand_rep where section=$sec_x and left(date,7)='".date("Y-m")."'";
+$sqlx="select date,plan_sth,act_sth,shift,plan_clh,act_clh from $pts.grand_rep where plant_code='$plantcode' and section=$sec_x and left(date,7)='".date("Y-m")."'";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {

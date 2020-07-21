@@ -3,7 +3,7 @@
 $start_timestamp = microtime(true);
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
-
+$plantcode=$_SESSION['plantCode'];
 ini_set('mysql.connect_timeout', 3000);
 ini_set('default_socket_timeout', 3000);
 
@@ -183,7 +183,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 
-$sql="select distinct delivery from $bai_pro.bai_log_buf where log_time>='$log_time_stamp' and length(trim(both from delivery))>0";
+$sql="select distinct delivery from $pts.bai_log_buf where plant_code='$plantcode' and log_time>='$log_time_stamp' and length(trim(both from delivery))>0";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -352,7 +352,7 @@ if(sizeof($sch_to_process)>0)
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\"  from $bai_pro.bai_log where delivery=\"".$schedule."\" and color=\"".$color."\" and bac_sec<>0  group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\"  from $pts.bai_log where plant_code='$plantcode' and delivery=\"".$schedule."\" and color=\"".$color."\" and bac_sec<>0  group by bac_sec";
 		// echo "</br>".$sql2."<br/>";
 		mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));

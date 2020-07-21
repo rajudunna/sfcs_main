@@ -6,7 +6,7 @@
 	//load the database configuration file
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
-
+	$plantcode=$_SESSION['plantCode'];
 	$master_resons = array();
 	$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22) ";
 	$res_mstr = mysqli_query($link, $sql_mstr_resns) or exit('SQL Error:'.$sql_mstr_resns);
@@ -185,7 +185,7 @@ if(isset($_GET['submit']))
 								$nop = $result['fix_nop'].'<br>';
 							}
 
-							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $bai_pro.bai_log where bac_no='$team' AND bac_date='$frdate'";
+							$sqlsc="SELECT SUM(bac_Qty) AS sumqty FROM $pts.bai_log where plant_code='$plantcode' and bac_no='$team' AND bac_date='$frdate'";
 							// echo $sqlsc;
 							$resc=mysqli_query($link,$sqlsc);
 							if($rowc=mysqli_fetch_array($resc))

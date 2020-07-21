@@ -207,7 +207,8 @@ td,th
                         // echo $total_hours."<br>";
                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
                         $hour_start = $hour + 1;
-                        
+                        $plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
                         
                     ?> 
 
@@ -883,7 +884,7 @@ td,th
                                     $atotal=0; 
                                      
                                     $psth=0; 
-                                    $sql_sth="select sum(plan_sth) as psth from $bai_pro.grand_rep where date=\"$date\" and module=$mod and shift in ($team)"; 
+                                    $sql_sth="select sum(plan_sth) as psth from $pts.grand_rep where plant_code='$plantcode' and date=\"$date\" and module=$mod and shift in ($team)"; 
                                     //echo $sql_sth."<br>"; 
                                     $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 

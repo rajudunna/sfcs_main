@@ -1,7 +1,7 @@
 <?php
 set_time_limit(9000);
 $start_date_w=time();
-
+$plantcode=$_SESSION['plantCode'];
 while((date("N",$start_date_w))!=1) {
 $start_date_w=$start_date_w-(60*60*24); // define monday
 }
@@ -613,7 +613,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			{
 				$plan_mod = 0;
 			}
-			$sql13 = "SELECT GROUP_CONCAT(DISTINCT bac_no) as bac_no FROM $bai_pro.bai_log_buf where delivery = '$schedule_no' and bac_qty>0";
+			$sql13 = "SELECT GROUP_CONCAT(DISTINCT bac_no) as bac_no FROM $pts.bai_log_buf where plant_code='$plantcode' and delivery = '$schedule_no' and bac_qty>0";
 			//$act_mod = array();
 			$query13 = mysqli_query($link, $sql13) or die("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			

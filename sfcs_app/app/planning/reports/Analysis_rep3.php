@@ -12,6 +12,7 @@
 $username="sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
 
 //$view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
 //$authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
@@ -423,7 +424,7 @@ $january=($year_code)."-01-31";
 $december=($year_code-1)."-12-01";
 
 $t=0;
-$sql="select distinct week(bac_date)+1 as week_code from $bai_pro.bai_log_buf where bac_date between \"".$december."\" and \"".$january."\" group by week(bac_date) order by bac_date,week(bac_date)";
+$sql="select distinct week(bac_date)+1 as week_code from $pts.bai_log_buf where plant_code='$plantcode' and bac_date between \"".$december."\" and \"".$january."\" group by week(bac_date) order by bac_date,week(bac_date)";
  //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
  $view_access=user_acl("SFCS_0027",$username,1,$group_id_sfcs); 
+ $plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 
@@ -226,7 +228,7 @@ if(isset($_POST['submit']))
 		}
 		
 		$output[$i]=0;
-		$sql1="select SUM(act_out) as output from $bai_pro.grand_rep where section in (".$sections[$i].") and date between \"".$fdate."\" and \"".$tdate."\" ";
+		$sql1="select SUM(act_out) as output from $pts.grand_rep where plant_code='$plantcode' and section in (".$sections[$i].") and date between \"".$fdate."\" and \"".$tdate."\" ";
 		//echo $sql;
 		$result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row1=mysqli_fetch_array($result1))

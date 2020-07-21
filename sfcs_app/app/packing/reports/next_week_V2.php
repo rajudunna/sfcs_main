@@ -17,6 +17,7 @@ $fg_authorized=user_acl("SFCS_0038",$username,51,$group_id_sfcs);
 $spc_users=user_acl("SFCS_0038",$username,68,$group_id_sfcs);
 set_time_limit(6000000);
 $permission = haspermission($_GET['r']);
+$plantcode=$_SESSION['plantCode'];
 ?>
 <title>Weekly Delivery Dashboard - Packing</title>
 
@@ -426,7 +427,7 @@ else
 			$cut_total_qty=$sql_row["cuttable_s_xs"]+$sql_row["cuttable_s_s"]+$sql_row["cuttable_s_m"]+$sql_row["cuttable_s_l"]+$sql_row["cuttable_s_xl"]+$sql_row["cuttable_s_xxl"]+$sql_row["cuttable_s_xxxl"]+$sql_row["cuttable_s_s06"]+$sql_row["cuttable_s_s08"]+$sql_row["cuttable_s_s10"]+$sql_row["cuttable_s_s12"]+$sql_row["cuttable_s_s14"]+$sql_row["cuttable_s_s16"]+$sql_row["cuttable_s_s18"]+$sql_row["cuttable_s_s20"]+$sql_row["cuttable_s_s22"]+$sql_row["cuttable_s_s24"]+$sql_row["cuttable_s_s26"]+$sql_row["cuttable_s_s28"]+$sql_row["cuttable_s_s30"];
 		}	*/
 		
-		$sql2x="SELECT GROUP_CONCAT(DISTINCT bac_sec SEPARATOR '#') as mods FROM $bai_pro.bai_log_buf WHERE delivery=\"".$schedule."\" AND color=\"".$color."\" order by bac_no+0";
+		$sql2x="SELECT GROUP_CONCAT(DISTINCT bac_sec SEPARATOR '#') as mods FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and delivery=\"".$schedule."\" AND color=\"".$color."\" order by bac_no+0";
 		$sql_result2x=mysqli_query($link,$sql2x) or exit("Sql Error =".mysqli_error());
 		while($sql_row2x=mysqli_fetch_array($sql_result2x))
 		{

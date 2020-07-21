@@ -4,6 +4,8 @@ $start_timestamp = microtime(true);
 error_reporting(E_ALL & ~E_NOTICE);
 include("ims_process_ses_track.php");
 $time_diff=(int)date("YmdH")-$log_time;
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 if($log_time==0 or $time_diff>1)
 {
@@ -58,6 +60,7 @@ if($log_time==0 or $time_diff>1)
 
 		include($include_path.'\sfcs_app\common\config\m3_bulk_or_proc.php');
 			// var_dump($shifts_array);
+			$plantcode=$_SESSION['plantCode'];
 			$teams=$shifts_array;
 			$team_array=implode(",",$shifts_array);
 			$team = "'".str_replace(",","','",$team_array)."'"; 
@@ -70,7 +73,7 @@ if($log_time==0 or $time_diff>1)
 			echo "START:".date("H:i:s");
 			echo "<br>";	
 			//SPEED PROCESS - START
-			$bai_log_table_name="$bai_pro.bai_log_buf";
+			$bai_log_table_name="$pts.bai_log_buf";
 			$date=date("Y-m-d");
 			// $date="2018-09-17";
 			$work_hrs=0;
@@ -185,7 +188,7 @@ if($log_time==0 or $time_diff>1)
 				// Avg PCS calculation
 						
 				//Today output
-				$sql11="select coalesce(sum(bac_qty),0) as \"today_output\" from ".$bai_log_table_name." where bac_date=\"$date\" and delivery=$schedule";
+				$sql11="select coalesce(sum(bac_qty),0) as \"today_output\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date=\"$date\" and delivery=$schedule";
 				$note.=date("His").$sql11."<br/>";
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error23$sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -215,14 +218,14 @@ if($log_time==0 or $time_diff>1)
 				// Hours completed calculation
 				
 				$total_hrs=0;
-				$sql1="select distinct bac_date from ".$bai_log_table_name." where delivery=$schedule";
+				$sql1="select distinct bac_date from ".$bai_log_table_name." where plant_code='$plantcode' and delivery=$schedule";
 				$note.=date("His").$sql1."<br/>";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error25$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
 					$date_new=$sql_row1['bac_date'];
 				
-					$sql11="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where bac_date=\"$date_new\" and delivery=$schedule";
+					$sql11="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date=\"$date_new\" and delivery=$schedule";
 					$note.=date("His").$sql11."<br/>";
 					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error26$sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$hoursa_new=mysqli_num_rows($sql_result11);
@@ -506,11 +509,11 @@ if($log_time==0 or $time_diff>1)
 										
 							$code=$date."-".$module."-".$shift;
 							// echo $code."<br>";
-							$sql_check="select tid from $bai_pro.grand_rep where tid=\"$code\"";
+							$sql_check="select tid from $pts.grand_rep where plant_code='$plantcode' and tid=\"$code\"";
 							$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_check_res)==0)
 							{
-								$sql2="insert into $bai_pro.grand_rep(tid) values (\"$code\")";
+								$sql2="insert into $pts.grand_rep(tid,plant_code,created_user,created_at) values (\"$code\",'$plantcode','$username','".date('Y-m-d')."')";
 								$note.=date("His").$sql2."<br/>";
 							    // echo $sql2."<br>";
 
@@ -541,7 +544,7 @@ if($log_time==0 or $time_diff>1)
 								}
 							}
 
-							$sql2="update $bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+							$sql2="update $pts.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=\"$code\"";
 							// echo $sql2."<br>";
 							$note.=date("His").$sql2."<br/>";
 							mysqli_query($link, $sql2) or exit("Sql Error42$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));			

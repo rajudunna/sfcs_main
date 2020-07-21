@@ -18,7 +18,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
 $final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
 <style id="Daily_Efficiency_Report_26424_Styles">
@@ -2963,7 +2964,7 @@ if(isset($_POST['submit']))
 		$sql="truncate $bai_pro.bai_log_buf_temp";
 		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$sql="insert into $bai_pro.bai_log_buf_temp select * from $bai_pro.bai_log_buf where bac_date 
+		$sql="insert into $bai_pro.bai_log_buf_temp select * from $pts.bai_log_buf where plant_code='$plantcode' and bac_date 
 			  between \"$date\" and \"$edate\"";
 			  //echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2977,14 +2978,14 @@ if(isset($_POST['submit']))
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
 //to fasten system
 
-	$sql="truncate $bai_pro.grand_rep_temp";
+	$sql="truncate $pts.grand_rep_temp";
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro.grand_rep_temp select * from $bai_pro.grand_rep where date between \"".$_POST['dat']."\" and \"".$_POST['edat']."\"";
+	$sql="insert into $pts.grand_rep_temp select * from $pts.grand_rep where plant_code='$plantcode' and date between \"".$_POST['dat']."\" and \"".$_POST['edat']."\"";
 
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$grand_rep="$bai_pro.grand_rep_temp";
+	$grand_rep="$pts.grand_rep_temp";
 
 //to fasten system
 	$total_nop=0;
@@ -3047,13 +3048,13 @@ if(isset($_POST['submit']))
 
 		if($buyer_name == "ALL")
 		{
-			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
+			$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
 			//echo $sql1;
 			//echo "Hello";
 		}
 		else
 		{
-			$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer like \"%".$buyer_name."%\" order by module*1";
+			$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer like \"%".$buyer_name."%\" order by module*1";
 			// echo $sql;
 		}
 		//echo $sql;
@@ -3099,11 +3100,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select sum(act_out) as \"act_out\",ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
+				$sql2="select sum(act_out) as \"act_out\",ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
 			}
 			else
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
               //echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3123,11 +3124,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" group by date";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" group by date";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date";	
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3138,11 +3139,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\",sum(plan_out) as \"plan_out\"  from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\",sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
 			}
 			else
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3162,11 +3163,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" group by date";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" group by date";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date";	
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3176,7 +3177,7 @@ if(isset($_POST['submit']))
 			}
 
 			$max=0;
-			$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $bai_pro.grand_rep where module=$mod and date between \"$date\" and \"$edate\"";
+			$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\"";
 			mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3238,14 +3239,14 @@ if(isset($_POST['submit']))
 			{
 				//echo "Date = ".$chk_date."<br>";
 				$chk_date=date("Y-m-d",strtotime("-1 day",strtotime($chk_date)));	
-				$sql22="SELECT * FROM $bai_pro.grand_rep WHERE DATE=\"".$chk_date."\"";
+				$sql22="SELECT * FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$chk_date."\"";
 				//echo $sql22."<br>";
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rows=mysqli_num_rows($sql_result22);
 				if($rows == 0)
 				{
 					//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
-					$sql2="SELECT MAX(bac_date) as max_date FROM $bai_pro.bai_log_buf WHERE bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
+					$sql2="SELECT MAX(bac_date) as max_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
 					// echo $sql2."<br>";
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3254,7 +3255,7 @@ if(isset($_POST['submit']))
 					}
 				}
 			
-				$sql21="select * from $bai_pro.bai_log_buf where bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
+				$sql21="select * from $pts.bai_log_buf where plant_code='$plantcode' and bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
 				// echo $sql21."<br>";
 				mysqli_query($link, $sql21) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3288,7 +3289,7 @@ if(isset($_POST['submit']))
 				$operatorssum=$operatorssum+$nop;
 
 				$date_range=array();
-				$sql2="select distinct date from $bai_pro.grand_rep where date between \"$date\" and \"$edate\"";
+				$sql2="select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$date\" and \"$edate\"";
 				mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3657,11 +3658,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\"";
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\"";
 			}
 			else
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3681,11 +3682,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date,module";	
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date,module";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3696,11 +3697,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\"";
+				$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\"";
 			}
 			else
 			{
-				$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error333".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3719,11 +3720,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" group by date,module";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" group by date,module";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date,module";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and section in ($sec) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date,module";
 			//echo $sql2;	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));

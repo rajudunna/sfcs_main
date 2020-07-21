@@ -4,7 +4,7 @@ set_time_limit(90000);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <?php
@@ -99,7 +99,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 			$text.= "<td>".$sql_row['order_style_no']."</td>";
 			$text.= "<td>".$sql_row['order_del_no']."</td>";
 			$text.= "<td>".$sql_row['order_col_des']."</td>";
-			$sql1="select group_concat(distinct(bac_no) order by bac_no) as bac_no from $bai_pro.bai_log_buf where delivery='".$sql_row['order_del_no']."' and color='".$sql_row['order_col_des']."'";
+			$sql1="select group_concat(distinct(bac_no) order by bac_no) as bac_no from $pts.bai_log_buf where plant_code='$plantcode' and delivery='".$sql_row['order_del_no']."' and color='".$sql_row['order_col_des']."'";
 		 
 		 // echo $sql1;
 		 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

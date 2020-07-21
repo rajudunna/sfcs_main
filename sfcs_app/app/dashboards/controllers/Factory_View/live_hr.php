@@ -5,7 +5,7 @@ include ("../../../../common/config/functions.php");
 // {
 // 	$sections_db=array($_GET['sec_x']);
 // }
-
+$plantcode=$_SESSION['plantCode'];
 for($i=0;$i<sizeof($sections_db);$i++)
 {
 	$section_id=$sections_db[$i];
@@ -25,7 +25,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 		$mods=explode(",",$section_mods);
 			
 		$teams=array();
-		$sql2="SELECT  DISTINCT bac_shift FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\"";
+		$sql2="SELECT  DISTINCT bac_shift FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date=\"".date("Y-m-d")."\"";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error145".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{

@@ -36,7 +36,7 @@ $offstha_sum=0;
 
 //$sql="select distinct mod_no from $bai_pro.pro_mod where mod_sec in(".$sec_code.") and mod_date between \"$date\" and \"$edate\" order by mod_no"; 
 // echo $sql."<br>";
-$sql="select distinct module from $bai_pro.grand_rep where section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module*1"; 
+$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module*1"; 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 

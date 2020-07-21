@@ -8,7 +8,10 @@ Changes Log:
 Kirang/20150307 added validation to avoid additional output.
 -->
 
-<?php $process_the_auto_process=0; //1-Yes ; 0-No; ?>
+<?php $process_the_auto_process=0; //1-Yes ; 0-No;
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+?>
 	<title>Rework Update</title>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',1,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
@@ -160,7 +163,7 @@ if(isset($_POST['date']))
 				$sec=$csnb[4];
 				if($rew_qty>=0 and $rew_qty!="")
 				{
-					$sql="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER())"; 
+					$sql="insert into $pts.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser,plant_code,created_user,created_at) values (\"$mno\", \"$sec\", \"$rew_qty\", \"$dat\", \"$dat\", \"$shift\", \"$mst\", \"$rem\",  \"$ldate\",  \"$color\", \"$buyer\", \"$schedule\",USER(),'$plantcode','$username','".date('Y-m-d')."')"; 
 					$note.=$sql."<br/>";
 					mysqli_query($link, $sql) or exit("Sql Error5$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
