@@ -3,7 +3,9 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-    // $url = getFullURLLEVEL($_GET['r'],'emb_reprint.php',0,'N');
+	// $url = getFullURLLEVEL($_GET['r'],'emb_reprint.php',0,'N');
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 ?>
 
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
@@ -56,12 +58,12 @@ if(isset($_POST['continue']))
 	$remarks=$_POST['remarks'];
 	$val=explode("-",$barcode);
 	//validating bundlebarcode existing or not
-	$sql_validating_barcode="select * from $bai_pro3.emb_bundles where barcode='$barcode'";
+	$sql_validating_barcode="select * from $pps.emb_bundles where plant_code='$plant_code' and barcode='$barcode' ";
 	$sql_result=mysqli_query($link, $sql_validating_barcode) or exit($sql_validating_barcode."<br/> Error in section table ");
 	$no_rows=mysqli_num_rows($sql_result);
 	if($no_rows>0)
 	{
-		$sql="insert into $bai_pro3.emb_reprint_track(barcode,shift,emp_id,remarks,username) values('".$barcode."','".$shift."','".$employeeid."','".$remarks."','".$username."')";
+		$sql="insert into $pps.emb_reprint_track(barcode,shift,emp_id,remarks,username,plant_code,created_user) values('".$barcode."','".$shift."','".$employeeid."','".$remarks."','".$username."','".$plant_code."','".$username."')";
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/> Error while insert into emb_reprint_track");
 		echo "<table class='table table-bordered'><tr><th rospan=4>You are going to take bundle print</th>";
 		$url1 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
