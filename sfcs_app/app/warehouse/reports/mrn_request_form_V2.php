@@ -459,7 +459,7 @@ function button_disable()
 
 			//To check the supplier approved quantity for issue availability 
 			//CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
-			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no=\"".$batch."\""; 
+			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no=\"".$batch."\" and plant_code='".$plant_code."'"; 
 
 			//echo "<br/>".$sql14."<br/>";
 
@@ -557,7 +557,7 @@ function button_disable()
 			$appr_qty=0;
 			//CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
 			//$sql14="select sum(supplier_replace_approved_qty) as qty from bai_rm_pj1.inspection_complaint_db where reject_batch_no in (".$batch_ref_implode.")";
-			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no in ('".$inp_5."')";
+			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no in ('".$inp_5."') and plant_code='".$plant_code."'";
 
 			//echo "<br/>".$sql14."<br>";
 

@@ -3,6 +3,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $has_permission=haspermission($_GET['r']);
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 <head>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
@@ -109,11 +111,11 @@ if(isset($_POST['show']) || isset($_GET['show']))
 		if($batch=="")
 		{
 		
-		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\" and complaint_status=\"".$status."\"";
+		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\" and complaint_status=\"".$status."\" and plant_code='".$plant_code."'";
 		}
 		else
 		{
-			$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
+			$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\" and plant_code='".$plant_code."'";
 		}
 	}
 	else
@@ -121,11 +123,11 @@ if(isset($_POST['show']) || isset($_GET['show']))
 		
 		if($batch=="")
 		{
-		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\"";
+		$sql="select * from $wms.inspection_complaint_db where DATE(req_date) between \"".$startdate."\" and \"".$enddate."\" and plant_code='".$plant_code."'";
 		}
 		else
 		{
-		$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\"";
+		$sql="select * from $wms.inspection_complaint_db where reject_batch_no = \"".$batch."\" OR reject_inv_no=\"".$batch."\" and plant_code='".$plant_code."'";
 		}	
 	}
 	$result=mysqli_query($link, $sql) or die("Error=".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -195,7 +197,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				}
 						
 				$batch_lots=0;
-				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $wms.sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
+				$sql1="select GROUP_CONCAT(DISTINCT lot_no) AS lots from $wms.sticker_report WHERE batch_no=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";	
 				$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($result1);
 				if($rowsx > 0)
@@ -206,7 +208,7 @@ if(isset($_POST['show']) || isset($_GET['show']))
 					}
 				}
 
-				$sql3="select unique_id as uid,log_date as upd from  $pps.inspection_db where batch_ref=\"".$reject_batch_no."\"";
+				$sql3="select unique_id as uid,log_date as upd from  $pps.inspection_db where batch_ref=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";
 				$result3=mysqli_query($link, $sql3) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row3=mysqli_fetch_array($result3))
 				{

@@ -29,7 +29,8 @@
 	
 <?php
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-
+ $plant_code = $_SESSION['plantCode'];
+ $username = $_SESSION['userName'];
 ?> 
 
 <div class="panel panel-primary">
@@ -150,7 +151,7 @@
                             $min_value = min($width_s,$width_m,$width_e);
                             $inch_value=round($min_value/(2.54),2);				
 							$back_color="";		
-							$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";	
+							$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id and plant_code='".$plant_code."')";	
 							$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($status_details_result2)>0)
 							{	

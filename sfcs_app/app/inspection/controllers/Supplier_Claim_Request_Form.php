@@ -3,6 +3,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
 $Page_Id='SFCS_0053';
 $has_permission=haspermission($_GET['r']);
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 ?>
 <script>
@@ -127,7 +129,8 @@ function enableButton()
 $comcat=$_POST["selcompro"];
 $batch_no=$_POST["txtbatch"];
 $lot_no_ref_new_test=$_POST["sellotnosrefnew"];
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 if(isset($_POST['txtbatch']))
 {
@@ -167,7 +170,7 @@ if($batch=="")
 }
 $batch_temp1 = $batch;
 
-$sql="SELECT DISTINCT(SUBSTRING_INDEX(product_group,'-',-1)) AS compro FROM $wms.sticker_report WHERE batch_no=\"".$batch."\"";
+$sql="SELECT DISTINCT(SUBSTRING_INDEX(product_group,'-',-1)) AS compro FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and plant_code='".$plant_code."'";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $row=mysqli_fetch_array($result);
 
@@ -185,7 +188,7 @@ $row=mysqli_fetch_array($result);
 	echo "Select Lot Nos";
 	echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;' multiple>";
 	echo "<option value='' selected>Please Select</option>";
-	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and length(batch_no) > 0";
+	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and plant_code='".$plant_code."' and length(batch_no) > 0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -233,7 +236,7 @@ if(isset($_POST['show']))
 		}
 		
 		
-		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR ',')) AS lot_no FROM $wms.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."')";
+		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR ',')) AS lot_no FROM $wms.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."') and plant_code='".$plant_code."'";
 		// echo $sql2."<br>";
 		$result2=mysqli_query($link, $sql2) or die("Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -246,21 +249,21 @@ if(isset($_POST['show']))
 				
 			}
 
-			$sql3="select TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) as lot_no from $wms.store_in where lot_no IN ('".$lot_no_ref."') and roll_status in (1,2)";
+			$sql3="select TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) as lot_no from $wms.store_in where lot_no IN ('".$lot_no_ref."') and roll_status in (1,2) and plant_code='".$plant_code."'";
 			$result3=mysqli_query($link, $sql3) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row3=mysqli_fetch_array($result3))
 			{
 				$rej_lot_no_ref=$row3["lot_no"];
 			}
 			
-			$sql3="select TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) as lot_no from $wms.store_in where lot_no IN ('".$lot_no_ref."')";
+			$sql3="select TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR \"','\")) as lot_no from $wms.store_in where lot_no IN ('".$lot_no_ref."') and plant_code='".$plant_code."'";
 			$result3=mysqli_query($link, $sql3) or die("Error21=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row3=mysqli_fetch_array($result3))
 			{
 				$rej_lot_no_ref=$row3["lot_no"];
 			}
 		
-			$sql2="SELECT SUM(qty_rec) AS rec_qty,COUNT(tid) as rolls,SUM(ref5) AS insp_qty FROM $wms.store_in WHERE lot_no IN ('".$lot_no_ref."')";	
+			$sql2="SELECT SUM(qty_rec) AS rec_qty,COUNT(tid) as rolls,SUM(ref5) AS insp_qty FROM $wms.store_in WHERE lot_no IN ('".$lot_no_ref."') and plant_code='".$plant_code."'";	
 			$result2=mysqli_query($link, $sql2) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row2=mysqli_fetch_array($result2))
 			{
@@ -278,7 +281,7 @@ if(isset($_POST['show']))
 				$len_shrt=0;
 			}	
 		
-			$sql1="SELECT GROUP_CONCAT(DISTINCT item) AS item_code,TRIM(GROUP_CONCAT(DISTINCT item_desc)) AS item_color,TRIM(GROUP_CONCAT(DISTINCT item_name)) AS item_name,TRIM(GROUP_CONCAT(DISTINCT lot_no)) AS lot_no,TRIM(GROUP_CONCAT(DISTINCT po_no)) AS po_no,TRIM(GROUP_CONCAT(DISTINCT buyer)) AS buyer,TRIM(GROUP_CONCAT(DISTINCT supplier)) AS supplier,TRIM(GROUP_CONCAT(DISTINCT uom)) AS uom,TRIM(GROUP_CONCAT(DISTINCT inv_no)) AS inv FROM $wms.sticker_report WHERE batch_no=\"".$batch_no."\" and lot_no in ('".$lot_no_ref."')";
+			$sql1="SELECT GROUP_CONCAT(DISTINCT item) AS item_code,TRIM(GROUP_CONCAT(DISTINCT item_desc)) AS item_color,TRIM(GROUP_CONCAT(DISTINCT item_name)) AS item_name,TRIM(GROUP_CONCAT(DISTINCT lot_no)) AS lot_no,TRIM(GROUP_CONCAT(DISTINCT po_no)) AS po_no,TRIM(GROUP_CONCAT(DISTINCT buyer)) AS buyer,TRIM(GROUP_CONCAT(DISTINCT supplier)) AS supplier,TRIM(GROUP_CONCAT(DISTINCT uom)) AS uom,TRIM(GROUP_CONCAT(DISTINCT inv_no)) AS inv FROM $wms.sticker_report WHERE batch_no=\"".$batch_no."\" and lot_no in ('".$lot_no_ref."') and plant_code='".$plant_code."'";
 			$result1=mysqli_query($link, $sql1) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($result1))
 			{
@@ -303,7 +306,7 @@ if(isset($_POST['show']))
 			$rej_item_name_exp=explode(",",$rej_item_name);
 			
 			$rejqty=0;
-			$sql4="select SUM(qty_rec) AS recv_qty,SUM(partial_appr_qty) AS rejqty,roll_status as sts from $wms.store_in where roll_status in ('1','2') and lot_no in ('".$lot_no_ref."') group by tid";	
+			$sql4="select SUM(qty_rec) AS recv_qty,SUM(partial_appr_qty) AS rejqty,roll_status as sts from $wms.store_in where roll_status in ('1','2') and lot_no in ('".$lot_no_ref."') and plant_code='".$plant_code."' group by tid";	
 			// echo $sql4."<br>";
 			$result4=mysqli_query($link, $sql4) or die("Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row4=mysqli_fetch_array($result4))
@@ -319,7 +322,7 @@ if(isset($_POST['show']))
 			}
 		
 			$lenrejqty=0;
-			$sql6="select SUM(qty_rec) AS recv_qty,SUM(ref5) AS ctexqty from $wms.store_in where lot_no in ('".$lot_no_ref."') group by tid";
+			$sql6="select SUM(qty_rec) AS recv_qty,SUM(ref5) AS ctexqty from $wms.store_in where lot_no in ('".$lot_no_ref."') and plant_code='".$plant_code."' group by tid";
 			// echo $sql6."<br>";
 			$result6=mysqli_query($link, $sql6) or die("Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row6=mysqli_fetch_array($result6))
@@ -444,7 +447,7 @@ if(isset($_POST['show']))
 			echo "<div class='col-md-6'>";
 			echo "<table class='table table-bordered'>";
 			echo "<tr ><th class=\"tblheading\">Reason</th><th>Effected Qty</th><th>Ratings</th><th>Remarks</th></tr>";	
-			$sql5="select * from $wms.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\"";
+			$sql5="select * from $wms.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\" and plant_code='".$plant_code."'";
 			// echo $sql5."<br>";
 			$result5=mysqli_query($link, $sql5) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5=mysqli_fetch_array($result5))
@@ -650,7 +653,7 @@ if(isset($_POST['submitx']))
 	}
 	
 	$max_complaint_no=0;
-	$sql7="select max(complaint_No) as comno from $wms.inspection_complaint_db";
+	$sql7="select max(complaint_No) as comno from $wms.inspection_complaint_db where plant_code='".$plant_code."'";
 	$result7=mysqli_query($link, $sql7) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row7=mysqli_fetch_array($result7))
 	{
@@ -669,12 +672,12 @@ if(isset($_POST['submitx']))
 	//Added Year Clause for reset the sequence starting form 1
 	if($comcatref==0)
 	{
-		$sql11="SELECT * FROM $wms.inspection_complaint_db WHERE TRIM(supplier_name)=\"".trim($supplier_ref_final)."\" and year(req_date)=\"".date("Y")."\" and product_categoy=\"".$comcat_type_ref."\" AND complaint_cat_ref=0";
+		$sql11="SELECT * FROM $wms.inspection_complaint_db WHERE TRIM(supplier_name)=\"".trim($supplier_ref_final)."\" and year(req_date)=\"".date("Y")."\" and product_categoy=\"".$comcat_type_ref."\" AND complaint_cat_ref=0 and plant_code='".$plant_code."'";
 		$cat_staring="";
 	}
 	else
 	{
-		$sql11="select * from $wms.inspection_complaint_db WHERE TRIM(supplier_name)=\"".trim($supplier_ref_final)."\" and year(req_date)=\"".date("Y")."\" and product_categoy=\"".$comcat_type_ref."\" AND complaint_cat_ref=1";
+		$sql11="select * from $wms.inspection_complaint_db WHERE TRIM(supplier_name)=\"".trim($supplier_ref_final)."\" and year(req_date)=\"".date("Y")."\" and product_categoy=\"".$comcat_type_ref."\" AND complaint_cat_ref=1 and plant_code='".$plant_code."'";
 		$cat_staring="INT";
 	}
 	$result11=mysqli_query($link, $sql11) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -684,7 +687,7 @@ if(isset($_POST['submitx']))
 	
 	$max_complaint_nos=0;
 	
-	$sql12="select * from $pms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\"";
+	$sql12="select * from $pms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\" and plant_code='".$plant_code."'";
 	$result12=mysqli_query($link, $sql12) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row12=mysqli_fetch_array($result12))
 	{
@@ -719,14 +722,14 @@ if(isset($_POST['submitx']))
 		$add_string="0";
 	}
 
-	$sql8="insert into $wms.inspection_complaint_db(product_categoy,complaint_category,complaint_raised_by,supplier_name,buyer_name,reject_item_codes,reject_item_color,reject_batch_no,reject_po_no,reject_lot_no,reject_roll_qty,reject_len_qty,uom,complaint_remarks,reject_inv_no,reject_item_desc,ref_no,complaint_no,req_date,purchase_width,actual_width,purchase_gsm,actual_gsm,inspected_qty,complaint_cat_ref) values(\"".$comcat_type_ref."\",\"".$comcat_mode_ref."\",\"".$username."\",\"".$supplier_ref_final."\",\"".$buyer_ref_final."\",\"".$item_codes_ref_final."\",\"".$item_colors_ref_final."\",\"".$batch_no_ref."\",\"".$po_no_ref."\",\"".$lot_no_ref_final."\",\"".$rejected_roll_qty."\",\"".$rejected_len_qty."\",\"".$uom_ref."\",\"".$comaplint_remarks."\",\"".$invoice_ref_final."\",\"".str_replace('"',"",$item_name_ref_final)."\",\"".$supplier_code."".$cat_staring."".$add_string."".$max_complaint_nos."\",\"".$max_complaint_no."\",\"".date("Y-m-d H:i:s")."\",\"".$purchase_width."\",\"".$actual_width."\",\"".$purchase_gsm."\",\"".$actual_gsm."\",\"".$inspqty_lot."\",\"".$comcatref."\")";
+	$sql8="insert into $wms.inspection_complaint_db(product_categoy,complaint_category,complaint_raised_by,supplier_name,buyer_name,reject_item_codes,reject_item_color,reject_batch_no,reject_po_no,reject_lot_no,reject_roll_qty,reject_len_qty,uom,complaint_remarks,reject_inv_no,reject_item_desc,ref_no,complaint_no,req_date,purchase_width,actual_width,purchase_gsm,actual_gsm,inspected_qty,complaint_cat_ref,plant_code,created_user) values(\"".$comcat_type_ref."\",\"".$comcat_mode_ref."\",\"".$username."\",\"".$supplier_ref_final."\",\"".$buyer_ref_final."\",\"".$item_codes_ref_final."\",\"".$item_colors_ref_final."\",\"".$batch_no_ref."\",\"".$po_no_ref."\",\"".$lot_no_ref_final."\",\"".$rejected_roll_qty."\",\"".$rejected_len_qty."\",\"".$uom_ref."\",\"".$comaplint_remarks."\",\"".$invoice_ref_final."\",\"".str_replace('"',"",$item_name_ref_final)."\",\"".$supplier_code."".$cat_staring."".$add_string."".$max_complaint_nos."\",\"".$max_complaint_no."\",\"".date("Y-m-d H:i:s")."\",\"".$purchase_width."\",\"".$actual_width."\",\"".$purchase_gsm."\",\"".$actual_gsm."\",\"".$inspqty_lot."\",\"".$comcatref."\",'".$plant_code."','".$username."')";
 
 	mysqli_query($link, $sql8) or die("Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	for($i=0;$i<sizeof($rej_com_sno);$i++)
 	{
 		if($rej_ind_qty[$i] > 0)
 		{
-			$sql9="insert into $wms.inspection_complaint_db_log(complaint_track_id,complaint_reason,complaint_rej_qty,complaint_rating,complaint_commnets) values(\"".$max_complaint_no."\",\"".$rej_com_sno[$i]."\",\"".$rej_ind_qty[$i]."\",\"".$rej_ind_rat[$i]."\",\"".$rej_ind_remarks[$i]."\")";
+			$sql9="insert into $wms.inspection_complaint_db_log(complaint_track_id,complaint_reason,complaint_rej_qty,complaint_rating,complaint_commnets,plant_code,created_user) values(\"".$max_complaint_no."\",\"".$rej_com_sno[$i]."\",\"".$rej_ind_qty[$i]."\",\"".$rej_ind_rat[$i]."\",\"".$rej_ind_remarks[$i]."\",'".$plant_code."','".$username."')";
 			mysqli_query($link, $sql9) or die("Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}

@@ -77,7 +77,8 @@ border: 1px solid black;
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 {
 	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
@@ -320,7 +321,7 @@ $flag = false;
                                 // echo $inch_value."</br>";
                                 // echo $invoice_qty;
 								$back_color="";		
-								$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$store_in_id."";
+								$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$store_in_id." and plant_code='".$plant_code."'";
 								$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($status_details_result2)>0)
 								{	

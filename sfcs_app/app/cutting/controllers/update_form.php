@@ -324,7 +324,7 @@ if(sizeof($_GET["lots"]) > 0)
 	echo "<div>";
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
-	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3,ref2 from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) order by shrinkage_group,ref3,ref4,lot_no";
+	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3,ref2 from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) and plant_code='".$plant_code."' order by shrinkage_group,ref3,ref4,lot_no";
 	// echo $host."-".$sql1;
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -458,7 +458,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['item_code']."</td>";
 	echo "<td>".$sql_row['item_desc']."</td>";
 	
-	$sql1="select item_desc from $wms.sticker_report where item like \"%".$sql_row['item_code']."%\"";
+	$sql1="select item_desc from $wms.sticker_report where item like \"%".$sql_row['item_code']."%\" and plant_code='".$plant_code."'";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -468,7 +468,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$item_desc."</td>";
 	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
 	$reason_code = $sql_row['reason_code'];
-	$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code";
+	$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code and plant_code='".$plant_code."'";
 	$result_reason = mysqli_query($link,$sql_reason);
 	$reason_row = mysqli_fetch_assoc($result_reason);
 	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";
@@ -727,7 +727,7 @@ $(document).ready(function(){
 				$qty_allocated=array();
 				$total_qty=array();
 				if($issued_qty[$j]<=$val_ref[$j]){
-					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j]";
+					$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
 					$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
 					{
@@ -741,16 +741,16 @@ $(document).ready(function(){
 					$issued_ref[$j]=$issued_qty[$j];
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
-						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql="update wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_qty[$j]." where tid=".$tid_ref[$j];
+						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j],$plant_code,$username);
+						$sql="update wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_qty[$j].",updated_by= '".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
 
-				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_qty[$j]." where tid=\"".$tid_ref[$j]."\"";
+				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_qty[$j].",updated_by= '".$username."' where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."'";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=\"".$tid_ref[$j]."\"";
+				$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."'";
 				//echo $query_status;
 				$query_status_res=mysqli_query($link, $query_status) or exit("Sql Error6: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($qry_status_result=mysqli_fetch_array($query_status_res))
@@ -764,7 +764,7 @@ $(document).ready(function(){
 				if($balance_qty[$j]==0)
 				{
 					$status_new=2;
-					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new where tid=\"".$tid_ref[$j]."\"";
+					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new,updated_by= '".$username."' where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."";
 					//echo $sql44."</br>";
 					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

@@ -1407,10 +1407,11 @@ x\:* {behavior:url(#default#VML);}
 </head>
 
 <body>";
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $comaplint_no=$_GET["sno"];
 //include("dbconf2.php"); 
-$sql="select * from inspection_complaint_db where complaint_no=\"".$comaplint_no."\"";	
+$sql="select * from inspection_complaint_db where complaint_no=\"".$comaplint_no."\" and plant_code='".$plant_code."'";	
 $result=mysqli_query($link, $sql) or die("ErrorX=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
@@ -1539,7 +1540,7 @@ tags will be replaced.-->
  $result1=mysqli_query($link, $sql1) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($result1))
  {	
- 	$sql2="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\"";
+ 	$sql2="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\" and plant_code='".$plant_code."'";
 	$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rows=mysqli_num_rows($result2);
 	
@@ -1675,7 +1676,7 @@ tags will be replaced.-->
 		$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($result2))
 		{
-			$sql3="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row2["sno"]."\"";
+			$sql3="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row2["sno"]."\" and plant_code='".$plant_code."'";
 			$result3=mysqli_query($link, $sql3) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows=mysqli_num_rows($result3);
 			if($rows > 0)

@@ -105,7 +105,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 }
 $tot_points=0;
 $cnt=0;
-$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,selected_point";
+$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by insp_child_id,selected_point";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
@@ -1924,7 +1924,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
-	$get_inspection_population_info122 = "select code,points from $wms.`four_points_table` where insp_child_id=".$tot_ids[$i]."";
+	$get_inspection_population_info122 = "select code,points from $wms.`four_points_table` where insp_child_id=".$tot_ids[$i]." and plant_code='".$plant_code."'";
 	$info_result122 = mysqli_query($link, $get_inspection_population_info122) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result122)>0)
 	{
@@ -2026,7 +2026,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   
   <?php
 	$count1=0;$data1='';
-	$get_inspection_population_info1221 = "select code,description from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by code";
+	$get_inspection_population_info1221 = "select code,description from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by code";
 	//echo $get_inspection_population_info1221."<br>";
 	$info_result1221 = mysqli_query($link, $get_inspection_population_info1221) or exit("get_details Error25" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result1221)>0)

@@ -5,7 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
 $has_permission=haspermission($_GET['r']);
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1709,7 +1710,7 @@ if(strlen($lot_no)>0 or strlen('$lot_ref')>0)
 echo '<form id="myForm" name="input" action="index.php?r='.$_GET['r'].'" method="post">';
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' name='lot_ref' value='".$lot_ref."'>";
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no=\"".trim($lot_no)."\"";
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 
 $sql_result=mysqli_query($link,$sql);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1744,7 +1745,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $pps.inspection_db where batch_ref=\"".trim($lot_no)."\"";
+$sql="select * from $pps.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql);
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1775,7 +1776,7 @@ $avg_t_width=0;
 $avg_c_width=0;
 $print_check=0;
 
-$sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."' order by ref2+0";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1797,7 +1798,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //Added Backup Lots for visibility in Inspection Report
 
-$sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."' order by ref2+0";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=$num_rows+mysqli_num_rows($sql_result1);
 if(mysqli_num_rows($sql_result1) > 0)
@@ -1836,7 +1837,7 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2337,7 +2338,7 @@ tags will be replaced.-->
 	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
-	  		$reject_reason_query="select * from wms.reject_reasons ";
+	  		$reject_reason_query="select * from wms.reject_reasons where plant_code='".$plant_code."'";
 			$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($reject_reasons))
 			{
@@ -2486,7 +2487,7 @@ echo '</form>';
   
 for($i=0;$i<$shade_count;$i++)
   {
-  	$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ('$lot_ref') and ref4=\"".$scount_temp2[$i]."\"";
+  	$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ('$lot_ref') and ref4=\"".$scount_temp2[$i]."\" and plant_code='".$plant_code."'";
 	$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sc=mysqli_fetch_array($result_sc))
 	{
@@ -2551,7 +2552,7 @@ if($_POST['put'] || $_POST['confirm'])
 	
 	if($head_check>0)
 	{
-		$sql_check="select batch_ref from $pps.inspection_db where batch_ref=\"$lot_no_new\"";
+		$sql_check="select batch_ref from $pps.inspection_db where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_check_res)==0)
 		{
@@ -2561,7 +2562,7 @@ if($_POST['put'] || $_POST['confirm'])
 		if(mysqli_affected_rows($link))
 		{
 			//For Total batched inspeciton done in current month.
-			$sql="select log_date from $pps.inspection_db where month(log_date)=".date("m")." and year(log_date)=".date("Y");
+			$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y") ;
 			//echo $sql.sizeof($suppliers);
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($sql_result);
@@ -2578,7 +2579,7 @@ if($_POST['put'] || $_POST['confirm'])
 					}
 					
 					//For Total batched inspeciton done in current month for current supplier.
-					$sql="select log_date from $pps.inspection_db where month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
+					$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
 					//echo $sql.sizeof($suppliers);
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$count2=mysqli_num_rows($sql_result);
@@ -2588,18 +2589,18 @@ if($_POST['put'] || $_POST['confirm'])
 				}
 				
 			  }
-			  	$sql="update $pps.inspection_db set unique_id=\"$count\" where batch_ref=\"$lot_no_new\"";
+			  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 				//echo $sql;
 				mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\" where batch_ref=\"$lot_no_new\"";
+		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		// echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
-	$sql="update $pps.inspection_db set status=0 where batch_ref=\"$lot_no_new\"";
+	$sql="update $pps.inspection_db set status=0,updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($_POST['confirm'])
 	{
@@ -2611,7 +2612,7 @@ if($_POST['put'] || $_POST['confirm'])
 		// }
 		echo $lot_no_new;
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
-		$sql1="update $pps.inspection_db set status=1 where batch_ref=\"$lot_no_new\"";
+		$sql1="update $pps.inspection_db set status=1,updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo "<script>sweetAlert('Updated Sucessfully','','success')</script>";
 		echo getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N");
@@ -2651,7 +2652,7 @@ if($_POST['put'] || $_POST['confirm'])
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
 			// echo $rejection_reason[$i];
-			$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+			$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_by= '".$username."'$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}

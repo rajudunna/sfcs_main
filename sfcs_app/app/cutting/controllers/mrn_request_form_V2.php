@@ -430,7 +430,7 @@ $(document).ready(function(){
                     if(strlen($doc_no) > 0)
                     {
                         //$sql_doc="SELECT group_concat(tran_pin) as tid FROM wms.fabric_cad_allocation where doc_no=".$doc_no." group by doc_no";
-                        $sql_doc="SELECT group_concat(roll_id) as tid FROM $wms.fabric_cad_allocation where doc_no='".$doc_no."' group by doc_no";
+                        $sql_doc="SELECT group_concat(roll_id) as tid FROM $wms.fabric_cad_allocation where doc_no='".$doc_no."' and plant_code='".$plant_code."' group by doc_no";
                         //echo "<option value=\"0\" selected>".$sql_doc."</option>";
                         $sql_result_doc=mysqli_query($link, $sql_doc) or die("Error".$sql_doc.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row_doc=mysqli_fetch_array($sql_result_doc))
@@ -440,7 +440,7 @@ $(document).ready(function(){
 
                         if(strlen($tid) > 0)
                         {
-                            $sql_tid="SELECT distinct(lot_no) FROM $wms.store_in where tid in (".$tid.")";
+                            $sql_tid="SELECT distinct(lot_no) FROM $wms.store_in where tid in (".$tid.") and plant_code='".$plant_code."'";
                             //echo "<option value=\"0\" selected>".$sql_tid."</option>";
                             $sql_result_tid=mysqli_query($link, $sql_tid) or die("Error".$sql_tid.mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
@@ -457,7 +457,7 @@ $(document).ready(function(){
 
                         if(strlen($lot_ref) > 0)
                         {
-                            $sql13="select distinct batch_no as batch from $wms.sticker_report where lot_no in (".str_replace(";",",",$lot_ref).") group by batch_no";
+                            $sql13="select distinct batch_no as batch from $wms.sticker_report where lot_no in (".str_replace(";",",",$lot_ref).") and plant_code='".$plant_code."' group by batch_no";
                             $sql_result13=mysqli_query($link, $sql13) or die("Error".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($sql_row13=mysqli_fetch_array($sql_result13))
                             {
@@ -483,7 +483,7 @@ $(document).ready(function(){
 
                     //To check the supplier approved quantity for issue availability 
                     //CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
-                    $sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no=\"".$batch."\""; 
+                    $sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no=\"".$batch."\" and plant_code='".$plant_code."'"; 
 
                     //echo "<br/>".$sql14."<br/>";
 
@@ -648,7 +648,7 @@ $(document).ready(function(){
                     $appr_qty=0;
                     //CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
                     //$sql14="select sum(supplier_replace_approved_qty) as qty from wms.inspection_complaint_db where reject_batch_no in (".$batch_ref_implode.")";
-                    $sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no in ('".$inp_5."')";
+                    $sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no in ('".$inp_5."') and plant_code='".$plant_code."'";
                     //echo "<br/>".$sql14."<br>";
                     $sql_result14=mysqli_query($link, $sql14) or die("Error".$sql14.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row14=mysqli_fetch_array($sql_result14))
@@ -727,7 +727,7 @@ $(document).ready(function(){
                     {
                         $reason_id_db = array();
                         $reason_code_db = array();
-                        $sql_reason="select * from $wms.mrn_reason_db where status=0 order by reason_order";
+                        $sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
                         $sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $count = mysqli_num_rows($sql_result);
                         

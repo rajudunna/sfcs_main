@@ -59,7 +59,8 @@ function button_disable()
 echo '<div class="panel-heading">Supplier Claim Update Form</div>';
 echo "<div class=\"panel-body\">";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>	
 <?php
 if(isset($_GET["sno"]))
@@ -79,7 +80,7 @@ else
 	echo "<thead><tr><th>Complaint No</th><th>Product Category</th><th>Complaint Category</th><th>Request Date</th><th>Request User</th><th>Supplier Name</th><th>Buyer Name</th><th>Reject Item Codes</th><th>Reject Item Colors</th><th>Batch No</th><th>PO No</th><th>Lot No</th><th>Reject Roll Qty</th><th>Reject Len Qty</th>
 <th>UOM</th><th>Supplier Replace Approved Qty</th><th>Supplier Claim Approved Qty</th><th>Complaint Remarks</th></tr></thead>";
 
-	$sql="select * from $wms.inspection_complaint_db where complaint_no=\"".$comaplint_no."\"";
+	$sql="select * from $wms.inspection_complaint_db where complaint_no=\"".$comaplint_no."\" and plant_code='".$plant_code."'";
 	
 	$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
@@ -222,7 +223,7 @@ if(isset($_POST['submitx']))
 	$credit_note_no=$_POST["txtsupcrdno"];
 	$claim_note_no=$_POST["txtsupclmno"];
 	
-	$sql2="update $wms.inspection_complaint_db set supplier_approved_date=\"$supplier_approved_date\",supplier_status=\"$supplier_status\",supplier_remarks=\"$supplier_remarks\",new_invoice_no=\"$new_invoice_no\",supplier_replace_approved_qty=\"$supplier_replace_approved_qty\",supplier_claim_approved_qty=\"$supplier_claim_approved_qty\",complaint_status=\"$complaint_status\",supplier_credit_no=\"$credit_note_no\",supplier_claim_no=\"".$claim_note_no."\" WHERE complaint_no=\"$comaplint_no_ref\"";
+	$sql2="update $wms.inspection_complaint_db set supplier_approved_date=\"$supplier_approved_date\",supplier_status=\"$supplier_status\",supplier_remarks=\"$supplier_remarks\",new_invoice_no=\"$new_invoice_no\",supplier_replace_approved_qty=\"$supplier_replace_approved_qty\",supplier_claim_approved_qty=\"$supplier_claim_approved_qty\",complaint_status=\"$complaint_status\",supplier_credit_no=\"$credit_note_no\",supplier_claim_no=\"".$claim_note_no."\",updated_by= '".$username."' WHERE complaint_no=\"$comaplint_no_ref\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql2) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script>sweetAlert('Data Updated Successfully','','success')</script>";
