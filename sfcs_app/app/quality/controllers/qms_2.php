@@ -108,8 +108,10 @@ if(isset($_GET['tid']))
 	$qms_qty=$_GET['qms_qty1'];
 	$parent_id = $_GET['parent_id'];
 	$bcd_id = $_GET['bcd_id'];
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	
-	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $bai_pro3.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	// die();
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -255,17 +257,17 @@ if(isset($_GET['tid']))
 	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
 
 	//Insert selected row into table deleted table
-	$sql1="insert ignore into $bai_pro3.bai_qms_db_deleted select * from bai_pro3.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="insert ignore into $pps.bai_qms_db_deleted select * from pps.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	//reduce qty from location table based on location
 	if($locationid != null) {
-		$sql3="update $bai_pro3.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
+		$sql3="update $pps.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty),created_user='username' where qms_location_id='".$locationid."' and plant_code='$plant_code'";
 		// echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	}
 	//delete selected row from bai_qms_db table
-	$sql2="delete from $bai_pro3.bai_qms_db where qms_tid='".$tid_ref."'";
+	$sql2="delete from $pps.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."'";
 	// echo $sql2."<br>";
 	$result2=mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
