@@ -224,7 +224,8 @@
 							die();
 						}
 
-						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."');";
+						// $save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."');";
+						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id,log_time,updated_by) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."',NOW(), '".$username."');";
 						$save_emb_result = mysqli_query( $link, $save_emb_details);
 						if ($save_emb_result == 1 or $save_emb_result == '1')
 						{
