@@ -1,5 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <title>CAD Saving Details</title>
@@ -455,8 +457,8 @@ while($row=mysqli_fetch_array($result))
 	
 //echo "<br/>value= ".round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),0)."<br/>";
 
-$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule='$schedule' 
-	  and color like '%$color%' and product='FAB'";
+$sql="select sum(issued_qty) as qty from $wms.mrn_track where schedule='$schedule' 
+	  and color like '%$color%' and product='FAB' and plant_code='".$plant_code."'";
 	//   echo $sql;
 $result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))

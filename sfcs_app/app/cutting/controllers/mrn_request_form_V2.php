@@ -3,7 +3,8 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
-
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
     $flag=1;
 
     $validation_ref_select="";
@@ -495,7 +496,7 @@ $(document).ready(function(){
                     //To check the applied quantity is exceeds the available quantity
                     //OLD ISSUE QUERY KK 20160721 $sql141="select COALESCE(sum(issued_qty)) as qty from wms.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32)";
 
-                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32)";
+                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
 
                     //echo "<br/>".$sql141."<br/>";
 
@@ -508,7 +509,7 @@ $(document).ready(function(){
 
                     $requested_qty=0;
 
-                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
                     //echo "<br/>".$sql_requested_qty."<br/>";
 
                     $sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -661,7 +662,7 @@ $(document).ready(function(){
                     }
 
                     //$sql141="select COALESCE(sum(issued_qty)) as qty from wms.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32)";
-                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32)";
+                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
                     //echo "<br/>".$sql141."<br/>";
                     $sql_result141=mysqli_query($link, $sql141) or die("Error".$sql141.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row141=mysqli_fetch_array($sql_result141))
@@ -671,7 +672,7 @@ $(document).ready(function(){
 
                     $requested_qty=0;
 
-                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
                     //echo "<br/>".$sql_requested_qty."<br/>";
                     $sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row_requested_qty=mysqli_fetch_array($sql_result_requested_qty))
@@ -688,8 +689,7 @@ $(document).ready(function(){
 
                     //echo $lot_ref."<br>";
                     //When M3 offline comment this
-                    $sql="select rand_track_id from $wms.mrn_track where style='$inp_1' and schedule='$inp_2' 
-                         group by rand_track_id";
+                    $sql="select rand_track_id from $wms.mrn_track where style='$inp_1' and schedule='$inp_2' AND plant_code='".$plant_code."' group by rand_track_id";
                     //echo $sql;
                     $sql_res = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($sql));
                     $cnt = mysqli_num_rows($sql_res);

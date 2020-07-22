@@ -7,6 +7,8 @@ kirang / 2015-12-18 / Service Request#13345467 // Need MRN Duplicate Print Optio
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $mrn_id=$_GET["tid"];
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //Print Status
 if($_GET["print_status"]==1)
 {
@@ -17,7 +19,7 @@ else
 	$print_status="Original";
 }
 
-$sql="select * from $wms.mrn_track where tid=$mrn_id";
+$sql="select * from $wms.mrn_track where tid=$mrn_id and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1873,7 +1875,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Allocated Qty</td>
   <?php
-	  $sql1="select iss_qty from $wms.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id'";
+	  $sql1="select iss_qty from $wms.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id' and plant_code='".$plant_code."'";
 	  //echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -2244,7 +2246,7 @@ tags will be replaced.-->
 <?php
 if($_GET["print_status"]==0)
 {
-	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id";
+	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 ?>
