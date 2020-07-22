@@ -1,6 +1,9 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
+
 
 ?>
 <link rel="stylesheet" href="<?=getFullURLLevel($_GET['r'],'common/css/jquery-ui.css',2,'R')?>">
@@ -45,7 +48,7 @@
                     <select class='form-control' name="module">
                         <option value='NIL'>Select Module</option>
                         <?php  
-                            $sql = "SELECT * FROM $pts.plan_modules";
+                            $sql = "SELECT * FROM $pts.plan_modules where plant_code='$plant_code'";
                             $sql_result = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                             while($sql_row=mysqli_fetch_array($sql_result)){
@@ -108,7 +111,7 @@
                         $style_id_new=$sql_row_id["sid"];
                     }
                         
-                    $get_fab_req_details="SELECT * FROM $pms.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" ";
+                    $get_fab_req_details="SELECT * FROM $pms.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" AND plant_code='$plant_code' ";
                     $get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $resulted_rows = mysqli_num_rows($get_fab_req_result);
 
