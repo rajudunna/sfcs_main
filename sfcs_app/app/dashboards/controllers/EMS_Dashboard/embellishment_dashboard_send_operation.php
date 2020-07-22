@@ -346,7 +346,7 @@ echo '<br><br>';
 $bindex=0;
 $blink_docs=array();
 
-$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
+$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_status = 'active' and emb_table_id>0";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -366,7 +366,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     $order_div_ref='';
   }
 
-  $sql1d="SELECT emb_table_id as modx from $bai_pro3.tbl_emb_table where emb_table_id in (".$section_mods.") order by emb_table_id*1";
+  $sql1d="SELECT emb_table_id as modx from $bai_pro3.tbl_emb_table where emb_table_status = 'active' and emb_table_id in (".$section_mods.") order by emb_table_id*1";
   $sql_num_checkd=0;
   $sql_result1d=mysqli_query($link, $sql1d) or exit("Sql Errordd".mysqli_error($GLOBALS["___mysqli_ston"]));
   $sql_num_checkd=mysqli_num_rows($sql_result1d);
