@@ -1,8 +1,9 @@
 <?php 
 include("../../../common/config/config_ajax.php");
+$plantcode=$_SESSION['plantCode'];
 if(isset($_GET['date']))
 {
-    $query = "select * from $pps.binding_consumption where status='Close' and date(status_at)='".$_GET['date']."'";
+    $query = "select * from $pps.binding_consumption where plant_code='".$plantcode."' and status='Close' and date(status_at)='".$_GET['date']."'";
     $sql_result = mysqli_query($link,$query);
 
     $response_table = '<tr>

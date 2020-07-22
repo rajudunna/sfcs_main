@@ -10,6 +10,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 $has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
+$plant_code = $_SESSION['plantCode'];
 
 if($check==1 and in_array($authorized,$has_permission))
 
@@ -66,7 +67,7 @@ else
 
 <?php
 
-$sql="select * from $wms.manual_form where rand_track=$tid and status=$check";
+$sql="select * from $wms.manual_form where rand_track=$tid and status=$check and plant_code='".$plant_code."'";
 //echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -3,6 +3,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0153",$username,1,$group_id_sfcs); 
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <link href="table_style.css" rel="stylesheet" type="text/css" />
@@ -304,7 +306,7 @@ if(isset($_POST['submit']))
 		if(strlen($item[$i])>0)
 		{
 			$count=1;
-			$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\")";
+			$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plant_code."','".$username."')";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
