@@ -188,9 +188,10 @@
 					$work_station_id = $_POST['work_station_id'];
 					if ($emb_table_id > 0)
 					{
-						$save_emb_details = "SELECT * from   $bai_pro3.tbl_emb_table where emb_table_name ='$emb_table_name' and cut_table_name='$cut_table' and work_station_id ='$work_station_id' and emb_table_id !='$emb_table_id'";
-						$save_emb_result = mysqli_query($link,$save_emb_details);
-						if(mysqli_num_rows($save_emb_result)> 0)
+						// echo "not null";
+						$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."', log_time = NOW(),updated_by = '".$username."' WHERE `emb_table_id` = '".$emb_table_id."';";
+						$update_emb_result = mysqli_query( $link, $update_emb_details);
+						if ($update_emb_result == 1 or $update_emb_result == '1')
 						{
 							echo "<script>
 							sweetAlert('Emblishment table already exists','','error');
