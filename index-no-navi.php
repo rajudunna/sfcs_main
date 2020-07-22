@@ -8,7 +8,7 @@ if (!isset($_GET['r'])) {
 require_once("configuration/API/confr.php");
 include "template/helper.php";
 include "template/header.php";
-include "template/sidemenu.php";
+// include "template/sidemenu.php";
 require_once 'sfcs_app/common/vendor/autoload.php';
 
 $whoops = new \Whoops\Run;
@@ -21,7 +21,7 @@ $whoops->register();
 <script src="assets/js/datepicker.js"></script>
 <script src="template/helperjs.js"></script>
 <div ng-app="App">
-    <div class="right_col" role="main">
+    <div class="right_col" style='margin:0px' role="main">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px;">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="min-height:640px">
@@ -37,6 +37,19 @@ $whoops->register();
                             $get_file_path = getFILE($_GET['r']);
                             if ($get_file_path) {
                                 if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {
+                                    // Get paln code
+                                    if ($_GET['plantCode']) {
+                                        $_SESSION['plantCode'] = $_GET['plantCode'];
+                                    }
+                                    if ($_GET['userName']) {
+                                        $_SESSION['userName'] = $_GET['userName'];
+                                    }
+                                    if ($_GET['poNumber']) {
+                                        $_SESSION['poNumber'] = $_GET['poNumber'];
+                                    }
+                                    if ($_GET['masterPoNumber']) {
+                                        $_SESSION['masterPoNumber'] = $_GET['masterPoNumber'];
+                                    }
                                     include($_SERVER["DOCUMENT_ROOT"] . $get_file_path['path']);
                                 } else {
                                     if ($get_file_path['type'] == 'xlsm') {
