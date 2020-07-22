@@ -23,41 +23,87 @@ var rowId4 = (id.split('working_hours_min-')[1] );
 						 
 							var adjustment1= $('#adjustment_smo-'+rowId).val();
 							var work1= $('#working_hours_min-'+rowId).val();
+							var type1= $('#adjustment_type-'+rowId).val();
+							if(type1=='Negative'){
+							var final_adjustment_min=Number(adjustment1)*Number(work1);
+							$('#adjustment_min-'+rowId).val('-'+final_adjustment_min);
+							var hours= $('#adjustment_min-'+rowId).val();
+							var final_hours=Number(hours/60).toFixed(2);
+							$('#adjustment_hours-'+rowId).val(final_hours);
+							}
+							if(type1=='Positive'){
 							var final_adjustment_min=Number(adjustment1)*Number(work1);
 							$('#adjustment_min-'+rowId).val(final_adjustment_min);
 							var hours= $('#adjustment_min-'+rowId).val();
 							var final_hours=Number(hours/60).toFixed(2);
 							$('#adjustment_hours-'+rowId).val(final_hours);
+							}	
+							
+							
 					    });
 					   $('#working_hours_min-'+rowId4).on('change', function() {
 						 
 						 var adjustment1= $('#adjustment_smo-'+rowId4).val();
 						// alert(adjustment1);
 						 var work1= $('#working_hours_min-'+rowId4).val();
+						 var type1= $('#adjustment_type-'+rowId4).val();
+							if(type1=='Negative'){
 						 var final_adjustment_min=Number(adjustment1)*Number(work1);
+						 $('#adjustment_min-'+rowId4).val('-'+final_adjustment_min);
+						 var hours= $('#adjustment_min-'+rowId4).val();
+						 var final_hours=Number(hours/60).toFixed(2);
+						 $('#adjustment_hours-'+rowId4).val(final_hours);
+							}
+							if(type1=='Positive'){
+						var final_adjustment_min=Number(adjustment1)*Number(work1);
 						 $('#adjustment_min-'+rowId4).val(final_adjustment_min);
 						 var hours= $('#adjustment_min-'+rowId4).val();
 						 var final_hours=Number(hours/60).toFixed(2);
 						 $('#adjustment_hours-'+rowId4).val(final_hours);
+
+							}
 				       });
 					   $('#adjustment_smo-'+rowId1).on('change', function() {
 						var work1= $('#working_hours_min-'+rowId1).val();
 						 var adjustment1= $('#adjustment_smo-'+rowId1).val();
+						 var type1= $('#adjustment_type-'+rowId1).val();
+						 if(type1 =='Negative'){
+						var final_adjustment_min=Number(adjustment1)*Number(work1);
+						 $('#adjustment_min-'+rowId1).val('-'+final_adjustment_min);
+						 var hours= $('#adjustment_min-'+rowId1).val();
+						 var final_hours=Number(hours/60).toFixed(2);
+						 $('#adjustment_hours-'+rowId1).val(final_hours);
+
+						 }
+						 if(type1 =='Positive'){
 						 var final_adjustment_min=Number(adjustment1)*Number(work1);
 						 $('#adjustment_min-'+rowId1).val(final_adjustment_min);
 						 var hours= $('#adjustment_min-'+rowId1).val();
 						 var final_hours=Number(hours/60).toFixed(2);
 						 $('#adjustment_hours-'+rowId1).val(final_hours);
+						 }
+						 
 				       });
 					   $('#adjustment_smo-'+rowId3).on('change', function() {
 						var work1= $('#working_hours_min-'+rowId3).val();
 						 var adjustment1= $('#adjustment_smo-'+rowId3).val();
+						 var type1= $('#adjustment_type-'+rowId3).val();
+						 if(type1=='Negative'){
+							var final_adjustment_min=Number(adjustment1)*Number(work1);
+						// alert(final_adjustment_min);
+						 $('#adjustment_min-'+rowId3).val('-'+final_adjustment_min);
+						 var hours= $('#adjustment_min-'+rowId3).val();
+						 var final_hours=Number(hours/60).toFixed(2);
+						 $('#adjustment_hours-'+rowId3).val(final_hours);
+						 }
+						 if(type1=='Positive'){
 						 var final_adjustment_min=Number(adjustment1)*Number(work1);
 						// alert(final_adjustment_min);
 						 $('#adjustment_min-'+rowId3).val(final_adjustment_min);
 						 var hours= $('#adjustment_min-'+rowId3).val();
 						 var final_hours=Number(hours/60).toFixed(2);
 						 $('#adjustment_hours-'+rowId3).val(final_hours);
+						 }
 				       });
 	
 }
@@ -92,22 +138,27 @@ function adjustment_type(id){
 			
 							var type= $(this).val();
 							if(type=='Positive'){
-								var adjustmentsmo = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var working_hours_min = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var adjustment_min = $('#adjustment_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var adjustment_hours = $('#adjustment_hours-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								$('#adjustment_smo-'+rowId1).val('+'+adjustmentsmo);
-								$('#working_hours_min-'+rowId1).val('+'+working_hours_min);
-								$('#adjustment_min-'+rowId1).val('+'+adjustment_min);
-								$('#adjustment_hours-'+rowId1).val('+'+adjustment_hours);
+								// var adjustmentsmo = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
+								// var working_hours_min = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
+								var adjustment_min = $('#adjustment_min-'+rowId1).val().replace(/[\-]+/, '');
+								var adjustment_hours = $('#adjustment_hours-'+rowId1).val().replace(/[\-]+/, '');
+
+				
+								// $('#adjustment_smo-'+rowId1).val('+'+adjustmentsmo);
+								// $('#working_hours_min-'+rowId1).val('+'+working_hours_min);
+
+								$('#adjustment_min-'+rowId1).val(adjustment_min);
+								$('#adjustment_hours-'+rowId1).val(adjustment_hours);
+								
+								
 							}
 							 if(type=='Negative'){
-								var adjustmentsmo1 = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var working_hours_min1 = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var adjustment_min1 = $('#adjustment_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var adjustment_hours1 = $('#adjustment_hours-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								$('#adjustment_smo-'+rowId1).val('-'+adjustmentsmo1);
-								$('#working_hours_min-'+rowId1).val('-'+working_hours_min1);
+								// var adjustmentsmo1 = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
+								// var working_hours_min1 = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
+								var adjustment_min1 = $('#adjustment_min-'+rowId1).val().replace(/[\-]+/, '');;
+								var adjustment_hours1 = $('#adjustment_hours-'+rowId1).val().replace(/[\-]+/, '');;
+								// $('#adjustment_smo-'+rowId1).val('-'+adjustmentsmo1);
+								// $('#working_hours_min-'+rowId1).val('-'+working_hours_min1);
 								$('#adjustment_min-'+rowId1).val('-'+adjustment_min1);
 								$('#adjustment_hours-'+rowId1).val('-'+adjustment_hours1);
 							}
@@ -171,7 +222,7 @@ $username=strtolower($username_list[1]);
 				</div>
 				<?php
 					$plant_timings_array=array();
-					$sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings";
+					$sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings order by time_value*1";
 					$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
@@ -245,9 +296,10 @@ if(isset($_POST['submit']))
 	
 		$modules = implode("','", $modules_array);
 
-		 $sql1="SELECT *,pro_attendance.module as module_name FROM bai_pro.pro_attendance LEFT JOIN bai_pro.pro_attendance_adjustment 
-		 ON pro_attendance.module=pro_attendance_adjustment.module  AND pro_attendance.shift=pro_attendance_adjustment.shift  WHERE  pro_attendance_adjustment.id IN (SELECT MIN(id) FROM bai_pro.pro_attendance_adjustment WHERE module=pro_attendance.module AND shift='$shift' AND DATE='$date' ) and pro_attendance.date='$date' AND pro_attendance.shift='$shift' AND pro_attendance.module IN ('$modules') GROUP BY pro_attendance.module order by pro_attendance.module*1 ";
-		//echo $sql1;
+		
+
+		$sql1="SELECT * FROM $bai_pro.pro_attendance where  date='$date' AND shift='$shift' AND module IN ('$modules')  order by pro_attendance.module*1 ";
+		//echo $sql2;
 		echo "
 		<table border=1 class='table table-bordered' id='dynamic_field'>
 			<tr class='info' id='header'>
@@ -259,26 +311,38 @@ if(isset($_POST['submit']))
 				<th style='text-align:center;'>Working Hours(min)</th>
 				<th style='text-align:center;'>Adjustment(min)</th>
 				<th style='text-align:center;'>Adjustment Hours</th><th></th>";
-				$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($sql_result1);
 				if($sql_num_check>0)
 				{
-					//echo "<th>Total</th>
 					echo"</tr>";
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
 						$atten_id=$sql_row1['atten_id'];
 						$date=$sql_row1['date'];
+						$shift=$sql_row1['shift'];
 						$avail_av=$sql_row1['present'];
 						$absent_ab=$sql_row1['absent'];
 						$jumper=$sql_row1['jumper'];
-						$adjustment_type=$sql_row1['adjustment_type'];
 						$break_hours=$sql_row1['break_hours'];
-						$adjustment_smo=$sql_row1['smo'];
-						$working_hours_min=$sql_row1['smo_minutes'];
-						$adjustment_min=$sql_row1['smo_adjustment_min'];
-						$adjustment_hours=$sql_row1['smo_adjustment_hours'];
-						$module=$sql_row1['module_name'];
+						$module=$sql_row1['module'];
+
+							$sql3="SELECT * FROM $bai_pro.pro_attendance_adjustment where id in(SELECT MIN(id) FROM $bai_pro.pro_attendance_adjustment WHERE module='$module' AND shift='$shift' AND DATE='$date' ) order by module*1 ";
+							//echo $sql3;
+							$sql_result2=mysqli_query($link, $sql3) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row2=mysqli_fetch_array($sql_result2))
+					         {
+								$adjustment_type=$sql_row2['adjustment_type'];
+								$adjustment_smo=$sql_row2['smo'];
+								$working_hours_min=$sql_row2['smo_minutes'];
+								$adjustment_min=$sql_row2['smo_adjustment_min'];
+								$adjustment_hours=$sql_row2['smo_adjustment_hours'];
+
+							 }
+							
+
+	
+						
 						$k=$modules_id_array[$module];
 						echo "<tr id='dynamic$k' class='dynamic-$k'>
 								<td>".$module."</td>"; 
@@ -562,22 +626,15 @@ $(document).ready(function(){
 							$(document).on('change','#adjustment_type'+rowId1,function(){
 							var type= $(this).val();
 							if(type=='Positive'){
-								var adjustmentsmo = $('#adjustment_smo'+rowId1).val().replace('-', '');
-								var working_hours_min = $('#working_hours_min'+rowId1).val().replace('-', '');
 								var adjustment_min = $('#adjustment_min'+rowId1).val().replace('-', '');
 								var adjustment_hours = $('#adjustment_hours'+rowId1).val().replace('-', '');
-								$('#adjustment_smo'+rowId1).val('+'+adjustmentsmo);
-								$('#working_hours_min'+rowId1).val('+'+working_hours_min);
-								$('#adjustment_min'+rowId1).val('+'+adjustment_min);
-								$('#adjustment_hours'+rowId1).val('+'+adjustment_hours);
+								$('#adjustment_min'+rowId1).val(adjustment_min);
+								$('#adjustment_hours'+rowId1).val(adjustment_hours);
 							}
 							 if(type=='Negative'){
-								var adjustmentsmo1 = $('#adjustment_smo'+rowId1).val().replace('+', '');
-								var working_hours_min1 = $('#working_hours_min'+rowId1).val().replace('+', '');
-								var adjustment_min1 = $('#adjustment_min'+rowId1).val().replace('+', '');
-								var adjustment_hours1 = $('#adjustment_hours'+rowId1).val().replace('+', '');
-								$('#adjustment_smo'+rowId1).val('-'+adjustmentsmo1);
-								$('#working_hours_min'+rowId1).val('-'+working_hours_min1);
+								
+								var adjustment_min1 = $('#adjustment_min'+rowId1).val();
+								var adjustment_hours1 = $('#adjustment_hours'+rowId1).val();
 								$('#adjustment_min'+rowId1).val('-'+adjustment_min1);
 								$('#adjustment_hours'+rowId1).val('-'+adjustment_hours1);
 							}
@@ -587,21 +644,43 @@ $(document).ready(function(){
 							$('#adjustment_smo'+rowId1).on('change', function() {
 							var adjustment1= $('#adjustment_smo'+rowId1).val();
 							var work1= $('#working_hours_min'+rowId1).val();
+							var type= $('#adjustment_type'+rowId1).val();
 							//alert(adjustment1);
+							if(type=='Negative'){
+							var final_adjustment_min=Number(adjustment1)*Number(work1);
+							$('#adjustment_min'+rowId1).val('-'+final_adjustment_min);
+							var hours= $('#adjustment_min'+rowId1).val();
+							var final_hours=Number(hours/60).toFixed(2);
+							$('#adjustment_hours'+rowId1).val(final_hours);
+							}
+							if(type=='Positive'){
 							var final_adjustment_min=Number(adjustment1)*Number(work1);
 							$('#adjustment_min'+rowId1).val(final_adjustment_min);
 							var hours= $('#adjustment_min'+rowId1).val();
 							var final_hours=Number(hours/60).toFixed(2);
 							$('#adjustment_hours'+rowId1).val(final_hours);
+							}
+							
 						    });
 						    $('#working_hours_min'+rowId1).on('change', function() {
 							var adjustment1= $('#adjustment_smo'+rowId1).val();
 							var work1= $('#working_hours_min'+rowId1).val();
+							var type= $('#adjustment_type'+rowId1).val();
+							if(type=='Negative'){
+							var final_adjustment_min=Number(adjustment1)*Number(work1);
+							$('#adjustment_min'+rowId1).val('-'+final_adjustment_min);
+							var hours= $('#adjustment_min'+rowId1).val();
+							var final_hours=Number(hours/60).toFixed(2);
+							$('#adjustment_hours'+rowId1).val(final_hours);
+							}
+							if(type=='Positive'){
 							var final_adjustment_min=Number(adjustment1)*Number(work1);
 							$('#adjustment_min'+rowId1).val(final_adjustment_min);
 							var hours= $('#adjustment_min'+rowId1).val();
 							var final_hours=Number(hours/60).toFixed(2);
 							$('#adjustment_hours'+rowId1).val(final_hours);
+							}
+
 						     });	
 							$('#adjustment_smo'+rowId1).on('mouseenter', function() {
 							var adjustment_smo=$(this).val();
