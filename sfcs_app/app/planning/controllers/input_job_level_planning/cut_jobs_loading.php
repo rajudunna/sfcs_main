@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 
 //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -92,10 +93,23 @@ function thirdbox()
 	window.location.href =url3+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
 	// window.location.href ="cut_jobs_loading.php?style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
+
 function fourthbox()
 {
 	var url4 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
-	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&cutno="+document.test.cutno.value;
+	window.location.href =url4+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value;
+}
+
+function fifthbox()
+{
+	var url5 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
+	window.location.href =url5+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+}
+
+function sixthbox()
+{
+	var url6 = '<?= getFullUrl($_GET['r'],'cut_jobs_loading.php','N'); ?>';
+	window.location.href =url6+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value+"&cutno="+document.test.cutno.value;
 }
 
 $(document).ready(function() {
@@ -168,9 +182,11 @@ $(document).ready(function() {
 <?php 
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));?>
 <?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$get_style=$_GET['style']; 
+$get_schedule=$_GET['schedule'];  
+$get_color=$_GET['color']; 
+$get_mpo=$_GET['mpo']; 
+$get_sub_po=$_GET['sub_po']; 
 $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
@@ -183,233 +199,187 @@ $cutno=$_GET['cutno'];
 <form name="test" action="index.php?r=<?=  $_GET['r']; ?>" method="post">
 <?php
 
-/**/
-echo "Select Style: <select name=\"style\" class=\"form-control\" onchange=\"firstbox();\" id='style'>";
+	/*function to get style from getdata_mp_color_detail
+	@params : $plantcode
+	@returns: $style
+	*/
 
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_style_no from $bai_pro3.plan_doc_summ order by order_style_no";	
-	echo $sql;
-//}
-// mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-}
-
-}
-
-echo "</select>";
-
-?>
-
-<?php
-$sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" order by order_del_no*1";	
-echo "Select Schedule: <select name=\"schedule\" class=\"form-control\" onchange=\"secondbox();\" id='schedule'>";
-// mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-//For color Clubbing
-
-}
-
-
-echo "</select>";
-
-
-?>
-
-<?php
-
-$sql="select distinct order_col_des from $bai_pro3.plan_doc_summ where order_del_no=\"$schedule\" order by order_col_des";	
-echo "Select Color: <select name=\"color\" class=\"form-control\" onchange=\"thirdbox();\" id='color'>";
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-}
-//For color Clubbing
-
-}
-
-
-echo "</select>";
-
-?>
-
-<?php
-
-echo "Select CutNo: <select name=\"cutno\" class=\"form-control\" onchange=\"fourthbox();\" id='cutno'>";
-
-
-$sql="select distinct pcutno as pcutno from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" order by pcutno";	
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-echo "<option value=\"NIL\" selected>NIL</option>";
-if($color!='')
-{
-echo "<option value=\"All\" selected>All</option>";	
-}
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['pcutno'])==str_replace(" ","",$cutno))
-{
-	echo "<option value=\"".$sql_row['pcutno']."\" selected>".$sql_row['pcutno']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['pcutno']."\">".$sql_row['pcutno']."</option>";
-}
-
-}
-
-
-echo "</select>";
-?>
-
-<?php
-
-
-$code="";
-//$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and plan_module is NULL order by doc_no";
-//$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and (plan_module is NULL or a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
-
-//2014-01-11 $sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\" and doc_no not in (select doc_no from plan_dashboard) order by doc_no";
-
-$sql="select doc_no,color_code,acutno,act_cut_status,cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and doc_no not in (select doc_no from plan_dashboard) and (a_plies<>p_plies or act_cut_issue_status='') order by doc_no";
-//echo $sql;
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-//docketno-colorcode cutno-cut_status
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	//$code.=$sql_row['doc_no']."-".chr($sql_row['color_code']).leading_zeros($sql_row['acutno'],3)."-".$sql_row['act_cut_status']."*";
-	$cat_ref=$sql_row['cat_ref'];
-}
-
-$sql="select cat_ref from $bai_pro3.plan_doc_summ where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color' order by doc_no";
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-//docketno-colorcode cutno-cut_status
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$cat_ref=$sql_row['cat_ref'];
-}
-
-$sql12="select * from $bai_pro3.packing_summary_input where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des='$color'";
-$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check12=mysqli_num_rows($sql_result12);
-
-if($sql_num_check>0)
-{
-	if($sql_num_check12>0)
-	{	
-		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-		echo "Sewing Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-		echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
-		echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-		echo "<input type=\"submit\" value=\"Submit\" name=\"submit\" id='sub' disabled class='btn btn-success'>";
+	if($plantcode!=''){
+		$result_mp_color_details=getMpColorDetail($plantcode);
+		$style=$result_mp_color_details['style'];
 	}
-	else
-	{
-		echo "Cut Jobs Available  :&nbsp;&nbsp;"."<span class='label label-success'>YES</span>&nbsp;&nbsp;";
-		echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
+	echo "<div class='row'>"; 
+	echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
+	echo "<option value=\"\" selected>NIL</option>";
+	foreach ($style as $style_value) {
+		if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
+	    { 
+	        echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
+	    } 
+	    else 
+	    { 
+	        echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
+	    }
+	} 
+	echo "</select></div>";
+
+?>
+
+<?php
+/*function to get schedule from getdata_bulk_schedules
+@params : plantcode,style
+@returns: schedule
+*/
+	if($get_style!=''&& $plantcode!=''){
+		$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+		$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+	}  
+	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+	echo "<option value=\"\" selected>NIL</option>";
+	foreach ($bulk_schedule as $bulk_schedule_value) {
+		if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
+	    { 
+	        echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+	    } 
+	    else 
+	    { 
+	        echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
+	    }
+	} 
+	echo "</select></div>";
+
+
+?>
+
+<?php
+/*function to get color from get_bulk_colors
+@params : plantcode,schedule
+@returns: color
+*/
+if($get_schedule!='' && $plantcode!=''){
+		$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+		$bulk_color=$result_bulk_colors['color_bulk'];
 	}
-}
-else
-{
-	echo "Cut Jobs Available:"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
-	echo "Sewing Jobs Available :"."<span class='label label-danger'>No</span>&nbsp;&nbsp;";
-	/*echo "<input type=\"hidden\" name=\"code\" value=\"$code\">";
-	echo "<input type=\"hidden\" name=\"cat_ref\" value=\"$cat_ref\">";
-	echo "<input type=\"submit\" value=\"submit\" name=\"submit\">";*/
-}
+	echo "<div class='col-sm-3'><label>Select Color: </label>";  
+	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($bulk_color as $bulk_color_value) {
+					if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
+					{ 
+						echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+
+?>
+
+<?php
+	/*function to get mpo from getdata_MPOs
+	@params : plantcode,schedule,color
+	@returns: mpo
+	*/
+	if($get_schedule!='' && $get_color!='' && $plantcode!=''){
+		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+		$master_po_description=$result_bulk_MPO['master_po_description'];
+	}
+	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
+	echo "<select name=\"mpo\" onchange=\"fourthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($master_po_description as $key=>$master_po_description_val) {
+					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+?>
+
+<?php
+		/*function to get subpo from getdata_bulk_subPO
+		@params : plantcode,mpo
+		@returns: subpo
+		*/
+	if($get_mpo!='' && $plantcode!=''){
+		$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+		$sub_po_description=$result_bulk_subPO['sub_po_description'];
+	}
+	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
+	echo "<select name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($sub_po_description as $key=>$sub_po_description_val) {
+					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+?>
+
+<?php
+
+		/*function to get cutno from get_cut_details
+		@params : plantcode,subpo
+		@returns: cutno
+		*/
+	if($get_sub_po!='' && $plantcode!=''){
+		$result_cutno=getCutDetails($get_sub_po,$plantcode);
+		$cut_number=$result_cutno['cut_number'];
+	}
+	echo "<div class='col-sm-3'><label>Select Cut: </label>";  
+	echo "<select name=\"cutno\" onchange=\"sixthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($cut_number as $key=>$cut_no_val) {
+					if(str_replace(" ","",$cut_no_val)==str_replace(" ","",$cutno)) 
+					{ 
+						echo '<option value=\''.$cut_no_val.'\' selected>'.$cut_no_val.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$cut_no_val.'\'>'.$cut_no_val.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+?>
+
+<?php
+$tasktype='SEWING';
+	/*function to get Sewing Jobs Available from check_task_header_status
+	@params : plantcode,subpo,task type
+	@returns: Sewing Jobs Available status
+	*/
+	if($plantcode!='')
+    {
+    	$result_get_task_status=getJobsStatus($get_sub_po,$tasktype,$plantcode);
+        $status=$result_get_task_status['task_status'];
+    }
+    echo "</br><div class='col-sm-3'>"; 
+    if($status=='OPEN')
+    {
+      echo "Sewing Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
+      echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
+    }
+    else
+    {
+      echo "Sewing Jobs Available: <font color=RED size=5>No</font>"; 
+    }		
+	echo "</div>";
 
 ?>
 </div>
 
 </form>
-
-<?php
-
-$floor_set_schedule=array();
-$floor_set_order_tid=array();
-//$sql="select group_concat(order_del_no) as order_del_no from bai_orders_db where left(order_style_no,1)=\"".substr($style,0,1)."\" and order_col_des=\"$color\"  AND (order_s_xs=9 OR order_s_s=10)";
-//$sql="select group_concat(order_del_no) as order_del_no, group_concat(order_tid SEPARATOR \"','\") as order_tid from bai_orders_db where order_style_no=\"".$style."\" and order_col_des=\"$color\"  AND (order_s_xs=9 OR order_s_s=10) and order_del_no>0";
-
-$sql="select order_del_no, order_tid from $bai_pro3.bai_orders_db where order_style_no=\"".$style."\"  AND (order_s_xs=9 OR order_s_s=10 OR order_s_s=17 OR order_s_s14=3 OR order_s_s18=3) and order_del_no>0";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-$floor_set_count=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$floor_set_schedule[]=$sql_row['order_del_no'];
-	$floor_set_order_tid[]=$sql_row['order_tid'];
-}
-
-
-if($floor_set_count>0)
-{
-	$display="";
-	
-	for($i=0;$i<sizeof($floor_set_schedule);$i++)
-	{
-		if($floor_set_schedule[$i]!=NULL)
-		{
-			$highlight="red";
-			//$sql="select doc_no from plandoc_stat_log where order_tid like \"%$floor_set_schedule%\" and plan_module>0";
-			$sql="select doc_no from $bai_pro3.plandoc_stat_log where order_tid='".$floor_set_order_tid[$i]."' and plan_module>0";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result)>0)
-			{
-				$highlight="green";
-			}
-			$display.="<font color=$highlight>".$floor_set_schedule[$i]."</font>";
-			
-		}
-	}
-	
-	echo "<h2>The following $display are Floor Sets, Please do plan accordingly.</h2>";
-}
-
-?>
 
 <?php
 if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
@@ -420,12 +390,14 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	//$module=$_POST['modules'];
 	$color=$_POST['color'];
 	$cutno=$_POST['cutno'];
+	$mpo=$_POST['mpo'];
+	$sub_po=$_POST['sub_po'];
 
 
 	$color=$_POST['color'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop_input_job.php?style=$style&schedule=$schedule&code=$code\"; }</script>";
 	// echo("<script>window.open('".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&code=$code');</script>");
-	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color';</script>";
+	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'drag_drop_input_job.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color&mpo=$mpo&sub_po=$sub_po';</script>";
 	// echo "<script>window.close ();</script>";
 	
 	}
