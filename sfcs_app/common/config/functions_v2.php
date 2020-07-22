@@ -575,8 +575,12 @@ function getJobsStatus($sub_po,$type,$plantcode){
 
 
 
-//function to get dockets from cut numbers
-function getDocketDetails($sub_po,$plantcode){
+/**
+ * function to get dockets
+ * @param:po_number,plantcode,docket_type(norma-0,Binding-1)
+ * @return:docket_number
+ */
+function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $link_new;
     global $pps; 
     $docs=array();
@@ -591,8 +595,8 @@ function getDocketDetails($sub_po,$plantcode){
         }
      }
      //qry to get dockets using cut_job_id
-    $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id='$cut_job_id' AND plant_code='$plantcode' order by docket_number ASC";
-    $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at jm_dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id='$cut_job_id' AND is_binding='$docket_type' AND plant_code='$plantcode' order by docket_number ASC";
+    $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
     while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
@@ -819,6 +823,52 @@ function fn_savings_per_cal($doc_no,$plant_code){
 
 
 }
+
+/**Function to get po description from mp sub order
+@params:sub_po,plantcode
+@returns:cut numbers 
+*/
+function getPoDetaials($po_number){
+    global $link_new;
+    global $pps;
+    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number'";
+    $ResultPoDetails=mysqli_query($link_new, $QryPODetails) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $PoDetails_num=mysqli_num_rows($ResultPoDetails);
+    if($PoDetails_num>0){
+        while($PoDetails_row=mysqli_fetch_array($ResultPoDetails))
+        {
+            $po_description=$PoDetails_row['po_description'];
+        }
+    }
+
+    return array(
+        'po_description' => $po_description
+    );
+}
+
+/**
+ * Function to get cut number wrt cutjobid
+ * @param:jm_cut_job_id
+ * @return:cut_number
+*/
+function getCutNumber($jm_cut_job_id){
+    global $link_new;
+    global $pps;
+    $QryCutNumbers="SELECT cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id'";
+    $ResultCutNumbers=mysqli_query($link_new, $QryCutNumbers) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $CutNumbers_num=mysqli_num_rows($ResultCutNumbers);
+    if($CutNumbers_num>0){
+        while($CutNumbers_row=mysqli_fetch_array($ResultCutNumbers))
+        {
+            $cut_number=$CutNumbers_row['cut_number'];
+        }
+    }
+
+    return array(
+        'cut_number' => $cut_number
+    );
+}
+
 
 
 ?>
