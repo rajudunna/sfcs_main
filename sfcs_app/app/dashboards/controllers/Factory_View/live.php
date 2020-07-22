@@ -5,6 +5,7 @@ include ("../../../../common/config/functions.php");
 //$sec_x=$_GET['sec_x'];
 $date=date("Y-m-d");
 $plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 if(isset($_GET['sec_x']))
 {
 	$sections_db=array($_GET['sec_x']);
@@ -14,7 +15,7 @@ $team_array=implode(",",$shifts_array);
 $team = "'".str_replace(",","','",$team_array)."'"; 	
 
 $work_hrs=0;
-$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
 // echo $sql_hr."<br>";
 $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 if(mysqli_num_rows($sql_result_hr) >0)
@@ -47,7 +48,7 @@ if($current_date==$date)
 	$hour_dur=0;
 	for($i=0;$i<sizeof($teams);$i++)
 	{
-		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
 		// echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($sql_result_hr) >0)
@@ -68,7 +69,7 @@ if($current_date==$date)
 		}
 		else
 		{
-			$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+			$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
 			// echo $sql_hr."<br>";
 			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			// $hour_dur=$hour_dur+0;

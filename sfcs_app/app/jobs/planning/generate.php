@@ -6,6 +6,8 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $start_timestamp = microtime(true);
 error_reporting(0);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <?php
@@ -178,7 +180,7 @@ if(mysqli_num_rows($sql_result1))
 		$plan_sah=$sql_row['plan_sah'];	
 		$plan_eff_ex=0;
 		$ref_code=$date."-".$mod_no."-".$shift;
-		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."'";
+		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."'";
 		// echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($sql_result_hr) >0)

@@ -127,7 +127,7 @@ elseif(isset($_GET['shift']))
 }
 
 $date_check=date("Y-m-d");
-$sql1="select * from $bai_pro.pro_atten_hours where date='".$date_check."' and shift in ('".$shifts."') order by start_time";
+$sql1="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='".$date_check."' and shift in ('".$shifts."') order by start_time";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result1)>0)
 {
@@ -163,7 +163,7 @@ while($sql_row11=mysqli_fetch_array($sql_result11))
 	$plan_out=$sql_row11['pro'];
 }
 $balance_out=($plan_out-$act_out)>0?($plan_out-$act_out):0;
-$sql114="select (SUM(present+jumper)-SUM(absent)) as atten from $bai_pro.pro_attendance where module='$module' and date='".$date_check."' and  shift in ('".$shifts."')";
+$sql114="select (SUM(present+jumper)-SUM(absent)) as atten from $pts.pro_attendance where plant_code='$plantcode' and module='$module' and date='".$date_check."' and  shift in ('".$shifts."')";
 $sql_result114=mysqli_query($link, $sql114) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row114=mysqli_fetch_array($sql_result114))
 {

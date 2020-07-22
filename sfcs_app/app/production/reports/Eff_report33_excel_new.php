@@ -1,5 +1,6 @@
 <?php 
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $sql="select GROUP_CONCAT(DISTINCT sec_name) as unit_members from $bai_pro3.sections_master order by sec_id"; 
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -110,7 +111,7 @@ $absent_B=$absent_B+$sql_row2['absent_B'];
 $absent_B_clk=$sql_row2['absent_B'];
 } */
 
-$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowA=mysqli_fetch_array($sql_resultA))
 				{
@@ -125,7 +126,7 @@ $sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" fro
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
 				{

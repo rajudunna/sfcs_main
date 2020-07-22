@@ -77,7 +77,7 @@ if($log_time==0 or $time_diff>1)
 			$date=date("Y-m-d");
 			// $date="2018-09-17";
 			$work_hrs=0;
-			$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+			$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
 			// echo $sql_hr."<br>";
 			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if(mysqli_num_rows($sql_result_hr) >0)
@@ -112,7 +112,7 @@ if($log_time==0 or $time_diff>1)
 				$hour_dur=0;
 				for($i=0;$i<sizeof($teams);$i++)
 				{
-					$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+					$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
 					// echo $sql_hr."<br>";
 					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					if(mysqli_num_rows($sql_result_hr) >0)
@@ -375,7 +375,7 @@ if($log_time==0 or $time_diff>1)
 							}
 
 							$work_hrs=0;
-                            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+                            $sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
                             // echo $sql_hr."<br>";
                             $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                             if(mysqli_num_rows($sql_result_hr) >0)
@@ -396,7 +396,7 @@ if($log_time==0 or $time_diff>1)
 							$current_hr=date('H');
 							if($current_date==$date)
                             {
-								$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
+								$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
 								// echo $sql_hr."<br>";
 								$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 								if(mysqli_num_rows($sql_result_hr) >0)
@@ -416,7 +416,7 @@ if($log_time==0 or $time_diff>1)
 								}
 								else
 								{
-									$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and $current_hr > end_time";
+									$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and $current_hr > end_time";
 									// echo $sql_hr."<br>";
 									$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 									// $hour_dur=$hour_dur+0;
@@ -498,7 +498,7 @@ if($log_time==0 or $time_diff>1)
 							
 							//New 2013-07-27 for actula clock hours calculation
 							$act_nop=0;
-							$sql2="select ((present+jumper)-absent) AS nop FROM $bai_pro.pro_attendance WHERE DATE='$date' AND module=$module and shift='".$shift."' ";
+							$sql2="select ((present+jumper)-absent) AS nop FROM $pts.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND module=$module and shift='".$shift."' ";
 							$note.=date("His").$sql2."<br/>";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))

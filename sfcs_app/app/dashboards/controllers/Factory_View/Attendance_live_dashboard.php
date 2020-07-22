@@ -1,4 +1,6 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 set_time_limit(2000);
 include("../../../../common/config/config.php");
 $sec_x=$_GET['sec_x'];
@@ -365,7 +367,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{
     $module=$mods[$x];
     $id_new="green";
-    $sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $bai_pro.pro_attendance where module=$module and date='".$date."'";
+    $sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $pts.pro_attendance where plant_code='$plantcode' and module=$module and date='".$date."'";
     // echo $sql2;
     $sql_result2=mysqli_query($link, $sql2) or exit("Error While getting Attendance Details");
     while($sql_row2=mysqli_fetch_array($sql_result2))

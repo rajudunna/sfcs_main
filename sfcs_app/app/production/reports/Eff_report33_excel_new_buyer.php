@@ -105,7 +105,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		//echo $nop."<br>";
 		$grand_total_nop_x=$grand_total_nop_x+$nop;
 
-		$sqlA="select sum(present+jumper) as avail_A,sum(absent) as absent_A from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+		$sqlA="select sum(present+jumper) as avail_A,sum(absent) as absent_A from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 		$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowA=mysqli_fetch_array($sql_resultA))
 		{
@@ -115,7 +115,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			$absent_A_clk=$sql_rowA['absent_A'];
 		}
 
-		$sqlB="select sum(present+jumper) as avail_B,sum(absent) as absent_B from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+		$sqlB="select sum(present+jumper) as avail_B,sum(absent) as absent_B from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 		$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowB=mysqli_fetch_array($sql_resultB))
 		{
