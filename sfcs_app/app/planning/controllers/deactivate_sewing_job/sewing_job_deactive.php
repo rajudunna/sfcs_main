@@ -2,6 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 $mail_status=0;
 $username = getrbac_user()['uname'];
@@ -72,7 +74,7 @@ if(isset($_POST['submit']) || $module)
 		{
 		  $operation_codes[]=$ops_row['operation_code'];
 		}
-		$get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $tms.rejection_log_child where assigned_module='$module'";
+		$get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $tms.rejection_log_child where assigned_module='$module' and plant_code='$plant_code'";
 		$recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($recut_row=mysqli_fetch_array($recut_result))
 		{
@@ -93,7 +95,7 @@ if(isset($_POST['submit']) || $module)
 			$recut_job_val[$input_jobs_rand[$k]]='Rejection';
 		  }
 		}  
-		$get_module_data = "SELECT * FROM $pms.`ims_log` where ims_mod_no = '$module' and ims_status<>'DONE' GROUP BY input_job_rand_no_ref UNION ALL SELECT * FROM $pms.`ims_log_backup` where ims_mod_no = '$module' and ims_status<>'DONE' GROUP BY input_job_rand_no_ref ORDER BY input_job_rand_no_ref,ims_date ";
+		$get_module_data = "SELECT * FROM $pms.`ims_log` where ims_mod_no = '$module' and ims_status<>'DONE' and plant_code='$plant_code' GROUP BY input_job_rand_no_ref UNION ALL SELECT * FROM $pms.`ims_log_backup` where ims_mod_no = '$module' and plant_code='$plant_code' and ims_status<>'DONE' GROUP BY input_job_rand_no_ref ORDER BY input_job_rand_no_ref,ims_date ";
         $get_module_data_result=mysqli_query($link, $get_module_data) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $norows = mysqli_num_rows($get_module_data_result);
 
@@ -150,7 +152,7 @@ if(isset($_POST['submit']) || $module)
                     $wip=$input_qty-$output_qty;
                 }
                             
-                $qry="select prefix from $pms.tbl_sewing_job_prefix where prefix_name='$ims_remarks'";
+                $qry="select prefix from $pms.tbl_sewing_job_prefix where prefix_name='$ims_remarks' and plant_code='$plant_code'";
                 $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($sql_row123=mysqli_fetch_array($res))
                 {
@@ -183,7 +185,7 @@ if(isset($_POST['submit']) || $module)
                     
                 }
 
-                $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+                $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                 $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row=mysqli_fetch_array($job_deacive_result))
                 {
@@ -281,7 +283,7 @@ if(isset($_POST['submit']) || $module)
 					}
                     echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$job_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>Rejection</td>";
 
-                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                     // echo $job_deacive;
 					$job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row=mysqli_fetch_array($job_deacive_result))
