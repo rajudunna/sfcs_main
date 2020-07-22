@@ -95,6 +95,8 @@ if(isset($_POST['submit']))
 	$filter_n='';
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	//echo sizeof($check_box)."<br>";
 	//echo $_POST['sdate']."--".$_POST['edate']."--".$check_box[0]."--".$check_box[1]."--".$check_box[2]."<br>";
 	if(empty($check_box)) {
