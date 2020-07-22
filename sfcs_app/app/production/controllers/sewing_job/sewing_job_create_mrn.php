@@ -86,6 +86,8 @@
 				?>
 				Style:
 				<?php
+					$plant_code = $_SESSION['plantCode'];
+					$username = $_SESSION['userName'];
 					// Style
 					echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" >";
 					$sql="SELECT * FROM $bai_pro3.`packing_summary_input` GROUP BY order_style_no ORDER BY order_style_no";
@@ -193,7 +195,7 @@
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
 
-								$sql88="select type_of_sewing,prefix,bg_color from $pms.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']."";
+								$sql88="select type_of_sewing,prefix,bg_color from $pms.tbl_sewing_job_prefix where type_of_sewing=".$sql_row['type_of_sewing']." AND plant_code='$plant_code'";
 								$sql_result88=mysqli_query($link, $sql88) or exit("Sql Error44b $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
 									while($sql_row88=mysqli_fetch_array($sql_result88))
 									{
@@ -250,13 +252,13 @@
 									$sql_result50=mysqli_query($link, $mo_operation_quantites_query1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 									$mo_operation_count=mysqli_num_rows($sql_result50);
 									if($mo_operation_count>0){
-										$sql98="SELECT input_job_rand_no_ref FROM $pms.ims_log_backup WHERE input_job_rand_no_ref='".$sql_row['input_job_no_random']."'";
+										$sql98="SELECT input_job_rand_no_ref FROM $pms.ims_log_backup WHERE input_job_rand_no_ref='".$sql_row['input_job_no_random']."' AND plant_code='$plant_code'";
 										$sql_result011=mysqli_query($link, $sql98) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$ims_log_backup_count=mysqli_num_rows($sql_result011);
-										$sql66="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."'";
+										$sql66="SELECT input_job_no_random_ref FROM $pms.plan_dashboard_input WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' AND plant_code='$plant_code'";
 										$sql_result012=mysqli_query($link, $sql66) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check_count=mysqli_num_rows($sql_result012);
-										$sql58="SELECT input_job_no_random_ref FROM $bai_pro3.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' limit 1";
+										$sql58="SELECT input_job_no_random_ref FROM $pms.plan_dashboard_input_backup WHERE input_job_no_random_ref='".$sql_row['input_job_no_random']."' AND plant_code='$plant_code' limit 1";
 										$sql_result58=mysqli_query($link, $sql58) or exit("Sql Error58".mysqli_error($GLOBALS["___mysqli_ston"]));
 										$sql_num_check_count_new=mysqli_num_rows($sql_result58);
 									
@@ -304,7 +306,7 @@
 					{
 						$co_no=$sql_row14['co_no'];
 					}
-					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql76="SELECT input_module,log_time  FROM $pms.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno' AND plant_code='$plant_code'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result76)>0)
 					{
@@ -316,7 +318,7 @@
 					}
 					else
 					{
-						$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno'";
+						$sql76="SELECT input_module,log_time  FROM $pms.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno' AND plant_code='$plant_code'";
 						$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row76=mysqli_fetch_array($sql_result76))
 						{
@@ -448,7 +450,7 @@
 					{
 						$co_no=$sql_row14['co_no'];
 					}
-					$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno'";
+					$sql76="SELECT input_module,log_time  FROM $pms.plan_dashboard_input WHERE  input_job_no_random_ref='$inputjobno' AND plant_code='$plant_code'";
 					$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result76)>0)
 					{
@@ -460,7 +462,7 @@
 					}
 					else
 					{
-						$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno'";
+						$sql76="SELECT input_module,log_time  FROM $pms.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$inputjobno' AND plant_code='$plant_code'";
 						$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error01".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row76=mysqli_fetch_array($sql_result76))
 						{
