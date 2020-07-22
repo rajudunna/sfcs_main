@@ -11,7 +11,7 @@
 	$list=$_POST['listOfItems'];
 	
 	/** Function to send */
-	$planned_response=getPlanDocketJobs($list,$jobtype);
+	$planned_response=updatePlanDocketJobs($list,$jobtype);
 	if($planned_response==1){
 		 $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/EMS_Dashboard/embellishment_dashboard_send_operation.php',3,'N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";

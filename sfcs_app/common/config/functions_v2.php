@@ -233,11 +233,11 @@ function getSizeRatios($ratio_id,$plant_code){
     @params:material_item_code,plant_code
     @returns:lots
 */
-function getStickerData($material_item_code,$style){
+function getStickerData($material_item_code,$style,$plantcode){
     global $link_new;
     global $bai_rm_pj1;
     $lotnos=array();
-    $qry_sticker_report="SELECT lot_no FROM $bai_rm_pj1.`sticker_report` WHERE item='$material_item_code' AND style_no='$style'";
+    $qry_sticker_report="SELECT lot_no FROM $bai_rm_pj1.`sticker_report` WHERE item='$material_item_code' AND plant_code='$plantcode' AND style_no='$style'";
     $sql_lotresult=mysqli_query($link_new, $qry_sticker_report) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sticker_report_num=mysqli_num_rows($sql_lotresult);
         if($sticker_report_num>0){
@@ -480,14 +480,14 @@ function getMpos($get_schedule,$get_color,$plantcode){
 */
 function getFnSavings($doc_no,$plant_code){
     /*By using doc number ratio component group id*/
-    if($doc_no!='' && $$plant_code!=''){
-        $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
+    if($doc_no!='' && $plant_code!=''){
+        $result_getdata_jm_dockets=getJmDockets($doc_no,$plant_code);
         $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
     }
     
     if($ratio_comp_group_id!='' && $plant_code!=''){
         /*By using ratio component group id fabric saving value*/
-        $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+        $result_getdata_ratio_component_group=getRatioComponentGroup($ratio_comp_group_id,$plant_code);
         $savings=$result_getdata_ratio_component_group['fabric_saving'];
     }
 
@@ -607,11 +607,11 @@ function getDocketDetails($sub_po,$plantcode){
   }
 
 
-  /**Function to update planned cut/Emb jobs 
-   * 
-
-   */
-  function getPlanDocketJobs($list,$jobtype){
+  /** Function to update jobs using workstations
+   * @param:inputjobs and work stations
+   * @return:true/false
+   * */
+  function updatePlanDocketJobs($list,$jobtype){
     global $link_new;
     global $pps;
     global $tms;
