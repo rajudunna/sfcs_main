@@ -1,6 +1,7 @@
 
 <?php
 $start_timestamp = microtime(true);
+$plantcode=$_SESSION['plantCode'];
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
 
@@ -381,7 +382,7 @@ if(sizeof($sch_to_process)>0)
 		
 		//Recut
 		
-		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from $bai_pro3.recut_v2_summary where order_tid=\"$ssc_code\"";
+		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from $pps.recut_v2_summary where plant_code='$plantcode' and order_tid=\"$ssc_code\"";
         //echo $sql1."<br/>";
         // echo $sqlx1."<br>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));

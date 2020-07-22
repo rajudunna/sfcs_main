@@ -4,6 +4,7 @@
 
 error_reporting(0);
 $schedules_to_update=array();
+$plantcode=$_SESSION['plantCode'];
 if($rowcount>0){
 	$sql="select distinct delivery from $bai_pro.bai_log_buf where bac_date between \"$start_date_w\" and \"$end_date_w\" and delivery not in (".implode(",",$schedule_db).")";
 	//$sql="select distinct delivery from bai_pro.bai_log_buf where delivery not in (".implode(",",$schedule_db).")";
@@ -220,7 +221,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 		//Recut
 		
-		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from $bai_pro3.recut_v2_summary where order_tid=\"$ssc_code\"";
+		$sqlx1="select SUM(IF(act_cut_status=\"DONE\",actual_cut_qty,0)) AS \"cut_total\" from $pps.recut_v2_summary where  plant_code='$plantcode' and order_tid=\"$ssc_code\"";
 		//echo $sql1."<br/>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))

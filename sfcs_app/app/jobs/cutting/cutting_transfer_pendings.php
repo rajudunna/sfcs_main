@@ -214,6 +214,8 @@ $(document).ready(function() {
 <div class="panel-body">
 
 <?php 
+   $plantcode=$_SESSION['plantCode'];
+   
     echo "<h3><span class='label label-primary'>LU:".date("Y-m-d H-i-s")."</span></h3>"; 
     echo "<div class='table-responsive'><table class='table table-bordered'>"; 
     echo "<tr> 
@@ -429,7 +431,7 @@ $(document).ready(function() {
         $qty=$act_cut_new_db[array_search($size,$sizes_db)]-$order_qtys[array_search($size,$sizes_db)]; 
         //echo $qty."<br/>"; 
      
-        $sql1="select doc_no from $bai_pro3.recut_v2_summary where order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
+        $sql1="select doc_no from $pps.recut_v2_summary where where plant_code='$plantcode' and order_tid in (select order_tid from $bai_pro3.bai_orders_db_confirm where order_style_no=\"".$style."\" and order_del_no=\"".$schedule."\" and order_col_des=\"".$color."\") and date>\"2011-10-26\""; 
     //echo $sql1."<br/>"; 
         $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_row1=mysqli_fetch_array($sql_result1)) 

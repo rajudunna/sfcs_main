@@ -6,6 +6,7 @@
 $schedules_to_update=array();
 
 $schedules_to_update=array_diff($sch_to_process,$schedule_db);
+$plantcode=$_SESSION['plantCode'];
 
 if(sizeof($schedules_to_update)>0){
 
@@ -200,7 +201,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		
 		//Recut
 		
-		$sqlx1="select IF(act_cut_status=\"DONE\",actual_cut_qty,0) AS \"cut_total\" from $bai_pro3.recut_v2_summary where 
+		$sqlx1="select IF(act_cut_status=\"DONE\",actual_cut_qty,0) AS \"cut_total\" from $pps.recut_v2_summary where  plant_code='$plantcode' and 
 		doc_no in ('$search_string') and order_tid=\"$ssc_code\"";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))

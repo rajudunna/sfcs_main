@@ -16,6 +16,8 @@ error_reporting(0);
 
 <?php
 $start_date_w=time();
+$plantcode=$_SESSION['plantCode'];
+
 
 while((date("N",$start_date_w))!=1) {
 $start_date_w=$start_date_w-(60*60*24); // define monday
@@ -346,7 +348,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 		
 		//Recut
 		
-		$sqlx1="select IF(act_cut_status=\"DONE\",actual_cut_qty,0) AS \"cut_total\" from bai_pro3.recut_v2_summary where doc_no in ('$search_string') and order_tid=\"$ssc_code\"";
+		$sqlx1="select IF(act_cut_status=\"DONE\",actual_cut_qty,0) AS \"cut_total\" from $pps.recut_v2_summary where plant_code='$plantcode' and  doc_no in ('$search_string') and order_tid=\"$ssc_code\"";
 		//echo $sql1."<br/>";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))

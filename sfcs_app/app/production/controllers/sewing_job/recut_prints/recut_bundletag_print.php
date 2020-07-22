@@ -62,6 +62,7 @@ span{
 </form>
 
 <?php
+$plantcode=$_SESSION['plantCode'];
 
 
 if(isset($_POST['submit']))
@@ -78,7 +79,7 @@ if(isset($_POST['submit']))
 {
 	$recut=$_POST['recut'];
 	$check_status=1;
-    $sql_query="select recut_id,status from $bai_pro3.recut_v2_child_issue_track where recut_id=\"".$recut."\" group by recut_id,status order by status";
+    $sql_query="select recut_id,status from $pps.recut_v2_child_issue_track where  where plant_code='$plantcode' and recut_id=\"".$recut."\" group by recut_id,status order by status";
     $sql_query_result=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$num_rows=mysqli_num_rows($sql_query_result);
 	if($num_rows !='0')

@@ -156,6 +156,8 @@ $(document).ready(function() {
 	</div>
 	<div class='panel-body'>
 		<?php
+			$plantcode=$_SESSION['plantCode'];
+
 			if(isset($_GET['style']))
 			{
 				$order_qtys=array();
@@ -368,7 +370,7 @@ $(document).ready(function() {
 				coalesce(sum(p_s40),0) as \"p_s40\",coalesce(sum(p_s41),0) as \"p_s41\",coalesce(sum(p_s42),0) as \"p_s42\",coalesce(sum(p_s43),0) as \"p_s43\",
 				coalesce(sum(p_s44),0) as \"p_s44\",coalesce(sum(p_s45),0) as \"p_s45\",coalesce(sum(p_s46),0) as \"p_s46\",coalesce(sum(p_s47),0) as \"p_s47\",
 				coalesce(sum(p_s48),0) as \"p_s48\",coalesce(sum(p_s49),0) as \"p_s49\",coalesce(sum(p_s50),0) as \"p_s50\" 
-				from $bai_pro3.recut_v2_summary where order_tid=\"$order_tid\"";
+				from $pps.recut_v2_summary where  plant_code='$plantcode' and order_tid=\"$order_tid\"";
 				//echo $sql1;
 
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
