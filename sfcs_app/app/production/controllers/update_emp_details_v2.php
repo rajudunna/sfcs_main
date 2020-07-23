@@ -164,6 +164,7 @@ $username=strtolower($username_list[1]);
 						<option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
 						<?php 
 										}
+										
 						?>
 					</select>
 				</div>
@@ -432,6 +433,35 @@ if(isset($_POST['submit']))
 <script>  
 $(document).ready(function(){  
 
+   $('#team').on('change',function(){ 
+	var date=$('#demo1').val();
+	var shift = $('#team option:selected').text();
+	var params =[shift,date];
+
+	$.ajax
+			  ({
+					type: "POST",
+
+					url:"<?= getFullURLLevel($_GET['r'],'emp_attendance_repeated.php',0,'R'); ?>?r=gettimedate&params="+params,
+					data: {},
+				
+						success: function(response)
+					{	
+						
+						var data = jQuery.parseJSON(response);
+						if(response.length >0)
+						{
+						var starttime = data[0]["start_time"];
+						var endtime = data[0]["end_time"];
+						$("#shift_start").val(starttime);
+						$("#shift_end").val(endtime);
+						}
+
+                         
+					}
+			  });
+
+   });
 		var date1=$('#demo1').val();
 		var team = $('#team option:selected').text();
 		var params1 =[date1,team];
