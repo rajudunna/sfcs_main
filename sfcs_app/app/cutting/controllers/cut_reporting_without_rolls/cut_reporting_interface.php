@@ -73,7 +73,7 @@ while($row = mysqli_fetch_array($team_leaders_result)){
 }
 
 
-$location_query="SELECT * FROM $bai_pro3.locations";
+$location_query="SELECT * FROM $mdm.locations";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
 while($row = mysqli_fetch_array($location_result))
 {

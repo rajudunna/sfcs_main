@@ -150,7 +150,7 @@ function hasviewpermission($r)
     $user = getrbac_user()['uname'];
     GLOBAL $link_ui;
     $r = base64_decode($r);
-    $r = "/".trim($r, "/");
+    // $r = "/".trim($r, "/");
 
     $query = "SELECT * FROM rbac_role_menu LEFT JOIN tbl_menu_list ON rbac_role_menu.menu_pid=tbl_menu_list.menu_pid LEFT JOIN rbac_users ON rbac_role_menu.roll_id = rbac_users.role_id WHERE rbac_users.user_name='".$user."' AND tbl_menu_list.link_location='".$r."'";
 
@@ -217,7 +217,7 @@ function haspermission($r){
 function getrbac_user(){
     $username_list=explode('\\',$_SERVER['REMOTE_USER']);
     $user['uname']=strtolower($username_list[1]);
-    $user['uname'] = 'sfcsproject1';
+     $user['uname'] = 'sfcsproject1';
     GLOBAL $link_ui;
     if($link_ui){
     $query = "SELECT rbac_roles.role_name,rbac_roles.role_id FROM rbac_users LEFT JOIN rbac_roles ON rbac_users.role_id = rbac_roles.role_id WHERE rbac_users.user_name='".$user['uname']."'";

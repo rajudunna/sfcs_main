@@ -17,6 +17,8 @@
 
 <body>
 <?php 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
     if(isset($_GET['tid'])){
         $jj='readonly';
         //echo "Row id".$_REQUEST['rowid'];
