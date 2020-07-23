@@ -2642,7 +2642,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	 		//getting rejection reasons from mdm with category filter as inspection
-			  $reject_reason_query = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
+			  $reject_reason_query = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and plant_code='".$plant_code."'";
 			  $reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// while($row1=mysqli_fetch_array($reject_reasons))
