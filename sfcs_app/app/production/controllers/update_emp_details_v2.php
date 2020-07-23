@@ -14,10 +14,10 @@
 <script language="javascript" type="text/javascript" src="datetimepicker_css.js"></script>
 <script>
 function working_hours(id){
-var rowId = (id.split('working_hours_min-')[1] );
-var rowId1 = (id.split('adjustment_smo-')[1] );
-var rowId3 = (id.split('adjustment_smo-')[1] );
-var rowId4 = (id.split('working_hours_min-')[1] );
+		var rowId = (id.split('working_hours_min-')[1] );
+		var rowId1 = (id.split('adjustment_smo-')[1] );
+		var rowId3 = (id.split('adjustment_smo-')[1] );
+		var rowId4 = (id.split('working_hours_min-')[1] );
 
                        $('#working_hours_min-'+rowId).on('change', function() {
 						 
@@ -41,28 +41,7 @@ var rowId4 = (id.split('working_hours_min-')[1] );
 							
 							
 					    });
-					   $('#working_hours_min-'+rowId4).on('change', function() {
-						 
-						 var adjustment1= $('#adjustment_smo-'+rowId4).val();
-						// alert(adjustment1);
-						 var work1= $('#working_hours_min-'+rowId4).val();
-						 var type1= $('#adjustment_type-'+rowId4).val();
-							if(type1=='Negative'){
-						 var final_adjustment_min=Number(adjustment1)*Number(work1);
-						 $('#adjustment_min-'+rowId4).val('-'+final_adjustment_min);
-						 var hours= $('#adjustment_min-'+rowId4).val();
-						 var final_hours=Number(hours/60).toFixed(2);
-						 $('#adjustment_hours-'+rowId4).val(final_hours);
-							}
-							if(type1=='Positive'){
-						var final_adjustment_min=Number(adjustment1)*Number(work1);
-						 $('#adjustment_min-'+rowId4).val(final_adjustment_min);
-						 var hours= $('#adjustment_min-'+rowId4).val();
-						 var final_hours=Number(hours/60).toFixed(2);
-						 $('#adjustment_hours-'+rowId4).val(final_hours);
-
-							}
-				       });
+					
 					   $('#adjustment_smo-'+rowId1).on('change', function() {
 						var work1= $('#working_hours_min-'+rowId1).val();
 						 var adjustment1= $('#adjustment_smo-'+rowId1).val();
@@ -84,29 +63,10 @@ var rowId4 = (id.split('working_hours_min-')[1] );
 						 }
 						 
 				       });
-					   $('#adjustment_smo-'+rowId3).on('change', function() {
-						var work1= $('#working_hours_min-'+rowId3).val();
-						 var adjustment1= $('#adjustment_smo-'+rowId3).val();
-						 var type1= $('#adjustment_type-'+rowId3).val();
-						 if(type1=='Negative'){
-							var final_adjustment_min=Number(adjustment1)*Number(work1);
-						// alert(final_adjustment_min);
-						 $('#adjustment_min-'+rowId3).val('-'+final_adjustment_min);
-						 var hours= $('#adjustment_min-'+rowId3).val();
-						 var final_hours=Number(hours/60).toFixed(2);
-						 $('#adjustment_hours-'+rowId3).val(final_hours);
-						 }
-						 if(type1=='Positive'){
-						 var final_adjustment_min=Number(adjustment1)*Number(work1);
-						// alert(final_adjustment_min);
-						 $('#adjustment_min-'+rowId3).val(final_adjustment_min);
-						 var hours= $('#adjustment_min-'+rowId3).val();
-						 var final_hours=Number(hours/60).toFixed(2);
-						 $('#adjustment_hours-'+rowId3).val(final_hours);
-						 }
-				       });
+					
 	
 }
+
 </script>
 <script type="text/javascript">
 
@@ -138,27 +98,14 @@ function adjustment_type(id){
 			
 							var type= $(this).val();
 							if(type=='Positive'){
-								// var adjustmentsmo = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								// var working_hours_min = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
 								var adjustment_min = $('#adjustment_min-'+rowId1).val().replace(/[\-]+/, '');
 								var adjustment_hours = $('#adjustment_hours-'+rowId1).val().replace(/[\-]+/, '');
-
-				
-								// $('#adjustment_smo-'+rowId1).val('+'+adjustmentsmo);
-								// $('#working_hours_min-'+rowId1).val('+'+working_hours_min);
-
 								$('#adjustment_min-'+rowId1).val(adjustment_min);
-								$('#adjustment_hours-'+rowId1).val(adjustment_hours);
-								
-								
+								$('#adjustment_hours-'+rowId1).val(adjustment_hours);	
 							}
 							 if(type=='Negative'){
-								// var adjustmentsmo1 = $('#adjustment_smo-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								// var working_hours_min1 = $('#working_hours_min-'+rowId1).val().replace(/[^a-z0-9\s]/gi, '');
-								var adjustment_min1 = $('#adjustment_min-'+rowId1).val().replace(/[\-]+/, '');;
-								var adjustment_hours1 = $('#adjustment_hours-'+rowId1).val().replace(/[\-]+/, '');;
-								// $('#adjustment_smo-'+rowId1).val('-'+adjustmentsmo1);
-								// $('#working_hours_min-'+rowId1).val('-'+working_hours_min1);
+								var adjustment_min1 = $('#adjustment_min-'+rowId1).val().replace(/[\-]+/, '');
+								var adjustment_hours1 = $('#adjustment_hours-'+rowId1).val().replace(/[\-]+/, '');
 								$('#adjustment_min-'+rowId1).val('-'+adjustment_min1);
 								$('#adjustment_hours-'+rowId1).val('-'+adjustment_hours1);
 							}
@@ -166,7 +113,7 @@ function adjustment_type(id){
 							}); 
 }
 
-//}
+
 $(function(){
 	
 
@@ -268,6 +215,7 @@ $username=strtolower($username_list[1]);
 			<div class='col-md-2 col-sm-3 col-xs-12' style='margin-top: 18px;'>
 				<input type="submit" class="btn btn-primary" name="submit" onclick="return check_hrs();" value="Submit" id="filter"/> 
 			</div>
+			
 		</form>
 		<br>
 <?php	
@@ -299,7 +247,7 @@ if(isset($_POST['submit']))
 		
 
 		$sql1="SELECT * FROM $bai_pro.pro_attendance where  date='$date' AND shift='$shift' AND module IN ('$modules')  order by pro_attendance.module*1 ";
-		//echo $sql2;
+		
 		echo "
 		<table border=1 class='table table-bordered' id='dynamic_field'>
 			<tr class='info' id='header'>
@@ -476,7 +424,9 @@ if(isset($_POST['submit']))
 	}
 }
 ?>
-
+<div class="ajax-loader" id="loading-image" style="display: none">
+		<center><img src="<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',1,'R'); ?>" class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
 </body>
 </html>
 <script>  
@@ -485,6 +435,7 @@ $(document).ready(function(){
 		var date1=$('#demo1').val();
 		var team = $('#team option:selected').text();
 		var params1 =[date1,team];
+	
 	   
 
 			$.ajax
@@ -495,7 +446,6 @@ $(document).ready(function(){
 					data: {},
 						success: function(response)
 					{	
-					//console.log(response);
 						var data = jQuery.parseJSON(response);
 						var $data = jQuery.parseJSON(response);		
 						if(response.length >0)
@@ -516,9 +466,8 @@ $(document).ready(function(){
 									var select1='';
 								}
 
-								//$('#adjustment_type-'+data[i]['id']).val(data[i]['adjustment_type']);
 								
-								var add_row ='<tr id="row'+data[i]['id']+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['module']+'" id="adjustment_type-'+data[i]['id']+i+'" onchange="adjustment_type(this.id)"><option value="Positive" '+select+'>Positive</option><option value="Negative" '+select1+'>Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['id']+i+'" value='+data[i]['smo']+' onclick=" working_hours(this.id);"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['id']+i+'"  value='+data[i]['smo_minutes']+' onclick=" working_hours(this.id);"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
+								var add_row ='<tr id="row'+data[i]['id']+i+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['module']+'" id="adjustment_type-'+data[i]['id']+i+'" onchange="adjustment_type(this.id)"><option value="Positive" '+select+'>Positive</option><option value="Negative" '+select1+'>Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['id']+i+'" value='+data[i]['smo']+' onclick=" working_hours(this.id);"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['id']+i+'"  value='+data[i]['smo_minutes']+' onclick=" working_hours(this.id);"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+i+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus" ></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
 
 								$('#dynamic'+data[i]['id']).after(add_row);
 						
@@ -539,10 +488,9 @@ $(document).ready(function(){
 					
 					$('#add-'+i).click(function(){ 
 						j++;
-						// alert('#add-'+i); 
 						var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
 						var rowId = (this.id.split('add-')[1] );
-						$('#dynamic'+rowId).after('<tr id="row'+rowId+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+j+'" onchange="adjustment_type(this.id)"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+j+'" value="0" onclick="working_hours(this.id)"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+j+'" onclick="working_hours(this.id)" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+j+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+j+'" readonly></td><td><button type="button" name="remove" id="'+rowId+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
+						$('#dynamic'+rowId).after('<tr id="row'+rowId+j+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+j+'" onchange="adjustment_type(this.id)"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+j+'" value="0" onclick="working_hours(this.id)"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+j+'" onclick="working_hours(this.id)" value="0"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+j+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+j+'" readonly></td><td><button type="button" name="remove" id="'+rowId+j+'" class="btn btn-danger btn_remove" ><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
 
 						    $('#adjustment_smo-'+rowId+j).on('mouseenter', function() {
 							var adjustment_smo=$(this).val();
@@ -598,7 +546,6 @@ $(document).ready(function(){
 							}
 							}).get();
 							var postData = JSON.stringify(tbl);
-							//alert(postData);
 
                    var module1 = $(this).closest('tr').children('td:eq(0)').text();
 				 
@@ -618,7 +565,10 @@ $(document).ready(function(){
 							} 
 								
 					});  
-		
+
+			 $('#loading-image').show();
+             $('#submit').hide();	
+			 $('#dynamic_field').hide();		
       });  
 	  $('#dynamic_field tr').each(function() {
 							var button_id1 = $(this).attr("class"); 	
@@ -741,7 +691,9 @@ $(document).ready(function(){
                 
                 $('#submit').attr("disabled", true);
 				
-            });                
+            });  
+
+		           
  });  
 
 
