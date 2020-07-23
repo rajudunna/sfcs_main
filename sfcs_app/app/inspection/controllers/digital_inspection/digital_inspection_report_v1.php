@@ -312,6 +312,8 @@ if(isset($_GET['status'])>0){
 
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <div class="panel panel-primary" id="navbar">
@@ -358,7 +360,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST" name="form1" id="form1">
 					<?php
 						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
-						$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id";
+						$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
 						$k=0;
 						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 						if (mysqli_num_rows($sql_result) == 0) {
@@ -462,7 +464,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 					$exp = explode("$", $id);
 					$sno = $exp[0];
 					$lot_num[] = $exp[1];
-					$insertbinditems = "update $wms.inspection_population set status=1 where parent_id=$parent_id and sno=$sno";
+					$insertbinditems = "update $wms.inspection_population set status=1,updated_by= '".$username."' where parent_id=$parent_id and sno=$sno and plant_code='".$plant_code."'";
 					mysqli_query($link, $insertbinditems) or exit("Sql Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				$lot_array = implode(",", $lot_num);

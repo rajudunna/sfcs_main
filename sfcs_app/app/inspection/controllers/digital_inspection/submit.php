@@ -53,7 +53,7 @@ if(isset($_POST['data']))
 if (isset($_POST['getalldata'])) 
 {
     //getting rejection reasons from mdm with category filter as inspection
-    $get_reasons = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and internal_reason_code = '". $_POST['getalldata']."'";
+    $get_reasons = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and internal_reason_code = '". $_POST['getalldata']."' and plant_code='".$plant_code."'";
     $details_result = mysqli_query($link_new, $get_reasons) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $reject_desc = '';
     while ($row1 = mysqli_fetch_array($details_result)) {
@@ -81,10 +81,10 @@ if (isset($_POST['delete_id'])) {
    // $delete_roll = "delete from $wms.inspection_population where store_in_id = ' $store_id'";
    // $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    $delete_roll = "UPDATE $wms.inspection_population set status=0 where store_in_id = '$store_id'";
+    $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_by= '".$username."' where store_in_id = '$store_id' and plant_code='".$plant_code."'";
     $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = ' $store_id'";
+    $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = ' $store_id' and plant_code='".$plant_code."'";
     $details_result_sec = mysqli_query($link, $delete_roll_inspection) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
    
     $delete_four_points = "delete from $wms.four_points_table where insp_child_id = ' $store_id' and plant_code='".$plant_code."'";

@@ -3,6 +3,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R')); 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $Page_Id='SFCS_0054';
 ?>
 <style>
@@ -22,7 +24,7 @@ body{
 
 
 //$sql="select * from $pms.inspection_supplier_db where product_code=\"Fabric\"";
-$sql="SELECT * FROM $wms.sticker_report WHERE product_group='Fabric' GROUP BY supplier";
+$sql="SELECT * FROM $wms.sticker_report WHERE product_group='Fabric' and plant_code='".$plant_code."' GROUP BY supplier";
 $sql_result=mysqli_query($link, $sql) or exit("No Data Avaiable".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

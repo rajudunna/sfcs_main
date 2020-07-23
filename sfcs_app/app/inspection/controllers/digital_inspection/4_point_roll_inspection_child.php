@@ -153,7 +153,7 @@ if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
    echo "<input type='hidden' value= $store_id id='four_point_store_id'>";
 }
 $sno_points = $store_id;
-$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where store_in_tid=$store_id";
+$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where store_in_tid=$store_id and plant_code='".$plant_code."'";
 
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) {
@@ -175,7 +175,7 @@ while ($row22 = mysqli_fetch_array($info_result)) {
     $inspection_status = $row22['inspection_status'];
 }
 
-$get_details = "select * from $wms.`inspection_population` where store_in_id=$store_id";
+$get_details = "select * from $wms.`inspection_population` where store_in_id=$store_id and plant_code='".$plant_code."'";
 
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result)) {
@@ -204,7 +204,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
     }       
 }
 
-$get_details1 = "select * from $wms.`main_population_tbl` where id=$parent_id";
+$get_details1 = "select * from $wms.`main_population_tbl` where id=$parent_id and plant_code='".$plant_code."'";
 $details_result1 = mysqli_query($link, $get_details1) or exit("get_details Error--3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row111 = mysqli_fetch_array($details_result1)) 
 {
@@ -217,7 +217,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
     $remarks = $row111['remarks'];
 }
 
-$get_supplier_name = "select supplier from $wms.sticker_report where batch_no='$batch'";
+$get_supplier_name = "select supplier from $wms.sticker_report where batch_no='$batch' and plant_code='".$plant_code."'";
 $supplier_result = mysqli_query($link, $get_supplier_name) or exit("get_supplier_name Error--4" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($supplier_result))
 {
@@ -732,21 +732,21 @@ if (isset($_POST['confirm'])) {
         $count = count($code);
         $damage = $_POST['damage'];
         
-        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "' where id=".$parent_id."";
+        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "' where id=".$parent_id." and plant_code='".$plant_code."'";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $id_parent = $parent_id;
 
-        $check_store_tid = "select sno from $wms.roll_inspection_child where store_in_tid='" . $store_id . "'";
+        $check_store_tid = "select sno from $wms.roll_inspection_child where store_in_tid='" . $store_id . "' and plant_code='".$plant_code."'";
         $details_check_store_tid = mysqli_query($link, $check_store_tid) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         $row_sid = mysqli_num_rows($details_check_store_tid);
         $row_store_tid = mysqli_fetch_array($details_check_store_tid);
         if ($row_sid == 1) 
         {            
-            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '3' where store_in_tid='".$store_id."'";
+            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '3',updated_by= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
             $roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222');
             
-            $update_status = "update $wms.inspection_population SET status=3 where store_in_id='" . $store_id . "'";
+            $update_status = "update $wms.inspection_population SET status=3 where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating2221');
             
             $roll_id = $store_id;
@@ -775,7 +775,7 @@ if (isset($_POST['confirm'])) {
         }
         else 
         {
-            $insert_query = "insert into $wms.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','3','$store_id')";
+            $insert_query = "insert into $wms.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid,plant_code,created_user) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','3','$store_id','".$plant_code."','".$username."')";
             $result_query = $link->query($insert_query) or exit('query error in inserting111112');
             $roll_id = $store_id;
             
@@ -800,7 +800,7 @@ if (isset($_POST['confirm'])) {
                     }
                 }    
             }
-            $update_status = "update $wms.inspection_population SET status=3 where store_in_id='" . $store_id . "'";
+            $update_status = "update $wms.inspection_population SET status=3 where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating222');
         }
         echo "<script>swal('Confirmation Updated..','Successfully','success')</script>";
@@ -965,21 +965,21 @@ if (isset($_POST['save'])) {
         
         $damage = $_POST['damage'];
         
-        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "' where id=".$parent_id."";
+        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "',updated_by= '".$username."' where id=".$parent_id." and plant_code='".$plant_code."'";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $id_parent = $parent_id;
 
-        $check_store_tid = "select sno from $wms.roll_inspection_child where store_in_tid='" . $store_id . "'";
+        $check_store_tid = "select sno from $wms.roll_inspection_child where store_in_tid='" . $store_id . "' and plant_code='".$plant_code."'";
         $details_check_store_tid = mysqli_query($link, $check_store_tid) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         $row_sid = mysqli_num_rows($details_check_store_tid);
         $row_store_tid = mysqli_fetch_array($details_check_store_tid);
         if ($row_sid >0) 
         {   
-            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '2' where store_in_tid='".$store_id."'";
+            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '2',updated_by= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
             $roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222---3');
             
-            $update_status = "update $wms.inspection_population SET status=2 where store_in_id='" . $store_id . "'";
+            $update_status = "update $wms.inspection_population SET status=2,updated_by= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating2221---21');
             $roll_id = $store_id;
         
@@ -1008,7 +1008,7 @@ if (isset($_POST['save'])) {
         }
         else 
         {
-            $insert_query = "insert into $wms.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','2','$store_id')";
+            $insert_query = "insert into $wms.roll_inspection_child(inspection_status,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,parent_id,status,store_in_tid,plant_code,created_user) values ('$status','$inspected_per','$inspected_qty','$s','$m','$e','$actual_height','$actual_repeat_height','$skw','$bow','$ver','$gsm','$comment','$marker_type','$id_parent','2','$store_id','".$plant_code."','".$username."')";
             // echo $insert_query;
             $result_query = $link->query($insert_query) or exit('query error in inserting111113');
             $roll_id = $store_id;
@@ -1033,7 +1033,7 @@ if (isset($_POST['save'])) {
                     }
                 }    
             }
-            $update_status = "update $wms.inspection_population SET status=2 where store_in_id='" . $store_id . "'";
+            $update_status = "update $wms.inspection_population SET status=2,updated_by= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating222---');
         }
     

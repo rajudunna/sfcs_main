@@ -18,12 +18,14 @@ body { zoom:72%;}
 </style>
 <?php
 include('../../../common/config/config.php');
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $inpsect_id=$_GET['parent_id'];
-$get_details21 = "select * from $wms.`inspection_population` where parent_id=".$inpsect_id."";
+$get_details21 = "select * from $wms.`inspection_population` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_rolls_data=mysqli_num_rows($details_result21);
 
-$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where parent_id=".$inpsect_id."";
+$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) 
 {
@@ -44,7 +46,7 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$tot_ids[]=	$row22['store_in_tid'];
 }
 
-$get_details = "select * from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).")";
+$get_details = "select * from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."'";
 //echo $get_details;
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
@@ -75,7 +77,7 @@ while ($row1 = mysqli_fetch_array($details_result))
 
 
 
-$get_details1 = "select * from $wms.`main_population_tbl` where id=$inpsect_id";
+$get_details1 = "select * from $wms.`main_population_tbl` where id=$inpsect_id and plant_code='".$plant_code."'";
 $details_result1 = mysqli_query($link, $get_details1) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row111 = mysqli_fetch_array($details_result1)) 
 {
@@ -89,7 +91,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$remarks = $row111['remarks'];
 }
  $lot_ref = implode(",",$lots_no);
- $get_details12 = "select * from $wms.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".")";
+ $get_details12 = "select * from $wms.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and plant_code='".$plant_code."'";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 
@@ -2953,7 +2955,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 
 </html>
 <?php
-$update_query = "update $wms.main_population_tbl set status=2 where id=".$inpsect_id."";
+$update_query = "update $wms.main_population_tbl set status=2,updated_by= '".$username."' where id=".$inpsect_id." and plant_code='".$plant_code."'";
 mysqli_query($link, $update_query) or exit("Update Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 ?>
 <script>
