@@ -121,9 +121,12 @@ function verify_date(e){
 		<label>Section Buyer Division: </label>
 		<select name="division" class="form-control">
 		<?php
+		$plantcode=$_SESSION['plantCode'];
+		$username=$_SESSION['userName'];
+		
 			echo "<option value=\"ALL\" selected >ALL</option>";
 			//$sqly="select distinct(buyer_div) from plan_modules";
-			$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+			$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and  GROUP BY BUYER_CODE ORDER BY buyer_code";
 			
 
 			// mysqli_query($link, $sqly) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

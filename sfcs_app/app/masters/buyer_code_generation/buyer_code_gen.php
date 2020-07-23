@@ -1,8 +1,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $link11 = $link; 
+$plantcode=$_SESSION['plantCode'];
 
-$sql="SELECT * FROM $bai_pro2.buyer_codes";
+$sql="SELECT * FROM $pps.buyer_codes where plant_code='$plantcode'";
 $sql_result=mysqli_query($link11, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -72,10 +73,14 @@ th {
 
         $buyer_codes = $_POST['buyer_code'];
         $buyer_ids = $_POST['chkbox'];
+        $plantcode=$_SESSION['plantCode'];
+        $username=$_SESSION['userName'];
+
         if(sizeof($buyer_codes) > 0 && sizeof($buyer_ids) > 0){
             // for ($i=0; $i < sizeof($buyer_ids); $i++) { 
             foreach ($buyer_ids as $key => $id) {
-                $update_buyer_code_qry = "update bai_pro2.buyer_codes SET buyer_code =\"$buyer_codes[$id]\" where id=".$id;
+                $update_buyer_code_qry = "update pps.buyer_codes SET buyer_code =\"$buyer_codes[$id]\",
+                updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and  id=".$id;
                 $update_buyer_code=mysqli_query($link11, $update_buyer_code_qry) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             $sbmtmsg = "Successfully updated";

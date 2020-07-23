@@ -89,7 +89,10 @@ function verify(){
 						<option value="ALL" selected="ALL">ALL</option>
 
 							<?php
-								$sql3="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+								$plantcode=$_SESSION['plantCode'];
+								$username=$_SESSION['userName'];
+								
+								$sql3="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
 								//echo $sql3;
 								mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));

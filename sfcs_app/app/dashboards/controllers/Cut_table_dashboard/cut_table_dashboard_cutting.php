@@ -35,12 +35,15 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
           <label>Buyer Division:</label>
           <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">
             <?php 
+            $plantcode=$_SESSION['plantCode'];
+            $username=$_SESSION['userName'];
+            
               if($_GET['view_div']=="ALL") { 
                 echo '<option value="ALL" selected>All</option>'; 
               } else { 
                 echo '<option value="ALL">All</option>'; 
               }
-              $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+              $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
               $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
               while($sql_rowy=mysqli_fetch_array($sql_resulty))
               {
@@ -156,7 +159,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                     else
                     {
                       $dash = $_GET["view_div"];
-                      $sql_qry = "select buyer_name from $bai_pro2.buyer_codes where buyer_name ='$dash'";
+                      $sql_qry = "select buyer_name from $pps.buyer_codes where  plant_code='$plantcode' and buyer_name ='$dash'";
                       
                       $res = mysqli_query($link, $sql_qry);
                       $sql_count_check = mysqli_num_rows($res);

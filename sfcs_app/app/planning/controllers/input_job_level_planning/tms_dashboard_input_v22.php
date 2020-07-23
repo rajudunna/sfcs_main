@@ -512,12 +512,14 @@ mysqli_query($link, $sql) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli
 		<div class="form-group">
 		<?php	
 			
-			
+			$plantcode=$_SESSION['plantCode'];
+			$username=$_SESSION['userName'];
+
 			echo 'Buyer Division :
 			<select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
 			echo "<option value=\"ALL\" selected >ALL</option>";
 			//$sqly="select distinct(buyer_div) from plan_modules";
-			$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+			$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and  GROUP BY BUYER_CODE ORDER BY buyer_code";
 			// mysqli_query($link, $sqly) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowy=mysqli_fetch_array($sql_resulty))

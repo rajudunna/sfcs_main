@@ -26,6 +26,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $style=$sql_row['style']; 
     $tid=$sql_row['ref_id']; 
     $buyer =$sql_row['buyer_division'];
+    $plantcode=$_SESSION['plantCode'];
    
 
     $remarks=explode("^",$sql_row['remarks']);
@@ -50,7 +51,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
             $status=0; 
         } 
     } 
-    $sqla="SELECT buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$buyer'";
+    $sqla="SELECT buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and buyer_name='$buyer'";
     $sql_resulta=mysqli_query($link, $sqla) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_rowa=mysqli_fetch_array($sql_resulta))
     {
@@ -121,7 +122,7 @@ font-size:12px;
         
 // $message.="<table>";
 // $message.="<tr><th colspan=2>Summary</th><th>M&S</th><th>VS</th><th>Total</th></tr>";
-// $sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+// $sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // while($sql_row=mysqli_fetch_array($sql_result))

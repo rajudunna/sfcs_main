@@ -87,7 +87,10 @@ for (var i = 0; i < document.input.lot_no.value.length; i++) {
 	</select>
 </td></tr> -->
 <?php
-$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
+$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

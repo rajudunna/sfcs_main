@@ -42,6 +42,9 @@ td{ padding:1px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 	<div class="panel-heading">Weekly Delivery Dashboard - Packing</div>
 	<div class="panel-body">
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $weeknumber=$_GET["weekno"];
 $year =date("Y");
 $dates=array();
@@ -67,7 +70,7 @@ while($rowy=mysqli_fetch_array($resulty))
 $status=array("Shipped","M3 Reported","FCA","FCA/P","FCA Fail","Offered","FG*");
 $low_status=array("FG","Packing","Sewing","Cutting","RM");
 $high_status=array("Shipped","M3 Reported","FCA","FCA/P","FCA Fail","Offered","FG*","FG","Packing","Sewing","Cutting","RM");
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";					
 mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo "<div class='table-responsive'>";
@@ -84,7 +87,7 @@ for($i=0;$i<sizeof($status);$i++)
 	echo "<th>".$status[$i]."</th>";
 	$status_implode='"'.implode('","',$status).'"';
 	$low_status_implode='"'.implode('","',$low_status).'"';
-	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
+	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";					
 	mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowy=mysqli_fetch_array($sql_resulty))
@@ -109,7 +112,7 @@ for($i=0;$i<sizeof($low_status);$i++)
 	echo "<th>".$status[$i]."</th>";
 	$status_implode='"'.implode('","',$status).'"';
 	$low_status_implode='"'.implode('","',$low_status).'"';
-	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
+	$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";					
 	mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowy=mysqli_fetch_array($sql_resulty))
@@ -129,7 +132,7 @@ for($i=0;$i<sizeof($low_status);$i++)
 }
 echo "</tr>";
 echo "<tr><th>Total</th>";
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";					
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";					
 mysqli_query($link,$sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowy=mysqli_fetch_array($sql_resulty))

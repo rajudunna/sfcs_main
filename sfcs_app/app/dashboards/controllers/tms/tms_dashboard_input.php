@@ -452,13 +452,14 @@ $has_permission=haspermission($_GET['r']);
 		</div>
 <div class="form-group">		
 <?php
+$plantcode=$_SESSION['plantCode'];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 // Ticket #424781 Disply buyer division from the database level plan_module table
 echo '&nbsp;&nbsp;Buyer Division :
 <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
 echo "<option value=\"ALL\" selected >ALL</option>";
 // $sqly="select distinct(buyer_div) from plan_modules";
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
 //echo $sqly."<br>";
 
 // mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

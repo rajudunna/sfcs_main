@@ -29,6 +29,9 @@ $style=$_GET['style']; ?>
 
 
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 if(isset($_POST['Update']))
 {
@@ -37,7 +40,7 @@ $style_id=$_POST['style_id'];
 
 $style=$_POST['style'];
 
-$sql="SELECT buyer_code FROM $bai_pro2.buyer_codes WHERE buyer_name=(SELECT DISTINCT order_div FROM bai_pro3.bai_orders_db WHERE order_style_no='$style')";
+$sql="SELECT buyer_code FROM $pps.buyer_codes WHERE plant_code='$plantcode' and buyer_name=(SELECT DISTINCT order_div FROM bai_pro3.bai_orders_db WHERE order_style_no='$style')";
 // echo $sql."<br>";
 $result=mysqli_query($link, $sql) or mysqli_error("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($result))

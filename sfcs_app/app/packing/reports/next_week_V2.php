@@ -136,8 +136,10 @@ $status_update = getFullURL($_GET['r'],'status_update.php','N');
 		<label> Buyer Division : </label>
 			<select onchange='verify()' name="division" id="division" class="form-control" onchange="redirect_view()">';
 			<?php 
+				
+				
 				// $sqly="select distinct(buyer_div) from plan_modules";
-				$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+				$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
 				//echo $sqly."<br>";
 				echo "<option value=\"ALL\" selected >All</option>";
 				mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -146,6 +148,8 @@ $status_update = getFullURL($_GET['r'],'status_update.php','N');
 				{
 					$buyer_div=$sql_rowy['buyer_div'];
 					$buyer_name=$sql_rowy['buyer_name'];
+					$plantcode=$_SESSION['plantCode'];
+					$username=$_SESSION['userName'];
 					// echo $_GET["division"];
 					if($_GET["division"] == $buyer_name) 
 					{

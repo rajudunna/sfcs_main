@@ -151,6 +151,7 @@ mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $buyer_stock=[];
 $fg_wh_report_summary="$bai_pro3.fg_wh_report_summary";
 $packing_summary="$bai_pro3.packing_summary";
+$plantcode=$_SESSION['plantCode'];
 
 	echo "<br/><h3>LU:".date("Y-m-d H:i:s")."</h3>";
 	
@@ -588,7 +589,7 @@ $order_div=$sql_rowxx['order_div'];
 				echo "</tr>";
 			}
 			//$order_div=$sql_row['order_div'];
-			$sql_new="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes where buyer_name='$order_div'";
+			$sql_new="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where  plant_code='$plantcode' and buyer_name='$order_div'";
 // echo $sql;
 			$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error1244".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowa=mysqli_fetch_array($sql_result_new))

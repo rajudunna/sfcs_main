@@ -527,6 +527,7 @@
                 </div>
                 <div class="form-group">
                     <?php
+                    $plantcode=$_SESSION['plantCode'];
                         //echo "<font size=4>LIVE FABRIC STATUS DASHBOARD";
                         if($_GET['view']==1)
                         {
@@ -547,7 +548,8 @@
                         if($_GET['view']=="3") { echo '<option value="3" selected>Cutting</option>'; } else { echo '<option value="3">Cutting</option>'; }
                         echo '</select>';
                         // Ticket #424781 Disply buyer division from the database level plan_module table
-                        $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+                        $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and 
+                        GROUP BY BUYER_CODE ORDER BY buyer_code";
                         // echo $sqly.'<br>';
                         echo '&nbsp;&nbsp;&nbsp;Buyer Division :
                         <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';

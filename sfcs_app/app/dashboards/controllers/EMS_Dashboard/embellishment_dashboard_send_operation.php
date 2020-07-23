@@ -306,7 +306,7 @@ else
 echo "</div>";
 echo "</div>";
 
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' and GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // echo $sqly;
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
@@ -342,6 +342,9 @@ echo '<br><br>';
 </div>
 <?php
 //For blinking priorties as per the section module wips
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $bindex=0;
 $blink_docs=array();
 
@@ -422,7 +425,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       else
       {
         $dash = $_GET["view_div"];
-        $sql_qry = "select * from $bai_pro2.buyer_codes where buyer_name =".'"'.$dash.'"';
+        $sql_qry = "select * from $pps.buyer_codes where plant_code='$plantcode' and buyer_name =".'"'.$dash.'"';
 
         $res = mysqli_query($link, $sql_qry);
         $sql_count_check = mysqli_num_rows($res);

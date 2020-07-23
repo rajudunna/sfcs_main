@@ -231,7 +231,7 @@
 //echo "<td>";
 // echo $buyer_title."<select name=\"buyer\" value='$buyer_title'>";
 // echo "<option value=\"0\">Please Select</option>";
-// $sql="SELECT * FROM bai_pro2.buyer_codes";
+// $sql="SELECT * FROM pps.buyer_codes";
 // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // while($sql_row=mysqli_fetch_array($sql_result))

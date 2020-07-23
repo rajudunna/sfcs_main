@@ -1,4 +1,6 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $start_timestamp = microtime(true);
 include("m3_process_ses_track.php");
 error_reporting(0);
@@ -113,7 +115,7 @@ function isNumber($c)
 				// {
 					$style_id=$style;
 				// }
-				$sql44="select buyer_code FROM $bai_pro2.buyer_codes WHERE buyer_name in (SELECT DISTINCT order_div FROM bai_pro3.bai_orders_db WHERE order_style_no='$style' )";
+				$sql44="select buyer_code FROM $pps.buyer_codes WHERE plant_code='$plantcode'and buyer_name in (SELECT DISTINCT order_div FROM bai_pro3.bai_orders_db WHERE order_style_no='$style' )";
 			
 				$result44=mysqli_query($link, $sql44) or exit("error1245".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row44=mysqli_fetch_array($result44))

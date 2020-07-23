@@ -17,9 +17,9 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`bai_pro2` /*!40100 DEFAULT CHARACTER SE
 
 /*Table structure for table `bek_team` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`bek_team`;
+DROP TABLE IF EXISTS `pps`.`bek_team`;
 
-CREATE TABLE `bai_pro2`.`bek_team` (
+CREATE TABLE `pps`.`bek_team` (
   `team` varchar(45) DEFAULT NULL,
   `team_id` varchar(45) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
