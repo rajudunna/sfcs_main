@@ -17,9 +17,17 @@ if($params1 != '')
     getshiftdata($params1);
 }
 }
+if(isset($_GET['params']))
+{
+$params = $_GET['params'];
+if($params != '')
+{
+    gettimedate($params);
+}
+}
 function getshiftdata($params1){	
-error_reporting(0);
-	//include("../../../../../common/config/config_ajax.php");
+     error_reporting(0);
+	
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     $params1 = explode(",",$params1);
     $date=$params1[0];
@@ -31,7 +39,6 @@ error_reporting(0);
     while($module_row=mysqli_fetch_array($modules_result))
     {
         $modules_array[]=$module_row['module'];
-        //$id=$module_row['id'];
       
     }
 
@@ -47,14 +54,33 @@ error_reporting(0);
 		while ($row = $success_query->fetch_assoc()) {
            
             $result_array[] = $row;
-         // $row = mysqli_fetch_assoc($success_query); 
 		}
 		$json_data = json_encode($result_array);
-   // }
         }
     echo $json_data;
 
 
 }
+function gettimedate($params){	
+    error_reporting(0);
+   include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+   $params = explode(",",$params);
+   $shift=$params[0];
+   $date=$params[1];
 
+
+   $sql_query="select * from $bai_pro.pro_atten_hours where date='" .$date. "' AND shift='" .$shift. "' ";
+   $success_query1 = mysqli_query($link, $sql_query) or exit("third ErrorError-2" . mysqli_error($GLOBALS["___mysqli_ston"]));
+   
+   $sql_num_check1=mysqli_num_rows($success_query1);
+   if($sql_num_check1 > 0){
+
+    while ($row = $success_query1->fetch_assoc()) {
+           
+        $result_array[] = $row;
+    }
+    $json_data = json_encode($result_array);
+    }
+    echo $json_data;
+   }
 ?>
