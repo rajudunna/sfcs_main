@@ -63,9 +63,9 @@ else
 	else
 	{
 
-		
 
-		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and (prefix='$department' or bg_color='$type')";
+
+		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where (prefix_name='$code' or prefix_name=!'$code')  and (prefix='$department' or bg_color='$type')";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
