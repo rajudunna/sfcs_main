@@ -243,21 +243,14 @@ if(isset($_POST['submit']))
 			$value=0;
 			$actual_clock_hours=0;
 			// echo Checking Adjustments;
-			$sql91="SELECT adjustment_type, SUM(smo_adjustment_hours) as hrs FROM $bai_pro.`pro_attendance_adjustment` WHERE date between '".$fdat."' and '".$tdat."' AND module ='$module_name' AND shift ='$shifts_array[$i]' group by adjustment_type";
+			$sql91="SELECT SUM(smo_adjustment_hours) as hrs FROM $bai_pro.`pro_attendance_adjustment` WHERE date between '".$fdat."' and '".$tdat."' AND module ='$module_name' AND shift ='$shifts_array[$i]'";
 			$result91=mysqli_query($link, $sql91) or die("Sql Error9: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			$adjustment_count=mysqli_num_rows($result91);
 			if($adjustment_count >0)
 			{
 				while($row9=mysqli_fetch_array($result91))
 				{
-					if($row9["adjustment_type"]=='Negative')
-					{
-						$value =$value+($row9["hrs"]*-1);
-					}
-					else
-					{
-						$value =$value+$row9["hrs"];
-					}					
+					$value =$value+$row9["hrs"];		
 				}	
 				$actual_clock_hours=$effective_shift_working_hours[$module_name][$shifts_array[$i]]+$value;			
 			}
@@ -395,10 +388,13 @@ $("#checkbox1").click(function() {
         $(".summary10").show();
         $(".summary11").show();
         $(".summary12").show();
-		$(".style2").show();
-        $(".smv2").show();
-        $(".days2").show();
-        $(".test2").show();  		
+		if($("#checkbox").is(":checked")) {
+		$(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test2").hide(); 
+		}
+		
     }else{      
         $(".summary").hide();
         $(".summary1").hide();
