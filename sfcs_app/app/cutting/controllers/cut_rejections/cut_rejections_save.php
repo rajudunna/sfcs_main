@@ -15,6 +15,9 @@ $color   = $data['color'];
 $shift   = $data['shift'];
 $rejections_flag = $data['rejections_flag'];
 $rejection_details = $data['rejections'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift);
 
@@ -28,7 +31,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     $update_counter = 0;
     $remarks = 'CUT-'.$shift.'-P';
     $total_rej = 0;
-    $verify_query = "SELECT * from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
+    $verify_query = "SELECT * from $pps.rejections_log where  plant_code='$plantcode' and style='$style' and schedule='$schedule' 
                     and color='$color'";                
     $result = mysqli_query($link,$verify_query) or exit('Rejections Log Error 1');  
     while($row = mysqli_fetch_array($result))   
@@ -37,9 +40,9 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     if($id > 0)
         $parent_id = $id;
     else{
-        $rejection_log_query = "INSERT into $bai_pro3.rejections_log 
-            (style,SCHEDULE,color,rejected_qty,replaced_qty,recut_qty,remaining_qty,status) 
-            values ('$style','$schedule','$color',0,0,0,0,'P')";    
+        $rejection_log_query = "INSERT into $pps.rejections_log 
+            (style,SCHEDULE,color,rejected_qty,replaced_qty,recut_qty,remaining_qty,status,,plant_code,created_user,created_at) 
+            values ('$style','$schedule','$color',0,0,0,0,'P','$plantcode','$username','".date('Y-m-d')."')";    
         $rejection_log_result = mysqli_query($link,$rejection_log_query) or exit('Rejections Log Error 2');
         $parent_id = mysqli_insert_id($link);
     }
@@ -121,8 +124,8 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     }
     //Again Seperating M3 Updations from basic operation flow to maintain consistency
 
-    $rejection_log_uquery = "UPDATE $bai_pro3.rejections_log set rejected_qty = rejected_qty+$total_rej,remaining_qty = remaining_qty + $total_rej
-                         where id=$parent_id";
+    $rejection_log_uquery = "UPDATE $pps.rejections_log set rejected_qty = rejected_qty+$total_rej,remaining_qty = remaining_qty + $total_rej,updated_user='$username',updated_at='".date('Y-m-d')."'
+                         where plant_code='$plantcode' and id=$parent_id";
     $rejection_log_uresult = mysqli_query($link,$rejection_log_uquery) or exit('Rejection Log Error 3');
     if($sent == $confirmed && $sent == $update_counter)
         $response_data['saved'] = 1;

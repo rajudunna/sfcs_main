@@ -23,6 +23,8 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/mo_filling.php',4,'R'));?>
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
     function mofillingforrecutreplace($qty,$bcd_id)
     {
@@ -413,7 +415,7 @@ if($sql_result1_res==0){
                                     // echo $update_rejection_log_child."<br>";
                                     mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $to_add_mo += $to_add;
-                                    $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$schedule' and color = '$color'";
+                                    $update_rejection_log = "update $pps.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add ,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style = '$style' and schedule = '$schedule' and color = '$color'";
                                     // echo $update_rejection_log."<br>";
 
                                     mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -643,7 +645,7 @@ if($sql_result1_res==0){
                                     // echo $update_rejection_log_child."<br>";
                                     mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $to_add_mo += $to_add;
-                                    $update_rejection_log = "update $bai_pro3.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add where style = '$style' and schedule = '$schedule' and color = '$color'";
+                                    $update_rejection_log = "update $pps.rejections_log set recut_qty = recut_qty+$to_add,remaining_qty = remaining_qty - $to_add ,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style = '$style' and schedule = '$schedule' and color = '$color'";
                                     // echo $update_rejection_log."<br>";
 
                                     mysqli_query($link,$update_rejection_log) or exit("While updating rejection log".mysqli_error($GLOBALS["___mysqli_ston"]));

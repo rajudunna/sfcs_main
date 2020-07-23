@@ -3,6 +3,9 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 //$has_perm=haspermission($_GET['r']);
@@ -275,7 +278,7 @@ if(isset($_GET['tid']))
 	// echo $update_qry.'</br>';
 	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 
-	$search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+	$search_qry="SELECT id FROM $pps.rejections_log where plant_code='$plantcode' and style='$style' and schedule='$schedule' and color='$color'";
 					// echo $search_qry;
 	$result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result_search_qry->num_rows > 0)
@@ -284,7 +287,7 @@ if(isset($_GET['tid']))
 		{
 
 			$rejection_log_id = $row_result_search_qry['id'];
-			$update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty where id = $rejection_log_id";
+			$update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty ,updated_user='$username',updated_at='".date('Y-m-d')."'  where plant_code='$plantcode' and id = $rejection_log_id";
 			// echo $update_qry_rej_lg;
 			$update_qry_rej_lg = $link->query($update_qry_rej_lg);
 			$parent_id = $rejection_log_id;

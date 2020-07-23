@@ -11,6 +11,7 @@
 //27-10-2016/SR#76898083/ calculating shipment sample and samples in noraml input column in reconciliation
 ?>
 <?php
+$plantcode=$_SESSION['plantCode'];
 
 function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 {
@@ -35,7 +36,7 @@ function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 function get_qty($schedule,$type,$size,$color,$link,$module)
 {
 	$size=str_replace("a_","", $size);
-	$sql_schedule_id='SELECT `id` FROM bai_pro3.rejections_log WHERE `schedule`='.$schedule.' and `color`="'.$color.'"';
+	$sql_schedule_id='SELECT `id` FROM $pps.rejections_log WHERE plant_code='$plantcode' and `schedule`='.$schedule.' and `color`="'.$color.'"';
 	$result_schedule_id=mysqli_query($link,$sql_schedule_id) or exit("sql Error12=".$sql_schedule_id."-".mysql_errno());
 	while($sql_row_id=mysqli_fetch_array($result_schedule_id))
 	{

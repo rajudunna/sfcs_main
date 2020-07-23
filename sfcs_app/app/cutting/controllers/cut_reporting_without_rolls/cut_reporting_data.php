@@ -4,6 +4,7 @@ error_reporting(1);
 
 $response_data = array();
 $op_code = 15;
+$plantcode=$_SESSION['plantCode'];
  
 foreach($sizes_array as $size){
     $a_sizes_sum .= 'a_'.$size.'+';
@@ -471,10 +472,10 @@ function getReasonWiseDetails($doc_no){
     $html_data = "<table class='table table-bordered'><thead><tr class='info'>
                     <th>Sno</th><th>Size</th><th>Reason</th><th>Quantity</th></tr></thead><tbody>";
     $rej_wise_details_query = "SELECT bcd_id,SUM(rejected_qty) AS rejected_qty,bqr.reason_desc AS reason
-                        FROM $bai_pro3.rejections_reason_track rrt
+                        FROM $pps.rejections_reason_track rrt
                         LEFT JOIN $bai_pro3.bai_qms_rejection_reason bqr ON rrt.rejection_reason =  bqr.reason_code 
                         AND rrt.form_type = bqr.form_type 
-                        WHERE  bcd_id IN  ($ids) 
+                        WHERE  plant_code='$plantcode' and bcd_id IN  ($ids) 
                         GROUP BY bcd_id,rejection_reason";                 
     $rej_wise_details_result = mysqli_query($link,$rej_wise_details_query);
     while($row = mysqli_fetch_array($rej_wise_details_result)){

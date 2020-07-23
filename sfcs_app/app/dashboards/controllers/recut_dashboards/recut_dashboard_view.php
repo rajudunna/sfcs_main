@@ -1,5 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
     if(isset($_POST['formsubmit']))
     {
@@ -18,8 +21,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         
        
         //retrieving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
-        $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-        WHERE rc.`bcd_id` in ($bcd) ";
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        WHERE  plant_code='$plantcode' and rc.`bcd_id` in ($bcd) ";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
         {
@@ -179,8 +182,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
         $size = $_POST['size'];
         $operation_id = $_POST['operation_id'];
         $bcd = $bcd_id[0];
-        $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-        WHERE rc.`bcd_id` in ($bcd)";
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        WHERE  plant_code='$plantcode' and rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
         {
@@ -365,7 +368,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
                                     $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
                                     mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     //updating rejection log 
-                                    $updating_rejection_log = "update $bai_pro3.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj where style = '$style' and schedule = '$scheule' and color = '$color' ";
+                                    $updating_rejection_log = "update $pps.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style = '$style' and schedule = '$scheule' and color = '$color' ";
                                     mysqli_query($link, $updating_rejection_log) or exit("updating_rejection_log".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $to_add_mo += $to_add_sj;
                                     $issued_to_module = issued_to_module($bundle_number,$to_add_sj,1);
@@ -572,8 +575,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
             </thead>
             <?php  
             $s_no = 1;
-            $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $bai_pro3.rejections_log r
-            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE short_shipment_status=0
+            $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $pps.rejections_log r
+            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE plant_code='$plantcode' and short_shipment_status=0
             GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0 order by r.id";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)

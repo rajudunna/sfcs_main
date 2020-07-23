@@ -1,4 +1,5 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
 if(isset($_GET['recut_id']))
 {
 	$recut_id = $_GET['recut_id'];
@@ -83,8 +84,8 @@ function RecutProcess($recut_id_edit)
     $recut_id = $recut_id_edit;
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
     $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";
-    $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-    WHERE rc.`parent_id` = $recut_id";
+    $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+    WHERE  plant_code='$plantcode' and rc.`parent_id` = $recut_id";
     $qry_details_res = $link->query($qry_details);
     while($row_row = $qry_details_res->fetch_assoc()) 
     {
@@ -236,8 +237,8 @@ function ReplaceProcess($replace_id_edit)
     include("../../../../common/config/functions_dashboard.php");
     $html = "<button type='button' class='btn btn-success' value='Set' style='float: right;' onclick='setfunction();' id='setreset'>Select All</button>";
     $html .= "<button type='button' class='btn btn-success' value='ReSet' style='float: right;' onclick='resetfunction();' id='setreset'>Re Set</button></br></br>";    
-    $qry_details = "SELECT style,SCHEDULE,color FROM `$bai_pro3`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
-    WHERE rc.`parent_id` = $replace_id_edit";
+    $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+    WHERE  plant_code='$plantcode' and rc.`parent_id` = $replace_id_edit";
     // echo $qry_details;
     $qry_details_res = $link->query($qry_details);
     while($row_row = $qry_details_res->fetch_assoc()) 

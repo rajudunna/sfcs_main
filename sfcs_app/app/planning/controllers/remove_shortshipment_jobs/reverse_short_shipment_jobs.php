@@ -6,6 +6,8 @@
     $rem_type=$_GET['rem_type'];
     $username = getrbac_user()['uname'];
     $updated_date = date("Y-m-d h:i:s");
+    $plantcode=$_SESSION['plantCode'];
+    $username=$_SESSION['userName'];
 
     $update_revers_qry = "update $bai_pro3.short_shipment_job_track set remove_type=0,updated_by='".$username."',updated_at='".$updated_date."' where id=".$id;
     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -140,12 +142,12 @@
         }
                 
         //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
-        $rej_table_query="select * from $bai_pro3.rejections_log where style='$style' and schedule = '$schedule' and short_shipment_status=1";
+        $rej_table_query="select * from $pps.rejections_log where plant_code='$plantcode' and style='$style' and schedule = '$schedule' and short_shipment_status=1";
         $rej_table_query_resultx=mysqli_query($link, $rej_table_query) or exit("Sql Error101".mysqli_error($GLOBALS["___mysqli_ston"]));
         $rej_table_rowx=mysqli_num_rows($rej_table_query_resultx);
         if($rej_table_rowx>0)
         { 
-            $rej_table_update="UPDATE bai_pro3.rejections_log SET short_shipment_status=0 WHERE style = '$style' and schedule = '$schedule' and short_shipment_status=1";
+            $rej_table_update="UPDATE $pps.rejections_log SET short_shipment_status=0,updated_user='$username',updated_at='".date('Y-m-d')."' WHERE plant_code='$plantcode' and style = '$style' and schedule = '$schedule' and short_shipment_status=1";
             $rej_table_update_result=mysqli_query($link, $rej_table_update) or exit("Sql Error011".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
 

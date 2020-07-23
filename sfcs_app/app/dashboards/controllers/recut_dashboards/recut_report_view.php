@@ -59,6 +59,7 @@ $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
 $category=$_GET['category'];
+$plantcode=$_SESSION['plantCode'];
 
 if(isset($_POST['style']))
 {
@@ -93,7 +94,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>Select Style</option>";
 					//$sql="select distinct order_style_no from bai_orders_db";
-					$sql="SELECT DISTINCT style as order_style_no FROM bai_pro3.`rejections_log`";
+					$sql="SELECT DISTINCT style as order_style_no FROM $pps.`rejections_log`";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -117,7 +118,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>Select Schedule</option>";	
 					//$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\"";
-                    $sql="select distinct schedule as order_del_no from $bai_pro3.rejections_log where style =\"$style\"";
+                    $sql="select distinct schedule as order_del_no from $pps.rejections_log where plant_code='$plantcode' and style =\"$style\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -140,7 +141,7 @@ if(isset($_POST['category']))
 				<select class='form-control' name='color' id='color' onclick='show_pop2()' onchange='thirdbox();' >
 				<?php
 					//$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-					$sql="select distinct color as order_col_des from $bai_pro3.rejections_log where  style=\"$style\" and schedule=\"$schedule\"";
+					$sql="select distinct color as order_col_des from $pps.rejections_log where plant_code='$plantcode' and style=\"$style\" and schedule=\"$schedule\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 					echo "<option value=\"All\" selected>All</option>";

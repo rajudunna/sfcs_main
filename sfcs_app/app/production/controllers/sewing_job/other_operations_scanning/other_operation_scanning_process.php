@@ -37,6 +37,10 @@ $page_flag = $new_data['page_flag'];
 $child_doc = $new_data['child_docket'];
 $form = 'P';
 $qry_status='';
+
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 if($b_op_id >=130 && $b_op_id < 300)
 {
 	$form = 'G';
@@ -293,12 +297,12 @@ if($flag == 'clubbing')
                     $update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$final_rejected_qty where bcd_id = $bcd_id";
                     //echo $update_rejection_log_child_qry;
                     mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty where style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
+                    $update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
                     $update_qry_rej_lg = $link->query($update_qry_rej_lg);
                 }
                 else
                 {
-                    $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
+                    $search_qry="SELECT id FROM $pps.rejections_log where plant_code='$plantcode' and style='$b_style' and schedule='$b_schedule' and color='$mapped_color'";
                     // echo $search_qry;
                     $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($result_search_qry->num_rows > 0)
@@ -307,7 +311,7 @@ if($flag == 'clubbing')
                        {   
 
                         $rejection_log_id = $row_result_search_qry['id'];
-                        $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty where id = $rejection_log_id";
+                        $update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$final_rejected_qty,remaining_qty=remaining_qty+$final_rejected_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and  id = $rejection_log_id";
                         // echo $update_qry_rej_lg;
                         $update_qry_rej_lg = $link->query($update_qry_rej_lg);
                         $parent_id = $rejection_log_id;
@@ -317,7 +321,7 @@ if($flag == 'clubbing')
                     }
                     else
                     {
-                        $insert_qty_rej_log = "INSERT INTO $bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$b_style','$b_schedule','$mapped_color',$final_rejected_qty,'0',$final_rejected_qty)";
+                        $insert_qty_rej_log = "INSERT INTO $pps.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty,plant_code,created_user,created_at) VALUES ('$b_style','$b_schedule','$mapped_color',$final_rejected_qty,'0',$final_rejected_qty,'$plantcode','$username','".date('Y-m-d')."')";
                         $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
                         $parent_id=mysqli_insert_id($link);
 
@@ -638,12 +642,12 @@ else
                         {
                             $update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
                             mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where style='$style' and schedule='$schedule' and color='$color'";
+                            $update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and  style='$style' and schedule='$schedule' and color='$color'";
                             $update_qry_rej_lg = $link->query($update_qry_rej_lg);
                         }
                         else
                         {
-                            $search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+                            $search_qry="SELECT id FROM $pps.rejections_log where plant_code='$plantcode' and style='$style' and schedule='$schedule' and color='$color'";
                             // echo $search_qry;
                             $result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
                             if($result_search_qry->num_rows > 0)
@@ -652,7 +656,7 @@ else
                                 {
 
                                     $rejection_log_id = $row_result_search_qry['id'];
-                                    $update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2] where id = $rejection_log_id";
+                                    $update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id = $rejection_log_id";
                                     // echo $update_qry_rej_lg;
                                     $update_qry_rej_lg = $link->query($update_qry_rej_lg);
                                     $parent_id = $rejection_log_id;
@@ -662,7 +666,7 @@ else
                             }
                             else
                             {
-                                $insert_qty_rej_log = "INSERT INTO $bai_pro3.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2])";
+                                $insert_qty_rej_log = "INSERT INTO $pps.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty,,plant_code,created_user,created_at) VALUES ('$style','$schedule','$color',$implode_next[2],'0',$implode_next[2],'$plantcode','$username','".date('Y-m-d')."')";
                                 $res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
                                 $parent_id=mysqli_insert_id($link);
 

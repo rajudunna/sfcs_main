@@ -6,6 +6,8 @@ $mail_status=0;
 $username = getrbac_user()['uname'];
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
     
 ?>
 
@@ -265,13 +267,13 @@ if(isset($_POST['submit']))
                     
                     //To remove Jobs in Rejection Dashboard-(ims,cutt(2),Rejection)
                     
-                    $rej_table_query="select * from $bai_pro3.rejections_log where style = '$style' and schedule = '$schedule'";
+                    $rej_table_query="select * from $pps.rejections_log where plant_code='$plantcode' and style = '$style' and schedule = '$schedule'";
                     // echo $rej_table_query;die();
                     $rej_table_query_resultx=mysqli_query($link, $rej_table_query) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $rej_table_rowx=mysqli_num_rows($rej_table_query_resultx);
                     if($rej_table_rowx>0)
                     { 
-                        $rej_table_update="UPDATE $bai_pro3.rejections_log SET short_shipment_status=".$status." WHERE style = '$style' and schedule = '$schedule'";
+                        $rej_table_update="UPDATE $pps.rejections_log SET short_shipment_status=".$status.",updated_user='$username',updated_at='".date('Y-m-d')."' WHERE plant_code='$plantcode' and style = '$style' and schedule = '$schedule'";
                         $rej_table_update_result=mysqli_query($link, $rej_table_update) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
                         if($rej_table_update_result) {
                             $remarks .="Rejections";
