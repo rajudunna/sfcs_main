@@ -51,7 +51,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 ?>
 <?php
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $dat=$_POST["dat1"];
 $dat1=$_POST["dat2"];
 // echo $dat.'---'.$dat1;
@@ -79,7 +80,7 @@ $sql2="SELECT section as sec_id,GROUP_CONCAT(DISTINCT module_name ORDER BY modul
 		$addon_headings.="<th>SEC-".$sql_row2['sec_id']."<br/>Lost Value</th>";	
 	}
 
-$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+$week_del="select schedule_no,exfact_date from $pps.shipment_plan_summ where plant_code='$plantcode' and exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 //echo $week_del."<br>";
 $sql_result=mysqli_query($link,$week_del) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
@@ -132,7 +133,7 @@ if($count_rows > 0){
 	// {
 		$total_sch=implode(",",$schdules);
 
-	$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+	$week_del="select schedule_no,exfact_date from $pps.shipment_plan_summ where plant_code='$plantcode' and exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 	//echo $week_del."<br>";
 	$sql_result=mysqli_query($link, $week_del) or exit("Sql Error3 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows=mysqli_num_rows($sql_result);
@@ -352,7 +353,7 @@ if($count_rows > 0){
 			
 			//shipemet details
 		
-			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
+			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $pps.ship_stat_log WHERE plant_code='$plantcode' and ship_schedule=\"$sch\" and ship_status=\"2\"";
 
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_rows=mysqli_num_rows($sql_result4);
@@ -366,7 +367,7 @@ if($count_rows > 0){
 			//M3 shipment quantity
 			if(($rowspan_for_shipqty-$key001) == $rowspan_for_shipqty)
 			{
-				$sql5="SELECT SUM(ship_qty) FROM $bai_pro2.style_status_summ WHERE sch_no=\"$sch\"";
+				$sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE plant_code='$plantcode' and sch_no=\"$sch\"";
 				// echo $sql5."<br>";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows1=mysqli_num_rows($sql_result5);
@@ -451,7 +452,7 @@ if($count_rows > 0){
 			{
 				$sec_mods=$sql_row2['sec_mods'];
 				
-				$sql2xy="select sum(balance) as balance from (select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB') union select sum((ims_qty-ims_pro_qty)) as balance from $bai_pro3.ims_log_backup where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB')) as t";
+				$sql2xy="select sum(balance) as balance from (select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB') union select sum((ims_qty-ims_pro_qty)) as balance from $pms.ims_log_backup where plant_code='$plantcode' and ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB')) as t";
 				// echo $sql2xy;
 				$sql_result2xy=mysqli_query($link, $sql2xy) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2xy=mysqli_fetch_array($sql_result2xy))

@@ -80,7 +80,7 @@ echo "<tr><th>Docket ID</th><th width=\"150\">What</th><th>Who</th><th>When</th>
 
 
 //$sql="select * from $bai_pro3.plan_dashboard_change_log where doc_no in (select doc_no from $bai_pro3.order_cat_doc_mk_mix where order_del_no=\"$schedule\")";
-$sql="select * from $bai_pro3.jobs_movement_track where doc_no in (select doc_no from $bai_pro3.order_cat_doc_mk_mix where order_del_no=\"$schedule\")";
+$sql="select * from $pps.jobs_movement_track where plant_code='$plantcode' and doc_no in (select doc_no from $bai_pro3.order_cat_doc_mk_mix where order_del_no=\"$schedule\")";
 //echo $sql;
 mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error15".mysqli_error());
@@ -358,7 +358,7 @@ $output_total_qty1=$output_total_qty;
 }
 $total_output_qty = 0;
 $tot4 = 0;
-$sql="select * from $bai_pro3.ims_log_backup where ims_schedule=\"$schedule\" order by ims_mod_no";
+$sql="select * from $pms.ims_log_backup where plant_code='$plantcode' and ims_schedule=\"$schedule\" order by ims_mod_no";
 mysqli_query($link,$sql) or exit("Sql Error8".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error9".mysqli_error());
 $count1=mysqli_num_rows($sql_result); 
@@ -583,7 +583,7 @@ while($sql_row10=mysqli_fetch_array($sql_result))
 	}
 }
 echo "<th>tid</th><th>cartons</th><th>AOD no</th><th>lastup</th><th>Total QTY</th></tr>";
-$sql="select * from $bai_pro3.ship_stat_log where ship_schedule=$schedule";
+$sql="select * from $pps.ship_stat_log where plant_code='$plantcode' and ship_schedule=$schedule";
 mysqli_query($link,$sql) or exit("Sql Erro12r".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error13".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))

@@ -129,7 +129,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			{
 				$date1 = $row3['date']; 
 				$weekday1 = date('l', strtotime($date1));
-				$sqlxx4=mysqli_query($link, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"A\"") or exit("sqlxx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sqlxx4=mysqli_query($link, "select act_hours from $pts.pro_plan where plant_code='$plantcode' and mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"A\"") or exit("sqlxx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rowxx4=mysqli_fetch_array($sqlxx4))
 				{	
 					$act_hoursx=$rowxx4["act_hours"];
@@ -174,7 +174,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			{
 				$date1 = $row3['date']; 
 				$weekday1 = date('l', strtotime($date1));
-				$sqlx4=mysqli_query($link, "select act_hours from $bai_pro.pro_plan where mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"B\"") or exit("sqlx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sqlx4=mysqli_query($link, "select act_hours from $pts.pro_plan where plant_code='$plantcode' and mod_no='".$secs[$i]."' and date='".$row3['date']."' and sec_no='$sec' AND shift=\"B\"") or exit("sqlx4 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rowx4=mysqli_fetch_array($sqlx4))
 				{	
 					$act_hours=$rowx4["act_hours"];

@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0100",$username,1,$group_id_sfcs); 
 $plantcode=$_SESSION['plantCode'];
-
+$username=$_SESSION['userName'];
 // include("header.php");
 set_time_limit(60000);
 
@@ -55,7 +55,7 @@ $table_flag = false;
 	$numberofsecs=strtotime( "next monday" );
 	$next_mon=date('Y-m-d', $numberofsecs);
 	$ims_log="$bai_pro3.ims_log";
-	$ims_log_backup="$bai_pro3.ims_log_backup";
+	$ims_log_backup="$pms.ims_log_backup";
 	$orders_db="$bai_pro3.bai_orders_db";
 	$bai_orders_db_confirm="$bai_pro3.bai_orders_db";
 //	$section1=array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16);
@@ -202,7 +202,7 @@ $table_flag = false;
 					for($jj=0;$jj<sizeof($section);$jj++)
 					{
 						$sql8="select * from $ims_log where ims_schedule='".$schedule."' and ims_color='".$color."' and ims_remarks !='sample' and ims_mod_no in (".$section[$jj].")";
-						$sql9="select * from $ims_log_backup where ims_schedule='".$schedule."' and ims_color='".$color."' and ims_remarks !='sample' and ims_mod_no in (".$section[$jj].")";
+						$sql9="select * from $ims_log_backup where plant_code='$plantcode' and ims_schedule='".$schedule."' and ims_color='".$color."' and ims_remarks !='sample' and ims_mod_no in (".$section[$jj].")";
 						$result8=mysqli_query($link, $sql8) or die("sql error--8".$sql8.mysqli_error($GLOBALS["___mysqli_ston"]));
 						$result9=mysqli_query($link, $sql9) or die("sql error--9".$sql9.mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($result8)>0)
@@ -223,7 +223,8 @@ $table_flag = false;
 						}
 						if(mysqli_num_rows($result9)>0)
 						{
-							$sql12="select sum(ims_pro_qty) as ims_pro_qty,sum(ims_qty) as ims_qty from $ims_log_backup where ims_schedule='".$schedule."' and ims_color='".$color."' and ims_remarks !='sample' and ims_mod_no in (".$section[$jj].")";
+							$sql12="select sum(ims_pro_qty) as ims_pro_qty,sum(ims_qty) as ims_qty from $ims_log_backup where plant_code='$plantcode' and
+ ims_schedule='".$schedule."' and ims_color='".$color."' and ims_remarks !='sample' and ims_mod_no in (".$section[$jj].")";
 							$result12=mysqli_query($link, $sql12) or die("sql error--12".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_rowx=mysqli_fetch_array($result12))
 							{
@@ -251,7 +252,7 @@ $table_flag = false;
 					for($i=0;$i<sizeof($sizes);$i++)
 					{
 						$sql21="select * from $ims_log where ims_schedule='".$schedule."' and ims_style='".$style."' and ims_color='".$color."' and ims_size= 'a_".$sizes[$i]."'";
-						$sql22="select * from $ims_log_backup where ims_schedule='".$schedule."' and ims_style='".$style."' and ims_color='".$color."' and ims_size= 'a_".$sizes[$i]."'";
+						$sql22="select * from $ims_log_backup where plant_code='$plantcode' and ims_schedule='".$schedule."' and ims_style='".$style."' and ims_color='".$color."' and ims_size= 'a_".$sizes[$i]."'";
 						$result21=mysqli_query($link, $sql21) or die("sql error--1-".$sql21.mysqli_error($GLOBALS["___mysqli_ston"]));
 						$result22=mysqli_query($link, $sql22) or die("sql error--2-".$sql22.mysqli_error($GLOBALS["___mysqli_ston"]));
 						

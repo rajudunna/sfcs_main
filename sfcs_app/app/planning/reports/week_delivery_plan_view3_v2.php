@@ -10,6 +10,7 @@ $end_date_w=$start_date_w+(60*60*24*6); // define sunday
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
 
+$username=$_SESSION['userName'];
 ?>
 
 
@@ -147,7 +148,7 @@ $pending=$_POST['pending'];
 <label>Buyer Division: </label><select name="division" class="select2_single form-control">
 <option value='All' <?php if($division=="All"){ echo "selected"; } ?> >All</option>
 <?php 
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes plant_code='$plantcode' GROUP BY BUYER_CODE ORDER BY buyer_code";
 // echo $sqly."<br>";
 
 mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -824,7 +825,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		//DISPATCH
 
-			$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+			$sql1="select ship_qty from $pps.style_status_summ where plant_code='$plantcode' and sch_no=\"$schedule_no\"";
 			//echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))

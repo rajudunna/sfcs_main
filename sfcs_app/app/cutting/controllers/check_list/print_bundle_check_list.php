@@ -11,6 +11,8 @@
 			}
 		</script>
 		<?php
+		$plantcode=$_SESSION['plantCode'];
+		$username=$_SESSION['userName'];
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 
@@ -32,12 +34,12 @@
 			}
 			if($org_doc_no==0)
 			{
-			   $sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no =$doc_no limit 1";
+			   $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$doc_no limit 1";
 			//echo $sql123;
 			}
 			else
 			{
-			   $sql123="SELECT bundle_loc,leader_name FROM $bai_pro3.`act_cut_status` WHERE doc_no =$org_doc_no limit 1";
+			   $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$org_doc_no limit 1";
 			}
 			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
 			while($m13=mysqli_fetch_array($sql_result123))
@@ -859,7 +861,7 @@
 									<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
 								</tr>";
 								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty ORDER BY tid) AS bundle_nos 
-									FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
+								FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
 								 //echo $sql123;
 								$sql_result123=mysqli_query($link, $sql123) or exit("Error1 while fetching details for the selected style and schedule");
 								$sno = 1;

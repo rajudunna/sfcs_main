@@ -90,7 +90,7 @@
 
 					$time_display_sah = array();	$plan_sah = array();	$act_sah = array();
 
-					$plan_sah_qry="SELECT round(SUM(plan_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $bai_pro.pro_plan WHERE DATE='$selected_date'";
+					$plan_sah_qry="SELECT round(SUM(plan_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $pts.pro_plan WHERE plant_code='$plantcode' and DATE='$selected_date'";
 					// echo $plan_sah_qry;
 					$plan_sah_result=mysqli_query($link,$plan_sah_qry);
 					while ($plan_row = mysqli_fetch_array($plan_sah_result))
@@ -189,7 +189,7 @@
 																		$style = $res1['bac_style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
+																	$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plantcode' and DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
 																	// echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -232,7 +232,7 @@
 														{
 															$act_pcs_fact1 = $res1['qty'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plantcode' and DATE='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -366,7 +366,7 @@
 																		$style = $res1['bac_style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT SUM(plan_pro) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
+																	$plan_pcs_qry="SELECT SUM(plan_pro) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plantcode' and DATE='$selected_date' and sec_no='$section' and mod_no='$team'";
 																	// echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -408,7 +408,7 @@
 														{
 															$act_pcs_fact2 = $res1['qty'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM bai_pro.pro_plan WHERE DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plantcode' and DATE='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))

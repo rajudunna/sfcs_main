@@ -7,6 +7,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $cutting_mail = $conf1->get('cutting_mail');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <?php
 $message= '';
@@ -160,7 +162,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				//echo "total13=". $total11."--".$total12."--".$total."<br/>";
 				$total=$total11+$total12;
 				
-				$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=$module and date='$date2'";
+				$sql11="select (sum(plan_pro)/15) as plan_pro from $pts.pro_plan_today where plant_code='$plantcode' and mod_no=$module and date='$date2'";
 				//echo $sqll;
 				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -283,7 +285,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$wip=$sql_row11['wip'];
 			}
 			
-			$sql11="select (sum(plan_pro)/15) as plan_pro from $bai_pro.pro_plan_today where mod_no=$module  and date='$date2'";
+			$sql11="select (sum(plan_pro)/15) as plan_pro from $pts.pro_plan_today where plant_code='$plantcode' and mod_no=$module  and date='$date2'";
 			//echo $sqll;
 			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row11=mysqli_fetch_array($sql_result11))

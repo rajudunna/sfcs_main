@@ -13,6 +13,8 @@ $username="sfcsproject1";
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 //$view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
 //$authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
@@ -295,7 +297,7 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 
 			  <?php
 		
-			 $sql='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
+			 $sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -395,10 +397,10 @@ $style_status_summ="temp_pool_db.".$username.date("YmdHis")."_"."style_status_su
 $style_status_summ_today="style_status_summ_today";
 $ssc_code_temp="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_temp";
 
-$sql="create TEMPORARY table $bai_pro2.style_status_summ ENGINE = MyISAM select * from $bai_pro2.style_status_summ_live ";
+$sql="create TEMPORARY table $pps.style_status_summ ENGINE = MyISAM select * from $bai_pro2.style_status_summ_live ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="create TEMPORARY table $bai_pro2.ssc_code_temp ENGINE = MyISAM select * from $bai_pro2.ssc_code_temp ";
+$sql="create TEMPORARY table $pps.ssc_code_temp ENGINE = MyISAM select * from $pps.ssc_code_temp ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $start_date=$_POST["sdate"];
@@ -464,7 +466,7 @@ echo '<table class="table table-bordered" border=1  id="tablecol" >';
 $i=0;
 $j=1;
 $r=$t;
-$sql="select distinct week(exfact_date) as week_code,year(exfact_date) as \"year\",GROUP_CONCAT(DISTINCT exfact_date ORDER BY exfact_date)AS dates from $bai_pro2.shipment_plan where exfact_date between \"".$start_date."\" and \"".$end_date."\" and schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM bai_pro2.buyer_codes WHERE buyer_name IN ('".str_replace(",","','",$buyer_div)."'))) group by week(exfact_date) order by exfact_date,week(exfact_date)";
+$sql="select distinct week(exfact_date) as week_code,year(exfact_date) as \"year\",GROUP_CONCAT(DISTINCT exfact_date ORDER BY exfact_date)AS dates from $bai_pro2.shipment_plan where exfact_date between \"".$start_date."\" and \"".$end_date."\" and schedule_no in (SELECT order_del_no FROM bai_pro3.bai_orders_db WHERE order_div IN (SELECT buyer_name FROM $pps.buyer_codes WHERE plant_code='$plantcode' and buyer_name IN ('".str_replace(",","','",$buyer_div)."'))) group by week(exfact_date) order by exfact_date,week(exfact_date)";
  //echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -606,7 +608,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 			if(sizeof($temp)>0)
 			{
-				$sql2="select sum(cut_qty) as \"cut_qty\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(cut_qty) as \"cut_qty\" from $pps.style_status_summ where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -614,7 +616,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$cut_qty[$i]=$sql_row2['cut_qty'];
 				}
 
-				$sql2="select sum(cut_qty) as \"cut_qty\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(cut_qty) as \"cut_qty\" from $pps.style_status_summ_today where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -657,7 +659,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 
 			if(sizeof($temp)>0){
-				$sql2="select sum(sewing_in) as \"sewing_in\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_in) as \"sewing_in\" from $pps.style_status_summ where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -666,7 +668,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					
 				}
 				
-				$sql2="select sum(sewing_in) as \"sewing_in\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_in) as \"sewing_in\" from $pps.style_status_summ_today where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -705,7 +707,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(sewing_out) as \"sewing_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_out) as \"sewing_out\" from $pps.style_status_summ where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2;
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -713,7 +715,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$sewing_out[$i]=$sql_row2['sewing_out'];
 				}
 
-				$sql2="select sum(sewing_out) as \"sewing_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_out) as \"sewing_out\" from $pps.style_status_summ_today where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -752,14 +754,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}			
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(pack_qty) as \"pack_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(pack_qty) as \"pack_out\" from $pps.style_status_summ where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
 					$pack_out[$i]=$sql_row2['pack_out'];	
 				}
 				
-				$sql2="select sum(pack_qty) as \"pack_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(pack_qty) as \"pack_out\" from $pps.style_status_summ_today where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -799,7 +801,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(ship_qty) as \"ship_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(ship_qty) as \"ship_out\" from $pps.style_status_summ where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -807,7 +809,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					
 				}
 
-				$sql2="select sum(ship_qty) as \"ship_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(ship_qty) as \"ship_out\" from $pps.style_status_summ_today where plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -854,7 +856,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if($Current_Modules==1 || $All==1){
 		for($i=0; $i<sizeof($week_code); $i++)
 		{
-			$sql2="select max(mod_count) as \"mod_count\" from $bai_pro2.movex_styles where style_id=\"$style_id\"";
+			$sql2="select max(mod_count) as \"mod_count\" from $pps.movex_styles where plant_code='$plantcode' and style_id=\"$style_id\"";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -901,7 +903,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			// $ssc_code=implode(",",$temp);
 			// echo "SSC :".$ssc_code;
 			if(sizeof($temp)>0){
-				$sql12="select sum(old_sewing_out) as \"old_sewing_out\" from $bai_pro2.$style_status_summ_primary where ssc_code in 
+				$sql12="select sum(old_sewing_out) as \"old_sewing_out\" from $pps.$style_status_summ_primary where plant_code='$plantcode' and ssc_code in 
 				(".implode(",",$temp).")";
 				//echo "Host:".var_dump($link)."</br>";
 				//echo "Qry:".$sql12;

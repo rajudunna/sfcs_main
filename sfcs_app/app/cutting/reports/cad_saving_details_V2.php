@@ -1,5 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <title>CAD Saving Details</title>
@@ -83,7 +85,7 @@ function verify_date(){
 				<input  class="form-control " type="text" id="edate" name="edat" data-toggle="datepicker" size=8 onchange="return verify_date();" value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/></td>
 			</div>
 			  <?php
-			$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+			$sql="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes where plant_code='$plantcode' GROUP BY BUYER_CODE ORDER BY buyer_code";
 
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -138,7 +140,7 @@ if(isset($_POST["submit"]))
 	$sdat=$_POST["sdat"];
 	$edat=$_POST["edat"];
 	$aod_nos=array();
-	$sql_dat="select disp_note_no as disp from $bai_pro3.disp_db where create_date between \"$sdat\" and \"$edat\"";
+	$sql_dat="select disp_note_no as disp from $pps.disp_db where plant_code='$plantcode' and create_date between \"$sdat\" and \"$edat\"";
 	//echo $sql_dat;
 	$result_dat=mysqli_query($link, $sql_dat) or exit("Sql Error1".$sql_dat.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_dat=mysqli_fetch_array($result_dat))
@@ -393,7 +395,7 @@ if(isset($_POST["submit"]))
 
 				//echo "<td>".."</td>";
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where plant_code='$plantcode' and cutno in (".implode(",",$docketnos).")";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -401,7 +403,7 @@ if(isset($_POST["submit"]))
 					$issued_qty=$row["qty"];
 				}
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where plant_code='$plantcode' and cutno in (".implode(",",$recut_docketnos).")";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -419,7 +421,7 @@ if(isset($_POST["submit"]))
 
 				$damages_qty=0;
 				$shortages_qty=0;
-				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).") ";
+				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $pps.act_cut_status where plant_code='$plantcode' and doc_no in (".implode(",",$docketno).") ";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
@@ -428,7 +430,7 @@ if(isset($_POST["submit"]))
 
 				}
 				$joints=0;$endbits=0;	
-				$sql12="select joints_endbits from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).")";
+				$sql12="select joints_endbits from $pps.act_cut_status where plant_code='$plantcode' and doc_no in (".implode(",",$docketno).")";
 				$result12=mysqli_query($link, $sql12) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row12=mysqli_fetch_array($result12))
 				{
@@ -443,7 +445,7 @@ if(isset($_POST["submit"]))
 				}
 				$recut_damages_qty=0;
 				$recut_shortages_qty=0;
-				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status_recut_v2 where doc_no in (".implode(",",$recut_docketno).")";
+				$sql="select  sum(damages) as dam,sum(shortages) as shrt from $pps.act_cut_status_recut_v2 where plant_code='$plantcode' and doc_no in (".implode(",",$recut_docketno).")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
@@ -457,7 +459,7 @@ if(isset($_POST["submit"]))
 
 	   
 
-				$sql4="SELECT SUM(ship_s_xs)+SUM(ship_s_s)+SUM(ship_s_m)+SUM(ship_s_l)+SUM(ship_s_xl)+SUM(ship_s_xxxl)+SUM(ship_s_s01)+SUM(ship_s_s02)+SUM(ship_s_s03)+SUM(ship_s_s04)+SUM(ship_s_s05)+SUM(ship_s_s06)+SUM(ship_s_s07)+SUM(ship_s_s08)+SUM(ship_s_s09)+SUM(ship_s_s10)+SUM(ship_s_s11)+SUM(ship_s_s12)+SUM(ship_s_s13)+SUM(ship_s_s14)+SUM(ship_s_s15)+SUM(ship_s_s16)+SUM(ship_s_s17)+SUM(ship_s_s18)+SUM(ship_s_s19)+SUM(ship_s_s20)+SUM(ship_s_s21)+SUM(ship_s_s22)+SUM(ship_s_s23)+SUM(ship_s_s24)+SUM(ship_s_s25)+SUM(ship_s_s26)+SUM(ship_s_s27)+SUM(ship_s_s28)+SUM(ship_s_s29)+SUM(ship_s_s30)+SUM(ship_s_s31)+SUM(ship_s_s32)+SUM(ship_s_s33)+SUM(ship_s_s34)+SUM(ship_s_s35)+SUM(ship_s_s36)+SUM(ship_s_s37)+SUM(ship_s_s38)+SUM(ship_s_s39)+SUM(ship_s_s40)+SUM(ship_s_s41)+SUM(ship_s_s42)+SUM(ship_s_s43)+SUM(ship_s_s44)+SUM(ship_s_s45)+SUM(ship_s_s46)+SUM(ship_s_s47)+SUM(ship_s_s48)+SUM(ship_s_s49)+SUM(ship_s_s50) as ship_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$schedule\" and ship_status=\"2\"";
+				$sql4="SELECT SUM(ship_s_xs)+SUM(ship_s_s)+SUM(ship_s_m)+SUM(ship_s_l)+SUM(ship_s_xl)+SUM(ship_s_xxxl)+SUM(ship_s_s01)+SUM(ship_s_s02)+SUM(ship_s_s03)+SUM(ship_s_s04)+SUM(ship_s_s05)+SUM(ship_s_s06)+SUM(ship_s_s07)+SUM(ship_s_s08)+SUM(ship_s_s09)+SUM(ship_s_s10)+SUM(ship_s_s11)+SUM(ship_s_s12)+SUM(ship_s_s13)+SUM(ship_s_s14)+SUM(ship_s_s15)+SUM(ship_s_s16)+SUM(ship_s_s17)+SUM(ship_s_s18)+SUM(ship_s_s19)+SUM(ship_s_s20)+SUM(ship_s_s21)+SUM(ship_s_s22)+SUM(ship_s_s23)+SUM(ship_s_s24)+SUM(ship_s_s25)+SUM(ship_s_s26)+SUM(ship_s_s27)+SUM(ship_s_s28)+SUM(ship_s_s29)+SUM(ship_s_s30)+SUM(ship_s_s31)+SUM(ship_s_s32)+SUM(ship_s_s33)+SUM(ship_s_s34)+SUM(ship_s_s35)+SUM(ship_s_s36)+SUM(ship_s_s37)+SUM(ship_s_s38)+SUM(ship_s_s39)+SUM(ship_s_s40)+SUM(ship_s_s41)+SUM(ship_s_s42)+SUM(ship_s_s43)+SUM(ship_s_s44)+SUM(ship_s_s45)+SUM(ship_s_s46)+SUM(ship_s_s47)+SUM(ship_s_s48)+SUM(ship_s_s49)+SUM(ship_s_s50) as ship_qty FROM $pps.ship_stat_log WHERE plant_code='$plantcode' and ship_schedule=\"$schedule\" and ship_status=\"2\"";
 				////echo $sql4;
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows=mysqli_num_rows($sql_result4);
