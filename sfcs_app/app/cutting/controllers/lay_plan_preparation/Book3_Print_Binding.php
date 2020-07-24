@@ -2871,7 +2871,7 @@ while($sql_row=mysqli_fetch_array($sql_result_print))
 
 if($printstatus!='Close')
 {
-	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_by= '".$username."' where id = $bindid and plant_code='".$plant_code."'";
+	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."' where id = $bindid and plant_code='".$plant_code."'";
     $update_query = mysqli_query($link,$query);
 }
 ?>

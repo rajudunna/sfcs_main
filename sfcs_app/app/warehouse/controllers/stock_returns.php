@@ -285,13 +285,13 @@ if(isset($_POST['put']))
 				
 				if($status[$i]==1)
 				{
-					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0, updated_by= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0, updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 					echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				else
 				{
-					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0, updated_by= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0, updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 					//echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

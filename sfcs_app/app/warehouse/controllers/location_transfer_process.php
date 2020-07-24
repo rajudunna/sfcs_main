@@ -46,7 +46,7 @@ if($_POST['put'])
 			//echo "ok";
 			if($available[$i]==$qty_issued[$i])
 			{
-				$sql="update $wms.store_in set ref1=\"".$n_location[$i]."\",updated_by= '".$username."' where barcode_number='$barcode_number[$i]' and plant_code='".$plant_code."'";
+				$sql="update $wms.store_in set ref1=\"".$n_location[$i]."\",updated_user= '".$username."' where barcode_number='$barcode_number[$i]' and plant_code='".$plant_code."'";
 				//echo $sql;
 				$sql_result2=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				

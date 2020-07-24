@@ -72,7 +72,7 @@ $username = $_SESSION['userName'];
 
 							//update qry here
 							$sno=$_POST['flag_status'];
-							$qry_updateloc="UPDATE $wms.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\",updated_by= \"$username\" WHERE sno=".$sno." and plant_code='".$plant_code."'";
+							$qry_updateloc="UPDATE $wms.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\",updated_user= \"$username\" WHERE sno=".$sno." and plant_code='".$plant_code."'";
 							$update_locations=mysqli_query($link, $qry_updateloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// $url = getFullURL($_GET['r'],'add_newlocation.php','N');
 							// header("Location: ".$url);

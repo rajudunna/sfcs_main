@@ -156,7 +156,7 @@ if(isset($_POST['cartonid']))
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
 				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status, updated_by= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
+				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status, updated_user= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -254,7 +254,7 @@ if(isset($_POST['check2']))
 			if((($qty_rec-($qty_iss+$qty_issued))+$qty_ret)>=0 && $qty_iss > 0)
 			{
 				//$sql1="update store_in set qty_issued=".(($qty_rec-$qty_issued)+($qty_ret+$qty_issued+$qty_iss)).", status=2, allotment_status=2 where tid=\"$code\"";
-				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status, updated_by= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
+				$sql1="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).", status=$status, allotment_status=$status, updated_user= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
 				// echo "<BR>".$sql1;
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
