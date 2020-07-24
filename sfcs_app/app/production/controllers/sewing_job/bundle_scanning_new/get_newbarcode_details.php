@@ -3,7 +3,8 @@ error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if (isset($_POST["barcode_info"])){
     $op_code=$_POST['op_code'];
     $action_mod=$_POST['action_mod'];
