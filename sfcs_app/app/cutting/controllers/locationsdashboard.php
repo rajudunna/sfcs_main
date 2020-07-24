@@ -40,9 +40,11 @@ jQuery(document).ready(function($){
     </head>
     <body>
         <?php 
+        $plantcode=$_SESSION['plantCode'];
+        $username=$_SESSION['userName'];
             error_reporting(0);             
             include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-                $sqlQuery = "SELECT * FROM $mdm.locations";
+                $sqlQuery = "SELECT * FROM $pms.locations where plant_code='$plantcode'";
 				$sqlData = mysqli_query($link, $sqlQuery) or exit("Problem picking the locations from database/".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $locationData = array();
                 $resultArray = array();
