@@ -15,7 +15,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $mdm.tbl_leader_name where plant_code='$plantcode'";
+	$sql = "SELECT * FROM $mdm.tbl_leader_name where plant_code='$plantcode' order by id desc";
 	$result = $conn->query($sql);
 
 	$sno =1;
