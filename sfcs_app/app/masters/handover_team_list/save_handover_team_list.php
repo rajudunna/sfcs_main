@@ -82,6 +82,7 @@
                     
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="emp_status"  data-parsley-errors-container="#errId4">
                 <?php
+                if ($emp_call_name) {
                     if($emp_status=="Active"){
                         echo '<option value="0" selected>Active</option>';
                         echo '<option value="1">In-Active</option>';
@@ -89,6 +90,11 @@
                         echo '<option value="0">Active</option>';
                         echo '<option value="1" selected>In-Active</option>';
                     }
+                } else {
+                    echo '<option value="0" selected>Active</option>';
+                    echo '<option value="1">In-Active</option>';
+                }
+                    
 
                 ?>
                 </select><span id="errId4" class="error"></span></div>

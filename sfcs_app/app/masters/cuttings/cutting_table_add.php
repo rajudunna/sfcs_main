@@ -57,7 +57,7 @@ $username=$_SESSION['userName'];
                 <label class="control-label control-label-left col-sm-3" for="table_name">  Employee Id:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="table_name" type="text" class="form-control k-textbox integer" data-role="text"  name="emp_id" required="required" <?= $jj ?>  value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
+                <input id="table_name" type="text" class="form-control k-textbox integer" min="1" onkeyup="return validateEmpIdNum(this)"  data-role="text"  name="emp_id" required="required" <?= $jj ?>  value="<?php echo $emp_id; ?>" ><span id="errId1" class="error"></span></div>
                 
         </div></div><div class="col-md-4"><div class="form-group">
                 <label class="control-label control-label-left col-sm-3" for="table_status">Employee Name:</label>
@@ -83,4 +83,21 @@ $username=$_SESSION['userName'];
     
 <?php include('view_cutting_table.php'); ?>
 </body>
+<script>
+    function validateEmpIdNum(t){
+        if(t.value == '')
+            return false;
+        var emp_id = t.value;
+        var emp_id_pattern = /^[1-9][0-9]*$/;
+        var found = emp_id.match(emp_id_pattern);
+        if(found) {
+            return true;
+        } else {
+            swal("ID is not valid");
+            t.value = '';
+            return false;
+        }  
+    }
+
+</script>
 </html>

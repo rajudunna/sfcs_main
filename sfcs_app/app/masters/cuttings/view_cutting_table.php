@@ -3,8 +3,8 @@
 	// $username = "baiall";
 	// $password = "baiall";
 	// $dbname = "bai_pro3";
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
+	//$plantcode=$_SESSION['plantCode'];
+	//$username=$_SESSION['userName'];
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
 
@@ -15,7 +15,7 @@
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM $mdm.tbl_leader_name where plant_code='$plantcode'";
+	$sql = "SELECT * FROM $mdm.tbl_leader_name where plant_code='$plantcode' and  order by id desc";
 	$result = $conn->query($sql);
 
 	$sno =1;
