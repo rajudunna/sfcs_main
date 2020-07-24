@@ -130,7 +130,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 				{
 					$existing_location=$row['ref1'];
 				}
-				$code=ltrim($code,"0");
+				// $code=ltrim($code,"0");
 				if($location==$existing_location)
 				{
 					$status=0;
