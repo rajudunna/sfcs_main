@@ -683,7 +683,7 @@ $username = $_SESSION['userName'];
 				$main_item_name = str_replace('"', '',$item_name);
 				$insertbinditems .= ' ("' . $lot_no . '","' . $supplier_po . '","' . $po_line . '","' . $po_subline . '","' . $inv_no . '","' . $item_code . '","' . $item_desc . '","'.$main_item_name.'","' . $batch . '","' . $rm_color . '","' . $supplier_roll_no . '","' . $fcs_no . '","' . $qty . '",0,' . $lastinsert_id . ',' . $main_id . ','.$plant_code.','.$username.'),';
         
-				$update_4point_status = "update wms.store_in set four_point_status=1,updated_by= '".$username."' where tid in ('" . $main_id . "') and plant_code='".$plant_code."'";
+				$update_4point_status = "update wms.store_in set four_point_status=1,updated_user= '".$username."' where tid in ('" . $main_id . "') and plant_code='".$plant_code."'";
 
 				mysqli_query($link, $update_4point_status) or exit(message_sql());
 			}

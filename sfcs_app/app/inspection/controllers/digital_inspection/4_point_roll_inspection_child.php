@@ -743,7 +743,7 @@ if (isset($_POST['confirm'])) {
         $row_store_tid = mysqli_fetch_array($details_check_store_tid);
         if ($row_sid == 1) 
         {            
-            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '3',updated_by= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
+            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '3',updated_user= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
             $roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222');
             
             $update_status = "update $wms.inspection_population SET status=3 where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
@@ -965,7 +965,7 @@ if (isset($_POST['save'])) {
         
         $damage = $_POST['damage'];
         
-        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "',updated_by= '".$username."' where id=".$parent_id." and plant_code='".$plant_code."'";
+        $sql_rows="update $wms.main_population_tbl set fab_composition='" . $fabric_composition . "',s_width='" . $spec_width . "',s_weight='" . $spec_weight . "',repeat_len='" . $repeat_length . "',lab_testing='" . $lab_testing . "',tolerence='" . $tolerance . "',remarks='" . $remarks . "',updated_user= '".$username."' where id=".$parent_id." and plant_code='".$plant_code."'";
         mysqli_query($link, $sql_rows) or die("Error---1111" . mysqli_error($GLOBALS["___mysqli_ston"]));
         
         $id_parent = $parent_id;
@@ -976,10 +976,10 @@ if (isset($_POST['save'])) {
         $row_store_tid = mysqli_fetch_array($details_check_store_tid);
         if ($row_sid >0) 
         {   
-            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '2',updated_by= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
+            $update_status_insp = "update $wms.roll_inspection_child SET inspection_status='" . $status . "',inspected_per='" . $inspected_per . "',inspected_qty='" . $inspected_qty . "',width_s='" . $s . "',width_m='" . $m . "',width_e='" . $e . "',actual_height='" . $actual_height . "',actual_repeat_height='" . $actual_repeat_height . "',skw='" . $skw . "',bow='" . $bow . "',ver='" . $ver . "',gsm='" . $gsm . "',comment='" . $comment . "',marker_type='" . $marker_type . "',status = '2',updated_user= '".$username."' where store_in_tid='".$store_id."' and plant_code='".$plant_code."'";
             $roll_inspection_update = $link->query($update_status_insp) or exit('query error in updating222---3');
             
-            $update_status = "update $wms.inspection_population SET status=2,updated_by= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
+            $update_status = "update $wms.inspection_population SET status=2,updated_user= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating2221---21');
             $roll_id = $store_id;
         
@@ -1033,7 +1033,7 @@ if (isset($_POST['save'])) {
                     }
                 }    
             }
-            $update_status = "update $wms.inspection_population SET status=2,updated_by= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
+            $update_status = "update $wms.inspection_population SET status=2,updated_user= '".$username."' where store_in_id='" . $store_id . "' and plant_code='".$plant_code."'";
             $result_query_update = $link->query($update_status) or exit('query error in updating222---');
         }
     

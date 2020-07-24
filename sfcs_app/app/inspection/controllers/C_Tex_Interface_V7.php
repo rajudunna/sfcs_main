@@ -2589,18 +2589,18 @@ if($_POST['put'] || $_POST['confirm'])
 				}
 				
 			  }
-			  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+			  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_user= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 				//echo $sql;
 				mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		// echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
-	$sql="update $pps.inspection_db set status=0,updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+	$sql="update $pps.inspection_db set status=0,updated_user= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($_POST['confirm'])
 	{
@@ -2612,7 +2612,7 @@ if($_POST['put'] || $_POST['confirm'])
 		// }
 		echo $lot_no_new;
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
-		$sql1="update $pps.inspection_db set status=1,updated_by= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+		$sql1="update $pps.inspection_db set status=1,updated_user= '".$username."' where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo "<script>sweetAlert('Updated Sucessfully','','success')</script>";
 		echo getFullURLLevel($_GET['r'], "trims_inspection_update.php", "0", "N");
@@ -2652,7 +2652,7 @@ if($_POST['put'] || $_POST['confirm'])
 				$add_query=", ref4=\"".$ele_shade[$i]."\"";
 			}
 			// echo $rejection_reason[$i];
-			$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_by= '".$username."'$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
+			$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."'$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}

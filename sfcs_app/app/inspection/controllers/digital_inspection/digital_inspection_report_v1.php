@@ -464,7 +464,7 @@ $username = $_SESSION['userName'];
 					$exp = explode("$", $id);
 					$sno = $exp[0];
 					$lot_num[] = $exp[1];
-					$insertbinditems = "update $wms.inspection_population set status=1,updated_by= '".$username."' where parent_id=$parent_id and sno=$sno and plant_code='".$plant_code."'";
+					$insertbinditems = "update $wms.inspection_population set status=1,updated_user= '".$username."' where parent_id=$parent_id and sno=$sno and plant_code='".$plant_code."'";
 					mysqli_query($link, $insertbinditems) or exit("Sql Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				$lot_array = implode(",", $lot_num);

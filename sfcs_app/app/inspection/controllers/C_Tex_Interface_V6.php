@@ -2662,24 +2662,24 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				}
 				
 			  }
-		  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_by= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
+		  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_user= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_by= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
+		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 		// echo "Upadte Qry :".$sql;
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
-	$sql="update $pps.inspection_db set status=0,updated_by= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
+	$sql="update $pps.inspection_db set status=0,updated_user= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(isset($_POST['confirm']))
 	{
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
-		$sql1="update $pps.inspection_db set status=1,updated_by= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
+		$sql1="update $pps.inspection_db set status=1,updated_user= '".$username."' where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
@@ -2729,7 +2729,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_by= '".$username."'$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."'$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}

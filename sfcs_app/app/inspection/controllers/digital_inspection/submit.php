@@ -81,7 +81,7 @@ if (isset($_POST['delete_id'])) {
    // $delete_roll = "delete from $wms.inspection_population where store_in_id = ' $store_id'";
    // $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_by= '".$username."' where store_in_id = '$store_id' and plant_code='".$plant_code."'";
+    $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_user= '".$username."' where store_in_id = '$store_id' and plant_code='".$plant_code."'";
     $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
     $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = ' $store_id' and plant_code='".$plant_code."'";
