@@ -230,7 +230,7 @@ if(isset($_POST['submit']))
 	$shift_end_time=$_POST['shift_end'];
 	$now_date=date('Y-m-d');
 	$prev_date = date('Y-m-d', strtotime($date .' -1 day'));
-	$next_date = date('Y-m-d', strtotime($date .' +1 day'));
+
 	$modules_array = array();	$modules_id_array=array();
 	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
@@ -332,16 +332,15 @@ if(isset($_POST['submit']))
 						
 					?>	
 					<?php
-					  $get_working_days="select *  FROM $pms.plant_calendar where plant_code='$facility_code' and calendar_date>=\"$next_date\"  and day_status='Working Day' limit 1";
-					  
-					  $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					  while($sql_row11=mysqli_fetch_array($result_get_working_day))
-								{
-								$final_date=$sql_row11['calendar_date'];
-
-								}
+					   $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1  ";
+					   $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
+								 {
+								 $final_date=$sql_row11['last_up'];
+  
+								 }
 								
-								if($now_date==$final_date || $now_date==$date){
+								if($date==$final_date || $now_date==$date){
 									echo'<tr>
 									<th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
 									 </tr>';
@@ -394,15 +393,15 @@ if(isset($_POST['submit']))
 					 ?>
 					 <?php
 					 
-					 $get_working_days="select *  FROM $pms.plant_calendar where plant_code='$facility_code' and calendar_date>=\"$next_date\"  and day_status='Working Day' limit 1";
+					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1 ";
 					 $result_get_working_day=mysqli_query($link, $get_working_days) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
 							   {
-							   $final_date=$sql_row11['calendar_date'];
+							   $final_date=$sql_row11['last_up'];
 
 							   }
-							    
-							   if($now_date==$final_date ||$now_date==$date){
+							 
+							   if($date==$final_date ||$now_date==$date){
 								   echo'<tr>
 								   <th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
 									</tr>';
