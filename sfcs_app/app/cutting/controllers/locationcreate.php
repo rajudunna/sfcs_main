@@ -10,12 +10,14 @@
 </style>
 
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 	error_reporting(0);
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	$flag='';
 	if (isset($_GET['edit_id'])) {
 		$loc_id = $_GET['edit_id'];
-		$rec = "select * from $mdm.locations where loc_id = $loc_id";
+		$rec = "select * from $pms.locations where plant_code='$plantcode' and loc_id = $loc_id";
 		$recReply = mysqli_query( $link, $rec) or exit("Problem Fetching data from Database/".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row=mysqli_fetch_array($recReply))
 		{
@@ -37,7 +39,7 @@
 			if (isset($_GET['edit_id'])) 
 			{
 				$loc_id = $_GET['edit_id'];
-				$currentLoc = "select capacity from $mdm.locations where loc_id = ".$loc_id." ";				
+				$currentLoc = "select capacity from $pms.locations where plant_code='$plantcode' and loc_id = ".$loc_id." ";				
 				$currentLocres = mysqli_query( $link, $currentLoc);
 				$res=mysqli_fetch_row($currentLocres);
 				if($cap < $res[0]){?>
@@ -51,7 +53,7 @@
 					</script>
 
 				<?php }else{
-					$rec = "UPDATE locations SET loc_name = '".$locName."', capacity=".$cap." WHERE loc_id = ".$loc_id." ";
+					$rec = "UPDATE $pms.locations SET loc_name = '".$locName."', capacity=".$cap.",updated_user='$username',updated_at='".date('Y-m-d')."' WHERE  plant_code='$plantcode' and loc_id = ".$loc_id." ";
 					// echo $rec;
 					$recReply = mysqli_query( $link, $rec);
 					if ($recReply) 
@@ -80,7 +82,8 @@
 					}
 				}
 			}else{
-				$InsertQuery = 'INSERT INTO '.$mdm.'.`locations` (`loc_name`, `capacity`) VALUES ( "'.$locName.'" , '.$cap.') ON DUPLICATE KEY UPDATE loc_name = VALUES(loc_name), capacity = VALUES(capacity);';
+				$InsertQuery = 'INSERT INTO '.$pms.'.`locations` (`loc_name`, `capacity`,plant_code,created_user,created_at) VALUES ( "'.$locName.'" , '.$cap.',"'.$plantcode.'","'.$username.'","'.date('Y-m-d').'") ON DUPLICATE KEY UPDATE loc_name = VALUES(loc_name), capacity = VALUES(capacity);';
+
 				$InsertReply = mysqli_query( $link, $InsertQuery);
 				if ($InsertReply) 
 				{?>
@@ -112,7 +115,7 @@
 
 		if (isset($_GET['del_id'])) {
 			$loc_id = $_GET['del_id'];
-			$deleteQuery = "DELETE FROM $mdm.`locations` WHERE `loc_id` = '$loc_id'";
+			$deleteQuery = "DELETE FROM $pms.`locations` WHERE plant_code='$plantcode' and `loc_id` = '$loc_id'";
 			$deleteReply = mysqli_query( $link, $deleteQuery);
 			if ($deleteReply) {?>
 				<div class="alert alert-success fa fa-thumbs-up">
@@ -189,7 +192,7 @@
 				</thead>
 				<tbody >
 					<?php
-						$selectQuery = "SELECT * FROM $mdm.locations";
+						$selectQuery = "SELECT * FROM $pms.locations where plant_code='$plantcode'";
 						$selectReply = mysqli_query( $link, $selectQuery) or exit("Problem Fetching data from Database/".mysqli_error($GLOBALS["___mysqli_ston"]));;
 						$locValues =array();
 						$resValues =array();
