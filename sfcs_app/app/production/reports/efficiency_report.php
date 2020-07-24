@@ -78,7 +78,7 @@ if(isset($_POST['submit']))
     $tdat=$_POST['tdat'];
  	$rowspan=sizeof($shifts_array);
     echo '<div class="row"><div class="col-sm-2"><input type="checkbox"  id="checkbox" name="checkbox">&nbsp <b>Hide Style Info</b></div>';
-	if($rowspan>1)
+	if($rowspan>0)
 	{
 		echo'<div class="col-sm-2"><input type="checkbox"  id="checkbox1" name="checkbox1" checked="checked">&nbsp <b>Enable Summary</b></div></div>';
 	}
@@ -212,7 +212,7 @@ if(isset($_POST['submit']))
 			$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-$breakhours/60));
 		}		
 	}	
-	$rowspans=$rowspan+1;
+	$rowspans=$rowspan;
 	$sql="select * from $bai_pro3.module_master where status='Active' ORDER BY module_name*1";
 	$result=mysqli_query($link, $sql) or die("Error =8 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($result))
@@ -298,7 +298,7 @@ if(isset($_POST['submit']))
 		if($rowspan>1)
 		{
 			echo"<tr >";
-			echo"<td class='summary'>".implode("+",$shifts_array)."</td>
+			echo"<td class='summary' colspan=2 style='text-align:right;'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
 			echo" <td class='style2'>-</td>
 			<td class='smv2'>-</td>
@@ -353,7 +353,7 @@ if(isset($_POST['submit']))
         $(".days1").hide();
      }
      else
-     {
+     {	  
         $("#test").show();
         $("#style").show();
         $("#smv").show();
@@ -362,6 +362,17 @@ if(isset($_POST['submit']))
         $(".style1").show();
         $(".smv1").show();
         $(".days1").show();
+		if($('#checkbox1').not(':checked').length){
+		a$(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test2").hide(); 
+		} 
+		$(".style2").show();
+        $(".smv2").show();
+        $(".days2").show();
+        $(".test2").show(); 
+		
     }
 	
 	if($("#checkbox").is(":checked") && $("#checkbox1").is(":checked")) {
@@ -388,6 +399,10 @@ $("#checkbox1").click(function() {
         $(".summary10").show();
         $(".summary11").show();
         $(".summary12").show();
+		$(".style2").show();
+        $(".smv2").show();
+        $(".days2").show();
+        $(".test2").show();
 		if($("#checkbox").is(":checked")) {
 		$(".style2").hide();
         $(".smv2").hide();
