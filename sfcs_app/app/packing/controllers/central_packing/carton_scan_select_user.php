@@ -1,6 +1,7 @@
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	if ($_GET['operation_id']) {
 		$operation_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
@@ -28,7 +29,7 @@
 				{
 					$team_id=$_GET['team_id'];
 					$emp_id=$_GET['emp_id'];
-					$sql_schedule="update bai_pro3.tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."' where team_id=$team_id and emp_id='$emp_id'";
+					$sql_schedule="update $pps.tbl_fg_crt_handover_team_list set selected_user='$username', lastup='".date("Y-m-d H:i:s")."',created_user='$username' where team_id=$team_id and emp_id='$emp_id' and plant_code='$plant_code'";
 					// echo $sql_schedule;
 					mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');
@@ -42,7 +43,7 @@
 					<h3><label class='label label-info'>Select an User to Start Scanning:</label></h3>
 					<table class='table table-bordered'>
 						<tr><th>Employee ID</th><th>Call Name</th><th>Control</th></tr>";
-						$sql_schedule="select * from bai_pro3.tbl_fg_crt_handover_team_list where emp_status=0 order by 1*emp_id";
+						$sql_schedule="select * from $pps.tbl_fg_crt_handover_team_list where  plant_code='$plant_code' and emp_status=0 order by 1*emp_id";
 						$sql_result_schedule=mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule$sql_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row_schedule=mysqli_fetch_array($sql_result_schedule))
 						{
