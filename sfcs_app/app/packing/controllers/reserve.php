@@ -1,7 +1,8 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3, 'R')); 
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if(isset($_POST['hold']))
 {
 	$style_new=$_POST['style_new'];
@@ -43,7 +44,7 @@ if(isset($_POST['hold']))
 			foreach ($clrs as $key => $value) {
 				if($query[$value] != '')
 				{
-					$sql1="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"".trim($value)."\",ship_status=\"1\",ship_remarks=\"$rmks\",".substr($query[$value],0,-1);
+					$sql1="insert into $pps.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"".trim($value)."\",plant_code=\"".$plant_code."\",created_user=\"".$username."\",ship_status=\"1\",ship_remarks=\"$rmks\",".substr($query[$value],0,-1);
 					// echo "<br/> query1=".$sql;
 					mysqli_query($link, $sql1) or exit("Sql Error inserting-all_color".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$ship_update_tid1 = mysqli_insert_id($link);
@@ -51,12 +52,12 @@ if(isset($_POST['hold']))
 					if($count_value == 1)
 					{
 						$ship_update_value = 'R-'.$schedule_new.'-'.$ship_update_tid1;
-						$sql23 = "UPDATE `bai_pro3`.`ship_stat_log` SET ship_up_date = '$ship_update_value', ship_cartons=".abs($crts)." where ship_tid = ".$ship_update_tid1;
+						$sql23 = "UPDATE `pps`.`ship_stat_log` SET ship_up_date = '$ship_update_value', ship_cartons=".abs($crts).", created_user=".$username." where ship_tid = ".$ship_update_tid1." AND plant_code=".$plant_code;
 						mysqli_query($link, $sql23) or exit("Sql Error updating-all_color_first".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					else
 					{
-						$sql24 = "UPDATE `bai_pro3`.`ship_stat_log` SET ship_up_date ='$ship_update_value' where ship_tid = ".$ship_update_tid1;
+						$sql24 = "UPDATE `pps`.`ship_stat_log` SET ship_up_date ='$ship_update_value',created_user ='$username' where ship_tid = ".$ship_update_tid1." AND plant_code=".$plant_code;
 						mysqli_query($link, $sql24) or exit("Sql Error updating-all_color".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
