@@ -20,8 +20,8 @@ $emp_id =$_POST['emp_id'];
 $emp_name =$_POST['emp_name'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-// echo 
-if (empty($emp_id) || empty($emp_name)) {
+// echo strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0
+if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0) {
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
