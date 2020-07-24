@@ -17,7 +17,7 @@
 
 <body>
 <?php 
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
     if(isset($_GET['tid'])){
         $jj='readonly';

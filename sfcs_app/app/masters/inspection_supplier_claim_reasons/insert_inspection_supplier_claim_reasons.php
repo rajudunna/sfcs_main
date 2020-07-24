@@ -8,7 +8,7 @@ $complaint_reason=$_POST['complaint_reason'];
 $complaint_clasification =$_POST['complaint_clasification'];
 $complaint_category = $_POST['complaint_category'];
 $status = $_POST['status'];
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName']; 
 //echo $color_code;
 
@@ -44,7 +44,7 @@ if (strlen(trim($complaint_reason)) == 0 || strlen(trim($complaint_clasification
 }else{
 	if($tid>0){ 
 		//update
-		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status',updated_by= '$username' where tid =$tid and plant_code='$plantcode'";
+		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status',updated_by= '$username' where tid =$tid and plant_code='$plant_code'";
 		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
@@ -67,7 +67,7 @@ if (strlen(trim($complaint_reason)) == 0 || strlen(trim($complaint_clasification
 		}
 	}else{
 		
-		$count_qry= "select * from $mdm.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and plant_code='$plantcode' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
+		$count_qry= "select * from $mdm.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and plant_code='$plant_code' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

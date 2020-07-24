@@ -13,7 +13,7 @@ $emp_call_name =$_POST['emp_call_name'];
 //$selected_user = $_POST['selected_user'];
 //$lastup = $_POST['lastup'];
 $emp_status = $_POST['emp_status'];
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 
 //echo $color_code;
@@ -50,7 +50,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 )
 }else{
 	if($team_id>0){
 		//update
-		$sql = "update $pms.tbl_fg_crt_handover_team_list set emp_id='$emp_id',emp_call_name='$emp_call_name',emp_status='$emp_status',updated_user='$username' where team_id=$team_id and plant_code='$plantcode'";
+		$sql = "update $pms.tbl_fg_crt_handover_team_list set emp_id='$emp_id',emp_call_name='$emp_call_name',emp_status='$emp_status',updated_user='$username' where team_id=$team_id and plant_code='$plant_code'";
 		//echo $sql;exit;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_handover_team_list.php','N');
@@ -73,7 +73,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 )
 		}
 	}else{
 		
-		$count_qry= "select emp_id from $pms.tbl_fg_crt_handover_team_list where emp_id = '$emp_id' and plant_code='$plantcode'"; 
+		$count_qry= "select emp_id from $pms.tbl_fg_crt_handover_team_list where emp_id = '$emp_id' and plant_code='$plant_code'"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){

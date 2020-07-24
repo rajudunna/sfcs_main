@@ -4,9 +4,9 @@
 	// 	echo "<script>swal('Enter data correctly.')</script>";
 	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    $plantcode=$_SESSION['plantCode'];
+    $plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
-	$sql = "SELECT * FROM $mdm.inspection_complaint_reasons where plant_code='$plantcode' order by tid desc";
+	$sql = "SELECT * FROM $mdm.inspection_complaint_reasons where plant_code='$plant_code' order by tid desc";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);

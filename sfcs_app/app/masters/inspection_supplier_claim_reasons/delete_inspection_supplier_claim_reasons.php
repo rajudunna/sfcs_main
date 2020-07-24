@@ -5,7 +5,7 @@
 
 <?php
 $tid=$_GET['tid'];
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName']; 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
@@ -14,7 +14,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
  
-$delete="delete from $mdm.inspection_complaint_reasons where tid='$tid' and plant_code='$plantcode'";
+$delete="delete from $mdm.inspection_complaint_reasons where tid='$tid' and plant_code='$plant_code'";
 
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo"<script>setTimeout(function () { 
