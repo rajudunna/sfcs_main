@@ -30,7 +30,7 @@ $conn=$link;
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 
-if (empty($emp_id) || empty($emp_call_name) ) 
+if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 ) 
 {
 	$url=getFullURL($_GET['r'],'save_handover_team_list.php','N');
 	echo"<script>setTimeout(function () { 
