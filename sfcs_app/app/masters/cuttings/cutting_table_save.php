@@ -11,8 +11,8 @@
 // 	$emp_name=$_GET['emp_name'];
 // }
 // echo $_POST['table_name'];
-//$plantcode=$_SESSION['plantCode'];
-//$username=$_SESSION['userName'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $tbl_id=$_POST['tbl_id'];
 // echo $tbl_id;
 $emp_id =$_POST['emp_id'];
