@@ -6,7 +6,9 @@
 <?php 
     $table_filter = getFullURLLevel($_GET['r'],'common/js/TableFilter/tablefilter.js',3,'R');
     $view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
-    $image_path = getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/'; 
+    $image_path = getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/';
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName']; 
 ?>
 
 
@@ -78,11 +80,11 @@ if (newwindow.location && !newwindow.closed) {
 
 //Variable $con is coming from the header.php 
 $x=1;
-$sql1=mysqli_query($link,"select distinct sealno from $bai_pack.upload order by dat desc");
+$sql1=mysqli_query($link,"select distinct sealno from $pts.upload where plant_code='$plant_code' order by dat desc");
 
 while($rows=mysqli_fetch_array($sql1))
 {
-   $sql2=mysqli_query($link,"select * from $bai_pack.upload where sealno='".$rows['sealno']."' order by dat desc");
+   $sql2=mysqli_query($link,"select * from $pts.upload where sealno='".$rows['sealno']."' AND plant_code='".$plant_code."' order by dat desc");
    while($row2=mysqli_fetch_array($sql2))
    {
 		 echo "<tr>";
@@ -130,30 +132,30 @@ $x++;
 <?php
 
 $x=1;
-$sql1=mysqli_query($link, "select distinct sealno from $bai_pack.uploads order by dat");
+$sql1=mysqli_query($link, "select distinct sealno from $pts.uploads where plant_code='$plant_code' order by dat");
 while($rows=mysqli_fetch_array($sql1))
 {
    echo "<tr>";
    echo "<td>$x</td>";
-   $sql2=mysqli_query($link, "select distinct dat from $bai_pack.uploads where sealno='".$rows['sealno']."'");
+   $sql2=mysqli_query($link, "select distinct dat from $pts.uploads where plant_code='$plant_code' AND sealno='".$rows['sealno']."'");
    while($row2=mysqli_fetch_array($sql2))
    {
 		echo "<td>".$row2['dat']."</td>";
    }
-   $sql=mysqli_query($link, "select distinct name from $bai_pack.uploads where sealno='".$rows['sealno']."' order by container");
+   $sql=mysqli_query($link, "select distinct name from $pts.uploads where sealno='".$rows['sealno']."' AND plant_code='$plant_code' order by container");
    while($row=mysqli_fetch_array($sql))
    {
 	 $pho=$row['name'];
 	 echo "<td><a href=\"javascript:popitup('images/$pho')\"><img src=\"images/thumb_".$row['name']."\" height=150 width=150 alt=\"Click Here to Zoom\"></A></td>";
    }
    
-   $sql2=mysqli_query($link, "select distinct vecno from $bai_pack.uploads where sealno='".$rows['sealno']."'");
+   $sql2=mysqli_query($link, "select distinct vecno from $pts.uploads where plant_code='$plant_code' sealno='".$rows['sealno']."'");
    while($row2=mysqli_fetch_array($sql2))
    {
 		echo "<td>".$row2['vecno']."</td>";
    }
    echo "<td>".$rows['sealno']."</td>";
-   $sql2=mysqli_query($link, "select distinct carton from $bai_pack.uploads where sealno='".$rows['sealno']."'");
+   $sql2=mysqli_query($link, "select distinct carton from $pts.uploads where plant_code='$plant_code' AND sealno='".$rows['sealno']."'");
    while($row2=mysqli_fetch_array($sql2))
    {
 		echo "<td>".$row2['carton']."</td>";
