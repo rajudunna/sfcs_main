@@ -24,7 +24,9 @@
 		//$selected_user = $_GET['selected_user'];
         //$lastup = $_GET['lastup'];
         $emp_status = $_GET['emp_status'];
-       
+        $plantcode=$_SESSION['plantCode'];
+        $username=$_SESSION['userName'];
+        
 		
 		//echo $color_code;
        

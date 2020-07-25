@@ -13,7 +13,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_handover_team_list.php','N');
   
-$delete="delete from bai_pro3.tbl_fg_crt_handover_team_list where team_id='$team_id'";
+$delete="delete from pps.tbl_fg_crt_handover_team_list where team_id='$team_id'";
 if (mysqli_query($conn, $delete)) {
 	echo"<script>setTimeout(function () { 
 		swal({
