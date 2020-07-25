@@ -28,6 +28,8 @@
 
 </script>
 <?php
+		$plant_code = $_SESSION['plantCode'];
+		$username = $_SESSION['userName'];
 		echo'<div class="panel panel-primary">
 			<div class="panel-heading"><b>Update RM Receiving (Stock IN)</b></div>
             <div class="panel-body">

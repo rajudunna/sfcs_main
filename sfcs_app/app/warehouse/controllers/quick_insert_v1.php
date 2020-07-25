@@ -3,6 +3,8 @@
 	// require_once('phplogin/auth.php');
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 ?>
 
 
@@ -23,14 +25,14 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 	{
 		if(isset($_POST['lot_no'])){
 			$lot_no = $_POST['lot_no'];
-			$main_sql = "select * from $bai_rm_pj1.sticker_report where lot_no = '$lot_no' or rec_no = '$lot_no' ";
+			$main_sql = "select * from $wms.sticker_report where plant_code = '$plant_code' and lot_no = '$lot_no' or rec_no = '$lot_no' ";
 		}else{
 			$ref=$_POST['reference'];
-			$main_sql = "select * from $bai_rm_pj1.sticker_report where inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
+			$main_sql = "select * from $wms.sticker_report where plant_code = \"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
 		}
 	}else{
 		$ref=$_GET['ref'];
-		$main_sql = "select * from $bai_rm_pj1.sticker_report where inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
+		$main_sql = "select * from $wms.sticker_report where plant_code = \"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\"";
 	}
 	// echo $ref;
 	
@@ -48,7 +50,7 @@ echo'<td>Date:</td><td> <input type="text" class="form-control" name="date" valu
 
 echo '<td style="padding:4px;">Locaton:</td><td><select class="form-control" name="ref1">';
 echo "<option value=\"\"></option>";
-$sql="select * from $bai_rm_pj1.location_db where status=1 order by sno";
+$sql="select * from $wms.location_db where plant_code='$plant_code' and status=1 order by sno";
 mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -106,7 +108,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 		while($sql_row1=mysqli_fetch_array($main_result))
 		{
 			
-			$sql="select coalesce(sum(qty_rec),0) as \"in\" from $bai_rm_pj1.store_in where lot_no=\"".$sql_row1['lot_no']."\"";
+			$sql="select coalesce(sum(qty_rec),0) as \"in\" from $wms.store_in where plant_code='$plant_code' lot_no=\"".$sql_row1['lot_no']."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -199,11 +201,11 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		if($qty[$i]>0)
 		{
 		
-		$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name')";
+		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username')";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$last_id = mysqli_insert_id($link);
 
-		$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid='$last_id'";
+		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where plant_code='$plant_code' AND tid='$last_id'";
 		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}

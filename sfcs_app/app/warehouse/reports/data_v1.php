@@ -1,22 +1,18 @@
 <?php
-	//require_once('phplogin/auth.php');
-?>
-
-
-
-<?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if(!empty($_POST['put']) && isset($_POST['put']))
 {
 	$lot_no=$_POST['lot_no'];
-	$query="SELECT uom FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+	$query="SELECT uom FROM $wms.sticker_report where plant_code='$plant_code' AND lot_no='$lot_no'";
 	$query_result=mysqli_query($link, $query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$uom = mysqli_fetch_row($query_result);
 	$uom = $uom[0];
 	
 	if($_FILES['file']['name'])
 	{		
-		$query="SELECT DISTINCT upload_file FROM $bai_rm_pj1.store_in";
+		$query="SELECT DISTINCT upload_file FROM $wms.store_in where plant_code='$plant_code'";
 		$query_result=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo $query_result;
 	
@@ -53,7 +49,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 				{
 					$handle = fopen($_FILES['file']['tmp_name'],"r");
 					$flag = true;
-					$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ";
+					$sql1 = "insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file,plant_code,created_user) values ";
 					$values = array();
 					$total_qty=0;
 
@@ -79,7 +75,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					
 						// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
 						
-						array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','" . $user_name . "','" . $upload_file . "')");
+						array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $remarks . "','" . $user_name . "','" . $upload_file . "','" . $plant_code . "','" . $created_user . "')");
 						$total_qty=$total_qty+$item2;
 					}
 					if($convert==1)
@@ -176,7 +172,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							$qty[$i]=round($qty[$i]*1.09361,2);
 						}
 					}
-					$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name')";
+					$sql="insert into $wms.store_in (lot_no, ref1, ref2, ref3, qty_rec, date, remarks, log_user,plant_code,created_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', $qty[$i], '$date', '$remarks','$user_name','$plant_code','$username')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 				}
