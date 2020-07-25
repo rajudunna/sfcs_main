@@ -82,7 +82,8 @@ else
 <?php
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 $url1 = getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R');
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url1);
 $company_num = $company_no;
@@ -142,7 +143,7 @@ if(isset($_POST['download']))
 				$sql_lot = "INSERT IGNORE INTO $bai_rm_pj1.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
 				//echo $sql_lot."</br>";
 				$result_lot = mysqli_query($link, $sql_lot);
-				$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = \"".$grn_entry_no."\", grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\", rm_color = \"".$rm_color."\" WHERE lot_no = \"".$lot_num."\"";
+				$sql_sticker_det = "UPDATE $bai_rm_pj1.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = \"".$grn_entry_no."\", grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\", rm_color = \"".$rm_color."\",created_user = \"".$username."\", plant_code = \"".$plant_code."\" WHERE lot_no = \"".$lot_num."\"";
 				//echo $sql_sticker_det."</br>";
 				$result_rec_insert = mysqli_query($link, $sql_sticker_det);
 				if($result_rec_insert)
