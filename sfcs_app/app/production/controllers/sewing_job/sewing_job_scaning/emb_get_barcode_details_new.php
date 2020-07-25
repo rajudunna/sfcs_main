@@ -705,7 +705,7 @@ if($check_qry_result->num_rows > 0)
 															$doc_value = $bcd_id_row['docket_number'];
 														}
 													//searching the bcd_id in rejection log child or not
-													$bcd_id_searching_qry = "select id,parent_id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+													$bcd_id_searching_qry = "select id,parent_id from $pps.rejection_log_child where plant_code='$plantcode' and bcd_id = $bcd_id";
 													$bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
 													if($bcd_id_searching_qry_result->num_rows > 0)
 													{
@@ -713,7 +713,7 @@ if($check_qry_result->num_rows > 0)
 														{
 															$parent_id = $bcd_id_searching_qry_result_row['parent_id'];
 														}
-														$update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
+														$update_rejection_log_child_qry = "update $pps.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_id";
 														mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style='$style' and schedule='$schedule' and color='$maped_color'";
 														$update_qry_rej_lg = $link->query($update_qry_rej_lg);
@@ -737,13 +737,14 @@ if($check_qry_result->num_rows > 0)
 														}
 														else
 														{
-															$insert_qty_rej_log = "INSERT INTO $pps.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty,,plant_code,created_user,created_at) VALUES ('$style','$schedule','$maped_color',$implode_next[2],'0',$implode_next[2],'$plantcode','$username','".date('Y-m-d'))";
+															$insert_qty_rej_log = "INSERT INTO $pps.rejections_log (style,schedule,color,rejected_qty,recut_qty,remaining_qty,plant_code,created_user,created_at) VALUES ('$style','$schedule','$maped_color',$implode_next[2],'0',$implode_next[2],'$plantcode','$username','".date('Y-m-d')."')";
 															$res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
 															$parent_id=mysqli_insert_id($link);
 														}
-														$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+														$inserting_into_rejection_log_child_qry = "INSERT INTO `$pps`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`,plant_code,created_user,created_at) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id,'$plantcode','$username','".date('Y-m-d')."')";
 														$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 													}
+													
 													//inserting into rejections_reason_track'
 													if($implode_next[2] > 0)
 													{
@@ -1002,7 +1003,7 @@ if($check_qry_result->num_rows > 0)
 															$doc_value = $bcd_id_row['docket_number'];
 														}
 													//searching the bcd_id in rejection log child or not
-													$bcd_id_searching_qry = "select id,parent_id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+													$bcd_id_searching_qry = "select id,parent_id from $pps.rejection_log_child where plant_code='$plantcode' and bcd_id = $bcd_id";
 													$bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
 													if($bcd_id_searching_qry_result->num_rows > 0)
 													{
@@ -1010,7 +1011,7 @@ if($check_qry_result->num_rows > 0)
 														{
 															$parent_id = $bcd_id_searching_qry_result_row['parent_id'];
 														}
-														$update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
+														$update_rejection_log_child_qry = "update $pps.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_id";
 														mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style='$style' and schedule='$schedule' and color='$maped_color'";
 														$update_qry_rej_lg = $link->query($update_qry_rej_lg);
@@ -1038,7 +1039,7 @@ if($check_qry_result->num_rows > 0)
 															$res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
 															$parent_id=mysqli_insert_id($link);
 														}
-														$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+														$inserting_into_rejection_log_child_qry = "INSERT INTO `$pps`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`,plant_code,created_user,created_at) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id,'$plantcode','$username','".date('Y-m-d')."')";
 														$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 													}
 													//inserting into rejections_reason_track'
@@ -1965,7 +1966,7 @@ if($check_qry_result->num_rows > 0)
 																$doc_value = $bcd_id_row['docket_number'];
 															}
 														//searching the bcd_id in rejection log child or not
-														$bcd_id_searching_qry = "select id,parent_id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+														$bcd_id_searching_qry = "select id,parent_id from $pps.rejection_log_child where plant_code='$plantcode' and bcd_id = $bcd_id";
 														$bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
 														if($bcd_id_searching_qry_result->num_rows > 0)
 														{
@@ -1973,7 +1974,7 @@ if($check_qry_result->num_rows > 0)
 															{
 																$parent_id = $bcd_id_searching_qry_result_row['parent_id'];
 															}
-															$update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
+															$update_rejection_log_child_qry = "update $pps.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_id";
 															mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 															$update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style='$job_number[1]' and schedule='$job_number[2]' and color='$maped_color'";
 															$update_qry_rej_lg = $link->query($update_qry_rej_lg);
@@ -2001,7 +2002,7 @@ if($check_qry_result->num_rows > 0)
 																$res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
 																$parent_id=mysqli_insert_id($link);
 															}
-															$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+															$inserting_into_rejection_log_child_qry = "INSERT INTO `$pps`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`,plant_code,created_user,created_at) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id,'$plantcode','$username','".date('Y-m-d')."')";
 															$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 														}
 														//inserting into rejections_reason_track'
@@ -2379,7 +2380,7 @@ if($check_qry_result->num_rows > 0)
 															$doc_value = $bcd_id_row['docket_number'];
 														}
 													//searching the bcd_id in rejection log child or not
-													$bcd_id_searching_qry = "select id,parent_id from $bai_pro3.rejection_log_child where bcd_id = $bcd_id";
+													$bcd_id_searching_qry = "select id,parent_id from $pps.rejection_log_child where plant_code='$plantcode' and bcd_id = $bcd_id";
 													$bcd_id_searching_qry_result=mysqli_query($link,$bcd_id_searching_qry) or exit("bcd_id_searching_qry_result".mysqli_error($GLOBALS["___mysqli_ston"]));
 													if($bcd_id_searching_qry_result->num_rows > 0)
 													{
@@ -2387,7 +2388,7 @@ if($check_qry_result->num_rows > 0)
 														{
 															$parent_id = $bcd_id_searching_qry_result_row['parent_id'];
 														}
-														$update_rejection_log_child_qry = "update $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2] where bcd_id = $bcd_id";
+														$update_rejection_log_child_qry = "update $pps.rejection_log_child set rejected_qty=rejected_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_id";
 														mysqli_query($link,$update_rejection_log_child_qry) or exit("update_rejection_log_child_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 														$update_qry_rej_lg = "update $pps.rejections_log set rejected_qty = rejected_qty+$implode_next[2],remaining_qty=remaining_qty+$implode_next[2],updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style='$job_number[1]' and schedule='$job_number[2]' and color='$maped_color'";
 														$update_qry_rej_lg = $link->query($update_qry_rej_lg);
@@ -2415,7 +2416,7 @@ if($check_qry_result->num_rows > 0)
 															$res_insert_qty_rej_log = $link->query($insert_qty_rej_log);
 															$parent_id=mysqli_insert_id($link);
 														}
-														$inserting_into_rejection_log_child_qry = "INSERT INTO `bai_pro3`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id)";
+														$inserting_into_rejection_log_child_qry = "INSERT INTO `$pps`.`rejection_log_child` (`parent_id`,`bcd_id`,`doc_no`,`input_job_no_random_ref`,`size_id`,`size_title`,`assigned_module`,`rejected_qty`,`operation_id`,plant_code,created_user,created_at) values($parent_id,$bcd_id,$doc_no,$input_job_random_ref,'$size_id','$size_title',$assigned_module,$implode_next[2],$b_op_id,'$plantcode','$username','".date('Y-m-d')."')";
 														$insert_qry_rej_child = $link->query($inserting_into_rejection_log_child_qry);
 													}
 													//inserting into rejections_reason_track'

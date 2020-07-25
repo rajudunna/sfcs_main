@@ -396,6 +396,9 @@ $.ajax
 <?php
 $dashboard_name="IMS";
 $start_timestamp = microtime(true);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
@@ -535,7 +538,7 @@ while($sql_row1=mysqli_fetch_array($scanning_result1))
     $replace=array();
     $recut_job=array();
 
-    $get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $bai_pro3.rejection_log_child where assigned_module='$module'";
+    $get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $pps.rejection_log_child where plant_code='$plantcode' and assigned_module='$module'";
     $recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($recut_row=mysqli_fetch_array($recut_result))
     {

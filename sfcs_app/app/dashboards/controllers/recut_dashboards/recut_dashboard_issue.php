@@ -202,7 +202,7 @@ if(isset($_POST['formIssue']))
                         mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         
                         //updating rejection_log_child
-                            $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
+                            $updating_rejection_log_child = "update $pps.rejection_log_child set issued_qty=issued_qty+$to_add,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bundle_number";
                         mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         }
@@ -254,7 +254,7 @@ if(isset($_POST['formIssue']))
                         mysqli_query($link, $insert_query_track) or exit("Inserting_recut_v2_issue_track_table_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         
                         //updating rejection_log_child
-                            $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set issued_qty=issued_qty+$to_add where bcd_id = $bundle_number";
+                            $updating_rejection_log_child = "update $pps.rejection_log_child set issued_qty=issued_qty+$to_add,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bundle_number";
                         mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                             $issued_to_module = issued_to_module($bundle_number,$to_add,2);
 

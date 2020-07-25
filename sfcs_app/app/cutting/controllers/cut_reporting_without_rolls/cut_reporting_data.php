@@ -471,6 +471,7 @@ function getReasonWiseDetails($doc_no){
 
     $html_data = "<table class='table table-bordered'><thead><tr class='info'>
                     <th>Sno</th><th>Size</th><th>Reason</th><th>Quantity</th></tr></thead><tbody>";
+                    
     $rej_wise_details_query = "SELECT bcd_id,SUM(rejected_qty) AS rejected_qty,bqr.reason_desc AS reason
                         FROM $pps.rejections_reason_track rrt
                         LEFT JOIN $bai_pro3.bai_qms_rejection_reason bqr ON rrt.rejection_reason =  bqr.reason_code 

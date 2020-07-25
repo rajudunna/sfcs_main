@@ -79,9 +79,9 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $size_title = $row['size_title'];  
             $module = $row['assigned_module'];  
             $bundle_numbers[$size] = $bno; 
-            $rejection_log_child_query  =  "INSERT INTO $bai_pro3.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id)
+            $rejection_log_child_query  =  "INSERT INTO $pps.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id,plant_code,created_user,created_at)
             values
-            ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code)";
+            ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code,'$plantcode','$username','".date('Y-m-d')."')";
             $rejection_log_child_result =  mysqli_query($link,$rejection_log_child_query) or exit('Rejections Child Error');
 
             $update_cps_query = "UPDATE $bai_pro3.cps_log set remaining_qty = remaining_qty-$qty where doc_no = $doc_no 

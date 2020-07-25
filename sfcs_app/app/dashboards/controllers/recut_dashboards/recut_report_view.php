@@ -94,7 +94,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>Select Style</option>";
 					//$sql="select distinct order_style_no from bai_orders_db";
-					$sql="SELECT DISTINCT style as order_style_no FROM $pps.`rejections_log`";
+					$sql="SELECT DISTINCT style as order_style_no FROM $pps.`rejections_log` where plant_code='$plantcode'";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 

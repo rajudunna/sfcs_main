@@ -1,4 +1,6 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 error_reporting(0);
 if(isset($_POST['approve']))
@@ -104,8 +106,8 @@ if(isset($_POST['approve']))
             {
                 $retriving_size = "SELECT size_title FROM `$bai_pro3`.`recut_v2_child` rc 
                 LEFT JOIN `$bai_pro3`.`recut_v2` r ON r.`doc_no` = rc.`parent_id`
-                LEFT JOIN `$bai_pro3`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
-                WHERE rc.parent_id = $doc_nos AND rejc.`size_id` = '$size'";
+                LEFT JOIN `$pps`.`rejection_log_child` rejc ON rejc.`bcd_id` = rc.`bcd_id`
+                WHERE plant_code='$plantcode' and rc.parent_id = $doc_nos AND rejc.`size_id` = '$size'";
                 // echo $retriving_size;
                 // die();
                 $res_retriving_size = $link->query($retriving_size);

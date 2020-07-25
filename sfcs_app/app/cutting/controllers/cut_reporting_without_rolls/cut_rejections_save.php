@@ -14,7 +14,7 @@ $username=$_SESSION['userName'];
 
 function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shift,$cut_remarks=0){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-
+   
     $op_code = 15;
     $date = date('Y-m-d');
     $date_time = date('Y-m-d H:i:s');
@@ -77,23 +77,23 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
             $bundle_numbers[$size] = $bno; 
 
             
-            $bcd_id_qry = "SELECT bcd_id from $bai_pro3.rejection_log_child where bcd_id = $id";
+            $bcd_id_qry = "SELECT bcd_id from $pps.rejection_log_child where plant_code='$plantcode' and bcd_id = $id";
             $bcd_id_result=mysqli_query($link,$bcd_id_qry) or exit("bcd_id_searching_qry_result");
             if($bcd_id_result->num_rows > 0)
 			{
                 if($qty == '')
                     $qty = 0;
-                $update_rejection_log_child_qry = "UPDATE $bai_pro3.rejection_log_child set rejected_qty=rejected_qty+$qty 
-                            where bcd_id = $id";
+                $update_rejection_log_child_qry = "UPDATE $pps.rejection_log_child set rejected_qty=rejected_qty+$qty,updated_user='$username',updated_at='".date('Y-m-d')."' 
+                            where plant_code='$plantcode' and bcd_id = $id";
 				mysqli_query($link,$update_rejection_log_child_qry) or exit('Updating Error 1');
             }else{
-                $rejection_log_child_query  =  "INSERT INTO $bai_pro3.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id)
+                $rejection_log_child_query  =  "INSERT INTO $pps.rejection_log_child (parent_id,bcd_id,doc_no,size_id,size_title,assigned_module,rejected_qty,recut_qty,replaced_qty,issued_qty,operation_id,plant_code,created_user,created_at)
                 values
-                ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code)";
+                ($parent_id,$id,$doc_no,'$size','$size_title','$assigned_module',$qty,0,0,0,$op_code,'$plantcode','$username','".date('Y-m-d')."')";
                 $rejection_log_child_result =  mysqli_query($link,$rejection_log_child_query) or exit('Rejections Child Error');
             }
 
-            //inserting resaon wise into the new table - rejections_reason_track
+            //inserting reason wise into the new table - rejections_reason_track
             foreach($reason_codes[$size] as $key => $reason){
                 $rejections_reson_track_query = "INSERT INTO $pps.rejections_reason_track 
                             (date_time,parent_id,bcd_id,rejection_reason,rejected_qty,form_type,username,plant_code,created_user,created_at) 

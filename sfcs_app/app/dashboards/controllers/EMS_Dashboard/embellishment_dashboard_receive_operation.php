@@ -339,6 +339,9 @@ echo '<br><br>';
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 $sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
 mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -505,14 +508,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           }
 		  $reject_qty_s=0;
 		  $reject_qty_r=0;
-		  $sql221="select sum(rejected_qty) as rej_qty from $bai_pro3.rejection_log_child where doc_no=".$doc_no." and operation_id=$send_op_code";
+		  $sql221="select sum(rejected_qty) as rej_qty from $pps.rejection_log_child where plant_code='$plantcode' and doc_no=".$doc_no." and operation_id=$send_op_code";
           // echo $sql2;
           $result212=mysqli_query($link, $sql221) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($row212=mysqli_fetch_array($result212))
           {
             $reject_qty_s=$row212['rej_qty'];            
           }
-		$sql2212="select sum(rejected_qty) as rej_qty from $bai_pro3.rejection_log_child where doc_no=".$doc_no." and operation_id=$receive_op_code";
+		$sql2212="select sum(rejected_qty) as rej_qty from $pps.rejection_log_child where plant_code='$plantcode' and doc_no=".$doc_no." and operation_id=$receive_op_code";
           // echo $sql2;
           $result2122=mysqli_query($link, $sql2212) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
           while($row2122=mysqli_fetch_array($result2122))

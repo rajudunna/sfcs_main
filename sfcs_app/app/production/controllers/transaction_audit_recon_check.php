@@ -36,12 +36,12 @@ function quality_qty($schedule,$color,$tran_type,$size,$link,$module)
 function get_qty($schedule,$type,$size,$color,$link,$module)
 {
 	$size=str_replace("a_","", $size);
-	$sql_schedule_id='SELECT `id` FROM $pps.rejections_log WHERE plant_code='$plantcode' and `schedule`='.$schedule.' and `color`="'.$color.'"';
+	$sql_schedule_id= "SELECT id FROM $pps.rejections_log WHERE plant_code='$plantcode' and schedule='$schedule' and color='$color'";
 	$result_schedule_id=mysqli_query($link,$sql_schedule_id) or exit("sql Error12=".$sql_schedule_id."-".mysql_errno());
 	while($sql_row_id=mysqli_fetch_array($result_schedule_id))
 	{
 		$id=$sql_row_id["id"];
-		$sql_qty='SELECT sum('.$type.') AS qty FROM bai_pro3.rejection_log_child WHERE `parent_id`='.$id.' and `size_id`="'.$size.'" and `assigned_module`="'.$module.'"';
+		$sql_qty="SELECT sum('$type') AS qty FROM $pps.rejection_log_child WHERE plant_code='$plantcode' and parent_id='$id' and size_id='$size' and assigned_module='$module'";
 		$get_qty=mysqli_query($link,$sql_qty) or exit("sql Error2".mysqli_error());
 		while($getqty=mysqli_fetch_array($get_qty)){
 			return $getqty['qty'];

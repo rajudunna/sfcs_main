@@ -5,6 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 $mail_status=0;
 $username = getrbac_user()['uname'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 if($_GET['module']){
     $module = $_GET['module'];
 } else if($_POST['module']) {
@@ -72,7 +74,7 @@ if(isset($_POST['submit']) || $module)
 		{
 		  $operation_codes[]=$ops_row['operation_code'];
 		}
-		$get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $bai_pro3.rejection_log_child where assigned_module='$module'";
+		$get_recut_qty="select input_job_no_random_ref,operation_id,rejected_qty,issued_qty,replaced_qty from $pps.rejection_log_child where plant_code='$plantcode' and assigned_module='$module'";
 		$recut_result=mysqli_query($link, $get_recut_qty) or exit("Sql Errorrecut".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($recut_row=mysqli_fetch_array($recut_result))
 		{

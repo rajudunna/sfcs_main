@@ -21,7 +21,7 @@ $username=$_SESSION['userName'];
         
        
         //retrieving style,schedule,color and size wise cumulative quantities to store in plan_doc_stat_log and recut_v2
-        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$pps`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE  plant_code='$plantcode' and rc.`bcd_id` in ($bcd) ";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
@@ -135,7 +135,7 @@ $username=$_SESSION['userName'];
                         $bundle_number = $row_bcd['bundle_number'];
                         $operation_id = $row_bcd['operation_id'];
                         $size_id = $row_bcd['size_id'];
-                        $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`rejection_log_child` where bcd_id = $bcd_act_id";
+                        $retreaving_rej_qty = "SELECT * FROM `$pps`.`rejection_log_child` where plant_code='$plantcode' and bcd_id = $bcd_act_id";
                         $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                         while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                         {
@@ -182,7 +182,7 @@ $username=$_SESSION['userName'];
         $size = $_POST['size'];
         $operation_id = $_POST['operation_id'];
         $bcd = $bcd_id[0];
-        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
+        $qry_details = "SELECT style,SCHEDULE,color FROM `$pps`.`rejections_log` r LEFT JOIN `$pps`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` 
         WHERE  plant_code='$plantcode' and rc.`bcd_id` in ($bcd)";
         $qry_details_res = $link->query($qry_details);
         while($row_row = $qry_details_res->fetch_assoc()) 
@@ -242,7 +242,7 @@ $username=$_SESSION['userName'];
                     $bundle_number = $row_bcd['id'];
                     $operation_id = $row_bcd['operation_id'];
                     $size_title = $row_bcd['size_title'];
-                    $retreaving_rej_qty = "SELECT * FROM `$bai_pro3`.`rejection_log_child` where bcd_id = $bundle_number";
+                    $retreaving_rej_qty = "SELECT * FROM `$pps`.`rejection_log_child` where plant_code='$plantcode' and bcd_id = $bundle_number";
                     $retreaving_rej_qty_res = $link->query($retreaving_rej_qty);
                     while($child_details = $retreaving_rej_qty_res->fetch_assoc()) 
                     {
@@ -365,7 +365,7 @@ $username=$_SESSION['userName'];
                                     $update_cps_log_qry = "update $bai_pro3.cps_log set remaining_qty=remaining_qty-$to_add_sj where doc_no=$doc_no and size_title='$size_title' and operation_code = 15";
                                     mysqli_query($link, $update_cps_log_qry) or exit("update_cps_log_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                                    $updating_rejection_log_child = "update $bai_pro3.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj where bcd_id = $bundle_number";
+                                    $updating_rejection_log_child = "update $pps.rejection_log_child set replaced_qty = replaced_qty+$to_add_sj,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bundle_number";
                                     mysqli_query($link, $updating_rejection_log_child) or exit("updating_rejection_log_child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     //updating rejection log 
                                     $updating_rejection_log = "update $pps.rejections_log set replaced_qty = replaced_qty+$to_add_sj,remaining_qty = remaining_qty-$to_add_sj,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and style = '$style' and schedule = '$scheule' and color = '$color' ";
@@ -576,7 +576,7 @@ $username=$_SESSION['userName'];
             <?php  
             $s_no = 1;
             $blocks_query  = "SELECT r.id,style,SCHEDULE,color,r.rejected_qty,r.recut_qty,r.remaining_qty,r.replaced_qty,GROUP_CONCAT(DISTINCT bcd_id)as bcd_ids FROM $pps.rejections_log r
-            LEFT JOIN `$bai_pro3`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE plant_code='$plantcode' and short_shipment_status=0
+            LEFT JOIN `$pps`.`rejection_log_child` rc ON rc.`parent_id` = r.`id` WHERE plant_code='$plantcode' and short_shipment_status=0
             GROUP BY r.`style`,r.`schedule`,r.`color` HAVING (rejected_qty-(recut_qty+replaced_qty)) > 0 order by r.id";
             $blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error');
             if($blocks_result->num_rows > 0)

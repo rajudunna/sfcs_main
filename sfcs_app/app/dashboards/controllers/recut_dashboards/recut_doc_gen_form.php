@@ -411,7 +411,7 @@ if($sql_result1_res==0){
                                             mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         }
                                     }
-                                    $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
+                                    $update_rejection_log_child = "update $pps.rejection_log_child set recut_qty = recut_qty+$to_add,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_act_id";
                                     // echo $update_rejection_log_child."<br>";
                                     mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $to_add_mo += $to_add;
@@ -641,7 +641,7 @@ if($sql_result1_res==0){
                                             mysqli_query($link,$updae_moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         }
                                     }
-                                    $update_rejection_log_child = "update $bai_pro3.rejection_log_child set recut_qty = recut_qty+$to_add where bcd_id = $bcd_act_id";
+                                    $update_rejection_log_child = "update $pps.rejection_log_child set recut_qty = recut_qty+$to_add,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bcd_id = $bcd_act_id";
                                     // echo $update_rejection_log_child."<br>";
                                     mysqli_query($link,$update_rejection_log_child) or exit("While updating rejection log child".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     $to_add_mo += $to_add;
