@@ -4,6 +4,8 @@
 			include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 			$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 			$username=strtolower($username_list[1]);
+			$plant_code = $_SESSION['plantCode'];
+			$username = $_SESSION['userName'];
 		?>
 	</head>
 <?php
@@ -18,13 +20,14 @@ else
 	$plant_name2=$_GET['plant_name'];
 	
 }
+
 ?>	
 <body>
 <h3 style="font-family:Helvetica Neue,Roboto,Arial,Droid Sans,sans-serif;"><b>RM Warehouse Material Receive</b></h3>
 	<form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
 		<?php
 			
-			$query="SELECT * FROM $bai_pro3.plant_details where plant_code !='$facility_code'";
+			$query="SELECT * FROM $bai_pro3.plant_details where plant_code !='$plant_code'";
 			$query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
 			echo "<tr>
 					<td>Sender Plant Name</td><td>:</td></br>
@@ -99,12 +102,12 @@ else
 				//================ get barcode details from CWH DB =============
 				if($database_type=='new'){
 	
-				$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
+				$qry_get_data_fm_cwh = "select * from $wms.store_in where plant_code='$plant_code' AND barcode_number='".$bar_code_new."'";
 				// echo '<br/>'.$qry_get_data_fm_cwh."<br/>";
 				}
 				else{
 				
-					$qry_get_data_fm_cwh = "select * from $bai_rm_pj1.store_in where tid='".$bar_code_new."'";
+					$qry_get_data_fm_cwh = "select * from $wms.store_in where plant_code='$plant_code' AND tid='".$bar_code_new."'";
 				
 				}
 				
@@ -155,19 +158,19 @@ else
 						{							
 								//=================== check rmwh db with present tid ==================
 					
-								$qry_check_rm_db = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
+								$qry_check_rm_db = "select * from $wms.store_in where plant_code='$plant_code' AND barcode_number='".$bar_code_new."'";
 								$res_check_rm_db = $link->query($qry_check_rm_db);
 								if($res_check_rm_db->num_rows == 0)
 								{
 									// echo $res_check_rm_db->num_rows.'aaaaa';
 									//=============== Insert Data in rmwh ==========================
-									$qry_insert_update_rmwh_data = "INSERT INTO $bai_rm_pj1.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."',0,'".$barcode_data['ref2']."','$ref3','".$barcode_data['ref4']."','$ref5','$ref6','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."','".$barcode_data['roll_joins']."','".$barcode_data['shrinkage_length']."','".$barcode_data['shrinkage_width']."','".$barcode_data['shrinkage_group']."','".$barcode_data['supplier_no']."','".$barcode_data['shade_grp']."','".$barcode_data['rejection_reason']."','".$barcode_data['roll_remarks']."','".$barcode_data['roll_status']."','".$barcode_data['partial_appr_qty']."')";	
+									$qry_insert_update_rmwh_data = "INSERT INTO $wms.`store_in`(`lot_no`, `qty_rec`, `qty_issued`, `qty_ret`, `date`, `remarks`, `log_stamp`, `status`,`ref2`,`ref3`,`ref4`,`ref5`,`ref6`,`log_user`,`barcode_number`,`ref_tid`,roll_joins,shrinkage_length,shrinkage_width,shrinkage_group,supplier_no,shade_grp,rejection_reason,roll_remarks,roll_status,partial_appr_qty,plant_code,created_user) VALUES ('".$barcode_data['lot_no']."','".$actual_quentity_present."','0','0','".date('Y-m-d')."','Directly came from ".$plant_name1."','".date('Y-m-d H:i:s')."',0,'".$barcode_data['ref2']."','$ref3','".$barcode_data['ref4']."','$ref5','$ref6','".$username."^".date('Y-m-d H:i:s')."','".$bar_code_new."','".$tid_new."','".$barcode_data['roll_joins']."','".$barcode_data['shrinkage_length']."','".$barcode_data['shrinkage_width']."','".$barcode_data['shrinkage_group']."','".$barcode_data['supplier_no']."','".$barcode_data['shade_grp']."','".$barcode_data['rejection_reason']."','".$barcode_data['roll_remarks']."','".$barcode_data['roll_status']."','".$barcode_data['partial_appr_qty']."','".$plant_code."','".$username."')";	
 									// echo $qry_insert_update_rmwh_data."<br/>";
 	
 									$res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
 									
 									
-									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."'";
+									$sticker_report = "select * from $wms.`sticker_report` where plant_code='$plant_code' AND lot_no='".$barcode_data['lot_no']."'";
 									//echo $sticker_report."<br/>";
 									$res_sticker_report_cwh = $link_new->query($sticker_report);
 									while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
@@ -176,7 +179,7 @@ else
 										break;
 									}
 									
-									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."'";
+									$sticker_report1 = "select * from $wms.`sticker_report` where plant_code='$plant_code' AND lot_no='".$barcode_data['lot_no']."'";
 									//echo $sticker_report1."<br/>";
 									$res_sticker_report_cwh1 = $link->query($sticker_report1);
 									while($row12 = $res_sticker_report_cwh1->fetch_assoc()) 
@@ -192,12 +195,12 @@ else
 										$pkg_no=str_replace('"','""',$sticker_data['pkg_no']);
 										$item_desc=str_replace('"','""',$sticker_data['item_desc']);
 										$item_name=str_replace('"','""',$sticker_data['item_name']);
-										$qry_insert_sticker_report_data = "INSERT INTO $bai_rm_pj1.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no) VALUES (\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\")";
+										$qry_insert_sticker_report_data = "INSERT INTO $wms.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no,plant_code,created_user) VALUES (\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\",'".$plant_code."','".$username."')";
 										//echo $qry_insert_sticker_report_data."<br/>";
 										$qry_insert_sticker_report_data1 = $link->query($qry_insert_sticker_report_data);
 									}
 									
-									$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no='".$barcode_data['lot_no']."'";
+									$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $wms.`store_in` where plant_code='$plant_code' lot_no='".$barcode_data['lot_no']."'";
 									//echo $qty_rec_store_report."<br/>";
 									$qty_rec_store_report1 = $link->query($qty_rec_store_report);
 									while($row2 = $qty_rec_store_report1->fetch_assoc()) 
@@ -206,7 +209,7 @@ else
 										break;
 									}
 									
-									$qry_insert_sticker_report1_data = "update $bai_rm_pj1.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where lot_no=\"".$sticker_data['lot_no']."\"";
+									$qry_insert_sticker_report1_data = "update $wms.`sticker_report` set rec_qty=\"".$rec_qty['qty_rec']."\",rec_no=\"".$sticker_data['rec_no']."\",inv_no=\"".$sticker_data['inv_no']."\",batch_no=\"".$sticker_data['batch_no']."\" where plant_code= \"".$plant_code."\" AND lot_no=\"".$sticker_data['lot_no']."\"";
 									//echo $qry_insert_sticker_report1_data."<br/>";
 									
 									$qry_insert_sticker_report1_data1 = $link->query($qry_insert_sticker_report1_data);
@@ -216,13 +219,13 @@ else
 									//$res_insert_update_rmwh_data = $conn1->query($qry_insert_update_rmwh_data);
 									//=============== insert store_out & update store_in in cwh======================
 														
-									$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
+									$qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,plant_code,created_by) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."','".$plant_code."','".$username."')";
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued +".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $wms.store_in set qty_issued=qty_issued +".$actual_quentity_present." where plant_code='$plant_code' AND barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued +".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued +".$actual_quentity_present." where plant_code='$plant_code' AND tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
@@ -238,11 +241,11 @@ else
 									// // echo $qry_insert_update_rmwh_data."<br/>";
 	
 									// $res_insert_update_rmwh_data = $link->query($qry_insert_update_rmwh_data);
-									$qry_insert_update_rmwh_data1 = "update $bai_rm_pj1.`store_in` set qty_issued=0,remarks='Directly came from ".$plant_name1."',log_user='".$username."^".date('Y-m-d H:i:s')."' where barcode_number='$bar_code_new'";	
+									$qry_insert_update_rmwh_data1 = "update $wms.`store_in` set qty_issued=0,remarks='Directly came from ".$plant_name1."',log_user='".$username."^".date('Y-m-d H:i:s')."' where plant_code='$plant_code' AND barcode_number='$bar_code_new'";	
 									
 										$res_insert_update_rmwh_data1 = $link->query($qry_insert_update_rmwh_data1);
 									
-									$sticker_report = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."' ";
+									$sticker_report = "select * from $wms.`sticker_report` where plant_code='$plant_code' AND lot_no='".$barcode_data['lot_no']."' ";
 									//echo $sticker_report."<br/>";
 									$res_sticker_report_cwh = $link_new->query($sticker_report);
 									while($row1 = $res_sticker_report_cwh->fetch_assoc()) 
@@ -251,7 +254,7 @@ else
 										break;
 									}
 									
-									$sticker_report1 = "select * from $bai_rm_pj1.`sticker_report` where lot_no='".$barcode_data['lot_no']."' ";
+									$sticker_report1 = "select * from $wms.`sticker_report` where lot_no='".$barcode_data['lot_no']."' AND plant_code='".$plant_code."'";
 									//echo $sticker_report1."<br/>";
 									$res_sticker_report_cwh1 = $link->query($sticker_report1);
 									while($row12 = $res_sticker_report_cwh1->fetch_assoc()) 
@@ -260,7 +263,7 @@ else
 										break;
 									}
 									
-									$qry_check_rm_db1 = "select * from $bai_rm_pj1.store_in where barcode_number='".$bar_code_new."'";
+									$qry_check_rm_db1 = "select * from $wms.store_in where plant_code='".$plant_code."' AND barcode_number='".$bar_code_new."'";
 									$res_check_rm_db1 = $link->query($qry_check_rm_db1);
 									
 									
@@ -268,7 +271,7 @@ else
 									while($row1 = $res_check_rm_db1->fetch_assoc()) 
 									{
 										$tid_old=$row1['tid'];
-										$delete_qry= "delete from $bai_rm_pj1.store_out where tran_tid=$tid_old";
+										$delete_qry= "delete from $wms.store_out where plant_code='$plant_code' AND tran_tid=$tid_old";
 										$delete_qry_result = $link->query($delete_qry);
 									}
 									
@@ -279,12 +282,12 @@ else
 										$pkg_no=str_replace('"','""',$sticker_data['pkg_no']);
 										$item_desc=str_replace('"','""',$sticker_data['item_desc']);
 										$item_name=str_replace('"','""',$sticker_data['item_name']);
-										$qry_insert_sticker_report_data = "INSERT INTO $bai_rm_pj1.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no) VALUES (\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\")";
+										$qry_insert_sticker_report_data = "INSERT INTO $wms.`sticker_report` (`item`,`item_name`,`item_desc`,`inv_no`,`po_no`,`rec_no`,`lot_no`,`batch_no`,`buyer`,`product_group`,`doe`,`pkg_no`,`grn_date`,`allocated_qty`,`backup_status`,`supplier`,`uom`,`grn_location`,style_no,plant_code,created_user) VALUES (\"".$sticker_data['item']."\",\"".$item_name."\",\"".$item_desc."\",\"".$sticker_data['inv_no']."\",\"".$sticker_data['po_no']."\",\"".$sticker_data['rec_no']."\",\"".$sticker_data['lot_no']."\",\"".$sticker_data['batch_no']."\",\"".$sticker_data['buyer']."\",\"".$sticker_data['product_group']."\",\"".$sticker_data['doe']."\",\"".$pkg_no."\",\"".$sticker_data['grn_date']."\",\"".$sticker_data['allocated_qty']."\",\"".$sticker_data['backup_status']."\",\"".$sticker_data['supplier']."\",\"".$sticker_data['uom']."\",\"".$sticker_data['grn_location']."\",\"".$sticker_data['style_no']."\",\"".$plant_code."\",\"".$username."\")";
 										//echo $qry_insert_sticker_report_data."<br/>";
 										$qry_insert_sticker_report_data1 = $link->query($qry_insert_sticker_report_data);
 									}
 									
-									$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $bai_rm_pj1.`store_in` where lot_no='".$barcode_data['lot_no']."'";
+									$qty_rec_store_report = "select sum(qty_rec)as qty_rec from $wms.`store_in` where plant_code='$plant_code' AND lot_no='".$barcode_data['lot_no']."'";
 									//echo $qty_rec_store_report."<br/>";
 									$qty_rec_store_report1 = $link->query($qty_rec_store_report);
 									while($row2 = $qty_rec_store_report1->fetch_assoc()) 
@@ -293,13 +296,13 @@ else
 										break;
 									}
 									
-									$qry_ins_stockout = "INSERT INTO $bai_rm_pj1.`store_out`(tran_tid,qty_issued,date,updated_by,remarks) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."')";
+									$qry_ins_stockout = "INSERT INTO $wms.`store_out`(tran_tid,qty_issued,date,updated_by,remarks,created_user,plant_code) VALUES (".$tid_new.",".$actual_quentity_present.",'".date('Y-m-d')."','".$username."','Send to ".$plant_name."','".$username."','".$plant_code."')";
 									// echo $qry_ins_stockout."<br/>";
 									$res_ins_stockout = $link_new->query($qry_ins_stockout);
 									if($database_type=='new'){
-									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued= qty_issued + ".$actual_quentity_present." where barcode_number='".$bar_code_new."'";
+									$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued= qty_issued + ".$actual_quentity_present." where plant_code='$plant_code' AND barcode_number='".$bar_code_new."'";
 									}else{
-										$update_qty_store_in = "update $bai_rm_pj1.store_in set qty_issued=qty_issued + ".$actual_quentity_present." where tid='".$bar_code_new."'";
+										$update_qty_store_in = "update $wms.store_in set qty_issued=qty_issued + ".$actual_quentity_present." where plant_code='".$plant_code."' AND tid='".$bar_code_new."'";
 		
 									}
 									//echo $update_qty_store_in."<br/>";
@@ -312,13 +315,13 @@ else
 								//$sticker_data['batch_no']
 
 								//validating batch no in receiving plant
-								$qry_batch_val="select * from $bai_rm_pj1.inspection_db where batch_ref='".$sticker_data['batch_no']."'";
+								$qry_batch_val="select * from $wms.inspection_db where plant_code='$plant_code' AND batch_ref='".$sticker_data['batch_no']."'";
 								
 								$qry_batch_val_check = $link->query($qry_batch_val);
 								if($qry_batch_val_check->num_rows == 0){
 									
 									//validating inspection done or not in sending plant for particular batch
-									$qry_batchval_sendplant="select * from $bai_rm_pj1.inspection_db where batch_ref='".$sticker_data['batch_no']."'";
+									$qry_batchval_sendplant="select * from $wms.inspection_db where plant_code='$plant_code' AND batch_ref='".$sticker_data['batch_no']."'";
 									
 									$qry_batchval_sendplant_check = $link_new->query($qry_batchval_sendplant);
 									while($row123 = $qry_batchval_sendplant_check->fetch_assoc()) 
@@ -329,7 +332,7 @@ else
 									if($qry_batchval_sendplant_check->num_rows > 0)
 									{
 										//logic for insert inspected db details based on batch
-										$insert_insp_db = "insert into $bai_rm_pj1.inspection_db (batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,pur_gsm,consumption) values('".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".str_replace( array( "'",'"' ),'',$inspection_data['sp_rem'])."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."')";
+										$insert_insp_db = "insert into $wms.inspection_db (batch_ref,act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,status,pur_gsm,consumption,plant_code,created_user) values('".$sticker_data['batch_no']."','".$inspection_data['act_gsm']."','".$inspection_data['pur_width']."','".$inspection_data['act_width']."','".str_replace( array( "'",'"' ),'',$inspection_data['sp_rem'])."','".$inspection_data['qty_insp']."','".$inspection_data['gmt_way']."','".$inspection_data['pts']."','".$inspection_data['fallout']."','".$inspection_data['skew']."','".$inspection_data['skew_cat']."','".$inspection_data['shrink_l']."','".$inspection_data['shrink_w']."','".$inspection_data['supplier']."','".$inspection_data['log_date']."','".$inspection_data['unique_id']."','".$inspection_data['status']."','".$inspection_data['pur_gsm']."','".$inspection_data['consumption']."','".$plant_code."','".$username."')";
 										//echo $insert_insp_db;
 										$qry_inspectiondb_check = $link->query($insert_insp_db);
 									}
