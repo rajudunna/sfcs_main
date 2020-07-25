@@ -235,7 +235,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 //Ship
-$sql="select distinct ship_schedule from $bai_pro3.ship_stat_log where last_up>='$log_time_stamp' and length(trim(both from ship_schedule))>0";
+$sql="select distinct ship_schedule from $pps.ship_stat_log where plant_code='$plantcode' and last_up>='$log_time_stamp' and length(trim(both from ship_schedule))>0";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

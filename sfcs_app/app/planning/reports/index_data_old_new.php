@@ -54,6 +54,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 $dat=$_POST["dat1"];
 $dat1=$_POST["dat2"];
+$plantcode=$_SESSION['plantCode'];
 // echo $dat.'---'.$dat1;
 
   echo "<form class='row' action='".getFullURL($_GET['r'],'index_data_old_new.php','N')."' method=\"post\">
@@ -352,7 +353,7 @@ if($count_rows > 0){
 			
 			//shipemet details
 		
-			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$sch\" and ship_status=\"2\"";
+			$sql4="SELECT SUM($ship_title_sizes[$key001]) as shipped_qty FROM $pps.ship_stat_log WHERE plant_code='$plantcode' and ship_schedule=\"$sch\" and ship_status=\"2\"";
 
 			$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$total_rows=mysqli_num_rows($sql_result4);

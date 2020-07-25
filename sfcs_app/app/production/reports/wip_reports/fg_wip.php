@@ -57,6 +57,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 	<br/>
 		<?php
 			set_time_limit(6000000);
+			$plantcode=$_SESSION['plantCode'];
 			//$msg="<table border='1px' class='mytable' id='table1'><tr><th>Schedule No</th><th>Doc No</th><th>Cut No</th><th>Scanned Qty</th><th>Unscanned Qty</th><th>Input</th><th>Output</th></tr>";
 			$msg="
 			<div class='table-responsive'><table class='table table-bordered table-striped' id='table1'>
@@ -108,7 +109,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					$ship_total=0;
 					$sql_ship="select sum(ship_s_xs),sum(ship_s_s),sum(ship_s_m),sum(ship_s_l),sum(ship_s_xl),sum(ship_s_xxl),sum(ship_s_xxxl),sum(ship_s_s01),sum(ship_s_s02),sum(ship_s_s03),sum(ship_s_s04),sum(ship_s_s05),sum(ship_s_s06),sum(ship_s_s07),sum(ship_s_s08),sum(ship_s_s09),sum(ship_s_s10),sum(ship_s_s11),sum(ship_s_s12),sum(ship_s_s13),sum(ship_s_s14),sum(ship_s_s15),sum(ship_s_s16),sum(ship_s_s17),sum(ship_s_s18),sum(ship_s_s19),sum(ship_s_s20),sum(ship_s_s21),sum(ship_s_s22),sum(ship_s_s23),sum(ship_s_s24),sum(ship_s_s25),sum(ship_s_s26),sum(ship_s_s27),sum(ship_s_s28),sum(ship_s_s29),
 					sum(ship_s_s30),sum(ship_s_s31),sum(ship_s_s32),sum(ship_s_s33),sum(ship_s_s34),sum(ship_s_s35),sum(ship_s_s36),sum(ship_s_s37),sum(ship_s_s38),
-					sum(ship_s_s39),sum(ship_s_s40),sum(ship_s_s41),sum(ship_s_s42),sum(ship_s_s43),sum(ship_s_s44),sum(ship_s_s45),sum(ship_s_s46),sum(ship_s_s47),sum(ship_s_s48),sum(ship_s_s49),sum(ship_s_s50) from $bai_pro3.ship_stat_log where ship_schedule=\"".$order_del_no."\"";
+					sum(ship_s_s39),sum(ship_s_s40),sum(ship_s_s41),sum(ship_s_s42),sum(ship_s_s43),sum(ship_s_s44),sum(ship_s_s45),sum(ship_s_s46),sum(ship_s_s47),sum(ship_s_s48),sum(ship_s_s49),sum(ship_s_s50) from $pps.ship_stat_log where plant_code='$plantcode' and ship_schedule=\"".$order_del_no."\"";
 					//echo $sql_ship;
 					$result_ship=mysqli_query($link, $sql_ship) or die("Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row3=mysqli_fetch_array($result_ship))

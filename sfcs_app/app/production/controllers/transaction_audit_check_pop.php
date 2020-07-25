@@ -37,6 +37,7 @@ return false;
  <div class="panel panel-primary" style="height:130px;">
 <div class="panel-heading" style="height:40px;"><span style="float: left"><h3 style="margin-top: -2px;">Quick Transaction Audit</h3></span></div>
 <?php
+	$plantcode=$_SESSION['plantCode'];
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	$shift=$_POST['shift'];
@@ -582,7 +583,7 @@ while($sql_row10=mysqli_fetch_array($sql_result))
 	}
 }
 echo "<th>tid</th><th>cartons</th><th>AOD no</th><th>lastup</th><th>Total QTY</th></tr>";
-$sql="select * from $bai_pro3.ship_stat_log where ship_schedule=$schedule";
+$sql="select * from $pps.ship_stat_log where plant_code='$plantcode' and ship_schedule=$schedule";
 mysqli_query($link,$sql) or exit("Sql Erro12r".mysqli_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error13".mysqli_error());
 while($sql_row=mysqli_fetch_array($sql_result))

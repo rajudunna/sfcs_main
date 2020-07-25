@@ -1,6 +1,7 @@
 
 <?php
 $start_timestamp = microtime(true);
+$plantcode=$_SESSION['plantCode'];
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
 
@@ -138,7 +139,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$fcamca=$sql_row7['qty'];
 				}
 				$shipped=0;
-				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $bai_pro3.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."'";
+				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $pps.ship_stat_log where plant_code='$plantcode' and ship_schedule='".$schedule."' and ship_color='".$color."'";
 				$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row8=mysqli_fetch_array($sql_result8))
 				{

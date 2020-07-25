@@ -1,4 +1,5 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
 
 if(isset($_GET['variable']))
 {
@@ -454,7 +455,7 @@ function getjobdetails($job_number)
                                     $replaced_qty = 0;
                                     if($job_number_reference == 2)
                                     {
-                                        $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
+                                        $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $pps.replacment_allocation_log where plant_code='$plantcode' and input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
                                         $result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
                                         if($result_qry_for_replacment_allocation_log->num_rows > 0)
                                         {
@@ -499,7 +500,7 @@ function getjobdetails($job_number)
                                     $replaced_qty = 0;
                                     if($job_number_reference == 2)
                                     {
-                                        $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
+                                        $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $pps.replacment_allocation_log where plant_code='$plantcode' and input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
                                         $result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
                                         if($result_qry_for_replacment_allocation_log->num_rows > 0)
                                         {

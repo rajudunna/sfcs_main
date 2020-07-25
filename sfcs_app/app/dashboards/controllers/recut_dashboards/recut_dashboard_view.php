@@ -300,7 +300,7 @@ $username=$_SESSION['userName'];
                                     }
                                 }
                                 //checking the input job already replaced or not
-                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` = '$input_job_no_excess' and size_title='$size_title'";
+                                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$pps`.`replacment_allocation_log` WHERE plant_code='$plantcode' and `input_job_no_random_ref` = '$input_job_no_excess' and size_title='$size_title'";
                                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                                 if($result_checking_replaced_or_not->num_rows > 0)
                                 {
@@ -341,7 +341,7 @@ $username=$_SESSION['userName'];
                                 }
                                 if($to_add_sj > 0)
                                 {
-                                    $insertion_qry = "INSERT INTO `$bai_pro3`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`) values ($bundle_number,'$sj',$to_add_sj,'$size_title')";
+                                    $insertion_qry = "INSERT INTO `$pps`.`replacment_allocation_log` (`bcd_id`,`input_job_no_random_ref`,`replaced_qty`,`size_title`,plant_code,created_user,created_at) values ($bundle_number,'$sj',$to_add_sj,'$size_title','$plantcode','$username','".date('Y-m-d')."')";
                                     // echo $insertion_qry.'</br>';
                                     mysqli_query($link, $insertion_qry) or exit("insertion_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
                                  

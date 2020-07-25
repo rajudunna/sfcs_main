@@ -1,6 +1,8 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3, 'R')); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 if(isset($_POST['hold']))
 {
@@ -43,7 +45,7 @@ if(isset($_POST['hold']))
 			foreach ($clrs as $key => $value) {
 				if($query[$value] != '')
 				{
-					$sql1="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"".trim($value)."\",ship_status=\"1\",ship_remarks=\"$rmks\",".substr($query[$value],0,-1);
+					$sql1="insert into $pps.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"".trim($value)."\",ship_status=\"1\",ship_remarks=\"$rmks\",".substr($query[$value],0,-1).",plant_code=\"$plantcode\",created_user=\"$username\",created_at=\"date('Y-m-d')";
 					// echo "<br/> query1=".$sql;
 					mysqli_query($link, $sql1) or exit("Sql Error inserting-all_color".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$ship_update_tid1 = mysqli_insert_id($link);
@@ -51,12 +53,12 @@ if(isset($_POST['hold']))
 					if($count_value == 1)
 					{
 						$ship_update_value = 'R-'.$schedule_new.'-'.$ship_update_tid1;
-						$sql23 = "UPDATE `bai_pro3`.`ship_stat_log` SET ship_up_date = '$ship_update_value', ship_cartons=".abs($crts)." where ship_tid = ".$ship_update_tid1;
+						$sql23 = "UPDATE `$pps`.`ship_stat_log` SET ship_up_date = '$ship_update_value', ship_cartons=".abs($crts).",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and ship_tid = ".$ship_update_tid1;
 						mysqli_query($link, $sql23) or exit("Sql Error updating-all_color_first".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 					else
 					{
-						$sql24 = "UPDATE `bai_pro3`.`ship_stat_log` SET ship_up_date ='$ship_update_value' where ship_tid = ".$ship_update_tid1;
+						$sql24 = "UPDATE `$pps`.`ship_stat_log` SET ship_up_date ='$ship_update_value',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and ship_tid = ".$ship_update_tid1;
 						mysqli_query($link, $sql24) or exit("Sql Error updating-all_color".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
@@ -65,12 +67,12 @@ if(isset($_POST['hold']))
 		}
 		else
 		{
-			$sql2="insert into $bai_pro3.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"$color_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query);
+			$sql2="insert into $pps.ship_stat_log set ship_style=\"$style_new\",ship_schedule=\"$schedule_new\",ship_color=\"$color_new\",ship_status=\"1\",ship_remarks=\"$rmks\",ship_cartons=".abs($crts).",".implode(",",$query).",plant_code=\"$plantcode\",created_user=\"$username\",created_at=\"date('Y-m-d')";
 			// echo "<br/> query2=".$sql;
 			mysqli_query($link, $sql2) or exit("Sql Error inserting-color".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$ship_update_tid = mysqli_insert_id($link);
 			
-			$sql22 = "UPDATE `bai_pro3`.`ship_stat_log` SET ship_up_date = CONCAT('R','-',$schedule_new,'-',$ship_update_tid) where ship_tid = $ship_update_tid";
+			$sql22 = "UPDATE `$pps`.`ship_stat_log` SET ship_up_date = CONCAT('R','-',$schedule_new,'-',$ship_update_tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and ship_tid = $ship_update_tid";
 			mysqli_query($link, $sql22) or exit("Sql Error updating-color".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}

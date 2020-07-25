@@ -10,6 +10,8 @@ $order_tid=$_GET['order_tid'];
 $user="Admin";
 $doc_no=$_GET['doc_no'];
 $cut_no=$_GET['cut_no'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 $sql1="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -272,7 +274,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
  <?php
 //NEW
 
-$sql="select * from $bai_pro3.review_print_track where ref_tid=\"$order_tid\"";
+$sql="select * from $pps.review_print_track where plant_code='$plantcode' and ref_tid=\"$order_tid\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $printed_count=mysqli_num_rows($sql_result);
@@ -286,7 +288,7 @@ else
 	$printed_count=$printed_count+1;
 }
 
-$sql="select * from $bai_pro3.review_print_track";
+$sql="select * from $pps.review_print_track where plant_code='$plantcode'";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $doc_count=mysqli_num_rows($sql_result);
@@ -300,7 +302,7 @@ else
 }
 
 
-$sql="insert into review_print_track (ref_tid, log_user) values (\"$order_tid\",\"$user\")";
+$sql="insert into $pps.review_print_track (ref_tid, log_user,plant_code,created_user,created_at) values (\"$order_tid\",\"$user\",'$plantcode','$username','".date('Y-m-d')."')";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
@@ -2413,7 +2415,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl63666 style='height:15.0pt'></td>
   <td rowspan=2 class=xl110666 style='border-bottom:1.0pt solid black'>Hour<span
-  style='mso-spacerun:yes'> </span></td>
+  style='mso-spacerun:yes'>ï¿½</span></td>
   <td colspan=2 class=xl112666 style='border-right:.5pt solid black;border-left:
   none'>XS</td>
   <td colspan=2 class=xl112666 style='border-right:.5pt solid black;border-left:

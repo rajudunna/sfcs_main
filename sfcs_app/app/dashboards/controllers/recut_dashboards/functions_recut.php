@@ -326,7 +326,7 @@ function ReplaceProcess($replace_id_edit)
                 $total_replaced_qty = 0;
                 $input_excess = explode(",",$input_job_no_excess);
                 $input_excess_job = "'" . implode ( "', '", $input_excess ) . "'";
-                $total_replace_qty_query = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
+                $total_replace_qty_query = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$pps`.`replacment_allocation_log` WHERE plant_code='$plantcode' and `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
                 // echo "<br/>".$total_replace_qty_query;
                 $total_replace_qty_result = $link->query($total_replace_qty_query);
                 if($total_replace_qty_result->num_rows > 0)
@@ -366,7 +366,7 @@ function ReplaceProcess($replace_id_edit)
                     }
                 }
                 //checking the input job already replaced or not
-                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$bai_pro3`.`replacment_allocation_log` WHERE `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
+                $checking_replaced_or_not = "SELECT SUM(`replaced_qty`)AS replaced_qty FROM `$pps`.`replacment_allocation_log` WHERE plant_code='$plantcode' and `input_job_no_random_ref` IN ($input_excess_job) and size_title='$excess_size_title'";
                 // echo $checking_replaced_or_not;
                 $result_checking_replaced_or_not = $link->query($checking_replaced_or_not);
                 if($result_checking_replaced_or_not->num_rows > 0)

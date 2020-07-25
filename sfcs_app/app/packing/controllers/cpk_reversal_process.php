@@ -6,6 +6,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], 'common/config/functions.php', 3, 'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'], 'sesssion_track.php', 'R'));
+$plantcode=$_SESSION['plantCode'];
 
 //Exemption Handling
 if($session_login_fg_carton_scan==1)
@@ -244,7 +245,7 @@ if(isset($_POST['update1']) or isset($_POST['update']))
 			$order_qty=$sql_row['order_qty'];
 		}
 		
-		$sql="select sum(ship_s_$size) as \"sent_qty\"  from $bai_pro3.ship_stat_log where ship_style=\"$style\" and ship_schedule=$schedule";
+		$sql="select sum(ship_s_$size) as \"sent_qty\"  from $pps.ship_stat_log where plant_code='$plantcode' and ship_style=\"$style\" and ship_schedule=$schedule";
 		//echo $sql;
 		$sql_result=mysqli_query($link,$sql) or exit("Sql Error7".mysqli_error($link));
 		while($sql_row=mysqli_fetch_array($sql_result))

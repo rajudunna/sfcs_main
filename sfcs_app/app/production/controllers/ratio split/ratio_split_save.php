@@ -18,6 +18,8 @@ foreach($ashades as $key => $shade)
 $a_plies = $data['a_plies'];
 $doc_no  = $data['doc_no'];
 $schedule = $data['schedule'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 $response_data = [];
 
@@ -43,9 +45,9 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     exit();
 }else{
     if(sizeof($shades) == 1){
-        $insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
+        $insert_query = "INSERT into $pps.shade_split(date_time,username,doc_no,schedule,shades,plies,plant_code,created_user,created_at) 
                 values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."',
-                '".implode($shades_plies,",")."')";
+                '".implode($shades_plies,",")."','$plantcode','$username','".date('Y-m-d')."')";
         mysqli_query($link,$insert_query) or exit('Problem in inserting into shade split');  
         
         $update_psl_query = "UPDATE $bai_pro3.pac_stat_log_input_job set shade_group = '".$ashades[0]."' where doc_no = $doc_no ";
@@ -141,8 +143,8 @@ if(mysqli_num_rows(mysqli_query($link,$bcd_verify)) > 0){
     }
 }
 //inserting to shade splitting table
-$insert_query = "INSERT into $bai_pro3.shade_split(date_time,username,doc_no,schedule,shades,plies) 
-                values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."','".implode($shades_plies,",")."')";
+$insert_query = "INSERT into $pps.shade_split(date_time,username,doc_no,schedule,shades,plies,plant_code,created_user,created_at) 
+                values('".date('y-m-d H:i:s')."','$username',$doc_no,'$schedule','".implode($ashades,',')."','".implode($shades_plies,",")."','$plantcode','$username','".date('Y-m-d')."')";
 mysqli_query($link,$insert_query) or exit('Problem in inserting into shade split');   
 
 //inserting deleted jobs into the deleted job track
