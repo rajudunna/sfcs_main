@@ -1,4 +1,7 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 $sout=$_POST['sout'];
 $pph=$_POST['pph'];
@@ -19,21 +22,21 @@ $dout3=$_POST['dout3'];
 
 if($dreason1 != ""){
 				
-		$sql="delete from $bai_pro2.hourly_downtime WHERE team='$team' AND date='$odate' AND dhour='$hour'";
+		$sql="delete from $pps.hourly_downtime WHERE team='$team' AND date='$odate' AND dhour='$hour'";
 		mysqli_query($link,$sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo $sql;
 		
 		//echo $sql;
 		
-		$sql2="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason1','$dout1','$hour')";
+		$sql2="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason1','$dout1','$hour','$plantcode','$username','".date('Y-m-d')."')";
 	    mysqli_query($link,$sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 			if($dreason2 != ""){
-				$sql3="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason2','$dout2','$hour')";
+				$sql3="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason2','$dout2','$hour','$plantcode','$username','".date('Y-m-d')."')";
 				mysqli_query($link,$sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			if($dreason3 != ""){
-				$sql4="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason3','$dout3','$hour')";
+				$sql4="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason3','$dout3','$hour','$plantcode','$username','".date('Y-m-d')."')";
 				mysqli_query($link,$sql4) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			echo "<h3 style='color:#5cb85c;'><b>Successfuly Updated Hourly Output</h3></b>";

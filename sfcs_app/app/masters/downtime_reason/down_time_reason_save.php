@@ -8,6 +8,8 @@ $dr_id=$_REQUEST['dr_id'];
 $code=$_REQUEST['code'];
 $department=$_REQUEST['department'];
 $reason=$_REQUEST['reason'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
@@ -43,7 +45,8 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $bai_pro2.downtime_reason set code='$code',rdept='$department',reason='$reason' where id=$dr_id";
+		$sql = "update $pps.downtime_reason set code='$code',rdept='$department',reason='$reason',updated_user='$username',
+		updated_at='".date('Y-m-d')."' where  plant_code='$plantcode' and id=$dr_id";
 		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'down_time_reason_add.php','N');
@@ -70,7 +73,7 @@ else
 
 		
 
-		$query1="select reason,code from $bai_pro2.downtime_reason  where reason='$reason' or code='$code'";
+		$query1="select reason,code from $ps.downtime_reason  where   plant_code='$plantcode' and reason='$reason' or code='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		
@@ -104,8 +107,8 @@ else
 
 
 
-		$sql = "INSERT INTO $bai_pro2.downtime_reason (code, rdept,reason)
-		VALUES ('$code','$department','$reason')";
+		$sql = "INSERT INTO $pps.downtime_reason (code, rdept,reason,plant_code,created_user,created_at)
+		VALUES ('$code','$department','$reason','$plantcode','$username','".date('Y-m-d')."')";
 
 		if (mysqli_query($conn, $sql)) 
 		{

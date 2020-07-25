@@ -1,4 +1,7 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
@@ -1359,7 +1362,7 @@ if(isset($_POST["trans_action"])){
 
                                     
                                     if($b_op_id == $hout_ops_code){
-                                        $hout_data_qry = "select * from $bai_pro2.hout where out_date = '$tod_date' and team = '$b_module[0]' and time_parent_id = $plant_time_id";
+                                        $hout_data_qry = "select * from $pps.hout where  plant_code='$plantcode' and out_date = '$tod_date' and team = '$b_module[0]' and time_parent_id = $plant_time_id";
                                         $hout_data_result = $link->query($hout_data_qry);
 
                                         if($hout_data_result->num_rows > 0)
@@ -1373,11 +1376,13 @@ if(isset($_POST["trans_action"])){
                                                 $qty = $hout_result_data['qty'];
                                             }
                                             $upd_qty = $qty + $rep_sum_qty;
-                                            $hout_update_qry = "update $bai_pro2.hout set qty = '$upd_qty' where id= $row_id";
+                                            $hout_update_qry = "update $pps.hout set qty = '$upd_qty',updated_user='$username',updated_at='".date('Y-m-d')."'
+                                             where plant_code='$plantcode' and id= $row_id";
                                             $hout_update_result = $link->query($hout_update_qry);
                                             // update
                                         }else{
-                                            $hout_insert_qry = "insert into $bai_pro2.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id) values('$tod_date','$cur_hour','$b_module[0]','$rep_sum_qty', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id')";
+                                            $hout_insert_qry = "insert into $pps.hout(out_date, out_time, team, qty, status, remarks, rep_start_time, rep_end_time, time_parent_id,plant_code,created_user,created_at)
+                                             values('$tod_date','$cur_hour','$b_module[0]','$rep_sum_qty', '1', 'NA', '$plant_start_timing', '$plant_end_timing', '$plant_time_id','$plantcode','$username','".date('Y-m-d')."')";
                                             $hout_insert_result = $link->query($hout_insert_qry);
                                             // insert
                                         }

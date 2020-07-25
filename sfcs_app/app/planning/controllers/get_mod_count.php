@@ -21,6 +21,9 @@ set_time_limit(2000);
 // $user2=$host_adr_un;
 // $password2=$host_adr_pw;
 // $host2=$host_adr;
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 $link2= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host2, $user2, $password2)) or die("Could not connect: ".mysqli_error($GLOBALS["___mysqli_ston"]));
 mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -35,7 +38,7 @@ mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysq
 			$mod_count=0;
 			
 			$date_check=date("Y-m-d");
-			$sql="select max(date) as \"date\" from $bai_pro2.db_update_log";
+			$sql="select max(date) as \"date\" from $pps.db_update_log where plant_code='$plantcode'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))

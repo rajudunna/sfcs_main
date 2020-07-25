@@ -91,6 +91,8 @@ $today=Date('Y-m-d', strtotime("-2 days"));
   
   </tr> -->
     <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 
 
@@ -127,7 +129,7 @@ $sql_schedule="SELECT 	* FROM $bai_pro3.`temp_delivery_schedule` WHERE ex_date B
 		$comnt="";
 		$comnt_user="";
 		
-		$que1="SELECT mode from $bai_pro2.deliver_mode where order_del='$schedule_no'";
+		$que1="SELECT mode from $pps.deliver_mode where  plant_code='$plantcode' and order_del='$schedule_no'";
 		$que1_result=mysqli_query($link, $que1) or exit ("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($que1_row=mysqli_fetch_array($que1_result))
 			{ 

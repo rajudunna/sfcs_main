@@ -16,6 +16,9 @@
 
 
 <?php 
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
+	
 	$section="1";
 	$section=$_GET['secid'];
 	//echo $section;
@@ -82,8 +85,8 @@
 		$pph=$pqty/$hours;
 		
 			$otime=date('H');
-			$query="SELECT * FROM $bai_pro2.hout where id=(
-			SELECT max(id) FROM $bai_pro2.hout WHERE out_date='$date1' AND team='$module')";
+			$query="SELECT * FROM $pps.hout where  plant_code='$plantcode' and id=(
+			SELECT max(id) FROM $pps.hout WHERE  plant_code='$plantcode' and out_date='$date1' AND team='$module')";
 				
 			$result=mysqli_query($link,$query);
 			$query_row=mysqli_fetch_array($result);

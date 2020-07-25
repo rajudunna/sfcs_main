@@ -12,7 +12,7 @@ INSERT INTO central_administration_sfcs.rbac_role_menu (menu_pid,menu_descriptio
 
 USE bai_pro2;
 
-CREATE TABLE bai_pro2.hout2 (
+CREATE TABLE pps.hout2 (
 id int(11) NOT NULL AUTO_INCREMENT,
 out_date varchar(45) DEFAULT NULL,
 out_time varchar(45) DEFAULT NULL,

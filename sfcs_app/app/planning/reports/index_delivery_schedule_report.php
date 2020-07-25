@@ -55,6 +55,9 @@ $today=Date('Y:m:d', strtotime("-3 days"));
   
   <table width="1060px" border="0" style="margin-top:50px;margin-left:0px;padding-left:0px;" align="left">
     <?php
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
+	
 
 //$sql_schedule="SELECT b.order_style_no,b.order_del_no, SUM(b.`order_s_xs`+ b.`order_s_s`+ b.`order_s_m`+b.`order_s_l`+b. `order_s_xl`+ b.`order_s_xxl`+ b.`order_s_xxxl`+ b.`order_s_s06`+ 	b.`order_s_s08`+ b.`order_s_s10`+ b.`order_s_s12`+b.`order_s_s14`+b.`order_s_s16`+b.`order_s_s18`+b.`order_s_s20`+b.`order_s_s22`+ b.`order_s_s24`+ b.`order_s_s26`+ b.`order_s_s28`+ b.`order_s_s30` ) AS QTY , SUM(b.`old_order_s_xs`+ b.`old_order_s_s`+ b.`old_order_s_m`+b.`old_order_s_l`+b. `old_order_s_xl`+ b.`old_order_s_xxl`+ b.`old_order_s_xxxl`+ b.`old_order_s_s06`+ 	b.`old_order_s_s08`+ b.`old_order_s_s10`+ b.`old_order_s_s12`+b.`old_order_s_s14`+b.`old_order_s_s16`+b.`old_order_s_s18`+b.`old_order_s_s20`+b.`old_order_s_s22`+ b.`old_order_s_s24`+ b.`old_order_s_s26`+ b.`old_order_s_s28`+ b.`old_order_s_s30` ) AS QTY_old ,b.order_date	FROM 	`bai_pro3`.`bai_orders_db` b 	WHERE   order_date BETWEEN \"2013-02-07\" and \"2013-02-14\" and order_del_no NOT IN (\"0\",\"\") and $order_joins_not_in	GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
 $sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_no,order_div	FROM 	`bai_pro3`.`bai_orders_db` b 	WHERE   order_date BETWEEN \"$today\" and \"$endday\" and order_del_no NOT IN (\"0\",\"\") and $order_joins_not_in	GROUP BY order_date ,order_del_no ORDER BY order_date ASC	";
@@ -245,7 +248,7 @@ $sql_schedule="SELECT b.order_style_no,b.order_del_no, b.order_date,b.order_po_n
 				
 				///////////////////////////////////fca///////////////////
 				
-				$sql_fca="SELECT * from bai_pro2.fca_status WHERE order_del_no='$schedule_no'";
+				$sql_fca="SELECT * from pps.fca_status WHERE  plant_code='$plantcode' and order_del_no='$schedule_no'";
 				$sql_fca_result=mysqli_query($link, $sql_fca) or exit ("Sql Error in fca_qty2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$fcas="";
 				if($sql_row_fca=mysqli_fetch_array($sql_fca_result))

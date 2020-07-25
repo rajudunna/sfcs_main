@@ -3,7 +3,7 @@ USE bai_pro3;
 ALTER TABLE bai_pro3.cps_log ADD KEY (doc_no, size_title, operation_code); 
 
 USE bai_pro2;
-ALTER TABLE bai_pro2.hout ADD KEY hout_out_date_team (out_date, team, time_parent_id); 
+ALTER TABLE pps.hout ADD KEY hout_out_date_team (out_date, team, time_parent_id); 
 
 USE bai_pro;
 ALTER TABLE bai_pro.pro_attendance ADD KEY attendance (date, module, shift); 

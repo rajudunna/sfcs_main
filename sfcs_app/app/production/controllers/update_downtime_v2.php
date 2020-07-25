@@ -1,4 +1,7 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/config.php',3,'R'));	
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',3,'R')); 
 
@@ -43,18 +46,18 @@ $dout=$dout1+$dout2+$dout3;
 //echo $rest.'  '.$dout;
 if($rest<=$dout){
 	
-	$sql1="insert into $bai_pro2.hout(out_date,out_time,team,qty,status,remarks) VALUES ('$odate','$otime','$team','$sout','3','downtime')";
+	$sql1="insert into $pps.hout(out_date,out_time,team,qty,status,remarks,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$sout','3','downtime','$plantcode','$username','".date('Y-m-d')."')";
 	mysqli_query($link,$sql1);
 	
-	$sql2="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason1','$dout1','$ohour')";
+	$sql2="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason1','$dout1','$ohour',,'$plantcode','$username','".date('Y-m-d')."')";
 	mysqli_query($link,$sql2);
 	
 		if($dreason2 != ""){
-		$sql3="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason2','$dout2','$ohour')";
+		$sql3="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason2','$dout2','$ohour','$plantcode','$username','".date('Y-m-d')."')";
 		mysqli_query($link,$sql3);
 		}
 		if($dreason3 != ""){
-		$sql4="INSERT into $bai_pro2.hourly_downtime(date,time,team,dreason,output_qty,dhour) VALUES ('$odate','$otime','$team','$dreason3','$dout3','$ohour')";
+		$sql4="INSERT into $pps.hourly_downtime(date,time,team,dreason,output_qty,dhour,plant_code,created_user,created_at) VALUES ('$odate','$otime','$team','$dreason3','$dout3','$ohour','$plantcode','$username','".date('Y-m-d')."')";
 		mysqli_query($link,$sql4);
 		}
 		echo "<script>swal('Successfuly Updated','Hourly Output','success');</script>"; ?>

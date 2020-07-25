@@ -39,9 +39,9 @@ CREATE TABLE `bai_pro2`.`buyer_codes` (
 
 /*Table structure for table `db_update_log` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`db_update_log`;
+DROP TABLE IF EXISTS `pps`.`db_update_log`;
 
-CREATE TABLE `bai_pro2`.`db_update_log` (
+CREATE TABLE `pps`.`db_update_log` (
   `date` date NOT NULL,
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `file_name` varchar(200) NOT NULL,
@@ -52,9 +52,9 @@ CREATE TABLE `bai_pro2`.`db_update_log` (
 
 /*Table structure for table `deliver_mode` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`deliver_mode`;
+DROP TABLE IF EXISTS `pps`.`deliver_mode`;
 
-CREATE TABLE `bai_pro2`.`deliver_mode` (
+CREATE TABLE `pps`.`deliver_mode` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_del` varchar(45) DEFAULT NULL,
   `mode` varchar(45) DEFAULT NULL,
@@ -75,9 +75,9 @@ CREATE TABLE `bai_pro2`.`downtime_reason` (
 
 /*Table structure for table `fca_status` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`fca_status`;
+DROP TABLE IF EXISTS `pps`.`fca_status`;
 
-CREATE TABLE `bai_pro2`.`fca_status` (
+CREATE TABLE `pps`.`fca_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_del_no` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
@@ -105,9 +105,9 @@ CREATE TABLE `bai_pro2`.`fr_data` (
 
 /*Table structure for table `fr_data_copy` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`fr_data_copy`;
+DROP TABLE IF EXISTS `pps`.`fr_data_copy`;
 
-CREATE TABLE `bai_pro2`.`fr_data_copy` (
+CREATE TABLE `pps`.`fr_data_copy` (
   `fr_id` int(45) NOT NULL AUTO_INCREMENT,
   `frdate` varchar(45) DEFAULT NULL,
   `team` varchar(12) DEFAULT NULL,

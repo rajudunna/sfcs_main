@@ -35,11 +35,13 @@ th, td {
 <div class="container">
 <?php
 //echo $sout.' '.$pph.' '.$team.' '.$section;
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 
 
 	
-				$sql2="SELECT * from $bai_pro2.downtime_reason";
+				$sql2="SELECT * from $pps.downtime_reason where plant_code='$plantcode'";
 				$res2=mysqli_query($link,$sql2);
 				$res3=mysqli_query($link,$sql2);
 				$res4=mysqli_query($link,$sql2);		

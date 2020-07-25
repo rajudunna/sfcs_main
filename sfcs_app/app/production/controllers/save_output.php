@@ -28,6 +28,8 @@
 <?php
 //echo $sout.' '.$pph.' '.$team.' '.$section;
 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 	if($pretime=='1'){
 
@@ -37,7 +39,7 @@
 			echo "<h4>Hourly Output :".$sout."</h4>";
 			echo "<hr>";
 			
-				$sql2="SELECT * from $bai_pro2.downtime_reason";
+				$sql2="SELECT * from $pps.downtime_reason  where plant_code='$plantcode'";
 				$res2=mysqli_query($link,$sql2);
 				$res3=mysqli_query($link,$sql2);
 				$res4=mysqli_query($link,$sql2);
@@ -93,7 +95,8 @@
 			<?php
 		}
 		else{
-			$sql1="insert into $bai_pro2.hout(out_date,out_time,team,qty,status,remarks) VALUES ('$odate','$otime','$team','$sout','1','$remarks')";
+			$sql1="insert into $pps.hout(out_date,out_time,team,qty,status,remarks,plant_code,created_user,created_at) VALUES
+			 ('$odate','$otime','$team','$sout','1','$remarks','$plantcode','$username','".date('Y-m-d')."')";
 			mysqli_query($link,$sql1);
 			//echo $sql1;
 			echo "<h3 style='color:#5cb85c;'><b>Successfuly Updated Hourly Output</h3></b>";
@@ -102,7 +105,7 @@
 	}else{
 		
 			echo "<script>swal('Not Update Output in Previous Hour','Please Update Downtime Reason with previous hour qty','warning');</script>";
-				$sql2="SELECT * from $bai_pro2.downtime_reason";
+				$sql2="SELECT * from $pps.downtime_reason where plant_code='$plantcode'";
 				$res2=mysqli_query($link,$sql2);
 				$res3=mysqli_query($link,$sql2);
 				$res4=mysqli_query($link,$sql2);
