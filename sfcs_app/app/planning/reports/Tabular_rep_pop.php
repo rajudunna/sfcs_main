@@ -27,6 +27,9 @@ Movex Analytical - POPUP REPORT
 <span><h2>Order Status - POP REPORT</h2></span>
 
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 //Table Name Spaces
 //To Identify shipment plan table
@@ -46,7 +49,7 @@ $style_status_summ="style_status_summ";
 
 //Create Temp Table
 
-$sql="create TEMPORARY table $bai_pro2.ssc_code_temp select * from $bai_pro2.ssc_code_temp";
+$sql="create TEMPORARY table $pps.ssc_code_temp select * from $pps.ssc_code_temp";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -72,7 +75,7 @@ echo "</tr>";
 $ssc_code_base=array();
 $i=0;
 
-$sql11="delete from $bai_pro2.ssc_code_temp";
+$sql11="delete from $pps.ssc_code_temp";
 mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -81,12 +84,12 @@ $sql11="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date 
 $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row11=mysqli_fetch_array($sql_result11))
 {
-	$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
+	$sql111="insert ignore into $pps.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
 	mysqli_query($link, $sql111) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
 
-$sql111="select distinct ssc_code from $bai_pro2.ssc_code_temp";
+$sql111="select distinct ssc_code from $pps.ssc_code_temp where plant_code='$plantcode'";
 mysqli_query($link, $sql111) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row111=mysqli_fetch_array($sql_result111))

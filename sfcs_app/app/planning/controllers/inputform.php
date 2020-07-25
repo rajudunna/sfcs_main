@@ -95,7 +95,7 @@ while($sql_row=mysqli_fetch_array($result))
 $host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 $note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
 // echo $note."<br>";
-$sql= "update $bai_pro2.movex_styles set style_id=\"$style_id\",buyer_id=\"$buyer_id\" where movex_style=\"$style\"";
+$sql= "update $pps.movex_styles set style_id=\"$style_id\",buyer_id=\"$buyer_id\" ,updated_user='$username',updated_at='".date('Y-m-d')."'where plant_code='$plantcode' and movex_style=\"$style\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $note.=$sql."<br/>";
@@ -116,7 +116,7 @@ $note.=$sql."<br/>";
 	}	
 	
 	
-	$sql="select * from $bai_pro2.shipment_plan_summ where style_id is NULL";
+	$sql="select * from $pps.shipment_plan_summ where  plant_code='$plantcode' and style_id is NULL";
 	// echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -124,7 +124,7 @@ $note.=$sql."<br/>";
 	{
 		$ssc_code=$sql_row['ssc_code'];
 		$style_no=$sql_row['style_no'];
-		$sql2="update $bai_pro2.shipment_plan_summ set style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
+		$sql2="update $pps.shipment_plan_summ set updated_user='$username',updated_at='".date('Y-m-d')."', style_id=(select style_id from movex_styles where plant_code='$plantcode' and movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
 		// echo $sql2."<br>";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

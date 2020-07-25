@@ -397,7 +397,7 @@ $ssc_code_temp="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_temp";
 $sql="create TEMPORARY table $bai_pro2.style_status_summ ENGINE = MyISAM select * from $bai_pro2.style_status_summ_live ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="create TEMPORARY table $bai_pro2.ssc_code_temp ENGINE = MyISAM select * from $bai_pro2.ssc_code_temp ";
+$sql="create TEMPORARY table $pps.ssc_code_temp ENGINE = MyISAM select * from $pps.ssc_code_temp ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $start_date=$_POST["sdate"];
@@ -853,7 +853,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		if($Current_Modules==1 || $All==1){
 		for($i=0; $i<sizeof($week_code); $i++)
 		{
-			$sql2="select max(mod_count) as \"mod_count\" from $bai_pro2.movex_styles where style_id=\"$style_id\"";
+			$sql2="select max(mod_count) as \"mod_count\" from $pps.movex_styles where  plant_code='$plantcode' and style_id=\"$style_id\"";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{

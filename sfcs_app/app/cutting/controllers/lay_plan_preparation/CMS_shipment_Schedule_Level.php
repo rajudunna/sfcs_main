@@ -29,7 +29,7 @@ set_time_limit(6000000);
 // 		} 			
 // 	}
 
-// 	$sql3="select style_id from $bai_pro2.movex_styles where movex_style=\"$string\"";
+// 	$sql3="select style_id from $pps.movex_styles where movex_style=\"$string\"";
 // 	$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // 	while($sql_row3=mysqli_fetch_array($sql_result3))
 // 	{
@@ -123,11 +123,12 @@ function isNumber($c)
 					$buyer_id_new=$sql_row44['buyer_code'];
 				}
 				
-				$sql_check="select movex_style,style_id,buyer_id from $bai_pro2.movex_styles where movex_style=\"".$style."\" and style_id=\"".$style_id."\"";
+				$sql_check="select movex_style,style_id,buyer_id from $pps.movex_styles where  plant_code='$plantcode'and movex_style=\"".$style."\" and style_id=\"".$style_id."\"";
 				$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_check_res)==0)
 				{
-					$sql22="insert into $bai_pro2.movex_styles (movex_style,style_id,buyer_id) values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\")";
+					$sql22="insert into $pps.movex_styles (movex_style,style_id,buyer_id,plant_code,created_user,created_at) 
+					values (\"".$style."\", \"".$style_id."\",\"".$buyer_id_new."\",\"".$plantcode."\",\"".$username."\",\"".date('Y-m-d')."\")";
 					mysqli_query($link, $sql22) or exit("sql movex".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}	
 				

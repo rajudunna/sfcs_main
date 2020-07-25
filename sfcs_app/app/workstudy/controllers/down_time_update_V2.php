@@ -203,6 +203,8 @@ else
 
 
 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 $date=date("Y-m-d");
 
@@ -287,7 +289,7 @@ for($i=0;$i<=10;$i++)
 	</td>
 	<td><select name=\"sty[$i]\" id=\"style_$i\" class=\"form-control\">";
 
-	$sql22="select distinct style_id from $bai_pro2.movex_styles order by style_id";
+	$sql22="select distinct style_id from $pps.movex_styles   where plant_code='$plantcode' and order by style_id";
 	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
@@ -492,7 +494,7 @@ if(isset($_POST["submit"]))
 				//2016-10-06 / CR 512 / kirang / Changed the logic to capture the Buyer Name
 				//$sql1="SELECT distinct(buyer) FROM pro_style WHERE style=\"".$style[$i]."\"";	
 				
-				$sql1="SELECT distinct(buyer_id) as buyer FROM $bai_pro2.movex_styles WHERE movex_style=\"".$order_style_no."\"";	
+				$sql1="SELECT distinct(buyer_id) as buyer FROM $pps.movex_styles WHERE  plant_code='$plantcode' and movex_style=\"".$order_style_no."\"";	
 				//echo "<br/>".$sql1."<br/>";			
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -503,7 +505,7 @@ if(isset($_POST["submit"]))
 			}
 			else if($style[$i]!='')
 			{
-				$sql_buyer="SELECT distinct(buyer_id) as buyer  FROM $bai_pro2.movex_styles where style_id='".$style[$i]."' and buyer_id!=''";
+				$sql_buyer="SELECT distinct(buyer_id) as buyer  FROM $pps.movex_styles where  plant_code='$plantcode' andstyle_id='".$style[$i]."' and buyer_id!=''";
 				
 				//echo "<br/>".$sql_buyer;
 				

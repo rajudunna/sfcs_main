@@ -9,6 +9,11 @@ $style_id=$_GET['style_id'];
 $schedule_id=$_GET['schedule_id'];
 $style1=$_GET['style'];
 $schedule=$_GET['schedule'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 		$mpo ='';$cpo='';$cust_ord='';$module = '';
 		$leading = '';
@@ -484,7 +489,7 @@ $order_tid_qry="SELECT order_tid FROM bai_orders_db_confirm WHERE order_del_no=$
 						// $mpo=$sql_row['MPO'];
 						// $cust_ord=$sql_row['Cust_order'];
 					} 
-$sql="select * from $bai_pro2.shipment_plan_summ where ssc_code=\"$order_tid\"";
+$sql="select * from $pps.shipment_plan_summ where plant_code='$plantcode' and ssc_code=\"$order_tid\"";
 // echo $sql;
 // die();
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

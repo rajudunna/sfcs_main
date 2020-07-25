@@ -157,7 +157,7 @@ th,td{ color : #000;}
 					<option value="">Select</option>
 					<?php
 
-					$sql="select distinct style_id as style_id from $bai_pro2.movex_styles where style_id > 0 order by style_id";
+					$sql="select distinct style_id as style_id from $pps.movex_styles where plant_code='$plantcode' and style_id > 0 order by style_id";
 					$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo "<option value=''>Select</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))

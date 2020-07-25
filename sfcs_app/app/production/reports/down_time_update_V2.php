@@ -196,6 +196,8 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 <div class="col-md-3">
 <?php 
 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 
 $sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
@@ -225,6 +227,8 @@ else
 
 
 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 $date=date("Y-m-d");
 
@@ -299,7 +303,7 @@ for($i=0;$i<=10;$i++)
 	</td>
 	<td><select name=\"sty[$i]\" id=\"style_$i\" class=\"form-control\">";
 
-	$sql22="select distinct style_id from $bai_pro2.movex_styles order by style_id";
+	$sql22="select distinct style_id from $pps.movex_styles where plant_code='$plantcode' and order by style_id";
 	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{

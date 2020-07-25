@@ -2,6 +2,9 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	 $style_id=$_GET['style_id']; 
 	 $mod_count=$_GET['mod_count'];
+	 $plantcode=$_SESSION['plantCode'];
+	 $username=$_SESSION['userName'];
+
 ?>
 
 <script>
@@ -104,7 +107,8 @@ if(isset($_POST['update']))
 $style_id=$_POST['style_id'];
 $mod_count=$_POST['mod_count'];
 
-$sql= "update $bai_pro2.movex_styles set mod_count=$mod_count where style_id=\"$style_id\"";
+$sql= "update $pps.movex_styles set mod_count=$mod_count,updated_user='$username',updated_at='".date('Y-m-d')."'
+ where plant_code='$plantcode' and  style_id=\"$style_id\"";
 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -120,25 +124,27 @@ mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_s
 	}	
 	
 	
-	$sql="select * from $bai_pro2.shipment_plan_summ where style_id is NULL";
+	$sql="select * from $pps.shipment_plan_summ where  plant_code='$plantcode' and style_id is NULL";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$ssc_code=$sql_row['ssc_code'];
 		$style_no=$sql_row['style_no'];
-		$sql2="update $bai_pro2.shipment_plan_summ set style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
+		$sql2="update $pps.shipment_plan_summ set updated_user='$username',updated_at='".date('Y-m-d')."',
+		style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where   plant_code='$plantcode' and ssc_code=\"$ssc_code\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	
-	$sql="select * from $bai_pro2.style_status_summ where style_id is NULL";
+	$sql="select * from $pps.style_status_summ where plant_code='$plantcode' and style_id is NULL";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$ssc_code=$sql_row['ssc_code'];
 		$style_no=$sql_row['style'];
-		$sql2="update $bai_pro2.style_status_summ set style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
+		$sql2="update $pps.style_status_summ set updated_user='$username',updated_at='".date('Y-m-d')."',style_id=(select style_id from movex_styles 
+		where plant_code='$plantcode' and  movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 $url=getFullURL($_GET['r'],'module_count.php','N');

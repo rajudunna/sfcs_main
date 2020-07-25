@@ -17,7 +17,7 @@
 						//echo $_GET['style']."--<br>";
 						//Changed on 2013-06-17 8:43 PM - Kirang
 						$sql="select order_style_no,style_id from $bai_pro3.bai_orders_db group by order_style_no ";
-						//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
+						//$sql="select distinct style_id from pps.movex_styles order by style_id";
 						mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_num_check=mysqli_num_rows($sql_result);
@@ -117,7 +117,7 @@
 
 			//Changed on 2013-06-17 8:43 PM - Kirang
 			$sql="select distinct style_id from bai_orders_db order by style_id";
-			//$sql="select distinct style_id from bai_pro2.movex_styles order by style_id";
+			//$sql="select distinct style_id from pps.movex_styles order by style_id";
 			mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 			$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 			$sql_num_check=mysql_num_rows($sql_result);

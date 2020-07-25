@@ -29,7 +29,7 @@ $link2= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host2, $user2, $password2)
 mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
 
-		$sql1="select * from $bai_pro2.movex_styles";
+		$sql1="select * from $pps.movex_styles where plant_code='$plantcode'";
 		mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -54,7 +54,8 @@ mysqli_select_db($link, $bai_pro) or die("Error in selecting the database:".mysq
 			{
 				$mod_count=$sql_row['mod_count'];
 			} 
-			$sql="update $bai_pro2.movex_styles set mod_count=$mod_count where style_id=\"$style_id\"";
+			$sql="update $pps.movex_styles set mod_count=$mod_count,updated_user='$username',updated_at='".date('Y-m-d')."'
+			 where   plant_code='$plantcode' and style_id=\"$style_id\"";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
 			
 		}

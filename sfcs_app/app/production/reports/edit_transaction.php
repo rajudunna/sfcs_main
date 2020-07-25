@@ -197,6 +197,9 @@ function calculate()
 
 <table class="table table-bordered">
 <?php 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 //echo $_GET['r'];
 $mins=array("00","05","10","15","20","25","30","35","40","45","50","55");
 if(isset($_GET['tid']))
@@ -340,7 +343,7 @@ while($row=mysqli_fetch_array($result))
 	
 	echo "<th>Buyer</th>";
 	
-	$sql_buyer="SELECT distinct buyer_id FROM $bai_pro2.movex_styles where buyer_id!=''";
+	$sql_buyer="SELECT distinct buyer_id FROM $pps.movex_styles where  plant_code='$plantcode' and buyer_id!=''";
 	//echo $sql_buyer;
 	$result_buyer=mysqli_query($link, $sql_buyer) or die($sql_buyer."Error in buyer 1 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_buyer=mysqli_fetch_array($result_buyer))
@@ -375,7 +378,7 @@ while($row=mysqli_fetch_array($result))
 	//$sql1="select distinct(style) from pro_style";
 	
 	//26-04-2017 changed the source for fetching styles
-/*	$sql1="select distinct(style_id) as style from $bai_pro2.movex_styles order by style_id";
+/*	$sql1="select distinct(style_id) as style from $pps.movex_styles order by style_id";
 	$result2=mysqli_query($link, $sql1) or die("2Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result2))
 	{

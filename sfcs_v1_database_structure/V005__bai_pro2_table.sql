@@ -232,9 +232,9 @@ CREATE TABLE `bai_pro2`.`order_status_buffer` (
 
 /*Table structure for table `print_track` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`print_track`;
+DROP TABLE IF EXISTS `pps`.`print_track`;
 
-CREATE TABLE `bai_pro2`.`print_track` (
+CREATE TABLE `pps`.`print_track` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
   `ref_id` int(11) NOT NULL,
@@ -244,9 +244,9 @@ CREATE TABLE `bai_pro2`.`print_track` (
 
 /*Table structure for table `pro_review` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`pro_review`;
+DROP TABLE IF EXISTS `pps`.`pro_review`;
 
-CREATE TABLE `bai_pro2`.`pro_review` (
+CREATE TABLE `pps`.`pro_review` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL,
   `style` varchar(100) NOT NULL,
@@ -336,9 +336,9 @@ CREATE TABLE `ssc_code_list` (
 
 /*Table structure for table `ssc_code_temp` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`ssc_code_temp`;
+DROP TABLE IF EXISTS `pps`.`ssc_code_temp`;
 
-CREATE TABLE `bai_pro2`.`ssc_code_temp` (
+CREATE TABLE `pps`.`ssc_code_temp` (
   `ssc_code` varchar(200) NOT NULL,
   `schedule_no` varchar(100) NOT NULL,
   PRIMARY KEY (`ssc_code`),
@@ -347,9 +347,9 @@ CREATE TABLE `bai_pro2`.`ssc_code_temp` (
 
 /*Table structure for table `style_smv` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`style_smv`;
+DROP TABLE IF EXISTS `pps`.`style_smv`;
 
-CREATE TABLE `bai_pro2`.`style_smv` (
+CREATE TABLE `pps`.`style_smv` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `style` varchar(45) DEFAULT NULL,
   `smv` varchar(25) DEFAULT NULL,

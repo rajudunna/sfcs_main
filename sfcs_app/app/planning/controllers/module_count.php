@@ -19,6 +19,9 @@
 
 
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $url=getFullURLLevel($_GET['r'],'get_mod_count.php',0,'N');
 echo "<a href=\"$url\"><button class='btn btn-success btn-xm'>Update from LIVE</button></a> <font color=\"WHITE\">|</font> ";
 echo "</br>";
@@ -29,7 +32,7 @@ echo "</br>";
 
 	echo "<table class='table table-bordered'>";
 	echo "<tr><th>User Defined Style</th><th>Mod Count</th><th>Controls</th><th>Style DB</th></tr>";
-	$sql="select distinct style_id from $bai_pro2.movex_styles order by mod_count DESC";
+	$sql="select distinct style_id from $pps.movex_styles where plant_code='$plantcode' and order by mod_count DESC";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -37,7 +40,7 @@ echo "</br>";
 		$style_id=$sql_row['style_id'];
 		$mod_count=0;
 		
-		$sql2="select max(mod_count) as \"mod_count\" from $bai_pro2.movex_styles where style_id=\"$style_id\" order by style_id ASC";
+		$sql2="select max(mod_count) as \"mod_count\" from $pps.movex_styles where  plant_code='$plantcode' and style_id=\"$style_id\" order by style_id ASC";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -47,7 +50,7 @@ echo "</br>";
 		
 		$style_db="";
 		
-		$sql2="select distinct movex_style from $bai_pro2.movex_styles where style_id=\"$style_id\"";
+		$sql2="select distinct movex_style from $pps.movex_styles where  plant_code='$plantcode' and style_id=\"$style_id\"";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))

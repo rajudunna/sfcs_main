@@ -54,6 +54,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 $dat=$_POST["dat1"];
 $dat1=$_POST["dat2"];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 // echo $dat.'---'.$dat1;
 
   echo "<form class='row' action='".getFullURL($_GET['r'],'index_data_old_new.php','N')."' method=\"post\">
@@ -79,7 +82,7 @@ $sql2="SELECT section as sec_id,GROUP_CONCAT(DISTINCT module_name ORDER BY modul
 		$addon_headings.="<th>SEC-".$sql_row2['sec_id']."<br/>Lost Value</th>";	
 	}
 
-$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+$week_del="select schedule_no,exfact_date from $pps.shipment_plan_summ where  plant_code='$plantcode' and exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 //echo $week_del."<br>";
 $sql_result=mysqli_query($link,$week_del) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
@@ -132,7 +135,7 @@ if($count_rows > 0){
 	// {
 		$total_sch=implode(",",$schdules);
 
-	$week_del="select schedule_no,exfact_date from $bai_pro2.shipment_plan_summ where exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
+	$week_del="select schedule_no,exfact_date from $pps.shipment_plan_summ where  plant_code='$plantcode' and exfact_date between \"$dat\" and \"$dat1\" and style_no not like \"M%\" GROUP BY schedule_no";
 	//echo $week_del."<br>";
 	$sql_result=mysqli_query($link, $week_del) or exit("Sql Error3 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows=mysqli_num_rows($sql_result);

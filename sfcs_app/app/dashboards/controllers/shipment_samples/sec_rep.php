@@ -4,6 +4,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 error_reporting(0);
 ?>
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 //To find time days difference between two dates
 
 function dateDiff($start, $end) {
@@ -260,7 +263,7 @@ if(isset($_GET['val']))
 					$user_style=$sql_row33['style']; //Color Code
 				} */
 				
-				$sql33="select style_id from $bai_pro2.movex_styles where movex_style like \"%".$sql_row12['ims_style']."%\"";
+				$sql33="select style_id from $pps.movex_styles where plant_code='$plantcode'and movex_style like \"%".$sql_row12['ims_style']."%\"";
 				mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row33=mysqli_fetch_array($sql_result33))

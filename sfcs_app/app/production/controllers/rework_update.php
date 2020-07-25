@@ -230,6 +230,10 @@ function second_box(){
 <div class="panel-heading">Re-Work Capturing </div>
 <div class="panel-body">
 	<?php
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
+	
+	
 	    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/rework_functions.php',1,'R'));
 		$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 		$username=strtolower($username_list[1]);
@@ -441,7 +445,7 @@ if (isset($_POST['submit11']))
 						}
 						
 						
-						$sql33="select style_id from $bai_pro2.movex_styles where movex_style like \"%".$sql_row12['ims_style']."%\"";
+						$sql33="select style_id from $pps.movex_styles where  plant_code='$plantcode' and movex_style like \"%".$sql_row12['ims_style']."%\"";
 						$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row33=mysqli_fetch_array($sql_result33))
 						{

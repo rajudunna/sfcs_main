@@ -8,6 +8,9 @@
 	$carton_id=$_GET['carton_id'];
 	$style=$_GET['style'];
 	$schedule=$_GET['schedule'];
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
+
 
 		$mpo ='';$cpo='';$cust_ord='';$module = '';
 		$leading = '';
@@ -469,7 +472,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //ERROR CHECK POINT
 
- $sql="select * from $bai_pro2.shipment_plan_summ where ssc_code=\"$order_tid\"";
+ $sql="select * from $pps.shipment_plan_summ where plant_code='$plantcode' and ssc_code=\"$order_tid\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

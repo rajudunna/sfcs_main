@@ -78,7 +78,7 @@ fputcsv($file,$title_list);
 					}
 					
 					
-					// $sqlx11="select MPO from $bai_pro2.shipment_plan_summ where schedule_no='$ship_schedule'";
+					// $sqlx11="select MPO from $pps.shipment_plan_summ where schedule_no='$ship_schedule'";
 					// $sql_resultx11=mysqli_query($link, $sqlx11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
 					// {

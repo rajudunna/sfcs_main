@@ -20,6 +20,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <?php
 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 echo "<div class='col-sm-12' style=\"float: left;overflow-x:scroll;max-height:600px;width:parent\"  >";
 	echo "<table class='table table-bordered'>";
@@ -30,7 +32,7 @@ echo "<div class='col-sm-12' style=\"float: left;overflow-x:scroll;max-height:60
 	echo "<th>Controls</th>";
 	}
 	echo "</tr>";
-	$sql="select * from $bai_pro2.movex_styles order by style_id ASC";
+	$sql="select * from $pps.movex_styles where plant_code='$plantcode' and order by style_id ASC";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
