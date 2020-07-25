@@ -4,7 +4,8 @@ $start_timestamp = microtime(true);
 error_reporting(E_ALL & ~E_NOTICE);
 include("ims_process_ses_track.php");
 $time_diff=(int)date("YmdH")-$log_time;
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 if($log_time==0 or $time_diff>1)
 {
 		$myFile = "ims_process_ses_track.php";
@@ -138,7 +139,7 @@ if($log_time==0 or $time_diff>1)
 			}
 			// echo $hoursa_shift."<br>";
 			
-			$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
+			$sql="select speed_schedule from $pps.speed_del_dashboard where plant_code='$plantcode'";
 			$note.=date("His").$sql."<br/>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error18$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -207,7 +208,7 @@ if($log_time==0 or $time_diff>1)
 				
 				$lastup=date("Y-m-d H:i:s");
 				
-				$sql1="update $bai_pro3.speed_del_dashboard set speed_act=\"$avg_pcs_per_hour\", speed_style=\"$order_style_no\", speed_cut_qty=\"$cut_qty\", speed_in_qty=\"$input\", speed_out_qty=\"$output\", speed_order_qty=\"$order_qty\", lastup=\"$lastup\" where speed_schedule=$schedule";
+				$sql1="update $pps.speed_del_dashboard set speed_act=\"$avg_pcs_per_hour\", speed_style=\"$order_style_no\", speed_cut_qty=\"$cut_qty\", speed_in_qty=\"$input\", speed_out_qty=\"$output\", speed_order_qty=\"$order_qty\", lastup=\"$lastup\",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and speed_schedule=$schedule";
 
 				$note.=date("His").$sql1."<br/>";
 
@@ -252,7 +253,7 @@ if($log_time==0 or $time_diff>1)
 					$total_hrs+=$hoursa_new;
 				}
 				
-				$sql1="update $bai_pro3.speed_del_dashboard set total_hrs=$total_hrs, today_hrs=$hoursa_shift where speed_schedule=$schedule";
+				$sql1="update $pps.speed_del_dashboard set total_hrs=$total_hrs, today_hrs=$hoursa_shift,updated_user='$username',updated_at='".date('Y-m-d')."'plant_code='$plantcode' and  where speed_schedule=$schedule";
 
 				$note.=date("His").$sql1."<br/>";
 				mysqli_query($link, $sql1) or exit("Sql Error27$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));

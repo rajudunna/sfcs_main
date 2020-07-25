@@ -9,14 +9,15 @@
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
         $username_list=explode('\\',$_SERVER['REMOTE_USER']);
         $username=strtolower($username_list[1]);
+        $plantcode=$_SESSION['plantCode'];
         $module=$_GET['module'];
         $table_name="$bai_pro3.plan_dash_doc_summ_input";
 		$sql2x="SELECT b.date_n_time,SUM(a.carton_act_qty) AS carton_act_qty,order_del_no,order_style_no,a.input_job_no,log_time,input_trims_status,
 		input_priority,input_module,input_job_no_random_ref FROM $table_name AS a JOIN 
-		$bai_pro3.temp_line_input_log AS b ON
+		$pps.temp_line_input_log AS b ON
 		CONCAT(a.order_style_no,a.order_del_no,a.input_job_no) =CONCAT(b.style,b.schedule_no,b.input_job_no) 
 		WHERE 
-		a.input_trims_status=4 AND a.input_module='$module' AND a.input_job_no!='NULL' AND
+		plant_code='$plantcode' and a.input_trims_status=4 AND a.input_module='$module' AND a.input_job_no!='NULL' AND
 		b.page_name='Trim Issue4'
 		GROUP BY a.input_job_no_random_ref ORDER BY b.date_n_time ASC";        
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));

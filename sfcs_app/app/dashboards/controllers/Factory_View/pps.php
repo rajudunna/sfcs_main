@@ -1,5 +1,6 @@
 <?php
 include ("../../../../common/config/config.php");
+$plantcode=$_SESSION['plantCode'];
 
 if(isset($_GET['sec_x']))
 {
@@ -54,7 +55,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 				$color_code=$sql_row1['color_code'];
 
 				$trims_input=0;
-				$sql1x="SELECT COALESCE(trims_status,0) as trims_status FROM $bai_pro3.trims_dashboard WHERE doc_ref=$doc_no";
+				$sql1x="SELECT COALESCE(trims_status,0) as trims_status FROM $pps.trims_dashboard WHERE plant_code='$plantcode' and doc_ref=$doc_no";
 				//echo $sql1x."<br/>";
 				$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 

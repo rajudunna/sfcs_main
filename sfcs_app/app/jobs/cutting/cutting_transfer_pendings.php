@@ -2,6 +2,8 @@
 <html>
 <head>  
 <?php 
+$plantcode=$_SESSION['plantCode'];
+
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -241,7 +243,7 @@ $(document).ready(function() {
     $temp_schedule=0; 
     $temp_color=0; 
      
-    $sql="select * from $bai_pro3.zero_module_trans"; 
+    $sql="select * from $pps.zero_module_trans where plant_code='$plantcode'"; 
     //echo $sql; 
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 

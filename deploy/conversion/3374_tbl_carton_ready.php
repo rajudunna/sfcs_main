@@ -3,14 +3,15 @@
 ini_set('max_execution_time', '50000');
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
-
-$create_new_table="CREATE TABLE `bai_pro3`.`tbl_carton_ready_archive` (PRIMARY KEY(`id`),KEY `mo_check`( `mo_no` , `operation_id` ))ENGINE=INNODB  COLLATE = latin1_swedish_ci COMMENT = '' SELECT `id`, `operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty` FROM `bai_pro3`.`tbl_carton_ready` ";
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+$create_new_table="CREATE TABLE `$pps`.`tbl_carton_ready_archive` (PRIMARY KEY(`id`),KEY `mo_check`( `mo_no` , `operation_id` ))ENGINE=INNODB  COLLATE = latin1_swedish_ci COMMENT = '' SELECT `id`, `operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty` FROM `$pps`.`tbl_carton_ready` where plant_code='$plantcode'";
 $create_tbl_res = mysqli_query($link,$create_new_table);
 if($create_tbl_res)
 {
 	echo "<b><h2 style='color:pink;'>Successfully Created and Inserted new table : </h2></b></br>";
 }
-$get_del_mos="SELECT DISTINCT mo_no,operation_id FROM `bai_pro3`.`tbl_carton_ready` WHERE mo_no IN (SELECT mo_number FROM `m3_inputs`.deleted_mos GROUP BY mo_number) GROUP BY mo_no";
+$get_del_mos="SELECT DISTINCT mo_no,operation_id FROM `$pps`.`tbl_carton_ready` WHERE plant_code='$plantcode' and mo_no IN (SELECT mo_number FROM `m3_inputs`.deleted_mos GROUP BY mo_number) GROUP BY mo_no";
 $del_mo_result = mysqli_query($link,$get_del_mos);
 $sql_num=mysqli_num_rows($del_mo_result);
 if($sql_num>0)
@@ -23,7 +24,7 @@ if($sql_num>0)
 		$deleted_mos[$op_code][]= $deleted_mo;
 	}
 }
-$get_code51 = "TRUNCATE `bai_pro3`.`tbl_carton_ready`";
+$get_code51 = "TRUNCATE `$pps`.`tbl_carton_ready` where plant_code='$plantcode'";
 $bcd_result51 = mysqli_query($link,$get_code51);
 $count_val = 0;$count_value=0;
 $get_styles="select distinct(style) as style_val,color from brandix_bts.tbl_style_ops_master group by style_val,color";
@@ -78,7 +79,7 @@ while($row1 = mysqli_fetch_array($style_result))
 				
 				if($output > 0)
 				{
-					$insert_qry = "INSERT INTO `bai_pro3`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`) VALUES ($code, '$mo_no', $remain, $output); ";
+					$insert_qry = "INSERT INTO `$pps`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`,plant_code,created_user,created_at) VALUES ($code, '$mo_no', $remain, $output,'$plantcode','$username','".date('Y-m-d')."'); ";
 					// $qty_inserting = mysqli_query($link,$insert_qry) or exit("While inserting mo_operation_quantites".$insert_qry."<br/>".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_inserting = mysqli_query($link,$insert_qry);
 					if($qty_inserting)
@@ -115,7 +116,7 @@ while($row1 = mysqli_fetch_array($style_result))
 									
 									if($output1 > 0)
 									{
-										$insert_qry1 = "INSERT INTO `bai_pro3`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`) VALUES ($code1, '$mo_no1', $remain1, $output1); ";
+										$insert_qry1 = "INSERT INTO `$pps`.`tbl_carton_ready` (`operation_id`, `mo_no`, `remaining_qty`, `cumulative_qty`,plant_code,created_user,created_at) VALUES ($code1, '$mo_no1', $remain1, $output1,'$plantcode','$username','".date('Y-m-d')."'); ";
 										$qty_inserting1 = mysqli_query($link,$insert_qry1);
 										if($qty_inserting1)
 										{

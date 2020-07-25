@@ -2,6 +2,8 @@
 <?php
 // LOGIC TO INSERT TRANSACTIONS IN M3_TRANSACTIONS TABLE
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 function updateM3Transactions($ref_id,$op_code,$qty)
 {
     $obj = new rest_api_calls();    
@@ -91,7 +93,7 @@ function updateM3Transactions($ref_id,$op_code,$qty)
                     
                     if($sewing_last_opn == $op_code)
                     {
-                        $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no='$mo_number'";
+                        $get_count = "SELECT COUNT(*) as count FROM $pps.`tbl_carton_ready` WHERE plant_code='$plantcode' and mo_no='$mo_number'";
                         $count_result = $link->query($get_count);
                         while($row = $count_result->fetch_assoc()) 
                         {
@@ -100,11 +102,11 @@ function updateM3Transactions($ref_id,$op_code,$qty)
 
                         if ($count > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+                            $insert_update_tbl_carton_ready = "UPDATE $pps.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and mo_no= '$mo_number'";
                         }
                         else
                         {
-                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            $insert_update_tbl_carton_ready = "INSERT INTO $pps.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty,plant_code,created_user,created_at) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty','$plantcode','$username','".date('Y-m-d')."');";
                         }
                         mysqli_query($link,$insert_update_tbl_carton_ready);
                     }                                                                                      
@@ -240,7 +242,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
                         
                         if ($opn_b4_200 == $op_code)
                         {
-                            $get_count = "SELECT COUNT(*) as count FROM $bai_pro3.`tbl_carton_ready` WHERE mo_no='$mo_number'";
+                            $get_count = "SELECT COUNT(*) as count FROM $pps.`tbl_carton_ready` WHERE plant_code='$plantcode' and mo_no='$mo_number'";
                             $count_result = $link->query($get_count);
                             while($row = $count_result->fetch_assoc()) 
                             {
@@ -249,7 +251,7 @@ function updateM3TransactionsReversal($bundle_no,$reversalval,$op_code)
 
                             if ($count > 0)
                             {
-                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty where mo_no= '$mo_number'";
+                                $insert_update_tbl_carton_ready = "UPDATE $pps.tbl_carton_ready set remaining_qty = remaining_qty - $to_update_qty, cumulative_qty = cumulative_qty - $to_update_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and mo_no= '$mo_number'";
                                 mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating/inserting tbl_carton_ready");
                             }
                         }
@@ -471,7 +473,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id, $deduct_from_carton_read
     {
         for ($i=0; $i < sizeof($mo_array); $i++)
         {
-            $check_in_tbl_carton_ready = "select remaining_qty from bai_pro3.tbl_carton_ready where mo_no = $mo_array[$i] ";
+            $check_in_tbl_carton_ready = "select remaining_qty from $pps.tbl_carton_ready where plant_code='$plantcode' and mo_no = $mo_array[$i] ";
             //echo $check_in_tbl_carton_ready;
             $tbl_carton_ready_check_result=mysqli_query($link,$check_in_tbl_carton_ready) or exit("error while fetching tbl_carton_ready");
             if (mysqli_num_rows($tbl_carton_ready_check_result) > 0)
@@ -516,7 +518,7 @@ function updateM3CartonScan($b_op_id, $b_tid, $team_id, $deduct_from_carton_read
 
             if ($deduct_from_carton_ready)
             {
-                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity where mo_no= '$mo_number'";
+                $insert_update_tbl_carton_ready = "UPDATE $pps.tbl_carton_ready set remaining_qty = remaining_qty - $mo_quantity,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and mo_no= '$mo_number'";
                 // echo $insert_update_tbl_carton_ready;
                 mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
             }
@@ -596,7 +598,7 @@ function updateM3CartonScanReversal($b_op_id, $b_tid, $deduct_from_carton_ready)
 
         if ($deduct_from_carton_ready)
         {
-            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past where mo_no= '$mo_number'";
+            $insert_update_tbl_carton_ready = "UPDATE $pps.tbl_carton_ready set remaining_qty = remaining_qty + $good_quantity_past,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and mo_no= '$mo_number'";
             // echo $insert_update_tbl_carton_ready;
             mysqli_query($link,$insert_update_tbl_carton_ready) or exit("While updating tbl_carton_ready");
         }

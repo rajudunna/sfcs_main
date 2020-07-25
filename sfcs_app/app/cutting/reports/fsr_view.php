@@ -5,7 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/me
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -327,7 +327,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$endbits=$endbits+$values_joint[1];		
 		}
 
-			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
+			$s="select emp_name from $pps.tbl_leader_name where plant_code='$plantcode' and id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))

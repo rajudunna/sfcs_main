@@ -27,8 +27,7 @@ error_reporting(0);
 include ("../../../../common/config/config.php");
 include ("../../../../common/config/functions.php");
 $authorized=array("kirang","kirang","sfcsproject1","vemanas","srinivasaraot");
-
-
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <?php
@@ -520,7 +519,7 @@ window.onload = startBlink;
 
 // for speed_delivery schedules
 $speed_sch=array();
-$sqlq= "SELECT speed_schedule FROM $bai_pro3.speed_del_dashboard";
+$sqlq= "SELECT speed_schedule FROM $pps.speed_del_dashboard where plant_code='$plantcode'";
 $sql_result13=mysqli_query($link, $sqlq) or exit("sql error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row13=mysqli_fetch_array($sql_result13))
 {

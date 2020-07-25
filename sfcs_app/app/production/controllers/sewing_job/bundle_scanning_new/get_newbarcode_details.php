@@ -1977,7 +1977,7 @@ if(isset($_POST["trans_action"])){
                                                                     $mo_no[]=$row1['mo_no'];
                                                                 }
                                                                 //var_dump($mo_no);
-                                                                $check_ops = "SELECT * from $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo_no)."') AND operation_id = $job_number[0] group by mo_no order by mo_no*1";
+                                                                $check_ops = "SELECT * from $pps.tbl_carton_ready WHERE plant_code='$plantcode' and mo_no in ('".implode("','",$mo_no)."') AND operation_id = $job_number[0] group by mo_no order by mo_no*1";
                                                                 // echo $check_ops.'<br>';
                                                                 $result_check_ops = $link->query($check_ops);
                                                                 if($result_check_ops->num_rows > 0)
@@ -2058,7 +2058,7 @@ if(isset($_POST["trans_action"])){
                                                                     $mo_no[]=$row1['mo_no'];
                                                                 }
                                                                 // var_dump($mo_no);
-                                                                $check_ops = "SELECT * from $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo_no)."') AND operation_id = $job_number[0] group by mo_no order by mo_no*1";
+                                                                $check_ops = "SELECT * from $pps.tbl_carton_ready WHERE plant_code='$plantcode' and mo_no in ('".implode("','",$mo_no)."') AND operation_id = $job_number[0] group by mo_no order by mo_no*1";
                                                                 // echo $check_ops.'<br>';exit;
                                                                 $result_check_ops = $link->query($check_ops);
                                                                 if($result_check_ops->num_rows > 0)

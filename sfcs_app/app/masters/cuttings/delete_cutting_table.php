@@ -3,7 +3,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 $tbl_id=$_GET['tid'];
-
+$plantcode=$_SESSION['plantCode'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 if (!$conn) {
@@ -12,7 +12,7 @@ if (!$conn) {
 
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	
-$delete="delete from $mdm.`tbl_leader_name` where id='$tbl_id'";
+$delete="delete from $pps.`tbl_leader_name` where plant_code='$plantcode' and id='$tbl_id'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     echo "<script>window.location = '".$url."'</script>";
 

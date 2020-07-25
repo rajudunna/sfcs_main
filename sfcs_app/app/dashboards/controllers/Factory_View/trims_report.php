@@ -3,6 +3,7 @@ include ("../../../../common/config/config.php");
 include ("../../../../common/config/functions.php");
 //$table_name="fabric_priorities";
 $table_name="trims_dashboard";
+$plantcode=$_SESSION['plantCode'];
 $section=$_GET["section"];
 ?>
 <html>
@@ -47,7 +48,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 <tr></th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Request Time</th><th>Issued Time</th><th>Status</th></tr>
 <?php
 
-$sql2x="select * from $bai_pro3.trims_dashboard where section=$section and DATE(plan_time)>=\"2013-01-09\"";
+$sql2x="select * from $pps.trims_dashboard where plant_code='$plantcode' and section=$section and DATE(plan_time)>=\"2013-01-09\"";
 //echo $sql2x;
 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($row2x=mysqli_fetch_array($result2x))

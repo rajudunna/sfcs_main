@@ -3,6 +3,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 $rid=$_GET['rowid1'];
+$plantcode=$_SESSION['plantCode'];
 // echo $rid;
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
@@ -19,7 +20,7 @@ if (!$conn) {
 }
 if($rid!=''){
 	$url=getFullURL($_GET['r'],'create_leader_names.php','N');
-$delete="delete from bai_pro3.tbl_leader_name where id='$rid'";
+$delete="delete from $pps.tbl_leader_name where plant_code='$plantcode' and id='$rid'";
 if (mysqli_query($conn, $delete)) {
 	echo"<script>setTimeout(function () { 
 		swal({

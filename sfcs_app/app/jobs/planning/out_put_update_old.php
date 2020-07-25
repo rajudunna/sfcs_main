@@ -62,7 +62,7 @@ $schedule_db=array();
 
 $schedule_db[]=1;
 //To update Speed Deliveries
-$sql="select distinct speed_schedule as speed_schedule from $bai_pro3.speed_del_dashboard where speed_schedule > 0";
+$sql="select distinct speed_schedule as speed_schedule from $pps.speed_del_dashboard where plant_code='$plantcode' and speed_schedule > 0";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $rowcount=mysqli_num_rows($sql_result);

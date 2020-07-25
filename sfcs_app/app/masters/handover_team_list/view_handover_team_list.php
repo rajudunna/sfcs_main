@@ -4,8 +4,9 @@
 	// 	echo "<script>swal('Enter data correctly.')</script>";
 	// }
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-
-	$sql = "SELECT * FROM bai_pro3.tbl_fg_crt_handover_team_list order by team_id desc";
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
+	$sql = "SELECT * FROM $pps.tbl_fg_crt_handover_team_list where plant_code='$plantcode' order by team_id desc";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1; 

@@ -3,6 +3,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 // var_dump($_POST);die();
 // if(isset($_REQUEST['tid'])){
 // 	//echo "Row id".$_REQUEST['supplier_code'];
@@ -46,7 +48,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		
 		//update
 		
-		$sql = "update $bai_pro3.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$tbl_id";
+		$sql = "update $pps.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$tbl_id";
 		// echo $sql;die();
 		if (mysqli_query($conn, $sql)) {
 
@@ -72,7 +74,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}
 	}else{
 		
-		$query="select emp_id from $bai_pro3.tbl_leader_name where emp_id='$emp_id'  ";
+		$query="select emp_id from $pps.tbl_leader_name where plant_code='$plantcode' and emp_id='$emp_id'  ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 		$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -94,8 +96,8 @@ if (empty($emp_id) || empty($emp_name)) {
 		}else{
 
 		//insert 
-		$sql = "INSERT INTO $bai_pro3.tbl_leader_name (emp_id,emp_name)
-			VALUES ('$emp_id','$emp_name')";
+		$sql = "INSERT INTO $pps.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)
+			VALUES ('$emp_id','$emp_name','$plantcode','$username','".date('Y-m-d')."')";
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 								//echo "New record created successfully";

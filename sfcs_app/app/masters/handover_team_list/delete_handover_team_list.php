@@ -5,7 +5,7 @@
 
 <?php
 $team_id=$_GET['team_id'];
-
+$plantcode=$_SESSION['plantCode'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 if (!$conn) {
@@ -13,7 +13,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_handover_team_list.php','N');
   
-$delete="delete from bai_pro3.tbl_fg_crt_handover_team_list where team_id='$team_id'";
+$delete="delete from $pps.tbl_fg_crt_handover_team_list where plant_code='$plantcode' and team_id='$team_id'";
 if (mysqli_query($conn, $delete)) {
 	echo"<script>setTimeout(function () { 
 		swal({

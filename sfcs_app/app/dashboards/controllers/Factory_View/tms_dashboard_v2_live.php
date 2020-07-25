@@ -21,6 +21,7 @@ include("../../../../common/config/config.php");
 $double_modules=array();
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
+$plantcode=$_SESSION['plantCode'];
 $authorized=array("kirang","sfcsproject1");//production
 $authorized1=array("kirang","sfcsproject1","kishorek","sarojiniv","ravipu","ramanav","sekhark","ganeshb","pithanic","duminduw","kirangs","apparaop","satyako","rameshv","sekhark","sunithau","kirang","kirang","shanmukharaop","vijayadurgag","chirikis","gunakararaor");//trim
 ?>
@@ -512,7 +513,7 @@ Schedule Track: <input type="text" onkeyup="blink_new3(this.value)" size="10"></
 
 // for speed_delivery schedules
 $speed_sch=array();
-$sqlq= "SELECT speed_schedule FROM $bai_pro3.speed_del_dashboard";
+$sqlq= "SELECT speed_schedule FROM $pps.speed_del_dashboard where plant_code='$plantcode'";
 $sql_result13=mysqli_query($link, $sqlq) or exit("sql error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row13=mysqli_fetch_array($sql_result13))
 {
@@ -521,7 +522,7 @@ while($sql_row13=mysqli_fetch_array($sql_result13))
 
 // for speed_delivery schedules
 $speed_sch=array();
-$sqlq= "SELECT speed_schedule FROM $bai_pro3.speed_del_dashboard";
+$sqlq= "SELECT speed_schedule FROM $pps.speed_del_dashboard where plant_code='$plantcode'";
 $sql_result13=mysqli_query($link, $sqlq) or exit("sql error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row13=mysqli_fetch_array($sql_result13))
 {
@@ -571,7 +572,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 		$id="yash";
 		$y=0;
-		$sql="SELECT doc_ref,trims_status as stat,date(trims_req_time) as rtime FROM $bai_pro3.trims_dashboard WHERE trims_status!=4 and module=$module and date(plan_time) >=\"2013-01-09\" order by plan_time,priority,doc_ref+0";	
+		$sql="SELECT doc_ref,trims_status as stat,date(trims_req_time) as rtime FROM $pps.trims_dashboard WHERE plant_code='$plantcode' and trims_status!=4 and module=$module and date(plan_time) >=\"2013-01-09\" order by plan_time,priority,doc_ref+0";	
 		
 		
 		

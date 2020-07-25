@@ -8,6 +8,8 @@
 //Date:2016-02-12/kirang/SR#64304318/Added an array to Store the result of packing pending schedules and giving this as input in creating of temp tables. which reduce the query response time and avoid sql errors.
 
 $view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <style>
@@ -28,7 +30,7 @@ if(isset($_GET['select']))
 	{
 		$team_id=$_GET['team_id'];
 		$emp_id=$_GET['emp_id'];
-		$sql_schedule="update tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."' where team_id=$team_id and emp_id='$emp_id'";
+		$sql_schedule="update $pps.tbl_fg_crt_handover_team_list set selected_user=USER(), lastup='".date("Y-m-d H:i:s")."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and team_id=$team_id and emp_id='$emp_id'";
 		// echo $sql_schedule;
 		mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$url = getFullURL($_GET['r'],'packing_check_point_gateway.php','N');
@@ -63,7 +65,7 @@ if(isset($_GET['select']))
 {
 	echo "<div class='col-md-12 table-responsive' style='max-height:900px;overflow-y:scroll;'><table class='table table-bordered'>";
 	echo "<tr><th>EMP ID</th><th>Call Name</th><th>Control</th></tr>";
-	$sql_schedule="select * from tbl_fg_crt_handover_team_list where emp_status=0 order by 1*emp_id";
+	$sql_schedule="select * from $pps.tbl_fg_crt_handover_team_list where plant_code='$plantcode' and emp_status=0 order by 1*emp_id";
 	$sql_result_schedule=mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule$sql_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_schedule=mysqli_fetch_array($sql_result_schedule))
 	{

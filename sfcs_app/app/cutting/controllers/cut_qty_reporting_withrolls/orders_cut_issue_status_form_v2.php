@@ -88,6 +88,7 @@ function isNumber(evt) {
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+$plantcode=$_SESSION['plantCode'];
 ?> 
 
 
@@ -490,7 +491,7 @@ $club_status=0;$a_plies_qty=0;
         echo "</select></div></td></tr>"; 
     //} 
 
-    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+    $team_query="SELECT * FROM $pps.tbl_leader_name where plant_code='$plantcode'";
     $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
     echo "<tr>
             <td>Team Leader</td><td>:</td>
