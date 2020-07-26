@@ -369,7 +369,7 @@ if($count_rows > 0){
 			//M3 shipment quantity
 			if(($rowspan_for_shipqty-$key001) == $rowspan_for_shipqty)
 			{
-				$sql5="SELECT SUM(ship_qty) FROM $bai_pro2.style_status_summ WHERE sch_no=\"$sch\"";
+				$sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE   plant_code='$plantcode' and sch_no=\"$sch\"";
 				// echo $sql5."<br>";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows1=mysqli_num_rows($sql_result5);

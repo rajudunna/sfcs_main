@@ -117,7 +117,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 	$order_qty=0;
 	$style_id="";
 
-	$sql="select * from $bai_pro2.style_status_summ where ssc_code=\"$ssc_code\"";
+	$sql="select * from $pps.style_status_summ where  plant_code='$plantcode' and ssc_code=\"$ssc_code\"";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));

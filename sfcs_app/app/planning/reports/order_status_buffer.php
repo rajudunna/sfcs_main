@@ -4,7 +4,7 @@
 set_time_limit(2000);
 include ($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $order_status_buffer="pps.order_status_buffer";
-$style_status_summ="bai_pro2.style_status_summ";
+$style_status_summ="pps.style_status_summ";
 $shipment_plan_summ="pps.shipment_plan_summ";
 
 // $sql="create TEMPORARY table $order_status_buffer ENGINE = MyISAM select * from $pps.order_status_buffer";

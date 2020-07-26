@@ -221,7 +221,7 @@ $note.=$sql."<br/>";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	
-	$sql="select * from $bai_pro2.style_status_summ where style_id is NULL OR style=\"$style\"";
+	$sql="select * from $pps.style_status_summ where  plant_code='$plantcode'and  style_id is NULL OR style=\"$style\"";
 	// echo $sql."8<br>";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -229,7 +229,7 @@ $note.=$sql."<br/>";
 	{
 		$ssc_code=$sql_row['ssc_code'];
 		$style_no=$sql_row['style'];
-		$sql2="update $bai_pro2.style_status_summ set style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where ssc_code=\"$ssc_code\"";
+		$sql2="update $pps.style_status_summ set updated_user='$username',updated_at='".date('Y-m-d')."',style_id=(select style_id from movex_styles where movex_style=\"$style_no\") where plant_code='$plantcode' and  ssc_code=\"$ssc_code\"";
 		// echo $sql2."9<br>";
 		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

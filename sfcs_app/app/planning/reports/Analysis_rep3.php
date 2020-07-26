@@ -394,7 +394,7 @@ $style_status_summ="temp_pool_db.".$username.date("YmdHis")."_"."style_status_su
 $style_status_summ_today="style_status_summ_today";
 $ssc_code_temp="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_temp";
 
-$sql="create TEMPORARY table $bai_pro2.style_status_summ ENGINE = MyISAM select * from $bai_pro2.style_status_summ_live ";
+$sql="create TEMPORARY table $pps.style_status_summ ENGINE = MyISAM select * from $pps.style_status_summ_live ";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql="create TEMPORARY table $pps.ssc_code_temp ENGINE = MyISAM select * from $pps.ssc_code_temp ";
@@ -605,7 +605,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			
 			if(sizeof($temp)>0)
 			{
-				$sql2="select sum(cut_qty) as \"cut_qty\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(cut_qty) as \"cut_qty\" from $pps.style_status_summ where   plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -613,7 +613,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$cut_qty[$i]=$sql_row2['cut_qty'];
 				}
 
-				$sql2="select sum(cut_qty) as \"cut_qty\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(cut_qty) as \"cut_qty\" from $pps.style_status_summ_today where  plant_code='$plantcode' and  ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -656,7 +656,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 
 			if(sizeof($temp)>0){
-				$sql2="select sum(sewing_in) as \"sewing_in\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_in) as \"sewing_in\" from $pps.style_status_summ where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -665,7 +665,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					
 				}
 				
-				$sql2="select sum(sewing_in) as \"sewing_in\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_in) as \"sewing_in\" from $pps.style_status_summ_today where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -704,7 +704,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(sewing_out) as \"sewing_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_out) as \"sewing_out\" from $pps.style_status_summ where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				//echo $sql2;
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -712,7 +712,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$sewing_out[$i]=$sql_row2['sewing_out'];
 				}
 
-				$sql2="select sum(sewing_out) as \"sewing_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(sewing_out) as \"sewing_out\" from $pps.style_status_summ_today where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -751,14 +751,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}			
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(pack_qty) as \"pack_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(pack_qty) as \"pack_out\" from $pps.style_status_summ where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
 					$pack_out[$i]=$sql_row2['pack_out'];	
 				}
 				
-				$sql2="select sum(pack_qty) as \"pack_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(pack_qty) as \"pack_out\" from $pps.style_status_summ_today where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -798,7 +798,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			}
 			
 			if(sizeof($temp)>0){
-				$sql2="select sum(ship_qty) as \"ship_out\" from $bai_pro2.style_status_summ where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(ship_qty) as \"ship_out\" from $pps.style_status_summ where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{
@@ -806,7 +806,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					
 				}
 
-				$sql2="select sum(ship_qty) as \"ship_out\" from $bai_pro2.style_status_summ_today where ssc_code in (".implode(",",$temp).")";
+				$sql2="select sum(ship_qty) as \"ship_out\" from $pps.style_status_summ_today where  plant_code='$plantcode' and ssc_code in (".implode(",",$temp).")";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 				{

@@ -409,9 +409,9 @@ CREATE TABLE `bai_pro2`.`style_status_summ` (
 
 /*Table structure for table `style_status_summ_live_temp` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`style_status_summ_live_temp`;
+DROP TABLE IF EXISTS `pps`.`style_status_summ_live_temp`;
 
-CREATE TABLE `bai_pro2`.`style_status_summ_live_temp` (
+CREATE TABLE `pps`.`style_status_summ_live_temp` (
   `ssc_code` varchar(250) NOT NULL,
   `cut_qty` int(11) NOT NULL,
   `sewing_in` int(11) NOT NULL,
@@ -423,9 +423,9 @@ CREATE TABLE `bai_pro2`.`style_status_summ_live_temp` (
 
 /*Table structure for table `style_status_summ_today` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`style_status_summ_today`;
+DROP TABLE IF EXISTS `pps`.`style_status_summ_today`;
 
-CREATE TABLE `bai_pro2`.`style_status_summ_today` (
+CREATE TABLE `pps`.`style_status_summ_today` (
   `ssc_code` varchar(500) NOT NULL,
   `style` varchar(200) NOT NULL,
   `sch_no` varchar(200) NOT NULL,
@@ -467,9 +467,9 @@ CREATE TABLE `bai_pro2`.`tbl_mini_plant_master` (
 
 /*Table structure for table `trim_cards_db` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`trim_cards_db`;
+DROP TABLE IF EXISTS `pps`.`trim_cards_db`;
 
-CREATE TABLE `bai_pro2`.`trim_cards_db` (
+CREATE TABLE `pps`.`trim_cards_db` (
   `style` varchar(50) DEFAULT NULL,
   `schedule` varchar(50) DEFAULT NULL,
   `color` varchar(200) DEFAULT NULL,
@@ -481,9 +481,9 @@ CREATE TABLE `bai_pro2`.`trim_cards_db` (
 
 /*Table structure for table `upload_details` */
 
-DROP TABLE IF EXISTS `bai_pro2`.`upload_details`;
+DROP TABLE IF EXISTS `pps`.`upload_details`;
 
-CREATE TABLE `bai_pro2`.`upload_details` (
+CREATE TABLE `pps`.`upload_details` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
   `card_no` varchar(45) NOT NULL,
   `upload_date` date NOT NULL,

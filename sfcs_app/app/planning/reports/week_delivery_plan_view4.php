@@ -218,7 +218,7 @@ if(isset($_POST['submit']) or isset($_GET['division']))
 
 //DISPATCH
 
-	$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+	$sql1="select ship_qty from $pps.style_status_summ where  plant_code='$plantcode' and sch_no=\"$schedule_no\"";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -281,7 +281,7 @@ if(isset($_POST['submit']) or isset($_GET['division']))
 			$status="FCA";
 		}
 
-		$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
+		$sql1="select ship_qty from $pps.style_status_summ where  plant_code='$plantcode' and sch_no=\"$schedule_no\"";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
