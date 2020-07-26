@@ -79,6 +79,7 @@ $plant_wh_code=$conf->get('plant_wh_code');
 $plant_prod_code=$conf->get('plant_prod_code');
 
 //HCM Integration
+$attendance_integration=$conf->get('attendance_app');
 $hcm_location_id=$conf->get('hcm_plant_code');
 $hcm_sql_driver_name=$conf->get('hcm_driver_name');
 $hcm_sql_server=$conf->get('hcm-server-name');
