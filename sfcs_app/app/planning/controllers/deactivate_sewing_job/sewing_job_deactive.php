@@ -177,7 +177,7 @@ if(isset($_POST['submit']) || $module)
                 echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
                 echo "<td>".$sno++."</td><td>".$ims_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$module."</td><td>".leading_zeros($display,1)."</td><td>".$job_qty."</td><td>".$output_qty."</td><td>".$rejected_qty."</td><td>".$wip."</td><td>".$ims_remarks."</td>";
 
-                $short_shipment_query = "SELECT * FROM $pts.`short_shipment_job_track` where schedule = '$schedule' and (remove_type in ('1','2'))";
+                $short_shipment_query = "SELECT * FROM $pts.`short_shipment_job_track` where plant_code='$plant_code' schedule = '$schedule' and (remove_type in ('1','2'))";
                 $short_shipment_query_result=mysqli_query($link, $short_shipment_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($row=mysqli_fetch_array($short_shipment_query_result))
                 {

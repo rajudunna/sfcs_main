@@ -180,17 +180,17 @@ function save_details($data,$module,$module1){
     $counter = 0;
     foreach($data['jobs'] as $job){
 
-        $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module',created_user='$username' where input_job_no_random_ref = '$job' AND plant_code='$plant_code'";
+        $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module',updated_user='$username',updated_at=NOW() where input_job_no_random_ref = '$job' AND plant_code='$plant_code'";
         mysqli_query($link, $plan_query)or exit("plan_update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
         $bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
         mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."')";
+        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."','".$username."')";
         mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user) values (".$job.",".$module.",'P',".$plant_code.",".$username.")";
+        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values (".$job.",".$module.",'P',".$plant_code.",".$username.",".$username.")";
         mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }

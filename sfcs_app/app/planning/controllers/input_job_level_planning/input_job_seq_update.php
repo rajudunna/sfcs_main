@@ -46,7 +46,7 @@ $plant_code = $_SESSION['plantCode'];
             }
             if ($original_module != $items[0])
             {
-                $insert_log_query="INSERT INTO $pps.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time,plant_code,created_user) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', '".$userName."', NOW(),'".$plant_code."','".$username."')";
+                $insert_log_query="INSERT INTO $pps.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no,  from_module, to_module, username, log_time,plant_code,created_user,updated_user) VALUES('".$doc_no."', '".$order_del_no."', '".$items[1]."', '".$input_job_no."', '".$original_module."', '".$items[0]."', '".$userName."', NOW(),'".$plant_code."','".$username."','".$username."')";
                 // echo $insert_log_query.";<br>";
                 // die();
                 mysqli_query($link, $insert_log_query) or die("Error while saving the track details2");
@@ -62,7 +62,7 @@ $plant_code = $_SESSION['plantCode'];
                 $order_del_no1=$sql_row_schedule["order_del_no"];
                 $input_job_no1=$sql_row_schedule["input_job_no"];
             }
-            $insert_log_query="INSERT INTO $pps.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, username, log_time) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', '".$userName."', NOW())";
+            $insert_log_query="INSERT INTO $pps.jobs_movement_track (doc_no, schedule_no, input_job_no_random, input_job_no, from_module, to_module, username, log_time,plant_code,created_user,updated_user) VALUES('".$items[2]."', '".$order_del_no1."', '".$items[1]."', '".$input_job_no1."', 'No Module', '".$items[0]."', '".$userName."', NOW(),'".$plant_code."','".$username."','".$username."')";
             // echo $insert_log_query.";<br>";
             // die();
             mysqli_query($link, $insert_log_query) or die("Error while saving the track details3 == ".$insert_log_query);
@@ -73,7 +73,7 @@ $plant_code = $_SESSION['plantCode'];
         $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($sql_check_res)==0)
         {
-            $sql="insert into $pps.plan_dashboard_input (input_job_no_random_ref) values ('".$items[1]."')";
+            $sql="insert into $pps.plan_dashboard_input (input_job_no_random_ref,plant_code) values ('".$items[1]."''".$plant_code."')";
             ///echo $sql.";<br>";
             mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
@@ -81,13 +81,13 @@ $plant_code = $_SESSION['plantCode'];
         
         if(((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res)>0)
         {
-            $sql="update $pps.plan_dashboard_input set input_priority=$x, input_module=".$items[0].",created_user=".$user_name.", log_time=\"".date("Y-m-d H:i:s")."\" where input_job_no_random_ref='".$items[1]."' and plant_code='".$plant_code."'";
+            $sql="update $pps.plan_dashboard_input set input_priority=$x, input_module=".$items[0].",created_user=".$user_name.",updated_user=".$user_name.",updated_at=NOW(), log_time=\"".date("Y-m-d H:i:s")."\" where input_job_no_random_ref='".$items[1]."' and plant_code='".$plant_code."'";
             // echo $sql;
             mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
         else
         {
-            $sql="update $bai_pro3.plan_dashboard_input set input_priority=$x, input_module="."'".$items[0]."'".",created_user='".$user_name."' where input_job_no_random_ref='".$items[1]."' and plant_code='".$plant_code."'";
+            $sql="update $bai_pro3.plan_dashboard_input set input_priority=$x, input_module="."'".$items[0]."'".",created_user='".$user_name."',updated_user='".$user_name."',updated_at=NOW() where input_job_no_random_ref='".$items[1]."' and plant_code='".$plant_code."'";
         //    echo $sql.";<br>";
             mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
