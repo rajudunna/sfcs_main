@@ -40,9 +40,11 @@ jQuery(document).ready(function($){
     </head>
     <body>
         <?php 
+        $plantcode=$_SESSION['plantCode'];
+        $username=$_SESSION['userName'];
             error_reporting(0);             
             include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-                $sqlQuery = "SELECT * FROM $bai_pro3.locations";
+                $sqlQuery = "SELECT * FROM $pms.locations where plant_code='$plantcode'";
 				$sqlData = mysqli_query($link, $sqlQuery) or exit("Problem picking the locations from database/".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $locationData = array();
                 $resultArray = array();
@@ -56,7 +58,7 @@ jQuery(document).ready(function($){
                 if(!empty($_POST['sch_no']) || !empty($_POST['doc_no'])){
                     if(!empty($_POST['sch_no'])){ 
                         $sch =  $_POST['sch_no'];                 
-                        $docketinfo = "SELECT DISTINCT doc_loc_mapping.doc_no,GROUP_CONCAT(DISTINCT doc_loc_mapping.loc_id) AS loc_id,GROUP_CONCAT(DISTINCT locations.loc_name) AS loc_name FROM $bai_pro3.doc_loc_mapping LEFT JOIN $bai_pro3.locations ON locations.loc_id= doc_loc_mapping.loc_id WHERE doc_loc_mapping.doc_no IN(SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$sch."%')";
+                        $docketinfo = "SELECT DISTINCT doc_loc_mapping.doc_no,GROUP_CONCAT(DISTINCT doc_loc_mapping.loc_id) AS loc_id,GROUP_CONCAT(DISTINCT locations.loc_name) AS loc_name FROM $bai_pro3.doc_loc_mapping LEFT JOIN $mdm.locations ON locations.loc_id= doc_loc_mapping.loc_id WHERE doc_loc_mapping.doc_no IN(SELECT doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid LIKE '%".$sch."%')";
                         $docketresult = mysqli_query($link, $docketinfo) or exit("Error getting dockets with schedule number/".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $docketcount = mysqli_num_rows($docketresult);
 						
@@ -66,7 +68,7 @@ jQuery(document).ready(function($){
                     }
                     if(!empty($_POST['doc_no'])){
                         $doc =  $_POST['doc_no'];
-                        $docketinfo = "SELECT doc_loc_mapping.doc_no,GROUP_CONCAT(DISTINCT doc_loc_mapping.loc_id) AS loc_id,GROUP_CONCAT(DISTINCT locations.loc_name) AS loc_name FROM $bai_pro3.doc_loc_mapping LEFT JOIN $bai_pro3.locations ON locations.loc_id = doc_loc_mapping.loc_id WHERE  doc_no = ".$doc." AND doc_loc_mapping.`loc_id` = locations.`loc_id`";
+                        $docketinfo = "SELECT doc_loc_mapping.doc_no,GROUP_CONCAT(DISTINCT doc_loc_mapping.loc_id) AS loc_id,GROUP_CONCAT(DISTINCT locations.loc_name) AS loc_name FROM $bai_pro3.doc_loc_mapping LEFT JOIN $mdm.locations ON locations.loc_id = doc_loc_mapping.loc_id WHERE  doc_no = ".$doc." AND doc_loc_mapping.`loc_id` = locations.`loc_id`";
                         $docketresult = mysqli_query($link, $docketinfo) or exit("Error getting dockets with docket number/".mysqli_error($GLOBALS["___mysqli_ston"]));
                         $docketcount = mysqli_num_rows($docketresult);
 						

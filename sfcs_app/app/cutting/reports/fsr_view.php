@@ -3,6 +3,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
 $plantcode=$_SESSION['plantCode'];
@@ -456,7 +458,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
         $req_qty=0;
 		$issued_qty=0;
-        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+        $sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
@@ -702,7 +704,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$req_qty=0;
 		$issued_qty=0;
-		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{

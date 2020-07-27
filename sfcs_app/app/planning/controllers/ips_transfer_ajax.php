@@ -2,6 +2,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 if(isset($_GET['get_data'])){
     $module = $_GET['module'];
@@ -66,7 +68,7 @@ function get_details($module){
                      </tr>
                  </thead>
                  <tbody>";
-    $check_module="Select input_module,input_job_no_random_ref From $bai_pro3.plan_dashboard_input where input_module='$module'";
+    $check_module="Select input_module,input_job_no_random_ref From $pps.plan_dashboard_input where input_module='$module' and plan_code='$plant_code'";
     //echo $check_module;
     $result1 = mysqli_query($link, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row1 = mysqli_fetch_array($result1))
@@ -108,7 +110,7 @@ function get_details($module){
         }
 
         // To get Prefix
-        $get_prefix="select * from  brandix_bts.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
+        $get_prefix="select * from  $pms.tbl_sewing_job_prefix where type_of_sewing ='$type_name' and plant_code='$plant_code'";
         //echo $get_prefix;
         $get_result=mysqli_query($link, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row3=mysqli_fetch_array($get_result))
@@ -178,17 +180,17 @@ function save_details($data,$module,$module1){
     $counter = 0;
     foreach($data['jobs'] as $job){
 
-        $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module' where input_job_no_random_ref = '$job'";
+        $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module',updated_user='$username',updated_at=NOW() where input_job_no_random_ref = '$job' AND plant_code='$plant_code'";
         mysqli_query($link, $plan_query)or exit("plan_update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
         $bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
         mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry="insert into bai_pro3.ips_job_transfer (job_no,module,transfered_module,user) values (".$job.",".$module1.",".$module.",'".$username."')";
+        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."','".$username."')";
         mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry1="insert into $bai_pro3.job_transfer_details (sewing_job_number,transfered_module,status) values (".$job.",".$module.",'P')";
+        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values (".$job.",".$module.",'P',".$plant_code.",".$username.",".$username.")";
         mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
