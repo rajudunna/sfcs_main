@@ -121,7 +121,7 @@
 				$resultr112=mysqli_query($link, $sql12) or exit("Sql Error5 == ".$sql12.' == '.mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($resultr112)==0)
 				{
-					$sql_map_table="select * from $bai_pro3.tbl_emb_table where emb_table_id=".$items[0]." and emb_table_status='active'";
+					$sql_map_table="select * from $bai_pro3.tbl_emb_table where emb_table_status='active' and emb_table_id=".$items[0]."";
 					$sql_map_table_res=mysqli_query($link, $sql_map_table) or exit("Sql error sql_map_table".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_map_table_res)>0)
 					{

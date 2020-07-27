@@ -730,7 +730,7 @@
 							<?php
 								
 								
-								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
+								$sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_status = 'active' and emb_table_id>0 ";
 								// mysqli_query($link,$sqlx) or exit("Sql Error".mysqli_error());
 								$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error5".mysqli_error());
 								while($sql_rowx=mysqli_fetch_array($sql_resultx))
