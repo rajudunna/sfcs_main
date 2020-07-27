@@ -15,6 +15,8 @@ Description: Here AQL team will be update Garments Rejected status.
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 <style>
 body
@@ -136,7 +138,7 @@ function button_disable()
 
 $reason_id=array();
 $reason_code=array();
-$sql="select * from $bai_pro3.audit_ref where status=0 order by reason";
+$sql="select * from $pps.audit_ref where plant_code='$plant_code' and status=0 order by reason";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -273,11 +275,11 @@ if(isset($_POST['update']))
 		{
 			if($color_new1=='1')
 			{
-			$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+			$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			else
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
