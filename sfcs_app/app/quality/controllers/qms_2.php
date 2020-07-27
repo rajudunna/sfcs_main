@@ -109,7 +109,7 @@ if(isset($_GET['tid']))
 	$parent_id = $_GET['parent_id'];
 	$bcd_id = $_GET['bcd_id'];
 	
-	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $pms.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $pms.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	// die();
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
@@ -255,27 +255,27 @@ if(isset($_GET['tid']))
 	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
 
 	//Insert selected row into table deleted table
-	$sql1="insert ignore into $pms.bai_qms_db_deleted select * from $pms.bai_qms_db where qms_tid='".$tid_ref."' ";
+	$sql1="insert ignore into $pms.bai_qms_db_deleted select * from $pms.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
 	// echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	//reduce qty from location table based on location
 	if($locationid != null) {
-		$sql3="update $pms.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty) where qms_location_id='".$locationid."'";
+		$sql3="update $pms.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty),updated_user='$username',updated_at=NOW() where qms_location_id='".$locationid."'";
 		// echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	}
 	//delete selected row from bai_qms_db table
-	$sql2="delete from $pms.bai_qms_db where qms_tid='".$tid_ref."'";
+	$sql2="delete from $pms.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."'";
 	// echo $sql2."<br>";
 	$result2=mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 	
 	//updating rejection_log_chile
 
-	$update_qry = "update $tms.rejection_log_child set rejected_qty = rejected_qty-$qms_qty where bcd_id = $bcd_id";
+	$update_qry = "update $tms.rejection_log_child set rejected_qty = rejected_qty-$qms_qty,updated_user='$username',updated_at=NOW() where bcd_id = $bcd_id";
 	// echo $update_qry.'</br>';
 	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 
-	$search_qry="SELECT id FROM $tms.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+	$search_qry="SELECT id FROM $tms.rejections_log where plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color'";
 					// echo $search_qry;
 	$result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result_search_qry->num_rows > 0)
@@ -284,7 +284,7 @@ if(isset($_GET['tid']))
 		{
 
 			$rejection_log_id = $row_result_search_qry['id'];
-			$update_qry_rej_lg = "update $tms.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty where id = $rejection_log_id";
+			$update_qry_rej_lg = "update $tms.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and id = $rejection_log_id";
 			// echo $update_qry_rej_lg;
 			$update_qry_rej_lg = $link->query($update_qry_rej_lg);
 			$parent_id = $rejection_log_id;
