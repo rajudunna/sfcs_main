@@ -232,7 +232,7 @@ if(isset($_POST['submit']))
 	$prev_date = date('Y-m-d', strtotime($date .' -1 day'));
 
 	$modules_array = array();	$modules_id_array=array();
-	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	$count= mysqli_num_rows($modules_result);
 	if(mysqli_num_rows($modules_result) > 0)
@@ -325,7 +325,9 @@ if(isset($_POST['submit']))
 								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"> <span class="glyphicon glyphicon-plus"></span></button></td>  
 								<?php
 							echo"</tr>";
+							
 					}
+					echo "</table>";
 		        if(in_array($authorized,$has_permission))
 					{ ?>
 					<?php
@@ -341,16 +343,10 @@ if(isset($_POST['submit']))
 								 }
 								
 								if($date==$final_date || $now_date==$date){
-									echo'<tr>
-									<th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
-									 </tr>';
+									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
 								}
-					
-			           ?>	
-						
-						 <?php
 					}
-					echo "</table>";
+				
 					echo "</form>";
 				}
 				else
@@ -391,6 +387,7 @@ if(isset($_POST['submit']))
 					echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
 					echo "<input type=\"hidden\" name=\"break_hours\" value=\"$break_hours\">";
 					 ?>
+					 </table>
 					 <?php
 					 
 					 $get_working_days="select DATE_FORMAT(last_up,'%Y-%m-%d') AS last_up  FROM $bai_pro.pro_attendance_adjustment  GROUP BY last_up ORDER BY last_up DESC LIMIT 1 ";
@@ -402,16 +399,14 @@ if(isset($_POST['submit']))
 							   }
 							 
 							   if($date==$final_date ||$now_date==$date){
-								   echo'<tr>
-								   <th colspan=9><input type="submit" id="submit" class="btn btn-primary" value="Submit" onclick="disableButton()"> </th>
-									</tr>';
+								echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
 							   }
 			
 	
 			         ?>	
 				
 				
-		          </table>
+		          
 					</form>
 					</div>
 					</div>
@@ -595,9 +590,9 @@ $(document).ready(function(){
 								
 					});  
 
-			 $('#loading-image').show();
-             $('#submit').hide();	
-			 $('#dynamic_field').hide();		
+			 //$('#loading-image').show();
+            //  $('#submit').hide();	
+			//  $('#dynamic_field').hide();		
       });  
 	  $('#dynamic_field tr').each(function() {
 							var button_id1 = $(this).attr("class"); 	
@@ -716,12 +711,7 @@ $(document).ready(function(){
 							
 	                	
 	  });
-	  $('#submit').on('click', function(){
-                
-                $('#submit').attr("disabled", true);
-				
-            });  
-
+	 
 		           
  });  
 

@@ -84,7 +84,7 @@ if(isset($_POST['submit']))
 	$shifts_array=array_values($result);
  	$rowspan=sizeof($shifts_array);
     echo '<div class="row"><div class="col-sm-2"><input type="checkbox"  id="checkbox" name="checkbox">&nbsp <b>Hide Style Info</b></div>';
-	if($rowspan>0)
+	if($rowspan>1)
 	{
 		echo'<div class="col-sm-2"><input type="checkbox"  id="checkbox1" name="checkbox1" checked="checked">&nbsp <b>Enable Summary</b></div></div>';
 	}
@@ -361,7 +361,7 @@ if(isset($_POST['submit']))
 </div>
  <script type="text/javascript">
 
-	$('#excel').click(function(){
+	$('#excel').click(function(){		
         var blob = new Blob([document.getElementById('report').innerHTML], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
 		});
