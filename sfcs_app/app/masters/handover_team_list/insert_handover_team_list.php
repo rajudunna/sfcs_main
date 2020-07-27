@@ -50,7 +50,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 )
 }else{
 	if($team_id>0){
 		//update
-		$sql = "update $pms.tbl_fg_crt_handover_team_list set emp_id='$emp_id',emp_call_name='$emp_call_name',emp_status='$emp_status',updated_user='$username' where team_id=$team_id and plant_code='$plant_code'";
+		$sql = "update $pms.tbl_fg_crt_handover_team_list set emp_id='$emp_id',emp_call_name='$emp_call_name',emp_status='$emp_status',updated_user='$username',updated_at=NOW() where team_id=$team_id and plant_code='$plant_code'";
 		//echo $sql;exit;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_handover_team_list.php','N');
@@ -97,7 +97,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_call_name)) == 0 )
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $pms.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user) VALUES('$emp_id','$emp_call_name','$selected_user','$emp_status','$plant_code','$username')";
+			$sql = "INSERT INTO $pms.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user,updated_user,updated_at) VALUES('$emp_id','$emp_call_name','$selected_user','$emp_status','$plant_code','$username','".$username."',NOW())";
 		
 			 
 			if (mysqli_query($conn, $sql)) {

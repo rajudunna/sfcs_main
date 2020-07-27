@@ -32,7 +32,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "update $pms.packing_team_master set packing_team='$packing_team',team_leader='$team_leader',status='$status',updated_user= '".$username."' where id=$row_id and plant_code='$plant_code'";
+                $sql = "update $pms.packing_team_master set packing_team='$packing_team',team_leader='$team_leader',status='$status',updated_user= '".$username."',updated_at=NOW() where id=$row_id and plant_code='$plant_code'";
                 if (mysqli_query($conn, $sql)) {
                     echo"<script>setTimeout(function () { 
                         swal({
@@ -67,7 +67,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "INSERT INTO $pms.packing_team_master (packing_team,team_leader,status,plant_code,created_user) VALUES ('$packing_team','$team_leader','$status','$plant_code','$username')";
+                $sql = "INSERT INTO $pms.packing_team_master (packing_team,team_leader,status,plant_code,created_user,updated_user,updated_at) VALUES ('$packing_team','$team_leader','$status','$plant_code','$username','".$username."',NOW())";
                 if (mysqli_query($conn, $sql)) {
                     $url=getFullURL($_GET['r'],'create_team.php','N');
                     echo"<script>setTimeout(function () { 

@@ -94,7 +94,7 @@ if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0) {
 					}
 			}); }, 100);</script>";
 		}else{
-			$sql = "INSERT INTO $mdm.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)VALUES ('$emp_id','$emp_name','$plant_code','$username','".date('Y-m-d')."')";
+			$sql = "INSERT INTO $mdm.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at,updated_user,updated_at)VALUES ('$emp_id','$emp_name','$plant_code','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 									//echo "New record created successfully";
