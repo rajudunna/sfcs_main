@@ -7,8 +7,8 @@
 	$list=$_POST['listOfItems'];
 	
 	/** Function to send */
-	$planned_respo=getPlanDocketJobs($list,$jobtype);
-	if($planned_respo==1){
+	$planned_respo=updatePlanDocketJobs($list,$jobtype);
+	if($planned_respo=1){
 		   $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 	}else{
