@@ -2955,7 +2955,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 
 </html>
 <?php
-$update_query = "update $wms.main_population_tbl set status=2,updated_user= '".$username."' where id=".$inpsect_id." and plant_code='".$plant_code."'";
+$update_query = "update $wms.main_population_tbl set status=2,updated_user= '".$username."',updated_at=NOW() where id=".$inpsect_id." and plant_code='".$plant_code."'";
 mysqli_query($link, $update_query) or exit("Update Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 ?>
 <script>

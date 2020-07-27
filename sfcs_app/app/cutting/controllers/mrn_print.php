@@ -2246,7 +2246,7 @@ tags will be replaced.-->
 <?php
 if($_GET["print_status"]==0)
 {
-	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id,updated_user= '$username' and plant_code='$plant_code'";
+	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id,updated_user= '$username',updated_at=NOW() and plant_code='$plant_code'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 ?>

@@ -44,8 +44,8 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 			$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$mk_id.",mk_ref=".$mk_ref_id." where doc_no=".$date_maker[$i][2]."";
 			// echo $sql11x132."<br>";
 			$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error14 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code,created_user) 
-			VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$mk_id."', '".$plant_code."','".$username."')";
+			$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code,created_user,updated_user,updated_at) 
+			VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$mk_id."', '".$plant_code."','".$username."','".$username."',NOW())";
 			// echo $sql_inse."<br>";
 			mysqli_query($link, $sql_inse) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$result_array['status'] = 'New Group Added & Updated.';
@@ -80,8 +80,8 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 						$test_query_old_marker_invalid=mysqli_query($link, $sql_query_old_marker_invalid) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 
-					$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code, created_user) 
-					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[0][3]."', '".$date_maker[$i][1]."','".$plant_code."','".$username."')";
+					$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code, created_user,updated_user,updated_at) 
+					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[0][3]."', '".$date_maker[$i][1]."','".$plant_code."','".$username."','".$username."',NOW())";
 					mysqli_query($link, $sql_inse) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql_inse."<br>";
 					$result_array['status_new'] = 'Selected group has been updated.';
@@ -107,8 +107,8 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 					$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$iLastid." where doc_no=".$date_maker[$i][2]."";
 					// echo $sql11x132."<br>";
 					$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error143 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code, created_user) 
-					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$date_maker[$i][1]."','".$plant_code."','".$username."')";
+					$sql_inse="INSERT INTO $pps.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`, plant_code, created_user,updated_user,updated_at) 
+					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[$i][3]."', '".$date_maker[$i][1]."','".$plant_code."','".$username."','".$username."',NOW())";
 					mysqli_query($link, $sql_inse) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));		
 					// echo $sql_inse."<br>";	
 					$result_array['status_new'] = 'Selected group has been changed.';

@@ -470,7 +470,7 @@ if (isset($_POST['bindingdata'])) {
 			$exp = explode("$", $id);
 			$sno = $exp[0];
 			$lot_num[] = $exp[1];
-			$insertbinditems = "update $wms.inspection_population set status=1,updated_user= '".$username."' where parent_id=$parent_id and sno=$sno and plant_code='".$plant_code."'";
+			$insertbinditems = "update $wms.inspection_population set status=1,updated_user= '".$username."',updated_at=NOW() where parent_id=$parent_id and sno=$sno and plant_code='".$plant_code."'";
 			mysqli_query($link, $insertbinditems) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		$lot_array = implode(",", $lot_num);
@@ -488,7 +488,7 @@ if(isset($_POST['confirm']))
 	$insp_id=$_POST['insp_id'];
 	$sno_array = implode(",", $insp_id);
 
-	$update_inspection="update $wms.`inspection_population` set status=2,updated_user= '".$username."' where sno in ($sno_array) and plant_code='".$plant_code."'";
+	$update_inspection="update $wms.`inspection_population` set status=2,updated_user= '".$username."',updated_at=NOW() where sno in ($sno_array) and plant_code='".$plant_code."'";
 	$result_query_update = $link->query($update_inspection) or exit('query error in updating111');
 	$flag = true;
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";

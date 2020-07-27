@@ -348,7 +348,7 @@ if(isset($_POST['formSubmit']))
                             $allocated_qty+=$sql_row1['allocated_qty'];  
                         }
                         $req_at = date("Y-m-d H:i:s");
-                        $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user) values ($doc_no,$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."')";
+                        $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ($doc_no,$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
                         $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');

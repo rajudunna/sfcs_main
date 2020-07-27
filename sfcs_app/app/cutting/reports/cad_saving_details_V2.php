@@ -395,7 +395,7 @@ if(isset($_POST["submit"]))
 
 				//echo "<td>".."</td>";
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$docketnos).") and plant_code='".$plant_code."'";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -403,7 +403,7 @@ if(isset($_POST["submit"]))
 					$issued_qty=$row["qty"];
 				}
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$recut_docketnos).") and plant_code='".$plant_code."'";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))

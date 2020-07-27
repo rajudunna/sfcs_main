@@ -20,7 +20,7 @@ if(isset($_POST['data']))
         }
 
         $ponits_array=array("1"=>"point_1", "2"=>"point_2", "3"=>"point_3", "4"=>"point_4");
-        $insert_four_points = "INSERT IGNORE INTO $wms.`four_points_table` (`insp_child_id`, `code`, `description`, `selected_point`, `points`, plant_code, created_user) VALUES ";
+        $insert_four_points = "INSERT IGNORE INTO $wms.`four_points_table` (`insp_child_id`, `code`, `description`, `selected_point`, `points`, plant_code, created_user,updated_user,updated_at) VALUES ";
         foreach ($dataArray as $key => $value) 
         {
             foreach ($ponits_array as $point_key => $point_value) 
@@ -28,7 +28,7 @@ if(isset($_POST['data']))
                 if($value[$point_value]>0)
                 {
                     $points_val=$point_key*$value[$point_value];
-                    $insert_four_points .= "($store_in_id,'".$value['code']."','".$value['desc']."',$point_key,$points_val,$plant_code,$username),";
+                    $insert_four_points .= "($store_in_id,'".$value['code']."','".$value['desc']."',$point_key,$points_val,$plant_code,$username,'".$username."',NOW()),";
                 }
             }
          }
@@ -81,7 +81,7 @@ if (isset($_POST['delete_id'])) {
    // $delete_roll = "delete from $wms.inspection_population where store_in_id = ' $store_id'";
    // $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_user= '".$username."' where store_in_id = '$store_id' and plant_code='".$plant_code."'";
+    $delete_roll = "UPDATE $wms.inspection_population set status=0,updated_user= '".$username."',updated_at=NOW() where store_in_id = '$store_id' and plant_code='".$plant_code."'";
     $details_result_fir = mysqli_query($link, $delete_roll) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     
     $delete_roll_inspection = "delete from $wms.roll_inspection_child where store_in_tid = ' $store_id' and plant_code='".$plant_code."'";

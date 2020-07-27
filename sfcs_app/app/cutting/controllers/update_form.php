@@ -163,7 +163,7 @@ $ref_tid=$_GET['ref_tid'];
 
 if($level==8)
 {
-	$sql="update $wms.mrn_track set status=9,issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."' where tid=$ref_tid and plant_code='".$plant_code."'";
+	$sql="update $wms.mrn_track set status=9,issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW() where tid=$ref_tid and plant_code='".$plant_code."'";
 	//echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"mrn_form_log.php\"; }</script>";
@@ -612,11 +612,11 @@ $(document).ready(function(){
 		$ins_rem=$_POST['ins_rem'];
 		
 		//echo "ins remarks= ".$ins_rem;
-		$sql="update $wms.mrn_track set status=2, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."' where  plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
+		$sql="update $wms.mrn_track set status=2, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW() where  plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Approved\",'".$plant_code."','".$username."')";
+		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user,updated_user,updated_at)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Approved\",'".$plant_code."','".$username."','".$username."',NOW())";
 		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo "<h3><font color=green>Successfully Updated.</font></h3>";
@@ -632,10 +632,10 @@ $(document).ready(function(){
 	{
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
-		$sql="update wms.mrn_track set status=3, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."' where plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
+		$sql="update wms.mrn_track set status=3, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Rejected\",'".$plant_code."','".$username."')";
+		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user,updated_user,updated_at)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Rejected\",'".$plant_code."','".$username."','".$username."',NOW())";
 		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -657,16 +657,16 @@ $(document).ready(function(){
 		{
 			if($available[$i]>0)
 			{
-				$sql="update $wms.mrn_track set status=5, updated_user=\"$username\",updated_date=\"".date("Y-m-d H:i:s")."\",avail_qty=".$available[$i]."  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+				$sql="update $wms.mrn_track set status=5, updated_user=\"$username\",updated_at=\"".date("Y-m-d H:i:s")."\",avail_qty=".$available[$i]."  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			}
 			else
 			{
-				$sql="update $wms.mrn_track set status=6, updated_user=\"$username\",updated_date=\"".date("Y-m-d H:i:s")."\",avail_qty=0  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+				$sql="update $wms.mrn_track set status=6, updated_user=\"$username\",updated_at=\"".date("Y-m-d H:i:s")."\",avail_qty=0  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			}
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error28".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Updated\",'".$plant_code."','".$username."')";
+		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user,updated_user,updated_at)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Updated\",'".$plant_code."','".$username."','".$username."',NOW())";
 		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error29".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -704,7 +704,7 @@ $(document).ready(function(){
 		{
 			//if($available[$i]>0)
 			{
-				$sql="update $wms.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$j].",updated_user= '".$username."'  where plant_code='".$plant_code."' and tid=".$tid[$j];
+				$sql="update $wms.mrn_track set status=7, issued_by=\"$username\",issued_date=\"".date("Y-m-d H:i:s")."\",issued_qty=".$available[$j].",updated_user= '".$username."',updated_at=NOW()  where plant_code='".$plant_code."' and tid=".$tid[$j];
 				//echo $sql."<br>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
@@ -714,7 +714,7 @@ $(document).ready(function(){
 		{
 			if($issued_qty[$j]>0)
 			{
-				$sql1="insert into $wms.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user,plant_code,created_user) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\",'".$plant_code."','".$username."')";
+				$sql1="insert into $wms.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user,plant_code,created_user,updated_user,updated_at) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\",'".$plant_code."','".$username."','".$username."',NOW())";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				unset($qty_issued);
@@ -742,12 +742,12 @@ $(document).ready(function(){
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
 						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j],$plant_code,$username);
-						$sql="update wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_qty[$j].",updated_user= '".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+						$sql="update wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_qty[$j].",updated_user= '".$username."',updated_at=NOW() where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
 
-				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_qty[$j].",updated_user= '".$username."' where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."'";
+				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_qty[$j].",updated_user= '".$username."',updated_at=NOW() where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."'";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."'";
@@ -764,14 +764,14 @@ $(document).ready(function(){
 				if($balance_qty[$j]==0)
 				{
 					$status_new=2;
-					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new,updated_user= '".$username."' where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."";
+					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new,updated_user= '".$username."',updated_at=NOW() where tid=\"".$tid_ref[$j]."\" and plant_code='".$plant_code."";
 					//echo $sql44."</br>";
 					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 			}
 		}
 		
-		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Allocate\",'".$plant_code."','".$username."')";
+		$sql1="insert into $wms.remarks_log (tid,remarks,username,date,level,plant_code,created_user,updated_user,updated_at)values (".implode(",",$tid).",\"".$ins_rem."\",\"".$username."\",\"".date("Y-m-d H:i:s")."\",\"Allocate\",'".$plant_code."','".$username."','".$username."',NOW())";
 		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			

@@ -223,7 +223,7 @@ if(isset($_POST['submitx']))
 	$credit_note_no=$_POST["txtsupcrdno"];
 	$claim_note_no=$_POST["txtsupclmno"];
 	
-	$sql2="update $wms.inspection_complaint_db set supplier_approved_date=\"$supplier_approved_date\",supplier_status=\"$supplier_status\",supplier_remarks=\"$supplier_remarks\",new_invoice_no=\"$new_invoice_no\",supplier_replace_approved_qty=\"$supplier_replace_approved_qty\",supplier_claim_approved_qty=\"$supplier_claim_approved_qty\",complaint_status=\"$complaint_status\",supplier_credit_no=\"$credit_note_no\",supplier_claim_no=\"".$claim_note_no."\",updated_user= '".$username."' WHERE complaint_no=\"$comaplint_no_ref\" and plant_code='".$plant_code."'";
+	$sql2="update $wms.inspection_complaint_db set supplier_approved_date=\"$supplier_approved_date\",supplier_status=\"$supplier_status\",supplier_remarks=\"$supplier_remarks\",new_invoice_no=\"$new_invoice_no\",supplier_replace_approved_qty=\"$supplier_replace_approved_qty\",supplier_claim_approved_qty=\"$supplier_claim_approved_qty\",complaint_status=\"$complaint_status\",supplier_credit_no=\"$credit_note_no\",supplier_claim_no=\"".$claim_note_no."\",updated_user= '".$username."',updated_at=NOW() WHERE complaint_no=\"$comaplint_no_ref\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql2) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script>sweetAlert('Data Updated Successfully','','success')</script>";
