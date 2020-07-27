@@ -76,6 +76,12 @@ if(isset($_POST['submit']))
 {
 	$fdat=$_POST['fdat'];
     $tdat=$_POST['tdat'];
+	function remove_element($array,$value) {
+	  return array_diff($array, (is_array($value) ? $value : array($value)));
+	}
+	$result = remove_element($shifts_array,'ALL');
+	$shifts_array=array();
+	$shifts_array=array_values($result);
  	$rowspan=sizeof($shifts_array);
     echo '<div class="row"><div class="col-sm-2"><input type="checkbox"  id="checkbox" name="checkbox">&nbsp <b>Hide Style Info</b></div>';
 	if($rowspan>0)
@@ -323,7 +329,7 @@ if(isset($_POST['submit']))
 		if($rowspan>1)
 		{
 			echo"<tr >";
-			echo"<td class='summary' colspan=2 style='text-align:right;'>".implode("+",$shifts_array)."</td>
+			echo"<td class='summary' style='text-align:right;'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
 			echo" <td class='style2'>-</td>
 			<td class='smv2'>-</td>
