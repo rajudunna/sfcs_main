@@ -12,7 +12,7 @@ if (!$conn) {
 
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	
-$delete="delete from $mdm.`tbl_leader_name` where id='$tbl_id'";
+$delete="delete from $pms.`tbl_leader_name` where id='$tbl_id'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     echo "<script>window.location = '".$url."'</script>";
 

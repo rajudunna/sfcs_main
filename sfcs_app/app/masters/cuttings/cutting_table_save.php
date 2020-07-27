@@ -21,7 +21,7 @@ $emp_name =$_POST['emp_name'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 
-$sqlnewchange="ALTER TABLE mdm.tbl_leader_name ADD COLUMN plant_code VARCHAR(150) NULL AFTER status, 
+$sqlnewchange="ALTER TABLE pms.tbl_leader_name ADD COLUMN plant_code VARCHAR(150) NULL AFTER status, 
 ADD COLUMN created_at TIMESTAMP NULL AFTER plant_code, ADD COLUMN created_user VARCHAR(120) NULL AFTER created_at, ADD COLUMN updated_at DATETIME NULL AFTER created_user, ADD COLUMN updated_user VARCHAR(120) NULL AFTER updated_at,
  ADD COLUMN version_flag INT(11) NULL AFTER updated_user"; 
   
@@ -44,7 +44,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}); }, 100);</script>";
 }else{
 	if($tbl_id>0){
-		$query = "SELECT emp_id  from $mdm.tbl_leader_name where plant_code='$plantcode' and  emp_id='$emp_id' and id != $tbl_id ";
+		$query = "SELECT emp_id  from $pms.tbl_leader_name where plant_code='$plantcode' and  emp_id='$emp_id' and id != $tbl_id ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -61,7 +61,7 @@ if (empty($emp_id) || empty($emp_name)) {
 					}
 			}); }, 100);</script>";
 		}else{
-			$sql = "UPDATE $mdm.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id = $tbl_id";
+			$sql = "UPDATE $pms.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id = $tbl_id";
 			// echo $sql;die();
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -84,7 +84,7 @@ if (empty($emp_id) || empty($emp_name)) {
 			}
 		}
 	}else{
-		$query = "SELECT emp_id from $mdm.tbl_leader_name where plant_code='$plantcode' and emp_id='$emp_id'";
+		$query = "SELECT emp_id from $pms.tbl_leader_name where plant_code='$plantcode' and emp_id='$emp_id'";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -101,7 +101,7 @@ if (empty($emp_id) || empty($emp_name)) {
 					}
 			}); }, 100);</script>";
 		}else{
-			$sql = "INSERT INTO $mdm.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)VALUES ('$emp_id','$emp_name','$plantcode','$username','".date('Y-m-d')."')";
+			$sql = "INSERT INTO $pms.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)VALUES ('$emp_id','$emp_name','$plantcode','$username','".date('Y-m-d')."')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 									//echo "New record created successfully";
