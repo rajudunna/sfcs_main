@@ -126,7 +126,15 @@ if(isset($_POST['submit']))
 	$plan_sah=array();
 	$plan_pro=array();
 	$nop=array();
+	$modules=array();
 	$effective_shift_working_hours=array();
+	$sql="select * from $bai_pro3.module_master where status='Active' ORDER BY module_name*1";
+	$result=mysqli_query($link, $sql) or die("Error =8 ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($result))
+	{ 
+		$modules[]=$row["module_name"];
+	}
+	
 
 
 	$sql2="SELECT operation_code  FROM $brandix_bts.`tbl_orders_ops_ref` where category='sewing'";
@@ -173,52 +181,68 @@ if(isset($_POST['submit']))
 		}
 		unset($order_div);
 	}
+	
 	// Getting Plan details
-	$sql1="SELECT mod_no,shift,AVG(plan_eff) AS plan_eff,SUM(plan_pro) AS plan_pro,SUM(plan_clh) AS plan_clh,SUM(plan_sah) AS plan_sah,SUM(fix_nop) AS nop FROM $bai_pro.pro_plan WHERE date between '".$fdat."' and '".$tdat."' group by mod_no,shift";
-    $result1=mysqli_query($link, $sql1) or die("Error5 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($result1)!='')
-	{
-		while($row1=mysqli_fetch_array($result1))
+	for($j=0;$j<sizeof($modules);$j++)
+	{		
+		for ($jj=0; $jj < sizeof($shifts_array); $jj++) 
 		{
-			$plan_eff[$row1["mod_no"]][$row1["shift"]]=round($row1["plan_eff"],2);
-			$plan_clh[$row1["mod_no"]][$row1["shift"]]=$row1["plan_clh"];
-			$plan_sah[$row1["mod_no"]][$row1["shift"]]=$row1["plan_sah"];
-			$plan_pro[$row1["mod_no"]][$row1["shift"]]=$row1["plan_pro"];
-			$nop[$row1["mod_no"]][$row1["shift"]]=$row1["nop"];
-		}  
-	}
-	else
-	{
-		$plan_eff[$row1["mod_no"]][$row1["shift"]]=0;
-		$plan_clh[$row1["mod_no"]][$row1["shift"]]=0;
-		$plan_sah[$row1["mod_no"]][$row1["shift"]]=0;
-		$plan_pro[$row1["mod_no"]][$row1["shift"]]=0;
-		$nop[$row1["mod_no"]][$row1["shift"]]=0;
-	}
-	// Getting Working Hours
-	$sql7="select date,module,shift,present,jumper from $bai_pro.`pro_attendance` WHERE  date between '".$fdat."' and '".$tdat."' order by module*1";
-	$result7=mysqli_query($link, $sql7) or die("Sql Error6: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));  
-	while($row7=mysqli_fetch_array($result7))
-	{
-		$smo[$row7["module"]][$row7["shift"]]=$smo[$row7["module"]][$row7["shift"]]+$row7["present"]+$row7["jumper"];
-		$temp_smo=$row7["present"]+$row7["jumper"];
-		$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";
-		$sql_result8=mysqli_query($link, $sql8) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row8=mysqli_fetch_array($sql_result8))
-		{
-			$start_time=$sql_row8['start_time'];
-			$end_time=$sql_row8['end_time'];
+			$sql1="SELECT mod_no,shift,AVG(plan_eff) AS plan_eff,SUM(plan_pro) AS plan_pro,SUM(plan_clh) AS plan_clh,SUM(plan_sah) AS plan_sah,SUM(fix_nop) AS nop FROM $bai_pro.pro_plan WHERE date between '".$fdat."' and '".$tdat."' and mod_no='".$modules[$j]."' and shift='".$shifts_array[$jj]."' group by mod_no,shift";
+			$result1=mysqli_query($link, $sql1) or die("Error5 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($result1)!='')
+			{
+				while($row1=mysqli_fetch_array($result1))
+				{
+					$plan_eff[$row1["mod_no"]][$row1["shift"]]=round($row1["plan_eff"],2);
+					$plan_clh[$row1["mod_no"]][$row1["shift"]]=$row1["plan_clh"];
+					$plan_sah[$row1["mod_no"]][$row1["shift"]]=$row1["plan_sah"];
+					$plan_pro[$row1["mod_no"]][$row1["shift"]]=$row1["plan_pro"];
+					$nop[$row1["mod_no"]][$row1["shift"]]=$row1["nop"];
+				}  
+			}
+			else
+			{
+				$plan_eff[$modules[$j]][$shifts_array[$jj]]=0;
+				$plan_clh[$modules[$j]][$shifts_array[$jj]]=0;
+				$plan_sah[$modules[$j]][$shifts_array[$jj]]=0;
+				$plan_pro[$modules[$j]][$shifts_array[$jj]]=0;
+				$nop[$modules[$j]][$shifts_array[$jj]]=0;
+			}
+			// Getting Working Hours
+			$sql7="select date,module,shift,present,jumper from $bai_pro.`pro_attendance` WHERE  date between '".$fdat."' and '".$tdat."' and module='".$modules[$j]."' and shift='".$shifts_array[$jj]."' order by module*1";
+			$result7=mysqli_query($link, $sql7) or die("Sql Error6: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			if(mysqli_num_rows($result1)!='')
+			{		
+				while($row7=mysqli_fetch_array($result7))
+				{
+					$smo[$row7["module"]][$row7["shift"]]=$smo[$row7["module"]][$row7["shift"]]+$row7["present"]+$row7["jumper"];
+					$temp_smo=$row7["present"]+$row7["jumper"];
+					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";
+					$sql_result8=mysqli_query($link, $sql8) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row8=mysqli_fetch_array($sql_result8))
+					{
+						$start_time=$sql_row8['start_time'];
+						$end_time=$sql_row8['end_time'];
+						
+						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-$breakhours/60));
+					}		
+				}
+			}
+			else
+			{
+				$smo[$modules[$j]][$shifts_array[$jj]]=0;
+				$temp_smo[$modules[$j]][$shifts_array[$jj]]=0;
+				$effective_shift_working_hours[$modules[$j]][$shifts_array[$jj]]=0;
+			}
+		}
 			
-			$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-$breakhours/60));
-		}		
-	}	
-	$rowspans=$rowspan;
-	$sql="select * from $bai_pro3.module_master where status='Active' ORDER BY module_name*1";
-	$result=mysqli_query($link, $sql) or die("Error =8 ".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($result))
+	}
+	
+	$rowspans=$rowspan+1;
+	for ($ii=0; $ii < sizeof($modules); $ii++) 
 	{    
 		echo"<tr>";
-		$module_name=$row["module_name"];
+		$module_name=$modules[$ii];
 		echo "<td rowspan=$rowspans>".$module_name."</td>";  
 		$plant_clh_total=0;
 		$plan_clh_count=0;
@@ -231,7 +255,8 @@ if(isset($_POST['submit']))
 		$actual_eff_total=0;	
 		$total_no_of_days=0;
 		$total_var_out=0;
-		$total_var_sah=0;		
+		$total_var_sah=0;	
+		$act_smo=0;	
 		for ($i=0; $i < sizeof($shifts_array); $i++) 
 		{		
 			echo"<td>".$shifts_array[$i]."</td>
