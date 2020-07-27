@@ -29,7 +29,7 @@
 				{
 					$team_id=$_GET['team_id'];
 					$emp_id=$_GET['emp_id'];
-					$sql_schedule="update $pps.tbl_fg_crt_handover_team_list set selected_user='$username', lastup='".date("Y-m-d H:i:s")."',created_user='$username' where team_id=$team_id and emp_id='$emp_id' and plant_code='$plant_code'";
+					$sql_schedule="update $pps.tbl_fg_crt_handover_team_list set selected_user='$username', lastup='".date("Y-m-d H:i:s")."',updated_user='$username,updated_at=NOW() where team_id=$team_id and emp_id='$emp_id' and plant_code='$plant_code'";
 					// echo $sql_schedule;
 					mysqli_query($link, $sql_schedule) or exit("Sql Error_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$url = getFullURL($_GET['r'],'carton_scan_decentral_packing.php','R');

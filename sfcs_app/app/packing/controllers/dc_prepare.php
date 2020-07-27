@@ -50,7 +50,11 @@
 		</div>
 		<div class='panel-body'>		
 			<form name="input" method="post" action="<?php echo '?r='.$_GET['r']; ?>">
-				<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+				<?php 
+				include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php', 3,'R'));
+				$plant_code = $_SESSION['plantCode'];
+				$username = $_SESSION['userName'];
+
 					if(isset($_POST['prepare']));
 					if(1)
 					{
@@ -270,8 +274,6 @@
 
 
 <?php
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 if(isset($_POST['submit']))
 {
 	$ship_id=$_POST['ship_id'];
@@ -286,11 +288,11 @@ if(isset($_POST['submit']))
 	$jump_url1 = getFullURL($_GET['r'],'dispatch_db.php','N');
 	if($seal!='' && $vehicle!='')
 	{
-		$sql="insert into $pps.disp_db set create_date=\"$date\", party=\"$party\", vehicle_no=\"$vehicle\", mode=\"$mode\", status=1, seal_no=\"$seal\", remarks=\"$remarks\",plant_code=\"$plant_code\",created_user=\"$username\", prepared_by=USER(), prepared_time=NOW()";
+		$sql="insert into $pps.disp_db set create_date=\"$date\", party=\"$party\", vehicle_no=\"$vehicle\", mode=\"$mode\", status=1, seal_no=\"$seal\", remarks=\"$remarks\",plant_code=\"$plant_code\",created_user=\"$username\",updated_user=\"$username\",prepared_by=USER(), prepared_time=NOW()";
 		mysqli_query($link, $sql) or exit("Sql Error1 insert disp_db".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$iLastID=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		
-		$sql="update $pps.ship_stat_log set disp_note_no=$iLastID, ship_status=2,created_user='$username' where plant_code='$plant_code' and ship_tid in ($ship_id)";
+		$sql="update $pps.ship_stat_log set disp_note_no=$iLastID, ship_status=2,created_user='$username',updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and ship_tid in ($ship_id)";
 		mysqli_query($link, $sql) or exit("Sql Error2 update status".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		echo "<script type='text/javascript'> setTimeout('Redirect()',0); function Redirect() {  location.href = '$jump_url1'; }</script>"; 

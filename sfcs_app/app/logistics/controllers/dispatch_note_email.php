@@ -890,7 +890,7 @@ tags will be replaced.-->
 		$myFile = "mail_tran_log.txt";
 	$fh = fopen($myFile, 'a') or die("can't open file");
 	
-	$sql="select * from $pps.disp_db where plant_code='$plant_code' disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
+	$sql="select * from $pps.disp_db where plant_code='$plant_code' and disp_note_no='$note_no' and (exit_date IS NULL OR exit_date = '') and status=2";
 
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	//var_dump($sql_result);
@@ -905,7 +905,7 @@ tags will be replaced.-->
 		{
 			fwrite($fh, date("Y-m-d H:i:s").$username."Mail Successful<br>\r\n");
 			
-			$sql="update $pps.disp_db set created_user=\"".$username."\",exit_date=\"".date("Y-m-d H:i:s")."\", status=3, dispatched_by=USER() where disp_note_no=$note_no and status=2";
+			$sql="update $pps.disp_db set created_user=\"".$username."\",updated_user=\"".$username."\",updated_at=NOW(),exit_date=\"".date("Y-m-d H:i:s")."\", status=3, dispatched_by=USER() where disp_note_no=$note_no and status=2";
 			mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			fwrite($fh, date("Y-m-d H:i:s").$username."Mail Query Success<br>\r\n");
