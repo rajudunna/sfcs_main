@@ -4,12 +4,14 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM $mdm.`packing_team_master` order by id desc";
+$sql = "SELECT * FROM $pms.`packing_team_master` where plant_code='".$plant_code."' order by id desc";
 $result = $conn->query($sql);
 $sno =1;
 $url=getFullURL($_GET['r'],'create_team.php','N');
