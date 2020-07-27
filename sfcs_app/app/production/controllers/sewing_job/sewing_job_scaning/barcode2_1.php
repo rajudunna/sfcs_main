@@ -69,12 +69,12 @@
 				}
 				
 				
-				$update_psl_query = "UPDATE $bai_pro3.emb_bundles set print_status=1 where doc_no=".$doc_no." and report_seq=".$reqseqid."";  
+				$update_psl_query = "UPDATE $pps.emb_bundles set print_status=1,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and  doc_no=".$doc_no." and report_seq=".$reqseqid."";  
 				$update_result = mysqli_query($link,$update_psl_query) or exit('Query Error');
 				
 				//$detailed_bundle_sticker=1;
 				$check=0;               
-                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code,num_id FROM $bai_pro3.emb_bundles where $query doc_no=".$doc_no." and report_seq=".$reqseqid."";
+                $barcode_qry="SELECT tran_id, doc_no,size, barcode,quantity, ops_code,num_id FROM $pps.emb_bundles where plant_code='$plant_code' and $query doc_no=".$doc_no." and report_seq=".$reqseqid."";
 				// echo $barcode_qry;		
 				$sql_barcode=mysqli_query($link, $barcode_qry) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($barcode_rslt = mysqli_fetch_array($sql_barcode))
