@@ -1,6 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-
+$plantcode=$_SESSION['plantCode'];
 $has_permission=haspermission($_GET['r']); 
 
 if($fabric_validation_for_cut_report == 'yes')
@@ -66,7 +66,7 @@ while($row = mysqli_fetch_array($cut_table_result)){
     $cut_tables[$row['tbl_id']] = $row['tbl_name'];
 }
 
-$team_leaders_query = "SELECT * from $bai_pro3.tbl_leader_name";
+$team_leaders_query = "SELECT * from $pps.tbl_leader_name where plant_code='$plantcode'";
 $team_leaders_result = mysqli_query($link,$team_leaders_query);
 while($row = mysqli_fetch_array($team_leaders_result)){
     $team_leaders[$row['id']] = $row['emp_name'];

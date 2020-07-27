@@ -9,11 +9,12 @@
 	// Check connection
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$conn=$link;
+	$plantcode=$_SESSION['plantCode'];
 	if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 	} 
 
-	$sql = "SELECT * FROM bai_pro3.`tbl_leader_name`";
+	$sql = "SELECT * FROM $pps.`tbl_leader_name` where plant_code='$plantcode'";
 	$result = $conn->query($sql);
 	$sno = 1;
 	$url=getFullURL($_GET['r'],'create_leader_names.php','N');

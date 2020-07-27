@@ -7,6 +7,8 @@ $emp_id=$_REQUEST['emp_id'];
 $row_id=$_REQUEST['c_id'];
 // echo $row_id;die();
 $emp_name=$_REQUEST['emp_name'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 // echo $status;die();
 // $servername = "192.168.0.110:3326";
@@ -48,7 +50,7 @@ else
 	if($row_id>0)
 	{
 		//update
-		$sql = "update tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name' where id=$row_id";
+		$sql = "update $pps.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$row_id";
 		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'create_leader_names.php','N');
@@ -98,8 +100,8 @@ else
 						//echo "<script>window.location = 'index.php?r=L3NmY3NfYXBwL2FwcC9tYXN0ZXJzL2NhdGVnb3JpZXMvYWRkX2NhdGVnb3JpZXMucGhw'</script>";
 					}else{
 					
-							$sql = "INSERT INTO tbl_leader_name (emp_id,emp_name)
-							VALUES ('$emp_id','$emp_name')";
+							$sql = "INSERT INTO $pps.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)
+							VALUES ('$emp_id','$emp_name','$plantcode','$username','".date('Y-m-d')."')";
 
 							if (mysqli_query($conn, $sql)) 
 							{

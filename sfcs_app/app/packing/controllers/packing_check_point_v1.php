@@ -21,6 +21,7 @@ $permission = haspermission($_GET['r']);
 //CR# 285 : KiranG - 2015-02-06
 // New logic change has been deployed to handle extra shipment and multi color logic for M&S
 $username="ber_databasesvc";
+$plantcode=$_SESSION['plantCode'];
 //New Code
 $ims_log_packing_v3="$bai_pro3.ims_log_packing_v3";
 $packing_summary_tmp_v3="$bai_pro3.packing_summary_tmp_v3";
@@ -186,7 +187,7 @@ return false;
 <div class="panel-body">
 <?php
 
-$sql="select emp_id,emp_call_name from $bai_pro3.tbl_fg_crt_handover_team_list where selected_user=user() order by lastup desc limit 1";
+$sql="select emp_id,emp_call_name from $pps.tbl_fg_crt_handover_team_list where plant_code='$plantcode' and selected_user=user() order by lastup desc limit 1";
 	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error19=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0){
