@@ -222,7 +222,7 @@ if(isset($_POST['show']))
 	$no_rows=mysqli_num_rows($sql_result);
 	if($no_rows>0)
 	{
-		$sql="insert into $brandix_bts.re_print_table(bundle_id,emp_id,module_id,shift,user_name,remark,plant_code,created_user) values('".$bundle."','".$emp_no."','".$module."','".$shift."','".$username."','".$remark."','".$plant_code."','".$username."')";
+		$sql="insert into $brandix_bts.re_print_table(bundle_id,emp_id,module_id,shift,user_name,remark,plant_code,created_user,updated_user) values('".$bundle."','".$emp_no."','".$module."','".$shift."','".$username."','".$remark."','".$plant_code."','".$username."','".$username."')";
 		//echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/> Error in section table ");
 		echo "<table class='table table-bordered'><tr><th rospan=4>You are going to take bundle print</th>";
