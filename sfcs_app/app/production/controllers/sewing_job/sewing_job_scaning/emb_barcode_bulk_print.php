@@ -228,7 +228,7 @@ if(isset($_POST['submit']))
         echo "<th>Plies</th><th>Emb barcode 4*2</th><th>Emb barcode2*1</th></tr></thead>";
        
        
-        $sql="select *,bund.doc_no as docno from $bai_pro3.emb_bundles as bund left join $bai_pro3.order_cat_doc_mk_mix as mix on bund.doc_no=mix.doc_no where plant_code='$plant_code' and order_tid='".$orde_tid."' and category in ($in_categories) group by bund.doc_no";
+        $sql="select *,bund.doc_no as docno from $pps.emb_bundles as bund left join $bai_pro3.order_cat_doc_mk_mix as mix on bund.doc_no=mix.doc_no where plant_code='$plant_code' and order_tid='".$orde_tid."' and category in ($in_categories) group by bund.doc_no";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_num_check=mysqli_num_rows($sql_result);
 		if($sql_num_check>0)
@@ -236,7 +236,7 @@ if(isset($_POST['submit']))
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$seq=array();
-				$sql12="select report_seq from $bai_pro3.emb_bundles where plant_code='$plant_code' doc_no=".$sql_row['docno']." group by report_seq";
+				$sql12="select report_seq from $pps.emb_bundles where plant_code='$plant_code' doc_no=".$sql_row['docno']." group by report_seq";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
 				{
@@ -253,7 +253,7 @@ if(isset($_POST['submit']))
 				echo "<td rowspan=$rowspan>".$sql_row["a_plies"]."</td>";
 				for($i=0;$i<sizeof($seq);$i++)
 				{
-					$get_print_status_qry="select print_status from $bai_pro3.emb_bundles where plant_code='$plant_code' and doc_no=".$sql_row['docno']." and report_seq=".$seq[$i]."";
+					$get_print_status_qry="select print_status from $pps.emb_bundles where plant_code='$plant_code' and doc_no=".$sql_row['docno']." and report_seq=".$seq[$i]."";
 					$sql_result123=mysqli_query($link, $get_print_status_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row123=mysqli_fetch_array($sql_result123))
 					{
@@ -349,7 +349,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']) && isset($_GET['color']))
         echo "<th>Plies</th><th>Emb barcode 4*2</th><th>Emb barcode2*1</th></tr></thead>";
        
        
-        $sql="select *,bund.doc_no as docno from $bai_pro3.emb_bundles as bund left join $bai_pro3.order_cat_doc_mk_mix as mix on bund.doc_no=mix.doc_no where plnant_code='$plant_code' and order_tid='".$orde_tid."' and category in ($in_categories) group by bund.doc_no";
+        $sql="select *,bund.doc_no as docno from $pps.emb_bundles as bund left join $bai_pro3.order_cat_doc_mk_mix as mix on bund.doc_no=mix.doc_no where plnant_code='$plant_code' and order_tid='".$orde_tid."' and category in ($in_categories) group by bund.doc_no";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $sql_num_check=mysqli_num_rows($sql_result);
 		if($sql_num_check>0)
@@ -357,7 +357,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']) && isset($_GET['color']))
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$seq=array();
-				$sql12="select report_seq from $bai_pro3.emb_bundles where plant_code='$plant_code' and doc_no=".$sql_row['docno']." group by report_seq";
+				$sql12="select report_seq from $pps.emb_bundles where plant_code='$plant_code' and doc_no=".$sql_row['docno']." group by report_seq";
 				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row12=mysqli_fetch_array($sql_result12))
 				{

@@ -63,7 +63,7 @@ if(isset($_POST['continue']))
 	$no_rows=mysqli_num_rows($sql_result);
 	if($no_rows>0)
 	{
-		$sql="insert into $pps.emb_reprint_track(barcode,shift,emp_id,remarks,username,plant_code,created_user) values('".$barcode."','".$shift."','".$employeeid."','".$remarks."','".$username."','".$plant_code."','".$username."')";
+		$sql="insert into $pps.emb_reprint_track(barcode,shift,emp_id,remarks,username,plant_code,created_user,updated_user) values('".$barcode."','".$shift."','".$employeeid."','".$remarks."','".$username."','".$plant_code."','".$username."','".$username."')";
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/> Error while insert into emb_reprint_track");
 		echo "<table class='table table-bordered'><tr><th rospan=4>You are going to take bundle print</th>";
 		$url1 = getFullURLLevel($_GET['r'],'barcode_new.php',0,'R');
