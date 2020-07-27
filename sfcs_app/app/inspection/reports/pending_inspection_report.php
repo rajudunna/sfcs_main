@@ -29,7 +29,8 @@
 	
 <?php
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-
+ $plant_code = $_SESSION['plantCode'];
+ $username = $_SESSION['userName'];
 ?> 
 
 <div class="panel panel-primary">
@@ -73,17 +74,17 @@
 			if($_POST['date'])
 			{
 				$date=$_POST['date'];
-				$sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE DATE(date_time)= '".$date."'";
+				$sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE DATE(date_time)= '".$date."'";
 			}
 			if($_POST['batch'])
 			{
 				$batch=$_POST['batch'];
-	           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE batch= '".$batch."'";
+	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE batch= '".$batch."'";
 			}
 			if($_POST['lot_no'])
 			{
 				$lot_no=$_POST['lot_no'];
-	           $sql = "SELECT * FROM `$bai_rm_pj1`.`main_population_tbl` WHERE lot_no = '".$lot_no."'";
+	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE lot_no = '".$lot_no."'";
 			}
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$no_of_rows = mysqli_num_rows($sql_result);
@@ -116,7 +117,7 @@
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$id=$sql_row['id'];                 	
-					$sql121="SELECT * FROM $bai_rm_pj1.`roll_inspection_child` WHERE parent_id=$id";
+					$sql121="SELECT * FROM $wms.`roll_inspection_child` WHERE parent_id=$id";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rows=mysqli_num_rows($sql_result121);
 					
@@ -126,7 +127,7 @@
 					$batchs=explode(",",$sql_row['batch']);
 					$invoice_nos=explode(",",$sql_row['invoice_no']);
 					
-					$get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$id and status=3";
+					$get_details_points = "select sum(rec_qty) as qty from $wms.`inspection_population` where parent_id=$id and status=3";
 					$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row522=mysqli_fetch_array($details_result_points))
 					{ 					
@@ -139,7 +140,7 @@
 							{
 								$invoice_qty;
 							}
-							$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";
+							$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid in (select store_in_id from $wms.`inspection_population` where parent_id=$id)";
 							$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row_min=mysqli_fetch_array($min_value_result))
 							{
@@ -150,7 +151,7 @@
                             $min_value = min($width_s,$width_m,$width_e);
                             $inch_value=round($min_value/(2.54),2);				
 							$back_color="";		
-							$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$id)";	
+							$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id in (select store_in_id from $wms.`inspection_population` where parent_id=$id and plant_code='".$plant_code."')";	
 							$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($status_details_result2)>0)
 							{	
@@ -257,7 +258,7 @@
 					$pop_up_path1="../sfcs_app/app/inspection/controllers/digital_inspection/C_Tex_Report_Print.php";
 					
 					// second Process
-					$sql1="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
+					$sql1="SELECT * FROM $wms.`inspection_population` WHERE parent_id='$id' AND status<>0";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql1;
 					$check=mysqli_num_rows($sql_result1);
@@ -293,7 +294,7 @@
 					}
 					else
 					{
-						$sql12="SELECT * FROM $bai_rm_pj1.`inspection_population` WHERE parent_id=$id AND (status<>3 && status<>0)";
+						$sql12="SELECT * FROM $wms.`inspection_population` WHERE parent_id=$id AND (status<>3 && status<>0)";
 						$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result12)>0)
 						{					
@@ -311,7 +312,7 @@
 
 					
 					$get_status=0;
-					$sql121="SELECT min(status) as status FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id' AND status<>0";
+					$sql121="SELECT min(status) as status FROM $wms.`inspection_population` WHERE parent_id='$id' AND status<>0";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result121)>0)
 					{
@@ -334,14 +335,14 @@
 					}
 					
 					//To get color contunity report
-					$get_store_in_id= "select store_in_id FROM $bai_rm_pj1.`inspection_population` WHERE parent_id='$id'";
+					$get_store_in_id= "select store_in_id FROM $wms.`inspection_population` WHERE parent_id='$id'";
 					$sql_result1212=mysqli_query($link, $get_store_in_id) or exit("Sql Error2.111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row5212=mysqli_fetch_array($sql_result1212))
 					{
                        $store_in_id[] = $row5212['store_in_id'];
 					}
 					$store_id = implode(",",$store_in_id);
-					$get_color_report = "select * from $bai_rm_pj1.store_in where ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
+					$get_color_report = "select * from $wms.store_in where ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{

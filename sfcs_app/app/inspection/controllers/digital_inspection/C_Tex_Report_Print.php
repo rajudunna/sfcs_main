@@ -1768,7 +1768,7 @@ function printpr()
 		$parent_id=$_GET['parent_id'];
 
 		$lot = array();
-		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id='$parent_id'";
+		$get_details = "select distinct(lot_no),supplier_batch from $wms.inspection_population where parent_id='$parent_id'";
 	    //echo $get_details;
 	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -1788,7 +1788,7 @@ function printpr()
 if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 {
 
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ',') as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $bai_rm_pj1.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and right(lot_no,1)<> 'R' and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no SEPARATOR ',') as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\" from $wms.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and right(lot_no,1)<> 'R' and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorb".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1823,7 +1823,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $bai_rm_pj1.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
+$sql="select * from $pps.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1856,7 +1856,7 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 
-$get_roll_details = "select distinct(store_in_id) as roll_numbers,item_name,item_desc,item_code from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers,item_name,item_desc,item_code from $wms.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
 // echo $get_roll_details;
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
@@ -1867,7 +1867,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $item_code=$sql_rolls['item_code'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select * from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
+$sql="select * from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1899,14 +1899,14 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 //get inspected_qty
-$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
+$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $wms.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
 $inspected_qty_result=mysqli_query($link, $get_inspected_qty) or exit("Sql Errorqty=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($qty_row=mysqli_fetch_array($inspected_qty_result))
 {
    $qty_insp = $qty_row['reported_qty'];
 }
 
-$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+$sql="select COUNT(ref2)  as \"count\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errord".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2273,7 +2273,7 @@ tags will be replaced.-->
 $doc_db=array();
 $recut_doc_db=array();
 $qty=array();
-$sql="select cutno, round(sum(qty_issued),2) as material_req from $bai_rm_pj1.store_out where tran_tid=\"".$temp[0]."\" and length(cutno)>0 group by cutno";
+$sql="select cutno, round(sum(qty_issued),2) as material_req from $wms.store_out where tran_tid=\"".$temp[0]."\" and length(cutno)>0 group by cutno";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2341,7 +2341,7 @@ if($num_check>0)
 	  echo "<td class=xl12824082 colspan=6 width=98 style='border-left:none;width:130pt'>".wordwrap($temp[14],10,"<br>\n")."</td>
 	  <td class=xl9624082 colspan=14 width=98 style='border-left:none;width:130pt'>";
 				//getting rejection reasons from mdm with category filter as inspection
-	  			$reject_reason_query = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
+	  			$reject_reason_query = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and plant_code='".$plant_code."'";
 				$reject_reasons=mysqli_query($link_new, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
@@ -2446,7 +2446,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$flag-5;$j<=$flag-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2472,7 +2472,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))

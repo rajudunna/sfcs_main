@@ -1,5 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <title>CAD Saving Details</title>
@@ -393,7 +395,7 @@ if(isset($_POST["submit"]))
 
 				//echo "<td>".."</td>";
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$docketnos).") and plant_code='".$plant_code."'";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -401,7 +403,7 @@ if(isset($_POST["submit"]))
 					$issued_qty=$row["qty"];
 				}
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
+				$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$recut_docketnos).") and plant_code='".$plant_code."'";
 				////echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -409,7 +411,7 @@ if(isset($_POST["submit"]))
 					$recut_issued_qty=$row["qty"];
 				}
 
-				$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=$schedule and color like \"%".$color."%\" and product=\"FAB\"";
+				$sql="select sum(issued_qty) as qty from $wms.mrn_track where schedule=$schedule and color like \"%".$color."%\" and product=\"FAB\" and plant_code='".$plant_code."'";
 				////echo $sql;
 				$result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
