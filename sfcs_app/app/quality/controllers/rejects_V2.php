@@ -275,11 +275,11 @@ if(isset($_POST['update']))
 		{
 			if($color_new1=='1')
 			{
-			$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
+			$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			else
 			{
-				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

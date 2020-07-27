@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jque
 if(isset($_GET['gatepassid']))
 {
 	$gatepassid=$_GET['gatepassid'];
-	$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
+	$sql12="select vehicle_no from $pps.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result123))
@@ -109,7 +109,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 	{		
 		$vehicle_number=$_POST['vehicle_no'];
 		$gate_id=$_POST['gatepassno'];
-		$sql33="update $pps.gatepass_table set vehicle_no='$vehicle_number',created_user='$username',gatepass_status=2 where id='".$gate_id."' and plant_code='".$plant_code."'";
+		$sql33="update $pps.gatepass_table set vehicle_no='$vehicle_number',updated_user='$username',updated_at=NOW(),gatepass_status=2 where id='".$gate_id."' and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$sql_total_1="SELECT SUM(bundle_qty) AS qty_bundle FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code=".$plant_code."";

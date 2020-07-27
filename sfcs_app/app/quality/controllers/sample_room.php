@@ -715,7 +715,7 @@ if(isset($_POST['update']))
 	{
 		if($qty[$i]>0 and rejection_validation_m3('SAMPLE',$schedule,$color,$sizes_db[$i],$qty[$i],0,$username)=='TRUE')
 		{
-			$sql="insert into $pms.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,plant_code,created_user) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."-".$module."-".$team."\",\"".date("Y-m-d")."\",\"".$plant_code."\",\"".$username."\")";
+			$sql="insert into $pms.bai_qms_db (qms_style,qms_schedule,qms_color,qms_size,qms_qty,qms_tran_type,remarks,log_date,plant_code,created_user,updated_user) values (\"".$style."\",\"".$schedule."\",\"".$color."\",\"".$sizes_db[$i]."\",".$qty[$i].",$temp,\"".$source."-".$module."-".$team."\",\"".date("Y-m-d")."\",\"".$plant_code."\",\"".$username."\",\"".$username."\")";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		else

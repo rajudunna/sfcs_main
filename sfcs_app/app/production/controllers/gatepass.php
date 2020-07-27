@@ -81,7 +81,7 @@ function oper_display(){
 						$shift=$_POST['shift'];
 						$operation=$_POST['operation'];
 						$operation_name=$_POST['operation'];
-						$sql1="select * from $brandix_bts.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
+						$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{			
@@ -99,12 +99,12 @@ function oper_display(){
 						{
 							if($_POST['operation']=='0')
 							{
-								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."')";
+								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."')";
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							else
 							{
-								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$username."','".$plant_code."','".$username."')";
+								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$username."','".$plant_code."','".$username."','".$username."')";
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							$gate_id=mysqli_insert_id($link);
