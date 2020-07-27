@@ -254,7 +254,7 @@ $schedule_db=array();
 
 
 //To update Speed Deliveries
-$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
+$sql="select speed_schedule from $pps.speed_del_dashboard where plant_code='$plantcode'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {

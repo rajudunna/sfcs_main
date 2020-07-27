@@ -13,6 +13,8 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/trims_status_update_input.php");
 $has_permission=haspermission($url_r); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 //$username="sfcsproject1";
@@ -500,8 +502,8 @@ if(isset($_POST["submit"]))
 	//echo $sql4;
 	mysqli_query($link, $sql4);
 			
-	$sql123="INSERT INTO `$bai_pro3`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES
-	('".$schedule_code."','".$style_code."','".$input_job_no_ref[0]."','".$username."','".date("Y-m-d H:i:s")."','Trim Issue$up_status')";
+	$sql123="INSERT INTO `$pps`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`,plant_code,created_user,created_at) VALUES
+	('".$schedule_code."','".$style_code."','".$input_job_no_ref[0]."','".$username."','".date("Y-m-d H:i:s")."','Trim Issue$up_status','$plantcode','$username','".date('Y-m-d')."')";
 	mysqli_query($link, $sql123) OR die("Error=".$sql123."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script type=\"text/javascript\"> window.close(); </script>";	

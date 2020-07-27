@@ -765,7 +765,7 @@ tags will be replaced.-->
 			$ship_cartons=$sql_row['ship_cartons'];
 			
 			//Additional Validity to avoid other schedule info
-			$sql1="select * from $bai_pro3.speed_del_dashboard where speed_schedule='$ship_schedule'";
+			$sql1="select * from $pps.speed_del_dashboard where plant_code='$plantcode' and speed_schedule='$ship_schedule'";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			if(mysqli_num_rows($sql_result1)>0)

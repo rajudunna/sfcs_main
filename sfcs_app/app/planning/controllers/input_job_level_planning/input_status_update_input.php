@@ -28,7 +28,8 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 
 </script>
 <?php
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 // include("header.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
@@ -725,8 +726,8 @@ if(isset($_POST["submit"]))
 		
 				
 				// Start - Input logs for temp table -ChathurangaD			
-				$sql123="INSERT INTO $bai_pro3.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES
-				('".$order_del_no[$j]."','".$style_code."','".$input_job_no_ref[$j]."','".$username."','".date("Y-m-d H:i:s")."','line Input')";
+				$sql123="INSERT INTO $pps.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`,plant_code,created_user,created_at) VALUES
+				('".$order_del_no[$j]."','".$style_code."','".$input_job_no_ref[$j]."','".$username."','".date("Y-m-d H:i:s")."','line Input','$plantcode','$username','".date('Y-m-d')."')";
 
 				//echo $sql123."<br>";
 				mysqli_query($link, $sql123) OR die("Error=".$sql123."-".mysqli_error($GLOBALS["___mysqli_ston"]));

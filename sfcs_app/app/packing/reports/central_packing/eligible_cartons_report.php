@@ -68,6 +68,7 @@ table, th, td {
 				<select name="style" id="style" class="form-control" onchange="secondbox();" required>
 					<option value="">Please Select</option>
 					<?php
+					$plantcode=$_SESSION['plantCode'];
 						$sql="SELECT order_style_no as style FROM $bai_pro3.bai_orders_db_confirm left join $bai_pro3.pac_stat on $bai_pro3.pac_stat.style=$bai_pro3.bai_orders_db_confirm.order_style_no WHERE vpo='$vpo'and vpo<>'' GROUP BY order_style_no";
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -142,7 +143,7 @@ table, th, td {
 						while($pack_result12=mysqli_fetch_array($pack_meth_qty12))
 						{ 									
 							// Eligible Quantity MO Wise
-							$mo_sql1="SELECT * FROM $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo)."')";
+							$mo_sql1="SELECT * FROM $pps.tbl_carton_ready WHERE plant_code='$plantcode' and mo_no in ('".implode("','",$mo)."')";
 							$sql_result23=mysqli_query($link, $mo_sql1) or exit("error while fetching pack methods3");
 							while($row_result23=mysqli_fetch_array($sql_result23))
 							{
