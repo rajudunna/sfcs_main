@@ -101,7 +101,7 @@ if (empty($emp_id) || empty($emp_call_name) )
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $bai_pro3.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user,created_at)
+			$sql = "INSERT INTO $pps.tbl_fg_crt_handover_team_list (emp_id, emp_call_name,selected_user, emp_status,plant_code,created_user,created_at)
 			 VALUES('$emp_id','$emp_call_name','$selected_user','$emp_status','$plantcode','$username','".date('Y-m-d')."')";
 		
 			 
