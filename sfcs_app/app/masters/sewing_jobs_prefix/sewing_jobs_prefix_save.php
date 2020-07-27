@@ -11,9 +11,16 @@ $code=$_POST['prefix_name'];
 $department=$_POST['prefix'];
 $reason=$_POST['type_of_sewing'];
 $type=$_POST['bg_color'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
+
+$sqlnewchange="ALTER TABLE mdm.tbl_sewing_job_prefix ADD COLUMN plant_code VARCHAR(150) NULL AFTER status, ADD COLUMN created_at TIMESTAMP NULL AFTER plant_code, ADD COLUMN created_user VARCHAR(120) NULL AFTER created_at, ADD COLUMN updated_at DATETIME NULL AFTER created_user, ADD COLUMN updated_user VARCHAR(120) NULL AFTER updated_at, ADD COLUMN version_flag INT(11) NULL AFTER updated_user";  
+  
+$sql_resultnewchange=mysqli_query($link, $sqlnewchange) or exit("Sql Error2--".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
 if (empty($code) || empty($department) || empty($reason) || empty($type) ) 
@@ -38,7 +45,7 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $brandix_bts.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type' where id=$dr_id";
+		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$dr_id";
 
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
@@ -63,9 +70,9 @@ else
 	else
 	{
 
-		
 
-		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and (prefix='$department' or bg_color='$type')";
+
+		$query1="select * from $mdm.tbl_sewing_job_prefix  where plant_code='$plantcode' and prefix_name='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
@@ -90,8 +97,8 @@ else
 
 
 
-		$sql = "INSERT INTO $brandix_bts.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
-		VALUES ('$code','$department','$reason','$type')";
+		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color,plant_code,created_user,created_at)
+		VALUES ('$code','$department','$reason','$type','$plantcode','$username','".date('Y-m-d')."')";
   
 		if (mysqli_query($conn, $sql)) 
 		{
