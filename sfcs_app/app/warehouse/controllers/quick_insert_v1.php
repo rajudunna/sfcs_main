@@ -201,7 +201,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		if($qty[$i]>0)
 		{
 		
-		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username')";
+		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,updated_user) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$username')";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$last_id = mysqli_insert_id($link);
 
