@@ -11,11 +11,13 @@
     $smv=$_POST['smv'];
     $status=$_POST['status'];
     $packing_description=$_POST['packing_description'];
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
     
     if(strlen(trim($packing_method_code)) > 0 && strlen(trim($smv)) > 0 && strlen(trim($packing_description)) > 0) {
        
         if($row_id > 0){
-            $query1="select * from $brandix_bts.packing_method_master where packing_method_code='$packing_method_code'";
+            $query1="select * from $mdm.packing_method_master where packing_method_code='$packing_method_code' and plant_code='".$plant_code."'";
             // echo $query1;
             $sql_result1=mysqli_query($conn, $query1);
             $count = mysqli_num_rows($sql_result1);
@@ -34,7 +36,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "update $brandix_bts.packing_method_master set packing_method_code='$packing_method_code',packing_description='$packing_description',smv='$smv',status='$status' where id=$row_id";
+                $sql = "update $mdm.packing_method_master set packing_method_code='$packing_method_code',packing_description='$packing_description',smv='$smv',status='$status',updated_user= '".$username."',updated_at=NOW() where id=$row_id and plant_code='".$plant_code."'";
                 if (mysqli_query($conn, $sql)) {
                     echo"<script>setTimeout(function () { 
                         swal({
@@ -53,7 +55,7 @@
                 }
             }
         } else {
-            $query="select * from $brandix_bts.packing_method_master where packing_method_code='$packing_method_code'";
+            $query="select * from $mdm.packing_method_master where packing_method_code='$packing_method_code' and plant_code='".$plant_code."'";
             $sql_result=mysqli_query($conn, $query);
             if(mysqli_num_rows($sql_result)>0){
                 echo"<script>setTimeout(function () { 
@@ -69,7 +71,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "INSERT INTO $brandix_bts.packing_method_master (packing_method_code,packing_description,smv,status) VALUES ('$packing_method_code','$packing_description','$smv','$status')";
+                $sql = "INSERT INTO $mdm.packing_method_master (packing_method_code,packing_description,smv,status,plant_code,created_user,updated_user,updated_at) VALUES ('$packing_method_code','$packing_description','$smv','$status','".$plant_code."','".$username."','".$username."',NOW())";
                 if (mysqli_query($conn, $sql)) {
                     $url=getFullURL($_GET['r'],'create_packing.php','N');
                     echo"<script>setTimeout(function () { 

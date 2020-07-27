@@ -3,7 +3,8 @@ error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 include('../sewing_job_scaning/functions_scanning_ij.php');
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if (isset($_POST["barcode_info"])){
     $op_code=$_POST['op_code'];
     $action_mod=$_POST['action_mod'];
@@ -1029,7 +1030,7 @@ if(isset($_POST["trans_action"])){
                                                         $result_query_001_temp = $link->query($bulk_insert_post_temp) or exit('bulk_insert_post query error in updating');
                                                         if($gate_pass_no>0)
                                                         {
-                                                            $sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-1')";
+                                                            $sql_gate="insert into $pps.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id,plant_code,created_user,updated_user) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-1','".$plant_code."','".$username."','".$username."')";
                                                             $result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
                                                         
                                                         }
@@ -1089,7 +1090,7 @@ if(isset($_POST["trans_action"])){
                                             $bulk_insert_temp .= '("'.$b_style.'","'. $b_schedule.'","'.$b_colors[$key].'","'.$b_size_code[$key].'","'. $b_sizes[$key].'","'. $sfcs_smv.'","'.$b_tid[$key].'","'.$b_in_job_qty[$key].'","'.$b_in_job_qty[$key].'","'.$b_rep_qty[$key].'","'.$b_rej_qty[$key].'","'.$left_over_qty.'","'. $b_op_id.'","'.$b_doc_num[$key].'","'.date('Y-m-d').'","'.$b_a_cut_no[$key].'","'.$b_inp_job_ref[$key].'","'.$b_job_no.'","'.$b_shift.'","'.$b_module[$key].'","'.$b_remarks[$key].'","'.$username.'"),';
                                             if($gate_pass_no>0)
                                             {
-                                                $sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-2')";
+                                                $sql_gate="insert into $pps.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id,plant_code,created_user,updated_user) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$b_rep_qty[$key]."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-2',,'".$plant_code."','".$username."','".$username."')";
                                                 $result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
                                             
                                             }
@@ -1279,7 +1280,7 @@ if(isset($_POST["trans_action"])){
                                                             
                                                             if($gate_pass_no>0)
                                                             {
-                                                                $sql_gate="insert into $brandix_bts.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$previously_scanned."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-4')";
+                                                                $sql_gate="insert into $pps.`gatepass_track` (`gate_id`, `bundle_no`, `bundle_qty`, `style`, `schedule`, `color`, `size`,operation_id,plant_code,created_user,updated_user) values ('".$gate_pass_no."', ".$b_tid[$key].", '".$previously_scanned."', '".$b_style."','".$b_schedule."','".$b_colors[$key]."','".$b_sizes[$key]."','".$b_op_id."-4','".$plant_code."','".$username."','".$username."')";
                                                                 $result_sql_temp = $link->query($sql_gate) or exit('Gate_pass_child query error in updating');
                                                             
                                                             }

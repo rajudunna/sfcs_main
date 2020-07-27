@@ -4,6 +4,8 @@
 <?php  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 
@@ -139,10 +141,10 @@ if(isset($_POST['update']))
 		{
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
 				// echo "<br/>query1=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"".$color_new[$i]."\", tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
 				// echo "<br/>query2=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
@@ -154,10 +156,10 @@ if(isset($_POST['update']))
 		{
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=2, size=\"".$size[$i]."\", pcs=".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
 				// echo "<br/>query11=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i];
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\",  tran_type=1, size=\"".$size[$i]."\", pcs=".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username;
 				// echo "<br/>query12=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}

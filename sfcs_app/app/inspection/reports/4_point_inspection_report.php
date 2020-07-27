@@ -18,12 +18,14 @@ body { zoom:72%;}
 </style>
 <?php
 include('../../../common/config/config.php');
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $inpsect_id=$_GET['parent_id'];
-$get_details21 = "select * from $bai_rm_pj1.`inspection_population` where parent_id=".$inpsect_id."";
+$get_details21 = "select * from $wms.`inspection_population` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_rolls_data=mysqli_num_rows($details_result21);
 
-$get_inspection_population_info = "select * from $bai_rm_pj1.`roll_inspection_child` where parent_id=".$inpsect_id."";
+$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) 
 {
@@ -44,7 +46,7 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$tot_ids[]=	$row22['store_in_tid'];
 }
 
-$get_details = "select * from $bai_rm_pj1.`inspection_population` where store_in_id in (".implode(",",$tot_ids).")";
+$get_details = "select * from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."'";
 //echo $get_details;
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
@@ -75,7 +77,7 @@ while ($row1 = mysqli_fetch_array($details_result))
 
 
 
-$get_details1 = "select * from $bai_rm_pj1.`main_population_tbl` where id=$inpsect_id";
+$get_details1 = "select * from $wms.`main_population_tbl` where id=$inpsect_id and plant_code='".$plant_code."'";
 $details_result1 = mysqli_query($link, $get_details1) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row111 = mysqli_fetch_array($details_result1)) 
 {
@@ -89,7 +91,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$remarks = $row111['remarks'];
 }
  $lot_ref = implode(",",$lots_no);
- $get_details12 = "select * from $bai_rm_pj1.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".")";
+ $get_details12 = "select * from $wms.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and plant_code='".$plant_code."'";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 
@@ -105,7 +107,7 @@ while ($row1112 = mysqli_fetch_array($details_result12))
 }
 $tot_points=0;
 $cnt=0;
-$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by insp_child_id,selected_point";
+$get_inspection_population_info12 = "select insp_child_id,selected_point,SUM(points) AS tot from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by insp_child_id,selected_point";
 $info_result12 = mysqli_query($link, $get_inspection_population_info12) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($info_result12)>0)
 {
@@ -1781,7 +1783,7 @@ tags will be replaced.-->
   <td colspan="2" class="xl8919758">Width</td>
 </tr>
  <?php
-          $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $bai_rm_pj1.store_in LEFT JOIN $bai_rm_pj1.sticker_report ON $bai_rm_pj1.sticker_report.lot_no=$bai_rm_pj1.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
+          $get_shade_grp="SELECT batch_no,SUM(qty_rec) AS rec,shade_grp,COUNT(*) AS rolls,MIN(ref6) as width FROM $wms.store_in LEFT JOIN $wms.sticker_report ON $wms.sticker_report.lot_no=$wms.store_in.lot_no WHERE tid IN (".implode(",",$tot_ids).") GROUP BY batch_no,shade_grp";
 			   //echo $get_shade_grp;
 				$shade_grp_result = mysqli_query($link, $get_shade_grp) or exit("get_shade_grp Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($shade_grp_result)>0)
@@ -1924,7 +1926,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 	<td class=xl9319758 style='border-top:none;border-left:none'><?php echo $comment[$tot_ids[$i]]; ?></td>
 	<?php	
 	$count=0;$data='';
-	$get_inspection_population_info122 = "select code,points from $bai_rm_pj1.`four_points_table` where insp_child_id=".$tot_ids[$i]."";
+	$get_inspection_population_info122 = "select code,points from $wms.`four_points_table` where insp_child_id=".$tot_ids[$i]." and plant_code='".$plant_code."'";
 	$info_result122 = mysqli_query($link, $get_inspection_population_info122) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result122)>0)
 	{
@@ -2026,7 +2028,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
   
   <?php
 	$count1=0;$data1='';
-	$get_inspection_population_info1221 = "select code,description from $bai_rm_pj1.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") group by code";
+	$get_inspection_population_info1221 = "select code,description from $wms.`four_points_table` where insp_child_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."' group by code";
 	//echo $get_inspection_population_info1221."<br>";
 	$info_result1221 = mysqli_query($link, $get_inspection_population_info1221) or exit("get_details Error25" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($info_result1221)>0)
@@ -2953,7 +2955,7 @@ for($i=0;$i<sizeof($tot_ids);$i++)
 
 </html>
 <?php
-$update_query = "update $bai_rm_pj1.main_population_tbl set status=2 where id=".$inpsect_id."";
+$update_query = "update $wms.main_population_tbl set status=2,updated_user= '".$username."',updated_at=NOW() where id=".$inpsect_id." and plant_code='".$plant_code."'";
 mysqli_query($link, $update_query) or exit("Update Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 ?>
 <script>
