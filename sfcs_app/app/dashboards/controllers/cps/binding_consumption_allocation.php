@@ -366,7 +366,7 @@ if($fabric_category!='')
 		//$docno_lot=$sql_row1['doc_no'];
 		$seperated_lots='';
 		//function to get lot numbers based on component and style
-		$result_lots=getStickerData($material_item_code,$style);
+		$result_lots=getStickerData($material_item_code,$style,$plantcode);
 		$lotnos =$result_lots['lotnos'];	
 		if(sizeof($lotnos)>0)
 		{

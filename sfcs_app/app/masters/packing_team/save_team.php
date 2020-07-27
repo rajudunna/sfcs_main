@@ -13,7 +13,7 @@
         if(strlen(trim($packing_team)) > 0 && strlen(trim($team_leader)) > 0) {
        
             if($row_id > 0){
-            $query1="select * from $brandix_bts.packing_team_master where packing_team='$packing_team'";
+            $query1="select * from $mdm.packing_team_master where packing_team='$packing_team'";
             $sql_result1=mysqli_query($conn, $query1);
             $count = mysqli_num_rows($sql_result1);
             if($count == 2){
@@ -30,7 +30,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "update $brandix_bts.packing_team_master set packing_team='$packing_team',team_leader='$team_leader',status='$status' where id=$row_id";
+                $sql = "update $mdm.packing_team_master set packing_team='$packing_team',team_leader='$team_leader',status='$status' where id=$row_id";
                 if (mysqli_query($conn, $sql)) {
                     echo"<script>setTimeout(function () { 
                         swal({
@@ -49,7 +49,7 @@
                 }
             }
         } else {
-            $query="select * from $brandix_bts.packing_team_master where packing_team='$packing_team'";
+            $query="select * from $mdm.packing_team_master where packing_team='$packing_team'";
             $sql_result=mysqli_query($conn, $query);
             if(mysqli_num_rows($sql_result)>0){
                 echo"<script>setTimeout(function () { 
@@ -65,7 +65,7 @@
                     }
                     }); }, 100);</script>";
             } else {
-                $sql = "INSERT INTO $brandix_bts.packing_team_master (packing_team,team_leader,status) VALUES ('$packing_team','$team_leader','$status')";
+                $sql = "INSERT INTO $mdm.packing_team_master (packing_team,team_leader,status) VALUES ('$packing_team','$team_leader','$status')";
                 if (mysqli_query($conn, $sql)) {
                     $url=getFullURL($_GET['r'],'create_team.php','N');
                     echo"<script>setTimeout(function () { 

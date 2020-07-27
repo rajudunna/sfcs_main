@@ -30,10 +30,8 @@ function CategoryTree($list, $parent, $append, $happ)
 
 
 		$linkq2q = explode('?', $parent['link_location']);		 
-		$full_path_url = $linkq2q[0];
-		// is external link
-		$is_ext_link =  '&ext='. $parent['is_ext_link'];		
-		$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1] != '') ? '&' . $linkq2q[1] .$is_ext_link : $is_ext_link;
+		$full_path_url = $linkq2q[0];		 
+		$get_vars_data = (isset($linkq2q[1]) && $linkq2q[1] != '') ? '&' . $linkq2q[1] : '';
 		
 		//var_dump($happ);die();
 		if (in_array($parent['menu_pid'], $happ)) {
