@@ -4,10 +4,13 @@ include('../../../../common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 //getting style and scheduele and color
 $doc=$_GET['binding_id'];
-$plant_code="L01";
-$doc_id[]=$doc;
+
+	$doc_id[]=$doc;
+
 $doc_id=implode(',',$doc_id);
 $divide = 15;
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 
 	$order_tidss=array();
@@ -39,7 +42,7 @@ if($doc!=" " && $plant_code!=' '){
 	echo "Plese verify Docket No & Plant code";exit;
 }
 //to get component po_num and ratio id from
-$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='".$plant_code."'";
 $jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 $jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
 if($jm_cut_job_num>0){
@@ -2684,7 +2687,7 @@ $(document).ready(function(){
 </script>
 
 <?php
-$printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
+$printqry="select status from $pps.binding_consumption where id='$bindid' and plant_code='".$plant_code."'";
 $sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_print))
 {
@@ -2693,7 +2696,7 @@ while($sql_row=mysqli_fetch_array($sql_result_print))
 
 if($printstatus!='Close')
 {
-	$query = "UPDATE $bai_pro3.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."' where id = $bindid";
+	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id = $bindid and plant_code='".$plant_code."'";
     $update_query = mysqli_query($link,$query);
 }
 ?>
