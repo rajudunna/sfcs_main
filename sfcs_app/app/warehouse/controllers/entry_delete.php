@@ -162,7 +162,7 @@ if(isset($_POST['delete']))
 		
 		$id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 		//echo $id;
-		$sql3="update $wms.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW(),updated_user= '".$username."' where barcode_number=".$id." and plant_code='".$plant_code."'";
+		$sql3="update $wms.store_in_deleted set log_user='".$username."$".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where barcode_number=".$id." and plant_code='".$plant_code."'";
 		// echo  "<br/>".$sql3;	 
 		$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num3=mysqli_affected_rows($link);
@@ -205,6 +205,9 @@ if(isset($_POST['delete']))
 			$num6=mysqli_affected_rows($link);
 			if($num6>0)
 			{
+				//query to update upadte_user and time
+				$qry_update="UPDATE $wms.sticker_report_deleted SET updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
+				$updateresult=mysqli_query($link, $qry_update) or exit("update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no' and plant_code='".$plant_code."'";
 				$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$num8=mysqli_affected_rows($link);
@@ -364,7 +367,7 @@ if(isset($_POST['put']))
 			$sql_result2=mysqli_query($link, $sql2) or exit($sql2."<br/>Sql Error 2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$num2=mysqli_affected_rows($link);
 		
-			$sql3="update $wms.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW(),updated_user= '".$username."' where lot_no='$lot_no' and plant_code='".$plant_code."'";
+			$sql3="update $wms.store_in_deleted set log_user='".$username."&".$reason."',log_stamp =NOW(),updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
 			// echo  "<br/>".$sql3;
 		 
 			$sql_result3=mysqli_query($link, $sql3) or exit($sql3."<br/>Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -405,6 +408,9 @@ if(isset($_POST['put']))
 				
 				if($num5==$num6)
 				{
+					//query to update upadte_user and time
+					$qry_update="UPDATE $wms.sticker_report_deleted SET updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
+					$updateresult=mysqli_query($link, $qry_update) or exit("update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no' and plant_code='".$plant_code."'";
 					$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$num8=mysqli_affected_rows($link);
@@ -470,6 +476,9 @@ if(isset($_POST['put']))
 				
 					if($num5==$num6)
 					{
+						//query to update upadte_user and time
+						$qry_update="UPDATE $wms.sticker_report_deleted SET updated_user= '".$username."',updated_at=NOW() where lot_no='$lot_no' and plant_code='".$plant_code."'";
+						$updateresult=mysqli_query($link, $qry_update) or exit("update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql8="delete FROM $wms.stock_report_inventory where lot_no='$lot_no' and plant_code='".$plant_code."'";
 						$sql_result8=mysqli_query($link, $sql8) or exit($sql8."<br/>Sql Error 8".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$num8=mysqli_affected_rows($link);

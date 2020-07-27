@@ -306,7 +306,7 @@ if(isset($_POST['submit']))
 		if(strlen($item[$i])>0)
 		{
 			$count=1;
-			$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plant_code."','".$username."')";
+			$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plant_code."','".$username."','".$username."',NOW())";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			

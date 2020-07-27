@@ -16,12 +16,12 @@ if(isset($_POST['submit2']))
 	{
 		if($status[$i]==4)
 		{
-			$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."'  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+			$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			
 		}
 		else
 		{
-			$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+			$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 		}
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
@@ -64,14 +64,14 @@ if(isset($_POST['submit1']))
 
 		if($status[$i]==2 or $status[$i]==3)
 		{
-			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\",updated_user= '".$username."'  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			if($status[$i]==2)
 			{
 				$count=1;
 				
-				$sql="update $wms.manual_form set comm_status=1,updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+				$sql="update $wms.manual_form set comm_status=1,updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 				$table.="<tr><td>".$item_db[$i]."</td><td>".$reason_db[$i]."</td><td>".$qty_db[$i]."</td></tr>";

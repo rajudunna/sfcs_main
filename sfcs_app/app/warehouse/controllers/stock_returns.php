@@ -278,20 +278,20 @@ if(isset($_POST['put']))
 			//echo $qty_issued>=$qty_returned_new;
 			if($qty_issued>=$qty_returned_new)
 			{
-				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, plant_code,created_user) values (".$tid[$i].",".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','".$plant_code."','$username')";
+				$sql="insert into $wms.store_returns (tran_tid, qty_returned, date, remarks, plant_code,created_user,updated_user,updated_at) values (".$tid[$i].",".$qty_return[$i].",'".$date[$i]."','".$remarks[$i]."','".$plant_code."','$username','".$username."',NOW())";
 				//echo "<br/>".$sql."<br/>";
 				//die();
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				if($status[$i]==1)
 				{
-					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0, updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=1, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 					echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				else
 				{
-					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0, updated_user= '".$username."' where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_ret=".$qty_returned_new.", status=0, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 					//echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

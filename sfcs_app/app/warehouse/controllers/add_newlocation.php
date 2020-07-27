@@ -72,7 +72,7 @@ $username = $_SESSION['userName'];
 
 							//update qry here
 							$sno=$_POST['flag_status'];
-							$qry_updateloc="UPDATE $wms.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\",updated_user= \"$username\" WHERE sno=".$sno." and plant_code='".$plant_code."'";
+							$qry_updateloc="UPDATE $wms.location_db SET location_id=\"$location_name\",status=\"$location_status\",product=\"$product\",updated_user= \"$username\",updated_at=NOW() WHERE sno=".$sno." and plant_code='".$plant_code."'";
 							$update_locations=mysqli_query($link, $qry_updateloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// $url = getFullURL($_GET['r'],'add_newlocation.php','N');
 							// header("Location: ".$url);
@@ -94,7 +94,7 @@ $username = $_SESSION['userName'];
 					echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 				}else{
 					//insert qry here
-					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."')";
+					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user,updated_user,updated_at) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."','".$username."',NOW())";
 					$update_locations=mysqli_query($link, $qry_insertloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					//$url = getFullURL($_GET['r'],'add_newlocation.php','N');
 					//header("Location: ".$url);

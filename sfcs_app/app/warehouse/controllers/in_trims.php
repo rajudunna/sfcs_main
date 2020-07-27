@@ -103,7 +103,7 @@ echo "<br><div>
 				if(mysqli_num_rows($sql_result)>0)
 				{
 					$code=ltrim($code,"0");
-					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0, updated_user= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
+					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid=\"$code\" and plant_code='".$plant_code."'";
 					//echo "<br/>".$sql1."<br/>";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_affected_rows($link)>0)
@@ -166,7 +166,7 @@ echo "<br><div>
 				if(mysqli_num_rows($sql_result)>0)
 				{
 					$code=ltrim($code,"0");
-					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0, updated_user= '".$username."' where tid=\"$code\" and plant_code='".$plant_code."'";
+					$sql1="update $wms.store_in set ref1=\"$location\", status=0, allotment_status=0, updated_user= '".$username."',updated_at=NOW() where tid=\"$code\" and plant_code='".$plant_code."'";
 					$sql_result1=mysqli_query($link, $sql1);
 					if(mysqli_affected_rows($link)>0)
 					{
