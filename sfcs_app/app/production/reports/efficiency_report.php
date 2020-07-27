@@ -32,7 +32,19 @@ function verify(){
 	}
 }
 </script>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+<meta http-equiv="content-type" content="text/plain; charset=UTF-8"/>
+<title>Daily SAH</title>
+<!-- <script type="text/javascript" src="jquery.min.js"></script> -->
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 14">
+<link rel=File-List href="SAH%20-JUN_files/filelist.xml">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/FileSaver.js',1,'R');?>"></script>
+<style id="SAH -JUN_13441_Styles">
 
+</style>
 <div class="panel panel-primary">
 <div class="panel-heading"> Efficiency Report</div>	
 <div class="panel-body">
@@ -66,7 +78,7 @@ if(isset($_POST['submit']))
     $tdat=$_POST['tdat'];
  	$rowspan=sizeof($shifts_array);
     echo '<div class="row"><div class="col-sm-2"><input type="checkbox"  id="checkbox" name="checkbox">&nbsp <b>Hide Style Info</b></div>';
-	if($rowspan>1)
+	if($rowspan>0)
 	{
 		echo'<div class="col-sm-2"><input type="checkbox"  id="checkbox1" name="checkbox1" checked="checked">&nbsp <b>Enable Summary</b></div></div>';
 	}
@@ -123,9 +135,21 @@ if(isset($_POST['submit']))
 		$modules[]=$row["module_name"];
 	}
 	
+
+
+	$sql2="SELECT operation_code  FROM $brandix_bts.`tbl_orders_ops_ref` where category='sewing'";
+	$result2=mysqli_query($link, $sql2) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row2=mysqli_fetch_array($result2))
+	{
+		$operation_code_array[]=$row2['operation_code'];
+	
+	}
+	
+	$operation_codes = implode("','", $operation_code_array);
 	//Getting Actuals
 	$sql3="SELECT style,sfcs_smv,recevied_qty,assigned_module,shift  FROM $brandix_bts.`bundle_creation_data_temp` 
-	WHERE  date_time between '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty<>0";
+	WHERE  date_time between '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty>0 and operation_id in ('$operation_codes')";
+
 	$result3=mysqli_query($link, $sql3) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row3=mysqli_fetch_array($result3))
 	{           
@@ -134,7 +158,7 @@ if(isset($_POST['submit']))
 	}
 	
 	//Getting Styles and SMV
-	$sql6="SELECT GROUP_CONCAT(DISTINCT style) AS style, GROUP_CONCAT(DISTINCT sfcs_smv) AS sfcs_smv, COUNT(DISTINCT DATE(date_time)) AS days, assigned_module,shift FROM brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty<>0 group by assigned_module,shift";
+	$sql6="SELECT GROUP_CONCAT(DISTINCT style) AS style, GROUP_CONCAT(DISTINCT sfcs_smv) AS sfcs_smv, COUNT(DISTINCT DATE(date_time)) AS days, assigned_module,shift FROM brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty>0 and operation_id in('$operation_codes') group by assigned_module,shift";
 	$result6=mysqli_query($link, $sql6) or die("Sql Error2: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));  
 	while($row6=mysqli_fetch_array($result6))
 	{
@@ -299,7 +323,7 @@ if(isset($_POST['submit']))
 		if($rowspan>1)
 		{
 			echo"<tr >";
-			echo"<td class='summary'>".implode("+",$shifts_array)."</td>
+			echo"<td class='summary' colspan=2 style='text-align:right;'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
 			echo" <td class='style2'>-</td>
 			<td class='smv2'>-</td>
@@ -330,15 +354,16 @@ if(isset($_POST['submit']))
        </div>
 </div>
  <script type="text/javascript">
-$(document).ready(function() {   
-   $('#excel').on('click', function(e) {   
-   var blob = new Blob([document.getElementById('report').innerHTML], {   
-   type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"   
-   });
-   saveAs(blob,"efficiency-report.xls"); 
-   });
-   });
+
+	$('#excel').click(function(){
+        var blob = new Blob([document.getElementById('report').innerHTML], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+		});
+		saveAs(blob,"Efficiency_Report.xls");
+		return;
+    })
 </script>
+
 
 <script>
     $("#checkbox").click(function() {
@@ -353,7 +378,7 @@ $(document).ready(function() {
         $(".days1").hide();
      }
      else
-     {
+     {	  
         $("#test").show();
         $("#style").show();
         $("#smv").show();
@@ -362,6 +387,17 @@ $(document).ready(function() {
         $(".style1").show();
         $(".smv1").show();
         $(".days1").show();
+		if($('#checkbox1').not(':checked').length){
+		a$(".style2").hide();
+        $(".smv2").hide();
+        $(".days2").hide();
+        $(".test2").hide(); 
+		} 
+		$(".style2").show();
+        $(".smv2").show();
+        $(".days2").show();
+        $(".test2").show(); 
+		
     }
 	
 	if($("#checkbox").is(":checked") && $("#checkbox1").is(":checked")) {
@@ -388,6 +424,10 @@ $("#checkbox1").click(function() {
         $(".summary10").show();
         $(".summary11").show();
         $(".summary12").show();
+		$(".style2").show();
+        $(".smv2").show();
+        $(".days2").show();
+        $(".test2").show();
 		if($("#checkbox").is(":checked")) {
 		$(".style2").hide();
         $(".smv2").hide();
