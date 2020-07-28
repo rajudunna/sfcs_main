@@ -1447,7 +1447,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//Encoding order_tid
 	$main_tran_order_tid=order_tid_encode($tran_order_tid);
 	//Encoding color & style
-	$main_style = style_decode($style);
+	$main_style = style_encode($style);
 	$main_color = color_encode($color);
 	echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-info\" href=\"".getFullURL($_GET['r'], "order_allocation_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&check_id=$cuttable_ref&cat_id=$cat_id&total_cuttable_qty=$total_cuttable_qty&style=$main_style&schedule=$schedule&color=$main_color\">Add Ratios</a></center></td>";
 	$sql17="select * from bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid\" and recut_lay_plan='no'";
