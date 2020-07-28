@@ -44,7 +44,7 @@ if (strlen(trim($complaint_reason)) == 0 || strlen(trim($complaint_clasification
 }else{
 	if($tid>0){ 
 		//update
-		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status',updated_by= '$username',updated_at=NOW() where tid =$tid and plant_code='$plant_code'";
+		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status',updated_user= '$username',updated_at=NOW() where tid =$tid and plant_code='$plant_code'";
 		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');

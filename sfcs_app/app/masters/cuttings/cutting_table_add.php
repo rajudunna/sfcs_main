@@ -63,7 +63,7 @@ $username=$_SESSION['userName'];
                 <label class="control-label control-label-left col-sm-3" for="table_status">Employee Name:</label>
                 <div class="controls col-sm-9">
                     
-               <input id="emp_name" type="text" class="form-control k-textbox alpha "  maxlength="50" data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
+               <input id="emp_name" type="text" class="form-control k-textbox alpha "  maxlength="20" data-role="text" pattern="[A-Za-z0-9]" name="emp_name" required="required" value="<?php echo $emp_name; ?>" ><span id="errId1" class="error"></span></div>
     
                 
         </div></div><div class="col-md-4"><div class="form-group">
