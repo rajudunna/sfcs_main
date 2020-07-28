@@ -154,7 +154,7 @@ if(isset($_POST['submit']))
 	$operation_codes = implode("','", $operation_code_array);
 	//Getting Actuals
 	$sql3="SELECT style,sfcs_smv,recevied_qty,assigned_module,shift  FROM $brandix_bts.`bundle_creation_data_temp` 
-	WHERE  date_time between '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty>0 and operation_id in ('$operation_codes')";
+	WHERE  date_time between '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and operation_id in ('$operation_codes')";
 
 	$result3=mysqli_query($link, $sql3) or die("Error1 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row3=mysqli_fetch_array($result3))
@@ -164,7 +164,7 @@ if(isset($_POST['submit']))
 	}
 	
 	//Getting Styles and SMV
-	$sql6="SELECT GROUP_CONCAT(DISTINCT style) AS style, GROUP_CONCAT(DISTINCT sfcs_smv) AS sfcs_smv, COUNT(DISTINCT DATE(date_time)) AS days, assigned_module,shift FROM brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and recevied_qty>0 and operation_id in('$operation_codes') group by assigned_module,shift";
+	$sql6="SELECT GROUP_CONCAT(DISTINCT style) AS style, GROUP_CONCAT(DISTINCT sfcs_smv) AS sfcs_smv, COUNT(DISTINCT DATE(date_time)) AS days, assigned_module,shift FROM brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$fdat." 00:00:00' and '".$tdat." 23:59:59' and sfcs_smv>0 and operation_id in('$operation_codes') group by assigned_module,shift";
 	$result6=mysqli_query($link, $sql6) or die("Sql Error2: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));  
 	while($row6=mysqli_fetch_array($result6))
 	{
