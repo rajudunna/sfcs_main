@@ -1,10 +1,11 @@
 <?php
     
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    $plantcode=$_SESSION['plantCode'];
     
     
 
-    $sql = "SELECT * FROM brandix_bts.tbl_sewing_job_prefix";
+    $sql = "SELECT * FROM $mdm.tbl_sewing_job_prefix where plant_code='$plantcode'";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $norows = mysqli_num_rows($sql_result);
     $sno = 1;
