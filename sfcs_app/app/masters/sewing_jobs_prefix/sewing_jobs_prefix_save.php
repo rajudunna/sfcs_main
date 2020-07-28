@@ -18,9 +18,8 @@ $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 
-$sqlnewchange="ALTER TABLE mdm.tbl_sewing_job_prefix ADD COLUMN plant_code VARCHAR(150) NULL AFTER status, ADD COLUMN created_at TIMESTAMP NULL AFTER plant_code, ADD COLUMN created_user VARCHAR(120) NULL AFTER created_at, ADD COLUMN updated_at DATETIME NULL AFTER created_user, ADD COLUMN updated_user VARCHAR(120) NULL AFTER updated_at, ADD COLUMN version_flag INT(11) NULL AFTER updated_user";  
-  
-$sql_resultnewchange=mysqli_query($link, $sqlnewchange) or exit("Sql Error2--".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+
 
 
 if (empty($code) || empty($department) || empty($reason) || empty($type) ) 
