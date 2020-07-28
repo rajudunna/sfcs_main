@@ -16,7 +16,9 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];	
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
@@ -60,7 +62,7 @@ $id=$_GET['id'];
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Barcode</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th></tr><thead>";
 
-$sql="select * from $brandix_bts.module_bundle_track where ref_no = '$id'";
+$sql="select * from $pts.module_bundle_track where plant_code='$plantcode' and ref_no = '$id'";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $x=0;

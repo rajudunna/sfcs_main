@@ -1,16 +1,50 @@
+<!--
+Core Module: We can view and update Remarks of production.
+
+Description: We can view and update Planning, Packing Remarks of production.
+2013-12-09/DharaniD/Ticket:208365/ Add Actual Cut % in report
+2014-01-28/KiranG/Ticket:913906 / Added initilaization set value for rej_per variable
+2014-03-07/Dharanid/Ticket #222648 / Add the Actual Out% and Ext Ship%  and Modify the Act Cut% in weekly delivery report 
+2014-07-11/DharaniD/service request #331881 : Add Ravipu user in $authorized array for planning remarks and commitments. 
+2015-03-28/RameshK/CR#930/Need To Incorporate the Planning default comments in the Weekly delivery Report.
+-->
 <?php
+//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+//$username=strtolower($username_list[1]);
+//$authorized=array("kirang","ramakrishnak","edwinr","divyamohanm","sasidharch","chinnanaidud","kirang","ramakrishnak","edwinr","amulyap","sureshn","baimr1","baimr2"); //For Packing
+//$authorized2=array("bai2mr1","bainet","nalakasb","muralim","baimr1","bainet","nalakasb","baimr1","baimr2","sureshn","srikanthb","roshanm","ravipu"); // commitments
+//$authorized3=array("bai2mr2","rajithago","kiranm","rameshk","baimr1","baimr2","rajithago","srikanthb","roshanm","ravipu"); // planning remarks
+// include($_SERVER['DOCUMENT_ROOT']."server/user_acl_v1.php");
+// include($_SERVER['DOCUMENT_ROOT']."server/group_def.php");
+// $view_access=user_acl("SFCS_0047",$username,1,$group_id_sfcs); 
+// $authorized=user_acl("SFCS_0047",$username,49,$group_id_sfcs); 
+// $authorized2=user_acl("SFCS_0047",$username,50,$group_id_sfcs); 
+// $authorized3=user_acl("SFCS_0047",$username,51,$group_id_sfcs); 
+// $username="sfcsproject1";
+// $view_access=array("sfcsproject1");
+// $authorized=array("sfcsproject1");
+// $authorized2=array("sfcsproject1");
+// $authorized3=array("sfcsproject1");
+
+?>
+<?php
+$has_perm=haspermission($_GET['r']);
+$plantcode=$_SESSION['plantCode'];
 set_time_limit(9000);
 $start_date_w=time();
-$plantcode=$_SESSION['plantCode'];
+
 while((date("N",$start_date_w))!=1) {
 $start_date_w=$start_date_w-(60*60*24); // define monday
 }
 $end_date_w=$start_date_w+(60*60*24*6); // define sunday 
 
+//$start_date_w=date("Y-m-d",$start_date_w);
+//$end_date_w=date("Y-m-d",$end_date_w);
 $start_date_w=date("Y-m-d",$start_date_w);
 $end_date_w=date("Y-m-d",$end_date_w);
+// $start_date_w="2017-12-09";
+// $end_date_w="2017-12-09";
 
-$username=$_SESSION['userName'];
 ?>
 
 
@@ -22,101 +56,209 @@ $username=$_SESSION['userName'];
 	
 	margin:2px;
 }
+#tableone thead.Fixed
+{
+     position: absolute; 
+}
+
+
 
 </style>
 
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURL($_GET['r'],'common/css/TableFilter_EN/filtergrid.css',3,'R')?>"></script>
-<script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R') ?>" ></script>
-<script>
-	function dodisablenew()
-	{
-		document.getElementById('update').disabled='true';
-	}
 
+<!-- Filter -->
+<!-- <script>
+	/**
+ *  jQuery ColumnFilter Plugin
+ *  @requires jQuery v1.2.6 or greater
+ *  http://hernan.amiune.com/labs
+ *
+ *  Copyright (c)  Hernan Amiune (hernan.amiune.com)
+ *  Licensed under MIT license:
+ *  http://www.opensource.org/licenses/mit-license.php
+ * 
+ *  Version: 1.1
+ 	*/
+jQuery.noConflict();
 
-	function enableButton() 
-	{
-		if(document.getElementById('option').checked)
-		{
-			document.getElementById('update').disabled=false;
-		} 
-		else 
-		{
-			document.getElementById('update').disabled=true;
-		}
-	}
-	$(document).ready(function(){
+(function($) {
+    $.fn.columnfilter = function(options) {
 
-		$('#click_me').css({'display':'block'});
-		$('#tableone').css({'border':'1px solid black'});
-		$('td').css({'border':'1px solid black'});
-		$('th').css({'border':'1px solid black'});
-		var table3Filters = {
-			status_bar: true,
-			sort_select: true,
-			alternate_rows: false,
-			loader_text: "Filtering data...",
-			loader: true,
-			rows_counter: true,
-			display_all_text: "Display all",
-			btn_reset : true,
-		};
-		setFilterGrid("tableone",table3Filters);
-		$('#reset_tableone').addClass('btn btn-warning');
-	});
+        var defaults = {};
+
+        var options = $.extend(defaults, options);
+
+        return this.each(function(index) {
+        	
+            var $table = jQuery(this);
+            $table.find("th.filter").each(function() {
+                //create a select list for each filter column
+                var i = 0;
+                var $select = $('<select class="selectfilter" multiple></select>');
+                var $this = jQuery(this);
+                var colindex = $this.parent().children().index($this) + 1;
+                var dictionary = [];
+                $table.find("tr td:nth-child(" + colindex + ")").each(function() {
+                    var text = jQuery(this).text();
+                    //alert(text);
+                    dictionary[text] = true;
+                });
+                var colkeys = [];
+                for (i in dictionary) colkeys.push(i);
+                colkeys.sort();
+                $select.append('<option value="All" selected>All</option>');
+				var eliminate="$family associate clean combine contains each empty erase every extend filter flatten forEach getLast getRandom hexToRgb hsbToRgb include link map rgbToHex rgbToHsb some toJSON "; // To eliminate jquery error
+//var eliminate="$family associate"; // To eliminate jquery error
+                for (i=0; i<colkeys.length; i++) {
+                    if(colkeys[i] === "indexOf")continue; //weird stuff happens in ie and chrome, firefox is awesome
+					
+					if(!eliminate.contains(colkeys[i]))
+					//eliminate += colkeys[i] + " ";
+					//$("#ages").html(eliminate);
+                    $select.append('<option value="' + colkeys[i] + '">' + colkeys[i] + '</option>');
+                }
+                jQuery(this).append("<br/>");
+                jQuery(this).append($select);
+
+                //bind change function to each select filter
+                $select.change(function() {
+
+                    //create an array of the filters selected values
+                    var colIndexes = [];
+                    var selectedOptions = [];
+                    $table.find(".selectfilter").each(function() {
+                        $this = jQuery(this);
+                        var $parent = jQuery(this).parent();
+                        colIndexes.push($parent.parent().children().index($parent)+1);
+                        //selectedOptions.push($this.children(":selected").text());
+						var test="";
+						$this.children(":selected").each(function(x, selected) {
+						test += $(selected).text() + " ";
+						});
+						selectedOptions.push(test);
+						//alert(test);
+                    });
+					
+
+                    //show or hide the corresponding rows
+                    $table.find("tr").each(function(rowindex) {
+                        if (rowindex > 0) {
+                            var rowok = true;
+                            for (i = 0; i < colIndexes.length;  i++) {
+                                text = jQuery(this).find("td:nth-child(" + colIndexes[i] + ")").text()+" ";
+									
+							   // if (selectedOptions[i] != "All " && text != selectedOptions[i] && selectedOptions[i].indexOf(text)>0) rowok = false;
+								 if (selectedOptions[i] != "All " && selectedOptions[i].indexOf(text)<0) rowok = false;
+								//if (selectedOptions[i] != "All " && text != selectedOptions[i]) rowok = false;
+                            }
+                            if (rowok === true) $(this).show();
+                            else jQuery(this).hide();
+                        }
+                    });
+
+                });
+            });
+
+        });
+
+    } 
+})(jQuery);
+	</script> -->
+
+<!-- Filter -->
+
+<!-- <script>
+
+jQuery(document).ready(function()
+{
 	
-	function get_excel(){
-		var csv_value=$('#tableone').table2CSV({delivery:'value'});
-		$("#csv_weekly").val(csv_value);
-	}	
+	jQuery('#tableone').columnManager({listTargetID:'targetone', onClass: 'simpleon', offClass: 'simpleoff'});
+	jQuery("table").columnfilter();
 
-		// jQuery(function() {
-	// 	var table = jQuery("#tableone");
+});
+</script>	 -->
 
-	// 	jQuery(window).scroll(function() {
-	// 		var windowTop = jQuery(window).scrollTop();
-	// 		if (windowTop > table.offset().top) {
-	// 			jQuery("thead", table).addClass("Fixed").css("top", windowTop);
-	// 		}
-	// 		else {
-	// 			jQuery("thead", table).removeClass("Fixed");
-	// 		}
-	// 	});
-	// });
+<style>
+/* body
+{
+	font-family:calibri;
+	font-size:12px;
+} */
 
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
 
-	// $('.fltrow').remove();
-	// var tableID = 'tableone';
-	// var filename = 'weekly_delivery_report.xls';
-    // var downloadLink;
-    // var dataType = 'application/vnd.ms-excel';
-    // var tableSelect = document.getElementById(tableID);
-    // var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    // // Create download link element
-    // downloadLink = document.createElement("a");
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+}
 
-    // document.body.appendChild(downloadLink);
-    
-    // if(navigator.msSaveOrOpenBlob){
-    //     var blob = new Blob(['\ufeff', tableHTML], {
-    //         type: dataType
-    //     });
-    //     navigator.msSaveOrOpenBlob( blob, filename);
-    // }else{
-    //     // Create a link to the file
-    //     downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
-    //     // Setting the file name
-    //     downloadLink.download = filename;
-        
-    //     //triggering the function
-    //     downloadLink.click();
-    // }
-	// //location.reload();
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: #29759C;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+}
 
 
+}
+
+}
+</style>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/tablefilter.js',3,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',3,'R')?>"></script>
+<script>
+function dodisablenew()
+{
+	document.getElementById('update').disabled='true';
+}
+
+
+function enableButton() 
+{
+	if(document.getElementById('option').checked)
+	{
+		document.getElementById('update').disabled=false;
+	} 
+	else 
+	{
+		document.getElementById('update').disabled=true;
+	}
+}
 </script>
+
+<!-- <script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.min.js','R')?>"></script>
+
+<script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.columnmanager.js','R')?>"></script>
+<link rel="stylesheet" type="text/css" href="<?= getFullURL($_GET['r'],'jquery.columnmanager/clickmenu.css','R')?>" />
+<script src="<?= getFullURL($_GET['r'],'jquery.columnmanager/jquery.clickmenu.pack.js','R')?>"></script> -->
+<!-- <script>
+jQuery(document).ready(function()
+{
+	
+	jQuery('#tableone').columnManager({listTargetID:'targetone', onClass: 'simpleon', offClass: 'simpleoff'});
+	jQuery("table").columnfilter();
+
+});
+</script> -->
+
+
 
 <div class="panel panel-primary">
 <div class="panel-heading">Weekly Delivery Report</div>
@@ -143,15 +285,15 @@ $pending=$_POST['pending'];
 
 <form method="post" name="input" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
 
+<!-- Section: <input type="text" name="section" size=12 value="">  -->
 <div class="row">
 <div class='col-md-3'>
 <label>Buyer Division: </label><select name="division" class="select2_single form-control">
 <option value='All' <?php if($division=="All"){ echo "selected"; } ?> >All</option>
 <?php 
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes plant_code='$plantcode' GROUP BY BUYER_CODE ORDER BY buyer_code";
+$sqly='SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code';
 // echo $sqly."<br>";
-
-mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
 {
@@ -264,9 +406,38 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$query="where ex_factory_date_new between \"$start_date_w\" and  \"$end_date_w\" ".$order_div_ref." order by left(style,1),schedule_no+0";
 	}
 	
-	echo '<div class="table-responsive" style="max-height:600px">';
-	//echo '<div id="targetone" name="targetone" class="target col-sm-12 toggleview">toggle columns:</div>'
-	
+	echo '<div class="table-responsive">';
+	//echo '<div id="targetone" name="targetone" class="target col-sm-12 toggleview">toggle columns:</div>';
+	echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
+			<p style="float:right">
+				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
+				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
+			</p>';
+	echo '</form>';
+
+	echo '<table id="tableone" name="table_one" cellspacing="0" class="table table-bordered"><thead>';
+
+	echo '<tr>
+		<th>S. No</th>	<th class="filter">Buyer Division</th>	<th class="filter">MPO</th>	<th class="filter">CPO</th>	<th>Customer Order No</th>	<th>Z-Feature</th><th class="filter">Style No.</th>	<th class="filter">Schedule No.</th>	<th>Colour</th><th>Actual Cut %</th><th>Ext Ship %</th>	<th>Order Total</th><th>Actual Total</th><th>Act Out %</th><th class="filter">Current Status</th><th>Rejection %</th><th>M3 Ship Qty</th><th>Total</th><th>Size</th><th>Quantity</th>';
+		if(!isset($_POST['custom']))
+		{
+			//echo '<th>XS</th>	<th>S</th>	<th>M</th>	<th>L</th>	<th>XL</th>	<th>XXL</th>	<th>XXXL</th>	<th>S06</th><th>S08</th>	<th>S10</th>	<th>S12</th>	<th>S14</th>	<th>S16</th>	<th>S18</th>	<th>S20</th>	<th>S22</th>	<th>S24</th>	<th>S26</th>	<th>S28</th><th>S30</th>';
+		}
+
+
+	echo '<th class="filter">Ex Factory</th><th class="filter">Rev. Ex-Factory</th><th class="filter">Mode</th>
+		  <th class="filter">Rev. Mode</th><th class="filter">Packing Method</th><th>Plan End Date</th>	
+		  <th class="filter">Exe. Sections</th><th>Embellishment</th>';
+	if(!isset($_POST['custom']))
+	{
+		echo '<th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>	
+			  <th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th><th>Plan</th><th>Actual</th>';
+	}
+	echo '	<th>Plan Module</th><th>Actual Module</th><th>Planning Remarks</th><th>Production Remarks</th>
+		 	<th>Commitments</th><th>Remarks</th>
+		</tr>';
+	echo '</thead><tbody>';
+
 	//TEMP Tables
 
 	$sql="Truncate $bai_pro4.week_delivery_plan_ref_temp";
@@ -281,99 +452,30 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from $bai_pro4.week_delivery_plan_ref $query";
-	// echo $sql."<br>";
+	$sql="insert into $bai_pro4.week_delivery_plan_ref_temp select * from bai_pro4.week_delivery_plan_ref $query";
+	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from $bai_pro4.week_delivery_plan where ref_id in (select ref_id from $bai_pro4.week_delivery_plan_ref_temp $query)";
-	// echo $sql."<br>";
+	$sql="insert into $bai_pro4.week_delivery_plan_temp select * from week_delivery_plan where ref_id in (select ref_id from bai_pro4.week_delivery_plan_ref_temp $query)";
+	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from $bai_pro4.shipment_plan_ref where ship_tid in (select shipment_plan_id from $bai_pro4.week_delivery_plan_temp)";
+	$sql="insert into $bai_pro4.shipment_plan_ref_view select * from shipment_plan_ref where ship_tid in (select shipment_plan_id from week_delivery_plan_temp)";
 	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	$table_ref3="shipment_plan_ref_view";
 	$table_ref="week_delivery_plan_ref_temp";
 	$table_ref2="week_delivery_plan_temp";
+
+
 	//TEMP Tables
+
+
 	$x=1;
-	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from $bai_pro4.$table_ref $query) order by ref_id+0";
-	// echo $sql."<br>";
+	$sql="select * from $bai_pro4.$table_ref2 where ref_id in (select ref_id from bai_pro4.$table_ref $query) order by ref_id+0";
+	 //echo $sql."<br>";
 	// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result) > 0)
-	{
-		$excel_link = getFullURLLevel($_GET['r'],'export_excel_weekly_delivery_plan.php',0,'R');
-		echo '<form action="'.$excel_link.'" method="POST">
-				<input type="hidden" name="csv_weekly" id="csv_weekly">
-				<input type="submit" value="Export to Excel" id="click_me" onclick="get_excel()" class="btn btn-primary btn-sm" >
-		</form>';
-		
-		echo '<form method="post" name="test" action='.getFullURL($_GET['r'],'week_delivery_plan_edit_process.php','N').'>
-			
-			<p style="float:right">
-				<input type="checkbox" name="option"  id="option" height= "21px" onclick="javascript:enableButton();">Enable
-				<input type="submit" name="update" id="update" class="btn btn-success" disabled value="Update">
-			</p>';
-		echo '</form>';
-		echo '<table id="tableone" name="tableone" cellspacing="0" class="table table-bordered"><thead>';
-		echo '
-				<tr class="danger">
-				<th>S. No</th>
-				<th class=" filter">Buyer Division</th>
-				<th class=" filter">MPO</th>	
-				<th class=" filter">CPO</th>	
-				<th>Customer Order No</th>	
-				<th>Z-Feature</th>
-				<th class="filter">Ex Factory</th>
-				<th class="filter">Rev. Ex-Factory</th>
-				<th class="filter" >Style No.</th>	
-				<th class="filter" >Schedule No.</th>
-
-				<th>Colour</th>
-				<th>Order Total</th>
-				<th>Ext Ship %</th>
-				<th>Size</th>
-				<th>Quantity</th>
-				<th>Total</th>
-				<th>Actual Cut %</th>
-				<th>Actual Total</th>
-				<th>Act Out %</th>
-				<th>Rejection %</th>
-
-				<th>Embellishment</th>
-				<th class="filter">Packing Method</th>
-				<th>M3 Ship Qty</th>
-				<th class="filter">Current Status</th>
-				<th>Plan End Date</th>
-				<th>Mode</th>
-				<th class="filter" >Rev. Mode</th>
-				<th class="filter">Exe. Sections</th>';
-		if(!isset($_POST['custom']))
-		{
-			echo   '<th>Plan</th>
-					<th>Actual</th>
-					<th>Plan</th>
-					<th>Actual</th>
-					<th>Plan</th>
-					<th>Actual</th>	
-					<th>Plan</th>
-					<th>Actual</th>
-					<th>Plan</th>
-					<th>Actual</th>
-					<th>Plan</th>
-					<th>Actual</th>';
-		}
-
-		echo '<th>Plan Module</th>
-				<th>Actual Module</th>
-				<th>Planning Remarks</th>
-				<th>Production Remarks</th>
-				<th>Commitments</th>
-				<th>Remarks</th>';
-	
-		echo '</tr>';
-		echo '</thead><tbody>';
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$edit_ref=$sql_row['ref_id'];
@@ -563,7 +665,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$order_total=0;
 
 		$sql1="select * from $bai_pro4.$table_ref3 where ship_tid=$shipment_plan_id";
-		// echo "<br>2=".$sql1."<br>";
+		//echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -666,7 +768,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$sqlza="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 		}
 		// echo "<br>4=".$sqlza."<br>";
-		mysqli_query($link, $sqlza) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// mysqli_query($link, $sqlza) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_resultza=mysqli_query($link, $sqlza) or exit("Sql Error61".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowza=mysqli_fetch_array($sql_resultza))
 		{			
@@ -679,14 +781,106 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$o_xxxl=$sql_rowza['order_s_xxxl'];
 			$act_cut_val=$sql_rowza['act_cut'];
 			$act_out_val=$sql_rowza['output'];
-			foreach($sizes_array as $key => $value)
-			{
-				if($sql_rowza['order_s_'.$value.''] > 0)
-				{
-					$size_value[$value]=$sql_rowza['order_s_'.$value.''];
-					$title_size_value[$value]=$sql_rowza['title_size_'.$value.''];
-				}
-			}	
+			$title_size_s01=$sql_rowza['title_size_s01'];
+			$title_size_s02=$sql_rowza['title_size_s02'];
+			$title_size_s03=$sql_rowza['title_size_s03'];
+			$title_size_s04=$sql_rowza['title_size_s04'];
+			$title_size_s05=$sql_rowza['title_size_s05'];
+			$title_size_s06=$sql_rowza['title_size_s06'];
+			$title_size_s07=$sql_rowza['title_size_s07'];
+			$title_size_s08=$sql_rowza['title_size_s08'];
+			$title_size_s09=$sql_rowza['title_size_s09'];
+			$title_size_s10=$sql_rowza['title_size_s10'];
+			$title_size_s11=$sql_rowza['title_size_s11'];
+			$title_size_s12=$sql_rowza['title_size_s12'];
+			$title_size_s13=$sql_rowza['title_size_s13'];
+			$title_size_s14=$sql_rowza['title_size_s14'];
+			$title_size_s15=$sql_rowza['title_size_s15'];
+			$title_size_s16=$sql_rowza['title_size_s16'];
+			$title_size_s17=$sql_rowza['title_size_s17'];
+			$title_size_s18=$sql_rowza['title_size_s18'];
+			$title_size_s19=$sql_rowza['title_size_s19'];
+			$title_size_s20=$sql_rowza['title_size_s20'];
+			$title_size_s21=$sql_rowza['title_size_s21'];
+			$title_size_s22=$sql_rowza['title_size_s22'];
+			$title_size_s23=$sql_rowza['title_size_s23'];
+			$title_size_s24=$sql_rowza['title_size_s24'];
+			$title_size_s25=$sql_rowza['title_size_s25'];
+			$title_size_s26=$sql_rowza['title_size_s26'];
+			$title_size_s27=$sql_rowza['title_size_s27'];
+			$title_size_s28=$sql_rowza['title_size_s28'];
+			$title_size_s29=$sql_rowza['title_size_s29'];
+			$title_size_s30=$sql_rowza['title_size_s30'];
+			$title_size_s31=$sql_rowza['title_size_s31'];
+			$title_size_s32=$sql_rowza['title_size_s32'];
+			$title_size_s33=$sql_rowza['title_size_s33'];
+			$title_size_s34=$sql_rowza['title_size_s34'];
+			$title_size_s35=$sql_rowza['title_size_s35'];
+			$title_size_s36=$sql_rowza['title_size_s36'];
+			$title_size_s37=$sql_rowza['title_size_s37'];
+			$title_size_s38=$sql_rowza['title_size_s38'];
+			$title_size_s39=$sql_rowza['title_size_s39'];
+			$title_size_s40=$sql_rowza['title_size_s40'];
+			$title_size_s41=$sql_rowza['title_size_s41'];
+			$title_size_s42=$sql_rowza['title_size_s42'];
+			$title_size_s43=$sql_rowza['title_size_s43'];
+			$title_size_s44=$sql_rowza['title_size_s44'];
+			$title_size_s45=$sql_rowza['title_size_s45'];
+			$title_size_s46=$sql_rowza['title_size_s46'];
+			$title_size_s47=$sql_rowza['title_size_s47'];
+			$title_size_s48=$sql_rowza['title_size_s48'];
+			$title_size_s49=$sql_rowza['title_size_s49'];
+			$title_size_s50=$sql_rowza['title_size_s50'];
+			$title_size_s01=$sql_rowza['title_size_s01'];
+			$title_size_s02=$sql_rowza['title_size_s02'];
+			$title_size_s03=$sql_rowza['title_size_s03'];
+			$title_size_s04=$sql_rowza['title_size_s04'];
+			$title_size_s05=$sql_rowza['title_size_s05'];
+			$title_size_s06=$sql_rowza['title_size_s06'];
+			$title_size_s07=$sql_rowza['title_size_s07'];
+			$title_size_s08=$sql_rowza['title_size_s08'];
+			$title_size_s09=$sql_rowza['title_size_s09'];
+			$title_size_s10=$sql_rowza['title_size_s10'];
+			$title_size_s11=$sql_rowza['title_size_s11'];
+			$title_size_s12=$sql_rowza['title_size_s12'];
+			$title_size_s13=$sql_rowza['title_size_s13'];
+			$title_size_s14=$sql_rowza['title_size_s14'];
+			$title_size_s15=$sql_rowza['title_size_s15'];
+			$title_size_s16=$sql_rowza['title_size_s16'];
+			$title_size_s17=$sql_rowza['title_size_s17'];
+			$title_size_s18=$sql_rowza['title_size_s18'];
+			$title_size_s19=$sql_rowza['title_size_s19'];
+			$title_size_s20=$sql_rowza['title_size_s20'];
+			$title_size_s21=$sql_rowza['title_size_s21'];
+			$title_size_s22=$sql_rowza['title_size_s22'];
+			$title_size_s23=$sql_rowza['title_size_s23'];
+			$title_size_s24=$sql_rowza['title_size_s24'];
+			$title_size_s25=$sql_rowza['title_size_s25'];
+			$title_size_s26=$sql_rowza['title_size_s26'];
+			$title_size_s27=$sql_rowza['title_size_s27'];
+			$title_size_s28=$sql_rowza['title_size_s28'];
+			$title_size_s29=$sql_rowza['title_size_s29'];
+			$title_size_s30=$sql_rowza['title_size_s30'];
+			$title_size_s31=$sql_rowza['title_size_s31'];
+			$title_size_s32=$sql_rowza['title_size_s32'];
+			$title_size_s33=$sql_rowza['title_size_s33'];
+			$title_size_s34=$sql_rowza['title_size_s34'];
+			$title_size_s35=$sql_rowza['title_size_s35'];
+			$title_size_s36=$sql_rowza['title_size_s36'];
+			$title_size_s37=$sql_rowza['title_size_s37'];
+			$title_size_s38=$sql_rowza['title_size_s38'];
+			$title_size_s39=$sql_rowza['title_size_s39'];
+			$title_size_s40=$sql_rowza['title_size_s40'];
+			$title_size_s41=$sql_rowza['title_size_s41'];
+			$title_size_s42=$sql_rowza['title_size_s42'];
+			$title_size_s43=$sql_rowza['title_size_s43'];
+			$title_size_s44=$sql_rowza['title_size_s44'];
+			$title_size_s45=$sql_rowza['title_size_s45'];
+			$title_size_s46=$sql_rowza['title_size_s46'];
+			$title_size_s47=$sql_rowza['title_size_s47'];
+			$title_size_s48=$sql_rowza['title_size_s48'];
+			$title_size_s49=$sql_rowza['title_size_s49'];
+			$title_size_s50=$sql_rowza['title_size_s50'];			
 			
 			$total_ord=$sql_rowza['old_order_s_s01']+$sql_rowza['old_order_s_s02']+$sql_rowza['old_order_s_s03']+$sql_rowza['old_order_s_s04']+$sql_rowza['old_order_s_s05']+$sql_rowza['old_order_s_s06']+$sql_rowza['old_order_s_s07']+$sql_rowza['old_order_s_s08']+$sql_rowza['old_order_s_s09']+$sql_rowza['old_order_s_s10']+$sql_rowza['old_order_s_s11']+$sql_rowza['old_order_s_s12']+$sql_rowza['old_order_s_s13']+$sql_rowza['old_order_s_s14']+$sql_rowza['old_order_s_s15']+$sql_rowza['old_order_s_s16']+$sql_rowza['old_order_s_s17']+$sql_rowza['old_order_s_s18']+$sql_rowza['old_order_s_s19']+$sql_rowza['old_order_s_s20']+$sql_rowza['old_order_s_s21']+$sql_rowza['old_order_s_s22']+$sql_rowza['old_order_s_s23']+$sql_rowza['old_order_s_s24']+$sql_rowza['old_order_s_s25']+$sql_rowza['old_order_s_s26']+$sql_rowza['old_order_s_s27']+$sql_rowza['old_order_s_s28']+$sql_rowza['old_order_s_s29']+$sql_rowza['old_order_s_s30']+$sql_rowza['old_order_s_s31']+$sql_rowza['old_order_s_s32']+$sql_rowza['old_order_s_s33']+$sql_rowza['old_order_s_s34']+$sql_rowza['old_order_s_s35']+$sql_rowza['old_order_s_s36']+$sql_rowza['old_order_s_s37']+$sql_rowza['old_order_s_s38']+$sql_rowza['old_order_s_s39']+$sql_rowza['old_order_s_s40']+$sql_rowza['old_order_s_s41']+$sql_rowza['old_order_s_s42']+$sql_rowza['old_order_s_s43']+$sql_rowza['old_order_s_s44']+$sql_rowza['old_order_s_s45']+$sql_rowza['old_order_s_s46']+$sql_rowza['old_order_s_s47']+$sql_rowza['old_order_s_s48']+$sql_rowza['old_order_s_s49']+$sql_rowza['old_order_s_s50'];
 
@@ -739,7 +933,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		{
 			$embl_tag="";
 			$sql1="select order_embl_a,order_embl_e from $bai_pro3.bai_orders_db where order_del_no=\"$schedule_no\"";
-			mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -825,7 +1019,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		//DISPATCH
 
-			$sql1="select ship_qty from $pps.style_status_summ where plant_code='$plantcode' and sch_no=\"$schedule_no\"";
+			$sql1="select ship_qty from $bai_pro2.style_status_summ where sch_no=\"$schedule_no\"";
 			//echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -873,33 +1067,33 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 			$highlight=" bgcolor=\"".$color_code_ref1."\" ";
 
-		// if(in_array(strtolower($username),$authorized))
-		// {
+		if(in_array($authorizeLevel_1,$has_perm))
+		{
 			
 			//$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
 			$edit_rem="<td><input type=\"text\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"B\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		// }
-		// else
-		// {
-		// 	//$edit_rem="<td $highlight>".$remarks[1]."</td>";
-		// 	$edit_rem="<td $highlight>".$remarks[1]."</td>";
-		// }
+		}
+		else
+		{
+			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
+			$edit_rem="<td $highlight>".$remarks[1]."</td>";
+		}
 
 
-		// if(!(in_array(strtolower($username),$authorized2)))
-		// {
-		// 	$edit_rem2="<td $highlight>".$remarks[2]."</td>";
-		// }
-		// else
-		// {
+		if(!(in_array($authorizeLevel_2,$has_perm)))
+		{
+			$edit_rem2="<td $highlight>".$remarks[2]."</td>";
+		}
+		else
+		{
 			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
 			//$edit_rem2="<td class=\"editable\" rel=\"C$edit_ref\">".$remarks[2]."</td>";
 			$edit_rem2="<td><input type=\"text\" name=\"C[]\" value=\"".$remarks[2]."\">";
 			$edit_rem2.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"C\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		// }
+		}
 
-		// if(!(in_array(strtolower($username),$authorized3)))
-		// {
+		if(!(in_array($authorizeLevel_3,$has_perm)))
+		{
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$reason_ref2="";
 			$sql_res2="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
@@ -910,9 +1104,9 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				$reason_ref2=$sql_row_res2["reason"];		
 			}
 			$edit_rem3="".$reason_ref2."";
-		// }
-		// else
-		// {
+		}
+		else
+		{
 			//$edit_rem3="<input type=\"text\" name=\"A[]\" value=\"".$remarks[0]."\">";
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$edit_rem3="<select name=\"A[]\">";
@@ -936,79 +1130,27 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$edit_rem3.="</select>";
 			$edit_rem3.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"code[]\" value=\"A\">";
 			$rev_ex_factory_date="<input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\">";
-		// }
+		}
 		//Restricted Editing for Packing Team
 
 			if(!isset($_POST['custom']))
 			{
-				 for($i=0;$i<sizeof($sizes_array);$i++){
-					$size_val= $size_value[$sizes_array[$i]];
+				 for($i=0;$i<13;$i++){
+					$size_val= ${'size_'.$sizes_array[$i]};
 					//echo '<br>size_'.$sizes_array[$i]."<br>";
-					$title_size=$title_size_value[$sizes_array[$i]];
+					$title_size=${'title_size_'.$sizes_array[$i]};
 					if($title_size==''){
 						$title_size=$sizes_array[$i];
 					}
-					// echo "<br>".$size_val."<br>";
+					//echo "<br>".$size_val."<br>";
 					if($size_val>0){
-						$row_count++;
-						echo "
-							<tr>
-							<td $highlight> $x  </td>	
-							<td $highlight>$buyer_division</td>
-							<td $highlight>$mpo</td>	
-							<td $highlight>$cpo</td>	
-							<td $highlight>$order_no</td>	
-							<td $highlight>$z_feature</td>
-							<td $highlight>$ex_factory_date</td>
-							<td $highlight>$rev_ex_factory_date</td>
-							<td $highlight>$style</td>	
-							<td $highlight>$schedule_no</td>
-							
-							<td $highlight>$color</td>
-							<td $highlight>$order_total</td>
-							<td $highlight>$ext_cut_per</td>
-							<td $highlight>".strtoupper($title_size)."</td>
-							<td>$size_val</td> 
-							<td $highlight>$actu_total</td>
-							<td $highlight>$act_cut_per</td>
-							<td $highlight>$plan_total</td>
-							<td $highlight>$act_out_per</td>
-							<td $highlight>$rej_per</td>
-							
-							<td $highlight>$embl_tag</td>
-							<td $highlight>$packing_method</td>
-							<td $highlight>$ship_qty</td>	
-							<td $highlight>$status</td>
-							<td $highlight>$plan_comp_date</td>
-							<td $highlight>$mode</td>
-							<td $highlight>$rev_mode</td>
-							<td $highlight>".implode(",",$z)."</td>
-							";
-
-						if(!isset($_POST['custom'])){
-
-							echo "
-								<td $highlight>$plan_sec1</td>	
-								<td $highlight>$actu_sec1</td>	
-								<td $highlight>$plan_sec2</td>	
-								<td $highlight>$actu_sec2</td>	
-								<td $highlight>$plan_sec3</td>	
-								<td $highlight>$actu_sec3</td>	
-								<td $highlight>$plan_sec4</td>	
-								<td $highlight>$actu_sec4</td>	
-								<td $highlight>$plan_sec5</td>	
-								<td $highlight>$actu_sec5</td>	
-								<td $highlight>$plan_sec6</td>	
-								<td $highlight>$actu_sec6</td>
-								";
-						}	
-						echo "
-						    <td $highlight>$plan_mod</td>	
-							<td $highlight>$act_mod</td>
-							<td $highlight>$edit_rem3</td>
-							<td>$edit_rem$edit_rem2</td>
-							</tr>";
-
+						echo "<tr>
+							 <td $highlight> $x  </td>	<td $highlight>$buyer_division</td>	<td $highlight>$mpo</td>	<td $highlight>$cpo</td>	<td $highlight>$order_no</td>	<td $highlight>$z_feature</td><td $highlight>$style</td>	<td $highlight>$schedule_no</td>	<td $highlight>$color</td><td$highlight>$act_cut_per</td><td$highlight>$ext_cut_per</td>	<td $highlight>$order_total</td><td $highlight>$plan_total</td><td $highlight>$act_out_per</td><td $highlight>$status</td><td$highlight>$rej_per</td><td$highlight>$ship_qty</td><td $highlight>$actu_total</td>";
+						echo "<td $highlight>".strtoupper($title_size)."</td><td>".$size_val." </td>"; 
+						echo "<td $highlight>$ex_factory_date</td><td $highlight>$rev_ex_factory_date</td>	<td $highlight>$mode</td><td $highlight>$rev_mode</td>	<td $highlight>$packing_method</td>	<td $highlight>$plan_comp_date</td><td $highlight>".implode(",",$executed_sec)."</td><td $highlight>$embl_tag</td>";
+						echo "<td $highlight>$plan_sec1</td>	<td $highlight>$actu_sec1</td>	<td $highlight>$plan_sec2</td>	<td $highlight>$actu_sec2</td>	<td $highlight>$plan_sec3</td>	<td $highlight>$actu_sec3</td>	<td $highlight>$plan_sec4</td>	<td $highlight>$actu_sec4</td>	<td $highlight>$plan_sec5</td>	<td $highlight>$actu_sec5</td>	<td $highlight>$plan_sec6</td>	<td $highlight>$actu_sec6</td>"; 
+						echo "<td $highlight>".$plan_mod."</td>	<td $highlight>".$act_mod."</td><td $highlight>".$edit_rem3."</td><td>".$edit_rem.$edit_rem2."</td>
+							 </tr>";
 						$x+=1;
 					}
 					
@@ -1016,34 +1158,49 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			}
 	}
 	//echo $i;
-	if($row_count==0){
-		echo "<font size='11px' color='#ff0000'>NO Data Found</font>";
-		echo "<script>
-			$(document).ready(function(){
-				$('#click_me').css({'display':'none');
-				$('#update').css({'display':'none');
-			});
-		</script>";
-	}
 	echo '</tbody>';
 	echo '</table>';
 	echo '</div>';
-	}
-	else
-	{
-		echo "<div class='alert alert-info'>There are no deliveries in this week.</div>";
-	}
+	
 }
 
 ?>
 
+<script language="javascript" type="text/javascript">
 
+	var table3Filters = {
+        status_bar: true,
+	    sort_select: true,
+		alternate_rows: false,
+		loader_text: "Filtering data...",
+		loader: true,
+		rows_counter: true,
+		display_all_text: "Display all",
+		btn_reset : true,
+	};
+	setFilterGrid("tableone",table3Filters);
+
+	jQuery(function() {
+		var table = jQuery("#tableone");
+
+		jQuery(window).scroll(function() {
+			var windowTop = jQuery(window).scrollTop();
+			if (windowTop > table.offset().top) {
+				jQuery("thead", table).addClass("Fixed").css("top", windowTop);
+			}
+			else {
+				jQuery("thead", table).removeClass("Fixed");
+			}
+		});
+	});
+
+</script>
 
 
 </div>
 </div>
-</div>
-</div>
 
 
 
+
+	

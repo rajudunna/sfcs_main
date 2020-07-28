@@ -1,5 +1,5 @@
 <?php
-
+$plantcode=$_SESSION['plantCode'];
 if(isset($_GET['sec_x']))
 {
 	$sections_db=array($_GET['sec_x']);
@@ -12,7 +12,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 	$id_new="green";
 	$count_rls=0;
 	
-	$sqlx="select round((sum(rework_qty)/sum(act_out))*100,2) as reworkpnt from $bai_pro.grand_rep where date='".date("Y-m-d")."' and section=$section_id";
+	$sqlx="select round((sum(rework_qty)/sum(act_out))*100,2) as reworkpnt from $pts.grand_rep where plant_code='$plantcode' and date='".date("Y-m-d")."' and section=$section_id";
 	mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))

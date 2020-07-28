@@ -14,6 +14,8 @@ sleep(120);
 <?php
 // include("header.php");
 // Turn off all error reporting
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -24,18 +26,18 @@ $date=date("Y-m-d");
 // $date="2018-06-02";
 
 
-$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah FROM $bai_pro.bai_log_buf WHERE bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date between \"$date\" and \"$date\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$sql_new="update $bai_pro.grand_rep set act_sth=".$sql_row['sah']." where tid='".$sql_row['tid']."'";
+	$sql_new="update $pts.grand_rep set act_sth=".$sql_row['sah'].",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='".$sql_row['tid']."'";
 	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
 
 
-$sql="select sum(act_out) as \"act_out\" from $bai_pro.grand_rep where date =\"$date\" ";
+$sql="select sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and date =\"$date\" ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 		{

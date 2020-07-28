@@ -183,11 +183,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$size_value."</td><td>$qty</td>";
 		if($color=='0')
 		{
-			$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and color=\"".$sql_row['order_col_des']."\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
+			$sql2="select sum(bac_qty) as sizes,bac_no as mods from $pts.bai_log_buf where plant_code='$plantcode' and delivery=\"$schedule\" and color=\"".$sql_row['order_col_des']."\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
 		}
 		else
 		{
-		$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and color=\"$color\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
+		$sql2="select sum(bac_qty) as sizes,bac_no as mods from $pts.bai_log_buf where plant_code='$plantcode' and delivery=\"$schedule\" and color=\"$color\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
 		}
 		$mod_exp1='';
 		$mod_exp2='';

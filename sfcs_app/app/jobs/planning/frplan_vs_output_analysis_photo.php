@@ -2,6 +2,8 @@
 <?php
 $start_timestamp = microtime(true);
 error_reporting(0);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 //To extract date between two given dates
 function getDaysInBetween($start, $end) {
  // Vars
@@ -170,7 +172,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -263,7 +265,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE BETWEEN '$sdate' AND '$edate' AND module=$mod_chk GROUP BY date";
 			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))

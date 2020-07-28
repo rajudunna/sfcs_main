@@ -1,6 +1,8 @@
 <?php
 $start_timestamp = microtime(true);
 error_reporting(0);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $text="		
 <html><head><style type='text/css'>
 body
@@ -73,7 +75,7 @@ $section=0;
 // Table print
 
 $module_db=array();
-$sql_new1="select distinct module from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by module*1";
+$sql_new1="select distinct module from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" order by module*1";
 //echo $sql_new1;
 $sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
@@ -92,7 +94,7 @@ $text.= "<th>Day(+/-)</th>";
 $text.= "</tr>";
 
 $j=0;
-$sql222_new="select distinct date from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by date";
+$sql222_new="select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" order by date";
  // echo $sql222_new;
 
 $sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -118,7 +120,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$check=0;
 		}
 		
-		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $bai_pro.grand_rep where date=\"$date\" and module=$mod group by module";
+		$sql2="select styles, coalesce(sum(plan_out),0) as \"plan_out\",  coalesce(sum(act_out),0) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and date=\"$date\" and module=$mod group by module";
 		//echo $sql2."<BR>";
 		
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -1,38 +1,16 @@
 <?php
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	$has_perm=haspermission($_GET['r']);
-	$plantcode=$_SESSION['plantCode'];
-/*
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
-$sql="select * from menu_index where list_id=110";
-$result=mysql_query($sql,$link11) or mysql_error("Error=".mysql_error());
-while($row=mysql_fetch_array($result))
-{
-	$users=$row["auth_members"];
-}
-
-$auth_users=explode(",",$users);
-if(in_array($username,$auth_users))
-{
-	
-}
-else
-{
-	echo "<h2>You are not authorised to use this page.</h2>";
-    exit();		
-}
-*/
-//$auth_users=array("kirang","kirang","prasanthim","baiworkstudy","jyothsnas","pavanir","arunag","arunkarthickt");
-
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+$has_permission = haspermission($_GET['r']);
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <script>
 
 function box(x)
 {
-	var php_url = '<?= getFullURLLevel($_GET['r'],'workstudy/controllers/pop_view3.php','2','R');?>';
+	var php_url = '<?= getFullURL($_GET['r'],'pop_view3.php','R');?>';
 	var url= php_url+"?dep_id="+document.getElementById("dep_" + x).value+"&row_id="+x;
 	newwindow=window.open(url,'Reasons','width=700, height=500, toolbar=0, menubar=0, location=0, status=0, scrollbars=1, resizable=1, left=0, top=0');
 	if (window.focus) {newwindow.focus()}
@@ -53,8 +31,7 @@ function GetValueFromChild(tmp)
 {
 	//var result=tmp.split("$"); 
   //  document.getElementById("reason_code_" + result[0]).value = result[1];
-	
-	var result=tmp.split("$"); 
+	var result=tmp.split("$");
 	//var x=result[1];
 	//var l_time=document.getElementById("l_" + x).value;
     document.getElementById("reason_code_" + result[0]).value = result[1];
@@ -185,7 +162,6 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 }
 </script>
 <!-- <script type="text/javascript" src="jquery.min.js"></script> -->
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">DownTime Update</div>
 <div class="panel-body">
@@ -199,15 +175,16 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 
 
 
-$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date";
+
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$max_allowed_date=$sql_row['bac_date'];
 }
 
-if(in_array($authorized, $has_perm))
+// if(in_array($username,$auth_users))
+if(in_array($authorized,$has_permission))
 {
 	echo '<input type="text" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" >'; 
 }
@@ -254,23 +231,33 @@ for($i=0;$i<=10;$i++)
 	<td>
 
 	<select name=\"sec[$i]\" id=\"sec_$i\" name=\"sec_$i\" class=\"form-control\">";
-	$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-	//echo $sql;
-	$result7=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//$sql="SELECT sec_id FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+	
+	$sql="select * from $bai_pro3.sections_master order by sec_id";
+	$result7=mysqli_query($link, $sql) or exit("Sql Erro1r".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
-		echo "<option value=\"".$sql_row["sec_id"]."\">".$sql_row["sec_id"]."</option>";
+		echo "<option value=\"".$sql_row["sec_name"]."\">".$sql_row["section_display_name"]."</option>";
 	}
 	/*for($s=1;$s<=8;$s++)
 	{
 		echo "<option value=\"".$s."\">".$s."</option>";
 	}*/
+	
+
 	echo "</select>
 	</td>	
-	<td align='center'>
-	<select name=\"shift[$i]\" class=\"form-control\">
-	<option value=\"A\">A</option>
-	<option value=\"B\">B</option>
+	<td align='center'>	<select name=\"shift[$i]\" class=\"form-control\">";
+	
+			$shifts = (isset($_GET["shift"]))?$_GET["shift"]:'';
+              foreach($shifts_array as $shift){
+                if($shifts == $shift){
+                  echo "<option value=".$shift." selected>".$shift."</option>";
+                }else{
+                  echo "<option value=".$shift.">".$shift."</option>";
+                }
+              }
+              echo "
 	</select>
 	</td>
 
@@ -278,7 +265,7 @@ for($i=0;$i<=10;$i++)
 
 	$sql="SELECT GROUP_CONCAT(sec_mods) as mods FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
 	//echo $sql;
-	$result7=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result7=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($result7))
 	{
 		$sql_mod=$sql_row["mods"];
@@ -301,7 +288,7 @@ for($i=0;$i<=10;$i++)
 	<td><select name=\"sty[$i]\" id=\"style_$i\" class=\"form-control\">";
 
 	$sql22="select distinct style_id from $bai_pro2.movex_styles order by style_id";
-	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
 		echo '<option value="'.$sql_row22['style_id'].'">'.$sql_row22['style_id'].'</option>';
@@ -316,9 +303,9 @@ for($i=0;$i<=10;$i++)
 
 	//echo "<option value=\"0\">0</option>";
 	//$sql22="select distinct schedule_no from shipment_plan_summ where exfact_date between \"".date("Y-m-d",strtotime("-2 month", strtotime($date)))."\" and \"".date("Y-m-d",strtotime("+2 month", strtotime($date)))."\" order by schedule_no+0";
-	//$sql22="select distinct delivery as schedule_no from $pts.bai_log where delivery > 25000 order by delivery+0";
+	//$sql22="select distinct delivery as schedule_no from bai_pro.bai_log where delivery > 25000 order by delivery+0";
 	$sql22="select distinct order_del_no as schedule_no from $bai_pro3.bai_orders_db where order_del_no > 25000 order by order_del_no+0";
-	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))
 	{
 		echo "<option value=".$sql_row22['schedule_no'].">".$sql_row22['schedule_no']."</option>";
@@ -423,7 +410,7 @@ for($i=0;$i<=10;$i++)
 	<td><div><p><select name=\"dep[$i]\" id=\"dep_$i\" class=\"form-control\">";
 
 	$sqll1="select * from $bai_pro.down_deps";
-	$sql_resultl1=mysqli_query($link, $sqll1) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_resultl1=mysqli_query($link, $sqll1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowl1=mysqli_fetch_array($sql_resultl1))
 	{
 		$dep_id=$sql_rowl1['dep_id'];
@@ -433,9 +420,8 @@ for($i=0;$i<=10;$i++)
 	echo "</select></p></div></td>";
 	// Ticket #742482 / In Down time update panel get the data from down_reasons table against the departwise  
 	// echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" id=\"reason_code_$i\" value=\"0\" readonly size=3 class=\"form-control\"><br><button onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</button></div></td>"; 
-	echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" id=\"reason_code_$i\" value=\"0\" readonly size=3><span onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</sapn></td>"; 
-
-
+	echo "<td><input type=\"text\" class=\"form-control\" name=\"reason_code[$i]\" readonly id=\"reason_code_$i\" size=3><span onclick=\"box($i)\" class='btn btn-info btn-xs'>Select Reason</sapn></td>"; 
+		
 	echo '<td><input type="text" class="form-control" name="reason['.$i.']" value="" size="20" class="form-control"></td>';
 
 	echo "<td><select name=\"source[$i]\" class=\"form-control\">
@@ -449,7 +435,7 @@ for($i=0;$i<=10;$i++)
 ?>
 </table></div>
 <br>
-<input type="submit" name="submit" value="Submit" onclick="document.getElementById('submit').style.display='none';document.getElementById('msg').style.display='';" class="btn btn-primary pull-right"/>
+<input type="submit" name="submit" value="Submit" onclick = 'return check_reasons(<?= $i ?>)' class="btn btn-primary pull-right"/>
 
 <span id="msg" style="display:none;">Please Wait..</span>
 </form>
@@ -489,15 +475,58 @@ if(isset($_POST["submit"]))
 	for($i=0;$i<sizeof($module);$i++)
 	{
 		if($lost_mins[$i]>0)
-		{		
-		$sql_buyer="SELECT order_div FROM $bai_pro3.bai_orders_db where order_style_no=".$style[$i];
-		$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
+		{
+			if($schedule[$i]!=0)
 			{
-				$buyer=$sql_row_buyer["order_div"];
+				//2016-10-06 / CR 512 / kirang / Changed the logic to capture the Buyer Name
+				$order_style_no=0;
+				$sql3="select distinct order_style_no as order_style_no from $bai_pro3.bai_orders_db where order_del_no='".$schedule[$i]."'";
+					//echo "<br/>".$sql3."<br/>";
+				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row3=mysqli_fetch_array($sql_result3))
+				{
+					$order_style_no=$sql_row3["order_style_no"];
+				}
+			
+			
+				//2016-10-06 / CR 512 / kirang / Changed the logic to capture the Buyer Name
+				//$sql1="SELECT distinct(buyer) FROM pro_style WHERE style=\"".$style[$i]."\"";	
+				
+				$sql1="SELECT distinct(buyer_id) as buyer FROM $bai_pro2.movex_styles WHERE movex_style=\"".$order_style_no."\"";	
+				//echo "<br/>".$sql1."<br/>";			
+				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{
+					$buyer[$i]=$sql_row1["buyer"];
+				}
+			
+			}
+			else if($style[$i]!='')
+			{
+				$sql_buyer="SELECT distinct(buyer_id) as buyer  FROM $bai_pro2.movex_styles where style_id='".$style[$i]."' and buyer_id!=''";
+				
+				//echo "<br/>".$sql_buyer;
+				
+				$sql_result=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row=mysqli_fetch_array($sql_result))
+				{
+					$buyer[$i]=$sql_row["buyer"];
+				}
+				
+				
+			}
+			else
+			{
+				$sql_buyer="SELECT buyer FROM $bai_pro3.buyer_style a join $bai_pro3.plan_modules b on a.buyer_name=b.buyer_div where module_id=".$module[$i];
+				$sql_result_buyer=mysqli_query($link, $sql_buyer) or exit($sql_buyer."Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
+				{
+					$buyer[$i]=$sql_row_buyer["buyer"];
+				}
 			}
 			
-			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by) values (".$module[$i].", \"".$date."\", \"".$department[$i]."\",\"".$reason[$i]."\", \"".$style[$i]."\", ".$lost_mins[$i].", \"".$shift[$i]."\", \"".$section[$i]."\", \"".$buyer."\", \"".$schedule[$i]."\", \"".$source[$i]."\", \"".$capture."\", \"".$lastup."\",\"".$nop[$i]."\",\"".$start_time[$i]."\",\"".$end_time[$i]."\",".$reason_code[$i].",'$username')";
+			
+			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by) values (".$module[$i].", \"".$date."\", \"".$department[$i]."\",\"".$reason[$i]."\", \"".$style[$i]."\", ".$lost_mins[$i].", \"".$shift[$i]."\", \"".$section[$i]."\", \"".$buyer[$i]."\", \"".$schedule[$i]."\", \"".$source[$i]."\", \"".$capture."\", \"".$lastup."\",\"".$nop[$i]."\",\"".$start_time[$i]."\",\"".$end_time[$i]."\",".$reason_code[$i].",'$username')";
 			//echo "<br/><br/>".$sql2."<br/>";
 			$result = mysqli_query($link, $sql2) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if ($result=='1') {
@@ -522,3 +551,43 @@ if(isset($_POST["submit"]))
 
 </div>
 </div>
+
+<script>
+function check_reasons(count){
+		for(var i = 0;i<Number(count);i++){
+		var val = document.getElementById('reason_code_'+i).value;
+		// var nop = document.getElementById('nop_'+i).value;
+		var stime = document.getElementById("s_" + i).value;
+		var etime = document.getElementById("r_" + i).value;
+		var totlostmin = document.getElementById("l_" + i).value;
+		// alert(totlostmin);
+		// console.log(val);
+		// if(nop == 0 || nop == "")
+		// {
+			// swal('nop should be greater than 0','','warning');
+			// return false;
+		// }
+		// if(stime == 0 || etime == 0)
+		// {
+			// swal('Please select start time and end time','','warning');
+			// return false;
+		// }
+		// if(val == 0 )
+		// {
+			// swal('Please select atleast one Reason','','warning');
+			// return false;
+		// }
+
+		if(totlostmin > 0 && val == '')
+		{
+			swal('Please select atleast one Reason','','warning');
+			return false;
+		}
+		
+	}
+	
+	return true;
+	
+}
+
+</script>

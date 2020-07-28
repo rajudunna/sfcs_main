@@ -1522,7 +1522,7 @@ if(isset($_POST["trans_action"])){
                                         while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
                                                 $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                                             }
-                                        $qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
+                                        $qry_nop="select ((present+jumper)-absent) as nop FROM $pts.pro_attendance where plant_code='$plantcode' and module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$shift."'";
                                         $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
                                         {
@@ -1551,9 +1551,9 @@ if(isset($_POST["trans_action"])){
                                         }
                                         if($b_op_id == $output_ops_code_out)
                                         {
-                                            $insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-                                            bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-                                            ) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+                                            $insert_bailog="insert into $pts.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+                                            bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+                                            ) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."','$plantcode','$username','".date('Y-m-d')."')";
                                             if($b_rep_qty[$i] > 0)
                                             {
                                                 $qry_status=mysqli_query($link,$insert_bailog) or exit("BAI Log Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1561,9 +1561,9 @@ if(isset($_POST["trans_action"])){
                                             if($qry_status)
                                             {
                                                 /*Insert same data into bai_pro.bai_log_buf table*/
-                                                $insert_bailogbuf="insert into $bai_pro.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-                                                bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-                                                ) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+                                                $insert_bailogbuf="insert into $pts.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+                                                bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+                                                ) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."','$plantcode','$username','".date('Y-m-d')."')";
                                                 if($b_rep_qty[$i] > 0)
                                                 {
                                                     $qrybuf_status=mysqli_query($link,$insert_bailogbuf) or exit("BAI Log Buf Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1791,7 +1791,7 @@ if(isset($_POST["trans_action"])){
                             
                             if($rework_qty>0)
                             {
-                                $sql2="insert into $bai_pro.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser) values (\"$assigned_module\", \"$section\", \"$rework_qty\",NOW(),NOW(),\"$shift\", \"$style\", \"$remarks\",NOW(),\"$color\", \"$buyer_division\", \"$schedule\",USER())";
+                                $sql2="insert into $pts.bai_quality_log (bac_no, bac_sec, bac_qty, bac_lastup, bac_date, bac_shift, bac_style, bac_remarks,  log_time, color, buyer, delivery, loguser,plant_code,created_user,created_at) values (\"$assigned_module\", \"$section\", \"$rework_qty\",NOW(),NOW(),\"$shift\", \"$style\", \"$remarks\",NOW(),\"$color\", \"$buyer_division\", \"$schedule\",USER(),'$plantcode','$username','".date('Y-m-d')."')";
                                 //echo $sql2;exit;
                                 $sql_resultx = mysqli_query($link, $sql2) or exit("Sql Error2$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if($sql_resultx){
@@ -2611,7 +2611,7 @@ if(isset($_POST["trans_action"])){
                                                         {
                                                             $buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
                                                         }
-                                                        $qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
+                                                        $qry_nop="select((present+jumper)-absent) as nop FROM $pts.pro_attendance WHERE plant_code='$plantcode' and module=".$b_module[$key]." and date='".$bac_dat."' and shift='".$b_shift."'";
                                                         $qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                         while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
                                                         {
@@ -2644,9 +2644,9 @@ if(isset($_POST["trans_action"])){
                                                         }
                                                         if($b_op_id == $output_ops_code_out)
                                                         {
-                                                            $insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-                                                            bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-                                                            ) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+                                                            $insert_bailog="insert into $pts.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+                                                            bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+                                                            ) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."','$plantcode','$username','".date('Y-m-d')."')";
                                                             //echo "Bai log : ".$insert_bailog."</br>";
                                                             if($reversalval[$key] > 0)
                                                             {
@@ -2656,9 +2656,9 @@ if(isset($_POST["trans_action"])){
                                                             {
                                                                 //echo "Inserted into bai_log table successfully<br>";
                                                                 /*Insert same data into bai_pro.bai_log_buf table*/
-                                                                $insert_bailog_buf="insert into $bai_pro.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-                                                                bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-                                                                ) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."')";
+                                                                $insert_bailog_buf="insert into $pts.bai_log_buf (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+                                                                bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+                                                                ) values ('".$b_module[$key]."','".$sec_head."','".$b_rep_qty_ins."',DATE_FORMAT(NOW(), '%Y-%m-%d %H'),'".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors."',USER(),'".$b_doc_num."','".$sfcs_smv."','".$b_rep_qty_ins."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref."','$plantcode','$username','".date('Y-m-d')."')";
                                                                 //echo "Bai log Buff: ".$insert_bailog."</br>";
                                                                 if($reversalval[$key] > 0)
                                                                 {
@@ -2990,7 +2990,7 @@ if(isset($_POST["trans_action"])){
             }
         }
         
-        $qry_curr_rework = "SELECT COALESCE(sum(bac_qty), 0)  AS bac_qty FROM $bai_pro.bai_quality_log WHERE bac_lastup BETWEEN ('$current_time1') AND ('$current_time2')";
+        $qry_curr_rework = "SELECT COALESCE(sum(bac_qty), 0)  AS bac_qty FROM $pts.bai_quality_log WHERE plant_code='$plantcode' and bac_lastup BETWEEN ('$current_time1') AND ('$current_time2')";
         //echo "Curre rework".$qry_curr_rework."</br>";
         $result_qry_curr_rework = mysqli_query($link, $qry_curr_rework) or exit("Sql Error : sql".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($result_qry_curr_rework)>0)
@@ -3015,7 +3015,7 @@ if(isset($_POST["trans_action"])){
         }
 
         
-        $qry_prev_rework = "SELECT COALESCE(sum(bac_qty), 0)  AS bac_qty FROM $bai_pro.bai_quality_log WHERE bac_lastup BETWEEN ('$previuos_time1') AND ('$previuos_time2')";
+        $qry_prev_rework = "SELECT COALESCE(sum(bac_qty), 0)  AS bac_qty FROM $pts.bai_quality_log WHERE plant_code='$plantcode' and bac_lastup BETWEEN ('$previuos_time1') AND ('$previuos_time2')";
         //echo "Prev Rework".$qry_prev_rework."</br>";                        
         $result_qry_prev_rework = mysqli_query($link, $qry_prev_rework) or exit("Sql Error : sql".mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($result_qry_prev_rework)>0)

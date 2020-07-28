@@ -1,135 +1,237 @@
-<html>
-<head>
-
 <?php  
-$start_timestamp = microtime(true);
-$include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
+
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));; 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
+$view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
+$aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
+$permission = haspermission($_GET['r']);
 $plantcode=$_SESSION['plantCode'];
-error_reporting(0);
-$cache_date="previous_week";
-$cachefile = $cache_date."html";
-
-/* if (file_exists($cachefile)) {
-
-	include($cachefile);
-
-	exit;
-
-} */
-ob_start();
 ?>
 
-<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
-
-<script type="text/javascript" src="/sfcs_app/common/js/table2CSV.js" ></script>
-
-<script>
-	function downloadFile(fileName, urlData) {
-	    var aLink = document.createElement('a');
-	    aLink.download = fileName;
-	    aLink.href = urlData;
-	    var event = new MouseEvent('click');
-	    aLink.dispatchEvent(event);
-	   }
-	function getCSVData() {
-		var data = $('#example').table2CSV({delivery: 'value',filename: 'previous_week.csv'});
-        downloadFile('previous_week.csv', 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data));
-
-	}
-</script>
 <style>
-body
-{
-	font-family:calibri;
-	font-size:12px;
-}
-
-table tr
-{
-	border: 1px solid black;
-	text-align: right;
-	white-space:nowrap; 
-}
-
-table td
-{
-	border: 1px solid black;
-	text-align: right;
-white-space:nowrap; 
-}
-
-table td.lef
-{
-	border: 1px solid black;
-	text-align: left;
-white-space:nowrap; 
-}
-table th
-{
-	border: 1px solid black;
-	text-align: center;
-    	background-color: BLUE;
-	color: WHITE;
-white-space:nowrap; 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table{
-	white-space:nowrap; 
-	border-collapse:collapse;
-	font-size:12px;
-}
-
-
-}
-
+td,th{
+	color : #000;
 }
 </style>
 
 
-</head>
-<body>
-<div class="panel panel-primary">
-<div class="panel-heading"></diV>
-<div class="panel-body">
+
+<script>
+
+function firstbox()
+{
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value
+}
+
+function secondbox()
+{
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value
+}
+
+function thirdbox()
+{
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
+}
+</script>
+
+<div class='panel panel-primary'>
+	<div class='panel-heading'>
+		<b>M3 Offline Dispatch Reporting</b>
+	</div>
+	<div class='panel-body'>
+		<form name="input" method="post" action="?r=<?php echo $_GET['r']; ?>">
+			<?php
+			$username_list=explode('\\',$_SERVER['REMOTE_USER']);
+			$username=strtolower($username_list[1]);
+
+			$author_id_db=array("kirang");
+			if(in_array($authorized,$permission))
+			{
+				//echo '| <strong><a href="cut_to_ship3.php">Current Week Process</a></strong> | <strong> <a href="cut_to_ship33.php">Previous Week Process</a> </strong>';
+			}
+			?>
+			<?php
+			if(isset($_POST['filter2']))
+			{
+				$style=$_POST['style'];
+				$schedule=$_POST['schedule']; 
+				$color=$_POST['color'];
+			}
+			else
+			{
+				$style=$_GET['style'];
+				$schedule=$_GET['schedule']; 
+				$color=$_GET['color'];
+			}
+			?>
+
+			<?php
+			echo "<div class='col-sm-3 form-group'>";
+			echo "<label for='style'>Select Style </label>
+				  <select class='form-control' name=\"style\" onchange=\"firstbox();\" >";
+
+			//$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log)";
+			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+			//{
+				$sql="select distinct order_style_no from $bai_pro3.bai_orders_db_confirm order by order_style_no";	
+			//}
+			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result);
+
+			echo "<option value=\"NIL\" selected>NIL</option>";
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+
+			if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+			}
+
+			}
+
+			echo "</select>
+			</div>";
+			?>
+
+			<?php
+		    echo "<div class='col-sm-3 form-group'>";
+			echo "<label for='schedule'>Select Schedule</label>
+				  <select class='form-control' name=\"schedule\" onchange=\"secondbox();\" >";
+
+			//$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
+			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+			//{
+				$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" order by order_del_no";	
+				//echo $sql;
+			//}
+			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result);
+
+			echo "<option value=\"NIL\" selected>NIL</option>";
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+
+			if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+			}
+
+			}
+
+
+			echo "</select>
+			</div>";
+			?>
+
+			<?php
+			echo "<div class='col-sm-3 form-group'>";
+			echo "<label for='color'>Select Color</label>
+				  <select class='form-control' name=\"color\" onchange=\"thirdbox();\" >";
+
+			//$sql="select distinct order_style_no from bai_orders_db_confirm where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
+			//{
+				$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
+			//}
+			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_num_check=mysqli_num_rows($sql_result);
+
+			echo "<option value=\"NIL\" selected>NIL</option>";
+				
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+
+			if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
+			{
+				echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
+			}
+
+			}
+
+
+			echo "</select>
+			</div>";
+
+			echo '<span id="msg" style="display:none; color:blue;">Please Wait...</span>';
+			echo "<div class='col-sm-3'><br>
+				  	<input class='btn btn-success' disabled id='show' type=\"submit\" value=\"Show\" name=\"filter2\" onclick=\"document.getElementById('filter2').style.display='none'; document.getElementById('msg').style.display='';\">
+				  ";
+			$report_url = getFullURL($_GET['r'],'index.php', 'N');	  
+			echo " 	<a class='btn btn-warning' href='$report_url'> Report</a>
+				  </div>";
+			?>
+		</form>
+		<br>
+		<br>
+
+
 <?php
 
-// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-// $username=strtolower($username_list[1]);
+if(isset($_POST['submit_new'])){
 
 
+$style=$_POST['style'];
+$schedule=$_POST['schedule'];
+$color=$_POST['color'];
+$size=$_POST['size'];
+$order_qty=$_POST['order_qty'];
+$cut_qty=$_POST['cut_qty'];
+$input_qty=$_POST['input_qty'];
+$out_qty=$_POST['out_qty'];
+$fg_qty=$_POST['fg_qty'];
+$fca_qty=$_POST['fca_qty'];
+$ship_qty=$_POST['ship_qty'];
+$exist_report_qty=$_POST['exist_report_qty'];
+$report_qty=$_POST['report_qty'];
 
-// if(in_array($username,$author_id_db))
-
-
-//if(isset($_POST['filter']) or isset($_POST['filter2']))
-{
-	
-	$start_date_w=time();
-	
-	while((date("N",$start_date_w))!=1) {
-	$start_date_w=$start_date_w-(60*60*24); // define monday
+//print_r($size);
+for($i=0;$i<sizeof($size);$i++){
+	if($report_qty[$i]>0){
+		$sql="insert into $bai_pro3.m3_offline_dispatch(style,schedule,color,size,order_qty,cut_qty,input_qty,out_qty,fg_qty,fca_qty,ship_qty,report_qty,exist_report_qty,log_user) values ('".$style[$i]."','".$schedule[$i]."','".$color[$i]."','".$size[$i]."',".$order_qty[$i].",".$cut_qty[$i].",".$input_qty[$i].",".$out_qty[$i].",".$fg_qty[$i].",".$fca_qty[$i].",".$ship_qty[$i].",".$report_qty[$i].",".$exist_report_qty[$i].",'$username')";
+		//echo $sql;
+		$status = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));	
+	}	
+	if($status){
+		echo "<script>sweetAlert('Updated Successfully','','success')</script>";
+	}else{
+		echo "<script>sweetAlert('Unable to update','','error');</script>";
 	}
-	$end_date_w=$start_date_w+(60*60*24*6); // define sunday 
+}
 
-	$start_date_w=date("Y-m-d",$start_date_w);
-	$end_date_w=date("Y-m-d",$end_date_w);
 	
-	$sdate=date("Y-m-d",strtotime("-7 days",strtotime($start_date_w)));
-	$edate=date("Y-m-d",strtotime("-7 days",strtotime($end_date_w)));
-	
-	//$sdate="2012-11-26";
-	//$edate="2012-12-01";
-	
-	echo "<h2><b>LU:".date("Y-m-d H:i:s")."</b></h2>";
-	echo '<form action="export_excel1.php" method ="post" > 
-<input type="hidden" name="csv_text" id="csv_text">
-<input type="button" class="btn btn-xs btn-success" value="Export to Excel" onclick="getCSVData()">
-</form>';
-	echo "<div  class=\"table-responsive\"><table id=\"example\" table align=\"left\" class=\"table table-bordered\">";
-	echo "<tr>
+}
+
+?>
+
+
+<?php
+
+
+if(isset($_POST['filter']) or isset($_POST['filter2']))
+{
+	$row_count = 0;
+	$sdate=$_POST['sdate'];
+	$edate=$_POST['edate'];
+	echo "<form name='test' method='post' action='?r=".$_GET['r']."'>";
+	echo "<div class='table-responsive' style='overflow: auto;max-height : 600px'>";
+	echo "<table class='table table-bordered'>";
+	echo "<tr class='danger'>
 	<th>Division</th>
 	<th>FG Status</th>
 	<th>Ex-Factory</th>
@@ -138,6 +240,7 @@ table{
 	<th>Color</th>
 	<th>Section</th>
 	<th>Size</th>
+	<th>M3 Order <br/>Quantity</th>
 	<th>Total Order <br/>Quantity</th>
 	<th>Total Cut <br/>Quantity</th>
 	<th>Total Input <br/>Quantity</th>
@@ -146,33 +249,42 @@ table{
 	<th>Total FCA <br/>Quantity</th>";
 	//echo "<th>Total MCA <br/>Quantity</th>";
 	
-	echo "<th>Total Shipped <br/>Quantity</th>
-	<th>Rejected <br/>Quantity</th>
+	echo "<th>Total Shipped <br/>Quantity</th>";
+	echo "<th>M3 Confirmed Sofar</th>";
+	echo "<th>Report Qty</th>";
+	/*echo "<th>Rejected <br/>Quantity</th>
 	<th>Sample <br/>Quantity</th>
 	<th>Good Panel <br/>Quantity</th>
 	<th>Out of Ratio <br/>Quantity</th>
 	<th>Total Missing<br/>Panels</th>
 	<th class=\"total\">Sewing <br/>Missing</th>
 	<th class=\"total\">Panel Room <br/>Missing</th>
-	<th class=\"total\">Cutting <br/>Missing</th>
-</tr>";
+	<th class=\"total\">Cutting <br/>Missing</th>"; */
+echo "</tr>";
 	
-	// if(isset($_POST['filter2']))
-	// {
-	// 	$sch_db=$_POST['schedule'];
-	// 	$sql="select style,schedule_no,color,ssc_code_new,priority,buyer_division,ex_factory_date_new,sections from bai_pro4.bai_cut_to_ship_ref where schedule_no=\"$sch_db\" order by ex_factory_date_new";
-	// }
-	// else
-	// {
+	if(isset($_POST['filter2']))
+	{
+		$sch_db=$_POST['schedule'];
+		$sql="select style,schedule_no,color,ssc_code_new,priority,buyer_division,ex_factory_date_new,sections from $bai_pro4.bai_cut_to_ship_ref where schedule_no=\"$sch_db\" and trim(color)=\"$color\" order by ex_factory_date_new limit 1";
+		//echo $sql;
+	}
+	else
+	{
 		$sql="select style,schedule_no,color,ssc_code_new,priority,buyer_division,ex_factory_date_new,sections from $bai_pro4.bai_cut_to_ship_ref where ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new";
-	// }
+	}
 	//echo $sql;	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+	if(mysqli_num_rows($sql_result)==0){
+		$sql="select order_style_no as style,order_del_no as schedule_no,order_col_des as color,order_tid as ssc_code_new,priority,order_div as buyer_division from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$sch_db\" and trim(order_col_des)=\"$color\" limit 1";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 			$status=$sql_row['priority'];
 			$ssc_code_new=$sql_row['ssc_code_new'];
 			$order_qtys=array();
+			$old_order_qtys=array();
 			$out_qtys=array();
 			
 			$sizes_db=array("XS","S","M","L","XL","XXL","XXXL","s01","s02","s03","s04","s05","s06","s07","s08","s09","s10","s11","s12","s13","s14","s15","s16","s17","s18","s19","s20","s21","s22","s23","s24","s25","s26","s27","s28","s29","s30","s31","s32","s33","s34","s35","s36","s37","s38","s39","s40","s41","s42","s43","s44","s45","s46","s47","s48","s49","s50");
@@ -238,10 +350,67 @@ table{
 				$order_qtys[]=$sql_row1['order_s_s48'];
 				$order_qtys[]=$sql_row1['order_s_s49'];
 				$order_qtys[]=$sql_row1['order_s_s50'];
+				$old_order_qtys[]=$sql_row1['old_order_s_xs'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s'];
+				$old_order_qtys[]=$sql_row1['old_order_s_m'];
+				$old_order_qtys[]=$sql_row1['old_order_s_l'];
+				$old_order_qtys[]=$sql_row1['old_order_s_xl'];
+				$old_order_qtys[]=$sql_row1['old_order_s_xxl'];
+				$old_order_qtys[]=$sql_row1['old_order_s_xxxl'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s01'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s02'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s03'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s04'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s05'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s06'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s07'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s08'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s09'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s10'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s11'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s12'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s13'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s14'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s15'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s16'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s17'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s18'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s19'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s20'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s21'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s22'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s23'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s24'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s25'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s26'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s27'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s28'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s29'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s30'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s31'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s32'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s33'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s34'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s35'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s36'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s37'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s38'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s39'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s40'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s41'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s42'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s43'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s44'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s45'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s46'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s47'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s48'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s49'];
+				$old_order_qtys[]=$sql_row1['old_order_s_s50'];
+
 				$order_tid=$sql_row1['order_tid'];
 				$schedule=$sql_row1['order_del_no'];
 				$color=$sql_row1['order_col_des'];
-				$style=$sql_row1['order_style_no'];
 			}
 			
 			
@@ -308,7 +477,6 @@ table{
 				$out_qtys[]=$sql_row2['size_s48'];
 				$out_qtys[]=$sql_row2['size_s49'];
 				$out_qtys[]=$sql_row2['size_s50'];
-	
 			}
 			
 
@@ -440,7 +608,7 @@ table{
 			}
 			
 			$act_cut_new_db=array();
-			$sql1="select coalesce(sum(a_xs*a_plies),0) as \"a_xs\", coalesce(sum(a_s*a_plies),0) as \"a_s\", coalesce(sum(a_m*a_plies),0) as \"a_m\", coalesce(sum(a_l*a_plies),0) as \"a_l\", coalesce(sum(a_xl*a_plies),0) as \"a_xl\", coalesce(sum(a_xxl*a_plies),0) as \"a_xxl\", coalesce(sum(a_xxxl*a_plies),0) as \"a_xxxl\", coalesce(sum(a_s01*a_plies),0) as \"a_s01\", coalesce(sum(a_s02*a_plies),0) as \"a_s02\", coalesce(sum(a_s03*a_plies),0) as \"a_s03\", coalesce(sum(a_s04*a_plies),0) as \"a_s04\", coalesce(sum(a_s05*a_plies),0) as \"a_s05\", coalesce(sum(a_s06*a_plies),0) as \"a_s06\", coalesce(sum(a_s07*a_plies),0) as \"a_s07\", coalesce(sum(a_s08*a_plies),0) as \"a_s08\", coalesce(sum(a_s09*a_plies),0) as \"a_s09\", coalesce(sum(a_s10*a_plies),0) as \"a_s10\", coalesce(sum(a_s11*a_plies),0) as \"a_s11\", coalesce(sum(a_s12*a_plies),0) as \"a_s12\", coalesce(sum(a_s13*a_plies),0) as \"a_s13\", coalesce(sum(a_s14*a_plies),0) as \"a_s14\", coalesce(sum(a_s15*a_plies),0) as \"a_s15\", coalesce(sum(a_s16*a_plies),0) as \"a_s16\", coalesce(sum(a_s17*a_plies),0) as \"a_s17\", coalesce(sum(a_s18*a_plies),0) as \"a_s18\", coalesce(sum(a_s19*a_plies),0) as \"a_s19\", coalesce(sum(a_s20*a_plies),0) as \"a_s20\", coalesce(sum(a_s21*a_plies),0) as \"a_s21\", coalesce(sum(a_s22*a_plies),0) as \"a_s22\", coalesce(sum(a_s23*a_plies),0) as \"a_s23\", coalesce(sum(a_s24*a_plies),0) as \"a_s24\", coalesce(sum(a_s25*a_plies),0) as \"a_s25\", coalesce(sum(a_s26*a_plies),0) as \"a_s26\", coalesce(sum(a_s27*a_plies),0) as \"a_s27\", coalesce(sum(a_s28*a_plies),0) as \"a_s28\", coalesce(sum(a_s29*a_plies),0) as \"a_s29\", coalesce(sum(a_s30*a_plies),0) as \"a_s30\", coalesce(sum(a_s31*a_plies),0) as \"a_s31\", coalesce(sum(a_s32*a_plies),0) as \"a_s32\", coalesce(sum(a_s33*a_plies),0) as \"a_s33\", coalesce(sum(a_s34*a_plies),0) as \"a_s34\", coalesce(sum(a_s35*a_plies),0) as \"a_s35\", coalesce(sum(a_s36*a_plies),0) as \"a_s36\", coalesce(sum(a_s37*a_plies),0) as \"a_s37\", coalesce(sum(a_s38*a_plies),0) as \"a_s38\", coalesce(sum(a_s39*a_plies),0) as \"a_s39\", coalesce(sum(a_s40*a_plies),0) as \"a_s40\", coalesce(sum(a_s41*a_plies),0) as \"a_s41\", coalesce(sum(a_s42*a_plies),0) as \"a_s42\", coalesce(sum(a_s43*a_plies),0) as \"a_s43\", coalesce(sum(a_s44*a_plies),0) as \"a_s44\", coalesce(sum(a_s45*a_plies),0) as \"a_s45\", coalesce(sum(a_s46*a_plies),0) as \"a_s46\", coalesce(sum(a_s47*a_plies),0) as \"a_s47\", coalesce(sum(a_s48*a_plies),0) as \"a_s48\", coalesce(sum(a_s49*a_plies),0) as \"a_s49\", coalesce(sum(a_s50*a_plies),0) as \"a_s50\" from $bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\") and act_cut_status=\"DONE\"";
+			$sql1="select coalesce(sum(a_xs*a_plies),0) as \"a_xs\", coalesce(sum(a_s*a_plies),0) as \"a_s\", coalesce(sum(a_m*a_plies),0) as \"a_m\", coalesce(sum(a_l*a_plies),0) as \"a_l\", coalesce(sum(a_xl*a_plies),0) as \"a_xl\", coalesce(sum(a_xxl*a_plies),0) as \"a_xxl\", coalesce(sum(a_xxxl*a_plies),0) as \"a_xxxl\", coalesce(sum(a_s01*a_plies),0) as \"a_s01\", coalesce(sum(a_s02*a_plies),0) as \"a_s02\", coalesce(sum(a_s03*a_plies),0) as \"a_s03\", coalesce(sum(a_s04*a_plies),0) as \"a_s04\", coalesce(sum(a_s05*a_plies),0) as \"a_s05\", coalesce(sum(a_s06*a_plies),0) as \"a_s06\", coalesce(sum(a_s07*a_plies),0) as \"a_s07\", coalesce(sum(a_s08*a_plies),0) as \"a_s08\", coalesce(sum(a_s09*a_plies),0) as \"a_s09\", coalesce(sum(a_s10*a_plies),0) as \"a_s10\", coalesce(sum(a_s11*a_plies),0) as \"a_s11\", coalesce(sum(a_s12*a_plies),0) as \"a_s12\", coalesce(sum(a_s13*a_plies),0) as \"a_s13\", coalesce(sum(a_s14*a_plies),0) as \"a_s14\", coalesce(sum(a_s15*a_plies),0) as \"a_s15\", coalesce(sum(a_s16*a_plies),0) as \"a_s16\", coalesce(sum(a_s17*a_plies),0) as \"a_s17\", coalesce(sum(a_s18*a_plies),0) as \"a_s18\", coalesce(sum(a_s19*a_plies),0) as \"a_s19\", coalesce(sum(a_s20*a_plies),0) as \"a_s20\", coalesce(sum(a_s21*a_plies),0) as \"a_s21\", coalesce(sum(a_s22*a_plies),0) as \"a_s22\", coalesce(sum(a_s23*a_plies),0) as \"a_s23\", coalesce(sum(a_s24*a_plies),0) as \"a_s24\", coalesce(sum(a_s25*a_plies),0) as \"a_s25\", coalesce(sum(a_s26*a_plies),0) as \"a_s26\", coalesce(sum(a_s27*a_plies),0) as \"a_s27\", coalesce(sum(a_s28*a_plies),0) as \"a_s28\", coalesce(sum(a_s29*a_plies),0) as \"a_s29\", coalesce(sum(a_s30*a_plies),0) as \"a_s30\", coalesce(sum(a_s31*a_plies),0) as \"a_s31\", coalesce(sum(a_s32*a_plies),0) as \"a_s32\", coalesce(sum(a_s33*a_plies),0) as \"a_s33\", coalesce(sum(a_s34*a_plies),0) as \"a_s34\", coalesce(sum(a_s35*a_plies),0) as \"a_s35\", coalesce(sum(a_s36*a_plies),0) as \"a_s36\", coalesce(sum(a_s37*a_plies),0) as \"a_s37\", coalesce(sum(a_s38*a_plies),0) as \"a_s38\", coalesce(sum(a_s39*a_plies),0) as \"a_s39\", coalesce(sum(a_s40*a_plies),0) as \"a_s40\", coalesce(sum(a_s41*a_plies),0) as \"a_s41\", coalesce(sum(a_s42*a_plies),0) as \"a_s42\", coalesce(sum(a_s43*a_plies),0) as \"a_s43\", coalesce(sum(a_s44*a_plies),0) as \"a_s44\", coalesce(sum(a_s45*a_plies),0) as \"a_s45\", coalesce(sum(a_s46*a_plies),0) as \"a_s46\", coalesce(sum(a_s47*a_plies),0) as \"a_s47\", coalesce(sum(a_s48*a_plies),0) as \"a_s48\", coalesce(sum(a_s49*a_plies),0) as \"a_s49\", coalesce(sum(a_s50*a_plies),0) as \"a_s50\" from $bai_pro3.order_cat_doc_mix where order_tid=\"$order_tid\" and category in($in_categories) and act_cut_status=\"DONE\"";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result1))
 			{
@@ -508,7 +676,7 @@ table{
 			$sample_room_new_db=array();
 			$or_ratio_db=array();
 			$good_panels=array();
-			$sql1="select sum(rejected) as \"rejected\", sum(replaced) as \"replaced\", sum(sample_room) as \"sample_room\", sum(good_garments) as \"or_ratio\",  sum(good_panels) as \"good_panels\", qms_size  from $bai_pro3.bai_qms_day_report where qms_schedule=\"".$sql_row['schedule_no']."\" and qms_color=\"".$color."\" group by qms_size";
+			$sql1="select sum(rejected) as \"rejected\", sum(replaced) as \"replaced\", sum(sample_room) as \"sample_room\", sum(good_garments) as \"or_ratio\", sum(good_panels) as \"good_panels\", qms_size  from $bai_pro3.bai_qms_day_report where qms_schedule=\"".$sql_row['schedule_no']."\" and qms_color=\"".$color."\" group by qms_size";
 //echo $sql1."<br/>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -558,34 +726,34 @@ table{
 				$act_fca_new_db[$m]=0;
 			}
 			
-			// if(substr($style,0,1)=="M")
-			// {
-			// 	//$sqlx1="select sum(carton_act_qty) as scanned,size_code from packing_summary where order_del_no=\"$schedule\" and order_col_des=\"".$color."\" and status=\"DONE\" group by size_code";
- 			// 	$sqlx1="select sum(carton_act_qty) as scanned,size_code from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and trim(both from order_col_des)=\"".trim($color)."\" and status=\"DONE\" group by size_code";
-			// 	//echo $sqlx1."<br/>";
-			// 	$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			// 	while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-			// 	{
-			// 		$l=array_search($sql_rowx1['size_code'],$sizes_db);
-			// 		$act_fg_new_db[$l]=$sql_rowx1['scanned'];
-			// 		$act_fca_new_db[$l]=$sql_rowx1['scanned'];
-			// 		$tot_ship_new_db[$l]=$sql_rowx1['scanned'];
-			// 	}
-			// }
-			// else
-			// {
-			$sqlx1="select scanned,fca_app,size_code from $bai_pro3.disp_mix_size where order_del_no=\"$schedule\"";
-			//echo $sqlx1."<br/>";
-			$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+			if(substr($style,0,1)=="M")
 			{
-				$l=array_search($sql_rowx1['size_code'],$sizes_db);
-				$act_fg_new_db[$l]=$sql_rowx1['scanned'];
-				$act_fca_new_db[$l]=$sql_rowx1['fca_app'];
+				$sqlx1="select sum(carton_act_qty) as scanned,size_code from $bai_pro3.packing_summary where order_del_no=\"$schedule\" and trim(order_col_des)=\"$color\" and status=\"DONE\" group by size_code";
+				//echo $sqlx1."<br/>";
+				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+				{
+					$l=array_search($sql_rowx1['size_code'],$sizes_db);
+					$act_fg_new_db[$l]=$sql_rowx1['scanned'];
+					$act_fca_new_db[$l]=$sql_rowx1['scanned'];
+					$tot_ship_new_db[$l]=$sql_rowx1['scanned'];
+				}
 			}
-			
-			$tot_ship_new_db=array();
+			else
+			{
+				$sqlx1="select scanned,fca_app,size_code from $bai_pro3.disp_mix_size where order_del_no=\"$schedule\"";
+				//echo $sqlx1."<br/>";
+				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+				{
+					$l=array_search($sql_rowx1['size_code'],$sizes_db);
+					$act_fg_new_db[$l]=$sql_rowx1['scanned'];
+					$act_fca_new_db[$l]=$sql_rowx1['fca_app'];
+					
+				}
+				
+				$tot_ship_new_db=array();
 			$sql1="select coalesce(sum(ship_s_xs),0) as \"ship_s_xs\", coalesce(sum(ship_s_s),0) as \"ship_s_s\", coalesce(sum(ship_s_m),0) as \"ship_s_m\", coalesce(sum(ship_s_l),0) as \"ship_s_l\", coalesce(sum(ship_s_xl),0) as \"ship_s_xl\", coalesce(sum(ship_s_xxl),0) as \"ship_s_xxl\", coalesce(sum(ship_s_xxxl),0) as \"ship_s_xxxl\", coalesce(sum(ship_s_s01),0) as \"ship_s_s01\", coalesce(sum(ship_s_s02),0) as \"ship_s_s02\", coalesce(sum(ship_s_s03),0) as \"ship_s_s03\", coalesce(sum(ship_s_s04),0) as \"ship_s_s04\", coalesce(sum(ship_s_s05),0) as \"ship_s_s05\", coalesce(sum(ship_s_s06),0) as \"ship_s_s06\", coalesce(sum(ship_s_s07),0) as \"ship_s_s07\", coalesce(sum(ship_s_s08),0) as \"ship_s_s08\", coalesce(sum(ship_s_s09),0) as \"ship_s_s09\", coalesce(sum(ship_s_s10),0) as \"ship_s_s10\", coalesce(sum(ship_s_s11),0) as \"ship_s_s11\", coalesce(sum(ship_s_s12),0) as \"ship_s_s12\", coalesce(sum(ship_s_s13),0) as \"ship_s_s13\", coalesce(sum(ship_s_s14),0) as \"ship_s_s14\", coalesce(sum(ship_s_s15),0) as \"ship_s_s15\", coalesce(sum(ship_s_s16),0) as \"ship_s_s16\", coalesce(sum(ship_s_s17),0) as \"ship_s_s17\", coalesce(sum(ship_s_s18),0) as \"ship_s_s18\", coalesce(sum(ship_s_s19),0) as \"ship_s_s19\", coalesce(sum(ship_s_s20),0) as \"ship_s_s20\", coalesce(sum(ship_s_s21),0) as \"ship_s_s21\", coalesce(sum(ship_s_s22),0) as \"ship_s_s22\", coalesce(sum(ship_s_s23),0) as \"ship_s_s23\", coalesce(sum(ship_s_s24),0) as \"ship_s_s24\", coalesce(sum(ship_s_s25),0) as \"ship_s_s25\", coalesce(sum(ship_s_s26),0) as \"ship_s_s26\", coalesce(sum(ship_s_s27),0) as \"ship_s_s27\", coalesce(sum(ship_s_s28),0) as \"ship_s_s28\", coalesce(sum(ship_s_s29),0) as \"ship_s_s29\", coalesce(sum(ship_s_s30),0) as \"ship_s_s30\", coalesce(sum(ship_s_s31),0) as \"ship_s_s31\", coalesce(sum(ship_s_s32),0) as \"ship_s_s32\", coalesce(sum(ship_s_s33),0) as \"ship_s_s33\", coalesce(sum(ship_s_s34),0) as \"ship_s_s34\", coalesce(sum(ship_s_s35),0) as \"ship_s_s35\", coalesce(sum(ship_s_s36),0) as \"ship_s_s36\", coalesce(sum(ship_s_s37),0) as \"ship_s_s37\", coalesce(sum(ship_s_s38),0) as \"ship_s_s38\", coalesce(sum(ship_s_s39),0) as \"ship_s_s39\", coalesce(sum(ship_s_s40),0) as \"ship_s_s40\", coalesce(sum(ship_s_s41),0) as \"ship_s_s41\", coalesce(sum(ship_s_s42),0) as \"ship_s_s42\", coalesce(sum(ship_s_s43),0) as \"ship_s_s43\", coalesce(sum(ship_s_s44),0) as \"ship_s_s44\", coalesce(sum(ship_s_s45),0) as \"ship_s_s45\", coalesce(sum(ship_s_s46),0) as \"ship_s_s46\", coalesce(sum(ship_s_s47),0) as \"ship_s_s47\", coalesce(sum(ship_s_s48),0) as \"ship_s_s48\", coalesce(sum(ship_s_s49),0) as \"ship_s_s49\", coalesce(sum(ship_s_s50),0) as \"ship_s_s50\" from $bai_pro3.ship_stat_log where ship_schedule=\"$schedule\" and disp_note_no>0";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result1))
@@ -648,7 +816,14 @@ table{
 				$tot_ship_new_db[]=$sql_row2['ship_s_s49'];
 				$tot_ship_new_db[]=$sql_row2['ship_s_s50'];
 			}
-			// }
+			}
+			
+			
+			
+			
+			$display_total_good_panels=0;
+			$display_total_missing_panels=0;
+			$display_total_rejected_panels=0;
 			
 			for($i=0;$i<sizeof($order_qtys);$i++)
 			{
@@ -814,15 +989,27 @@ table{
 					$style=$sql_row['style'];
 					$schedule=$sql_row['schedule_no'];
 					$color=$sql_row['color'];
+					
+					$already_reported=0;
+					$sql1xx="select COALESCE(sum(report_qty),0) as report_qty from $bai_pro3.m3_offline_dispatch where style=\"$style\" and schedule=\"$schedule\" and color=\"$color\" and size=\"".$sizes_db[$i]."\"";
+					$sql_result1xx=mysqli_query($link, $sql1xx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row2xx=mysqli_fetch_array($sql_result1xx))
+					{
+						$already_reported=$sql_row2xx['report_qty'];
+					}
+					$style_url = getFullURL($_GET['r'],'pop_report.php', 'N');
+					
+					$row_count++;
 					echo "<tr>";
 					echo "<td class=\"lef\">".$sql_row['buyer_division']."</td>";
 					echo "<td class=\"lef\">".$status_title."</td>";
 					echo "<td>".$sql_row['ex_factory_date_new']."</td>";
-					echo "<td class=\"lef\"><a href=\"pop_report.php?style=$style&schedule=$schedule&color=$color\">".$sql_row['style']."</a></td>";
+					echo "<td class=\"lef\"><a class='btn btn-info btn-xs' href=\"$style_url&style=$style&schedule=$schedule&color=$color\" onclick=\"Popup=window.open('$style_url&style=$style&schedule=$schedule&color=$color"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">".$sql_row['style']."</a></td>";
 					echo "<td>".$sql_row['schedule_no']."</td>";
 					echo "<td class=\"lef\">".$sql_row['color']."</td>";
 					echo "<td>".substr($sql_row['sections'],0,-1)."</td>";
 					echo "<td>".$sizes_db[$i]."</td>";
+					echo "<td>".$old_order_qtys[$i]."</td>";
 					echo "<td>".$order_qtys[$i]."</td>";
 					echo "<td>".($act_cut_new+$recut_qty)."</td>";
 					echo "<td>".($act_in_new+$replaced_panels_new+($recut_qty-($recut_qty-$recut_req)))."</td>";
@@ -830,15 +1017,39 @@ table{
 					echo "<td>".$act_fg_new."</td>";
 					echo "<td>".$act_fca_new."</td>";
 					//echo "<td>".$act_mca."</td>";
-					echo "<td>".$tot_ship_new."</td>";
-					echo "<td>".$rejected."</td>";
-					echo "<td>".$sample_room_new."</td>";
-					echo "<td>".($excess_panels_new)."</td>";
-					echo "<td>".$or_ratio."</td>";
-					echo "<td>".$missing_panels_new."</td>";
-					echo "<td>".$sw_missing."</td>";
-					echo "<td>".$pr_missing."</td>";
-					echo "<td>".$ct_missing."</td>";
+					echo "<td>".$tot_ship_new;
+					echo "<input type=\"hidden\" name=\"style[]\" value=\"$style\">";
+					echo "<input type=\"hidden\" name=\"schedule[]\" value=\"$schedule\">";
+					echo "<input type=\"hidden\" name=\"color[]\" value=\"$color\">";
+					echo "<input type=\"hidden\" name=\"size[]\" value=\"".$sizes_db[$i]."\">";
+					echo "<input type=\"hidden\" name=\"order_qty[]\" value=\"".$order_qtys[$i]."\">";
+					echo "<input type=\"hidden\" name=\"cut_qty[]\" value=\"".($act_cut_new+$recut_qty)."\">";
+					echo "<input type=\"hidden\" name=\"input_qty[]\" value=\"".($act_in_new+$replaced_panels_new+($recut_qty-($recut_qty-$recut_req)))."\">";
+					echo "<input type=\"hidden\" name=\"out_qty[]\" value=\"".$out_qtys[$i]."\">";
+					echo "<input type=\"hidden\" name=\"fg_qty[]\" value=\"".$act_fg_new."\">";
+					echo "<input type=\"hidden\" name=\"fca_qty[]\" value=\"".$act_fca_new."\">";
+					echo "<input type=\"hidden\" name=\"ship_qty[]\" value=\"".$tot_ship_new."\">";
+					echo "<input type=\"hidden\" name=\"exist_report_qty[]\" value=\"".$already_reported."\">";
+					
+					echo"</td>";
+					echo "<td>".$already_reported."</td>";
+					$disable_btn = false;	
+					if(!in_array($authorized,$permission)){
+						$disable_btn = true;
+						$check="readonly=\"true\"";
+						$value=$act_fca_new-$already_reported;
+					}else{
+						$value=$order_qtys[$i]-$already_reported;
+					}
+					echo "<td><input type=\"number\" name=\"report_qty[]\" value=\"$value\" $check onkeyup=\"if(this.value>$value || this.value<0 || (event.which)==189 || (event.which)==187  ){ this.value=$value; sweetAlert('Please enter correct value.','','warning'); }\"></td>";
+					//echo "<td>".$rejected."</td>";
+					//echo "<td>".$sample_room_new."</td>";
+					//echo "<td>".($excess_panels_new)."</td>";
+					//echo "<td>".$or_ratio."</td>";
+					//echo "<td>".$missing_panels_new."</td>";
+					//echo "<td>".$sw_missing."</td>";
+					//echo "<td>".$pr_missing."</td>";
+					//echo "<td>".$ct_missing."</td>";
 					echo "</tr>";
 					
 					$display_total_good_panels+=abs($excess_panels_new);
@@ -847,7 +1058,6 @@ table{
 				}
 			}
 		
-	
 			unset($order_qtys);
 			unset($out_qtys);
 			unset($recut_qty_db);
@@ -862,35 +1072,37 @@ table{
 			unset($act_fg_new_db);
 			unset($act_fca_new_db);
 			unset($tot_ship_new_db);
-			
+		
+	
 	} 
-
+	echo "</table>";
+	if($row_count > 0)	{
+		echo '<span id="msg2" style="display:none; color:blue;">Please Wait...</span>';
+		echo "<input class='btn btn-sm btn-warning' type=\"submit\" name=\"submit_new\" id='upd' value=\"Update\" onclick=\"document.getElementById('submit_new').style.display='none'; document.getElementById('msg2').style.display='';\">";
+	}	
+	echo "</form>
+	</div>";
+	if($disable_btn){
+		echo "<br/><b style='color:red'>This user doesnt have access to update</b>";
+	}
+	if($row_count == 0)
+		echo "<script> $('#upd').attr('disabled', 'disabled'); </script>";
 }
-echo "</table></div>";
+
 
 ?>
-
-
-
-
+	</div><!-- panel body -->
+</div><!-- panel -->
+</div>
 
 <?php
 
-$cachefile = $path."/packing/reports/".$cache_date.'.html';
-// open the cache file "cache/home.html" for writing
-$fp = fopen($cachefile, 'w');
-// save the contents of output buffer to the file
-fwrite($fp, ob_get_contents());
-// close the file
-fclose($fp);
-// Send the output to the browser
-ob_end_flush();
+if($disable_btn){
+	
+	echo "<script>document.getElementById('upd').disabled = true;</script>";
+}
 
-
-$end_timestamp = microtime(true);
-$duration = $end_timestamp - $start_timestamp;
-print("Execution took ".$duration." milliseconds.");
+if(isset($_GET['color']))
+	echo "<script>document.getElementById('show').disabled = false;
+		  </script>";
 ?>
-</div></div>
-</body>
-</html>

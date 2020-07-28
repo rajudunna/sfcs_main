@@ -1,4 +1,6 @@
 <?php 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -24,7 +26,7 @@ $emp_lists=implode(",",$emp_list);
 $sql="SELECT team,module, SUM(IF(attn_status='A',1,0)) AS absent, SUM(IF(attn_status='P',1,0)) AS present FROM $database1.$month WHERE emp_id IN ($emp_lists) AND DATE=\"".$date."\" AND $database1.$month.emp_w_status in (".$emp_active_status.") AND module>0 GROUP BY module,team ORDER BY module+0" ;
 //echo $sql;
 
-$sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
+$sql11="update $pts.pro_attendance set present='',absent='',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date=\"$date\"";
 mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
  
 $sql_result=mysqli_query($link_hrms, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -42,19 +44,19 @@ while($sql_row1=mysqli_fetch_array($sql_result))
     // echo "Absent".$absent."<br>";
 
 
-    $sqla="select * from $bai_pro.pro_attendance where date=\"$date\" and module=\"$module\" and shift='".$team."'";
+    $sqla="select * from $pts.pro_attendance where plant_code='$plantcode' and date=\"$date\" and module=\"$module\" and shift='".$team."'";
 	// echo $sqla."</br>";
 	$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sqlresa)==0)
 	{
-		$sql1="insert into $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$module','".$team."')";
+		$sql1="insert into $pts.pro_attendance (date,module,shift,plant_code,created_user,created_at) VALUES ('".$date."','$module','".$team."','$plantcode','$username','".date('Y-m-d')."')";
 		// echo $sql1."</br>";
 		mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql23="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
+		$sql23="update $pts.pro_attendance set present='".$active."',absent='".$absent."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}else{
-		$sql22="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
+		$sql22="update $pts.pro_attendance set present='".$active."',absent='".$absent."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
     }
@@ -68,7 +70,7 @@ $sqly="select team,module, SUM(IF(attn_status='A',1,0)) as absent, SUM(IF(attn_s
 // echo $sql."<br>"; 
 $sql_resulty=mysqli_query($link_hrms, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-$sql11="update $bai_pro.pro_attendance set present='',absent='' where date=\"$date\"";
+$sql11="update $pts.pro_attendance set present='',absent='',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date=\"$date\"";
 	//echo $sql11."<br/>";
 mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	
@@ -80,20 +82,20 @@ while($sql_row1=mysqli_fetch_array($sql_resulty))
     $present=$sql_row1['present']; 
     $absent=$sql_row1['absent']; 
 
-    $sqla="select * from $bai_pro.pro_attendance where date=\"$date\" and module=\"$module\" and shift='".$team."'";
+    $sqla="select * from $pts.pro_attendance where plant_code='$plantcode' and date=\"$date\" and module=\"$module\" and shift='".$team."'";
 	// echo $sqla."</br>";
 	$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sqlresa)==0)
 	{
-		$sql1="insert into $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$module','".$team."')";
+		$sql1="insert into $pts.pro_attendance (date,module,shift,plant_code,created_user,created_at) VALUES ('".$date."','$module','".$team."','$plantcode','$username','".date('Y-m-d')."')";
 		// echo $sql1."</br>";
 		mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql23="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
+		$sql23="update $pts.pro_attendance set present='".$active."',absent='".$absent."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql23."</br>";
 		mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	else{
-		$sql22="update $bai_pro.pro_attendance set present='".$active."',absent='".$absent."' where date='".$date."' and module='$module' and shift='".$team."'";
+		$sql22="update $pts.pro_attendance set present='".$active."',absent='".$absent."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and module='$module' and shift='".$team."'";
 		// echo $sql22."</br>";
 		mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
     }

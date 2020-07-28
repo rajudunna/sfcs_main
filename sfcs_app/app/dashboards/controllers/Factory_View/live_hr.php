@@ -1,11 +1,13 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 include ("../../../../common/config/config.php");
 include ("../../../../common/config/functions.php");
 // if(isset($_GET['sec_x']))
 // {
 // 	$sections_db=array($_GET['sec_x']);
 // }
-
+$plantcode=$_SESSION['plantCode'];
 for($i=0;$i<sizeof($sections_db);$i++)
 {
 	$section_id=$sections_db[$i];
@@ -25,7 +27,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 		$mods=explode(",",$section_mods);
 			
 		$teams=array();
-		$sql2="SELECT  DISTINCT bac_shift FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\"";
+		$sql2="SELECT  DISTINCT bac_shift FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date=\"".date("Y-m-d")."\"";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error145".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
 		{
@@ -37,7 +39,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 		$date=date("Y-m-d");
 		if(sizeof($teams)>0) // ERROR CORRECTION
 		{
-			$sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $bai_pro.pro_attendance where module in ($section_mods) and date='".$date."'";
+			$sql2="select sum(present+jumper) as \"avail\", sum(absent) as \"absent\" from $pts.pro_attendance where plant_code='$plantcode' and module in ($section_mods) and date='".$date."'";
 			//secho $sql2;
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4569".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

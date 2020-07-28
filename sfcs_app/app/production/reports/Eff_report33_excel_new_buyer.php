@@ -6,6 +6,8 @@ Ticket #815663
 //Change Request#145/kirang/2014-08-13/Round up the values up to 2 decimals in efficiency, SAH and Grand efficiency report//service request #466334/ 2014-08-18 / kirang / Actual Eff % taken from Actual Clock hours.  
  -->
  <?php
+ $plantcode=$_SESSION['plantCode'];
+ $username=$_SESSION['userName'];
 //echo "DB name : ".$bai_pro."</br>";
 $sql="select GROUP_CONCAT(DISTINCT sec_name) as unit_members from $bai_pro3.sections_master order by sec_id"; 
 // echo $sql."<br>";
@@ -16,7 +18,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sec_code=$sql_row['unit_members']; 
 } 
 //Takes the Buyer names in selected time period
-$sql_buyer="select distinct buyer as buyer from $bai_pro.grand_rep where date between \"$date\" and \"$edate\" order by buyer";
+$sql_buyer="select distinct buyer as buyer from $pts.grand_rep where plant_code='$plantcode' and date between \"$date\" and \"$edate\" order by buyer";
 $sql_result_buyer=mysqli_query($link, $sql_buyer) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 {
@@ -48,7 +50,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	$absent_B_clk=0;
 	$act_clock_hrs1=0;
 
-	$sql="select distinct module from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module";
+	$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module";
 	//echo $sql."<br>";
 	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -73,7 +75,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		$mod=$sql_row['module'];
 		$style=$sql_row['mod_style'];
 		$max=0;
-		$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $bai_pro.grand_rep where shift=\"A\" AND buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\"";
+		$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep  where plant_code='$plantcode' and shift=\"A\" AND buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\"";
 		//echo $sql2."-".$mod."=".$buyer_sel."<br>";
 		mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -103,7 +105,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		//echo $nop."<br>";
 		$grand_total_nop_x=$grand_total_nop_x+$nop;
 
-		$sqlA="select sum(present+jumper) as avail_A,sum(absent) as absent_A from $bai_pro.pro_attendance where module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+		$sqlA="select sum(present+jumper) as avail_A,sum(absent) as absent_A from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 		$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowA=mysqli_fetch_array($sql_resultA))
 		{
@@ -113,7 +115,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			$absent_A_clk=$sql_rowA['absent_A'];
 		}
 
-		$sqlB="select sum(present+jumper) as avail_B,sum(absent) as absent_B from $bai_pro.pro_attendance where module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+		$sqlB="select sum(present+jumper) as avail_B,sum(absent) as absent_B from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 		$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowB=mysqli_fetch_array($sql_resultB))
 		{
@@ -184,7 +186,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		$psthb_fac_total=0;
 	
 	
-		$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
+		$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
 		mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -200,7 +202,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			$effa=($stha/$pclha)*100;
 		}
 		
-		$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
+		$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
 		mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -216,7 +218,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 			$effb=($sthb/$pclhb)*100;
 		}
 		
-		$sql2="select avg(nop) as \"nop\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and module=$mod and date in (\"".implode('","',$date_range)."\")";
+		$sql2="select avg(nop) as \"nop\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and module=$mod and date in (\"".implode('","',$date_range)."\")";
 		mysqli_query($link, $sql2) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error19".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -301,7 +303,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	$peff_a_total=0;
 	$peff_b_total=0;
 	
-	$sql2x="select ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and module in (92) and date between \"$date\" and \"$edate\" and shift=\"A\"";
+	$sql2x="select ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and module in (92) and date between \"$date\" and \"$edate\" and shift=\"A\"";
 	//echo $sql2x;
 	$sql_result2x=mysqli_query($link, $sql2x) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2x=mysqli_fetch_array($sql_result2x))
@@ -310,7 +312,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		$pclha_92=$sql_row2x['plan_clh'];
 	}
 	
-	$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\"";
+	$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\"";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -327,11 +329,11 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	
 	if($buyer_name == "ALL")
 	{
-		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
+		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
 	}
 	else
 	{
-		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
+		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\" group by date,module";
 	//echo $sql2;	
 	}
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error29".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -340,7 +342,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		$pstha_fac_total=$pstha_fac_total+round($sql_row2['plan_sth'],$decimal_factor);	
 	}
 	
-	$sql2x="select  ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and module in (92) and date between \"$date\" and \"$edate\" and shift=\"B\"";
+	$sql2x="select  ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and module in (92) and date between \"$date\" and \"$edate\" and shift=\"B\"";
 	$sql_result2x=mysqli_query($link, $sql2x) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2x=mysqli_fetch_array($sql_result2x))
 	{
@@ -348,7 +350,7 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 		$pclhb_92=$sql_row2x['plan_clh'];
 	}
 	
-	$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\"";
+	$sql2="select  sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\"";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -365,11 +367,11 @@ while($sql_row_buyer=mysqli_fetch_array($sql_result_buyer))
 	
 	if($buyer_name == "ALL")
 	{
-		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\" group by date,module";
+		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\" group by date,module";
 	}
 	else
 	{
-		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $bai_pro.grand_rep where buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date,module";
+		$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and buyer=\"$buyer_sel\" and section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date,module";
 	//echo $sql2;	
 	}
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error35".mysqli_error($GLOBALS["___mysqli_ston"]));

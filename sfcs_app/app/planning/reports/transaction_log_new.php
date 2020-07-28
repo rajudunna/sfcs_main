@@ -5,6 +5,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 
 // $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <html>
@@ -187,7 +188,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 	{
 		$end_check=$rows125['end_time'];
 	}
-	$sql="select tid from $bai_pro.bai_log where bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and time(log_time) BETWEEN ('".$start_check."') and ('".$end_check."')";
+	$sql="select tid from $pts.bai_log where plant_code='$plantcode' and bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and time(log_time) BETWEEN ('".$start_check."') and ('".$end_check."')";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error311".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_result)>0)
 	{
@@ -209,7 +210,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 					$end_hour=$rows12['end_time'];
 					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
 				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $bai_pro.bai_log where bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
+				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $pts.bai_log where plant_code='$plantcode' and bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result1)>0)
 				{
