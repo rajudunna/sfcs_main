@@ -63,7 +63,7 @@
                 <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Employee Ids:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="15" onkeyup="return validateEmpIdLength(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
+                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="15" onkeyup="return validateEmpIdNum(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
                     <span id="errId1" class="error"></span></div>
                 
         </div></div>
@@ -120,14 +120,19 @@ include('view_handover_team_list.php');
 
 
 <script>
-    function validateEmpIdLength(t){
-    if (t.value) {
-            if (t.value.length > 29) {
-                t.value =  t.value.substr(0,29);
-                swal("ID must be lessthan 30 Numbers");
-                return false;
-            }
-        }
+    function validateEmpIdNum(t){
+    if(t.value == '')
+        return false;
+        var emp_id = t.value;
+        var emp_id_pattern = /^[1-9][0-9]*$/;
+        var found = emp_id.match(emp_id_pattern);
+        if(found) {
+        return true;
+        } else {
+            swal("ID is not valid");
+            t.value ='';
+            return false;
+        }  
     }
     function validateEmpNameLength(t){
     if (t.value) {
