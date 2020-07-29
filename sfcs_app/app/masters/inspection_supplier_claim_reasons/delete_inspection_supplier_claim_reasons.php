@@ -14,7 +14,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
  
-$delete="delete from $mdm.inspection_complaint_reasons where tid='$tid' and plant_code='$plant_code'";
+$delete="delete from $mdm.inspection_complaint_reasons where tid='$tid'";
 
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 echo"<script>setTimeout(function () { 
