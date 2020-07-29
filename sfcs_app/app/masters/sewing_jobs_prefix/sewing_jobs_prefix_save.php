@@ -45,7 +45,7 @@ else
 	{
 		//update
 		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$dr_id";
-
+		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			//echo $url;
@@ -78,7 +78,7 @@ else
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Reason Already Existed!',
+				  title: 'Sewing Job Prefix Already Exists!',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
@@ -98,7 +98,7 @@ else
 
 		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color,plant_code,created_user,created_at)
 		VALUES ('$code','$department','$reason','$type','$plantcode','$username','".date('Y-m-d')."')";
-  
+
 		if (mysqli_query($conn, $sql)) 
 		{
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
