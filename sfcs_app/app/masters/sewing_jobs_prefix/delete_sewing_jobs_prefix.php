@@ -20,7 +20,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 
-$delete="delete from $mdm.`tbl_sewing_job_prefix` where plant_code='$plantcode' and id='$dr_id'";
+$delete="delete from $mdm.`tbl_sewing_job_prefix` where id='$dr_id'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
     echo"<script>setTimeout(function () { 
