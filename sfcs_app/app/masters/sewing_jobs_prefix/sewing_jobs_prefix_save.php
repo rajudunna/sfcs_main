@@ -44,7 +44,7 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$dr_id";
+		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where id=$dr_id";
 		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
@@ -71,7 +71,7 @@ else
 
 
 
-		$query1="select * from $mdm.tbl_sewing_job_prefix  where plant_code='$plantcode' and prefix_name='$code'";
+		$query1="select * from $mdm.tbl_sewing_job_prefix where prefix_name='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
@@ -96,8 +96,7 @@ else
 
 
 
-		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color,plant_code,created_user,created_at)
-		VALUES ('$code','$department','$reason','$type','$plantcode','$username','".date('Y-m-d')."')";
+		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color,created_user,created_at,updated_user,updated_at) VALUES ('$code','$department','$reason','$type','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
 
 		if (mysqli_query($conn, $sql)) 
 		{
