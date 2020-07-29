@@ -57,7 +57,7 @@ td,th{ color : #000 }
 $sql="select * 
 	  from $pps.disp_db 
 	  left join $pps.party_db on disp_db.party=party_db.pid 
-	  where $plant_code='$plant_code' and disp_db.create_date >'2011-12-31' and disp_db.status='2' 
+	  where plant_code='$plant_code' and disp_db.create_date >'2011-12-31' and disp_db.status='2' 
 	  order by disp_db.disp_note_no DESC";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
