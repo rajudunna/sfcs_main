@@ -28,7 +28,7 @@ echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"Confirm\" onclick
 echo '<table id="tableone" cellspacing="0" class="table table-bordered">';
 	echo "<tr><th>Reason Code</th><th>Functional Dept</th><th>Responsible Dept</th><th>Reason</th><th>Select</th><tr>";
 
-if($_GET['dep_id'])
+if($dep_id!='')
 {
 	$sqll1="SELECT * FROM $bai_pro.down_reason where dep_id=$dep_id";	
 }
@@ -36,8 +36,8 @@ else
 {
 	$sqll1="SELECT * FROM $bai_pro.down_reason where sno>=295 order by down_machine,down_problem,down_reason";
 }
-$sqll1="SELECT * FROM $bai_pro.down_reason where sno>=295 order by down_machine,down_problem,down_reason";
-//echo $sql1;
+//$sqll1="SELECT * FROM $bai_pro.down_reason where sno>=295 order by down_machine,down_problem,down_reason";
+//echo $sqll1;
 $sql_resultl1=mysqli_query($link, $sqll1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_rowl1=mysqli_fetch_array($sql_resultl1))
