@@ -845,9 +845,12 @@ $sql = "SELECT * FROM $bai_pro.`down_log`";
 		<th>Department</th>
 		<th>Reason</th>
 		<th>Remarks</th>
-		<th>Source</th>
-		<th> Edit / Delete </th>
-		</tr>
+		<th>Source</th>";
+		if(in_array($authorized,$has_permission))
+			{
+		echo"<th> Edit / Delete </th>";
+			}
+		echo"</tr>
 		</thead>
 		<tbody>";
 		// output data of each row
@@ -902,7 +905,12 @@ $sql = "SELECT * FROM $bai_pro.`down_log`";
 			$cat_selection=$row["cat_selection"];
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["date"]."</td><td>".$section_name." </td><td>".$row["shift"]."</td>
-			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_date1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$row["department"]."</td><td>".$row["reason_code"]."</td><td>".$row["remarks"]."</td><td>".$row["source"]."</td><td><a href='$url&rowid=$rowid&date=$date&section=$section&shift=$shift&module=$mod_no&style=$style&schedule=$schedule&nop=$nop&start_time=$start_time&end_time=$end_time&lost_min=$lost_min&remarks=$remarks&source=$source1&department=$department&reason_code=$reason_code&exception_time=$exception_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td></tr>";
+			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_date1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$row["department"]."</td><td>".$row["reason_code"]."</td><td>".$row["remarks"]."</td><td>".$row["source"]."</td>";
+			if(in_array($authorized,$has_permission))
+			{
+			echo"<td><a href='$url&rowid=$rowid&date=$date&section=$section&shift=$shift&module=$mod_no&style=$style&schedule=$schedule&nop=$nop&start_time=$start_time&end_time=$end_time&lost_min=$lost_min&remarks=$remarks&source=$source1&department=$department&reason_code=$reason_code&exception_time=$exception_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>";
+			}
+			echo"</tr>";
 		}
 
 		echo "</tbody></table></div>";
