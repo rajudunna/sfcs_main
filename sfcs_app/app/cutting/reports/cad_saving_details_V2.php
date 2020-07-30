@@ -208,7 +208,7 @@ if(isset($_POST["submit"]))
 				<th>Fabric Balance Requirement</th>
 				<th>AOD Status</th>
 			</tr>";
-		$sql3="select order_del_no as sch,order_col_des as col,order_tid from $bai_pro3.bai_orders_db where order_del_no in (".implode(",",$sch_nos).")";
+		$sql3="select order_del_no as sch,order_col_des as col,order_tid from $bai_pro3.bai_orders_db where order_del_no in ("."'".implode("','",$sch_nos)."'".")";
 		//echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($result3))
@@ -405,15 +405,13 @@ if(isset($_POST["submit"]))
 
 				//echo "<td>".."</td>";
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
-				////echo $sql."<br>";
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in ("."'".implode("','",$docketnos)."'".")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$issued_qty1=$row["qty"];
 				}
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$docketnos).")";
-				////echo $sql."<br>";
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in ("."'".implode("','",$docketnos)."'".")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error178".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
@@ -421,24 +419,21 @@ if(isset($_POST["submit"]))
 				}
 				$issued_qty=$issued_qty1+$issued_qty2;
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
-				////echo $sql."<br>";
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in ("."'".implode("','",$recut_docketnos)."'".")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$recut_issued_qty1=$row["qty"];
 				}
 
-				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$recut_docketnos).")";
-				////echo $sql."<br>";
+				$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in ("."'".implode("','",$recut_docketnos)."'".")";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
 					$recut_issued_qty2=$row["qty"];
 				}
                 $recut_issued_qty=$recut_issued_qty1+$recut_issued_qty2;
-				$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=$schedule and color like \"%".$color."%\" and product=\"FAB\"";
-				////echo $sql;
+				$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=\"$schedule\" and color like \"%".$color."%\" and product=\"FAB\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
@@ -478,7 +473,6 @@ if(isset($_POST["submit"]))
 					$recut_damages_qty=$row["dam"];
 					$recut_shortages_qty=$row["shrt"];
 				}
-
 	   
 
 				$sql4="SELECT SUM(ship_s_xs)+SUM(ship_s_s)+SUM(ship_s_m)+SUM(ship_s_l)+SUM(ship_s_xl)+SUM(ship_s_xxxl)+SUM(ship_s_s01)+SUM(ship_s_s02)+SUM(ship_s_s03)+SUM(ship_s_s04)+SUM(ship_s_s05)+SUM(ship_s_s06)+SUM(ship_s_s07)+SUM(ship_s_s08)+SUM(ship_s_s09)+SUM(ship_s_s10)+SUM(ship_s_s11)+SUM(ship_s_s12)+SUM(ship_s_s13)+SUM(ship_s_s14)+SUM(ship_s_s15)+SUM(ship_s_s16)+SUM(ship_s_s17)+SUM(ship_s_s18)+SUM(ship_s_s19)+SUM(ship_s_s20)+SUM(ship_s_s21)+SUM(ship_s_s22)+SUM(ship_s_s23)+SUM(ship_s_s24)+SUM(ship_s_s25)+SUM(ship_s_s26)+SUM(ship_s_s27)+SUM(ship_s_s28)+SUM(ship_s_s29)+SUM(ship_s_s30)+SUM(ship_s_s31)+SUM(ship_s_s32)+SUM(ship_s_s33)+SUM(ship_s_s34)+SUM(ship_s_s35)+SUM(ship_s_s36)+SUM(ship_s_s37)+SUM(ship_s_s38)+SUM(ship_s_s39)+SUM(ship_s_s40)+SUM(ship_s_s41)+SUM(ship_s_s42)+SUM(ship_s_s43)+SUM(ship_s_s44)+SUM(ship_s_s45)+SUM(ship_s_s46)+SUM(ship_s_s47)+SUM(ship_s_s48)+SUM(ship_s_s49)+SUM(ship_s_s50) as ship_qty FROM $bai_pro3.ship_stat_log WHERE ship_schedule=\"$schedule\" and ship_status=\"2\"";
