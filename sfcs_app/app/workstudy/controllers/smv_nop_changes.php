@@ -5,6 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $view_access=user_acl("SFCS_0165",$username,1,$group_id_sfcs);
 $auth_users=user_acl("SFCS_0165",$username,7,$group_id_sfcs);
 $has_permission = haspermission($_GET['r']);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 	<?php
 
@@ -208,7 +210,7 @@ $has_permission = haspermission($_GET['r']);
 			</div>
 		<?php 		
 		
-		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC";
+		$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and  bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC";
 		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -352,12 +354,12 @@ $has_permission = haspermission($_GET['r']);
 			{
 				$link->autocommit(FALSE);
 				$flag = true;
-				$sql2="update $bai_pro.bai_log set smv=$smv, nop=$nop where bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
+				$sql2="update $pts.bai_log set smv=$smv, nop=$nop, updated_user='$username', updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
 				// echo $sql2;
 				$run_sql2 = mysqli_query($link, $sql2);
 
 				if(mysqli_affected_rows($link) != NULL) {
-					$sql2="update $bai_pro.bai_log_buf set smv=$smv, nop=$nop where bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
+					$sql2="update $pts.bai_log_buf set smv=$smv, nop=$nop, updated_user='$username', updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and bac_no in ($module) and bac_shift in ('".$shift."') and bac_style=\"$style\" and bac_date between \"$date\" and \"$edate\"";
 					// echo $sql2;
 					$run_sql3 = mysqli_query($link, $sql2);
 

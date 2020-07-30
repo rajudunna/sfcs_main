@@ -1,4 +1,6 @@
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 
 $has_permission=haspermission($_GET['r']); 
@@ -73,7 +75,7 @@ while($row = mysqli_fetch_array($team_leaders_result)){
 }
 
 
-$location_query="SELECT * FROM $bai_pro3.locations";
+$location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
 while($row = mysqli_fetch_array($location_result))
 {

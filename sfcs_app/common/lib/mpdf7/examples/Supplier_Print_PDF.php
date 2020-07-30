@@ -1407,10 +1407,11 @@ x\:* {behavior:url(#default#VML);}
 </head>
 
 <body>";
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $comaplint_no=$_GET["sno"];
 //include("dbconf2.php"); 
-$sql="select * from inspection_complaint_db where complaint_no=\"".$comaplint_no."\"";	
+$sql="select * from wms.inspection_complaint_db where complaint_no=\"".$comaplint_no."\" and plant_code='".$plant_code."'";	
 $result=mysqli_query($link, $sql) or die("ErrorX=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
@@ -1451,7 +1452,7 @@ while($row=mysqli_fetch_array($result))
 }
 
 $batch_lots=0;
-$sql1="SELECT GROUP_CONCAT(DISTINCT lot_no) AS lots FROM sticker_report WHERE batch_no=\"".$reject_batch_no."\"";	
+$sql1="SELECT GROUP_CONCAT(DISTINCT lot_no) AS lots FROM $wms.sticker_report WHERE batch_no=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";	
 $result1=mysqli_query($link, $sql1) or die("ErrorX=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $rowsx=mysqli_num_rows($result1);
 if($rowsx > 0)
@@ -1462,7 +1463,7 @@ if($rowsx > 0)
 	}
 }
 
-$sql3="select unique_id as uid,log_date as upd from  inspection_db where batch_ref=\"".$reject_batch_no."\"";
+$sql3="select unique_id as uid,log_date as upd from  $wms.inspection_db where batch_ref=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";
 $result3=mysqli_query($link, $sql3) or die("ErrorX=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row3=mysqli_fetch_array($result3))
 {
@@ -1472,7 +1473,7 @@ while($row3=mysqli_fetch_array($result3))
 }	
 
 //$sql2="SELECT SUM(qty_rec) AS rec_qty,COUNT(tid) as rolls,COUNT(DISTINCT REPLACE(ref2,\"*\",\"\")),SUM(ref5) AS insp_qty FROM store_in WHERE lot_no IN (".$reject_lot_no.")";
-$sql2="SELECT SUM(qty_rec) AS rec_qty,COUNT(DISTINCT REPLACE(ref2,\"*\",\"\")) as rolls,SUM(ref5) AS insp_qty FROM store_in WHERE lot_no IN (".$reject_lot_no.")";	
+$sql2="SELECT SUM(qty_rec) AS rec_qty,COUNT(DISTINCT REPLACE(ref2,\"*\",\"\")) as rolls,SUM(ref5) AS insp_qty FROM $wms.store_in WHERE lot_no IN (".$reject_lot_no.") and plant_code='".$plant_code."'";	
 //echo $sql2."<br>";
 $result2=mysqli_query($link, $sql2) or die("Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
@@ -1535,11 +1536,11 @@ tags will be replaced.-->
  </tr>";
  $j=0;
  $k=0;
- $sql1="select * from inspection_complaint_reasons where complaint_category=\"$product_categoy\" ORDER BY complaint_category,sno,Complaint_clasification";
+ $sql1="select * from $wms.inspection_complaint_reasons where complaint_category=\"$product_categoy\" and plant_code='".$plant_code."' ORDER BY complaint_category,sno,Complaint_clasification";
  $result1=mysqli_query($link, $sql1) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($row1=mysqli_fetch_array($result1))
  {	
- 	$sql2="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\"";
+ 	$sql2="select * from $wms.inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row1["sno"]."\" and plant_code='".$plant_code."'";
 	$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$rows=mysqli_num_rows($result2);
 	
@@ -1675,7 +1676,7 @@ tags will be replaced.-->
 		$result2=mysqli_query($link, $sql2) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($result2))
 		{
-			$sql3="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row2["sno"]."\"";
+			$sql3="select * from inspection_complaint_db_log where complaint_track_id=$comaplint_no and complaint_reason=\"".$row2["sno"]."\" and plant_code='".$plant_code."'";
 			$result3=mysqli_query($link, $sql3) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows=mysqli_num_rows($result3);
 			if($rows > 0)

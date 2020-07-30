@@ -3,6 +3,8 @@ error_reporting(0);
 set_time_limit(900000);
 ini_set('memory_limit', '-1');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $location='';
 $lot_no='';
 $style_no='';
@@ -116,7 +118,7 @@ while ($sql_row1 = $stock_report_inventory_result->fetch_assoc())
 		}
 	}
 
-	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = $tid and DATE(log_time)=\"$current_date\"";
+	$sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `bai_rm_pj2`.`mrn_out_allocation`  WHERE  lable_id = $tid and DATE(log_time)=\"$current_date\" and plant_code='".$plant_code."'";
     $sql_result_mrn =$link->query($sql_mrn);
     if(mysqli_num_rows($sql_result_mrn)> 0) {
         while ($row_mrn = $sql_result_mrn->fetch_assoc())

@@ -60,17 +60,18 @@
             <div class="col-md-4">
                 
                 <div class="form-group">
-                <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Employee Id:</label>
+                <label class="control-label control-label-left col-sm-3"  for="complaint_reason">Employee Ids:</label>
                 <div class="controls col-sm-9">
                     
-                <input id="emp_id" type="text" class="form-control k-textbox alpha" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="emp_id" type="text" class="form-control k-textbox alpha" maxlength="15" onkeyup="return validateEmpIdNum(this)" data-role="text" required="required" <?= $jj ?>  name="emp_id" value="<?php echo $emp_id; ?>"  data-parsley-errors-container="#errId1" />
+                    <span id="errId1" class="error"></span></div>
                 
         </div></div>
             <div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="complaint_clasification" >Employee Name:</label>
 			    <div class="controls col-sm-9">
                     
-                <input id="emp_call_name" type="text" class="form-control k-textbox alpha" data-role="text" required="required" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
+                <input id="emp_call_name" type="text" class="form-control k-textbox alpha" maxlength="20" onkeyup="return validateEmpNameLength(this)" data-role="text" required="required" name="emp_call_name" value="<?php echo $emp_call_name; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span></div>
                 
 		</div></div>
         
@@ -82,11 +83,14 @@
                 <select id="active_status" class="form-control" data-role="select" selected="selected" required="required" name="emp_status"  data-parsley-errors-container="#errId4">
                 <?php
                     if($emp_status=="Active"){
-                        echo '<option value="0" selected>Active</option>';
-                        echo '<option value="1">In-Active</option>';
-                    }else{
+                    echo '<option value="0" selected>Active</option>';
+                    echo '<option value="1">In-Active</option>';
+                    }else if($emp_status=="In-Active"){
                         echo '<option value="0">Active</option>';
                         echo '<option value="1" selected>In-Active</option>';
+                    }else {
+                        echo '<option value="0" selected>Active</option>';
+                        echo '<option value="1">In-Active</option>';
                     }
 
                 ?>
@@ -111,8 +115,33 @@
 include('view_handover_team_list.php');
 ?>
 </body>
-<!-- <script>
-    $('#datetimepicker').datetimepicker();
-</script> -->
 
 </html>
+
+
+<script>
+    function validateEmpIdNum(t){
+    if(t.value == '')
+        return false;
+        var emp_id = t.value;
+        var emp_id_pattern = /^[1-9][0-9]*$/;
+        var found = emp_id.match(emp_id_pattern);
+        if(found) {
+        return true;
+        } else {
+            swal("ID is not valid");
+            t.value ='';
+            return false;
+        }  
+    }
+    function validateEmpNameLength(t){
+    if (t.value) {
+            if (t.value.length > 39) {
+                t.value =  t.value.substr(0,39);
+                swal("Name must be lessthan 40 Characters");
+                return false;
+            }
+        }
+    }
+
+</script>

@@ -5,6 +5,8 @@ $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config
 include("$url2");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $view_access=user_acl("SFCS_0013",$username,1,$group_id_sfcs); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 
@@ -362,7 +364,7 @@ if(isset($_POST['submit']))
 			$cut_section="";
 			$cut_shift="";
 		
-		$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+		$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -378,7 +380,7 @@ if(isset($_POST['submit']))
 			$input_module="";
 			$input_shift="";
 		
-		$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
+		$sql="select * from $pps.act_cut_issue_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -396,7 +398,7 @@ if(isset($_POST['submit']))
 		$damages=0;
 		$shortages=0;
 			
-	$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+	$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -766,7 +768,7 @@ if(isset($_POST['submit']))
 			$cut_section="";
 			$cut_shift="";
 		$joints=0;$endbits=0;	
-		$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+		$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -790,7 +792,7 @@ if(isset($_POST['submit']))
 			$input_module="";
 			$input_shift="";
 		
-		$sql="select * from $bai_pro3.act_cut_issue_status where doc_no=$act_doc_no";
+		$sql="select * from $pps.act_cut_issue_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -813,7 +815,7 @@ if(isset($_POST['submit']))
 		$shortages=0;
 		
 		
-	$sql="select * from $bai_pro3.act_cut_status where doc_no=$act_doc_no";
+	$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);

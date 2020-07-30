@@ -9,6 +9,7 @@
 //08-09-2016/SR#18628309/Removed $sample_in_qty from missing garment calculation as per mail at 30/08/2016 3:57 PM (subject:IMS removed)
 
 //27-10-2016/SR#76898083/ calculating shipment sample and samples in noraml input column in reconciliation
+$plantcode=$_SESSION['plantCode'];
 ?>
 <?php
 
@@ -208,7 +209,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$sample_out_qty=$sql_row12["out_qty"];
 		}
 		$output1 =0;$output2=0;
-		$sql_sample1="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0 ";
+		$sql_sample1="select sum(bac_qty) as sout from $pts.bai_log_buf where plant_code='$plantcode' and delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size']).">0 ";
 		$sql_result_buf1=mysqli_query($link,$sql_sample1) or exit("Sql Error12=".$sql_sample1."-".mysqli_error());
 		while($sql_row_buf1=mysqli_fetch_array($sql_result_buf1))
 		{
@@ -217,7 +218,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				$output1=$sql_row_buf1["sout"];
 			}
 		}
-		$sql_sample2="select sum(bac_qty) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size'])."< 0";
+		$sql_sample2="select sum(bac_qty) as sout from $pts.bai_log_buf where plant_code='$plantcode' and delivery=$schedule and color='".$sql_row['ims_color']."' and bac_no=\"".$sql_row["ims_mod_no"]."\" and size_".str_replace('a_','',$sql_row['ims_size'])."< 0";
 		$sql_result_buf2=mysqli_query($link,$sql_sample2) or exit("Sql Error12=".$sql_sample2."-".mysqli_error());
 		while($sql_row_buf2=mysqli_fetch_array($sql_result_buf2))
 		{

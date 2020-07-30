@@ -2,6 +2,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0064",$username,1,$group_id_sfcs);//1
+$plantcode=$_SESSION['plantCode'];
 ?>
 	<title>First Hour Output</title>
 	<style>
@@ -269,7 +270,7 @@ if(isset($_POST['submit']))
 		$end_time_pm=$rows125['end_time'];
 	}
 
-	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) OR (TIME(bac_lastup) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no;";
+	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) OR (TIME(bac_lastup) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no;";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))

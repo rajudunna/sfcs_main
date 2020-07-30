@@ -32,27 +32,21 @@ $whoops->register();
     <br><br><br><br><br><br><br><br><br><br><br><br>  <b><h1><font color="black">Welcome to</font> <br><font color="red">Shop Floor Control System</font></h1></b>
 </div>"; -->
                     <?php
-                    if (isset($_GET['r']) && $_GET['r'] != '') {                       
+                    if (isset($_GET['r']) && $_GET['r'] != '') {
                         if (hasviewpermission($_GET['r'])) {
                             $get_file_path = getFILE($_GET['r']);
                             if ($get_file_path) {
-                                if (!$_GET['ext']) {
-                                    if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {
-                                        include($_SERVER["DOCUMENT_ROOT"] . $get_file_path['path']);
-                                    } else {
-                                        if ($get_file_path['type'] == 'xlsm') {
-                                            echo "<a class='btn btn-primary' href='" . $get_file_path['path'] . "' target='_blank'>Click here to dowload Tool</a>";
-                                            if ($_GET['r'] == 'L3NmY3NfYXBwL2FwcC9kYXNoYm9hcmRzL2NvbnRyb2xsZXJzL2Nwcy9mYWJfcHJpb3JpdHlfZGFzaGJvYXJkLnBocA==') {
-                                                echo "<h4>Instructions Here : </h4>";
-                                            }
-                                        } else {
-                                            echo "<a class='btn btn-primary' href='" . $get_file_path['path'] . "' target='_blank'>Get " . $get_file_path['type'] . " file to click here..</a>";
+                                if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {
+                                    include($_SERVER["DOCUMENT_ROOT"] . $get_file_path['path']);
+                                } else {
+                                    if ($get_file_path['type'] == 'xlsm') {
+                                        echo "<a class='btn btn-primary' href='" . $get_file_path['path'] . "' target='_blank'>Click here to dowload Tool</a>";
+                                        if ($_GET['r'] == 'L3NmY3NfYXBwL2FwcC9kYXNoYm9hcmRzL2NvbnRyb2xsZXJzL2Nwcy9mYWJfcHJpb3JpdHlfZGFzaGJvYXJkLnBocA==') {
+                                            echo "<h4>Instructions Here : </h4>";
                                         }
+                                    } else {
+                                        echo "<a class='btn btn-primary' href='" . $get_file_path['path'] . "' target='_blank'>Get " . $get_file_path['type'] . " file to click here..</a>";
                                     }
-                                } else {                                    
-                                    $url = base64_decode($_GET['r']);
-                                    // Iframe for external links
-                                    echo '<iframe width="100%" frameborder="0" scrolling="auto" height="auto" src="' . $url . '?user='.getrbac_user()['uname'].'" title=""></iframe>';
                                 }
                             } elseif (isset($_GET['r'])) {
                                 echo "<div class='col-sm-12'>
@@ -118,16 +112,7 @@ include "template/footer.php";
     }).attr("readonly", "true").css({
         "background-color": "#fff"
     });
-    $(function() {
-        const height = $(window).height();
-        console.log(<?php  "<script>document.writeln(height);</script>";?>)
-        console.log('hahaha')
-        $('iframe').height(700 + 'px');
-    });
-    $('body').click(function(e) {
-        console.log('sdsdsd')
-        console.log($('iframe').contents().find('html').height())
-    });
+
     /*$.ajaxSetup({
         beforeSend: function(jqXHR, settings) {
 

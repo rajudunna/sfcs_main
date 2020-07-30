@@ -1,5 +1,5 @@
 <?php 
-//error_reporting(0);
+error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 //M3 Rest API Calls Details
@@ -60,6 +60,7 @@ $oms="oms";
 $mdm="mdm";
 $sms="sms";
 $tms="tms";
+$wms="wms";
 $fabric_categories_array = $conf1->get('category-display-dashboard');
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
 $shifts_array = $conf1->get('shifts');

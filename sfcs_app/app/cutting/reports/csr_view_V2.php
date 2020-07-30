@@ -1,6 +1,8 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <script>
 function verify_date(){
@@ -147,7 +149,7 @@ function verify_date(){
 					    <div class='panel-body'><div style='max-height:700px;overflow-y:scroll'>";	  
 			  
   			
-			$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and 
+			$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and 
 				  date between \"$from_date\" and \"$to_date\" and LENGTH(remarks)>0";
             //echo $sql;
 			//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
@@ -251,7 +253,7 @@ function verify_date(){
  		
 			//Recut
 
-			$sql="select * from $bai_pro3.act_cut_status_recut_v2 where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+			$sql="select * from $pps.act_cut_status_recut_v2 where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -457,7 +459,7 @@ function verify_date(){
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Cut Qty</th>
 		  </tr>";
- 			$sql="select distinct section from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
+ 			$sql="select distinct section from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
 			
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -467,14 +469,14 @@ function verify_date(){
 			{
 				$row_count++;
 				$section_new=$sql_row['section'];
-				$sql1="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
+				$sql1="select distinct shift from $pps.act_cut_status where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
 					$shift_new=$sql_row1['shift'];
 					$doc_list="";
-					$sql2="select doc_no from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift=\"$shift_new\"";
+					$sql2="select doc_no from $pps.act_cut_status where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift=\"$shift_new\"";
 					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -545,7 +547,7 @@ function verify_date(){
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Re Cut Qty</th>
 		  </tr>";
- 			$sql="select distinct section from $bai_pro3.act_cut_status_recut_v2 where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
+ 			$sql="select distinct section from $pps.act_cut_status_recut_v2 where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
 			
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -554,7 +556,7 @@ function verify_date(){
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
 				$section_new=$sql_row['section'];
-				$sql1="select distinct shift from $bai_pro3.act_cut_status_recut_v2 where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
+				$sql1="select distinct shift from $pps.act_cut_status_recut_v2 where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -562,7 +564,7 @@ function verify_date(){
 					$row_count++;
 					$shift_new=$sql_row1['shift'];
 					$doc_list="";
-					$sql2="select doc_no from $bai_pro3.act_cut_status_recut_v2 where date between \"$from_date\" and \"$to_date\" and section=$section_new and shift=\"$shift_new\"";
+					$sql2="select doc_no from $pps.act_cut_status_recut_v2 where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section=$section_new and shift=\"$shift_new\"";
 					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))

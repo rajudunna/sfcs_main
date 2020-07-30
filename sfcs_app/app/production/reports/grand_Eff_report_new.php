@@ -5,6 +5,8 @@
 	$teams=$shifts_array;
 	$team_array=implode(",",$shifts_array);
 	$team = "'".str_replace(",","','",$team_array)."'"; 
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
 ?>
 
 <div class="panel panel-primary">
@@ -33,15 +35,15 @@ if(isset($_POST['submit']))
 	$edate=$_POST['dat2']; 
 	$sdate=$_POST['dat1']; 
 	// NEW BUFFER Table Selection 
-	$table_name="$bai_pro.bai_log"; 
-	$sql="select count(*) as \"row_count\" from $bai_pro.bai_log_buf where bac_date=\"$sdate\"";
+	$table_name="$pts.bai_log"; 
+	$sql="select count(*) as \"row_count\" from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$sdate\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
 		$row_count1=$sql_row['row_count']; 
 	} 
 		
-	$sql="select count(*) as \"row_count\" from $bai_pro.bai_log_buf where bac_date=\"$edate\"";
+	$sql="select count(*) as \"row_count\" from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$edate\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
@@ -50,9 +52,9 @@ if(isset($_POST['submit']))
 
 	if($row_count1>1 and $row_count2>1) 
 	{ 
-		$table_name="$bai_pro.bai_log_buf"; 
+		$table_name="$pts.bai_log_buf"; 
 	} 
-	$table_name2="$bai_pro.bai_quality_log"; 
+	$table_name2="$pts.bai_quality_log"; 
 
 				     
 	echo "<h3> Report for the period: $sdate to $edate </h3>"; 
@@ -300,7 +302,7 @@ if(isset($_POST['submit']))
 								
 							$code=$date."-".$module."-".$shift; 
 								
-							$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")"; 
+							$sql2="insert ignore into $pts.grand_rep(tid) values (\"$code\")"; 
 							mysqli_query($link, $sql2) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				
 							//New code to extract values from existing 
@@ -328,7 +330,7 @@ if(isset($_POST['submit']))
 								} 
 							} 
 								
-							$sql2="update $bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days,rework_qty=$rework_qty,max_style=\"$delivery^$style_code_new\" where tid=\"$code\"";
+							$sql2="update $pts.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$buyer_db_new\", days=$days,rework_qty=$rework_qty,max_style=\"$delivery^$style_code_new\" where tid=\"$code\"";
 							//echo $sql2."<br/>"; 
 							mysqli_query($link, $sql2) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"]));             
 						}
@@ -345,7 +347,7 @@ if(isset($_POST['submit']))
 	//Ticket #274262 
 	//Renmoved the where clause for section 
 	$decimal_factor=2;
-	$sql2="select distinct section from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" order by section";
+	$sql2="select distinct section from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" order by section";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error78".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
@@ -353,7 +355,7 @@ if(isset($_POST['submit']))
 				
 		$check=0; 
 			
-		$sql_new="select distinct shift from $bai_pro.grand_rep where section=$section and date between \"$sdate\" and \"$edate\""; 
+		$sql_new="select distinct shift from $pts.grand_rep where plant_code='$plantcode' and section=$section and date between \"$sdate\" and \"$edate\""; 
 		$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error77".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		$rowspan=mysqli_num_rows($sql_result_new); 
 		while($sql_row_new=mysqli_fetch_array($sql_result_new)) 
@@ -368,7 +370,7 @@ if(isset($_POST['submit']))
 			} 
 			echo "<td>$shift</td>"; 
 				
-			$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $bai_pro.grand_rep where section=$section and shift=\"$shift\" and date between \"$sdate\" and \"$edate\""; 
+			$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and section=$section and shift=\"$shift\" and date between \"$sdate\" and \"$edate\""; 
 			//echo $sql."<br/>"; 
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error79".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -398,7 +400,7 @@ if(isset($_POST['submit']))
 	//Ticket #274262 
 	//Renmoved the where clause for section 
 	$check=0; 
-	$sql_new="select distinct shift from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\"";
+	$sql_new="select distinct shift from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\"";
 	$sql_result_new=mysqli_query($link, $sql_new) or exit("Sql Error74".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	$rowspan=mysqli_num_rows($sql_result_new); 
 	while($sql_row_new=mysqli_fetch_array($sql_result_new)) 
@@ -413,7 +415,7 @@ if(isset($_POST['submit']))
 		} 
 		echo "<td>$shift</td>"; 
 			
-		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $bai_pro.grand_rep where shift=\"$shift\" and date between \"$sdate\" and \"$edate\"";
+		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and shift=\"$shift\" and date between \"$sdate\" and \"$edate\"";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error75".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{ 
@@ -440,7 +442,7 @@ if(isset($_POST['submit']))
 	echo "<tr class=\"total\">"; 
 	echo "<td colspan=2>Grand Total</td>"; 
 							
-	$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\"";
+	$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error76".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 

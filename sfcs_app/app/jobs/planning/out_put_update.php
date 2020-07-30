@@ -3,7 +3,7 @@
 $start_timestamp = microtime(true);
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
-
+$plantcode=$_SESSION['plantCode'];
 
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
@@ -153,7 +153,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$fgqty=$sql_row9['fgqty'];
 				}
                 $output_array=[];
-				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $bai_pro.bai_log WHERE delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
+				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $pts.bai_log WHERE plant_code='$plantcode' and delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
 				//echo $sql10;
 				$sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql10."<br>";

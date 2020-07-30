@@ -4,171 +4,18 @@ include('../../../../common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 //getting style and scheduele and color
 $doc=$_GET['binding_id'];
-$plant_code="L01";
 
 	$doc_id[]=$doc;
 
 $doc_id=implode(',',$doc_id);
-
 $divide = 15;
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
-// //print status
-// $printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
-// $sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// while($sql_row=mysqli_fetch_array($sql_result_print))
-// {
-// 	$printstatus=$sql_row['status'];
-// }
-
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$style=$sql_row['order_style_no']; //Style
-	$color=$sql_row['order_col_des']; //color
-	$ord_joins=$sql_row['order_joins']; // Order joins
-	$division=$sql_row['order_div'];
-	$delivery=$sql_row['order_del_no']; //Schedule
-	$pono=$sql_row['order_po_no']; //po
-	$color_code=$sql_row['color_code']; //Color Code
-	$orderno=$sql_row['order_no']; 
-	$o_s01=$sql_row['order_s_s01'];
-	$o_s02=$sql_row['order_s_s02'];
-	$o_s03=$sql_row['order_s_s03'];
-	$o_s04=$sql_row['order_s_s04'];
-	$o_s05=$sql_row['order_s_s05'];
-	$o_s06=$sql_row['order_s_s06'];
-	$o_s07=$sql_row['order_s_s07'];
-	$o_s08=$sql_row['order_s_s08'];
-	$o_s09=$sql_row['order_s_s09'];
-	$o_s10=$sql_row['order_s_s10'];
-	$o_s11=$sql_row['order_s_s11'];
-	$o_s12=$sql_row['order_s_s12'];
-	$o_s13=$sql_row['order_s_s13'];
-	$o_s14=$sql_row['order_s_s14'];
-	$o_s15=$sql_row['order_s_s15'];
-	$o_s16=$sql_row['order_s_s16'];
-	$o_s17=$sql_row['order_s_s17'];
-	$o_s18=$sql_row['order_s_s18'];
-	$o_s19=$sql_row['order_s_s19'];
-	$o_s20=$sql_row['order_s_s20'];
-	$o_s21=$sql_row['order_s_s21'];
-	$o_s22=$sql_row['order_s_s22'];
-	$o_s23=$sql_row['order_s_s23'];
-	$o_s24=$sql_row['order_s_s24'];
-	$o_s25=$sql_row['order_s_s25'];
-	$o_s26=$sql_row['order_s_s26'];
-	$o_s27=$sql_row['order_s_s27'];
-	$o_s28=$sql_row['order_s_s28'];
-	$o_s29=$sql_row['order_s_s29'];
-	$o_s30=$sql_row['order_s_s30'];
-	$o_s31=$sql_row['order_s_s31'];
-	$o_s32=$sql_row['order_s_s32'];
-	$o_s33=$sql_row['order_s_s33'];
-	$o_s34=$sql_row['order_s_s34'];
-	$o_s35=$sql_row['order_s_s35'];
-	$o_s36=$sql_row['order_s_s36'];
-	$o_s37=$sql_row['order_s_s37'];
-	$o_s38=$sql_row['order_s_s38'];
-	$o_s39=$sql_row['order_s_s39'];
-	$o_s40=$sql_row['order_s_s40'];
-	$o_s41=$sql_row['order_s_s41'];
-	$o_s42=$sql_row['order_s_s42'];
-	$o_s43=$sql_row['order_s_s43'];
-	$o_s44=$sql_row['order_s_s44'];
-	$o_s45=$sql_row['order_s_s45'];
-	$o_s46=$sql_row['order_s_s46'];
-	$o_s47=$sql_row['order_s_s47'];
-	$o_s48=$sql_row['order_s_s48'];
-	$o_s49=$sql_row['order_s_s49'];
-	$o_s50=$sql_row['order_s_s50'];
-
-	$order_total=$o_s01+$o_s02+$o_s03+$o_s04+$o_s05+$o_s06+$o_s07+$o_s08+$o_s09+$o_s10+$o_s11+$o_s12+$o_s13+$o_s14+$o_s15+$o_s16+$o_s17+$o_s18+$o_s19+$o_s20+$o_s21+$o_s22+$o_s23+$o_s24+$o_s25+$o_s26+$o_s27+$o_s28+$o_s29+$o_s30+$o_s31+$o_s32+$o_s33+$o_s34+$o_s35+$o_s36+$o_s37+$o_s38+$o_s39+$o_s40+$o_s41+$o_s42+$o_s43+$o_s44+$o_s45+$o_s46+$o_s47+$o_s48+$o_s49+$o_s50;
-
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
-		}
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-			{
-				$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-			}
-		}	
-			$flag = $sql_row['title_flag'];
-}
 
 	$order_tidss=array();
 	$original_details = array();
 	$doc_no_child = Array();
-    if($ord_joins<>'0')
-    {
-        if(strlen($delivery)<8)
-        {
-            // color clubbing
-            $orders_join='J'.substr($color,-1);
-            $label="Color";
-            $select_sql="select order_tid, trim(order_col_des) as order_col_des from $bai_pro3.bai_orders_db_confirm where order_joins='".$orders_join."'";
-            //echo $select_sql."<br>";
-            $result=mysqli_query($link, $select_sql);
-            while($rows=mysqli_fetch_array($result))
-            {
-                $order_tidss[]=$rows['order_tid'];
-				$select_sql1="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no in ($doc_id) and order_tid='".$rows['order_tid']."'";
-				$result1=mysqli_query($link, $select_sql1);
-				if(mysqli_num_rows($result1)>0)
-				{
-					while($rows1=mysqli_fetch_array($result1))
-					{
-						$original_details[]=$rows['order_col_des']."-".$rows1['doc_no'];
-					}
-				}
-				else
-				{	
-					$original_details[]=$rows['order_col_des'];
-				}
-            }
-        }
-        else
-        {
-            // schedule clubbing
-			$label="Schedule";
-            $select_sql="select order_tid, order_del_no from $bai_pro3.bai_orders_db_confirm where order_joins='J".$delivery."'";
-            //echo $select_sql."<br>";
-            $result=mysqli_query($link, $select_sql);
-            while($rows=mysqli_fetch_array($result))
-            {
-                $order_tidss[]=$rows['order_tid'];
-                $select_sql1="select doc_no from $bai_pro3.plandoc_stat_log where org_doc_no in ($doc_id) and order_tid='".$rows['order_tid']."'";
-				$result1=mysqli_query($link, $select_sql1);
-				if(mysqli_num_rows($result1)>0)
-				{
-					while($rows1=mysqli_fetch_array($result1))
-					{
-						$original_details[]=$rows['order_del_no']."-".$rows1['doc_no'];
-					}
-				}
-				else
-				{	
-					$original_details[]=$rows['order_del_no'];
-				}
-            }
-        }   
-    }
-    else
-    {
-        $order_tidss[]=$order_tid;
-    }
-
-$sql="select * from $bai_pro3.plan_dashboard where doc_no in ($doc)";
-//echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$plan_log_time=$sql_row['log_time'];
-}
 
 if($doc!=" " && $plant_code!=' '){
 	//this is function to get style,color,and cutjob
@@ -195,7 +42,7 @@ if($doc!=" " && $plant_code!=' '){
 	echo "Plese verify Docket No & Plant code";exit;
 }
 //to get component po_num and ratio id from
-$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='$plant_code'";
+$qry_jm_cut_job="SELECT ratio_id,po_number,cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id='$jm_cut_job_id' AND plant_code='".$plant_code."'";
 $jm_cut_job_result=mysqli_query($link_new, $qry_jm_cut_job) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 $jm_cut_job_num=mysqli_num_rows($jm_cut_job_result);
 if($jm_cut_job_num>0){
@@ -262,7 +109,7 @@ if($ratio_id!=' ' && $plant_code!=''){
 
 	
 	$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
-	$sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
+	$sql="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
 //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
@@ -270,17 +117,7 @@ if($ratio_id!=' ' && $plant_code!=''){
 		$system_width=round($sql_row1x['width'],2);
 	}
 	$actwidth=$system_width;
-	
-$child_dockets_query="SELECT doc_no AS doc_no FROM $bai_pro3.plandoc_stat_log WHERE org_doc_no='$docketno'";
-$child_dockets_result=mysqli_query($link, $child_dockets_query) or exit("error while getting original doc nos");
-while($sql_row=mysqli_fetch_array($child_dockets_result))
-{
-	$original_docs[]=$sql_row['doc_no'];
-}
-
 ?>
-
-
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
 xmlns="http://www.w3.org/TR/REC-html40">
@@ -2314,7 +2151,7 @@ if($doc!='' && $doc_ype!=''){
 		}
 	   
 	    $batchs=array_unique($batchs);
-	    $sql="select group_concat(sp_rem) as rem from $bai_rm_pj1.inspection_db where batch_ref in (".implode(",",$batchs).")";
+	    $sql="select group_concat(sp_rem) as rem from $wms.inspection_db where batch_ref in (".implode(",",$batchs).")";
    	    //echo $sql;
 	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error at inspection".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    while($sql_row=mysqli_fetch_array($sql_result))
@@ -2337,7 +2174,7 @@ if($doc!='' && $doc_ype!=''){
  <?php
  $roll_length = array();
 //  $roll_det = array();
- $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $bai_rm_pj1.docket_ref WHERE doc_no=\"B".$bindid."\" AND doc_type='binding' GROUP BY ref4";
+ $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $wms.docket_ref WHERE doc_no=\"B".$bindid."\" AND doc_type='binding' GROUP BY ref4";
  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row123=mysqli_fetch_array($sql_result123))
 {
@@ -2795,17 +2632,6 @@ $tot_bind_len=0;
 
 </html>
 <?php 
-// if($print==1)
-// {
-// 	if($print_status=="0000-00-00" || $print_status == "")
-//     {
-// 	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
-//  	    //echo $sql;
-// 	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-//     }
-// }
-
 //Refresh Parent Page After this Print Out 
 echo"<script>
 window.onunload = refreshParent;
@@ -2861,7 +2687,7 @@ $(document).ready(function(){
 </script>
 
 <?php
-$printqry="select status from $bai_pro3.binding_consumption where id='$bindid'";
+$printqry="select status from $pps.binding_consumption where id='$bindid' and plant_code='".$plant_code."'";
 $sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_print))
 {
@@ -2870,7 +2696,7 @@ while($sql_row=mysqli_fetch_array($sql_result_print))
 
 if($printstatus!='Close')
 {
-	$query = "UPDATE $bai_pro3.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."' where id = $bindid";
+	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id = $bindid and plant_code='".$plant_code."'";
     $update_query = mysqli_query($link,$query);
 }
 ?>

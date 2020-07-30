@@ -1,9 +1,11 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $doc_no=$_GET['doc_no'];
 $bundle_no=array();
-$getdetails2="SELECT size,bundle_no FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." group by bundle_no order by id";
+$getdetails2="SELECT size,bundle_no FROM $pps.docket_number_info where plant_code='$plantcode' and doc_no=".$doc_no." group by bundle_no order by id";
 $getdetailsresult = mysqli_query($link,$getdetails2);
 while($sql_row=mysqli_fetch_array($getdetailsresult))
 {
@@ -34,7 +36,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$style_no= $sql_row['order_style_no'];	
 }
 
-$docketdetials="select * from $bai_pro3.docket_roll_info where docket=".$doc_no." order by shade";
+$docketdetials="select * from $pps.docket_roll_info where plant_code='$plantcode' and docket=".$doc_no." order by shade";
 $docketdetials_result=mysqli_query($link, $docketdetials) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -70,7 +72,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 	}
 }
-$totalplies="select sum(reporting_plies) as totalplies from $bai_pro3.docket_roll_info where docket=$doc_no";
+$totalplies="select sum(reporting_plies) as totalplies from $pps.docket_roll_info plant_code='$plantcode' and where docket=$doc_no";
 mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $totalpliesresult=mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $totalpliesresult=mysqli_fetch_array($totalpliesresult);
@@ -707,7 +709,7 @@ echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collap
 	$bundle=0;
 	for($i=0;$i<sizeof($bundle_no);$i++)
 	{	
-		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,sum(qty) as qty FROM $bai_pro3.docket_number_info where doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by id order by id";
+		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,sum(qty) as qty FROM $pps.docket_number_info where plant_code='$plantcode' and doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by id order by id";
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))
 		{			

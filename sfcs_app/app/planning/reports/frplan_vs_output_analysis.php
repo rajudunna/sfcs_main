@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
 // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
 //$view_access=user_acl("SFCS_0042",$username,1,$group_id_sfcs);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <?php
@@ -203,7 +205,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			
 			//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
 			 //echo $sql1."<br>";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -296,7 +298,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 {
 		//Actual output
-			$sql1="SELECT date,SUM(act_out) as output FROM $bai_pro.grand_rep WHERE DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
+			$sql1="SELECT date,SUM(act_out) as output FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE BETWEEN '$sdate' AND '$edate' AND module='$mod_chk' GROUP BY date";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{

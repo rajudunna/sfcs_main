@@ -6,6 +6,8 @@ $username=strtolower($username_list[1]);
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <style>
 /* #pch{
@@ -83,16 +85,16 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 		
 		if(mysqli_affected_rows($link)>0)
 		{
-			$sql_check="select qms_tid from $bai_pro3.bai_qms_db_deleted where qms_tid=$qms_tid";
+			$sql_check="select qms_tid from $pps.bai_qms_db_deleted where plant_code='$plantcode' and qms_tid=$qms_tid";
 			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_check_res)==0)
 			{
-				$sql="insert into $bai_pro3.bai_qms_db_deleted select * from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
+				$sql="insert into $pps.bai_qms_db_deleted select * from $pps.bai_qms_db where plant_code='$plantcode' and qms_tid=$qms_tid";
 				//echo $sql."<br/>";
 				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}	
 			
-			$sql="delete from $bai_pro3.bai_qms_db where qms_tid=$qms_tid";
+			$sql="delete from $pps.bai_qms_db where plant_code='$plantcode' and qms_tid=$qms_tid";
 			//echo $sql."<br/>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
@@ -183,7 +185,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 			echo "<td>".ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link)."</td>";
 			echo "<td>".$sql_row['raised']."</td>";
 			
-			$sql="select * from $bai_pro3.recut_track where doc_no=$recut_doc_no and level=2";
+			$sql="select * from $pps.recut_track where plant_code='$plantcode' and doc_no=$recut_doc_no and level=2";
 			$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($result);
 			while($row=mysqli_fetch_array($result))

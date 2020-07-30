@@ -6,6 +6,8 @@ $end_week=$_GET['week_end'];
 $style_id=$_GET['style_id'];
 //echo $color_code;
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 ?>
 
@@ -46,7 +48,7 @@ $style_status_summ="style_status_summ";
 
 //Create Temp Table
 
-$sql="create TEMPORARY table $bai_pro2.ssc_code_temp select * from $bai_pro2.ssc_code_temp";
+$sql="create TEMPORARY table $pps.ssc_code_temp select * from $pps.ssc_code_temp";
 mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -72,7 +74,7 @@ echo "</tr>";
 $ssc_code_base=array();
 $i=0;
 
-$sql11="delete from $bai_pro2.ssc_code_temp";
+$sql11="delete from $pps.ssc_code_temp plant_code='$plantcode'";
 mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
@@ -81,12 +83,12 @@ $sql11="select distinct ssc_code from $bai_pro2.shipment_plan where exfact_date 
 $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row11=mysqli_fetch_array($sql_result11))
 {
-	$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code) values (\"".$sql_row11['ssc_code']."\")";
+	$sql111="insert ignore into $bai_pro2.ssc_code_temp(ssc_code,plant_code,created_user,created_at) values (\"".$sql_row11['ssc_code']."\",'$plantcode','$username','".date('Y-m-d')."')";
 	mysqli_query($link, $sql111) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 
 
-$sql111="select distinct ssc_code from $bai_pro2.ssc_code_temp";
+$sql111="select distinct ssc_code from $pps.ssc_code_temp plant_code='$plantcode'";
 mysqli_query($link, $sql111) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row111=mysqli_fetch_array($sql_result111))
@@ -114,7 +116,7 @@ while($sql_row111=mysqli_fetch_array($sql_result111))
 	$order_qty=0;
 	$style_id="";
 
-	$sql="select * from $bai_pro2.style_status_summ where ssc_code=\"$ssc_code\"";
+	$sql="select * from $pps.style_status_summ where plant_code='$plantcode' and ssc_code=\"$ssc_code\"";
 	//echo $sql;
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));

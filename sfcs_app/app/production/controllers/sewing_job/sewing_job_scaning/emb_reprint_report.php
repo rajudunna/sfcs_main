@@ -87,6 +87,8 @@ Start Date: <input id="demo1" onclick="javascript:NewCssCal('demo1','yyyymmdd','
 
 </div>
 <?php
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //$hours=array('6-7AM','7-8AM','8-9AM','9-10AM','10-11AM','11-12AM','12-13PM','13-14PM','14-15PM','15-16PM','16-17PM','17-18PM','18-19PM','19-20PM','20-21PM','21-22PM','22-23PM');
 if(isset($_POST['submit']))
 {
@@ -132,7 +134,7 @@ if(isset($_POST['submit']))
 	
 	
 //echo $filter."<br>";
-	$sql="SELECT date(date_time) as date_time,$filter barcode,username,remarks from $bai_pro3.emb_reprint_track where date(date_time)
+	$sql="SELECT date(date_time) as date_time,$filter barcode,username,remarks from $pps.emb_reprint_track where plant_code='$plant_code' and date(date_time)
 BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 //echo $sql."<br>";
 	//$sets=explode(",",$filter_n);

@@ -5,7 +5,8 @@
 // include"downtimeperperiode.php"; 
  include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURL($_GET['r'],'downtimeperperiode.php','R'));
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <div id="Book1_7326" align=center x:publishsource="Excel">
 
@@ -184,7 +185,7 @@ echo "<tr><td class=xl637326 style='height:15.0pt;border-top:none'>Today Clock H
 
 for($i=0;$i<sizeof($sec_id);$i++)
 {
-	$sql1="select sum(act_clh) from $bai_pro.grand_rep where section=".$sec_id[$i]." and date between \"".$etodat."\" and \"".$etodat."\"";
+	$sql1="select sum(act_clh) from $pts.grand_rep where plant_code='$plantcode' and section=".$sec_id[$i]." and date between \"".$etodat."\" and \"".$etodat."\"";
 	//echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -194,7 +195,7 @@ for($i=0;$i<sizeof($sec_id);$i++)
 	}	
 }
 
-$sql1="select sum(act_clh) from $bai_pro.grand_rep where date between \"".$etodat."\" and \"".$etodat."\"";
+$sql1="select sum(act_clh) from $pts.grand_rep where plant_code='$plantcode' and date between \"".$etodat."\" and \"".$etodat."\"";
 //echo $sql1;
 $result1=mysqli_query($link, $sql1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($result1))
@@ -204,7 +205,7 @@ while($row1=mysqli_fetch_array($result1))
 }	
 //extra added
 
-$sql1="select sum(act_clh) from $bai_pro.grand_rep where date between \"".$etodat."\" and \"".$etodat."\"";
+$sql1="select sum(act_clh) from $pts.grand_rep where plant_code='$plantcode' and date between \"".$etodat."\" and \"".$etodat."\"";
 //echo $sql1;
 $result1=mysqli_query($link, $sql1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($result1))

@@ -8,7 +8,8 @@ $complaint_reason=$_POST['complaint_reason'];
 $complaint_clasification =$_POST['complaint_clasification'];
 $complaint_category = $_POST['complaint_category'];
 $status = $_POST['status'];
-
+$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName']; 
 //echo $color_code;
 
  //echo $seq_no;die();
@@ -23,7 +24,7 @@ $conn=$link;
 // $conn = mysqli_connect($servername, $username, $password, $dbname);
 // Check connection
 
-if (empty($complaint_reason) || empty($complaint_clasification) || empty($complaint_category) ) 
+if (strlen(trim($complaint_reason)) == 0 || strlen(trim($complaint_clasification)) == 0 || strlen(trim($complaint_category)) == 0) 
 {
 	$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 	echo"<script>setTimeout(function () { 
@@ -43,7 +44,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 }else{
 	if($tid>0){ 
 		//update
-		$sql = "update $bai_rm_pj1.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status' where tid =$tid";
+		$sql = "update $mdm.inspection_complaint_reasons set complaint_reason='$complaint_reason',complaint_clasification='$complaint_clasification',complaint_category='$complaint_category',status='$status',updated_user= '$username',updated_at=NOW() where tid =$tid and plant_code='$plant_code'";
 		//echo 	$sql;
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
@@ -66,7 +67,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 		}
 	}else{
 		
-		$count_qry= "select * from $bai_rm_pj1.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
+		$count_qry= "select * from $mdm.inspection_complaint_reasons where complaint_reason = '$complaint_reason' and plant_code='$plant_code' and (complaint_clasification = '$complaint_clasification' or complaint_category = '$complaint_category' )"; 
 		// echo $count_qry;
 		$count = mysqli_num_rows(mysqli_query($conn, $count_qry));
 		if($count > 0){
@@ -90,7 +91,7 @@ if (empty($complaint_reason) || empty($complaint_clasification) || empty($compla
 			// echo "<script>alert('Enter data correctly.')</script>";
 		}
 		else{
-			$sql = "INSERT INTO $bai_rm_pj1.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status')";
+			$sql = "INSERT INTO $mdm.inspection_complaint_reasons(complaint_reason, complaint_clasification,complaint_category, status,plant_code,created_user,updated_user,updated_at) VALUES('$complaint_reason','$complaint_clasification','$complaint_category','$status','$plant_code','$username','".$username."',NOW())";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'save_inspection_supplier_claim_reasons.php','N');
 
