@@ -208,7 +208,7 @@ if(isset($_POST["submit"]))
 				<th>Fabric Balance Requirement</th>
 				<th>AOD Status</th>
 			</tr>";
-		$sql3="select order_del_no as sch,order_col_des as col,order_tid from $bai_pro3.bai_orders_db where order_del_no in ("."'".implode("','",$sch_nos)."'".")";
+		$sql3="select order_del_no as sch,order_col_des as col,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in ("."'".implode("','",$sch_nos)."'".")";
 		//echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($result3))
