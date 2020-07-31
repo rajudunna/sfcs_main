@@ -496,6 +496,10 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 		
 		return true;
 	} else {
+
+		$delete_query = "DELETE FROM `bai_pro3`.`sewing_jobs_ref` where id = $inserted_id and bundles_count = 0";
+		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleteing the sewing jobs ref");
+
 		return false;
 	}
 }
