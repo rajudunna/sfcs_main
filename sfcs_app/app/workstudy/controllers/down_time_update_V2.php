@@ -821,7 +821,7 @@ if(isset($_POST["submit"]))
 
 <?php 
 
-$sql = "SELECT * FROM $bai_pro.`down_log`";
+$sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 	$result = $conn->query($sql);
 	$sno = 1;
 	 $url=getFullURL($_GET['r'],'down_time_update_V2.php','N');
