@@ -88,7 +88,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 						<div class="row">
 						<div class="col-md-4">
 								<div class="form-group">
-									<label class="control-label control-label-left col-sm-3" for="date" id="required">Date</label>
+									<label class="control-label control-label-left col-sm-3" for="date" >Date<span class="req" style='color:red;'> *</span></label>
 											<div class="controls col-sm-9">
 											
 													<?php 
@@ -120,7 +120,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 								</div>
 								<div class="col-md-4">
 								<div class="form-group">
-									<label class="control-label control-label-left col-sm-3" for="sections" id="required">Section</label>
+									<label class="control-label control-label-left col-sm-3" for="sections" >Section<span class='req' style="color:red;">*</span></label>
 											<div class="controls col-sm-9">
 												<?php 
 												include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -152,7 +152,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 									</div>   
                                 <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label control-label-left col-sm-3" for="shift" id="required">Shift</label>
+                                    <label class="control-label control-label-left col-sm-3" for="shift" >Shift<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
                                            <?php 
 											$conn=$link;
@@ -179,7 +179,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 							<div class="row">
 							 <div class="col-md-4">
                              <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="module" id="required">Module</label>
+                               <label class="control-label control-label-left col-sm-3" for="module" >Module<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
                                            <?php 
 										echo "<select id='module' class='form-control' data-role='select'  name='module'  data-parsley-errors-container='#errId2' required>";
@@ -215,7 +215,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 							</div>  
 							<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="style" id="required">Style</label>
+                               <label class="control-label control-label-left col-sm-3" for="style" >Style<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
                                            <?php 
 										// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -247,7 +247,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 							</div>
 							<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="schedule" id="required">Schedule</label>
+                               <label class="control-label control-label-left col-sm-3" for="schedule" >Schedule<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
                                            <?php 
 										// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -281,21 +281,21 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 							<div class="row">  
 							<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="nop" id="required">NOP</label>
+                               <label class="control-label control-label-left col-sm-3" for="nop" >NOP<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
 
-								<input type="text" class="form-control" onkeypress='return validateQty(event);' oncopy='return false' onpaste='return false' name="nop" size="5" id="nop" value="16" class="form-control">
+								<input type="text" class="form-control" onkeypress='return validateQty(event);' oncopy='return false' onpaste='return false' name="nop" size="5" id="nop" value="16" class="form-control" >
 
 							</div>
 							</div>
 							</div>
 							<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="start_time" id="required">Start Time</label>
+                               <label class="control-label control-label-left col-sm-3" for="start_time" >Start Time<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
 
                                  <?php
-								echo"<SELECT name=\"start_time\" id=\"start_time\" onchange=\"calculate\" class=\"form-control\">";
+								echo"<SELECT name=\"start_time\" id=\"start_time\" onchange=\"calculate\" class=\"form-control\" required>";
 
 								echo"<option value=\"0\" name=\"start_time\">Select Start Time</option>
 								";
@@ -352,11 +352,11 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 
 						<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="end_time" id="required">End Time</label>
+                               <label class="control-label control-label-left col-sm-3" for="end_time" >End Time<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
 						 <?php 
 						 
-						 echo"<SELECT name=\"end_time\" id=\"end_time\"  onchange=\"calculate()\" class=\"form-control\">";
+						 echo"<SELECT name=\"end_time\" id=\"end_time\"  onchange=\"calculate()\" class=\"form-control\" requied>";
 
 						 echo"<option value=\"0\" name=\"end_time\">Select End Time</option>
 						 ";
@@ -416,7 +416,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 						 <div class="row">
 						 <div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="total_lost_mins" id="required">Total
+                               <label class="control-label control-label-left col-sm-3" for="total_lost_mins" >Total
                                 Lost Mins</label>
                                        <div class="controls col-sm-9">
 
@@ -428,7 +428,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 						</div>
 						<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="end_time" id="required">Exception Time (Mins)</label>
+                               <label class="control-label control-label-left col-sm-3" for="end_time" >Exception Time (Mins)</label>
                                        <div class="controls col-sm-9">
 						
 									   <input type="text" class="form-control" name="ex" onkeypress='return validateQty(event);' oncopy='return false' onpaste='return false' size="5" id="ex" onkeyup="calculate()" value="<?php echo $exception_time; ?>" class="form-control"/>
@@ -440,7 +440,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 					
 						<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="department" id="required">Department</label>
+                               <label class="control-label control-label-left col-sm-3" for="department" >Department<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
                                            <?php 
 										echo "<select id='dep' class='form-control' data-role='select'  name='dep'  data-parsley-errors-container='#errId2' required>";
@@ -473,7 +473,7 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 							<div class="row">
 							<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="reason" id="required">Reason</label>
+                               <label class="control-label control-label-left col-sm-3" for="reason" >Reason<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
 
 								<input type="text" class="form-control" name="reason_code" readonly id="reason_code" size=3 value="<?php echo $reason_code; ?>"><span onclick="box()" class='btn btn-info btn-xs'>Select Reason</sapn>
@@ -497,10 +497,10 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 						</div>
 						<div class="col-md-4">
                            <div class="form-group">
-                               <label class="control-label control-label-left col-sm-3" for="department" id="required">Source</label>
+                               <label class="control-label control-label-left col-sm-3" for="department" >Source<span class='req' style="color:red;">*</span></label>
                                        <div class="controls col-sm-9">
 									
-										<select id="source" class="form-control" data-role="select" selected="selected" name="source" data-parsley-errors-container="#errId2">
+										<select id="source" class="form-control" data-role="select" selected="selected" name="source" data-parsley-errors-container="#errId2" required>
 										<?php
 										if($source==0){
 											echo '<option value="0" selected>Internal</option>';
@@ -703,14 +703,23 @@ if(isset($_POST["submit"]))
 	
 		
 	$department=$_POST["dep"];
-	$reason=$_POST["reason"];
+	$reason=$_POST["reason_code"];
 	$source=$_POST["source"];
 
 	
 	$capture="1";
-	if(empty($section) || empty($shift)|| empty($module)|| empty($style) ||empty($schedule) || empty($date) == '' || empty($start_time) == '' || empty($end_time) == '' || empty($lost_mins) == '0' || empty($exc_time) || empty($nop)|| empty($department) || empty($reason)|| empty($source)    ){
+	// if(empty($section) || empty($shift)|| empty($module)|| empty($style) ||empty($schedule) || empty($date) == '' || empty($date) == '0000-00-00'|| empty($start_time) == '' || empty($end_time) == '' || empty($lost_mins) == '0' || empty($exc_time) || empty($nop)|| empty($department) || empty($reason)|| empty($source)    ){
 			
-	}
+	// }
+	if(empty($section) || empty($shift) || empty($module) || empty($style) || empty($schedule) || empty($date)  ||  empty($start_time) || empty($end_time) || empty($nop) || empty($department) || empty($reason) || $date=='0000:00:00'){
+	
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100);
+					function Redirect() {
+						sweetAlert('Please Fill all Mandatory Fields','','warning');
+						location.href = \"".getFullURLLevel($_GET['r'], "down_time_update_V2.php", "0", "N")."\";
+						}
+					</script>";
+	}else{
 	//New Addition for reason code tracking
 	$reason_code=$_POST['reason_code'];
 	
@@ -812,7 +821,7 @@ if(isset($_POST["submit"]))
 		}
 			
 		}
-	
+	}
 
 }
 
@@ -883,7 +892,7 @@ $sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 				$end_date1 = $end_date2.' PM';
 			}
 			else{
-				$end_date1=$start_time;
+				$end_date1=$end_time;
 			}
 			$lost_min=$row["dtime"];
 			$remarks=$row["remarks"];
@@ -929,7 +938,7 @@ function check_reasons(count){
 		
 		if(totlostmin > 0 && val == '')
 		{
-			swal('Please select atleast one Reason','','warning');
+			swal('Please select  Reason','','warning');
 			return false;
 		}
 
