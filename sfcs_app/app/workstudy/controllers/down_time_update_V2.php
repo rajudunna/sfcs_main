@@ -330,7 +330,8 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 										}
 										else
 										{
-											$r=$l-12;
+											$r=$l;
+											//$r=$l-12;
 											$pm='PM';
 											$time_pm=$l.":".$mins[$k]." ".$pm;
 												if($start_time==$time_pm){
@@ -390,7 +391,8 @@ $action_url = getFullURL($_GET['r'],'down_time_update_V2.php','N');
 								 }
 								 else
 								 {
-									 $r=$l-12;
+									 //$r=$l-12;
+									 $r=$l;
 									 $pm='PM';
 									 $time_pm=$l.":".$mins[$k]." ".$pm;
 									 if($end_time==$time_pm){
@@ -784,18 +786,12 @@ if(isset($_POST["submit"]))
 					$url=getFullURL($_GET['r'],'down_time_update_V2.php','N');
 					//echo $url;
 					//echo "Record updated successfully";
-					echo"<script>setTimeout(function () { 
-						swal({
-						  title: 'Record updated successfully',
-						  text: 'Message!',
-						  type: 'success',
-						  confirmButtonText: 'OK'
-						},
-						function(isConfirm){
-						  if (isConfirm) {
-							window.location.href = \"$url\";
-						  }
-						}); }, 100);</script>";
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+					function Redirect() {
+						sweetAlert('Downtime Updated Successfully','','success');
+						location.href = \"".getFullURLLevel($_GET['r'], "down_time_update_V2.php", "0", "N")."\";
+						}
+					</script>";
 				} else {
 					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 				}
@@ -872,28 +868,29 @@ $sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 			$schedule=$row["schedule"];
 			$mod_no=$row["mod_no"];
 			$nop=$row["nop"];
-			$start_time=$row["start_time"];
+			$start_time1=$row["start_time"];
 			$string = str_replace('PM', '', $start_time);
+			$end_time1=$row["end_time"];
 			
 			
 			
-			if($start_time>12){
-				$start_time2 = date('h:i', strtotime($string . '- 12 hours'));
-				$start_time1 = $start_time2.' PM';
-			}
-			else{
-				$start_time1=$start_time;
-			}
+			// if($start_time>12){
+			// 	$start_time2 = date('h:i', strtotime($string . '- 12 hours'));
+			// 	$start_time1 = $start_time2.' PM';
+			// }
+			// else{
+			// 	$start_time1=$start_time;
+			// }
 			
-			$end_time=$row["end_time"];
-			$string1 = str_replace('PM', '', $end_time);
-			if($start_time>12){
-				$end_date2 = date('h:i', strtotime($string1 . '- 12 hours'));
-				$end_date1 = $end_date2.' PM';
-			}
-			else{
-				$end_date1=$end_time;
-			}
+			// $end_time=$row["end_time"];
+			// $string1 = str_replace('PM', '', $end_time);
+			// if($end_time>12){
+			// 	$end_date2 = date('h:i', strtotime($string1 . '- 12 hours'));
+			// 	$end_time1 = $end_date2.' PM';
+			// }
+			// else{
+			// 	$end_time1=$end_time;
+			// }
 			$lost_min=$row["dtime"];
 			$remarks=$row["remarks"];
 			$source1=$row["source"];
@@ -914,10 +911,10 @@ $sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 			$cat_selection=$row["cat_selection"];
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["date"]."</td><td>".$section_name." </td><td>".$row["shift"]."</td>
-			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_date1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$row["department"]."</td><td>".$row["reason_code"]."</td><td>".$row["remarks"]."</td><td>".$row["source"]."</td>";
+			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_time1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$row["department"]."</td><td>".$row["reason_code"]."</td><td>".$row["remarks"]."</td><td>".$row["source"]."</td>";
 			if(in_array($authorized,$has_permission))
 			{
-			echo"<td><a href='$url&rowid=$rowid&date=$date&section=$section&shift=$shift&module=$mod_no&style=$style&schedule=$schedule&nop=$nop&start_time=$start_time&end_time=$end_time&lost_min=$lost_min&remarks=$remarks&source=$source1&department=$department&reason_code=$reason_code&exception_time=$exception_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>";
+			echo"<td><a href='$url&rowid=$rowid&date=$date&section=$section&shift=$shift&module=$mod_no&style=$style&schedule=$schedule&nop=$nop&start_time=$start_time1&end_time=$end_time1&lost_min=$lost_min&remarks=$remarks&source=$source1&department=$department&reason_code=$reason_code&exception_time=$exception_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>";
 			}
 			echo"</tr>";
 		}
