@@ -706,6 +706,7 @@ if(isset($_POST["submit"]))
 		
 	$department=$_POST["dep"];
 	$reason=$_POST["reason_code"];
+	$remarks=$_POST["reason"];
 	$source=$_POST["source"];
 
 	
@@ -780,7 +781,7 @@ if(isset($_POST["submit"]))
 			}
 			if($row_id>0)
 			{
-				$sql = "update $bai_pro.down_log set mod_no='$module',date='$date',department='$department',remarks='$reason',style='$style',dtime='$lost_mins',shift='$shift',section='$section',customer='$buyer',schedule='$schedule',source='$source',capture='$capture',lastup='$lastup',nop='$nop',start_time='$start_time',end_time='$end_time',reason_code='$reason_code',updated_by='$username',exception_time='$exception_time' where tid='$row_id'";
+				$sql = "update $bai_pro.down_log set mod_no='$module',date='$date',department='$department',remarks='$remarks',style='$style',dtime='$lost_mins',shift='$shift',section='$section',customer='$buyer',schedule='$schedule',source='$source',capture='$capture',lastup='$lastup',nop='$nop',start_time='$start_time',end_time='$end_time',reason_code='$reason_code',updated_by='$username',exception_time='$exception_time' where tid='$row_id'";
 
 				if (mysqli_query($conn, $sql)) {
 					$url=getFullURL($_GET['r'],'down_time_update_V2.php','N');
@@ -798,7 +799,7 @@ if(isset($_POST["submit"]))
 				
 			}
 			else{
-			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by,exception_time) values (".$module.", \"".$date."\", \"".$department."\",\"".$reason."\", \"".$style."\", ".$lost_mins.", \"".$shift."\", ".$section.", \"".$buyer."\", \"".$schedule."\", \"".$source."\", \"".$capture."\", \"".$lastup."\",\"".$nop."\",\"".$start_time."\",\"".$end_time."\",".$reason_code.",'$username','$exception_time')";
+			$sql2="insert into $bai_pro.down_log(mod_no,date,department,remarks,style,dtime,shift,section,customer,schedule,source,capture,lastup,nop,start_time,end_time,reason_code,updated_by,exception_time) values (".$module.", \"".$date."\", \"".$department."\",\"".$remarks."\", \"".$style."\", ".$lost_mins.", \"".$shift."\", ".$section.", \"".$buyer."\", \"".$schedule."\", \"".$source."\", \"".$capture."\", \"".$lastup."\",\"".$nop."\",\"".$start_time."\",\"".$end_time."\",".$reason_code.",'$username','$exception_time')";
 			//echo "<br/><br/>".$sql2."<br/>";
 			$result = mysqli_query($link, $sql2) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if ($result=='1') {
@@ -896,6 +897,20 @@ $sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 			$source1=$row["source"];
 			$department=$row["department"];
 			$reason_code=$row["reason_code"];
+
+			$query1="select dep_name from $bai_pro.down_deps where dep_id=\"$department\"";
+			$result2 = mysqli_query($link, $query1) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row2=mysqli_fetch_array($result2))
+				{
+					$dep_name=$sql_row2["dep_name"];
+				}
+			$query3="select down_reason from $bai_pro.down_reason where sno=\"$reason_code\"";
+			$result3 = mysqli_query($link, $query3) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row3=mysqli_fetch_array($result3))
+				{
+					$down_reason=$sql_row3["down_reason"];
+				}
+			
 			$exception_time=$row["exception_time"];
 			$query="select * from $bai_pro3.sections_master where sec_name=\"$section\"  order by sec_id";
 			$result1 = mysqli_query($link, $query) or exit("Sql Error[$i]".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -911,7 +926,7 @@ $sql = "SELECT * FROM $bai_pro.`down_log` order by tid desc";
 			$cat_selection=$row["cat_selection"];
 			
 			echo "<tr><td>".$sno++."</td><td>".$row["date"]."</td><td>".$section_name." </td><td>".$row["shift"]."</td>
-			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_time1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$row["department"]."</td><td>".$row["reason_code"]."</td><td>".$row["remarks"]."</td><td>".$row["source"]."</td>";
+			<td>".$row["mod_no"]."</td><td>".$row["style"]."</td><td>".$row["schedule"]."</td><td>".$row["nop"]."</td><td>".$start_time1."</td><td>".$end_time1."</td><td>".$row["dtime"]."</td><td>".$row["exception_time"]."</td><td>".$dep_name."</td><td>".$down_reason."</td><td>".$row["remarks"]."</td><td>".$source."</td>";
 			if(in_array($authorized,$has_permission))
 			{
 			echo"<td><a href='$url&rowid=$rowid&date=$date&section=$section&shift=$shift&module=$mod_no&style=$style&schedule=$schedule&nop=$nop&start_time=$start_time1&end_time=$end_time1&lost_min=$lost_min&remarks=$remarks&source=$source1&department=$department&reason_code=$reason_code&exception_time=$exception_time' class='btn btn-warning btn-xs editor_edit'>Edit</a> / <a href='$url1&rowid1=$rowid' class='btn btn-danger btn-xs editor_remove' onclick='return confirm_delete(event,this);'>Delete</a></td>";
