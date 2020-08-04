@@ -810,7 +810,9 @@ if(mysqli_num_rows($sql_result) > 0){
 		 $('#loading-image').hide();
         document.getElementById('update').disabled='true';
     });
+    
     $('#supplier').on('submit', function(e){
+        document.getElementById('update').disabled='true';
 		$("#loading-image").show();
 		$("#loading-image").addClass("ajax-loader");
         e.preventDefault();
@@ -947,13 +949,13 @@ if(mysqli_num_rows($sql_result) > 0){
 				if(data!=''){
     				$("#loading-image").hide();
 						swal({
-							title: "Please click on ok to continue..!",
-							text: "successfully updated",
+							text: "Records Updated Successfully",
 							type: "success"
 						}).then(function() {
-							  location.reload(  true);
+							  location.reload( true);
 						});
 				}else{
+    				$("#loading-image").hide();
 					swal('Enter Atleast one Quantity','','warning');
 				}
 			},error: function(error)
