@@ -3,6 +3,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 error_reporting(0);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -73,7 +75,7 @@ $sdate=$_POST['fdate'];
 $edate=$_POST['tdate'];
 $batch_search=$_POST['batch_no'];
 $buyer_select=$_POST['buyerdiv'];
-$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report ";
+$sql="SELECT DISTINCT buyer FROM $wms.sticker_report where plant_code='$plantcode'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -132,11 +134,11 @@ $table.= "<th>Width Shortage</th>";
 $table.= "</tr>";
 	if(strlen($batch_search)>0)
 	{	
-		$sqlx="select * from $bai_rm_pj1.inspection_db where batch_ref=\"$batch_search\"";
+		$sqlx="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"$batch_search\"";
 	}
 	else
 	{
-		$sqlx="select * from $bai_rm_pj1.inspection_db where date(log_date) between \"$sdate\" and \"$edate\"";
+		$sqlx="select * from $wms.inspection_db where plant_code='$plantcode' and date(log_date) between \"$sdate\" and \"$edate\"";
 	}
 
 
@@ -162,7 +164,7 @@ $table.= "</tr>";
 		
 		if($lot_no!=NULL)
 		{
-			$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item  SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no  SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\"from $bai_rm_pj1.sticker_report where batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
+			$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item  SEPARATOR ', ') as \"item_batch\",group_concat(distinct pkg_no) as \"pkg_no_batch\",group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no  SEPARATOR ', ') as \"lot_ref_batch\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\"from $wms.sticker_report where plant_code='$plantcode' and batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
 	
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -211,7 +213,7 @@ $table.= "</tr>";
 			{
 				$rec_qty=0;
 			
-				$sql="select *, if((length(ref5)<0 or length(ref6)<0 or length(ref3)<0),1,0) as \"print_check\", qty_rec  from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch) order by ref2+0";
+				$sql="select *, if((length(ref5)<0 or length(ref6)<0 or length(ref3)<0),1,0) as \"print_check\", qty_rec  from $wms.store_in where plant_code='$plantcode' and lot_no in ($lot_ref_batch) order by ref2+0";
 				//$table.= $sql;
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$num_rows=mysqli_num_rows($sql_result);
@@ -254,7 +256,7 @@ $table.= "</tr>";
 				//Configuration 
 				
 				
-				$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref_batch)";
+				$sql="select  COUNT(DISTINCT REPLACE(ref2,\"*\",\"\"))  as \"count\" from $wms.store_in where plant_code='$plantcode' and lot_no in ($lot_ref_batch)";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{

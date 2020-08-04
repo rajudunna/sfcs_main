@@ -7,6 +7,8 @@
     $table_filter = getFullURLLevel($_GET['r'],'common/js/TableFilter/tablefilter.js',3,'R');
     $view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
     $image_path = getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/'; 
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
 ?>
 
 
@@ -78,11 +80,11 @@ if (newwindow.location && !newwindow.closed) {
 
 //Variable $con is coming from the header.php 
 $x=1;
-$sql1=mysqli_query($link,"select distinct sealno from $bai_pack.upload order by dat desc");
+$sql1=mysqli_query($link,"select distinct sealno from $pts.upload where plant_code='$plantcode' order by dat desc");
 
 while($rows=mysqli_fetch_array($sql1))
 {
-   $sql2=mysqli_query($link,"select * from $bai_pack.upload where sealno='".$rows['sealno']."' order by dat desc");
+   $sql2=mysqli_query($link,"select * from $pts.upload where plant_code='$plantcode' and sealno='".$rows['sealno']."' order by dat desc");
    while($row2=mysqli_fetch_array($sql2))
    {
 		 echo "<tr>";
