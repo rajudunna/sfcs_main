@@ -31,19 +31,24 @@ if($_POST['modal_submit'])
 				insertMOQuantitiesSewing($schedule,$inserted_id);		
 				$res1['status'] = true;
 				echo json_encode($res1);
-			} else {
+			} 
+			else 
+			{
 				$res1['status'] = false;
+				$res1['final'] = 'first_cut';
 				echo json_encode($res1);
 				exit();
 			} 
         }
-        else{
-		$res1['final'] = 'validating';
-		echo json_encode($res1);
-	    exit();
+		else
+		{
+			$res1['final'] = 'validating';
+			echo json_encode($res1);
+			exit();
 	    }			
 	}
-	else{
+	else
+	{
 		$res1['final'] = 'validating';
 		echo json_encode($res1);
 	    exit();
