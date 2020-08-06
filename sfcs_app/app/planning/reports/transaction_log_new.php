@@ -39,7 +39,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <div class="col-md-2">
 <label valign="top">End: </label> <input data-toggle="datepicker"  class="form-control" type="text" id="demo2" name="edate" value="<?php  if($edate==""){ echo date("Y-m-d"); } else { echo $edate; } ?>" size="10" required>
 </div>
-<div class="col-md-1">
+<div class="col-md-2">
 <label valign="top">Section: </label> <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
 <?php
@@ -178,7 +178,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		  $modules[]=$sql_row24['module_name'];
 		}
 		$modulesData = implode(',', $modules);
-		$section_value1 = "and assigned_module in ('$modulesData')";
+		$section_value1 = "and assigned_module in ($modulesData)";
 	}
 	else 
 	{
