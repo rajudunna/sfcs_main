@@ -6,7 +6,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 
-$sql="select *,sum(quantity) as qty,group_concat(id) as ids from $bai_pro3.m3_transactions where response_status ='pending' and m3_bulk_tran_id IS NULL group by mo_no,api_type,workstation_id,op_code,reason,remarks";
+$sql="select *,sum(quantity) as qty,group_concat(id) as ids from $pts.m3_transactions where response_status ='pending' and plant_code='$plant_code' and m3_bulk_tran_id IS NULL group by mo_no,api_type,workstation_id,op_code,reason,remarks";
 $transaction_result=mysqli_query($link, $sql) or exit("m3_transactions ERROR".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($transaction_result))
 {
@@ -31,13 +31,12 @@ while($row=mysqli_fetch_array($transaction_result))
     $ids=$row['ids'];
   
     $cur_date = date('Y-m-d H:s:i');
-    $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`)
-    VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type')";
+    $inserting_into_m3_tran_log = "INSERT INTO $pts.`m3_bulk_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`m3_ops_code`,`response_status`,`m3_trail_count`,`api_type`,plant_code,created_user,updated_user,updated_at) VALUES ('$cur_date','$mo_number',$quantity,'$reason','$remarks','$log_user','$tran_status_code','$module_no','$shift',$op_code,'$op_des','$ref_no','$workstation_id','$m3_ops_code','$response_status',$m3_trail_count,'$api_type','$plantcode','$username','$username',NOW())";
     mysqli_query($link,$inserting_into_m3_tran_log) or exit("While inserting into m3_tranlog".mysqli_error($GLOBALS["___mysqli_ston"]));
 
     $insert_id=mysqli_insert_id($link);
 
-    $qry_m3_transactions="UPDATE $bai_pro3.`m3_transactions` SET m3_bulk_tran_id=$insert_id  WHERE id in ($ids) ";
+    $qry_m3_transactions="UPDATE $pts.`m3_transactions` SET m3_bulk_tran_id=$insert_id,updated_user='$username',updated_at=NOW()  WHERE id in ($ids) and plant_code='$plant_code'";
     $res=mysqli_query($link,$qry_m3_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 

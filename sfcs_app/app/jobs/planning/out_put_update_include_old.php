@@ -1,11 +1,11 @@
 
 
 <?php
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 error_reporting(0);
 $schedules_to_update=array();
 if($rowcount>0){
-	$sql="select distinct delivery from $pts.bai_log_buf where plant_code='$plantcode' and bac_date between \"$start_date_w\" and \"$end_date_w\" and delivery not in (".implode(",",$schedule_db).")";
+	$sql="select distinct delivery from $pts.bai_log_buf where plant_code='$plant_code' and bac_date between \"$start_date_w\" and \"$end_date_w\" and delivery not in (".implode(",",$schedule_db).")";
 	//$sql="select distinct delivery from bai_pro.bai_log_buf where delivery not in (".implode(",",$schedule_db).")";
 	echo $sql."<br/>";
 
@@ -269,7 +269,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		if(substr($style,0,1)=="M")
 		{
 			//$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $packing_summary where doc_no in ($search_string) and status=\"DONE\"";
-			$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $bai_pro3.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\"";
+			$sqlx1="select coalesce(sum(carton_act_qty),0) as scanned from $pps.packing_summary where trim(BOTH from order_del_no)=\"".trim($schedule)."\" and trim(BOTH from order_col_des)=\"".trim($color)."\" and status=\"DONE\" and plant_code='$plant_code'";
 			echo "test:".$sqlx1."<br/>";
 			$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx15".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
@@ -279,7 +279,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no=$schedule and container=1 and plant_code='$plant_code'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -287,7 +287,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no='$schedule' and container>1 and plant_code='$plant_code'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx17".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{

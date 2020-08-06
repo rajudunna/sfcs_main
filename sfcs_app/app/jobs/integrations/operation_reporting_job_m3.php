@@ -9,7 +9,8 @@ set_time_limit(1000000);
 
 //details from config tool
 //$facility_id = $global_facility_code;
-$plant_code = $global_facility_code;
+$plant_code = $plantcode;
+$username = $username;
 $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
@@ -29,7 +30,7 @@ while($row=mysqli_fetch_array($sql_result111))
 }
 if($enable_api_call == 'YES')
 {
-    $transactions_query = "SELECT * from $bai_pro3.m3_bulk_transactions where response_status='$status' and m3_trail_count < 4 ";
+    $transactions_query = "SELECT * from $pts.m3_bulk_transactions where response_status='$status' and plant_code= '$plant_code' and m3_trail_count < 4 ";
     $transaction_result = mysqli_query($link, $transactions_query) or 
                         exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($transaction_result))
@@ -66,20 +67,20 @@ if($enable_api_call == 'YES')
             if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
             {
                 //updating response status in m3_bulk_transactions
-                $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
+                $qry_m3_bulk_transactions="UPDATE $pts.m3_bulk_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE id=".$transaction_id." and plant_code= '$plant_code'";
                 mysqli_query($link,$qry_m3_bulk_transactions) or exit("While updating into qry_m3_bulk_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
-                $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE m3_bulk_tran_id=".$transaction_id;
+                $qry_m3_transactions="UPDATE $pts.m3_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE m3_bulk_tran_id=".$transaction_id;
                 mysqli_query($link,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             else
             {
                 //incrementing the m3_trail_count in m3_bulk_transactions
-                $update_query = "UPDATE $bai_pro3.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where id=$transaction_id ";
+                $update_query = "UPDATE $pts.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where id=$transaction_id and plant_code= '$plant_code'";
                 mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_bulk_transactions');
-                $update_query_m3_trans = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where m3_bulk_tran_id=$transaction_id";
+                $update_query_m3_trans = "UPDATE $pts.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where m3_bulk_tran_id=$transaction_id and plant_code= '$plant_code'";
                 mysqli_query($link,$update_query_m3_trans) or exit('Theres an Error while update_query_m3_trans');
                 //insert transactions details into transactions_log
-                $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
+                $qry_transactionslog="INSERT INTO $pts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,plant_code,created_user,updated_user,updated_at) VALUES ('$transaction_id','$message','$log_user','$current_date','$plantcode','$username','$username',NOW())"; 
                 mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
         }else{
@@ -118,21 +119,21 @@ if($enable_api_call == 'YES')
                     if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
                     {
                         //updating response status in m3_bulk_transactions
-                        $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
+                        $qry_m3_bulk_transactions="UPDATE $pts.m3_bulk_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE id=".$transaction_id." and plant_code= '$plant_code'";
                         mysqli_query($link,$qry_m3_bulk_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE m3_bulk_tran_id=".$transaction_id;
+                        $qry_m3_transactions="UPDATE $pts.m3_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE m3_bulk_tran_id=".$transaction_id." and plant_code= '$plant_code'";
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                     }
                     else
                     {
                         //incrementing the m3_trail_count in m3_bulk_transactions
-                        $update_query = "UPDATE $bai_pro3.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where id=$transaction_id ";
+                        $update_query = "UPDATE $pts.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where id=$transaction_id and plant_code= '$plant_code'";
                         mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
-                        $update_query_m3_trans = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where m3_bulk_tran_id=$transaction_id";
+                        $update_query_m3_trans = "UPDATE $pts.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where m3_bulk_tran_id=$transaction_id and plant_code= '$plant_code'";
                         mysqli_query($link,$update_query_m3_trans) or exit('Theres an Error while update_query_m3_trans');
                         //insert transactions details into transactions_log
-                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
+                        $qry_transactionslog="INSERT INTO $pts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,plant_code,created_user,updated_user,updated_at) VALUES ('$transaction_id','$message','$log_user','$current_date','$plantcode','$username','$username',NOW())"; 
                         mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                     
@@ -172,21 +173,21 @@ if($enable_api_call == 'YES')
                     if($type!='ServerReturnedNOK' && $type!='BackendInternalError' && $type!='MandatoryInputFieldNotFound')
                     {
                         //updating response status in m3_bulk_transactions
-                        $qry_m3_bulk_transactions="UPDATE $bai_pro3.m3_bulk_transactions SET response_status='pass' WHERE id=".$transaction_id;
+                        $qry_m3_bulk_transactions="UPDATE $pts.m3_bulk_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE id=".$transaction_id." and plant_code= '$plant_code'";
                         mysqli_query($link,$qry_m3_bulk_transactions) or exit("While updating into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-                        $qry_m3_transactions="UPDATE $bai_pro3.m3_transactions SET response_status='pass' WHERE m3_bulk_tran_id=".$transaction_id;
+                        $qry_m3_transactions="UPDATE $pts.m3_transactions SET response_status='pass',updated_user='$username',updated_at=NOW() WHERE m3_bulk_tran_id=".$transaction_id." and plant_code= '$plant_code'";
                         mysqli_query($link,$qry_m3_transactions) or exit("While updating into qry_m3_transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                     else
                     {
                         //incrementing the m3_trail_count in m3_bulk_transactions
-                        $update_query = "UPDATE $bai_pro3.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where id=$transaction_id ";
+                        $update_query = "UPDATE $pts.m3_bulk_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where id=$transaction_id and plant_code= '$plant_code'";
                         mysqli_query($link,$update_query) or exit('Theres an Error while Updaitng m3_trans');
-                        $update_query_m3_trans = "UPDATE $bai_pro3.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail' where m3_bulk_tran_id=$transaction_id";
+                        $update_query_m3_trans = "UPDATE $pts.m3_transactions set m3_trail_count = m3_trail_count + 1,response_status='fail',updated_user='$username',updated_at=NOW() where m3_bulk_tran_id=$transaction_id and plant_code= '$plant_code'";
                         mysqli_query($link,$update_query_m3_trans) or exit('Theres an Error while update_query_m3_trans');
                         //insert transactions details into transactions_log
-                        $qry_transactionslog="INSERT INTO $brandix_bts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`) VALUES ('$transaction_id','$message','$log_user','$current_date')"; 
+                        $qry_transactionslog="INSERT INTO $pts.`transactions_log` (`transaction_id`,`response_message`,`created_by`,`created_at`,plant_code,created_user,updated_user,updated_at) VALUES ('$transaction_id','$message','$log_user','$current_date','$plantcode','$username','$username',NOW())"; 
                         mysqli_query($link,$qry_transactionslog) or exit("While inserting into M3 transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
                     }
                 } 

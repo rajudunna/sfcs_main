@@ -67,7 +67,7 @@ $j=0;
 $message.= "Dear All,<br><br>Please find the Additional Material Requests of ".trim($start_date_w)." to ".trim($end_date_w).".<br><br>";
 $message.="<table><tr bgcolor=\"yellow\"><th>Section</th><th>PTRIMS</th><th>STRIMS</th><th>FTRIMS</th><th>Recuts</th></tr>";
 
-$sql="SELECT section,SUM(IF(product='PTRIM',1,0)) AS PTRIM,SUM(IF(product='STRIM',1,0)) AS STRIM,SUM(IF(product='FAB',1,0)) AS FAB FROM $bai_rm_pj2.mrn_track WHERE DATE(req_date) BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" GROUP BY section";
+$sql="SELECT section,SUM(IF(product='PTRIM',1,0)) AS PTRIM,SUM(IF(product='STRIM',1,0)) AS STRIM,SUM(IF(product='FAB',1,0)) AS FAB FROM $wms.mrn_track WHERE DATE(req_date) BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND plant_code= '$plant_code' GROUP BY section";
 //echo $sql;
 $result=mysqli_query($link, $sql) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))

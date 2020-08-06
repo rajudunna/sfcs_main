@@ -50,7 +50,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\" from $pts.bai_log where plant_code='$plantcode' and ims_doc_no in ($search_string)  and bac_sec<>0 group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\" from $pts.bai_log where plant_code='$plant_code' and ims_doc_no in ($search_string)  and bac_sec<>0 group by bac_sec";
 		//echo $sql2."<br/>";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -136,7 +136,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		// }
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no=$schedule and container=1 and plant_code='$plant_code'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo $sqlx1."<br>";
 
@@ -146,7 +146,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no=$schedule and container>1 and plant_code='$plant_code'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 		echo $sqlx1."<br>";
 
