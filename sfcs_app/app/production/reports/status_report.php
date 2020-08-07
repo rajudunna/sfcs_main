@@ -108,7 +108,9 @@ if(isset($_POST['submit']))
         }
         $operation_codes = "'" . implode ( "', '", $op_codes ) . "'";
 
-        $get_cutting_data="SELECT distinct(input_job_no_random_ref) as input_job_no_random,size_title FROM $brandix_bts.`bundle_creation_data` WHERE date(date_time)='$post_date' and operation_id in ($operation_codes) group by input_job_no_random,size_title";
+        $post_date = date("ymd",strtotime($post_date));
+        $get_cutting_data="SELECT distinct(input_job_no_random) as input_job_no_random,size_code as size_title FROM $bai_pro3.`pac_stat_log_input_job` WHERE input_job_no_random like '%$post_date%' group by input_job_no_random,size_code";
+        // echo $get_cutting_data;
         $cutting_result=mysqli_query($link, $get_cutting_data) or exit("Error getting Table Details");
         $cutting_result_rows_count=mysqli_num_rows($cutting_result);
         if($cutting_result_rows_count == 0){
