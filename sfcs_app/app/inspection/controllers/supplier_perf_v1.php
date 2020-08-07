@@ -949,7 +949,7 @@ if(mysqli_num_rows($sql_result) > 0){
 				if(data!=''){
     				$("#loading-image").hide();
 						swal({
-							text: "Records Updated Successfully",
+							text:'"'+data+'" Records Updated Successfully',
 							type: "success"
 						}).then(function() {
 							  location.reload( true);
