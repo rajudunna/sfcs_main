@@ -500,10 +500,11 @@ function ReplaceProcess($replace_id_edit)
             $html .= '
             <div class="pull-right"><input type="submit" id="replace" class="btn btn-primary" value="Submit" name="formSubmit1"></div>';
         }
-        // else
-        // {
-        //     $html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
-        // }
+        else
+        {
+            $job_status=1;
+			$html = "<h2 style='color:red'>There is no excess sewing jobs for the particular style,schedule and color</h2>";
+        }
         $html .= "<input type='hidden' id='total_rows' value='$s_no'>";
     // }
     if($job_status==0) {
