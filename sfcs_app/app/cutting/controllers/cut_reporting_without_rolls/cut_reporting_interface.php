@@ -1669,6 +1669,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             console.log('------------------------');
             dockets.forEach( docketInfo => {
                 console.log(docketInfo);
+                var r_plies=docketInfo.a_plies;
+                if(docketInfo.p_plies == docketInfo.a_plies){
+                    r_plies=0;
+                }
                 dockets_html += "\
                     <tr class='dockets_for_cut'>\
                         <td>"+docketInfo['category']+"</td>\
@@ -1677,7 +1681,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         <td>"+docketInfo.act_cut_status+"</td>\
                         <td>"+docketInfo.fab_required+"</td>\
                         <td>"+docketInfo.p_plies+"</td>\
-                        <td>"+docketInfo.a_plies+"</td>\
+                        <td>"+r_plies+"</td>\
                     <tr>";
             });
             $('#docket_info_table').append(dockets_html);
