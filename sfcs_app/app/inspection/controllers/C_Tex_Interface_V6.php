@@ -2296,7 +2296,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	if(in_array($authorized,$has_permission))
 	{
 
-		if ($temp[16] > 0 && $temp[4] > 0) 
+		if ($temp[16]+$temp[17] > 0 && $temp[4] > 0) 
 		{
 			$readonly = 'readonly';
 			$dropdown_read = 'disabled';
@@ -2625,8 +2625,13 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	
 	if($head_check>0)
 	{
-		$sql="insert ignore into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
-		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_check="select batch_ref from $bai_rm_pj1.inspection_db where batch_ref=\"$lot_no_new\"";
+		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res)==0)
+		{
+			$sql="insert into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
+			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}	
 			
 		if(mysqli_affected_rows($link))
 		{

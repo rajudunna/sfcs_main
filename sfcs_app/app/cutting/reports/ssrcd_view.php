@@ -3,8 +3,8 @@ $url1 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config
 include("$url1");  
 $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'); 
 include("$url2");
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0012",$username,1,$group_id_sfcs); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
+
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -42,21 +42,21 @@ function show_pop3(){
 
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 }
 
 
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 }
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&category="+document.test.category.value
 }
 </script>
 
@@ -71,9 +71,9 @@ include("$url3");
 ?>
 
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $category=$_GET['category'];
 
 if(isset($_POST['style']))
@@ -510,7 +510,7 @@ if(isset($_POST['submit']))
 							<th>Cut Status</th>
 							<th>Docket Date</th>
 							<th>Cut Date</th>
-							<th>Section</th>
+							<th>Cut Table Name</th>
 							<th>Shift</th>
 							<th>Input Stats</th>
 							<th>Input <span style='mso-spacerun:yes'></span>Date(Minimum Date)</th>
@@ -644,4 +644,3 @@ if(isset($_POST['submit']))
 </div><!-- panel body
 </div><!-  panel -->
 </div>
-

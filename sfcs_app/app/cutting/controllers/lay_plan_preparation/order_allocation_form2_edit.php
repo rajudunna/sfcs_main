@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <style>
 div.block
@@ -52,7 +53,7 @@ function verify_num(t,e){
 <?php
 
 $check_id=$_GET['check_id'];
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $cat_id=$_GET['cat_id'];
 $ref_id=$_GET['ref_id'];
 
@@ -762,9 +763,11 @@ $allocate_s50=$sql_row['allocate_s50'];
 
 	$remarks=$sql_row['remarks'];
 }
-
+//Encoding color
+$main_color = color_encode($color_back);
+$main_style = style_encode($style_back);
 echo "<div class=\"block\">";
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back\"><< Click here to Go Back</a>";
 echo "<br><br>";
 echo "<table class=\"table table-bordered\">";
 echo "<tr><th>Ratio</th><td>:</td><td> ".$ratiocount."</td></tr>";

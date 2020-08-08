@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'order_status_buffer.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 <?php
 error_reporting(0);
@@ -34,22 +35,22 @@ function secondbox()
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	window.location.href = uriVal;
 }
 function fourthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)));
 	window.location.href = uriVal;
 }
 function fifthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)))+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 function sixthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&style_id="+window.btoa(unescape(encodeURIComponent(document.test.style_id.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
@@ -150,13 +151,13 @@ if(isset($_POST['submit1']))
 	$to_date=$_POST['to_date'];
 	
 }else{
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule'];
-	$color=$_GET['color'];
+	$color=color_decode($_GET['color']);
 	$cpo=$_GET['cpo'];
 	$buyer_div=$_GET['buyer_div'];
 	$buyer_div1=$_POST['buyer_div'];
-	$style_id=$_GET['style_id'];
+	$style_id=style_decode($_GET['style_id']);
 	$from_date=$_GET['from_date'];
 	$to_date=$_GET['to_date'];
 }

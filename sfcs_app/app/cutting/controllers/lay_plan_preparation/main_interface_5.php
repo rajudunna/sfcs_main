@@ -50,13 +50,13 @@ echo "<div>
 			</thead>";
 			foreach($cats_ids as $key=>$value)
 			{
-				$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value group by cat_ref ORDER BY tid";
+				$get_cat_ref_query="SELECT cat_ref FROM $bai_pro3.allocate_stat_log WHERE order_tid=\"$tran_order_tid1\" and cat_ref=$value and recut_lay_plan='no' group by cat_ref ORDER BY tid";
 				$cat_ref_result=mysqli_query($link, $get_cat_ref_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($cat_row=mysqli_fetch_array($cat_ref_result))
 				{
 					$grand_tot_used_fab = 0;
 					$grand_tot_used_binding = 0;
-					$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." ORDER BY ratio";
+					$sql="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and cat_ref=".$cat_row['cat_ref']." and recut_lay_plan='no' ORDER BY ratio";
 					// echo $sql.'<br>';
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -106,12 +106,14 @@ echo "<div>
 							$binding_consumption=$sql_row2['binding_con'];
 						}
 
-						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1";
+						$sql2="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref1 and recut_lay_plan='no'";
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
 							$ratio=$sql_row2['ratio'];
 						}
+						//Encoding order_tid
+                        $main_tran_order_tid=order_tid_encode($tran_order_tid1);
 						echo "
 						<tr class=\"  \">";
 							//echo "<td class=\"  \"><center>".$mk_ref1."</center></td>";
@@ -124,10 +126,11 @@ echo "<div>
 							
 							echo "<td class=\"  \"><center>".$mkeff1."</center></td>";
 							echo "<td class=\"  \"><center>".$mk_version."</center></td>";
-
+             
 							if($mk_ref1==0)
 							{
-								echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1\">Create</a>";
+								
+								echo "<td class=\"  \"><center><a class=\"btn btn-xs btn-primary\" href=\"".getFullURL($_GET['r'], "order_makers_form2.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1\">Create</a>";
 							}
 							else
 							{
@@ -136,7 +139,7 @@ echo "<div>
 									and order_tid='$tran_order_tid1' and print_status is not null ";
 								if(mysqli_num_rows(mysqli_query($link,$print_status_query)) > 0 ){
 									echo "<td class=\"  \"><center><a id='revise_form' class=\"btn btn-xs btn-warning\" 
-									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$tran_order_tid1&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
+									href=\"".getFullURL($_GET['r'], "revise_process.php", "N")."&tran_order_tid=$main_tran_order_tid&allocate_ref=$allocate_ref1\">Revise</a></center></td>";
 								}else{
 									echo "<td class=\"  \"><center>Updated</center></td>";
 									// if($mk_status1==9)
@@ -156,14 +159,14 @@ echo "<div>
 							if(mysqli_num_rows($sql_result21)==0)
 							{
 								$dummy++;
-								echo "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$tran_order_tid1&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
+								echo "<td class=\"  \"><center><a id='delete_form$dummy' class=\"btn btn-xs btn-danger confirm-submit\" href=\"".getFullURL($_GET['r'], "delete_id.php", "N")."&tran_order_tid=$main_tran_order_tid&cat_ref=$cat_ref1&cuttable_ref=$cuttable_ref1&allocate_ref=$allocate_ref1&mk_ref=$mk_ref1\">Delete</a>";
 							}
 							else
 							{
 								echo "<td class=\"word-wrap\"><center>Lay plan Prepared";		
 							}	
 							
-							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 ";
+							$sql2="select * from $bai_pro3.allocate_stat_log where order_tid=\"$tran_order_tid1\" and tid=$allocate_ref1 and recut_lay_plan='no'";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
 							{	

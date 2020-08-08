@@ -37,7 +37,7 @@
     ?>
     <div class='panel panel-primary'>
 	<div class='panel-heading'>
-		<b>Downtine Reasons</b>
+		<b>Downtime Reasons</b>
 	</div>
 	<div class='panel-body'>
 

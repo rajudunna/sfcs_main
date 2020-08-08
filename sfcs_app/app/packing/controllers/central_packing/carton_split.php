@@ -1,11 +1,12 @@
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
 
 	if (isset($_GET['style']))
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 	if(isset($_POST['submit']))
@@ -18,7 +19,7 @@
         var url1 = '<?= getFullURL($_GET['r'],'carton_split.php','N'); ?>';
         function firstbox()
         {
-            window.location.href =url1+"&style="+document.mini_order_report.style.value
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
         }
     </script>
 
@@ -109,16 +110,17 @@ if((isset($_POST['submit']) || ($_GET['style'] && $_GET['schedule'])) &&  short_
 							}
 
 							$status=$sql_row['status'];
-
+                            //Encoded Style
+                            $main_style = style_encode($style);
 							if($status!='DONE')
 							{
 								if($carton_mode=='F')
 								{
-									echo "<a href='$split_jobs&schedule=$schedule&style=$style&seq_no=$seq_no[$i]&packmethod=$pack_method[$i]&cartonno=$carton_no' class='btn btn-success'>Carton:".$carton_no."</a>"."";
+									echo "<a href='$split_jobs&schedule=$schedule&style=$main_style&seq_no=$seq_no[$i]&packmethod=$pack_method[$i]&cartonno=$carton_no' class='btn btn-success'>Carton:".$carton_no."</a>"."";
 								}
 								else
 								{
-									echo "<a href='$split_jobs&schedule=$schedule&style=$style&seq_no=$seq_no[$i]&packmethod=$pack_method[$i]&cartonno=$carton_no' class='btn btn-warning'>Carton:".$carton_no."</a>"."";
+									echo "<a href='$split_jobs&schedule=$schedule&style=$main_style&seq_no=$seq_no[$i]&packmethod=$pack_method[$i]&cartonno=$carton_no' class='btn btn-warning'>Carton:".$carton_no."</a>"."";
 								}
 							}
 							else

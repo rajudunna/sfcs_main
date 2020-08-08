@@ -60,7 +60,7 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table";
+$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table where status = 'active' ";
 $cut_table_result = mysqli_query($link,$cut_table_query);
 while($row = mysqli_fetch_array($cut_table_result)){
     $cut_tables[$row['tbl_id']] = $row['tbl_name'];
@@ -612,7 +612,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                        shortages= "value =0.00";
                                        fabric_return= "value =0.00"; 
                                     }
-                                    row = $('<tr><td id='+i+'>'+sno+'</td><td><input type="number" id='+i+"laysequece"+'  '+lay+' class="form-control integer" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["ref4"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="number"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies '+roll+' class="form-control float" '+existed+'></td><td><input type="number"  '+damages+'  onchange="calculatecutreport(\''+i+'cdamages\');"  id='+i+'cdamages class="form-control float" '+existed+'></td><td><input type="number"  '+joints+' onchange="calculatecutreport(\''+i+'cjoints\');" id='+i+'cjoints class="form-control float" '+existed+'></td><td><input type="number"  '+endbits+' onchange="calculatecutreport(\''+i+'cendbits\');" id='+i+'cendbits class="form-control float" '+existed+'></td><td><input type="number"  onchange="calculatecutreport(\''+i+'cshortages\');"  '+shortages+'  id='+i+'cshortages class="form-control float"  '+existed+' readonly></td><td><input type="number" onchange="calculatecutreport(\''+i+'cfabricreturn\');"  '+fabric_return+' id='+i+'cfabricreturn class="form-control float" ></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td></tr>'); //create row
+                                    var bgcolor = data[i]["bgcolor"];
+                                    row = $('<tr style="background-color:'+bgcolor+'"><td id='+i+'>'+sno+'</td><td><input type="number" id='+i+"laysequece"+'  '+lay+' class="form-control integer" '+existed+'></td><td>'+data[i]["ref2"]+'</td><td>'+data[i]["shade"]+'</td><td>'+data[i]["roll_width"]+'</td><td>'+data[i]["allocated_qty"]+'</td><td><input type="number"  onchange="calculatecutreport(\''+i+'creportingplies\');" id='+i+'creportingplies '+roll+' class="form-control float" '+existed+'></td><td><input type="number"  '+damages+'  onchange="calculatecutreport(\''+i+'cdamages\');"  id='+i+'cdamages class="form-control float" '+existed+'></td><td><input type="number"  '+joints+' onchange="calculatecutreport(\''+i+'cjoints\');" id='+i+'cjoints class="form-control float" '+existed+'></td><td><input type="number"  '+endbits+' onchange="calculatecutreport(\''+i+'cendbits\');" id='+i+'cendbits class="form-control float" '+existed+'></td><td><input type="number"  onchange="calculatecutreport(\''+i+'cshortages\');"  '+shortages+'  id='+i+'cshortages class="form-control float"  '+existed+' readonly></td><td><input type="number" onchange="calculatecutreport(\''+i+'cfabricreturn\');"  '+fabric_return+' id='+i+'cfabricreturn class="form-control float" ></td><td style="display:none;"><button style="background-color: DodgerBlue;color: white;"class="btn fa fa-trash" id="del'+i+'"></td><td style="display:none;"><input type="text"  value='+marklength+' onchange="calculatecutreport();" id="mlength" class="form-control"></td><td style="display:none;">'+data[i]["roll_id"]+'</td><td style="display:none;">'+data[i]["shade"]+'</td style="display:none;"><td style="display:none;">'+complted+'</td><td style="display:none;" id='+i+'alloc_type_id>'+data[i]["alloc_type_id"]+'</td><td style="display:none;" id='+i+'bgcolor>'+bgcolor+'</td></tr>'); //create row 
                                     totalreportingplies+=parseInt(data[i]["allocated_qty"]/marklength);
                                     $('#c_plies').val(totalreportingplies);
                                     totalfabricreturn+=marklength;
@@ -1055,6 +1056,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var data = [];
         var check=0;
         var i=0;
+        console.log(table+'table');
         table.find('tr').each(function (i) {
 
         var $tds = $(this).find('td'),
@@ -1068,6 +1070,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             damages = $tds.find('#'+i+'cdamages').val();
             joints =$tds.find('#'+i+'cjoints').val();
             endbits = $tds.find('#'+i+'cendbits').val();
+            alloc_type_id = $tds.eq(17).text();
+            bgcolor = $tds.eq(18).text();
             shortages =$tds.find('#'+i+'cshortages').val();
             fabricreturn=$tds.find('#'+i+'cfabricreturn').val();
             mlength=$tds.find('#mlength').val();
@@ -1122,7 +1126,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         if(preparedroll==0){
             if(laysequence!='')
             {
-                data.push([Sno,laysequence,rollno,shade,width,receivedqty,reportingplies,damages,joints,endbits,shortages,fabricreturn] );     
+                data.push([Sno,laysequence,rollno,shade,width,receivedqty,reportingplies,damages,joints,endbits,shortages,fabricreturn,alloc_type_id,bgcolor] );     
             }
         }
         
@@ -1275,6 +1279,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         full_reporting_flag : full_reporting_flag,  
                         data:data,
                         rollwisestatus:rollwisestatus,
+                        
                         //ratios:ratios
                     };    
 

@@ -1,16 +1,17 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
 
 if(isset($_GET['order_tid']))
 {
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];
 $cat_desc=$_GET['cat_desc'];
 $mk_status=$_GET['mk_status'];
 $sizes_reference=$_GET['sizes_reference'];
 $sizes_reference_array=explode(",",$sizes_reference);
-$sql_data='select * from '.$bai_pro3.'.allocate_stat_log where order_tid="'.$order_tid.'" and cat_ref="'.$cat_ref.'"';//echo $sql_data;
+$sql_data='select * from '.$bai_pro3.'.allocate_stat_log where order_tid="'.$order_tid.'" and cat_ref="'.$cat_ref.'" and recut_lay_plan="no"';//echo $sql_data;
 $sql_result_data=mysqli_query($link, $sql_data) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
  $table_details = "<div class=\"table-responsive\"><table class=\"table table-bordered\"><thead><tr><th class=\"column-title\"><center>Ratio</center></th><th class=\"column-title\"><center>Category</center></th><th class=\"column-title\"><center>Total Plies</center></th><th class=\"column-title\"><center>Max Plies/Cut</center></th>";
 foreach ($sizes_reference_array as $key => $value) {

@@ -34,12 +34,12 @@
         
         if($unique_count == '0'){
 
-            echo 'Proceed';
+            echo json_encode(['status'=>'Proceed']);
             die();
 
         }else{
             
-            echo 'Stop';
+            echo json_encode(['status'=>'Stop']);
             die();
         }
 

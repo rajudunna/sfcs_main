@@ -1,7 +1,8 @@
 <?php include('../../../../common/config/config.php'); ?>
 <?php include('../../../../common/config/functions.php'); ?>
+<?php include('../../../../common/config/functions_dashboard.php'); ?>
 <?php
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
 if($_GET['print_status']<>'')
@@ -2825,9 +2826,9 @@ if($print_status=="0000-00-00" || $print_status == "")
 	
 	if($print_status=="0000-00-00" || $print_status == "")
     {
-	    // $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
- 	    // //echo $sql;
-	    // mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	    $sql="update $bai_pro3.plandoc_stat_log set print_status=\"".date("Y-m-d")."\",docket_printed_person='$username' where doc_no=$docketno";
+ 	    //echo $sql;
+	    mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql12="update $bai_pro3.recut_v2 set print_status=\"".date("Y-m-d")."\" where doc_no=$docketno";
 	//echo $sql;
 	mysqli_query($link,$sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

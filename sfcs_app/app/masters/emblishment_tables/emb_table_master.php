@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Emblishment Table Master</title>
+	<title>Embellishment Table Master</title>
 	<?php 
 		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 		$self_url = getFullURL($_GET['r'],'emb_table_master.php','N');
@@ -50,7 +50,7 @@
 </head>
 <body>
 	<div class="panel panel-primary ">
-		<div class="panel-heading"><strong>Emblishment Table Master</strong></div>
+		<div class="panel-heading"><strong>Embellishment Table Master</strong></div>
 		<div class="panel-body">
 			<form  action="<?= $self_url ?>" method="POST" class="form-inline">
 				<?php
@@ -60,7 +60,7 @@
 					}					
 				?>
 				<div class="form-group">
-					<label>Emblishment Table: </label>
+					<label>Embellishment Table: </label>
 					<input type="text" name="emb_table_name" class="form-control" value="<?php echo $emb_tbl_name_edit; ?>" required>
 				</div>
 				&nbsp;&nbsp;
@@ -69,7 +69,7 @@
 					<select class="form-control" name="cut_table" id="cut_table" required>
 						<option value="">Please Select</option>
 						<?php 
-							$get_cut_table_qury = "SELECT tbl_name FROM bai_pro3.`tbl_cutting_table` WHERE status='active';";
+							$get_cut_table_qury = "SELECT tbl_name FROM $bai_pro3.`tbl_cutting_table` WHERE status='active';";
 							$get_cut_table_result = mysqli_query( $link, $get_cut_table_qury);
 							while ($row = mysqli_fetch_array($get_cut_table_result))
 							{
@@ -142,7 +142,7 @@
 							<thead>
 								<tr>
 									<th>S.No</th>
-									<th>Emblishment Table Name</th>
+									<th>Embellishment Table Name</th>
 									<th>Cutting Table Name</th>
 									<th>Work Station ID</th>
 									<th>Status</th>
@@ -189,7 +189,7 @@
 					if ($emb_table_id > 0)
 					{
 						// echo "not null";
-						$update_emb_details = "UPDATE `bai_pro3`.`tbl_emb_table` SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."' WHERE `emb_table_id` = '".$emb_table_id."';";
+						$update_emb_details = "UPDATE $bai_pro3.tbl_emb_table SET `emb_table_name` = '".$emb_table_name."' , `cut_table_name` = '".$cut_table."' , `emb_table_status` = '".$emb_status."' , `work_station_id` = '".$work_station_id."', log_time = NOW(),updated_by = '".$username."' WHERE `emb_table_id` = '".$emb_table_id."';";
 						$update_emb_result = mysqli_query( $link, $update_emb_details);
 						if ($update_emb_result == 1 or $update_emb_result == '1')
 						{
@@ -202,7 +202,7 @@
 					else
 					{
 						// echo "null";
-						$save_emb_details = "INSERT INTO `bai_pro3`.`tbl_emb_table` (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."');";
+						$save_emb_details = "INSERT INTO $bai_pro3.tbl_emb_table (`emb_table_name`, `cut_table_name`, `emb_table_status`, work_station_id,log_time,updated_by) VALUES ('".$emb_table_name."', '".$cut_table."', '".$emb_status."', '".$work_station_id."',NOW(), '".$username."');";
 						$save_emb_result = mysqli_query( $link, $save_emb_details);
 						if ($save_emb_result == 1 or $save_emb_result == '1')
 						{

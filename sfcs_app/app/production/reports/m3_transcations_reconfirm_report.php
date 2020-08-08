@@ -219,7 +219,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
       if($_POST["schedule"] != '' || $_POST["dat"] != '' && $_POST["dat1"] != '')
       {
          $shour='00:00:00';
-         $ehour='11:59:59';
+         $ehour='23:59:59';
          $sdate=$_POST['dat'];
          $edate=$_POST['dat1'];
          $schedule=$_POST['schedule'];
@@ -367,10 +367,10 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
             $reconfim_id=$exp[1]; 
             echo $reconfim_id;
             $update_sql="update $bai_pro3.`m3_transactions` set m3_trail_count=0 where id=$id_status";
-            echo $update_sql;
+            // echo $update_sql;
             mysqli_query($link, $update_sql) or exit("Sql Update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $update_bulk_sql="update $bai_pro3.`m3_bulk_transactions` set m3_trail_count=0 where id='$reconfim_id'";
-            echo $update_bulk_sql;
+            // echo $update_bulk_sql;
             mysqli_query($link, $update_bulk_sql) or exit("Sql Update bulk Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
          }

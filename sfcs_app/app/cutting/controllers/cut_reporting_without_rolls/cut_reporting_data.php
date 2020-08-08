@@ -114,14 +114,33 @@ if($org_doc_no > 1 ){
 
 //Validation for fabric status
 
-$validation_query = "SELECT cat_ref,fabric_status,category,material_req,plan_module from $bai_pro3.order_cat_doc_mk_mix 
-                    where doc_no=$doc_no";
+$validation_query = "SELECT order_del_no,order_col_des,pcutno,cat_ref,fabric_status,category,material_req,plan_module from $bai_pro3.order_cat_doc_mk_mix where doc_no=$doc_no";
 $validation_result = mysqli_query($link,$validation_query);
 if(mysqli_num_rows($validation_result)>0){
     $row = mysqli_fetch_array($validation_result);
     $cat_ref  = $row['cat_ref'];
+    $order_del_no  = $row['order_del_no'];
+    $order_col_des  = $row['order_col_des'];
+    $pcutno  = $row['pcutno'];
+    $col = $order_col_des.'^'.$pcutno;
     $category = strtolower($row['category']);
-    $fab_required = $row['material_req'];
+    $mrn_issued_qty = 0;
+    $sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = '".$doc_no."'";
+    $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num_check12=mysqli_num_rows($sql_result12);
+    if($sql_num_check12 == 0){
+        $sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule=\"$order_del_no\" and color = '".$col."' and product=\"FAB\" and status=9";
+        $result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row1=mysqli_fetch_array($result))
+        {
+            $mrn_issued_qty=$row1["qty"];
+        }
+        if($mrn_issued_qty==NULL || $mrn_issued_qty==''){
+            $mrn_issued_qty = 0;
+        }
+    }
+    // If Rolls are not allocated in Material req form and mrn is issued for that particular cut 
+    $fab_required = $row['material_req']+$mrn_issued_qty;
     $module = $row['plan_module'];
     $fabric_status = $row['fabric_status'];
     if($cat_ref > 0 && $fabric_status == 5)

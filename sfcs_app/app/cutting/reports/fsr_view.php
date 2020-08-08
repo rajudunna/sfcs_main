@@ -1,11 +1,8 @@
 <?php  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
-//include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'header_scripts.php','R'));
-// $view_access=user_acl("SFCS_0007",$username,1,$group_id_sfcs); 
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
 
@@ -97,7 +94,7 @@ $cat=$_POST['cat'];
 				}
 			?>
 			<div class="col-sm-2">
-				<label for='section'>Section :</label>
+				<label for='section'>Cut Table Name :</label>
 				<select class='form-control' name="section">
 					<option value='<?= $all_secs ?>'>All</option>
 				<?php
@@ -280,14 +277,14 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<tr class='info'>";
 	echo "<th>Date</th>";
 	echo "<th>Shift</th>";
-	echo "<th>Section</th>";
+	echo "<th>Cut Table Name</th>";
 	echo "<th>Docket No</th>";
 	echo "<th>Style</th>";
 	echo "<th>Schedule</th>";
 	echo "<th>Color</th>";
 	echo "<th>Category</th>";
 	echo "<th>Cut No</th>";
-	echo "<th>Pcs</th>";
+	echo "<th>Marker Ratio</th>";
 	echo "<th>Plies</th>";
 	echo "<th>MK Len.</th>";
 	echo "<th>Cut Qty</th>";
@@ -918,5 +915,3 @@ function getCSVData(){
 	document.getElementById("msg").style.display="none";
 	document.getElementById("export").style.display="";		
 </script>
-
-

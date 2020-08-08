@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
     $has_permission=haspermission($_GET['r']);
@@ -164,12 +165,14 @@
 			}
 		}
 	}
+	//Encoded Style
+    $main_style = style_encode($style);
 	echo '<h4><b>New Carton No : <a class="btn btn-warning">'.$maxcartonno.'</a></b></h4>';	
     echo "<script>sweetAlert('Success','Successfully Splitted your Carton.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',1000); 
                     function Redirect() {  
-                        location.href = '$url_s&schedule=$schedule&style=$style'; 
+                        location.href = '$url_s&schedule=$schedule&style=$main_style'; 
                     }
                 </script>"; 
 ?> 

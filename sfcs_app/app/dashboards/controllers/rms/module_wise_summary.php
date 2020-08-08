@@ -10,7 +10,7 @@ $module=$_GET['module'];
 $section=$_GET['section'];
 $date=date("Y-m-d H:i:s");
 
-        $sql2x="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND act_cut_status<>'DONE' GROUP BY doc_no order by priority";
+        $sql2x="SELECT * FROM $bai_pro3.plan_dash_doc_summ WHERE module='$module' AND act_cut_status<>'DONE' AND short_shipment_status='0' GROUP BY doc_no order by priority";
        // echo $sql2x;
         $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
         $rows2=mysqli_num_rows($result2x);	
@@ -22,6 +22,18 @@ $date=date("Y-m-d H:i:s");
     while($row21x=mysqli_fetch_array($result2x))
 	{
             $doc_no=$row21x["doc_no"];
+			$sq_mf="select manual_flag from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+            $sql_result_mf=mysqli_query($link, $sq_mf) or exit("Sql Error 18".mysqli_error($GLOBALS["___mysqli_ston"]));                                    
+            if(mysqli_num_rows($sql_result_mf)>0)
+            {
+                while($sql_row_mf=mysqli_fetch_array($sql_result_mf))
+                {
+                    $manual_flag_val=$sql_row_mf['manual_flag'];
+                }
+            }
+            //echo $doc_no."--".$manual_flag_val."<br/>";
+            if($manual_flag_val == 0)
+            {
             $module1=$row21x["module"];
             $priority=$row21x["priority"];
             $total=$row21x["total"];
@@ -98,7 +110,7 @@ $date=date("Y-m-d H:i:s");
         
 		
 		echo "</tr>";
-       
+       }
     }
 }
  echo"</table>";

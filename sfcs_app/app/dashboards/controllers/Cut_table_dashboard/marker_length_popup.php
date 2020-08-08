@@ -4,8 +4,19 @@ $data = $_POST['data'];
 $date_maker = json_decode($data, TRUE);
 $doc_no = $_POST['doc_no'];
 $date=date('Y-m-d');
-// var_dump($date_maker)."<br>";
-// die();
+$remarks='';
+$sql123="select remarks from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+$sql_result123=mysqli_query($link, $sql123) or die("plandoc_stat_log = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row1123=mysqli_fetch_array($sql_result123)) 
+{
+	$remarks=$row1123['remarks'];
+}
+
+if($remarks=='Recut'){
+	$recut_lay_plan='yes';
+}else{
+	$recut_lay_plan='no';
+}
 for($i=0;$i<(sizeof($date_maker)-1);$i++)
 {
 	if($date_maker[$i][0]=='yes')
@@ -22,8 +33,11 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 			$sql_marker_result=mysqli_query($link, $sql_marker) or die("Error13 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$mk_ref_id=mysqli_insert_id($link);
 			// echo $mk_ref_id."<br>";
-			$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set date='".$date."',marker_details_id='".$mk_id."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][13]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."' where tid=$mk_ref_id";			
+			$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set date='".$date."',marker_details_id='".$mk_id."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][13]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."',recut_lay_plan='".$recut_lay_plan."',mk_ver ='".$date_maker[$i][7]."' where tid=$mk_ref_id";			
 			mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+			$sql_query_old_marker="update  $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]."  and tid !=".$mk_ref_id."";
+			$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// echo $sql_update_marker_length_id."<br>";
 			$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$mk_id.",mk_ref=".$mk_ref_id." where doc_no=".$date_maker[$i][2]."";
 			// echo $sql11x132."<br>";
@@ -35,7 +49,6 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 			$result_array['status'] = 'New Group Added & Updated.';
 			$result_array['status_no'] = '1';
 			echo json_encode($result_array);
-		//	die(); 
 		
 		}
 		else
@@ -56,15 +69,23 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 						$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$row111x21['tid']." where doc_no=".$date_maker[$i][2]."";
 						// echo $sql11x132."<br>";
 						$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+						//for edit marker length
+						$sql_query_old_marker="update  $bai_pro3.maker_stat_log set recut_lay_plan='$recut_lay_plan' where allocate_ref=".$date_maker[$i][3]." and tid =".$row111x21['tid']."";
+						$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+						$sql_query_old_marker_invalid="update $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]." and tid !=".$row111x21['tid']."";
+						$test_query_old_marker_invalid=mysqli_query($link, $sql_query_old_marker_invalid) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
+
 					$sql_inse="INSERT INTO `bai_pro3`.`marker_changes_log` (`user`, `date_time`, `doc_no`, `alloc_ref`, `mk_ref_id`) 
 					VALUES ('".$username."', '".date("Y-m-d H:i:s")."', '".$date_maker[$i][2]."', '".$date_maker[0][3]."', '".$date_maker[$i][1]."')";
 					mysqli_query($link, $sql_inse) or die("Error19 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql_inse."<br>";
-					$result_array['status_new'] = 'Selected group has been changed.';
+					$result_array['status_new'] = 'Selected group has been updated.';
 					$result_array['status_no'] = '2';
 					echo json_encode($result_array);
-				//	die(); 			
+					//	die(); 			
 				}
 				else
 				{
@@ -73,9 +94,14 @@ for($i=0;$i<(sizeof($date_maker)-1);$i++)
 					mysqli_query($link, $sql) or exit("Sql Error1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql."<br>";
 					$iLastid=mysqli_insert_id($link);
-					$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$date_maker[$i][1]."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][14]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."' where tid=$iLastid";
+					$sql_update_marker_length_id ="update $bai_pro3.maker_stat_log set marker_details_id='".$date_maker[$i][1]."', mklength='".$date_maker[$i][10]."',mkeff='".$date_maker[$i][14]."',remark1='".$date_maker[$i][15]."',remark2='".$date_maker[$i][16]."',remark3='".$date_maker[$i][17]."',remark4='".$date_maker[$i][18]."',recut_lay_plan='".$recut_lay_plan."',mk_ver ='".$date_maker[$i][7]."' where tid=$iLastid";
 					// echo $sql_update_marker_length_id."<br>";
 					mysqli_query($link, $sql_update_marker_length_id) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+					$sql_query_old_marker="update  $bai_pro3.maker_stat_log set recut_lay_plan='invalid' where allocate_ref=".$date_maker[$i][3]." and tid !=".$iLastid."";
+					$test_query_old_marker=mysqli_query($link, $sql_query_old_marker) or die("Error155 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// echo $sql_query_old_marker;
+					// die();
 					$sql11x132="update $bai_pro3.plandoc_stat_log set mk_ref_id=".$date_maker[$i][1].",mk_ref=".$iLastid." where doc_no=".$date_maker[$i][2]."";
 					// echo $sql11x132."<br>";
 					$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error143 = ".mysqli_error($GLOBALS["___mysqli_ston"]));

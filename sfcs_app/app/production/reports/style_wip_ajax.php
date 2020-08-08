@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 error_reporting(0);
 if($_GET['some'] == 'bundle_no')
 {
@@ -172,9 +173,9 @@ else
 {
 	//Style Wip Report Code
 	$counter = 0;
-	$style = $_GET['style'];
+	$style = style_decode($_GET['style']);
 	$schedule = $_GET['schedule'];
-	$color = $_GET['color'];
+	$color = color_decode($_GET['color']);
 	$size_get = $_GET['size'];
 	if($schedule == 'all')
 	{
@@ -352,14 +353,14 @@ else
 					$ops_order = $row['operation_order'];
 				}
 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1 desc limit 1";
+				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order) desc limit 1";
 				$result_post_ops_check = $link->query($post_ops_check);
 				$row = mysqli_fetch_array($result_post_ops_check);
 				$pre_op_code = $row['operation_code'];
 				// echo $post_ops_check."-<br>";
 				// echo $pre_op_code."--<br>";
 				$diff= $bcd_rec[$pre_op_code] - ($bcd_rec[$value]+$bcd_rej[$value]);
-				
+
 				if($diff < 0)  
 				{
 					$diff = 0;

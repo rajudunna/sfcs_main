@@ -140,7 +140,7 @@
 			}
 		
 			if($short_ship_status==1){
-				$result_array['status'] = 5;
+				$result_array['status'] = 7;
 			}
 			else if($short_ship_status==2){
 				$result_array['status'] = 6;

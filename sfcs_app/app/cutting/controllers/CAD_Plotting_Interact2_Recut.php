@@ -5,16 +5,10 @@ create the interface for recut plot job priority.
 <?php 
 	// include("../dbconf.php"); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
-<?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php"); 
-$view_access=user_acl("SFCS_0096",$username,1,$group_id_sfcs);
-	//require_once('../phplogin/auth2.php');
-	//Ticket # 118925 : Changed displayed widith from type (int) to (float
-?>
 
 <style>
 th,td { color : #000; }
@@ -177,15 +171,25 @@ if(isset($_POST['submit']))
 	
 	
 	//Updating New Marker Refere in Matrix for new marker reference
-	$sql="insert ignore into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$ilast_id."-".$p_width."')";
-	mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_check="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$ilast_id."-".$p_width."'";
+	$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_check_res)==0)
+	{
+		$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$ilast_id."-".$p_width."')";
+		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}	
 	
 	$sql="update $bai_pro3.marker_ref_matrix set marker_ref='$ilast_id', marker_width='".$p_width."', marker_length='".$mk_length."',cat_ref=$cat_ref,allocate_ref=$allocate_ref, style_code='$style_code', buyer_code='$buyer_code',pat_ver='$pat_ver', ".implode(",",$allo_c)." where marker_ref_tid='".$ilast_id."-".$p_width."'";
 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//Updating New Marker Refere in Matrix for existing reference (to avoid existing issues)
-	$sql="insert ignore into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$mk_ref."-".$p_width."')";
-	mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_check1="select marker_ref_tid from $bai_pro3.marker_ref_matrix where marker_ref_tid='".$mk_ref."-".$p_width."'";
+	$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_check_res1)==0)
+	{
+		$sql="insert into $bai_pro3.marker_ref_matrix(marker_ref_tid) values ('".$mk_ref."-".$p_width."')";
+		mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	}	
 	
 	$sql="update $bai_pro3.marker_ref_matrix set marker_ref='$mk_ref', marker_width='".$p_width."', marker_length='".$mk_length."',cat_ref=$cat_ref,allocate_ref=$allocate_ref, style_code='$style_code', buyer_code='$buyer_code',pat_ver='$pat_ver', ".implode(",",$allo_c)." where marker_ref_tid='".$mk_ref."-".$p_width."'";
 	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -265,7 +269,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$allocate_ref=$sql_row1['allocate_ref'];
 	$cutno=$sql_row1["acutno"];
 	$sql="select purwidth,clubbing,category from $bai_pro3.cat_stat_log where tid=$cat_ref";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -310,8 +314,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}		
 	}
 	// $path= getFullURLLevel($_GET['r'],'new_doc_gen/color_club_docket_print.php',1,'N');
-	
-	$tab= "<tbody><tr><td><a href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</td>";
+	$tran_order_tid=$sql_row1['order_tid'];
+	$main_tran_order_tid=order_tid_encode($tran_order_tid);
+	$tab= "<tbody><tr><td><a href=\"$path&order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";

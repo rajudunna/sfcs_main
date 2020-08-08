@@ -2,26 +2,30 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 $view_access=user_acl("SFCS_0051",$username,1,$group_id_sfcs); 
 // $rep3 = getFullURL($_GET['r'],'rep3.php','N'); 
 // echo $rep3;
+$shifts='"'.implode('", "',$shifts_array).'"';
+
+//echo $shifts;
 ?>
 
 <script>
 
 	function firstbox()
 	{
-		window.location.href = "index.php?r=<?= $_GET['r'] ?>&style="+document.input.style.value;
+		window.location.href = "index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)));
 	}
 
 	function secondbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value
+		window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.input.style.value)))+"&schedule="+document.input.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.input.color.value)))
 	}
 </script>
 <script >
@@ -124,9 +128,9 @@ function verify_date()
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule']; 
-		$color=$_GET['color'];
+		$color=color_decode($_GET['color']);
 	}
 ?>
 <hr>
@@ -344,12 +348,12 @@ function verify_date()
 				
 				if($choice==1)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_size=\"$size1\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in ($shifts) $query_add and qms_size=\"$size1\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
 				}
 
 				if($choice==2)
 				{
-					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size1\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
+					$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(remarks,\"-\",1) as \"module\",substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in ($shifts) $query_add and qms_tran_type=3 and qms_schedule in ($sch_db) and substring_index(remarks,\"-\",1)=\"$mod\" and qms_size=\"$size1\" group by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1) order by qms_style,qms_schedule,qms_color,qms_size,substring_index(remarks,\"-\",1)";
 				}
 
 				//echo $sql."<br>";

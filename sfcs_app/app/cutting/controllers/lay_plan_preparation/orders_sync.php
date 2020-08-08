@@ -2,6 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/mo_filling.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 
 <body>
@@ -30,10 +31,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
 <?php
-	  $order_tid=$_GET['order_tid'];
+	  $order_tid=order_tid_decode($_GET['order_tid']);
 	  $get_order_tid = $_GET['order_tid'];
-	  $color=$_GET['color'];
-	  $style=$_GET['style'];
+	  $color=color_decode($_GET['color']);
+	  $style=style_decode($_GET['style']);
 	  $schedule=$_GET['schedule'];
 	$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.$order_joins_not_in AND bai_orders_db_confirm.order_tid='".$order_tid."' and bai_orders_db_confirm.order_del_no='".$schedule."' and bai_orders_db_confirm.order_col_des='".$color."' GROUP BY bai_orders_db_confirm.order_col_des";
 	//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
@@ -73,9 +74,14 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		}
 		else
 		{
-			$insertStyleCode="INSERT IGNORE INTO $brandix_bts.tbl_orders_style_ref(product_style) VALUES ('$style_code')";
-			$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+			$sql_check="select product_style from $brandix_bts.tbl_orders_style_ref where product_style='$style_code'";
+			$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_check_res)==0)
+			{
+				$insertStyleCode="INSERT INTO $brandix_bts.tbl_orders_style_ref(product_style) VALUES ('$style_code')";
+				$result3=mysqli_query($link, $insertStyleCode) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$style_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+			}	
 		}
 		//get Schedule code from product Master
 		$productsQuery=echo_title("$brandix_bts.tbl_orders_master","id","ref_product_style='".$style_id."' and product_schedule",$product_schedule,$link);
@@ -97,8 +103,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			if($r["order_s_".$sizes_array[$i].""]>0)
 			{
 				//$temp1=$r[$test];
-				$insertSizesQuery="INSERT IGNORE INTO $brandix_bts.tbl_orders_sizes_master(parent_id, ref_size_name, size_title, order_quantity, order_act_quantity,order_col_des) VALUES ($order_id,'".$sizes_tmp[$i]."','".$r["title_size_".$sizes_array[$i].""]."','".$r["order_s_".$sizes_array[$i].""]."',".$r["order_s_".$sizes_array[$i].""].",'".$color_code."')";
-				$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_check="select parent_id,ref_size_name,size_title,order_col_des from $brandix_bts.tbl_orders_sizes_master where parent_id=$order_id and ref_size_name='".$sizes_tmp[$i]."' and size_title='".$r["title_size_".$sizes_array[$i].""]."' and order_col_des='".$color_code."'";
+				$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res)==0)
+				{
+					$insertSizesQuery="INSERT INTO $brandix_bts.tbl_orders_sizes_master(parent_id, ref_size_name, size_title, order_quantity, order_act_quantity,order_col_des) VALUES ($order_id,'".$sizes_tmp[$i]."','".$r["title_size_".$sizes_array[$i].""]."','".$r["order_s_".$sizes_array[$i].""]."',".$r["order_s_".$sizes_array[$i].""].",'".$color_code."')";
+					$result6=mysqli_query($link, $insertSizesQuery) or ("Sql error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}	
 				//$sql11="insert ignore into $bai3_finishing.order_db (style_no, schedule_no, size_code, color, order_qty, output, c_block, ex_date) values ('".$style_code."', '".$product_schedule."', '".$r["title_size".$sizes_array[$i].""]."', '".$color_code."', '".$r["order_s_".$sizes_array[$i].""]."', '0', '".$c_block."', '".$r['order_date']."')";
 				// echo $insertSizesQuery."</br>".$sql11;
 			}
@@ -138,7 +149,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			if($layplan_id1==0)
 			{
-				$insertLayPlanQuery="INSERT IGNORE INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+				$insertLayPlanQuery="INSERT INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
 				// echo $insertLayPlanQuery."</br>";
 				$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error999".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$inserted_id_query = "select id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
@@ -187,11 +198,13 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				}
 			</script>";	
 	*/
-
+    //Encoding color
+    $main_color = color_encode($color);
+    $main_style = style_encode($style);
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Successfully Generated','','success');
-  			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\";
+  			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
   			}
   		</script>";
 ?>

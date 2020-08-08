@@ -6,11 +6,12 @@ Ticket# 575423: 2014-02-08/Kirang: Added Color Filter Clause for multi color ord
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 $order_quantity_mail=$conf1->get('order_quantity_mail');
 session_start();
 	if($_GET['style'])
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 	}
 	else
 	{
@@ -33,12 +34,12 @@ session_start();
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value;
+	window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 }
 
 function secondbox()
 {
-		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value	
+		window.location.href ="index.php?r=<?php echo $_GET['r'] ?>"+"&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value	
 }
 function check_style()
 {
@@ -108,15 +109,20 @@ if(isset($_POST["Update"]) || isset($_POST["update"])){
 			}
 			else
 			{
-				$insert="insert ignore into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-				if(!mysqli_query($link, $insert))
-				{			
-					echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
-				}
-				else
-				{			
-					echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
-				}		
+				$sql_check1="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 ";
+				$sql_check_res1=mysqli_query($link, $sql_check1) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($sql_check_res1)==0)
+				{
+					$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+					if(!mysqli_query($link, $insert))
+					{			
+						echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+					}
+					else
+					{			
+						echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+					}
+				}			
 			}
 		}
 	}else{
@@ -502,14 +508,19 @@ if(isset($_POST["update"])){
 				}
 				else
 				{
-					$insert="insert ignore into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
-					if(!mysqli_query($link, $insert))
-					{			
-						echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
-					}
-					else
-					{			
-						echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+					$sql_check2="select order_style_no,order_del_no,order_col_des,order_no from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1";
+					$sql_check_res2=mysqli_query($link, $sql_check2) or exit("Sql Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($sql_check_res2)==0)
+					{
+						$insert="insert into $bai_pro3.bai_orders_db_confirm (select * from bai_orders_db where order_style_no=\"$sty\" and order_del_no=\"$sch\" and order_col_des=\"$color\" and order_no = 1 )";
+						if(!mysqli_query($link, $insert))
+						{			
+							echo "<script>sweetAlert('Order Quantity Update Failed','','warning');</script>";
+						}
+						else
+						{			
+							echo "<script>sweetAlert('Order Quantity Updated Successfully','','success');</script>";
+						}	
 					}		
 				}
 			}
