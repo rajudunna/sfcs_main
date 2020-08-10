@@ -3,6 +3,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R')); 
 $Page_Id='SFCS_0055';
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
   ?>
 
 <script type="text/javascript">
@@ -77,7 +79,7 @@ else
 		echo '<form id="myForm" name="input" action='.getURL(getBASE($_GET['r'])['path'])['url'].'  method="post">';
 		//echo "<h3>Available Lots:</h3>";
 		//R in end of lot indicates rejected logt and escaped listing of the same in report.
-		$sql="select distinct lot_no as \"lot_ref_batch\" from $bai_rm_pj1.sticker_report where batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
+		$sql="select distinct lot_no as \"lot_ref_batch\" from $wms.sticker_report where plant_code='$plantcode' and batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows=mysqli_num_rows($sql_result);
@@ -134,7 +136,7 @@ if(isset($_POST['put']))
 		echo "<h3>Available Lots:</h3>";
 		
 		//R in end of lot indicates rejected logt and escaped listing of the same in report.
-		$sql="select distinct lot_no as \"lot_ref_batch\" from $bai_rm_pj1.sticker_report where batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
+		$sql="select distinct lot_no as \"lot_ref_batch\" from $wms.sticker_report where plant_code='$plantcode' and batch_no=\"".trim($lot_no)."\" and right(trim(both from lot_no),1)<>'R'";
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$num_rows=mysqli_num_rows($sql_result);
@@ -154,12 +156,12 @@ if(isset($_POST['put']))
 		echo '</form>';
 	}
 	
-	$sql="select * from $bai_rm_pj1.inspection_db where batch_ref=\"".trim($lot_no)."\"";
+	$sql="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"".trim($lot_no)."\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$inspection_check=mysqli_num_rows($sql_result);
 	
 
-	$sql="select *, if((length(ref5)=0 or length(ref6)=0 or length(ref3)=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ($lot_ref) order by ref2+0";
+	$sql="select *, if((length(ref5)=0 or length(ref6)=0 or length(ref3)=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in where plant_code='$plantcode' and lot_no in ($lot_ref) order by ref2+0";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$num_rows=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))

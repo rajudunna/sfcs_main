@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0156",$username,1,$group_id_sfcs); 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <?php 
@@ -93,7 +95,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if(strlen($lot_no)>0)
 			{
 
-			$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+			$sql="select * from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -124,7 +126,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				//NEW SYSTEM IMPLEMENTATION RESTRICTION
 			}
 
-			$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+			$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -156,7 +158,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$shades=array("","A","B","C","D","E","F","G");
 
 
-			$sql="select * from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+			$sql="select * from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -183,7 +185,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					if($location=="")
 					{
 						echo '<td><select name="ref1[]">';
-						$sql1="select * from $bai_rm_pj1.location_db where status=1 order by sno";
+						$sql1="select * from $wms.location_db where plant_code='$plantcode' and status=1 order by sno";
 						// echo $sql1."<br>";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error-d".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=\"\" selected></option>";
@@ -259,7 +261,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 
 			echo "<table class='table table-striped table-bordered'>";
 			echo "<thead><tr class=''><th>date</th><th>Qty</th><th>Box/Roll Number</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr></thead>";
-			$sql="select store_out.date as date1,store_out.qty_issued as qty,store_in.ref2 as ref2,store_out.style as style,store_out.schedule as schedule,store_out.cutno as jobno, store_out.remarks as remarks,store_out.updated_by as user from $bai_rm_pj1.store_out left join $bai_rm_pj1.store_in on store_out.tran_tid = store_in.tid where tran_tid in (select tid from bai_rm_pj1.store_in where lot_no='".trim($lot_no)."') order by store_in.date";
+			$sql="select store_out.date as date1,store_out.qty_issued as qty,store_in.ref2 as ref2,store_out.style as style,store_out.schedule as schedule,store_out.cutno as jobno, store_out.remarks as remarks,store_out.updated_by as user from $wms.store_out left join $wms.store_in on store_out.tran_tid = store_in.tid where plant_code='$plantcode' and tran_tid in (select tid from $wms.store_in where plant_code='$plantcode' and lot_no='".trim($lot_no)."') order by store_in.date";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			echo "<tbody>";
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -359,7 +361,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$mrn_host=$sql_row['hostname'];	
 				$mrn_ref2 = $sql_row['ref2'];
 				
-				$sql3="select style,schedule,remarks from $bai_rm_pj2.mrn_track where tid=".$mrn_tid."";
+				$sql3="select style,schedule,remarks from $wms.mrn_track where plant_code='$plantcode' and tid=".$mrn_tid."";
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error-f".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row3=mysqli_fetch_array($sql_result3))
 				{
@@ -400,7 +402,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 		{
 					
 				//Changed to update only locations.	
-				$sql="update store_in set ref1=\"".$ref1[$i]."\" where tid=".$tid[$i];
+				$sql="update $wms.store_in set ref1=\"".$ref1[$i]."\",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$tid[$i];
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error-g".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			

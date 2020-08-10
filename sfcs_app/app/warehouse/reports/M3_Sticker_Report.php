@@ -5,6 +5,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 	//$view_access=user_acl("SFCS_0078",$username,1,$group_id_sfcs);
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
 ?>
 <style>
 	th{
@@ -145,7 +147,7 @@ echo '<div class="table-responsive"><table id="table1" class="table table-border
 
 $date=str_replace("-","",$_POST['date']);
 
-	$sql1="select group_concat(item) as item,item_name,item_desc,inv_no,po_no,group_concat(distinct rec_no) as rec_no,sum(rec_qty) as rec_qty,group_concat(distinct lot_no SEPARATOR \"','\") as lot_no,batch_no,buyer,supplier,grn_date from $bai_rm_pj1.sticker_report where grn_date='$date' and LOWER(TRIM(BOTH FROM product_group)) LIKE '%fabric%' group by concat(inv_no,batch_no)";
+	$sql1="select group_concat(item) as item,item_name,item_desc,inv_no,po_no,group_concat(distinct rec_no) as rec_no,sum(rec_qty) as rec_qty,group_concat(distinct lot_no SEPARATOR \"','\") as lot_no,batch_no,buyer,supplier,grn_date from $wms.sticker_report where plant_code='$plantcode' and grn_date='$date' and LOWER(TRIM(BOTH FROM product_group)) LIKE '%fabric%' group by concat(inv_no,batch_no)";
 	//echo $sql1;
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -166,7 +168,7 @@ $date=str_replace("-","",$_POST['date']);
 		$ctx_width_arr=array();
 		$rolls=0;
 		$rolls_insp_comp=0; //Total Rolls Inspection completed.
-		$sql11="select qty_rec,ref5,ref3,ref6 from $bai_rm_pj1.store_in where lot_no in ("."'".$sql_row1['lot_no']."'".") group by ref2";
+		$sql11="select qty_rec,ref5,ref3,ref6 from $wms.store_in where plant_code='$plantcode' and lot_no in ("."'".$sql_row1['lot_no']."'".") group by ref2";
 		//echo $sql11;
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rolls=mysqli_num_rows($sql_result11);

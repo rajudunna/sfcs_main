@@ -13,6 +13,8 @@
         update v0.3: add Module Number, Rejection Reason based on 1270
         update v0.4: added api type column based on 1298
     ================================================== */
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
     include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
     if(!isset($_GET['excel'])){
         echo "<script>
@@ -111,7 +113,7 @@
                     $trial_count=0;
                     $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`tbl_orders_ops_ref` WHERE operation_code='".$res['op_code']."'"));
                     
-                    $bulk_trans_status = mysqli_fetch_array(mysqli_query($link_ui, "SELECT response_status,m3_trail_count,id FROM bai_pro3.`m3_bulk_transactions` WHERE id='".$res['m3_bulk_tran_id']."'"));
+                    $bulk_trans_status = mysqli_fetch_array(mysqli_query($link_ui, "SELECT response_status,m3_trail_count,id FROM $pts.`m3_bulk_transactions` WHERE plant_code='$plantcode' and id='".$res['m3_bulk_tran_id']."'"));
                     $reason = $bulk_trans_status['response_status'];
                     $trial_count = $bulk_trans_status['m3_trail_count'];
                     
@@ -124,7 +126,7 @@
                     }
                     
                     if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`transactions_log` WHERE transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM $pps.`transactions_log` WHERE plant_code='$plantcode' and transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";

@@ -1648,7 +1648,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 			 }
 			 else
 			 {
-			 	 $sql2="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
+			 	 $sql2="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
 				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2=mysqli_fetch_array($result2))
 				 {
@@ -1656,13 +1656,13 @@ for($i=0;$i<sizeof($sec_array);$i++)
 				 } 
 				 if($plan_eff ==0)
 				 {
-				 	$sql2="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+				 	$sql2="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 		//echo $sql2;
 					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
 						$max_date=$sql_row2["max_date"];
-						$sql21="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+						$sql21="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
 						//echo $sql2;
 						$sql_result21=mysqli_query($link, $sql21) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21=mysqli_fetch_array($sql_result21))
@@ -1704,7 +1704,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 			 }
 			 else
 			 {
-			 	 $sql2x="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
+			 	 $sql2x="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
 				 //echo $sql2x."<br>";
 				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				 while($row2x=mysqli_fetch_array($result2x))
@@ -1713,13 +1713,13 @@ for($i=0;$i<sizeof($sec_array);$i++)
 				 } 
 				 if($plan_effx ==0)
 				 {
-				 	$sql2x="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+				 	$sql2x="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 					//echo $sql2."<br>";
 					$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2x=mysqli_fetch_array($sql_result2x))
 					{
 						$max_datex=$sql_row2x["max_date"];
-						$sql21x="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+						$sql21x="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
 						//echo $sql2;
 						$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row21x=mysqli_fetch_array($sql_result21x))
@@ -1750,7 +1750,7 @@ for($i=0;$i<sizeof($sec_array);$i++)
 		$plan_eff1=$row11["plan_eff"];
 		if($plan_eff1 == 0)
 		{
-			$sql21="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
+			$sql21="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
 			//echo $sql21."<br>";
 			$result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row21=mysqli_fetch_array($result21))
@@ -1899,7 +1899,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		 }
 		 else
 		 {
-		 	 $sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
+		 	 $sql23="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
 			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23=mysqli_fetch_array($result23))
 			 {
@@ -1907,13 +1907,13 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 			 } 
 			 if($plan_eff3 ==0)
 			 {
-			 	$sql23="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+			 	$sql23="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 	//echo $sql2;
 				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23=mysqli_fetch_array($sql_result23))
 				{
 					$max_date1=$sql_row23["max_date"];
-					$sql213="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+					$sql213="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
 					//echo $sql2;
 					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213=mysqli_fetch_array($sql_result213))
@@ -1965,7 +1965,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		 }
 		 else
 		 {
-		 	 $sql23s="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
+		 	 $sql23s="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
 			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			 while($row23s=mysqli_fetch_array($result23s))
 			 {
@@ -1973,13 +1973,13 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 			 } 
 			 if($plan_eff3s == 0)
 			 {
-			 	$sql23s="SELECT MAX(DATE) as max_date FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
+			 	$sql23s="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
 				//echo $sql2;
 				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row23s=mysqli_fetch_array($sql_result23s))
 				{
 					$max_date1s=$sql_row23s["max_date"];
-					$sql213s="SELECT plan_eff FROM $bai_pro.pro_plan WHERE plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
+					$sql213s="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
 					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row213s=mysqli_fetch_array($sql_result213s))
 					{
@@ -2017,7 +2017,7 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		 $dtime13=$row113["dtime"]/60;
 		 $shift13=$row113["shift"];
 		 $dates13=$row113["date"];
-		 $sql213="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
+		 $sql213="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
 		 //echo $sql213."-".$dtime13."<br>";
 		 $result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		 while($row213=mysqli_fetch_array($result213))

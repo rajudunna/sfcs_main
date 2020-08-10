@@ -1,5 +1,7 @@
 <?php
 	error_reporting(0);
+	$plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 	$sum ='';
 	$asum ='';  
@@ -69,7 +71,7 @@
         }
     }
 	$today=date("Y-m-d");
-	$get_style_wip_data="select style,schedule,color,size FROM $brandix_bts.open_style_wip where style<>'' and status='open' group by style,schedule,color,size";
+	$get_style_wip_data="select style,schedule,color,size FROM $pps.open_style_wip where style<>'' and status='open' and plant_code='$plant_code' group by style,schedule,color,size";
 	//echo $get_style_wip_data."<br>";
 	$get_style_data_result =$link->query($get_style_wip_data);
 	while ($row1 = $get_style_data_result->fetch_assoc())
@@ -108,7 +110,7 @@
         $single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono,'orderqty'=>$order_qty];
         //$operations = implode(',',$operation);	
 		
-        $get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $brandix_bts.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' group by operation_code";
+        $get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $pps.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' and plant_code='$plant_code' group by operation_code";
 		//echo $get_qty_data."<br>";
         $get_qty_result =$link->query($get_qty_data);
         while ($row2 = $get_qty_result->fetch_assoc())

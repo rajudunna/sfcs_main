@@ -714,13 +714,16 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
         
   }
 
-  /**Getting work stations based on department wise */
+    /** Getting work stations based on department wise
+   * @param:department,plantcode
+   * @return:workstation
+   * */
   function getWorkstations($department,$plantcode){
     global $link_new;
     global $pms;
     /**Qry to get departmen wise id's */
-    $Qry_department="SELECT `department_id` FROM $pms.departments WHERE department_type='$department' AND is_active=1";
-    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at departments".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $Qry_department="SELECT `department_id` FROM $pms.`departments` WHERE department_type='$department' AND is_active=1";
+    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at department ids".mysqli_error($GLOBALS["___mysqli_ston"]));
     $Qry_department_result_num=mysqli_num_rows($Qry_department_result);
     if($Qry_department_result_num>0){
         while($department_row=mysqli_fetch_array($Qry_department_result))
@@ -730,7 +733,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     /**Getting work station type against department*/
     $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id='$department_id' AND is_active=1";
-    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation_type".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstationtype=array();
     $workstation_typet_num=mysqli_num_rows($workstation_type_result);
     if($workstation_typet_num>0){
@@ -759,6 +762,10 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
   }
 
   //function to get sewing jobs
+  /** function to get sewing jobs
+   * @param:po,job_type,plant_code
+   * @return:jobs
+   * */
 function getSewingJobs($sub_po,$job_type,$plantcode){
     global $link_new;
     global $pps;
@@ -767,44 +774,54 @@ function getSewingJobs($sub_po,$job_type,$plantcode){
     $jobs=array();
     $task_jobs_id=array();
     $task_refrence=array();
+    $job_number='';
    
     //Qry to fetch task_job_id from task_job_details
     $qry_toget_task_job="SELECT task_job_id,style,color FROM $tms.task_job_details WHERE po_number='$sub_po' AND task_type='$type' AND plant_code='$plantcode'";
     $toget_task_job_result=mysqli_query($link_new, $qry_toget_task_job) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_task_job_num=mysqli_num_rows($toget_task_job_result);
-      if($toget_task_job_num>0){
-        while($toget_task_id_row=mysqli_fetch_array($toget_task_job_result))
-        {
-           $task_jobs_id[]=$toget_task_id_row['task_job_id'];
-           $style=$toget_task_id_row['style'];
-           $color=$toget_task_id_row['color'];
-        }
-    //Qry to fetch taskrefrence from task_job  
-    $qry_toget_taskrefrence="SELECT task_ref FROM $tms.task_jobs WHERE task_type='$job_type' AND plant_code='$plantcode' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."')";
-    $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
-      if($toget_taskrefrence_num>0){
-        while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
-        {  
-           $task_refrence[]=$toget_taskrefrence_row['task_ref'];
+    if($toget_task_job_num>0){
+            while($toget_task_id_row=mysqli_fetch_array($toget_task_job_result))
+            {
+            $task_jobs_id[]=$toget_task_id_row['task_job_id'];
+            $style=$toget_task_id_row['style'];
+            $color=$toget_task_id_row['color'];
+            }
+        
+        //Qry to fetch taskrefrence from task_job  
+        $qry_toget_taskrefrence="SELECT task_ref FROM $tms.task_jobs WHERE task_type='$job_type' AND plant_code='$plantcode' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."')";
+        $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
+        if($toget_taskrefrence_num>0){
+            while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
+            {  
+            $task_refrence[]=$toget_taskrefrence_row['task_ref'];
+            }
         }  
-    //Qry to get sewing jobs from jm_jobs_header
-    $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id FROM $pps.jm_jobs_header WHERE jm_job_header_id IN('".implode("','" , $task_refrence)."')";
-    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
-      if($toget_sewing_jobs_num>0){
-        while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
-        {
-		  $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_job_header_id']; 
+        //Qry to get sewing jobs from jm_jobs_header
+        $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id FROM $pps.jm_jobs_header WHERE jm_job_header_id IN('".implode("','" , $task_refrence)."')";
+        $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+        if($toget_sewing_jobs_num>0){
+            while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+            {
+            $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_job_header_id']; 
+            }
         }
-	  }
-        return array(
+
+    }
+      
+    return array(
         'job_number' => $job_number
     );  
 }
 
-//This is function to get savings from fn_savings_per_cal
 
+//function to get savings from fn_savings_per_cal
+  /** function to get sewing jobs
+   * @param:doc_no,plant_code
+   * @return:savings
+   * */
 function fn_savings_per_cal($doc_no,$plant_code){
         //using this function  we can get ratio component group id
         if($doc_no!='' && $$plant_code!=''){
@@ -825,8 +842,8 @@ function fn_savings_per_cal($doc_no,$plant_code){
 }
 
 /**Function to get po description from mp sub order
-@params:sub_po,plantcode
-@returns:cut numbers 
+@param:sub_po,plantcode
+@return:cut numbers 
 */
 function getPoDetaials($po_number){
     global $link_new;
