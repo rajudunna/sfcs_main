@@ -14,6 +14,8 @@ function clean($string) {
 	$string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
 	return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
  }
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <?php $lot_no=$_GET['lot_no']; ?>
@@ -58,7 +60,7 @@ margin-right: 10px;
 <body>';
 
 
-$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,style_no from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,style_no from $wms.sticker_report where plant_code='$plant_code' AND lot_no like \"%".trim($lot_no)."%\"";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -90,7 +92,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $child_lots="";
 $symbol='"';
 
-$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $bai_rm_pj1.sticker_report where REPLACE(REPLACE(batch_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_batch_no."\" and REPLACE(REPLACE(inv_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_inv_no."\" and item=\"".$item."\" and lot_no not in ('$lot_no')";
+$sql="select group_concat(right(lot_no,4) SEPARATOR \" /\") as child_lots from $wms.sticker_report where plant_code=\"".$plant_code."\" and REPLACE(REPLACE(batch_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_batch_no."\" and REPLACE(REPLACE(inv_no,".$symbol."'".$symbol.",".$symbol."".$symbol."),'".$symbol."','')=\"".$ref_inv_no."\" and item=\"".$item."\" and lot_no not in ('$lot_no')";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -98,7 +100,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $child_lots=$sql_row['child_lots'];
 }
 
-$sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
+$sql="select * from $wms.store_in where plant_code=\"".$plant_code."\" and lot_no like \"%".trim($lot_no)."%\"";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);

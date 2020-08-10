@@ -11,8 +11,10 @@ Change Log:
 	// require_once('phplogin/auth.php');
 	ob_start();
 	$has_permission = haspermission($_GET['r']);
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
+
+	
 	// require_once "ajax-autocomplete/config.php";
 	// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
 	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
@@ -91,7 +93,7 @@ else
 
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
@@ -119,7 +121,7 @@ if(strlen($lot_no)>0)
 {
 	
 
-$sql="select * from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+$sql="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -163,7 +165,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
