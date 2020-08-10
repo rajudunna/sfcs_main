@@ -15,7 +15,7 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
 <script>
 $(document).ready(function() {
 //Select all anchor tag with rel set to tooltip
-$('a[rel=tooltip]').hover(function(e) {
+$('div[rel=tooltip]').hover(function(e) {
   
   //Grab the title attribute's value and assign it to a variable
   var tip = $(this).attr('title');  
@@ -738,21 +738,22 @@ padding:5px 5px 5px 15px;
                         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
                       if($rep_status!=''){
                         if($final_cols=="yellow" || $final_cols=="orange"){
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;' title='$title' rel='tooltip'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div><br/>";
+                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;' ><div title='$title' rel='tooltip'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</div></a></div></div><br/>";
                         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
                           echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='#'
                             onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
-                            title='$title' rel='tooltip'>$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div><br/>";
+                            ><div title='$title' rel='tooltip'>$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</div></a></div></div><br/>";
                         }
                         else if($final_cols=="pink"){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><a title='$title' rel='tooltip'>RT:".$req_time1."</a></div></div><br/>";
+                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><div title='$title' rel='tooltip'>RT:".$req_time1."</div></div></div><br/>";
                         }
                         else{
                           if($fabric_req_date<date("Y-M-d h:i:sa")){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white'><span class='blink'><a title='$title' rel='tooltip'>RT:".$req_time1."</a></span></div></div><br/>";
+                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white'>
+                          <div title='$title' rel='tooltip'><div class='blink'>RT:".$req_time1."</div></div></div></div><br/>";
                           }
                           else{
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><a title='$title' rel='tooltip'>RT:".$req_time1."</a></div></div><br/>";
+                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><div title='$title' rel='tooltip'>RT:".$req_time1."</div></div></div><br/>";
                           }
                         }
                       }
