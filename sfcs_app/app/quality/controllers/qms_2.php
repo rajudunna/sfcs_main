@@ -273,11 +273,11 @@ if(isset($_GET['tid']))
 	
 	//updating rejection_log_chile
 
-	$update_qry = "update $bai_pro3.rejection_log_child set rejected_qty = rejected_qty-$qms_qty where bcd_id = $bcd_id";
+	$update_qry = "update $tms.rejection_log_child set rejected_qty = rejected_qty-$qms_qty,updated_user='$username',updated_at=NOW() where bcd_id = $bcd_id";
 	// echo $update_qry.'</br>';
 	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
 
-	$search_qry="SELECT id FROM $bai_pro3.rejections_log where style='$style' and schedule='$schedule' and color='$color'";
+	$search_qry="SELECT id FROM $tms.rejections_log where plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color'";
 					// echo $search_qry;
 	$result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if($result_search_qry->num_rows > 0)
@@ -286,7 +286,7 @@ if(isset($_GET['tid']))
 		{
 
 			$rejection_log_id = $row_result_search_qry['id'];
-			$update_qry_rej_lg = "update $bai_pro3.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty where id = $rejection_log_id";
+			$update_qry_rej_lg = "update $tms.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and id = $rejection_log_id";
 			// echo $update_qry_rej_lg;
 			$update_qry_rej_lg = $link->query($update_qry_rej_lg);
 			$parent_id = $rejection_log_id;
@@ -325,9 +325,9 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	if(short_shipment_status($qms_style,$qms_schedule,$link)){
 		$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
 		ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
-		FROM bai_pro3.bai_qms_db qms 
+		FROM $pms.bai_qms_db qms 
 		LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-		LEFT JOIN bai_pro3.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` LEFT JOIN  bai_pro3.`lay_plan_recut_track` track ON track.bcd_id=bts.id  WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
+		LEFT JOIN $tms.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` LEFT JOIN  bai_pro3.`lay_plan_recut_track` track ON track.bcd_id=bts.id  WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
 		AND recut_qty = 0 AND replaced_qty = 0 and bts.`operation_id` in ($op_codes) AND track.recut_raised_qty IS NULL
 		";
 		
