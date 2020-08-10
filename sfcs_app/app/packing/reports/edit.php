@@ -4,6 +4,8 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/header.php',1,'R') );  ?>
 
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $permission = haspermission($_GET['r']);
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
@@ -183,7 +185,7 @@ $con=$_POST['con'];
 $sno=$_POST['sno'];
 
 	$url = getFullURL($_GET['r'],'edit.php','N');
-	$query = "select * from $pts.upload where sealno = '$sno' plant_code='$plant_code'";
+	$query = "select * from $pts.upload where plant_code='$plantcode' and sealno = '$sno' ";
 	$res = mysqli_query($link,$query);
 	if(mysqli_num_rows($res) == 0){
 		echo "<script>

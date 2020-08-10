@@ -6,7 +6,7 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 $start_timestamp = microtime(true);
 error_reporting(0);
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 
@@ -27,13 +27,13 @@ else
 $sql="delete from $bai_pro.bai_bac";
 mysqli_query($link, $sql) or exit("Sql Error1-$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="delete from $bai_pro.pro_mod_today";
+$sql="delete from $pts.pro_mod_today";
 mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="delete from $bai_pro.pro_plan_today";
+$sql="delete from $pts.pro_plan_today";
 mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql="delete from $bai_pro.pro_style_today";
+$sql="delete from $pts.pro_style_today";
 mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $sql="select * from $bai_pro3.module_master";
@@ -48,26 +48,26 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$ref_code=$date."-".$mod_number;
 	for($i=0;$i<sizeof($shifts_array);$i++)
 	{
-		$sql="insert ignore into $bai_pro.pro_mod (ref_id) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_mod (ref_id,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_mod set mod_no=$mod_number, mod_date=\"$date\", mod_sec=$mod_section, mod_shift='$shifts_array[$i]', mod_stat=\"$stat\", mod_remarks=\"$remarks\", mod_lupdate=\"$date\", couple=$couple where ref_id=\"$ref_code\"";
+		$sql="update $pts.pro_mod set mod_no=$mod_number, mod_date=\"$date\", mod_sec=$mod_section, mod_shift='$shifts_array[$i]', mod_stat=\"$stat\", mod_remarks=\"$remarks\", mod_lupdate=\"$date\", couple=$couple,updated_user='$username',updated_at=NOW() where ref_id=\"$ref_code\" and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//NEW2011
-		$sql="insert ignore into $bai_pro.pro_mod_today (ref_id) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_mod_today (ref_id,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_mod_today set mod_no=$mod_number, mod_date=\"$date\", mod_sec=$mod_section, mod_shift='$shifts_array[$i]', mod_stat=\"$stat\", mod_remarks=\"$remarks\", mod_lupdate=\"$date\", couple=$couple where ref_id=\"$ref_code\"";
+		$sql="update $pts.pro_mod_today set mod_no=$mod_number, mod_date=\"$date\", mod_sec=$mod_section, mod_shift='$shifts_array[$i]', mod_stat=\"$stat\", mod_remarks=\"$remarks\", mod_lupdate=\"$date\", couple=$couple ,updated_user='$username',updated_at=NOW() where ref_id=\"$ref_code\" and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}	
 }
 
 
-if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $bai_pro.pro_style where date=\"$date\""))==0)
+if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "select * from $pts.pro_style where date=\"$date\" and plant_code='$plant_code'"))==0)
 {
 
-$sql="select * from $bai_pro.pro_style where date=(select max(date) from bai_pro.pro_style)";
+$sql="select * from $pts.pro_style where date=(select max(date) from pts.pro_style) and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -95,17 +95,17 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	$ref_code=$date."-".$style;
 
-	$sql="insert ignore into $bai_pro.pro_style (sno) values (\"$ref_code\")";
+	$sql="insert ignore into $pts.pro_style (sno,plant_code) values (\"$ref_code\",\"$plant_code\")";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="update $bai_pro.pro_style set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\"  where sno=\"$ref_code\"";
+	$sql="update $bai_pro.pro_style set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\",updated_user='$username',updated_at=NOW()  where sno=\"$ref_code\" and plant_code='$plant_code'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//NEW2011
-	$sql="insert ignore into $bai_pro.pro_style_today (sno) values (\"$ref_code\")";
+	$sql="insert ignore into $pts.pro_style_today (sno,plant_code) values (\"$ref_code\",\"$plant_code\")";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="update $bai_pro.pro_style_today set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\"  where sno=\"$ref_code\"";
+	$sql="update $pts.pro_style_today set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\",updated_user='$username',updated_at=NOW()  where sno=\"$ref_code\" and plant_code='$plant_code'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	//NEW2011
@@ -114,10 +114,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 else
 {
-	$sql="delete from $bai_pro.pro_style where date>=\"$date\"";
+	$sql="delete from $pts.pro_style where date>=\"$date\" and plant_code='$plant_code'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-	$sql="select * from $bai_pro.pro_style where date=(select max(date) from bai_pro.pro_style)";
+	$sql="select * from $pts.pro_style where date=(select max(date) from pts.pro_style) and plant_code='$plant_code'";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -145,17 +145,17 @@ else
 	
 		$ref_code=$date."-".$style;
 	
-		$sql="insert ignore into $bai_pro.pro_style (sno) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_style (sno,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_style set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\"  where sno=\"$ref_code\"";
+		$sql="update $pts.pro_style set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\",updated_user='$username',updated_at=NOW()  where sno=\"$ref_code\" and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//NEW2011
-		$sql="insert ignore into $bai_pro.pro_style_today (sno) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_style_today (sno,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_style_today set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\"  where sno=\"$ref_code\"";
+		$sql="update $pts.pro_style_today set style=\"$style\", date=\"$date\", smv=$smv, nop=$nop,  remarks=\"$remarks\", buyer=\"$buyer\", nop1=$nop1, nop2=$nop2, nop3=$nop3, nop4=$nop4, nop5=$nop5, smv1=$smv1, smv2=$smv2, smv3=$smv3, smv4=$smv4, smv5=$smv5, movex_styles_db=\"$movex_styles_db\",updated_user='$username',updated_at=NOW()  where sno=\"$ref_code\" and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//NEW2011
 		
@@ -180,7 +180,7 @@ if(mysqli_num_rows($sql_result1))
 		$plan_sah=$sql_row['plan_sah'];	
 		$plan_eff_ex=0;
 		$ref_code=$date."-".$mod_no."-".$shift;
-		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."'";
+		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plant_code' and date='$date' and shift='".$shift."'";
 		// echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($sql_result_hr) >0)
@@ -195,17 +195,17 @@ if(mysqli_num_rows($sql_result1))
 		}else{
 			$act_hrs=7.5;
 		}
-		$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_plan (plan_tag,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no,act_hours=\"$act_hrs\",  couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $pts.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no,act_hours=\"$act_hrs\",  couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex,updated_user='$username',updated_at=NOW() where plan_tag='$ref_code' and plant_code='$plant_code'";
 		echo $sql."<br>";
 		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//NEW2011
-		$sql="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_plan_today (plan_tag,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $pts.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=\"$act_hrs\", couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex,updated_user='$username',updated_at=NOW() where plan_tag='$ref_code' and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//NEW2011		
 	}
@@ -229,16 +229,16 @@ else
 		$plan_eff_ex=0;
 		$ref_code=$date."-".$mod_no."-".$shift;
 
-		$sql="insert ignore into $bai_pro.pro_plan (plan_tag) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_plan (plan_tag,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql="update $bai_pro.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $pts.pro_plan set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex,updated_user='$username',updated_at=NOW() where plan_tag='$ref_code' and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		//NEW2011
-		$sql="insert ignore into $bai_pro.pro_plan_today (plan_tag) values (\"$ref_code\")";
+		$sql="insert ignore into $pts.pro_plan_today (plan_tag,plant_code) values (\"$ref_code\",\"$plant_code\")";
 		mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql="update $bai_pro.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex where plan_tag='$ref_code'";
+		$sql="update $pts.pro_plan_today set mod_no=$mod_no, date=\"$date\", remarks=\"$remarks\", shift='$shift', plan_eff=$plan_eff, plan_pro=$plan_pro, sec_no=$sec_no, act_hours=7.5, couple=$couple, fix_nop=$fix_nop,plan_clh=$plan_clh,plan_sah=$plan_sah, plan_eff_ex=$plan_eff_ex,updated_user='$username',updated_at=NOW() where plan_tag='$ref_code' and plant_code='$plant_code'";
 		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));		
 	}
 }	

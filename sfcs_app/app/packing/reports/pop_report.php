@@ -583,7 +583,7 @@ $(document).ready(function() {
 				
 				if(sizeof($recut_docs)>0)
 				{
-					$sql="select *,SUBSTRING_INDEX(remarks,'-',1) as \"module\" from $bai_pro3.bai_qms_db where qms_style=\"".$_GET['style']."\" and qms_schedule=\"".$_GET['schedule']."\" and qms_color=\"".$_GET['color']."\" and qms_tran_type in (6,9) and SUBSTRING_INDEX(remarks,'-',-1) in (".implode(",",$recut_docs).") order by log_date,SUBSTRING_INDEX(remarks,'-',1)";
+					$sql="select *,SUBSTRING_INDEX(remarks,'-',1) as \"module\" from $pps.bai_qms_db where plant_code='$plantcode' and qms_style=\"".$_GET['style']."\" and qms_schedule=\"".$_GET['schedule']."\" and qms_color=\"".$_GET['color']."\" and qms_tran_type in (6,9) and SUBSTRING_INDEX(remarks,'-',-1) in (".implode(",",$recut_docs).") order by log_date,SUBSTRING_INDEX(remarks,'-',1)";
 				//cho $sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))

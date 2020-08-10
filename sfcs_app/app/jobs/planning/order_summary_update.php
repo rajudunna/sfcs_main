@@ -183,7 +183,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 
-$sql="select distinct delivery from $pts.bai_log_buf where plant_code='$plantcode' and log_time>='$log_time_stamp' and length(trim(both from delivery))>0";
+$sql="select distinct delivery from $pts.bai_log_buf where plant_code= '$plant_code' and log_time>='$log_time_stamp' and length(trim(both from delivery))>0";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -209,7 +209,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //FG
-$sql="select distinct order_del_no from $bai_pro3.packing_summary where lastup>='$log_time_stamp' and length(trim(both from order_del_no))>0";
+$sql="select distinct order_del_no from $pps.packing_summary where lastup>='$log_time_stamp' and length(trim(both from order_del_no))>0 and plant_code= '$plant_code'";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -222,7 +222,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //FCA
-$sql="select distinct schedule from $bai_pro3.fca_audit_fail_db where lastup>='$log_time_stamp' and length(trim(both from schedule))>0";
+$sql="select distinct schedule from $pps.fca_audit_fail_db where lastup>='$log_time_stamp' and length(trim(both from schedule))>0 and plant_code= '$plant_code'";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -234,7 +234,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	
 }
 //Ship
-$sql="select distinct ship_schedule from $bai_pro3.ship_stat_log where last_up>='$log_time_stamp' and length(trim(both from ship_schedule))>0";
+$sql="select distinct ship_schedule from $pps.ship_stat_log where last_up>='$log_time_stamp' and length(trim(both from ship_schedule))>0 and plant_code= '$plant_code'";
 // echo $sql."<br/>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -253,7 +253,7 @@ $schedule_db=array();
 
 
 //To update Speed Deliveries
-$sql="select speed_schedule from $bai_pro3.speed_del_dashboard";
+$sql="select speed_schedule from $pps.speed_del_dashboard where plant_code= '$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -352,7 +352,7 @@ if(sizeof($sch_to_process)>0)
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\"  from $pts.bai_log where plant_code='$plantcode' and delivery=\"".$schedule."\" and color=\"".$color."\" and bac_sec<>0  group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\"  from $pts.bai_log where plant_code= '$plant_code' and delivery=\"".$schedule."\" and color=\"".$color."\" and bac_sec<>0  group by bac_sec";
 		// echo "</br>".$sql2."<br/>";
 		mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -447,7 +447,7 @@ if(sizeof($sch_to_process)>0)
 		// }
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no=$schedule and container=1 and plant_code= '$plant_code'";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         
@@ -457,7 +457,7 @@ if(sizeof($sch_to_process)>0)
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $pps.packing_summary where order_del_no=$schedule and container>1 and plant_code= '$plant_code'";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         

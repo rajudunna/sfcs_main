@@ -38,7 +38,7 @@ while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
 {
 	$module=$sql_row_sec['sec_mods'];
 	$sec_id=$sql_row_sec['sec_id'];
-	$update_sec="Update bai_pro.bai_log set bac_sec=$sec_id where bac_no in ("."'".str_replace(",","','",$module)."'".")";
+	$update_sec="Update pts.bai_log set bac_sec=$sec_id,updated_user='$username',updated_at=NOW() where bac_no in ("."'".str_replace(",","','",$module)."'".") and plant_code='$plant_code'";
 	// echo $update_sec."<br>";
 	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
@@ -130,7 +130,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$input_total=$input_total+$sql_row6['input'];
 				}
 				$fcamca=0;
-				$sql7="select coalesce(SUM(pcs),0) as qty from $bai_pro3.fca_audit_fail_db where schedule=$schedule and size='".$size_data_ref."' and tran_type in (1,2) and pcs > 0";
+				$sql7="select coalesce(SUM(pcs),0) as qty from $pps.fca_audit_fail_db where schedule=$schedule and size='".$size_data_ref."' and tran_type in (1,2) and pcs > 0 and plant_code='$plant_code'";
 				// echo $sql7."<br/>";
 				$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row7=mysqli_fetch_array($sql_result7))
@@ -138,14 +138,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$fcamca=$sql_row7['qty'];
 				}
 				$shipped=0;
-				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $bai_pro3.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."'";
+				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $pps.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."' and plant_code='$plant_code'";
 				$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row8=mysqli_fetch_array($sql_result8))
 				{
 					$shipped=$sql_row8['shipped'];		
 				}
 				$fgqty =0;
-				$sql9="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\",SUM(IF(status=\"DONE\",carton_act_qty,0)) as fgqty from $bai_pro3.packing_summary where order_del_no=$schedule and order_col_des='".$color."' and size_code='".$size_data_ref."' group by size_code";
+				$sql9="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\",SUM(IF(status=\"DONE\",carton_act_qty,0)) as fgqty from $pps.packing_summary where order_del_no=$schedule and order_col_des='".$color."' and size_code='".$size_data_ref."' and plant_code='$plant_code' group by size_code";
 				$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row9=mysqli_fetch_array($sql_result9))
 				{
@@ -153,7 +153,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					$fgqty=$sql_row9['fgqty'];
 				}
                 $output_array=[];
-				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $pts.bai_log WHERE plant_code='$plantcode' and delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
+				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $pts.bai_log WHERE plant_code='$plant_code' and delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
 				//echo $sql10;
 				$sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// echo $sql10."<br>";
