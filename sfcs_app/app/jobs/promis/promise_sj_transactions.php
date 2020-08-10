@@ -19,7 +19,7 @@ if($conn)
 {
 	$log.="<tr><th></th><th>Connected successfully</th><th></th></tr>";	
 	//To get promis_operation_id & Flag
-	$get_details1 = "select * from $bai_pro3.promis_ops_mapping where flag>0";
+	$get_details1 = "select * from $pps.promis_ops_mapping where flag>0 and plant_code= '$plant_code'";
 	$result1=mysqli_query($link, $get_details1) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -27,7 +27,7 @@ if($conn)
 		$flag_check[$row1['sfcs_operation_id']]=$row1['flag'];	
 	}
 	//To get module description & promis_division_code
-	$get_module_desc = "select * from $bai_pro3.promis_module_mapping";
+	$get_module_desc = "select * from $pps.promis_module_mapping where plant_code= '$plant_code'";
 	$result_module = $link->query($get_module_desc);
 	while($row_mod = $result_module->fetch_assoc())
 	{
@@ -41,7 +41,7 @@ if($conn)
 		$uid[$row_user['username']] = $row_user['uid'];
 	}
 	$i=0;
-	$get_details = "select * from $bai_pro3.promisdata where trans_date ='$date'";
+	$get_details = "select * from $pps.promisdata where trans_date ='$date' and plant_code= '$plant_code'";
 	$result1=mysqli_query($link, $get_details) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 	$log.="<tr><th></th><th>".$get_details."</th><th></th></tr>";	
 	while($row1=mysqli_fetch_array($result1))
@@ -122,7 +122,7 @@ if($conn)
 				$status='Failed';
 				if($odbc_result){
 					$status='Success';
-					$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+					$sql_update="UPDATE $pts.`m3_transactions` SET `promis_status` = 1,updated_user='$username',updated_at=NOW() WHERE `id` = ".$id."";
 					$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				$log.="<tr><th>".$i."</th><th>".$inserting_qry."</th><th>".$status."</th></tr>";	
@@ -166,7 +166,7 @@ if($conn)
 				$status='Failed';
 				if($odbc_result1){
 					$status='Success';
-					$sql_update="UPDATE $bai_pro3.`m3_transactions` SET `promis_status` = 1 WHERE `id` = ".$id."";
+					$sql_update="UPDATE $pts.`m3_transactions` SET `promis_status` = 1,updated_user='$username',updated_at=NOW() WHERE `id` = ".$id."";
 					$sql_result=mysqli_query($link, $sql_update) or exit("Updatting issue".mysqli_error($GLOBALS["___mysqli_ston"]));		
 				}
 				$log.="<tr><th>".$i."</th><th>".$inserting_qry."</th><th>".$status."</th></tr>";	
