@@ -1,6 +1,7 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <html>
@@ -39,7 +40,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 		$i=1;
 		$total;
-		$sql="select * from $bai_pro.bai_log where bac_no=$mod and bac_date=\"$date\" order by bac_lastup";
+		$sql="select * from $pts.bai_log where plant_code='$plantcode' and bac_no=$mod and bac_date=\"$date\" order by bac_lastup";
 		// echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

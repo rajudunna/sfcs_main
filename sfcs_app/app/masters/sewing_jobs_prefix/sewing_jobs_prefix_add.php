@@ -67,7 +67,7 @@
 		<div class="col-md-4"><div class="form-group">
 			    <label class="control-label control-label-left col-sm-3" for="department">Prefix</label>
 			    <div class="controls col-sm-9">
-				<input id="department" type="text" class="form-control k-textbox" data-role="text"  name="prefix" value="<?php echo $department; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
+				<input id="department" type="text" maxlength="10" class="form-control k-textbox" data-role="text"  name="prefix" value="<?php echo $department; ?>"  data-parsley-errors-container="#errId1"><span id="errId1" class="error"></span>
 				</div>
                 
         </div></div>

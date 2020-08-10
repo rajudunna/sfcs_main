@@ -3,6 +3,8 @@
 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=strtolower($username_list[1]);
@@ -197,17 +199,17 @@ if(isset($_POST['confirm']))
 	$check=0;
 	for($i=0;$i<sizeof($tid);$i++){
 		if(strlen($location[$i])>0){
-			$sql="update $bai_pro3.bai_qms_db set location_id='DESTROYED-".$location[$i]."' where qms_tid in (".$tid[$i].")";
+			$sql="update $pps.bai_qms_db set location_id='DESTROYED-".$location[$i]."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and qms_tid in (".$tid[$i].")";
 			echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error:$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$sql="insert into $bai_pro3.bai_qms_db(qms_style,qms_schedule,qms_color,log_user,log_date,qms_size,qms_qty,qms_tran_type) values('".$style[$i]."','".$schedule[$i]."','".$color[$i]."','".$username."','".date("Y-m-d")."','".$size[$i]."','".$qty[$i]."',7)";
+			$sql="insert into $pps.bai_qms_db(qms_style,qms_schedule,qms_color,log_user,log_date,qms_size,qms_qty,qms_tran_type,plant_code,created_user,created_at) values('".$style[$i]."','".$schedule[$i]."','".$color[$i]."','".$username."','".date("Y-m-d")."','".$size[$i]."','".$qty[$i]."',7,'$plantcode','$username','".date('Y-m-d')."')";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$iLastid=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 			
-			$sql="update $bai_pro3.bai_qms_db set location_id='".$location[$i]."' where qms_tid=$iLastid";
+			$sql="update $pps.bai_qms_db set location_id='".$location[$i]."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and qms_tid=$iLastid";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -218,7 +220,7 @@ if(isset($_POST['confirm']))
 	
 	if($check==1)
 	{
-		$sql="insert into $bai_pro3.bai_qms_destroy_log (qms_log_user) values ('$username')";
+		$sql="insert into $pps.bai_qms_destroy_log (qms_log_user,plant_code,created_user,created_at) values ('$username','$plantcode','$username','".date('Y-m-d')."')";
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
@@ -255,7 +257,7 @@ $location_id=array();
 $location_title=array();
 $location_id[]="";
 $location_title[]="";
-$sql="select * from $bai_pro3.bai_qms_location_db where active_status=0 and qms_cur_qty<qms_location_cap order by qms_cur_qty desc,order_by desc";
+$sql="select * from $pps.bai_qms_location_db where plant_code='$plantcode' and active_status=0 and qms_cur_qty<qms_location_cap order by qms_cur_qty desc,order_by desc";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -265,7 +267,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $note_no=1;
-$sql="select max(qms_des_note_no) as qms_des_note_no from $bai_pro3.bai_qms_destroy_log";
+$sql="select max(qms_des_note_no) as qms_des_note_no from $pps.bai_qms_destroy_log where plant_code='$plantcode'";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -297,7 +299,7 @@ select
 SUM(IF((qms_tran_type= 12 and location_id<>'DESTROYED'),qms_qty,0))
    -SUM(IF((qms_tran_type= 7 and length(location_id)>0),qms_qty,0))
    
-   ) as qms_qty,qms_style,qms_schedule,qms_color,qms_size,group_concat(qms_tid) as qms_tid, group_concat(concat(location_id,'-',qms_qty,' PCS<br/>')) as existing_location from $bai_pro3.bai_qms_db where $addfilter left(location_id,9)<>'DESTROYED' and location_id<>'PAST_DATA' and qms_tran_type in (12,7) GROUP BY CONCAT(qms_schedule,qms_color,qms_size),location_id order by qms_schedule,qms_color,qms_size
+   ) as qms_qty,qms_style,qms_schedule,qms_color,qms_size,group_concat(qms_tid) as qms_tid, group_concat(concat(location_id,'-',qms_qty,' PCS<br/>')) as existing_location from $pps.bai_qms_db where plant_code='$plantcode' and $addfilter left(location_id,9)<>'DESTROYED' and location_id<>'PAST_DATA' and qms_tran_type in (12,7) GROUP BY CONCAT(qms_schedule,qms_color,qms_size),location_id order by qms_schedule,qms_color,qms_size
 ";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));

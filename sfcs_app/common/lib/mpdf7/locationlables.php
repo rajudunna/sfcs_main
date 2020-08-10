@@ -1,4 +1,5 @@
 <?php
+$plant_code = $_SESSION['plantCode'];
 // Increase max_execution_time. If a large pdf fails, increase it even more.
 ini_set('max_execution_time', 240);
 // Increase this for old PHP versions (like 5.3.3). If a large pdf fails, increase it even more.
@@ -57,7 +58,7 @@ margin-bottom: 5px;
 </style>
 </head>
 <body>';
-$sql="SELECT * FROM $bai_rm_pj1.location_db where status=1 order by sno ASC";
+$sql="SELECT * FROM $wms.location_db where status=1 and plant_code='".$plant_code."' order by sno ASC";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_labels=mysqli_num_rows($sql_result);

@@ -23,6 +23,8 @@
 	//1 for lock
 	//2 for completed
 	$has_permission = haspermission($_GET['r']);
+	$plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
 ?>
 
 <script type="text/javascript">
@@ -140,7 +142,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+$sql="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -163,7 +165,7 @@ if($sql_num_check>0)
 		$grn_date=$sql_row['grn_date'];
 	}
 
-	$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
+	$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -242,7 +244,7 @@ if($sql_num_check>0)
 		}
 	}
 
-	$sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>''";
+	$sql="select * from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
@@ -266,7 +268,7 @@ if($sql_num_check>0)
 				
 				echo '<td><select name="n_location[]" class="select2_single form-control">';
 				echo "<option value=\"0\">Select Location</option>";
-				$sql1="select * from $bai_rm_pj1.location_db where status=1 and location_id NOT IN ('".$location."') order by location_id,sno";
+				$sql1="select * from $wms.location_db where status=1 and plant_code='".$plant_code."' and location_id NOT IN ('".$location."') order by location_id,sno";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -287,7 +289,7 @@ if($sql_num_check>0)
 
 		echo "<table class='table table-bordered'>";
 		echo "<tr class='tblheading'><th>Date</th><th>Previous Location</th><th>New Location</th><th>Old Qty</th><th>New Qty</th><th>Remarks</th><th>User</th></tr>";
-		$sql="select * from $bai_rm_pj1.location_trnsf where lot_no like \"%".trim($lot_no)."%\" order by date";
+		$sql="select * from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
 		// echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

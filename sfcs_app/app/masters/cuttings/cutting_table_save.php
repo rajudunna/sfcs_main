@@ -11,7 +11,7 @@
 // 	$emp_name=$_GET['emp_name'];
 // }
 // echo $_POST['table_name'];
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 $tbl_id=$_POST['tbl_id'];
 // echo $tbl_id;
@@ -20,8 +20,8 @@ $emp_id =$_POST['emp_id'];
 $emp_name =$_POST['emp_name'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
-// echo 
-if (empty($emp_id) || empty($emp_name)) {
+// echo strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0
+if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0) {
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	echo"<script>setTimeout(function () { 
 		swal({
@@ -37,7 +37,7 @@ if (empty($emp_id) || empty($emp_name)) {
 		}); }, 100);</script>";
 }else{
 	if($tbl_id>0){
-		$query = "SELECT emp_id  from $mdm.tbl_leader_name where plant_code='$plantcode' and emp_id='$emp_id' and id != $tbl_id ";
+		$query = "SELECT emp_id  from $pms.tbl_leader_name where plant_code='$plant_code' and emp_id='$emp_id' and id != $tbl_id ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -54,7 +54,7 @@ if (empty($emp_id) || empty($emp_name)) {
 					}
 			}); }, 100);</script>";
 		}else{
-			$sql = "UPDATE $mdm.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id = $tbl_id";
+			$sql = "UPDATE $pms.tbl_leader_name set emp_id='$emp_id',emp_name='$emp_name',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plant_code' and id = $tbl_id";
 			// echo $sql;die();
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -77,7 +77,7 @@ if (empty($emp_id) || empty($emp_name)) {
 			}
 		}
 	}else{
-		$query = "SELECT emp_id from $mdm.tbl_leader_name where plant_code='$plantcode' and emp_id='$emp_id' ";
+		$query = "SELECT emp_id from $pms.tbl_leader_name where plant_code='$plant_code' and emp_id='$emp_id' ";
 		$sql_result=mysqli_query($conn, $query);
 		if(mysqli_num_rows($sql_result)>0){
 			$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
@@ -94,7 +94,7 @@ if (empty($emp_id) || empty($emp_name)) {
 					}
 			}); }, 100);</script>";
 		}else{
-			$sql = "INSERT INTO $mdm.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at)VALUES ('$emp_id','$emp_name','$plantcode','$username','".date('Y-m-d')."')";
+			$sql = "INSERT INTO $pms.tbl_leader_name (emp_id,emp_name,plant_code,created_user,created_at,updated_user,updated_at)VALUES ('$emp_id','$emp_name','$plant_code','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
 			if (mysqli_query($conn, $sql)) {
 				$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 									//echo "New record created successfully";

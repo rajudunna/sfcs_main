@@ -68,7 +68,8 @@ table{
 
 //if(isset($_POST['filter']))
 {
-  
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
 	$sdate=$_GET['sdate'];
 	$edate=$_GET['edate'];	
 	$suppliers_list_ref_query=str_replace("*","'",$_GET["suppliers"]);
@@ -76,7 +77,7 @@ table{
 	$mon1=date('F(Y)', strtotime($sdate));
     $mon2=date('F(Y)', strtotime($edate));
 	
-	$sql_sup_ref="select * from $bai_rm_pj1.inspection_supplier_db WHERE PRODUCT_CODE=\"Fabric\" order by seq_no";
+	$sql_sup_ref="select * from $pms.inspection_supplier_db WHERE PRODUCT_CODE=\"Fabric\" and plant_code='".$plant_code."' order by seq_no";
 	$sql_result_ref=mysqli_query($link, $sql_sup_ref) or exit("Sql Error".$sql_sup_ref.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row_ref=mysqli_fetch_array($sql_result_ref))
 	{
@@ -98,13 +99,13 @@ table{
     //echo  preg_grep('/^$mon1.*/', $array);
  	$supplier=array();
 	$rec_qty=array();
-	$sql="select ROUND(SUM(rec_qty),0) AS qty,supplier FROM $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\"  ".$suppliers_list_ref_query." GROUP BY supplier ORDER BY field ".$sup_ref_x_fin."";
+	$sql="select ROUND(SUM(rec_qty),0) AS qty,supplier FROM $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" AND plant_code='".$plant_code."'  ".$suppliers_list_ref_query." GROUP BY supplier ORDER BY field ".$sup_ref_x_fin."";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$rec_qty[]=$sql_row["qty"];
-		$sql_sup="select * from $bai_rm_pj1.inspection_supplier_db where supplier_m3_code=\"".$sql_row["supplier"]."\" and product_code=\"Fabric\"";
+		$sql_sup="select * from $pms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["supplier"]."\" and product_code=\"Fabric\" and plant_code='".$plant_code."'";
 		$sql_result_sup=mysqli_query($link, $sql_sup) or exit("Sql Error".$sql_sup.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_sup) > 0)
 		{
@@ -119,7 +120,7 @@ table{
 		}
 		$supplier[]=$supplier_name_ref;
 		
-		$sql_col1="select * FROM $bai_rm_pj1.inspection_supplier_db where supplier_code=\"".$supplier_name_ref."\" and product_code=\"Fabric\""; 
+		$sql_col1="select * FROM $pms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref."\" and product_code=\"Fabric\" and plant_code='".$plant_code."'"; 
 		//echo $sql_col."<br>";
 		$sql_result_col1=mysqli_query($link, $sql_col1) or exit("Sql Error".$sql_col1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_col1) > 0)
@@ -243,7 +244,7 @@ table{
 	
 	$text="";
 	
-	$sql2="select sno,complaint_reason FROM $bai_rm_pj1.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" ORDER BY sno";
+	$sql2="select sno,complaint_reason FROM $wms.inspection_complaint_reasons WHERE complaint_category=\"Fabric\" and plant_code='".$plant_code."' ORDER BY sno";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -260,13 +261,13 @@ table{
 	}
 	//echo "<td>Status</td>";
 	$text.="<td>Performance %</td></tr>";
-	$sql="select distinct supplier as sup from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" ".$suppliers_list_ref_query." and length(supplier) > 0 ORDER BY field ".$sup_ref_x_fin."";
+	$sql="select distinct supplier as sup from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and plant_code='".$plant_code."' ".$suppliers_list_ref_query." and length(supplier) > 0 ORDER BY field ".$sup_ref_x_fin."";
 	//echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$supplier_name=$sql_row["sup"];
-		$sql_sup1="select * from $bai_rm_pj1.inspection_supplier_db where supplier_m3_code=\"".$sql_row["sup"]."\" and product_code=\"Fabric\"";
+		$sql_sup1="select * from $pms.inspection_supplier_db where supplier_m3_code=\"".$sql_row["sup"]."\" and product_code=\"Fabric\" and plant_code='".$plant_code."'";
 		$sql_result_sup1=mysqli_query($link, $sql_sup1) or exit("Sql Error".$sql_sup1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_sup1) > 0)
 		{
@@ -280,7 +281,7 @@ table{
 			$supplier_name_ref1=$sql_row["sup"];
 		}
 		
-		$sql_col="select * FROM $bai_rm_pj1.inspection_supplier_db where supplier_code=\"".$supplier_name_ref1."\" and product_code=\"Fabric\""; 
+		$sql_col="select * FROM $pms.inspection_supplier_db where supplier_code=\"".$supplier_name_ref1."\" and product_code=\"Fabric\" and plant_code='".$plant_code."'"; 
 		//echo $sql_col."<br>";
 		$sql_result_col=mysqli_query($link, $sql_col) or exit("Sql Error".$sql_col.mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_col) > 0)
@@ -300,7 +301,7 @@ table{
 		//echo $color_refx."<br>";
 		$supplier[]=$supplier_name_ref1;
 		$supplier_array[]=$supplier_name_ref1;
-		$sql1="select count(distinct batch_no) as batch_no from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\"";
+		$sql1="select count(distinct batch_no) as batch_no from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" and plant_code='".$plant_code."'";
 		//echo $sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -312,7 +313,7 @@ table{
 		$text.="<tr>";
 		$text.="<td>".$supplier_name."</td>";
 	    $text.="<td>".$batch_count."</td>";
-		$sql1x="select distinct batch_no as batch_no from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\"";
+		$sql1x="select distinct batch_no as batch_no from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" and plant_code='".$plant_code."'";
 		//echo $sql1."<br>";
 		$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error".$sql1x.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1x=mysqli_fetch_array($sql_result1x))
@@ -326,12 +327,12 @@ table{
 			{
 				$rej_lots=array();
 				
-				$sql5="select * FROM $bai_rm_pj1.inspection_complaint_db a,$bai_rm_pj1.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND b.complaint_reason='".$comaplint_sno[$i1]."' AND a.reject_batch_no='".$batch_ref."'";
+				$sql5="select * FROM $wms.inspection_complaint_db a,$wms.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND b.complaint_reason='".$comaplint_sno[$i1]."' AND a.reject_batch_no='".$batch_ref."' and plant_code='".$plant_code."'";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error".$sql5.mysqli_error($GLOBALS["___mysqli_ston"]));
 				//echo mysql_num_rows($sql_result5)."-".$sql5."<br>";
 				if(mysqli_num_rows($sql_result5) > 0)
 				{
-					$sql3="select GROUP_CONCAT(CONCAT(\"'\",a.reject_lot_no,\"'\")) as lots FROM $bai_rm_pj1.inspection_complaint_db a,$bai_rm_pj1.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND a.reject_batch_no='".$batch_ref."' AND b.complaint_reason='".$comaplint_sno[$i1]."' GROUP BY b.complaint_track_id";
+					$sql3="select GROUP_CONCAT(CONCAT(\"'\",a.reject_lot_no,\"'\")) as lots FROM $wms.inspection_complaint_db a,$wms.inspection_complaint_db_log b WHERE a.complaint_no=b.complaint_track_id AND a.supplier_name=\"".$supplier_name."\" AND a.reject_batch_no='".$batch_ref."' AND b.complaint_reason='".$comaplint_sno[$i1]."' AND plant_code='".$plant_code."' GROUP BY b.complaint_track_id";
 					//echo $sql3."</br>";
 					$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".$sql3.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -346,7 +347,7 @@ table{
 				
 				if(strlen(implode(",",$rej_lots)) > 2)
 				{				
-					$sql4="select count(distinct batch_no) as batch_no from $bai_rm_pj1.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" AND batch_no='".$batch_ref."' and lot_no in (".implode(",",$rej_lots).")";
+					$sql4="select count(distinct batch_no) as batch_no from $wms.sticker_report WHERE DATE(grn_date) BETWEEN \"".$sdate."\" AND \"".$edate."\" AND product_group=\"Fabric\" and supplier=\"".$supplier_name."\" AND batch_no='".$batch_ref."' AND plant_code='".$plant_code."' and lot_no in (".implode(",",$rej_lots).")";
 					//echo $sql4."<br>";
 					$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error".$sql4.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row4=mysqli_fetch_array($sql_result4))

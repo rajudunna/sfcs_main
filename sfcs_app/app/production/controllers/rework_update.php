@@ -3,7 +3,7 @@
  
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     $has_permission=haspermission($_GET['r']);
-	
+	$plantcode=$_SESSION['plantCode'];
 
 	$workstudy_limit="23.59";
 	$user_limit="23.59";
@@ -263,7 +263,7 @@ function second_box(){
 	?>
 
 	<?php 
-		$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date=\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+		$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date=\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error7896".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))

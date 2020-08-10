@@ -3,6 +3,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
 $dr_id=$_GET['id'];
+$plantcode=$_SESSION['plantCode'];
 // echo $dr_id;
 // $servername = "192.168.0.110:3326";
 // $username = "baiall";
@@ -19,7 +20,7 @@ if (!$conn) {
 }
 $url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 
-$delete="delete from $brandix_bts.`tbl_sewing_job_prefix` where id='$dr_id'";
+$delete="delete from $mdm.`tbl_sewing_job_prefix` where id='$dr_id'";
 // echo $delete;
 if (mysqli_query($conn, $delete)) {
     echo"<script>setTimeout(function () { 

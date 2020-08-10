@@ -27,10 +27,10 @@
             <div class="row">
                 <div class="col-md-3">
         			<input type='hidden' id='row_id' name='row_id' value=<?php echo $row_id; ?> >
-                    <b>Packing Team<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="packing_team" name="packing_team" value="<?php echo $packing_team; ?>" required>
+                    <b>Packing Team<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="packing_team" maxlength="50" name="packing_team" value="<?php echo $packing_team; ?>" required>
                 </div>
                 <div class="col-md-3">
-                    <b>Team Leader<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="team_leader" name="team_leader" value="<?php echo $team_leader; ?>" required>
+                    <b>Team Leader<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'></font></span></b><input type="text" class="form-control" id="team_leader" maxlength="50" name="team_leader" value="<?php echo $team_leader; ?>" required>
                 </div>
                 <div class="col-md-3">
                     <div class="dropdown">

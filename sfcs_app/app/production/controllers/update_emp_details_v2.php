@@ -9,6 +9,8 @@
 	$date=$_POST['dat'];
 	$shift_start=$_POST['shift_start'];
 	$shift_end=$_POST['shift_end'];
+	$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <script language="javascript" type="text/javascript" src="datetimepicker_css.js"></script>
 <script type="text/javascript">
@@ -126,7 +128,7 @@ if(isset($_POST['submit']))
 			$modules_id_array[$module_row['module_name']]=$module_row['id'];
 		}
 		$modules = implode("','", $modules_array);
-		$sql1="SELECT * FROM $bai_pro.pro_attendance WHERE DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
+		$sql1="SELECT * FROM $pts.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
 		echo "
 		<table border=1 class='table table-bordered'>
 			<tr class='info'>

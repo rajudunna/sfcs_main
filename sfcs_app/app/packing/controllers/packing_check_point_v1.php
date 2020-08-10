@@ -11,6 +11,7 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/m3_bulk_or_proc.php")
 // $special_users=user_acl("SFCS_0116",$username,22,$group_id_sfcs);
 // $authorised=user_acl("SFCS_0116",$username,7,$group_id_sfcs);
 $permission = haspermission($_GET['r']);
+$plantcode=$_SESSION['plantCode'];
 ?>
 <?php //include("functions.php"); 
 //To validate the output entries
@@ -378,7 +379,7 @@ if($count>0){
 				//Validation added to avoid scan out more than the output quantity - KiranG 20150527
 				$sout=0;
 				
-				$sql="select COALESCE(SUM(size_s01+size_s02+size_s03+size_s04+size_s05+size_s06+size_s07+size_s08+size_s09+size_s10+size_s11+size_s12+size_s13+size_s14+size_s15+size_s16+size_s17+size_s18+size_s19+size_s20+size_s22+size_s24+size_s26+size_s28+size_s30+size_s31+size_s32+size_s33+size_s34+size_s35+size_s36+size_s37+size_s38+size_s39+size_s40+size_s41+size_s42+size_s43+size_s44+size_s45+size_s46+size_s47+size_s48+size_s49+size_s50),0) as sout from $bai_pro.bai_log_buf where delivery=$schedule";
+				$sql="select COALESCE(SUM(size_s01+size_s02+size_s03+size_s04+size_s05+size_s06+size_s07+size_s08+size_s09+size_s10+size_s11+size_s12+size_s13+size_s14+size_s15+size_s16+size_s17+size_s18+size_s19+size_s20+size_s22+size_s24+size_s26+size_s28+size_s30+size_s31+size_s32+size_s33+size_s34+size_s35+size_s36+size_s37+size_s38+size_s39+size_s40+size_s41+size_s42+size_s43+size_s44+size_s45+size_s46+size_s47+size_s48+size_s49+size_s50),0) as sout from $pts.bai_log_buf where plant_code='$plantcode' and delivery=$schedule";
 				//echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -424,7 +425,7 @@ if($count>0){
 				
 				//Validation added to avoid scan out more than the output quantity - KiranG 20150527
 				$sout=0;
-				$sql="select COALESCE(SUM(size_$size),0) as sout from $bai_pro.bai_log_buf where delivery=$schedule and color=\"".$filter_color_codes[$m]."\"";
+				$sql="select COALESCE(SUM(size_$size),0) as sout from $pts.bai_log_buf where plant_code='$plantcode' and delivery=$schedule and color=\"".$filter_color_codes[$m]."\"";
 				//echo  "<br/>".$sql."<br/>";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error84".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))

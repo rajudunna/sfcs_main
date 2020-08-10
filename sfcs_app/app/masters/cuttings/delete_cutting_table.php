@@ -6,13 +6,15 @@ $tbl_id=$_GET['tid'];
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
+$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName']; 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
 	$url=getFullURL($_GET['r'],'cutting_table_add.php','N');
 	
-$delete="delete from $mdm.`tbl_leader_name` where id='$tbl_id'";
+$delete="delete from $pms.`tbl_leader_name` where id='$tbl_id' and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $delete) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     echo "<script>window.location = '".$url."'</script>";
 

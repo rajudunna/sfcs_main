@@ -2,6 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 if(isset($_POST['dataset']))
 {   
@@ -20,7 +22,7 @@ if(isset($_POST['dataset']))
 	$cost=0;
 	$reason_id_db = array();
     $reason_code_db = array();
-	$sql_reason="select * from $bai_rm_pj2.mrn_reason_db where status=0 order by reason_order";
+	$sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
 	$sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count = mysqli_num_rows($sql_result);
 	
@@ -31,7 +33,7 @@ if(isset($_POST['dataset']))
 	}
     for($i=0;$i<sizeof($arryData);$i++)
 	{ 
-		$sql="insert into bai_rm_pj2.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\")";
+		$sql="insert into wms.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref,plant_code,created_user,updated_user,updated_at) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\",'".$plant_code."','".$username."','".$username."',NOW())";
 		echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$test=1;
