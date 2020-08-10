@@ -9,7 +9,7 @@ if ($conn->connect_error) {
 } 
 $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-$sql = "SELECT * FROM $mdm.`packing_method_master` where plant_code='".$plant_code."' order by id desc";
+$sql = "SELECT * FROM $mdm.`packing_method_master`order by id desc";
 $result = $conn->query($sql);
 $sno =1;
 $url=getFullURL($_GET['r'],'create_packing.php','N');
