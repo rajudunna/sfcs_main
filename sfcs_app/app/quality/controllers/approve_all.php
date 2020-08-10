@@ -5,6 +5,8 @@
 <?php  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 
@@ -90,7 +92,7 @@ if(array_sum($qty)==($audit_pending+$recheck))
         {
             foreach ($value as $size_val => $qnty) 
             {
-                $sql_clr_size="insert into $bai_pro3.fca_audit_fail_db set style=\"$style\", schedule=\"$schedule\",color=\"$clr\",size=\"".$size_val."\",pcs=".$qnty.", tran_type=1, done_by=\"$username\"";
+                $sql_clr_size="insert into $pps.fca_audit_fail_db set style=\"$style\", schedule=\"$schedule\",color=\"$clr\",size=\"".$size_val."\",pcs=".$qnty.", tran_type=1, done_by=\"$username\",plant_code=\"$plant_code\",created_user=\"$username\",updated_user=\"$username\"";
                 // echo "<br/>query1=".$sql_clr_size."<br>";
                 mysqli_query($link, $sql_clr_size) or exit("Sql Error".$sql_clr_size);
             }
@@ -103,7 +105,7 @@ if(array_sum($qty)==($audit_pending+$recheck))
         {
             if($qty[$i]>0)
             {
-                $sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style\", schedule=\"$schedule\",color=\"$color\",size=\"".$size[$i]."\",pcs=".$qty[$i].", tran_type=1, done_by=\"$username\"";
+                $sql="insert into $pps.fca_audit_fail_db set style=\"$style\", schedule=\"$schedule\",color=\"$color\",size=\"".$size[$i]."\",pcs=".$qty[$i].", tran_type=1, done_by=\"$username\",plant_code=\"$plant_code\",created_user=\"$username\",updated_user=\"$username\"";
                 // echo "<br/>query2=".$sql."<br>";
                 mysqli_query($link, $sql) or exit("Sql Error".$sql);
             }

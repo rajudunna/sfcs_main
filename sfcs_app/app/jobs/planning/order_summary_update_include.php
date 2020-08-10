@@ -2,7 +2,7 @@
 
 <?php
 $schedules_to_update=array();
-
+$plantcode=$_SESSION['plantCode'];
 $schedules_to_update=array_diff($sch_to_process,$schedule_db);
 
 if(sizeof($schedules_to_update)>0){
@@ -50,7 +50,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$qty_temp=0;
 
 		//echo date("H:i:s");	
-		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\" from $bai_pro.bai_log where ims_doc_no in ($search_string)  and bac_sec<>0 group by bac_sec";
+		$sql2="select bac_sec, coalesce(sum(bac_Qty),0) as \"qty\" from $pts.bai_log where plant_code='$plantcode' and ims_doc_no in ($search_string)  and bac_sec<>0 group by bac_sec";
 		//echo $sql2."<br/>";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))

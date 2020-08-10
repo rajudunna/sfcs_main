@@ -2,6 +2,8 @@
 error_reporting(0);
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 include($include_path.'\sfcs_app\common\config\config_jobs.php');		
 $con = odbc_connect("$prod_status_driver_name;Server=$bel_wisdom_server_name;Database=$bel_wisdom_database;", $bel_wisdom_username,$bel_wisdom_password);
 if(!$con)
@@ -13,7 +15,7 @@ else
 	echo "Connected";
 }
 
-$sql_max="select max(date) as max_date from $bai_pro.grand_rep where date < \"".date("Y-m-d")."\"";
+$sql_max="select max(date) as max_date from $pts.grand_rep where plant_code='$plantcode' and date < \"".date("Y-m-d")."\"";
 // echo "<br/>".$sql_max;
 $sql_result_max=mysqli_query($link,$sql_max) or exit("Sql Error".mysqli_error());
 while($sql_row_max=mysqli_fetch_array($sql_result_max))
@@ -104,7 +106,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$sah_loss=round($down_time*$plan_eff,2);
 	
 	$smv=0;
-	$sql22="select smv from $bai_pro.grand_rep where module=\"".$sql_row['mod_no']."\" and date=\"".$sql_row['date']."\" and shift=\"".$sql_row['shift']."\"";
+	$sql22="select smv from $pts.grand_rep where plant_code='$plantcode' and module=\"".$sql_row['mod_no']."\" and date=\"".$sql_row['date']."\" and shift=\"".$sql_row['shift']."\"";
 	$sql_result22=mysqli_query($link,$sql22) or die("Sql Error = ".$sql22."-".mysqli_error());
 	
 	while($sql_row22=mysqli_fetch_array($sql_result22))

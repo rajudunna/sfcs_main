@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0166",$username,1,$group_id_sfcs); 
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <?php
@@ -403,8 +405,8 @@ function button_disable()
 
 			if(strlen($doc_no) > 0)
 			{
-				//$sql_doc="SELECT group_concat(tran_pin) as tid FROM bai_rm_pj1.fabric_cad_allocation where doc_no=".$doc_no." group by doc_no";
-				$sql_doc="SELECT group_concat(roll_id) as tid FROM $bai_rm_pj1.fabric_cad_allocation where doc_no='".$doc_no."' group by doc_no";
+				//$sql_doc="SELECT group_concat(tran_pin) as tid FROM wms.fabric_cad_allocation where doc_no=".$doc_no." group by doc_no";
+				$sql_doc="SELECT group_concat(roll_id) as tid FROM $wms.fabric_cad_allocation where doc_no='".$doc_no."' AND plant_code='".$plant_code."' group by doc_no";
 				//echo "<option value=\"0\" selected>".$sql_doc."</option>";
 				$sql_result_doc=mysqli_query($link, $sql_doc) or die("Error".$sql_doc.mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row_doc=mysqli_fetch_array($sql_result_doc))
@@ -414,7 +416,7 @@ function button_disable()
 
 				if(strlen($tid) > 0)
 				{
-					$sql_tid="SELECT distinct(lot_no) FROM $bai_rm_pj1.store_in where tid in (".$tid.")";
+					$sql_tid="SELECT distinct(lot_no) FROM $wms.store_in where tid in (".$tid.") AND plant_code='".$plant_code."'";
 					//echo "<option value=\"0\" selected>".$sql_tid."</option>";
 					$sql_result_tid=mysqli_query($link, $sql_tid) or die("Error".$sql_tid.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row_tid=mysqli_fetch_array($sql_result_tid))
@@ -431,7 +433,7 @@ function button_disable()
 
 				if(strlen($lot_ref) > 0)
 				{
-					$sql13="select distinct batch_no as batch from $bai_rm_pj1.sticker_report where lot_no in (".str_replace(";",",",$lot_ref).") group by batch_no";
+					$sql13="select distinct batch_no as batch from $wms.sticker_report where lot_no in (".str_replace(";",",",$lot_ref).") AND plant_code='".$plant_code."' group by batch_no";
 					$sql_result13=mysqli_query($link, $sql13) or die("Error".$sql13.mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row13=mysqli_fetch_array($sql_result13))
 					{
@@ -457,7 +459,7 @@ function button_disable()
 
 			//To check the supplier approved quantity for issue availability 
 			//CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
-			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no=\"".$batch."\""; 
+			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no=\"".$batch."\" and plant_code='".$plant_code."'"; 
 
 			//echo "<br/>".$sql14."<br/>";
 
@@ -470,7 +472,7 @@ function button_disable()
 			//To check the applied quantity is exceeds the available quantity
 			//OLD ISSUE QUERY KK 20160721 $sql141="select COALESCE(sum(issued_qty)) as qty from bai_rm_pj2.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32)";
 
-			$sql141="select COALESCE(sum(avail_qty)) as qty from $bai_rm_pj2.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32)";
+			$sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
 
 			//echo "<br/>".$sql141."<br/>";
 
@@ -483,7 +485,7 @@ function button_disable()
 
 			$requested_qty=0;
 
-			$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $bai_rm_pj2.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+			$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
 			//echo "<br/>".$sql_requested_qty."<br/>";
 
 			$sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -554,8 +556,8 @@ function button_disable()
 
 			$appr_qty=0;
 			//CR# 376 // kirang // 2015-06-18 // Supplier Agreed Quantity Formula Has revised as per the discussion.
-			//$sql14="select sum(supplier_replace_approved_qty) as qty from bai_rm_pj1.inspection_complaint_db where reject_batch_no in (".$batch_ref_implode.")";
-			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $bai_rm_pj1.inspection_complaint_db where reject_batch_no in ('".$inp_5."')";
+			//$sql14="select sum(supplier_replace_approved_qty) as qty from wms.inspection_complaint_db where reject_batch_no in (".$batch_ref_implode.")";
+			$sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no in ('".$inp_5."') and plant_code='".$plant_code."'";
 
 			//echo "<br/>".$sql14."<br>";
 
@@ -572,7 +574,7 @@ function button_disable()
 
 			//$sql141="select COALESCE(sum(issued_qty)) as qty from bai_rm_pj2.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32)";
 
-			$sql141="select COALESCE(sum(avail_qty)) as qty from $bai_rm_pj2.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32)";
+			$sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
 			//echo "<br/>".$sql141."<br/>";
 
 			$sql_result141=mysqli_query($link, $sql141) or die("Error".$sql141.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -583,7 +585,7 @@ function button_disable()
 
 			$requested_qty=0;
 
-			$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $bai_rm_pj2.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+			$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
 			//echo "<br/>".$sql_requested_qty."<br/>";
 
 			$sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -605,7 +607,7 @@ function button_disable()
 
 			//When M3 offline comment this
 
-			$sql="select distinct rand_track_id from $bai_rm_pj2.mrn_track where style=\"$inp_1\" and schedule=\"$inp_2\" and color=\"$inp_3\"";
+			$sql="select distinct rand_track_id from $wms.mrn_track where style=\"$inp_1\" and schedule=\"$inp_2\" and color=\"$inp_3\" and plant_code='".$plant_code."'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 			echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".mysqli_num_rows($sql_result)."</b><br/>";

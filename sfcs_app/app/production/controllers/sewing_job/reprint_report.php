@@ -95,6 +95,8 @@ if(isset($_POST['submit']))
 	$filter_n='';
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	//echo sizeof($check_box)."<br>";
 	//echo $_POST['sdate']."--".$_POST['edate']."--".$check_box[0]."--".$check_box[1]."--".$check_box[2]."<br>";
 	if(empty($check_box)) {
@@ -136,7 +138,7 @@ if(isset($_POST['submit']))
 	
 	
 //echo $filter."<br>";
-	$sql="SELECT date(date_time) as date_time,$filter bundle_id,user_name,remark from $brandix_bts.re_print_table where date(date_time)
+	$sql="SELECT date(date_time) as date_time,$filter bundle_id,user_name,remark from $pps.re_print_table where plant_code='$plant_code' AND date(date_time)
 BETWEEN '$sdate' AND '$edate' GROUP BY date_time $filter_n ORDER BY date_time";
 //echo $sql."<br>";
 	//$sets=explode(",",$filter_n);

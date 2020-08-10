@@ -7,8 +7,9 @@ $conn=$link;
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-
-$sql = "SELECT * FROM $brandix_bts.`packing_method_master` order by id desc";
+$plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
+$sql = "SELECT * FROM $mdm.`packing_method_master`order by id desc";
 $result = $conn->query($sql);
 $sno =1;
 $url=getFullURL($_GET['r'],'create_packing.php','N');

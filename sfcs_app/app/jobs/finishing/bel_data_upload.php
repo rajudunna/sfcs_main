@@ -8,7 +8,8 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 //set_time_limit(50000);
 set_time_limit(0);
 
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 // Turn off all error reporting
 error_reporting(0);
 // Report simple running errors
@@ -43,7 +44,7 @@ if( $conn === false )
 <?php
 
 $unit='BEK';
-
+$plantcode=$_SESSION['plantCode'];
 // if(isset($_GET['currentdate']))
 // {
  	$max_allowed_date=date("Y-m-d");
@@ -80,18 +81,18 @@ sqlsrv_query( $conn, $tsql);
 //sqlsrv_query( $conn, $tsql);
 
 
-$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $bai_pro.bai_log_buf WHERE bac_date between \"$sdate\" and \"$edate\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
+$sql="SELECT CONCAT(bac_date,'-',bac_no,'-',bac_shift) AS tid, ROUND(SUM((bac_qty*smv)/60),2) AS sah, sum(bac_Qty) as outp FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date between \"$sdate\" and \"$edate\" GROUP BY CONCAT(bac_date,'-',bac_no,'-',bac_shift) ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	
-	$sql_new="update $bai_pro.grand_rep set act_sth=".$sql_row['sah'].", act_out=".$sql_row['outp']." where tid='".$sql_row['tid']."'";
+	$sql_new="update $pts.grand_rep set act_sth=".$sql_row['sah'].", act_out=".$sql_row['outp'].",updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='".$sql_row['tid']."'";
 	mysqli_query($link, $sql_new) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 //New block create to flush data from the begginig of the month to till date  and refresh the data in SFCS - kiran 20150722
 
 
-$sql="select date,round(sum(plan_out),0) as plan_out, round(sum(act_out),0) as act_out, SUBSTRING_INDEX(module,\".\",1) as module, left(styles,18) as styles,left(buyer,18) as buyer, round(sum(plan_clh),2) as plan_clh, round(sum(act_clh),2) as act_clh, round(sum(plan_sth),2) as plan_sth,  round(sum(act_sth),2) as act_sth, COALESCE(ROUND(SUM(act_sth)/SUM(act_clh)*100,2),0) AS act_eff, COALESCE(ROUND(SUM(plan_sth)/SUM(plan_clh)*100,2),0) AS plan_eff, SUM(rework_qty) AS rework_qty  from $bai_pro.grand_rep where date between \"$sdate\" and \"$edate\" group by date";
+$sql="select date,round(sum(plan_out),0) as plan_out, round(sum(act_out),0) as act_out, SUBSTRING_INDEX(module,\".\",1) as module, left(styles,18) as styles,left(buyer,18) as buyer, round(sum(plan_clh),2) as plan_clh, round(sum(act_clh),2) as act_clh, round(sum(plan_sth),2) as plan_sth,  round(sum(act_sth),2) as act_sth, COALESCE(ROUND(SUM(act_sth)/SUM(act_clh)*100,2),0) AS act_eff, COALESCE(ROUND(SUM(plan_sth)/SUM(plan_clh)*100,2),0) AS plan_eff, SUM(rework_qty) AS rework_qty  from $pts.grand_rep where plant_code='$plantcode' and date between \"$sdate\" and \"$edate\" group by date";
 
 //GROUP BY SUBSTRING_INDEX(module,\".\",1),DATE ORDER BY DATE,module
 //echo $sql;

@@ -7,9 +7,10 @@
 //include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $master_resons = array();
-$sql_mstr_resns = "SELECT id FROM $bai_pro2.downtime_reason WHERE id NOT IN (20,21,22) ";
+$sql_mstr_resns = "SELECT id FROM $pps.downtime_reason WHERE plant_code='$plantcode' and id NOT IN (20,21,22) ";
 $res_mstr = mysqli_query($link, $sql_mstr_resns) or exit('SQL Error:'.$sql_mstr_resns);
 $z = 0;
 while ($row_mstr = mysqli_fetch_array($res_mstr))
@@ -163,7 +164,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				$hours=$row['hours'];
 				//$sumscqty=$row['out'];
 				$sumscqty=0;
-				$sql3="SELECT time_parent_id,sum(qty) as outqty FROM $bai_pro2.hout2 where out_date='$frdate' AND team='$team' and trim(style)='".$style."' and smv='".$row['smv']."' group by time_parent_id";
+				$sql3="SELECT time_parent_id,sum(qty) as outqty FROM $pps.hout2 where plant_code='$plantcode' and out_date='$frdate' AND team='$team' and trim(style)='".$style."' and smv='".$row['smv']."' group by time_parent_id";
 				//echo $sql3."<br>";
 				$res3=mysqli_query($link,$sql3);
 				unset($out);
@@ -176,7 +177,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				//    echo $sql4."</br>";
 				$res4=mysqli_query($link,$sql4);
 				
-				$get_nop_query="SELECT fix_nop FROM $bai_pro.pro_plan WHERE date='$frdate' and mod_no='$team'";
+				$get_nop_query="SELECT fix_nop FROM $pts.pro_plan WHERE plant_code='$plantcode' and date='$frdate' and mod_no='$team'";
 				//   echo $get_nop_query."<br>";
 				$nop_result=mysqli_query($link,$get_nop_query);
 				while($result=mysqli_fetch_array($nop_result))
@@ -287,7 +288,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									$reasons = array();
 									$break_resons = array(20,21,22);
 
-									$sql6_2x="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2x="SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE plant_code='$plantcode' and DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									$res6_12x=mysqli_query($link,$sql6_2x);
 									$k = 0;
 									while ($rows = mysqli_fetch_array($res6_12x))
@@ -312,7 +313,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$color = '#DD3636';
 									}
 
-									$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT * FROM $pps.hourly_downtime WHERE plant_code='$plantcode' and DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)
@@ -337,7 +338,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 									$reasons = array();
 									$break_resons = array(20,21,22);
 
-									$sql6_2="SELECT distinct(reason_id) FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE plant_code='$plantcode' and DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									$res6_12=mysqli_query($link,$sql6_2);
 									$k = 0;
 									while ($rows = mysqli_fetch_array($res6_12))
@@ -362,7 +363,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$color = '#DD3636';
 									}
 									
-									$sql6_2="SELECT * FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
+									$sql6_2="SELECT * FROM $pps.hourly_downtime WHERE plant_code='$plantcode' and DATE='$frdate' AND time BETWEEN TIME('".$start_time[$i]."') AND TIME('".$end_time[$i]."') AND team='$team';";
 									// echo $sql6_2.'<br><br>';
 									$res6_12=mysqli_query($link,$sql6_2);
 									if (mysqli_num_rows($res6_12) > 0)

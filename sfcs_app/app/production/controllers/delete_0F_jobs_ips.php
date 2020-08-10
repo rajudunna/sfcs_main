@@ -3,22 +3,26 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
     $application = 'IPS';    
     $status = 'F';
-
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
     if( isset($_GET['job_no']) && $_GET['job_no']!=''){
         $job_r = $_GET['job_no'];
         $job = $_GET['job'];
 
         //Back up jobs
-        $insert_log = "Insert into $bai_pro3.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`) 
-                    values('$job_r','$username','".date('Y-m-d H:i:s')."')";
+        $insert_log = "Insert into $pms.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`,`plant_code`,`created_user`,`updated_user`) 
+                    values('$job_r','$username','".date('Y-m-d H:i:s')."','".$plant_code."','".$username."','".$username."')";
         mysqli_query($link,$insert_log);
 
-        $insert_qry_ips = "INSERT IGNORE INTO `$bai_pro3`.`plan_dashboard_input_backup` 
-                SELECT * FROM `$bai_pro3`.`plan_dashboard_input`
-                WHERE input_job_no_random_ref = '$job_r'";
+        $insert_qry_ips = "INSERT IGNORE INTO `$pps`.`plan_dashboard_input_backup` 
+                SELECT * FROM `$pps`.`plan_dashboard_input`
+                WHERE plant_code='$plant_code' AND input_job_no_random_ref = '$job_r'";
         mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $delete_query = "Delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='$job_r'" ;
+        $update_qry_ips = "UPDATE plan_dashboard_input_backup set updated_user='$username',updated_at=NOW() WHERE plant_code='$plant_code' AND input_job_no_random_ref = '$job_r'";
+        mysqli_query($link, $update_qry_ips) or exit("update_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+        $delete_query = "Delete from $pps.plan_dashboard_input where plant_code='$plant_code' and input_job_no_random_ref='$job_r'" ;
         $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
        
         echo "<script>$(document).ready(function(){
@@ -27,7 +31,6 @@
                 </script>";
         
     }
-
 
 ?>
 <div class='panel panel-primary'>

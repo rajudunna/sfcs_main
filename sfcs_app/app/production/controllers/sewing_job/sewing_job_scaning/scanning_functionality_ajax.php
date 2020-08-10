@@ -11,7 +11,8 @@ $ops_dep='';
 $post_ops_code='';
 $qry_status='';
 error_reporting(0);
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 //To Get Sewing Operations
 $category = 'sewing';
 $get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
@@ -1841,7 +1842,7 @@ else if($concurrent_flag == 0)
 					while($buyer_qry_row=mysqli_fetch_array($buyer_qry_result)){
 							$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 						}
-					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance where module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$b_shift."'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $pts.pro_attendance where plant_code='$plantcode' and module='".$b_module[$i]."' and date='".$bac_dat."' and shift='".$b_shift."'";
 					// echo $qry_nop;
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
@@ -1865,9 +1866,9 @@ else if($concurrent_flag == 0)
 						}
 					}
 					$bundle_op_id=$b_tid[$i]."-".$b_op_id."-".$b_inp_job_ref[$i];
-					$insert_bailog="insert into $bai_pro.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-					) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+					$insert_bailog="insert into $pts.bai_log (bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+					bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+					) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."','$plantcode','$username','".date('Y-m-d')."')";
 					//echo "Bai log : ".$insert_bailog."</br>";
 					if($b_rep_qty[$i] > 0)
 					{
@@ -1877,9 +1878,9 @@ else if($concurrent_flag == 0)
 					{
 						//echo "Inserted into bai_log table successfully<br>";
 						/*Insert same data into bai_pro.bai_log_buf table*/
-						$insert_bailogbuf="insert into $bai_pro.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
-						bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno
-						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."')";
+						$insert_bailogbuf="insert into $pts.bai_log_buf(bac_no,bac_sec,bac_Qty,bac_lastup,bac_date,
+						bac_shift,bac_style,bac_stat,log_time,buyer,delivery,color,loguser,ims_doc_no,smv,".$sizevalue.",ims_table_name,ims_tid,nop,ims_pro_ref,ope_code,jobno,plant_code,created_user,created_at
+						) values ('".$b_module[$i]."','".$sec_head."','".$b_rep_qty[$i]."','".$log_time."','".$bac_dat."','".$b_shift."','".$b_style."','Active','".$log_time."','".$buyer_div."','".$b_schedule."','".$b_colors[$i]."',USER(),'".$b_doc_num[$i]."','".$sfcs_smv."','".$b_rep_qty[$i]."','ims_log','".$b_op_id."','".$nop."','".$bundle_op_id."','".$b_op_id."','".$b_inp_job_ref[$i]."','$plantcode','$username','".date('Y-m-d')."')";
 						//echo "</br>Insert Bailog buf: ".$insert_bailogbuf."</br>";
 						if($b_rep_qty[$i] > 0)
 						{

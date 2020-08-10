@@ -1,5 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <title>CAD Saving Details</title>
@@ -374,7 +376,7 @@ if($order_yy-$cad_yy)
 	$savings_new=round((($order_yy-$cad_yy)/$order_yy)*100,1);
 //echo "<td>".."</td>";
 
-$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
+$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$docketnos).") and plant_code='".$plant_code."'";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
@@ -382,7 +384,7 @@ while($row=mysqli_fetch_array($result))
 	$issued_qty1=$row["qty"];
 }
 
-$sql1="select sum(qty_issued) as qty1 from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$docketnos).")";
+$sql1="select sum(qty_issued) as qty1 from $wms.store_out_backup where cutno in (".implode(",",$docketnos).") and plant_code='".$plant_code."'";
 //echo $sql1."<br>";
 $result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row1=mysqli_fetch_array($result1))
@@ -392,7 +394,7 @@ while($row1=mysqli_fetch_array($result1))
 
 $issued_qty=$issued_qty1+$issued_qty2;
 
-$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
+$sql="select sum(qty_issued) as qty from $wms.store_out where cutno in (".implode(",",$recut_docketnos).") and plant_code='".$plant_code."'";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
@@ -455,8 +457,8 @@ while($row=mysqli_fetch_array($result))
 	
 //echo "<br/>value= ".round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),0)."<br/>";
 
-$sql="select sum(issued_qty) as qty from $bai_rm_pj2.mrn_track where schedule='$schedule' 
-	  and color like '%$color%' and product='FAB'";
+$sql="select sum(issued_qty) as qty from $wms.mrn_track where schedule='$schedule' 
+	  and color like '%$color%' and product='FAB' and plant_code='".$plant_code."'";
 	//   echo $sql;
 $result=mysqli_query($link, $sql) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))

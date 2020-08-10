@@ -43,7 +43,8 @@ $start=$_GET['dat1'];
 $end=$_GET['dat2'];
 $sec=$_GET['sec'];
 $cat=$_GET['cat'];
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 // echo $start."---".$end;
 include("../".getFullURL($_GET['r'],'exp_mod_main.php',0,'R'));
 
@@ -79,8 +80,8 @@ while ($check_date != $end_date)
 	$check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date))); 
 	$weekday = date('l', strtotime($check_date));
 	//$l=$k+$l;
-	$sql_op=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where date='$check_date' and section='$sec'") or exit("sql_op Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// echo "select sum(act_out) from $bai_pro.grand_rep where date='$check_date' and section='$sec'"."<br>";
+	$sql_op=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and date='$check_date' and section='$sec'") or exit("sql_op Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// echo "select sum(act_out) from $pts.grand_rep where date='$check_date' and section='$sec'"."<br>";
 	while($row_op=mysqli_fetch_array($sql_op))
 	{
 		$output1=$row_op["sum(act_out)"];
@@ -102,8 +103,8 @@ while ($check_date != $end_date)
 	else
 	{		
 		
-	  	$sql=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where date='$check_date' and section='$sec'") or exit("sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//echo "select sum(act_out) from $bai_pro.grand_rep where date='$check_date' and section='$sec'<br>";
+	  	$sql=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and date='$check_date' and section='$sec'") or exit("sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//echo "select sum(act_out) from $pts.grand_rep where date='$check_date' and section='$sec'<br>";
 		
 		while($row=mysqli_fetch_array($sql))
 		{
@@ -147,7 +148,7 @@ echo "</tr>";
 for($i=0;$i<sizeof($secs);$i++)
 {
     
-	$sql2=mysqli_query($link, "select distinct(styles) from $bai_pro.grand_rep where section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module ") or exit("sql2 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql2=mysqli_query($link, "select distinct(styles) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module ") or exit("sql2 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($sql2))
 	{
 	    echo "<tr>";
@@ -158,7 +159,7 @@ for($i=0;$i<sizeof($secs);$i++)
 		for($k=0;$k<sizeof($dates);$k++)
 		{
 			$weekday1 = date('l', strtotime($dates[$k]));
-			$sql17=mysqli_query($link, "select count(module) from $bai_pro.grand_rep where section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."'")  or exit("sql17 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql17=mysqli_query($link, "select count(module) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."'")  or exit("sql17 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row17=mysqli_fetch_array($sql17))
 			{
 				$count=$row17["count(module)"];
@@ -166,13 +167,13 @@ for($i=0;$i<sizeof($secs);$i++)
 			}
 			if($count !=0)
 			{
-				$sql15=mysqli_query($link, "select distinct(nop) from $bai_pro.grand_rep where section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."'") or exit("sql15 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  			
+				$sql15=mysqli_query($link, "select distinct(nop) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."'") or exit("sql15 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  			
 				while($row15=mysqli_fetch_array($sql15))
 				{
 					$nop=$row15['nop'];	
 				}	
 				
-				$sql16=mysqli_query($link, "select distinct(smv) from $bai_pro.grand_rep where section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."' order by module ") or exit("sql16 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql16=mysqli_query($link, "select distinct(smv) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='".$secs[$i]."' AND date='".$dates[$k]."' and styles='".$row2['styles']."' order by module ") or exit("sql16 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($row16=mysqli_fetch_array($sql16))
 				{
 					$smv=$row16['smv'];
@@ -187,7 +188,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			
 			if($weekday1 == "Saturday")
 			{
-				$sql4=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$k]."' and section='$sec'") or exit("sql14 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
+				$sql4=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$k]."' and section='$sec'") or exit("sql14 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
 				while($row4=mysqli_fetch_array($sql4))
 				{
 					$output=$row4['sum(act_out)'];
@@ -212,7 +213,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			}
 			else 
 			{
-				$sql41=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$k]."' and section='$sec'") or exit("sql41 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
+				$sql41=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$k]."' and section='$sec'") or exit("sql41 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
 				while($row41=mysqli_fetch_array($sql41))
 				{
 					$output1=$row41['sum(act_out)'];
@@ -243,7 +244,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			
 			if($weekday2 == "Saturday")
 			{
-				$sql42=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$l]."' and section='$sec'") or exit("sql42 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
+				$sql42=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$l]."' and section='$sec'") or exit("sql42 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
 				while($row42=mysqli_fetch_array($sql42))
 				{
 					$output=round($row42['sum(act_out)']/15,0);
@@ -264,7 +265,7 @@ for($i=0;$i<sizeof($secs);$i++)
 			}
 			else
 			{
-				$sql43=mysqli_query($link, "select sum(act_out) from $bai_pro.grand_rep where styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$l]."' and section='$sec'") or exit("sql43 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
+				$sql43=mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='".$row2['styles']."' and module='".$secs[$i]."' and date='".$dates[$l]."' and section='$sec'") or exit("sql43 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
 				while($row43=mysqli_fetch_array($sql43))
 				{
 					$output1=round($row43['sum(act_out)']/15,0);

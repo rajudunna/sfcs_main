@@ -15,6 +15,8 @@ Description: Here AQL team will be update Garments Rejected status.
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 <style>
 body
@@ -136,7 +138,7 @@ function button_disable()
 
 $reason_id=array();
 $reason_code=array();
-$sql="select * from $bai_pro3.audit_ref where status=0 order by reason";
+$sql="select * from $pps.audit_ref where plant_code='$plant_code' and status=0 order by reason";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -181,11 +183,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		echo "<tr><td>".$sql_row['order_col_des']."</td><td>".$size_value."</td><td>$qty</td>";
 		if($color=='0')
 		{
-			$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and color=\"".$sql_row['order_col_des']."\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
+			$sql2="select sum(bac_qty) as sizes,bac_no as mods from $pts.bai_log_buf where plant_code='$plantcode' and delivery=\"$schedule\" and color=\"".$sql_row['order_col_des']."\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
 		}
 		else
 		{
-		$sql2="select sum(bac_qty) as sizes,bac_no as mods from $bai_pro.bai_log_buf where delivery=\"$schedule\" and color=\"$color\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
+		$sql2="select sum(bac_qty) as sizes,bac_no as mods from $pts.bai_log_buf where plant_code='$plantcode' and delivery=\"$schedule\" and color=\"$color\" and size_".$sql_row['size_code']." > 0 group by bac_no order by bac_no+0";
 		}
 		$mod_exp1='';
 		$mod_exp2='';
@@ -273,11 +275,11 @@ if(isset($_POST['update']))
 		{
 			if($color_new1=='1')
 			{
-			$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+			$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"".$color_new[$i]."\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			else
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i];
+				$sql="insert into $pps.fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\", color=\"$color_new\", tran_type=2, size=\"".$size[$i]."\", fail_reason=\"".implode(",",$reason)."\", done_by=\"$username\", remarks=\"".implode(",",$modss)."\", pcs=-".$qty[$i]."\",plant_code=".$plant_code."\",created_user=".$username."\",updated_user=".$username;
 			}
 			// echo $sql."<br>";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

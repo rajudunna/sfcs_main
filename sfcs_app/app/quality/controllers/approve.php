@@ -11,6 +11,8 @@ Description: Here AQL team will be update Garments Approve status.
 <?php  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 
@@ -215,7 +217,7 @@ if(isset($_POST['update']))
 		{
 			if($qty[$i]>0)
 			{
-				$sql="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i]."\",\"".$username."\",\"".$qty[$i]."\",\"".$color_new[$i]."\")";
+				$sql="insert into $pps.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color,plant_code,created_user,updated_user) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i]."\",\"".$username."\",\"".$qty[$i]."\",\"".$color_new[$i]."\",\"".$plant_code."\",\"".$username."\",\"".$username."\")";
 				// echo "<br/>query1=".$sql;
 				mysqli_query($link, $sql) or exit("Sql Error".$sql);
 			}
@@ -228,7 +230,7 @@ if(isset($_POST['update']))
 			// echo "<br>".$i1."-".$qty[$i1]."-".sizeof($qty)."<br>";
 			if($qty[$i1]>0)
 			{
-				$sql1="insert into $bai_pro3.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i1]."\",\"".$username."\",\"".$qty[$i1]."\",\"".$color_new."\")";
+				$sql1="insert into $pps.fca_audit_fail_db (style,schedule,tran_type,size,done_by,pcs,color,plant_code,created_user,updated_user) values (\"".$style_new."\",\"".$schedule_new."\",1,\"".$size[$i1]."\",\"".$username."\",\"".$qty[$i1]."\",\"".$color_new."\",\"".$plant_code."\",\"".$username."\",\"".$username."\")";
 				//$sql1="insert into fca_audit_fail_db set style=\"$style_new\", schedule=\"$schedule_new\",color=\"$color_new\", tran_type=1, size=\"".$size[$i1]."\", done_by=\"$username\", pcs=\"".$qty[$i1]."\"";
 				// echo "<br/>query2=".$sql1;
 				mysqli_query($link, $sql1) or exit("Sql Error2".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));

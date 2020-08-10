@@ -1,7 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $date=$_POST['date'];
 $shift=$_POST['shift'];
 $modules_array = array();	$modules_id_array=array();
@@ -16,7 +17,7 @@ while($module_row=mysqli_fetch_array($modules_result))
 for($i=0;$i<sizeof($modules_array);$i++)
 {
 	$jpa_id = 'jpa_'.$modules_id_array[$modules_array[$i]];
-	$sql2="update $bai_pro.pro_attendance set jumper='".$_POST[$jpa_id]."' where date='".$date."' and module='$modules_array[$i]' and shift = '$shift'";
+	$sql2="update $pts.pro_attendance set jumper='".$_POST[$jpa_id]."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and module='$modules_array[$i]' and shift = '$shift'";
 	// echo $sql2."<br>";
 	mysqli_query($link, $sql2) or exit("Sql Errora $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 	

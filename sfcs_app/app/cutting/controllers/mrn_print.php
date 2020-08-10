@@ -7,6 +7,8 @@ kirang / 2015-12-18 / Service Request#13345467 // Need MRN Duplicate Print Optio
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $mrn_id=$_GET["tid"];
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //Print Status
 if($_GET["print_status"]==1)
 {
@@ -17,7 +19,7 @@ else
 	$print_status="Original";
 }
 
-$sql="select * from $bai_rm_pj2.mrn_track where tid=$mrn_id";
+$sql="select * from $wms.mrn_track where tid=$mrn_id and and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -31,7 +33,7 @@ $item_code=$sql_row["item_code"];
 $item_desc=$sql_row["item_desc"];
 $product=$sql_row["product"];
 $reason=$sql_row["reason_code"];
-$sql1="select reason_desc as res from $bai_rm_pj2.mrn_reason_db where reason_tid=$reason";
+$sql1="select reason_desc as res from $wms.mrn_reason_db where reason_tid=$reason and plant_code='$plant_code'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
@@ -52,7 +54,7 @@ while($sql_row112=mysqli_fetch_array($sql_result112))
 {
 	$co_no=$sql_row112['co_no'];
 }
-$sql="select group_concat(lable_id) as lbl from $bai_rm_pj2.mrn_out_allocation where mrn_tid=$mrn_id";
+$sql="select group_concat(lable_id) as lbl from $wms.mrn_out_allocation where mrn_tid=$mrn_id and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1808,7 +1810,7 @@ tags will be replaced.-->
   
 		
 	
-	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error121=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1823,7 +1825,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>LotNo</td>
   <?php
-  	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error122=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1837,7 +1839,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>LableId</td>
   <?php
-  	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error123=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1851,7 +1853,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Width</td>
   <?php
-  	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error124=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1873,7 +1875,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Allocated Qty</td>
   <?php
-	  $sql1="select iss_qty from $bai_rm_pj2.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id'";
+	  $sql1="select iss_qty from $wms.mrn_out_allocation where lable_id in ($lable_ids) and mrn_tid='$mrn_id' and plant_code='".$plant_code."'";
 	  //echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error125=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -1888,12 +1890,12 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Batch</td>
   <?php
-    $sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+    $sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	//echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Error126=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$sql3="select group_concat(distinct batch_no) as batch from $bai_rm_pj1.sticker_report where lot_no=\"".$row1["lot_no"]."\"";
+		$sql3="select group_concat(distinct batch_no) as batch from $wms.sticker_report where lot_no=\"".$row1["lot_no"]."\" and plant_code='$plant_code'";
 		//echo $sql3."<br>";
 		$result3=mysqli_query($link, $sql3) or die("Error127=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row3=mysqli_fetch_array($result3))
@@ -1909,7 +1911,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Shade</td>
   <?php
-  	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error128=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1923,7 +1925,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Location</td>
    <?php
-  	$sql1="select * from $bai_rm_pj1.store_in where tid in ($lable_ids)";
+  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error129=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -2244,7 +2246,7 @@ tags will be replaced.-->
 <?php
 if($_GET["print_status"]==0)
 {
-	$sql="update $bai_rm_pj2.mrn_track set status=8 where tid=$mrn_id";
+	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id,updated_user= '$username',updated_at=NOW() and plant_code='$plant_code'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 ?>

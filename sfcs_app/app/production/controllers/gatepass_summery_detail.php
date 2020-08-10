@@ -1,12 +1,13 @@
 <?php 
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
 
 if(isset($_GET['gatepassid']))
 {
 	$gatepassid=$_GET['gatepassid'];
-	$sql12="select vehicle_no from $brandix_bts.gatepass_table where id=".$gatepassid."";
+	$sql12="select vehicle_no from $pps.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row12=mysqli_fetch_array($sql_result123))
@@ -99,7 +100,6 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 			<div class="panel-heading">Gate Pass</div>
 			<div class="panel-body">
 	<?php
-	
 	if($_GET['status']==1)
 	{
 		$vehicle_number=$_GET['vehicle_no'];
@@ -109,10 +109,10 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 	{		
 		$vehicle_number=$_POST['vehicle_no'];
 		$gate_id=$_POST['gatepassno'];
-		$sql33="update $brandix_bts.gatepass_table set vehicle_no='$vehicle_number',gatepass_status=2 where id=".$gate_id."";
+		$sql33="update $pps.gatepass_table set vehicle_no='$vehicle_number',updated_user='$username',updated_at=NOW(),gatepass_status=2 where id='".$gate_id."' and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
-	$sql_total_1="SELECT SUM(bundle_qty) AS qty_bundle FROM $brandix_bts.`gatepass_track` where gate_id=".$gate_id."";
+	$sql_total_1="SELECT SUM(bundle_qty) AS qty_bundle FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code=".$plant_code."";
 	$sql_grand_total_res_1 = mysqli_query($link,$sql_total_1) or exit('error in heading table view');
 	while($res_row12_1 = mysqli_fetch_array($sql_grand_total_res_1))
 	{
@@ -120,13 +120,13 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 	}
 	if($qty_row12_1<>0)
 	{
-		$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $brandix_bts.`gatepass_track` where gate_id=".$gate_id." GROUP BY style,schedule,color";
+		$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code=".$plant_code."  GROUP BY style,schedule,color";
 		$sql_grand_total_res = mysqli_query($link,$sql_total) or exit('error in heading table view');
 		while($res_row12 = mysqli_fetch_array($sql_grand_total_res))
 		{
 			$array_res[]=$res_row12;
 		}
-		$sql="select style,schedule,color,size from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by style,schedule,color,size";
+		$sql="select style,schedule,color,size from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by style,schedule,color,size";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -142,7 +142,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 		$size=array_values(array_unique($size));
 		$tot_qty=0;
 		$tot_bds=0;
-		$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by style,schedule,color,size";
+		$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by style,schedule,color,size";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -151,7 +151,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 			$tot_qty=$tot_qty+$sql_row1['qty'];
 			$tot_bds=$tot_bds+$sql_row1['cnts'];
 		}
-		$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $brandix_bts.gatepass_track where gate_id=".$gate_id." group by schedule,color";
+		$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by schedule,color";
 		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{
@@ -232,7 +232,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 
 	if(isset($_POST['submitdetails'])){
 		$date=$_POST['date'];
-		$sql_date="select * from $brandix_bts.`gatepass_table` where date='$date' ";
+		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
 	// echo $sql_date;
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
 		echo  "<div class='panel-body'>";
