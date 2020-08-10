@@ -367,14 +367,14 @@ if(isset($_POST['submit']))
 						?>
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
-								<td><input type="text" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
 								</select></td>
-								<td><span id="addsymbol"></span><input type="text" class="form-control" style="width: 140px;"value="0" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onclick=" working_hours()"></td>
-								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()"></td>
+								<td><span id="addsymbol"></span><input type="text" class="form-control" style="width: 140px;"value="0" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onkeyup="validateQty1(event,this);"  onclick=" working_hours()"></td>
+								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()" onkeyup="validateQty1(event,this);" ></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_min<?php echo $k; ?>" id="adjustment_min<?php echo $k; ?>" readonly></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_hours<?php echo $k; ?>" id="adjustment_hours<?php echo $k; ?>" readonly></td>
 								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button></td>  
@@ -715,5 +715,17 @@ $(document).ready(function(){
 		           
  });  
 
-
+function validateQty1(e,t) 
+{
+	if(e.keyCode == 13)
+			return;
+		var p = String.fromCharCode(e.which);
+		var c = /^[0-9]+$/;
+		var v = document.getElementById(t.id);
+		if( !(v.value.match(c)) && v.value!=null ){
+			v.value = '';
+			return false;
+		}
+		return true;
+}
  </script>
