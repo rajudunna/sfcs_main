@@ -719,8 +719,8 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $link_new;
     global $pms;
     /**Qry to get departmen wise id's */
-    $Qry_department="SELECT `department_id` FROM $pms.departments WHERE department_type='$department' AND is_active=1";
-    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at departments".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $Qry_department="SELECT `department_id` FROM $pms.`departments` WHERE department_type='$department' AND is_active=1";
+    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at department ids".mysqli_error($GLOBALS["___mysqli_ston"]));
     $Qry_department_result_num=mysqli_num_rows($Qry_department_result);
     if($Qry_department_result_num>0){
         while($department_row=mysqli_fetch_array($Qry_department_result))
@@ -730,7 +730,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     /**Getting work station type against department*/
     $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id='$department_id' AND is_active=1";
-    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation_type".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstationtype=array();
     $workstation_typet_num=mysqli_num_rows($workstation_type_result);
     if($workstation_typet_num>0){
