@@ -10,6 +10,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 	$has_permission=haspermission($_GET['r']);
+	$plant_code = $_SESSION['plantCode'];
 	//echo var_dump($has_permission);
 ?>
 
@@ -121,7 +122,7 @@ echo "<tr>
 <th>Date</th>	<th>Style</th>	<th>Schedule</th>	<th>Color</th>	<th>Buyer</th>	<th>M3 Item Code</th>	<th>Reason</th>	<th>Requested Qty</th><th>Status</th><th>Point Person</th><th>Req. From</th><th>App./Rej. By</th><th>App./Rej. Date</th><th>Reference</th><th>Category</th><th>Manually Issued Date</th></tr>";
 
 
-$sql="select * from $bai_rm_pj2.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") order by status";
+$sql="select * from $wms.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") and plant_code='".$plant_code."' order by status";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

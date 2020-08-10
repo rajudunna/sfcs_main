@@ -1739,12 +1739,13 @@ table
 
 
 <?php
-
+    $plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	if(isset($_POST['submit']) || isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$lot_no=$_POST['lot_no'];
 		$parent_id=$_POST['parent_id'];
-		$get_ids="select store_in_id from $bai_rm_pj1.inspection_population where parent_id=$parent_id and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
+		$get_ids="select store_in_id from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."' and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
 		//echo $get_ids;
 		$ids_result=mysqli_query($link, $get_ids) or exit("Sql Error41111".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($id_row=mysqli_fetch_array($ids_result))
@@ -1758,7 +1759,7 @@ table
 		$parent_id=$_GET['parent_id'];
 
 		$lot = array();
-		$get_details = "select distinct(lot_no),supplier_batch from $bai_rm_pj1.inspection_population where parent_id=$parent_id";
+		$get_details = "select distinct(lot_no),supplier_batch from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
 	    //echo $get_details;
 	    $sql_result=mysqli_query($link, $get_details) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -1783,7 +1784,7 @@ if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' id='lot_ref' name='lot_ref' value='".$lot_ref."'>";
 echo '<input type="hidden" id="parent_id"  name="parent_id" value="'.$parent_id.'">';
-$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $bai_rm_pj1.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no in ("."'".str_replace(",","','",$lot_no)."'".")";
+$sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1817,7 +1818,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $bai_rm_pj1.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
+$sql="select * from $pps.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1848,8 +1849,8 @@ $avg_t_width=0;
 $avg_c_width=0;
 $print_check=0;
 //removed validation of print button
-// $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-$get_roll_details = "select distinct(store_in_id) as roll_numbers,status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".")";
+// $sql="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$get_roll_details = "select distinct(store_in_id) as roll_numbers,status from $wms.inspection_population where parent_id=$parent_id and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."'";
 $roll_details_result=mysqli_query($link, $get_roll_details) or exit("roll details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_rolls=mysqli_fetch_array($roll_details_result))
@@ -1858,7 +1859,7 @@ while($sql_rolls=mysqli_fetch_array($roll_details_result))
   $status=$sql_rolls['status'];
 }
 $roll_num = implode(",",$rolls);
-$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid,ref2";
+$sql="select *, if((length(ref4)=0 and qty_allocated <=0),1,0) as \"print_check\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") and plant_code='".$plant_code."' order by tid,ref2";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -1881,8 +1882,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //Added Backup Lots for visibility in Inspection Report
 //removed validation of print button
-// $sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
-$sql1="select *, if((length(ref4)=0 and qty_allocated <= 0),1,0) as \"print_check\" from $bai_rm_pj1.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+// $sql1="select *, if((ref5=0 or length(ref6)<=1 or ref6=0 or length(ref3)<=1 or ref3=0 or length(ref4)=0),1,0) as \"print_check\" from $wms.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select *, if((length(ref4)=0 and qty_allocated <= 0),1,0) as \"print_check\" from $wms.store_in_backup where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."' order by ref2+0";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=$num_rows+mysqli_num_rows($sql_result1);
 if(mysqli_num_rows($sql_result1) > 0)
@@ -1924,7 +1925,7 @@ $shade_count=sizeof($scount_temp2);
 //Configuration 
 
 
-$sql="select COUNT(ref2)  as \"count\" from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+$sql="select COUNT(ref2)  as \"count\" from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and tid in ("."'".str_replace(",","','",$roll_num)."'".") and plant_code='".$plant_code."' order by tid";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error42=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1945,7 +1946,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 //get inspected_qty
-$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $bai_rm_pj1.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id";
+$get_inspected_qty = "select sum(inspected_qty) as reported_qty from $wms.roll_inspection_child where store_in_tid in ("."'".str_replace(",","','",$roll_num)."'".") and parent_id=$parent_id and plant_code='".$plant_code."'";
 $inspected_qty_result=mysqli_query($link, $get_inspected_qty) or exit("Sql Errorqty=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($qty_row=mysqli_fetch_array($inspected_qty_result))
 {
@@ -2353,7 +2354,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
  </tr>"; */
  $shade_group_total=array();
  echo "<input type=\"hidden\" id=\"rowcount\" value=\"".sizeof($values)."\" />";
- $get_details_points = "select sum(rec_qty) as qty from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id and status=3";
+ $get_details_points = "select sum(rec_qty) as qty from $wms.`inspection_population` where parent_id=$parent_id and status=3 and plant_code='".$plant_code."'";
 	$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row522=mysqli_fetch_array($details_result_points))
 	{ 					
@@ -2366,7 +2367,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			{
 				$invoice_qty;
 			}
-			$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";
+			$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid in (select store_in_id from $wms.`inspection_population` where parent_id=$parent_id and plant_code='".$plant_code."')";
 			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_min=mysqli_fetch_array($min_value_result))
 			{
@@ -2378,7 +2379,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
             $inch_value=round($min_value/(2.54),2);
 		
 			$back_color="";		
-			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id in (select store_in_id from $bai_rm_pj1.`inspection_population` where parent_id=$parent_id)";	
+			$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id in (select store_in_id from $wms.`inspection_population` where parent_id=$parent_id and plant_code='".$plant_code."')";	
 			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($status_details_result2)>0)
 			{	
@@ -2490,7 +2491,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$insp_status="Red";		
 	}
 	
-	$get_status = "select status from $bai_rm_pj1.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id=$temp[0]";
+	$get_status = "select status from $wms.inspection_population where parent_id=$parent_id and lot_no='".$temp[7]."' and store_in_id=$temp[0] and plant_code='".$plant_code."'";
 	//echo $get_status;
 	$status_details_result=mysqli_query($link, $get_status) or exit("status details error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_status=mysqli_fetch_array($status_details_result))
@@ -2509,7 +2510,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	/*-----*/
 	if($temp[2]=='')
 	{
-		$get_details_points = "select rec_qty from $bai_rm_pj1.`inspection_population` where store_in_id=$temp[0] and status<>0";
+		$get_details_points = "select rec_qty from $wms.`inspection_population` where store_in_id=$temp[0] and plant_code='".$plant_code."' and status<>0";
 		$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($details_result_points)>0)
 		{
@@ -2523,7 +2524,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 					$invoice_qty;
 				}
 			}
-			$get_min_value = "select width_s,width_m,width_e from $bai_rm_pj1.roll_inspection_child where store_in_tid=$temp[0]";
+			$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where store_in_tid=$temp[0] and plant_code='".$plant_code."'";
 			$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_min=mysqli_fetch_array($min_value_result))
 			{
@@ -2533,7 +2534,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 			}
 			$min_value = min($width_s,$width_m,$width_e);
 			$inch_value=round($min_value/(2.54),2);
-			$four_point_count = "select sum(points) as pnt from $bai_rm_pj1.four_points_table where insp_child_id=".$temp[0]."";
+			$four_point_count = "select sum(points) as pnt from $wms.four_points_table where insp_child_id=".$temp[0]." and plant_code='".$plant_code."'";
 			$status_details_result2=mysqli_query($link,$four_point_count) or exit("get_status_details Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($status_details_result2)>0)
 			{	
@@ -2796,7 +2797,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$flag-5;$j<=$flag-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") and plant_code='".$plant_code."' order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error112".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2822,7 +2823,7 @@ for($i=0;$i<$shade_count;$i++)
 
 		for($j=$shade_count-($shade_count%5);$j<=($shade_count)-1;$j++)
 		{
-			$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") order by tid";
+			$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and BINARY ref4=\"".$scount_temp2[$j]."\" and tid in ("."'".str_replace(",","','",$roll_num)."'".") and plant_code='".$plant_code."' order by tid";
 		//echo $sql_sc;
 			$result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row_sc=mysqli_fetch_array($result_sc))
@@ -2859,7 +2860,7 @@ for($i=0;$i<$shade_count;$i++)
   
 // for($i=0;$i<$shade_count;$i++)
 //  {
- //  	$sql_sc="select count(*) as cnt from $bai_rm_pj1.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\" and tid in ($roll_num) order by tid";
+ //  	$sql_sc="select count(*) as cnt from $wms.store_in where lot_no in ($lot_ref) and ref4=\"".$scount_temp2[$i]."\" and tid in ($roll_num) order by tid";
 	// $result_sc=mysqli_query($link, $sql_sc) or die("Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	// while($row_sc=mysqli_fetch_array($result_sc))
 	// {
@@ -2933,14 +2934,14 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	
 	if($head_check>0)
 	{
-		$sql="insert ignore into $bai_rm_pj1.inspection_db(batch_ref) values (\"$lot_no_new\")";
+		$sql="insert ignore into $pps.inspection_db(batch_ref) values (\"$lot_no_new\")";
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		if(mysqli_affected_rows($link))
 		{
 			//For Total batched inspeciton done in current month.
-			$sql="select log_date from $bai_rm_pj1.inspection_db where month(log_date)=".date("m")." and year(log_date)=".date("Y");
+			$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y") ;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($sql_result);
 		  	  for($i=0;$i<sizeof($suppliers);$i++)
@@ -2957,32 +2958,32 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 					}
 					
 					//For Total batched inspeciton done in current month for current supplier.
-					$sql="select log_date from $bai_rm_pj1.inspection_db where month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
+					$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$count2=mysqli_num_rows($sql_result);
 					$count=strtoupper($letters)."/".str_pad($count,4,"0",STR_PAD_LEFT)."/".str_pad($count2,3,"0",STR_PAD_LEFT);
 				}
 				
 			  }
-		  	$sql="update $bai_rm_pj1.inspection_db set unique_id=\"$count\" where batch_ref=\"$lot_no_new\"";
+		  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		  	//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql="update $bai_rm_pj1.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\" where batch_ref=\"$lot_no_new\"";
+		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		// echo "Upadte Qry :".$sql;
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
-	$sql="update $bai_rm_pj1.inspection_db set status=0 where batch_ref=\"$lot_no_new\"";
+	$sql="update $pps.inspection_db set status=0,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(isset($_POST['confirm']))
 	{
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
-		$sql1="update $bai_rm_pj1.inspection_db set status=1 where batch_ref=\"$lot_no_new\"";
+		$sql1="update $pps.inspection_db set status=1,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
@@ -3033,14 +3034,13 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			$external_code = $rejection_code_explode[1];
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
-				 $sql= "insert INTO $bai_rm_pj1.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason, external_reason_code,shade_grp,act_width_grp, roll_remarks)
-				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"". $internal_code."\",\"". $external_code ."\",\"".$ele_shade1[$i]."\",\"".$ele_shade2[$i]."\", roll_remarks
-				  FROM $bai_rm_pj1.store_in WHERE tid=".$ele_tid[$i];
+				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason, external_reason_code,shade_grp,act_width_grp, roll_remarks,plant_code,created_user,updated_user)
+				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"". $internal_code."\",\"". $external_code ."\",\"".$ele_shade1[$i]."\",\"".$ele_shade2[$i]."\", roll_remarks,'".$plant_code."','".$username."','".$username."' FROM $wms.store_in WHERE tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					   //
 				  	   
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $bai_rm_pj1.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				  $sql1="update $wms.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\" ,updated_at=NOW()$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
 				//   echo $sql1.'<br/>';
 				//   die();
 				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3048,7 +3048,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			}
 			else
 			{
-				$sql="update $bai_rm_pj1.store_in set rejection_reason=\"".$internal_code. "\",, external_reason_code=\"" . $external_code . "\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where tid=".$ele_tid[$i];
+				$sql="update $wms.store_in set rejection_reason=\"".$internal_code. "\",, external_reason_code=\"" . $external_code . "\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\" ,updated_user= '".$username."',updated_at=NOW()$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
 				// echo $sql.'<br/>';
 				// die();
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));

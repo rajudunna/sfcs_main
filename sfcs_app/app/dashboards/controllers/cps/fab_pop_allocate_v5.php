@@ -81,6 +81,8 @@ else{
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
 	$has_permission=haspermission($url_r);
+	$plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
 ?>
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1209,7 +1211,7 @@ if(isset($_POST['allocate']))
 			echo "<td>".$sql_row['qty_rec']."</td>";
 			echo "<td>".$sql_row['ref5']."</td>";
 			$mrn_iss_qty=0;
-			$sql111="select sum(iss_qty) as iss_qty1 from $bai_rm_pj2.mrn_out_allocation where lable_id='".$sql_row["tid"]."'";
+			$sql111="select sum(iss_qty) as iss_qty1 from $wms.mrn_out_allocation where lable_id='".$sql_row["tid"]."' and plant_code='".$plant_code."'";
 			$sql_result221=mysqli_query($link, $sql111) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row221=mysqli_fetch_array($sql_result221))
 			{	

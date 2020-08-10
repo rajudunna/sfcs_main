@@ -40,7 +40,7 @@ td
 <?php
 include("../../../../common/config/config.php");
 $sec_x=$_GET['sec_x'];
-
+$plantcode=$_SESSION['plantCode'];
 $start=date("Y-m-01");
 $end=date("Y-m-31");
 //echo $start."---".$end;
@@ -48,7 +48,7 @@ $end=date("Y-m-31");
 $full="470000";
 $total="300000";
 
-$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $bai_pro.grand_rep where date between \"$start\" and \"$end\" and section=$sec_x");
+$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $pts.grand_rep where plant_code='$plantcode' and date between \"$start\" and \"$end\" and section=$sec_x");
 //echo "<br>select sum(act_sth),sum(plan_sth) FROM grand_rep where date=\"$date[$i]\"<br><br>";
 while($row=mysqli_fetch_array($sql))
 {
@@ -73,7 +73,7 @@ $today_bal=$plan_sth-$act_sth;
 		$start=date("Y-m-01");
 		$end=date("Y-m-31");
 		
-		$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $bai_pro.grand_rep where date between \"$start\" and \"$end\" and section=$sec_x");
+		$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $pts.grand_rep where plant_code='$plantcode' and date between \"$start\" and \"$end\" and section=$sec_x");
 		//echo "<br>select sum(act_sth),sum(plan_sth) FROM grand_rep where date=\"$date[$i]\"<br><br>";
 		while($row=mysqli_fetch_array($sql))
 		{

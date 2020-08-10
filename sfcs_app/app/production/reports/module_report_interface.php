@@ -6,6 +6,8 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
 ?>
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
@@ -48,7 +50,7 @@ if(isset($_POST['submit']))
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
-$sql="select * from $brandix_bts.input_transfer where date(date_time) = '$sdate' order by id";
+$sql="select * from $pts.input_transfer where plant_code='$plantcode' and date(date_time) = '$sdate' order by id";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 

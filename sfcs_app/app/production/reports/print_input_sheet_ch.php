@@ -21,6 +21,8 @@
 <body onload="printpr1();">
 
     <?php
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
@@ -570,7 +572,7 @@
                                     <td><?php echo $sql_rowwip12["output"]; ?></td>
                                     
                                     <?php  
-                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $bai_pro3.bai_qms_db where qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
+                                    $rej_sql="select qms_color,qms_size,COALESCE(SUM(qms_qty),0) AS qms_qty,operation_id from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type=3 and input_job_no='".$sql_row["input_job_no_random"]."' group by qms_size,operation_id";
                                     // echo $rej_sql;
                                     $rej_result=mysqli_query($link, $rej_sql) or die("Error-".$rej_sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while($row3=mysqli_fetch_array($rej_result))

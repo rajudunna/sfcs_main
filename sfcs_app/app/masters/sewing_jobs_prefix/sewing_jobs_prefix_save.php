@@ -11,9 +11,15 @@ $code=$_POST['prefix_name'];
 $department=$_POST['prefix'];
 $reason=$_POST['type_of_sewing'];
 $type=$_POST['bg_color'];
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
+
+
+
 
 
 if (empty($code) || empty($department) || empty($reason) || empty($type) ) 
@@ -38,8 +44,8 @@ else
 	if($dr_id>0)
 	{
 		//update
-		$sql = "update $brandix_bts.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type' where id=$dr_id";
-
+		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where id=$dr_id";
+		
 		if (mysqli_query($conn, $sql)) {
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			//echo $url;
@@ -63,16 +69,16 @@ else
 	else
 	{
 
-		
 
-		$query1="select * from $brandix_bts.tbl_sewing_job_prefix  where prefix_name='$code' and (prefix='$department' or bg_color='$type')";
+
+		$query1="select * from $mdm.tbl_sewing_job_prefix where prefix_name='$code'";
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
-				  title: 'Reason Already Existed!',
+				  title: 'Sewing Job Prefix Already Exists!',
 				  text: 'Message!',
 				  type: 'warning',
 				  confirmButtonText: 'OK'
@@ -90,9 +96,8 @@ else
 
 
 
-		$sql = "INSERT INTO $brandix_bts.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color)
-		VALUES ('$code','$department','$reason','$type')";
-  
+		$sql = "INSERT INTO $mdm.tbl_sewing_job_prefix (prefix_name,prefix,type_of_sewing,bg_color,created_user,created_at,updated_user,updated_at) VALUES ('$code','$department','$reason','$type','$username','".date('Y-m-d')."','$username','".date('Y-m-d')."')";
+
 		if (mysqli_query($conn, $sql)) 
 		{
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');

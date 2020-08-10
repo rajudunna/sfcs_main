@@ -4,6 +4,7 @@
 	set_time_limit(2000);
 	include("../../../../common/js/Charts/FusionCharts.php");
 	error_reporting(0);
+	$plantcode=$_SESSION['plantCode'];
 ?>
 
 <html>
@@ -57,8 +58,8 @@ $today=date("Y-m-d");
 $start="2011-12-01";
 $end="2011-12-31";
 
-$sql=mysqli_query($link, "SELECT distinct(DATE) FROM $bai_pro.grand_rep WHERE DATE BETWEEN \"$start\" AND \"$end\" and section=$sec_x order by date");
-//echo "SELECT DISTINCT(DATE) FROM $bai_pro.grand_rep WHERE DATE BETWEEN \"$start\" AND \"$end\"";
+$sql=mysqli_query($link, "SELECT distinct(DATE) FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE BETWEEN \"$start\" AND \"$end\" and section=$sec_x order by date");
+//echo "SELECT DISTINCT(DATE) FROM $pts.grand_rep WHERE DATE BETWEEN \"$start\" AND \"$end\"";
 while($row=mysqli_fetch_array($sql))
 {
 	$date2[]=$row["DATE"];
@@ -78,8 +79,8 @@ for($x=0;$x<sizeof($date);$x++)
 //echo "<br>".$limit."<br>";
 for($i=0;$i<$limit;$i++)
 {
-	$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $bai_pro.grand_rep where date=\"$date[$i]\" and section=$sec_x");
-	//echo "<br>select sum(act_sth),sum(plan_sth) FROM $bai_pro.grand_rep where date=\"$date[$i]\"<br><br>";
+	$sql=mysqli_query($link, "select sum(act_sth),sum(plan_sth) FROM $pts.grand_rep where plant_code='$plantcode' and date=\"$date[$i]\" and section=$sec_x");
+	//echo "<br>select sum(act_sth),sum(plan_sth) FROM $pts.grand_rep where date=\"$date[$i]\"<br><br>";
 	while($row=mysqli_fetch_array($sql))
 	{
 		$plan_sth[]=round($row["sum(plan_sth)"],0);

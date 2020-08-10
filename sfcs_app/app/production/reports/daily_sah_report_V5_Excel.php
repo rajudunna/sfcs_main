@@ -565,7 +565,8 @@ tags will be replaced.-->
 
 
 <?php
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 if(isset($_POST["submit"]))
 {
 	?>
@@ -1095,14 +1096,14 @@ function div_by_zero($arg)
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php',1,'R')); 
 //include("../Production_Live_Chart/Control_Room_Charts/sah_monthly_status/data.php");
 
-$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT DATE) as days FROM $bai_pro.grand_rep WHERE (DATE between \"$dat\" and \"$dat1\") and dayname(date)<>'Sunday'");
+$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(DISTINCT DATE) as days FROM $pts.grand_rep WHERE plant_code='$plantcode' and (DATE between \"$dat\" and \"$dat1\") and dayname(date)<>'Sunday'");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$days=$rows7["days"];
 	//$sHTML_Content.="<td rowspan=2 class=xl6527942 width=64 style='width:48pt'>".$rows7["COUNT(DISTINCT DATE)"]."</td>";
 }
 
-$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(act_sth) as sah FROM $bai_pro.grand_rep WHERE DATE=\"".$dat1."\"");
+$sql7=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(act_sth) as sah FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$dat1."\"");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$today_sah=$rows7["sah"];
@@ -1352,7 +1353,7 @@ $sHTML_Content.="<div id=\"SAH -JUN_13441\" align=center x:publishsource=\"Excel
  $vs_sah_plan="246163";
  $ms_sah_plan="91610";
  
-$sql_vs="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date between \"$dat\" and \"$dat1\"";
+$sql_vs="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $pts.grand_rep where plant_code='$plantcode' and (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date between \"$dat\" and \"$dat1\"";
 //echo $sql_vs;
 $result_vs=mysqli_query($link, $sql_vs) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs=mysqli_fetch_array($result_vs))
@@ -1360,7 +1361,7 @@ while($row_vs=mysqli_fetch_array($result_vs))
 	$vs_act_sah=$row_vs["act"];
 }
 
-$sql_ms="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%M&S%\") and date between \"$dat\" and \"$dat1\"";
+$sql_ms="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $pts.grand_rep where plant_code='$plantcode' and (buyer like \"%M&S%\") and date between \"$dat\" and \"$dat1\"";
 //echo $sql_ms;
 $result_ms=mysqli_query($link, $sql_ms) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms=mysqli_fetch_array($result_ms))
@@ -1368,7 +1369,7 @@ while($row_ms=mysqli_fetch_array($result_ms))
 	$ms_act_sah=$row_ms["act"];
 }
 
-$sql_vs_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date=\"$dat1\"";
+$sql_vs_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $pts.grand_rep where plant_code='$plantcode' and (buyer like \"%VS Logo%\" or buyer like \"%VS Pink%\" or buyer like \"%Glamour%\") and date=\"$dat1\"";
 //echo $sql_vs;
 $result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs_today=mysqli_fetch_array($result_vs_today))
@@ -1376,7 +1377,7 @@ while($row_vs_today=mysqli_fetch_array($result_vs_today))
 	$vs_act_sah_today=$row_vs_today["act"];
 }
 
-$sql_ms_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $bai_pro.grand_rep where (buyer like \"%M&S%\") and date=\"$dat1\"";
+$sql_ms_today="SELECT SUM(plan_sth) as plan,SUM(act_sth) as act from $pts.grand_rep where plant_code='$plantcode' and (buyer like \"%M&S%\") and date=\"$dat1\"";
 //echo $sql_ms;
 $result_ms_today=mysqli_query($link, $sql_ms_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_ms_today=mysqli_fetch_array($result_ms_today))
@@ -1385,7 +1386,7 @@ while($row_ms_today=mysqli_fetch_array($result_ms_today))
 }
  
  
-$sql_dat=mysqli_query($GLOBALS["___mysqli_ston"], "select distinct date from $bai_pro.grand_rep where date between \"$dat\" and \"$dat1\" order by date");
+$sql_dat=mysqli_query($GLOBALS["___mysqli_ston"], "select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$dat\" and \"$dat1\" order by date");
 while($row=mysqli_fetch_array($sql_dat))
 {
   $date = $row['date']; 
@@ -1397,7 +1398,7 @@ while($row=mysqli_fetch_array($sql_dat))
   for($i=1;$i<=7;$i++)
   {	
 	
-	  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" AND section=\"$i\" group by module,shift order by module");	 
+	  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$row["date"]."\" AND section=\"$i\" group by module,shift order by module");	 
       while($rows=mysqli_fetch_array($sql))
 	  {
 			$plan_sah=$plan_sah+round($rows["plan"],0);
@@ -1580,7 +1581,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	  $plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0;
   }	
   
-  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE=\"".$row["date"]."\" group by module,shift order by module");
+  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$row["date"]."\" group by module,shift order by module");
   while($rows=mysqli_fetch_array($sql))
   {
 		$plan_sah_sec=$plan_sah_sec+$rows["plan"];
@@ -1642,7 +1643,7 @@ $sHTML_Content.="<tr height=27 style='mso-height-source:userset;height:20.25pt'>
 for($i2=1;$i2<=7;$i2++)
 {	
 
-  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$i2."\" group by date,module,shift order by date,module");
+  $sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$i2."\" group by date,module,shift order by date,module");
   while($rows=mysqli_fetch_array($sql))
   {
 		$plan_sah_fac=$plan_sah_fac+round($rows["plan"],0);
@@ -1853,7 +1854,7 @@ for($i2=1;$i2<=7;$i2++)
   
 }
 
-$sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $bai_pro.grand_rep WHERE DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
+$sql=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
 while($rows=mysqli_fetch_array($sql))
 {
 	$total_plan_sah_fac=$total_plan_sah_fac+round($rows["plan"],0);

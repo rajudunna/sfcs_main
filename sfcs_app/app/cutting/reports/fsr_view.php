@@ -3,9 +3,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -215,7 +218,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 //NEW Enhancement for category breakup		 
  		$doc_ref_new="";
 		
-		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+		$sql2="select * from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 		// echo $sql2;
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error a".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -259,7 +262,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}
 	//NEW Enhancement for category breakup		
 
-	$sql="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
+	$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" ".$query;
 	//echo $sql;
 	//mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -327,7 +330,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$endbits=$endbits+$values_joint[1];		
 		}
 
-			$s="select emp_name from $bai_pro3.tbl_leader_name where id = '$leader_name'";
+			$s="select emp_name from $pms.tbl_leader_name where plant_code='$plantcode' and id = '$leader_name'";
 		
 			$sql_result22=mysqli_query($link, $s) or exit("Sql Error ef".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -455,7 +458,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
         $req_qty=0;
 		$issued_qty=0;
-        $sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+        $sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
@@ -526,7 +529,7 @@ if(isset($_POST['submit']) && $reptype==2)
    //NEW Enhancement for category breakup		 
  		$doc_ref_new="";
 		
-		$sql2="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
+		$sql2="select * from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 		
 		//mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -569,7 +572,7 @@ if(isset($_POST['submit']) && $reptype==2)
 		}
 //NEW Enhancement for category breakup	
    
-$sql="select section from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. " group by section order by section";
+$sql="select section from $pps.act_cut_status where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and shift in ($shift) and section in ($section) ".$query. " group by section order by section";
 
 //mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -596,7 +599,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$section_new=$sql_row['section'];
-	$sql11="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
+	$sql11="select distinct shift from $pps.act_cut_status where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift in ($shift) ".$query. "order by shift";
 	//mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error 6".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row11=mysqli_fetch_array($sql_result11))
@@ -605,7 +608,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 		$doc_list="";
 		
-		$sql2="select doc_no from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift=\"$shift_new\" ".$query;
+		$sql2="select doc_no from $pps.act_cut_status where plant_code='$plantcode' and date between \"$from_date\" and \"$to_date\" and section in ($section_new) and shift=\"$shift_new\" ".$query;
 		//mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -627,7 +630,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			$cut_qty=$sql_row3['cut_qty'];
 		}
 		
-		$sql3="select sum(damages) as \"damages\", sum(shortages) as \"shortages\" from $bai_pro3.act_cut_status where doc_no in ($doc_list)";
+		$sql3="select sum(damages) as \"damages\", sum(shortages) as \"shortages\" from $pps.act_cut_status where plant_code='$plantcode' and doc_no in ($doc_list)";
 		//echo $sql3;
 		//mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error 9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -650,7 +653,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$net_saving_sum=0;
 		$net_saving_pct=0;
 		
-$sql33="select * from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and doc_no in ($doc_list) and date between \"$from_date\" and \"$to_date\"".$query;
+$sql33="select * from $pps.act_cut_status where plant_code='$plantcode' and section in ($section) and shift in ($shift) and doc_no in ($doc_list) and date between \"$from_date\" and \"$to_date\"".$query;
 
 //mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error 10".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -701,7 +704,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$req_qty=0;
 		$issued_qty=0;
-		$sql112="SELECT req_qty,issued_qty FROM $bai_rm_pj2.mrn_track WHERE product='FAB' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{

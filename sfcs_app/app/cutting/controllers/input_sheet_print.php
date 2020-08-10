@@ -1,7 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $color=$_GET['color'];
 $input_job=$_GET['input_job'];
 
@@ -55,7 +56,7 @@ if(mysqli_num_rows($sql_result76)>0)
 }
 else
 {
-	$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input_backup WHERE  input_job_no_random_ref='$input_job'";
+	$sql76="SELECT input_module,log_time  FROM $pps.plan_dashboard_input_backup WHERE plant_code='$plantcode' and input_job_no_random_ref='$input_job'";
 	$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error014".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row76=mysqli_fetch_array($sql_result76))
 	{

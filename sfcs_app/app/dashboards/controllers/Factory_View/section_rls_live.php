@@ -1,7 +1,7 @@
 <?php
 //KIRANG-2015-03-03 CR# 295
 //Added per1 variable besides the image to show the rework % value.
-
+$plantcode=$_SESSION['plantCode'];
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -31,6 +31,7 @@
 include ("../../../../common/config/config.php");
 include ("../../../../common/config/functions.php");
 //$dt="2011-09-28";
+$plantcode=$_SESSION['plantCode'];
 $dt=date("Y-m-d");
 $sec_x=$_GET['sec_x'];
 $sql=mysqli_query($link, "SELECT GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` where section = '".$sec_x."' GROUP BY section ORDER BY section + 0");
@@ -71,7 +72,7 @@ for($i=0;$i<sizeof($modules);$i++)
 	echo "<td>".$modules[$i]."</td>";
 	//for($j=06;$j<=21;$j++)
 	{		
-	    $sql=mysqli_query($link, "select sum(bac_qty),bac_style,delivery,bac_shift,bac_stat from $bai_pro.bai_log_buf where bac_date=\"$dt\" and bac_no in ($mods)");
+	    $sql=mysqli_query($link, "select sum(bac_qty),bac_style,delivery,bac_shift,bac_stat from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$dt\" and bac_no in ($mods)");
 		while($result=mysqli_fetch_array($sql))
 		{
 			$val=$result["sum(bac_qty)"];
@@ -81,7 +82,7 @@ for($i=0;$i<sizeof($modules);$i++)
 			$stat=$result["bac_stat"];
 		}
 		
-		$sql1=mysqli_query($link, "select sum(bac_qty) from $bai_pro.bai_quality_log where bac_date=\"$dt\" and bac_no in ($mods)");
+		$sql1=mysqli_query($link, "select sum(bac_qty) from $pts.bai_quality_log where plant_code='$plantcode' and bac_date=\"$dt\" and bac_no in ($mods)");
 		while($result1=mysqli_fetch_array($sql1))
 		{
 			$rew=$result1["sum(bac_qty)"];
@@ -138,13 +139,13 @@ for($i=0;$i<sizeof($modules);$i++)
 				echo "<th><div style=\"font-size:10px; text-align:center;\" title=\"$title\"><img src=\"../../common/images/imagesCA3H59TI.jpg\"></img></div></th>";
 			} 
 			*/
-			$sql_stat=mysqli_query($link, "select count(bac_stat) from $bai_pro.bai_log_buf where bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\" and bac_stat=\"Active\"");
+			$sql_stat=mysqli_query($link, "select count(bac_stat) from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\" and bac_stat=\"Active\"");
             while($results=mysqli_fetch_array($sql_stat))
 			{
 				$stats=$results["count(bac_stat)"];
 			}
 			         
-			$sql2=mysqli_query($link, "select sum(bac_qty),bac_style,delivery,bac_shift from $bai_pro.bai_log_buf where bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"");
+			$sql2=mysqli_query($link, "select sum(bac_qty),bac_style,delivery,bac_shift from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"");
 			while($result2=mysqli_fetch_array($sql2))
 			{
 				$val1=$result2["sum(bac_qty)"];
@@ -155,7 +156,7 @@ for($i=0;$i<sizeof($modules);$i++)
 			
 			
 
-			$sql11=mysqli_query($link, "select sum(bac_qty) from $bai_pro.bai_quality_log where bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"");
+			$sql11=mysqli_query($link, "select sum(bac_qty) from $pts.bai_quality_log where plant_code='$plantcode' and bac_date=\"$dt\" and bac_no=\"$modules[$i]\" and bac_lastup between \"$dt $sta:00:00\" and \"$dt $end:00:00\"");
 //echo "select sum(bac_qty) from $table1.$database1 where bac_date=\"$dt\" and bac_no=\"$i\" and bac_lastup \"$dt $sta:00:00\" and \"$dt $end:00:00\"";
 			while($result11=mysqli_fetch_array($sql11))
 			{

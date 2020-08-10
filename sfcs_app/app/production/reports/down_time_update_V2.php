@@ -1,6 +1,7 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-    $has_perm=haspermission($_GET['r']);
+	$has_perm=haspermission($_GET['r']);
+	$plantcode=$_SESSION['plantCode'];
 /*
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
@@ -198,7 +199,7 @@ function check_date(x,yy,xx) //form date, allowed date, today date
 
 
 
-$sql="SELECT DISTINCT bac_date FROM $bai_pro.bai_log_buf WHERE bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
+$sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -315,7 +316,7 @@ for($i=0;$i<=10;$i++)
 
 	//echo "<option value=\"0\">0</option>";
 	//$sql22="select distinct schedule_no from shipment_plan_summ where exfact_date between \"".date("Y-m-d",strtotime("-2 month", strtotime($date)))."\" and \"".date("Y-m-d",strtotime("+2 month", strtotime($date)))."\" order by schedule_no+0";
-	//$sql22="select distinct delivery as schedule_no from $bai_pro.bai_log where delivery > 25000 order by delivery+0";
+	//$sql22="select distinct delivery as schedule_no from $pts.bai_log where delivery > 25000 order by delivery+0";
 	$sql22="select distinct order_del_no as schedule_no from $bai_pro3.bai_orders_db where order_del_no > 25000 order by order_del_no+0";
 	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row22=mysqli_fetch_array($sql_result22))

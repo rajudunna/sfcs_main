@@ -1,4 +1,7 @@
 <?php 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
@@ -36,20 +39,20 @@ else
         $shift_start_time=$time_name[0];
         $shift_end_time=$time_namex[0];
 
-        $sql="select * from $bai_pro.pro_atten_hours where date='$date' and shift='$shift'";
+        $sql="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='$shift'";
         // echo $sql."<br>";
         $sql_res=mysqli_query($link, $sql) or exit("Sql Error88 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
         $count=mysqli_num_rows($sql_res);
         if($count == 0)
         {
-            $sql1="insert ignore INTO $bai_pro.pro_atten_hours (date,shift,start_time,end_time) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."')";
+            $sql1="insert ignore INTO $pts.pro_atten_hours (date,shift,start_time,end_time,plant_code,created_user,created_at) VALUES ('".$date."','".$shift."','".$shift_start_time."','".$shift_end_time."','$plantcode','$username','".date('Y-m-d')."')";
         // echo $sql1."<br>";
 
             mysqli_query($link, $sql1) or exit("Sql Error88 $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
         }
         else
         {
-            $sql2="update $bai_pro.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."' where date='".$date."' and shift='".$shift."' ";
+            $sql2="update $pts.pro_atten_hours set start_time='".$shift_start_time."',end_time='".$shift_end_time."',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and date='".$date."' and shift='".$shift."' ";
         // echo $sql2."<br>";
 
             mysqli_query($link, $sql2) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));

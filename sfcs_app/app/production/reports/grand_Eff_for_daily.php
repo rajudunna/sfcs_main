@@ -8,9 +8,11 @@ $edate=$edate;
 $sdate=$date;
 $teams=$shifts_array;
 $team_array=implode(",",$shifts_array);
-$team = "'".str_replace(",","','",$team_array)."'"; 	
+$team = "'".str_replace(",","','",$team_array)."'"; 
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];	
 	
-$sql222_new="select distinct bac_date from $bai_pro.bai_log_buf where bac_date between \"$sdate\" and \"$edate\"";
+$sql222_new="select distinct bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date between \"$sdate\" and \"$edate\"";
 //echo $sql222_new;
 
 $sql_result222_new=mysqli_query($link, $sql222_new) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -18,7 +20,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 {
 	$date=$sql_row222_new['bac_date'];
 
-	$sql222="select distinct bac_sec from $bai_pro.bai_log_buf where bac_date=\"$date\"";
+	$sql222="select distinct bac_sec from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$date\"";
 	//echo $sql222;
 	$sql_result222=mysqli_query($link, $sql222) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row222=mysqli_fetch_array($sql_result222))
@@ -34,7 +36,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 			$mod_tot_pln_sth=0;
 			$mod_tot_act_sth=0;
 			//Initial
-			// $sql_new1="select distinct bac_no from $bai_pro.bai_log_buf where bac_date=\"$date\" and bac_sec=$sec  and bac_shift=\"$shift\"";
+			// $sql_new1="select distinct bac_no from $pts.bai_log_buf where bac_date=\"$date\" and bac_sec=$sec  and bac_shift=\"$shift\"";
 			$sql_new1="select module_name as bac_no from $bai_pro3.module_master where section=$sec";
 			//echo $sql_new1;
 
@@ -44,7 +46,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$module=$sql_row_new1['bac_no'];
 
 				//COM: Production Total
-				$sql2="select coalesce(sum(bac_qty),0) as \"sum\" from $bai_pro.bai_log_buf where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
+				$sql2="select coalesce(sum(bac_qty),0) as \"sum\" from $pts.bai_log_buf where plant_code='$plantcode' and bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
 				//echo $sql2;
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -52,7 +54,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 					$act_output=$sql_row2['sum'];
 				}
 
-				$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $bai_pro.bai_quality_log where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
+				$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $pts.bai_quality_log where plant_code='$plantcode' and bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
 				//echo $sql2;
 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -65,7 +67,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$style_db=array();
 				$buyer_db=array();
 				//$sql2="select distinct bac_style  from $table_name where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=$module";
-				$sql2="select distinct bac_style  from $bai_pro.bai_log_buf where bac_sec=$sec and bac_date=\"$date\" and bac_no=\"$module\"";
+				$sql2="select distinct bac_style  from $pts.bai_log_buf where plant_code='$plantcode' and bac_sec=$sec and bac_date=\"$date\" and bac_no=\"$module\"";
 				//echo $sql2;
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -74,7 +76,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				}
 
 				//$sql2="select distinct buyer  from $table_name where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=$module";
-				$sql2="select distinct buyer  from $bai_pro.bai_log_buf where bac_sec=$sec and bac_date=\"$date\" and bac_no=\"$module\"";
+				$sql2="select distinct buyer  from $pts.bai_log_buf where plant_code='$plantcode' and bac_sec=$sec and bac_date=\"$date\" and bac_no=\"$module\"";
 				//echo $sql2;
 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -86,7 +88,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$buyer_db_new=implode(",",$buyer_db);
 
 				//COM: Standard Hours
-				$sql2="select coalesce(sum((bac_qty*smv)/60),0) as \"stha\" from $bai_pro.bai_log_buf where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
+				$sql2="select coalesce(sum((bac_qty*smv)/60),0) as \"stha\" from $pts.bai_log_buf where plant_code='$plantcode' and bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\"";
 				//echo $sql2."<br>";
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -95,7 +97,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				}
 
 				$work_hrs=0;
-				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+				$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
 				// echo $sql_hr."<br>";
 				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
@@ -116,7 +118,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				$current_hr=date('H');
 				if($current_date==$date)
 				{
-					$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
+					$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
 					// echo $sql_hr."<br>";
 					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					if(mysqli_num_rows($sql_result_hr) >0)
@@ -136,7 +138,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 					}
 					else
 					{
-						$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' and $current_hr > end_time";
+						$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and $current_hr > end_time";
 						// echo $sql_hr."<br>";
 						$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						// $hour_dur=$hour_dur+0;
@@ -166,7 +168,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				}	
 				//COM: NOP and SMV Selection
 				$max=0;
-				$sql2="select bac_style,smv,nop, coalesce(sum(bac_qty),0) as \"qty\", couple,delivery,buyer from $bai_pro.bai_log_buf where bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\" group by bac_style,delivery";
+				$sql2="select bac_style,smv,nop, coalesce(sum(bac_qty),0) as \"qty\", couple,delivery,buyer from $pts.bai_log_buf where plant_code='$plantcode' and bac_sec=$sec and bac_shift=\"$shift\" and bac_date=\"$date\" and bac_no=\"$module\" group by bac_style,delivery";
 				//echo $sql2."<br>";
 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -186,7 +188,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				//$max=$sql_row2['qty'];
 				}
 
-				$sql2="select bac_style,buyer from $bai_pro.bai_log_buf where bac_date=\"$date\" and buyer<>'' and bac_sec=$sec and bac_no=\"$module\" group by bac_style";
+				$sql2="select bac_style,buyer from $pts.bai_log_buf where plant_code='$plantcode' and bac_date=\"$date\" and buyer<>'' and bac_sec=$sec and bac_no=\"$module\" group by bac_style";
 				//echo $sql2;
 				//mysql_query($sql2,$link) or exit("Sql Error35".mysql_error());
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error35$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -256,7 +258,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				//New 2013-07-27 for actula clock hours calculation
 				$act_nop=0;	
 
-				$sql2="select COALESCE(SUM((present+jumper)-absent),0) AS nop FROM $bai_pro.pro_attendance where date='".$date."' and module=$module and shift='".$shift."'";
+				$sql2="select COALESCE(SUM((present+jumper)-absent),0) AS nop FROM $pts.pro_attendance where plant_code='$plantcode' and date='".$date."' and module=$module and shift='".$shift."'";
 				$note.=$sql2."<br/>";
 				// echo $sql2."<br>"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error41".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -269,7 +271,7 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 
 				$code=$date."-".$module."-".$shift;
 
-				$sql2="insert ignore into $bai_pro.grand_rep(tid) values (\"$code\")";
+				$sql2="insert ignore into $pts.grand_rep(tid,plant_code,created_user,created_at) values (\"$code\",'$plantcode','$username','".date('Y-m-d')."')";
 				// echo $sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -301,13 +303,13 @@ while($sql_row222_new=mysqli_fetch_array($sql_result222_new))
 				}
 				if($smv=='' && $nop=='')
 				{
-					$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv='', nop='', buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+					$sql2="update $pts.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv='', nop='', buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=\"$code\"";
 				}
 				else
 				{
 					if($smv == '')
 						$smv = 0;
-					$sql2="update $bai_pro.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+					$sql2="update $pts.grand_rep set date=\"$date\", module=\"$module\", shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv=$smv, nop=$nop, buyer=\"$max_buyer\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=\"$code\"";
 				}
 				// echo $sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error50".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));			
