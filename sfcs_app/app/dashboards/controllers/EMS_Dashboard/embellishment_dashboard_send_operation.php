@@ -704,13 +704,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
           $clr=trim(implode(',',$colors_db),50);
         
-          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;'><a title='$title' rel='tooltip'></a>";
+          echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id'  style='font-size:12px;color:white; text-align:center; float:left;'>";
           if($cut_new=="DONE"){
-            echo   "<span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</span>";
+            echo   "<a onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;' title='$title' rel='tooltip'>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code</a>";
           }else{
-            echo "$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code";
+            echo "<a title='$title' rel='tooltip'>$schedule(".implode(", ",$club_c_code).")-OP:$send_op_code";
           }
-          echo "</div></div><br>";    
+          echo "</a></div></div><br>";    
 		}		  
         }
       }   
