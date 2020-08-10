@@ -2,7 +2,8 @@
 <?php 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 
@@ -29,14 +30,14 @@ error_reporting(0);
 if(!empty($_POST['put']) && isset($_POST['put']))
 {
 	$lot_no=$_POST['lot_no'];
-	$query="SELECT uom FROM $bai_rm_pj1.sticker_report where lot_no='$lot_no'";
+	$query="SELECT uom FROM $wms.sticker_report where plant_code='$plantcode' and lot_no='$lot_no'";
 	$query_result=mysqli_query($link, $query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$uom = mysqli_fetch_row($query_result);
 	$uom = $uom[0];
 	
 	if($_FILES['file']['name'])
 	{		
-		$query="SELECT DISTINCT upload_file FROM $bai_rm_pj1.store_in";
+		$query="SELECT DISTINCT upload_file FROM $wms.store_in where plant_code='$plantcode'";
 		$query_result=mysqli_query($link, $query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo $query_result;
 	
@@ -77,7 +78,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					
 						$handle = fopen($_FILES['file']['tmp_name'],"r");
 						$flag = true;
-						$sql1 = "insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user) values ";
+						$sql1 = "insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, supplier_no, remarks, log_user,plant_code,created_user,created_at) values ";
 						$values = array();
 						$total_qty=0;
 						$iro_cnt = 0;
@@ -113,7 +114,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						
 							// $sql1 = "insert into bai_rm_pj1.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,upload_file) values ( '$lot_no','$ref1', '$item1','$item2', '$date','$remarks','$user_name','$upload_file')";
 							
-							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."')");
+							array_push($values, "('" . $lot_no . "','" . $ref1 . "','" . $item1 . "','" . $item2 . "','" . $date . "','" . $item3 . "','" . $remarks . "','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."')");
 							$total_qty=$total_qty+$item2;
 							$iro_cnt++;
 						}
@@ -149,7 +150,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						  $for_last_val = $last_id_ref+$iro_cnt;
 						  for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
 
-							$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid=".$last_id;
+							$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$last_id;
 							//echo "Update : ".$update_query."</br>"; 
 						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -259,12 +260,12 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 							}
 						}
 					}
-						$sql="insert into $bai_rm_pj1.store_in (lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."')";
+						$sql="insert into $wms.store_in (lot_no, ref1, ref2, ref3,supplier_no, qty_rec, date, remarks, log_user,plant_code,created_user,created_at) values ('$lot_no', '$ref1', '$ref2[$i]', '$ref3[$i]', '$ref4[$i]', $qty[$i], '$date', '$remarks','".$username."-".$plant_name."','$plantcode','$username','".date('Y-m-d')."')";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qty_count += 1;
 					$last_id = mysqli_insert_id($link);
 					
-					$update_query="UPDATE `$bai_rm_pj1`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where tid='$last_id'";
+					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}

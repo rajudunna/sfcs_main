@@ -21,6 +21,8 @@ table, th, td {
 			$style = $_GET['style'];
 			$vpo = $_GET['vpo'];
 		}
+		$plantcode=$_SESSION['plantCode'];
+		$username=$_SESSION['userName'];
 	?>
 </head>
 <script>
@@ -142,7 +144,7 @@ table, th, td {
 						while($pack_result12=mysqli_fetch_array($pack_meth_qty12))
 						{ 									
 							// Eligible Quantity MO Wise
-							$mo_sql1="SELECT * FROM $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo)."')";
+							$mo_sql1="SELECT * FROM $pps.tbl_carton_ready WHERE plant_code='$plantcode' and mo_no in ('".implode("','",$mo)."')";
 							$sql_result23=mysqli_query($link, $mo_sql1) or exit("error while fetching pack methods3");
 							while($row_result23=mysqli_fetch_array($sql_result23))
 							{

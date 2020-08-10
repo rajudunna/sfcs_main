@@ -210,7 +210,8 @@ onReady(function() {
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs); 
 ?>
 <?php 
@@ -311,7 +312,7 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
                   $response_status='--';
                }
 
-               $ndr = "SELECT response_message,transaction_id FROM brandix_bts.`transactions_log` WHERE transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
+               $ndr = "SELECT response_message,transaction_id FROM $pps.`transactions_log` WHERE plant_code='$plantcode' and transaction_id=".$sql_row['m3_bulk_tran_id']." order by sno desc limit 1";
                $sql_result1=mysqli_query($link, $ndr) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
                while($sql_row1=mysqli_fetch_array($sql_result1))
                {
@@ -366,10 +367,10 @@ $view_access=user_acl("SFCS_0068",$username,1,$group_id_sfcs);
             $id_status=$exp[0];
             $reconfim_id=$exp[1]; 
             echo $reconfim_id;
-            $update_sql="update $bai_pro3.`m3_transactions` set m3_trail_count=0 where id=$id_status";
+            $update_sql="update $pps.`m3_transactions` set m3_trail_count=0,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id=$id_status";
             echo $update_sql;
             mysqli_query($link, $update_sql) or exit("Sql Update Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $update_bulk_sql="update $bai_pro3.`m3_bulk_transactions` set m3_trail_count=0 where id='$reconfim_id'";
+            $update_bulk_sql="update $pts.`m3_bulk_transactions` set m3_trail_count=0,updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and id='$reconfim_id'";
             echo $update_bulk_sql;
             mysqli_query($link, $update_bulk_sql) or exit("Sql Update bulk Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 

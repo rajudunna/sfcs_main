@@ -286,7 +286,7 @@ if(isset($_POST['submit']))
 		echo "<td>".$sql_row['nop']."</td>";
 		
 		
-		$sql1="select plan_eff, round(plan_pro/act_hours,0) as plan_out from $bai_pro.pro_plan where date=\"".$sql_row['bac_date']."\" and mod_no=\"".$sql_row['bac_no']."\" and shift=\"".$sql_row['bac_shift']."\"";
+		$sql1="select plan_eff, round(plan_pro/act_hours,0) as plan_out from $pts.pro_plan where plant_code='$plantcode' and date=\"".$sql_row['bac_date']."\" and mod_no=\"".$sql_row['bac_no']."\" and shift=\"".$sql_row['bac_shift']."\"";
 		//echo $sql1;
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
