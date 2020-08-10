@@ -170,7 +170,8 @@ td{ color : #000}
 
 <?php
 
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 //include"main.php";
 //include("main.php");
 
@@ -279,37 +280,37 @@ $thumb=make_thumb($newname,$thumb_name,WIDTH,HEIGHT);
 }
 if($con == 1)
 {
-	$query = "update $pts.upload set name='$fileName',size='$fileSize',type='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name='$fileName',size='$fileSize',type='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 2)
 {
-	$query = "update $pts.upload set name1='$fileName',size1='$fileSize',type1='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name1='$fileName',size1='$fileSize',type1='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 3)
 {
-	$query = "update $pts.upload set name2='$fileName',size2='$fileSize',type2='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name2='$fileName',size2='$fileSize',type2='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 4)
 {
-	$query = "update $pts.upload set name3='$fileName',size3='$fileSize',type3='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name3='$fileName',size3='$fileSize',type3='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 5)
 {
-	$query = "update $pts.upload set name4='$fileName',size4='$fileSize',type4='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name4='$fileName',size4='$fileSize',type4='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 6)
 {
-	$query = "update $pts.upload set name5='$fileName',size5='$fileSize',type5='$fileType',updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and sealno='$sno'";
+	$query = "update $pts.upload set name5='$fileName',size5='$fileSize',type5='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 //echo $query;

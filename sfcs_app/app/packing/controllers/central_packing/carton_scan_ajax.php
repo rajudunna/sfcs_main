@@ -9,6 +9,8 @@
 	$host= $api_hostname;
 	$port= $api_port_no;
 	$current_date = date('Y-m-d h:i:s');
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	// $b_op_id='200';
 	// $b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
 	// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
