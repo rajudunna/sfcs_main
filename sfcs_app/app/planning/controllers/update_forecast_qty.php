@@ -115,6 +115,9 @@ function check_tot()
 					</div>
 				</form>	
 <?php
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 if(isset($_POST['submit']))
 {
 	$today=$_POST['date'];
@@ -145,7 +148,7 @@ if(isset($_POST['submit']))
 	foreach($workstations as $work_id=>$work_des)
 	{
 		$mod_names[]=$work_des;
-		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE planned_date='$today' AND row_name='$work_des'";
+		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE planned_date='$today' AND row_name='$work_des' AND plant_code=''";
 		$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
 		if($getPlannedQty_num>0){
@@ -160,7 +163,7 @@ if(isset($_POST['submit']))
 			$frv[$work_des]=0;
 			$frv_id[$work_des]=0;			
 		}
-		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."'"; 
+		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'"; 
 		$result12=mysqli_query($link, $sql12) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result12)) 
 		{ 
@@ -249,19 +252,19 @@ if(isset($_POST['update']))
 	{
 		if($fr_qty[$i]>0 || $fc_qty[$i]>0)
 		{
-			$sql1="select * from  $pps.`line_forecast` where date='$daten' and module='$fr_mod[$i]'";
+			$sql1="select * from  $pps.`line_forecast` where date='$daten' and module='$fr_mod[$i]' and plant_code='$plantcode'";
 			$result1=mysqli_query($link, $sql1) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql="INSERT INTO $pps.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]')";
+				$sql="INSERT INTO $pps.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`,plant_code,created_user,updated_user) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]', '$plancode', '$username', '$username')";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 			}
 			else
 			{
-				$sql="update $pps.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]' where module ='$fr_mod[$i]' and  date ='$daten'";
+				$sql="update $pps.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]', updated_user ='$username',updated_at=NOW() where module ='$fr_mod[$i]' and  date ='$daten' and plant_code ='$plantcode'";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));	
 				
