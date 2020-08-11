@@ -217,27 +217,28 @@ if(isset($_POST['submit']))
 			// Getting Working Hours
 			$sql7="select date,module,shift,present,jumper from $bai_pro.`pro_attendance` WHERE  date between '".$fdat."' and '".$tdat."' and module='".$modules[$j]."' and shift='".$shifts_array[$jj]."' order by module*1";
 			$result7=mysqli_query($link, $sql7) or die("Sql Error6: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			if(mysqli_num_rows($result1)!='')
+			if(mysqli_num_rows($result7)!='')
 			{		
 				while($row7=mysqli_fetch_array($result7))
 				{
 					$smo[$row7["module"]][$row7["shift"]]=$smo[$row7["module"]][$row7["shift"]]+$row7["present"]+$row7["jumper"];
 					$temp_smo=$row7["present"]+$row7["jumper"];
 					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";
+					
 					$sql_result8=mysqli_query($link, $sql8) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row8=mysqli_fetch_array($sql_result8))
 					{
 						$start_time=$sql_row8['start_time'];
 						$end_time=$sql_row8['end_time'];
 						
-						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-$breakhours/60));
-					}		
+						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-($breakhours/60)));
+					}	
+					$temp_smo=0;					
 				}
 			}
 			else
 			{
 				$smo[$modules[$j]][$shifts_array[$jj]]=0;
-				$temp_smo[$modules[$j]][$shifts_array[$jj]]=0;
 				$effective_shift_working_hours[$modules[$j]][$shifts_array[$jj]]=0;
 			}
 		}
@@ -329,7 +330,7 @@ if(isset($_POST['submit']))
 		if($rowspan>1)
 		{
 			echo"<tr >";
-			echo"<td class='summary' style='text-align:right;'>".implode("+",$shifts_array)."</td>
+			echo"<td class='summary'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
 			echo" <td class='style2'>-</td>
 			<td class='smv2'>-</td>

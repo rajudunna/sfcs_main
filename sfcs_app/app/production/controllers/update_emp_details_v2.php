@@ -516,11 +516,12 @@ $(document).ready(function(){
 	         var rowCount = $('#dynamic_field tr').length;
 			 var max_id=$('#count').val();
 			
-			 var j=2;
+			 var k=2;
 				for(var i=0; i<=max_id; i+=1){
 					
 					$('#add-'+i).click(function(){ 
-						j++;
+						k++;
+						var j='new'+k;
 						var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
 						var rowId = (this.id.split('add-')[1] );
 						$('#dynamic'+rowId).after('<tr id="row'+rowId+j+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+j+'" onchange="adjustment_type(this.id)"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+j+'" value="0" onclick="working_hours(this.id)" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+j+'" onclick="working_hours(this.id)" value="0" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+j+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+j+'" readonly></td><td><button type="button" name="remove" id="'+rowId+j+'" class="btn btn-danger btn_remove" ><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
