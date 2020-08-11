@@ -170,11 +170,33 @@ $username=strtolower($username_list[1]);
 				</div>
 				<?php
 					$plant_timings_array=array();
-					$sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings order by time_value*1";
+					$sql1="select time_value as plant_time,start_time,end_time FROM $bai_pro3.tbl_plant_timings order by time_value*1";
 					$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
+						$value='';
 						$plant_timings_array[]=$sql_row1['plant_time'];
+						$plant_timings_start[]=$sql_row1['start_time'];
+						$data=explode(":",$sql_row1['end_time']);
+						for($i=0;$i<sizeof($data);$i++)
+						{
+							if($i==0)
+							{
+								$value .= $data[$i];
+							}
+							else
+							{
+								if($data[$i]=='59')
+								{									
+									$value .= ":00";
+								}
+								else
+								{
+									$value .= ":".($data[$i]+1);
+								}								
+							}
+						}
+						$plant_timings_end[]=$value;
 					}
 				?>
 
@@ -186,7 +208,7 @@ $username=strtolower($username_list[1]);
 							for ($i=0; $i < sizeof($plant_timings_array); $i++)
 							{
 						?>
-						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_start==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_start==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_start[$i]; ?></option>
 						<?php 
 							}
 						?>
@@ -200,7 +222,7 @@ $username=strtolower($username_list[1]);
 							for ($i=0; $i < sizeof($plant_timings_array); $i++)
 							{
 								?>
-						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_end==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+						<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_end==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_end[$i]; ?></option>
 								<?php 
 							}
 						?>
