@@ -218,7 +218,10 @@ $username=strtolower($username_list[1]);
 			</div>
 			
 		</form>
-		<br>
+		<div class="ajax-loader" id="loading-image" style="display: none">
+		<center><img src="<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',1,'R'); ?>" class="img-responsive" style="padding-top: 250px"/></center>
+	</div>
+		<br>	
 <?php	
 if(isset($_POST['submit']))
 {
@@ -419,9 +422,6 @@ if(isset($_POST['submit']))
 	}
 }
 ?>
-<div class="ajax-loader" id="loading-image" style="display: none">
-		<center><img src="<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',1,'R'); ?>" class="img-responsive" style="padding-top: 250px"/></center>
-	</div>
 </body>
 </html>
 <script>  
@@ -590,9 +590,9 @@ $(document).ready(function(){
 								
 					});  
 
-			 //$('#loading-image').show();
-            //  $('#submit').hide();	
-			//  $('#dynamic_field').hide();		
+			 $('#loading-image').show();
+             $('#submit').hide();	
+			 $('#dynamic_field').hide();		
       });  
 	  $('#dynamic_field tr').each(function() {
 							var button_id1 = $(this).attr("class"); 	
