@@ -257,8 +257,8 @@ if(isset($_POST['submit']))
 				<th style='text-align:center;'>Jumper</th>
 				<th style='text-align:center;'>Type</th>
 				<th style='text-align:center;'>Adjustment SMO</th>
-				<th style='text-align:center;'>Working Hours(min)</th>
-				<th style='text-align:center;'>Adjustment(min)</th>
+				<th style='text-align:center;'>Worked Minutes</th>
+				<th style='text-align:center;'>Adjustment Minutes</th>
 				<th style='text-align:center;'>Adjustment Hours</th><th></th>";
 		$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_num_check=mysqli_num_rows($sql_result1);
