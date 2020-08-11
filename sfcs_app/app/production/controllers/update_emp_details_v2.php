@@ -235,6 +235,7 @@ if(isset($_POST['submit']))
 	$prev_date = date('Y-m-d', strtotime($date .' -1 day'));
 
 	$modules_array = array();	$modules_id_array=array();
+	
 	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	$count= mysqli_num_rows($modules_result);
@@ -248,7 +249,13 @@ if(isset($_POST['submit']))
 	
 		$modules = implode("','", $modules_array);
 
+		$get_modules1 = "SELECT max(id) as max_id FROM $bai_pro3.`module_master` where status='Active'";
+		$modules_result1=mysqli_query($link, $get_modules1) or exit ("Error while fetching modules: $get_modules");
 		
+		while($module_row1=mysqli_fetch_array($modules_result1))
+			{
+				$max_id=$module_row1['max_id'];
+			}
 
 		$sql1="SELECT * FROM $bai_pro.pro_attendance where  date='$date' AND shift='$shift' AND module IN ('$modules')  order by pro_attendance.module*1 ";
 		
@@ -314,7 +321,7 @@ if(isset($_POST['submit']))
 									$readonly = 'readonly';
 								}
 							?>
-								<input type="hidden"  name="count" id="count"  value=<?php echo $k ?>>
+								<input type="hidden"  name="count" id="count"  value=<?php echo $max_id ?>>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
 								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
@@ -369,7 +376,7 @@ if(isset($_POST['submit']))
 								}
 						?>
 
-						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
+						         <input type="hidden"  name="count" id="count"  value=<?php echo $max_id; ?>>
 								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
 								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
@@ -507,8 +514,10 @@ $(document).ready(function(){
 
 	 
 	         var rowCount = $('#dynamic_field tr').length;
+			 var max_id=$('#count').val();
+			
 			 var j=2;
-				for(var i=0; i<=rowCount-2; i+=1){
+				for(var i=0; i<=max_id; i+=1){
 					
 					$('#add-'+i).click(function(){ 
 						j++;
