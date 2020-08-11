@@ -177,8 +177,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		{
 		  $modules[]=$sql_row24['module_name'];
 		}
-		$modulesData = implode(',', $modules);
-		$section_value1 = "and assigned_module in ('$modulesData')";
+		$modulesData = "'" . implode("', '", $modules ) ."'";
+		$section_value1 = "and assigned_module in ($modulesData)";
 	}
 	else 
 	{
