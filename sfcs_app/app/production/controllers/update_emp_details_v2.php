@@ -235,6 +235,7 @@ if(isset($_POST['submit']))
 	$prev_date = date('Y-m-d', strtotime($date .' -1 day'));
 
 	$modules_array = array();	$modules_id_array=array();
+	
 	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	$count= mysqli_num_rows($modules_result);
@@ -248,7 +249,13 @@ if(isset($_POST['submit']))
 	
 		$modules = implode("','", $modules_array);
 
+		$get_modules1 = "SELECT max(id) as max_id FROM $bai_pro3.`module_master` where status='Active'";
+		$modules_result1=mysqli_query($link, $get_modules1) or exit ("Error while fetching modules: $get_modules");
 		
+		while($module_row1=mysqli_fetch_array($modules_result1))
+			{
+				$max_id=$module_row1['max_id'];
+			}
 
 		$sql1="SELECT * FROM $bai_pro.pro_attendance where  date='$date' AND shift='$shift' AND module IN ('$modules')  order by pro_attendance.module*1 ";
 		
@@ -314,15 +321,15 @@ if(isset($_POST['submit']))
 									$readonly = 'readonly';
 								}
 							?>
-								<input type="hidden"  name="count" id="count"  value=<?php echo $k ?>>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
+								<input type="hidden"  name="count" id="count"  value=<?php echo $max_id ?>>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
 								<option value="Negative" <?php if($adjustment_type == "Negative") { echo "SELECTED"; } ?>>Negative</option>	
 							     </select></td>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 130px;" value="<?php echo $adjustment_smo; ?>" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onclick=" working_hours()"></td>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 130px;" value="<?php echo $working_hours_min; ?>" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()"></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 130px;" value="<?php echo $adjustment_smo; ?>" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onclick=" working_hours()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 130px;" value="<?php echo $working_hours_min; ?>" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $adjustment_min; ?>" name="adjustment_min<?php echo $k; ?>" id="adjustment_min<?php echo $k; ?>" readonly></td>
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $adjustment_hours; ?>" name="adjustment_hours<?php echo $k; ?>" id="adjustment_hours<?php echo $k; ?>" readonly></td>
 								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"> <span class="glyphicon glyphicon-plus"></span></button></td>  
@@ -369,15 +376,15 @@ if(isset($_POST['submit']))
 								}
 						?>
 
-						         <input type="hidden"  name="count" id="count"  value=<?php echo $count; ?>>
-								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>"></td>
-								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>"></td>
+						         <input type="hidden"  name="count" id="count"  value=<?php echo $max_id; ?>>
+								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>
 								<option value="Negative">Negative</option>
 								</select></td>
-								<td><span id="addsymbol"></span><input type="text" class="form-control" style="width: 140px;"value="0" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onkeyup="validateQty1(event,this);"  onclick=" working_hours()"></td>
-								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()" onkeyup="validateQty1(event,this);" ></td>
+								<td><span id="addsymbol"></span><input type="text" class="form-control" style="width: 140px;"value="0" name="adjustment_smo<?php echo $k; ?>" id="adjustment_smo<?php echo $k; ?>" onkeyup="validateQty1(event,this);"  onclick=" working_hours()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="working_hours_min<?php echo $k; ?>" id="working_hours_min<?php echo $k; ?>" onclick=" working_hours()" onkeyup="validateQty1(event,this);" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_min<?php echo $k; ?>" id="adjustment_min<?php echo $k; ?>" readonly></td>
 								<td><input type="text" class="form-control" style="width: 100px;"value="0" name="adjustment_hours<?php echo $k; ?>" id="adjustment_hours<?php echo $k; ?>" readonly></td>
 								<td><button type="button" name="add" id="add-<?php echo $k; ?>" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span></button></td>  
@@ -491,7 +498,7 @@ $(document).ready(function(){
 								}
 
 								
-								var add_row ='<tr id="row'+data[i]['id']+i+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['module']+'" id="adjustment_type-'+data[i]['id']+i+'" onchange="adjustment_type(this.id)"><option value="Positive" '+select+'>Positive</option><option value="Negative" '+select1+'>Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['id']+i+'" value='+data[i]['smo']+' onclick=" working_hours(this.id);" onkeyup="validateQty1(event,this);"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['id']+i+'"  value='+data[i]['smo_minutes']+' onclick=" working_hours(this.id);" onkeyup="validateQty1(event,this);"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+i+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus" ></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
+								var add_row ='<tr id="row'+data[i]['id']+i+'" class="dynamic-'+data[i]['id']+'"><td>'+data[i]['module']+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+data[i]['module']+'" id="adjustment_type-'+data[i]['id']+i+'" onchange="adjustment_type(this.id)"><option value="Positive" '+select+'>Positive</option><option value="Negative" '+select1+'>Negative</option></select></td><td><input type="text" class="form-control" style="width: 130px;"  name="adjustment_smo'+data[i]['smo']+'" id="adjustment_smo-'+data[i]['id']+i+'" value='+data[i]['smo']+' onclick=" working_hours(this.id);" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control" style="width: 130px;"  name="working_hours_min'+data[i]['smo_minutes']+'[]" id="working_hours_min-'+data[i]['id']+i+'"  value='+data[i]['smo_minutes']+' onclick=" working_hours(this.id);" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+data[i]['smo_adjustment_min']+'[]" id="adjustment_min-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_min']+' readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+data[i]['smo_adjustment_hours']+'" id="adjustment_hours-'+data[i]['id']+i+'" value='+data[i]['smo_adjustment_hours']+' readonly></td><td><button type="button" name="remove" id="'+data[i]['id']+i+'" class="btn btn-danger btn_remove"><span class="glyphicon glyphicon-minus" ></span></button></td><td style="visibility:hidden;">'+data[i]['module']+'</td></tr>';
 
 								$('#dynamic'+data[i]['id']).after(add_row);
 						
@@ -507,14 +514,17 @@ $(document).ready(function(){
 
 	 
 	         var rowCount = $('#dynamic_field tr').length;
-			 var j=2;
-				for(var i=0; i<=rowCount-2; i+=1){
+			 var max_id=$('#count').val();
+			
+			 var k=2;
+				for(var i=0; i<=max_id; i+=1){
 					
 					$('#add-'+i).click(function(){ 
-						j++;
+						k++;
+						var j='new'+k;
 						var td1 =  $(this).closest('tr').children('td:eq(0)').text().trim();
 						var rowId = (this.id.split('add-')[1] );
-						$('#dynamic'+rowId).after('<tr id="row'+rowId+j+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+j+'" onchange="adjustment_type(this.id)"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+j+'" value="0" onclick="working_hours(this.id)" onkeyup="validateQty1(event,this)" ></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+j+'" onclick="working_hours(this.id)" value="0" onkeyup="validateQty1(event,this)"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+j+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+j+'" readonly></td><td><button type="button" name="remove" id="'+rowId+j+'" class="btn btn-danger btn_remove" ><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
+						$('#dynamic'+rowId).after('<tr id="row'+rowId+j+'" class="dynamic-'+rowId+'"><td>'+td1+'</td></td><td><input type="hidden"></td><td><input type="hidden"></td><td><select class="form-control" name="adjustment_type'+rowId+'" id="adjustment_type-'+rowId+j+'" onchange="adjustment_type(this.id)"><option value="Positive">Positive</option><option value="Negative">Negative</option></select></td><td><input type="text" class="form-control" style="width: 140px;"  name="adjustment_smo'+rowId+'" id="adjustment_smo-'+rowId+j+'" value="0" onclick="working_hours(this.id)" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control" style="width: 100px;"  name="working_hours_min'+rowId+'[]" id="working_hours_min-'+rowId+j+'" onclick="working_hours(this.id)" value="0" onkeypress="return isNumberKey(event)"></td><td><input type="text" class="form-control"  style="width: 100px;"  name="adjustment_min'+rowId+'[]" id="adjustment_min-'+rowId+j+'" readonly></td><td><input type="text" class="form-control" style="width: 100px;" name="adjustment_hours'+rowId+'" id="adjustment_hours-'+rowId+j+'" readonly></td><td><button type="button" name="remove" id="'+rowId+j+'" class="btn btn-danger btn_remove" ><span class="glyphicon glyphicon-minus"></span></button></td><td style="visibility:hidden;">'+rowId+'</td></tr>'); 
 
 						    $('#adjustment_smo-'+rowId+j).on('mouseenter', function() {
 							var adjustment_smo=$(this).val();
@@ -727,5 +737,11 @@ function validateQty1(e,t)
 			return false;
 		}
 		return true;
+}
+function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
 }
  </script>
