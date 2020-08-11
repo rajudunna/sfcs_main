@@ -94,7 +94,17 @@ if(isset($_POST['submit']))
 	}
     echo "<div class='table-responsive' id='report'>
    <table  class=\"table table-bordered\" id='example1' name='example1' style='border: 1px black solid'>";
-    echo"<tr>
+   if($rowspan>1)
+	{
+		$rowspans=$rowspan+1;
+		
+	}
+	else
+	{
+		$rowspans=$rowspan;
+	}
+	
+	echo"<tr>
    <th rowspan=2 >Line No</th>
    <th rowspan=2 >Shift</th>
    <th id='test' style='background-color:#e6fff8;' rowspan=2>Customer</th>
@@ -245,7 +255,7 @@ if(isset($_POST['submit']))
 			
 	}
 	
-	$rowspans=$rowspan+1;
+	
 	for ($ii=0; $ii < sizeof($modules); $ii++) 
 	{    
 		echo"<tr>";
