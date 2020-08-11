@@ -233,15 +233,48 @@ if(isset($_POST['submit']))
 				{
 					$smo[$row7["module"]][$row7["shift"]]=$smo[$row7["module"]][$row7["shift"]]+$row7["present"]+$row7["jumper"];
 					$temp_smo=$row7["present"]+$row7["jumper"];
-					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";
-					
+					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";					
 					$sql_result8=mysqli_query($link, $sql8) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row8=mysqli_fetch_array($sql_result8))
 					{
 						$start_time=$sql_row8['start_time'];
 						$end_time=$sql_row8['end_time'];
+						$sql81="select start_time FROM $bai_pro3.tbl_plant_timings where time_value='".$start_time."'";				
+						$sql_result81=mysqli_query($link, $sql81) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row81=mysqli_fetch_array($sql_result81))
+						{
+							$start=$sql_row81['start_time'];
+						}
 						
-						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-($breakhours/60)));
+						$sql82="select end_time FROM $bai_pro3.tbl_plant_timings where time_value='".$end_time."'";						
+						$sql_result82=mysqli_query($link, $sql82) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row82=mysqli_fetch_array($sql_result82))
+						{
+							$end='';
+							$data=explode(":",$sql_row82['end_time']);
+							for($i=0;$i<sizeof($data);$i++)
+							{
+								if($i==0)
+								{
+									$end .= $data[$i];
+								}
+								else
+								{
+									if($data[$i]=='59')
+									{									
+										$end .= ":00";
+									}
+									else
+									{
+										$end .= ":".($data[$i]+1);
+									}								
+								}
+							}
+						}						
+						$time1 = strtotime($start);
+						$time2 = strtotime($end);
+						$difference = round(abs($time2 - $time1) / 3600,2);
+						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($difference)-($breakhours/60)));
 					}	
 					$temp_smo=0;					
 				}
