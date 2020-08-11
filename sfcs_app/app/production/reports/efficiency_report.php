@@ -48,7 +48,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <div class="panel panel-primary">
 <div class="panel-heading"> Efficiency Report</div>	
 <div class="panel-body">
-<form method="POST" class="form-inline" action=<?php getFullURLLevel($_GET['r'],'efficiency_report.php',0,'N') ?>>
+<form method="POST" class="form-inline" onsubmit="return verify();" action=<?php getFullURLLevel($_GET['r'],'efficiency_report.php',0,'N') ?> >
 <body>
     <div class="row">
 		<div class="col-sm-2">
@@ -60,7 +60,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 				<input id="demo2" class="form-control datepicker" type="text"  size="8" name="tdat" value=<?php if(isset($_POST['tdat'])) { echo $_POST['tdat']; } else { echo date("Y-m-d"); } ?>>
 		</div>
 		<div class='col-sm-1'>
-			<br/><input type="submit" name="submit" onclick='verify()' value="Show" class="btn btn-primary">
+			<br/><input type="submit" name="submit" value="Show" class="btn btn-primary">
 		</div>
 		<div class='col-sm-1'>
 			<br/><input id="excel" type="button"  class="btn btn-success" value="Export To Excel" onclick="getCSVData()">
