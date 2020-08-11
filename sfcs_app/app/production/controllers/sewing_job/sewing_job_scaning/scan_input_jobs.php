@@ -154,7 +154,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 		if(e.keyCode == 13)
 				return;
 			var p = String.fromCharCode(e.which);
-			var c = /^[0-9]*\.?[0-9]*\.?[0-9]*$/;
+			var c = /^[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*$/;
 			var v = document.getElementById(t.id);
 			if( !(v.value.match(c)) && v.value!=null ){
 				v.value = '';
