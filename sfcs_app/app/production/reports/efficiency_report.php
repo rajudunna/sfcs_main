@@ -373,6 +373,26 @@ if(isset($_POST['submit']))
 		
 		if($rowspan>1)
 		{
+			// Act Eff
+			$p_eff=0;
+			$eff=0;
+			if($actual_clock_hours_total>0)
+			{	
+				$eff=(($actual_sah_total/$actual_clock_hours_total)*100);
+			}
+			else
+			{
+				$eff=0;
+			}
+			//Plan Eff
+			if($plan_clock_hours_total>0)
+			{	
+				$p_eff=(($plan_sah_total/$plan_clock_hours_total)*100);
+			}
+			else
+			{
+				$p_eff=0;
+			}
 			echo"<tr >";
 			echo"<td class='summary'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
@@ -389,8 +409,8 @@ if(isset($_POST['submit']))
 			<td colspan=1 class='summary8'>".round($plan_sah_total,2)."</td>
 			<td colspan=1 class='summary9'>".round($actual_sah_total,2)."</td>
 			<td colspan=1 class='summary10'>".round($total_var_sah,2)."</td>
-			<td colspan=1 class='summary11'>".round(array_sum($planeff_temp)/sizeof($planeff_temp),2)."</td>
-			<td colspan=1 class='summary12'>".round(array_sum($acteff_temp)/sizeof($acteff_temp),2)."</td>";
+			<td colspan=1 class='summary11'>".round($p_eff,2)."</td>
+			<td colspan=1 class='summary12'>".round($eff,2)."</td>";
 			echo"</tr>"; 
 			
 		}
