@@ -48,7 +48,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <div class="panel panel-primary">
 <div class="panel-heading"> Efficiency Report</div>	
 <div class="panel-body">
-<form method="POST" class="form-inline" action=<?php getFullURLLevel($_GET['r'],'efficiency_report.php',0,'N') ?>>
+<form method="POST" class="form-inline" onsubmit="return verify();" action=<?php getFullURLLevel($_GET['r'],'efficiency_report.php',0,'N') ?> >
 <body>
     <div class="row">
 		<div class="col-sm-2">
@@ -60,7 +60,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 				<input id="demo2" class="form-control datepicker" type="text"  size="8" name="tdat" value=<?php if(isset($_POST['tdat'])) { echo $_POST['tdat']; } else { echo date("Y-m-d"); } ?>>
 		</div>
 		<div class='col-sm-1'>
-			<br/><input type="submit" name="submit" onclick='verify()' value="Show" class="btn btn-primary">
+			<br/><input type="submit" name="submit" value="Show" class="btn btn-primary">
 		</div>
 		<div class='col-sm-1'>
 			<br/><input id="excel" type="button"  class="btn btn-success" value="Export To Excel" onclick="getCSVData()">
@@ -94,7 +94,17 @@ if(isset($_POST['submit']))
 	}
     echo "<div class='table-responsive' id='report'>
    <table  class=\"table table-bordered\" id='example1' name='example1' style='border: 1px black solid'>";
-    echo"<tr>
+   if($rowspan>1)
+	{
+		$rowspans=$rowspan+1;
+		
+	}
+	else
+	{
+		$rowspans=$rowspan;
+	}
+	
+	echo"<tr>
    <th rowspan=2 >Line No</th>
    <th rowspan=2 >Shift</th>
    <th id='test' style='background-color:#e6fff8;' rowspan=2>Customer</th>
@@ -217,34 +227,68 @@ if(isset($_POST['submit']))
 			// Getting Working Hours
 			$sql7="select date,module,shift,present,jumper from $bai_pro.`pro_attendance` WHERE  date between '".$fdat."' and '".$tdat."' and module='".$modules[$j]."' and shift='".$shifts_array[$jj]."' order by module*1";
 			$result7=mysqli_query($link, $sql7) or die("Sql Error6: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-			if(mysqli_num_rows($result1)!='')
+			if(mysqli_num_rows($result7)!='')
 			{		
 				while($row7=mysqli_fetch_array($result7))
 				{
 					$smo[$row7["module"]][$row7["shift"]]=$smo[$row7["module"]][$row7["shift"]]+$row7["present"]+$row7["jumper"];
 					$temp_smo=$row7["present"]+$row7["jumper"];
-					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";
+					$sql8="select start_time,end_time FROM $bai_pro.pro_atten_hours where date='".$row7["date"]."' and shift='".$row7["shift"]."'";					
 					$sql_result8=mysqli_query($link, $sql8) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row8=mysqli_fetch_array($sql_result8))
 					{
 						$start_time=$sql_row8['start_time'];
 						$end_time=$sql_row8['end_time'];
+						$sql81="select start_time FROM $bai_pro3.tbl_plant_timings where time_value='".$start_time."'";				
+						$sql_result81=mysqli_query($link, $sql81) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row81=mysqli_fetch_array($sql_result81))
+						{
+							$start=$sql_row81['start_time'];
+						}
 						
-						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($end_time-$start_time)-$breakhours/60));
-					}		
+						$sql82="select end_time FROM $bai_pro3.tbl_plant_timings where time_value='".$end_time."'";						
+						$sql_result82=mysqli_query($link, $sql82) or exit ("Sql Error7: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row82=mysqli_fetch_array($sql_result82))
+						{
+							$end='';
+							$data=explode(":",$sql_row82['end_time']);
+							for($i=0;$i<sizeof($data);$i++)
+							{
+								if($i==0)
+								{
+									$end .= $data[$i];
+								}
+								else
+								{
+									if($data[$i]=='59')
+									{									
+										$end .= ":00";
+									}
+									else
+									{
+										$end .= ":".($data[$i]+1);
+									}								
+								}
+							}
+						}						
+						$time1 = strtotime($start);
+						$time2 = strtotime($end);
+						$difference = round(abs($time2 - $time1) / 3600,2);
+						$effective_shift_working_hours[$row7["module"]][$row7["shift"]] = $effective_shift_working_hours[$row7["module"]][$row7["shift"]]+($temp_smo*(($difference)-($breakhours/60)));
+					}	
+					$temp_smo=0;					
 				}
 			}
 			else
 			{
 				$smo[$modules[$j]][$shifts_array[$jj]]=0;
-				$temp_smo[$modules[$j]][$shifts_array[$jj]]=0;
 				$effective_shift_working_hours[$modules[$j]][$shifts_array[$jj]]=0;
 			}
 		}
 			
 	}
 	
-	$rowspans=$rowspan+1;
+	
 	for ($ii=0; $ii < sizeof($modules); $ii++) 
 	{    
 		echo"<tr>";
@@ -329,7 +373,7 @@ if(isset($_POST['submit']))
 		if($rowspan>1)
 		{
 			echo"<tr >";
-			echo"<td class='summary' style='text-align:right;'>".implode("+",$shifts_array)."</td>
+			echo"<td class='summary'>".implode("+",$shifts_array)."</td>
 			<td class='test2'>-</td>";
 			echo" <td class='style2'>-</td>
 			<td class='smv2'>-</td>
