@@ -294,6 +294,7 @@ if(isset($_POST['submit']))
 		echo"<tr>";
 		$module_name=$modules[$ii];
 		echo "<td rowspan=$rowspans>".$module_name."</td>";  
+		$plan_smo=0;
 		$plant_clh_total=0;
 		$plan_clh_count=0;
 		$plan_clock_hours_total=0;
@@ -391,6 +392,7 @@ if(isset($_POST['submit']))
 			<td colspan=1 class='summary11'>".round(array_sum($planeff_temp)/sizeof($planeff_temp),2)."</td>
 			<td colspan=1 class='summary12'>".round(array_sum($acteff_temp)/sizeof($acteff_temp),2)."</td>";
 			echo"</tr>"; 
+			
 		}
 		unset($planeff_temp);
 		unset($acteff_temp);
