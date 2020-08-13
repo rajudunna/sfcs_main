@@ -398,7 +398,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type,$link);
 						$display = $sewing_prefi.leading_zeros($input_job_no,3);
 					  //To get section name from sections_master
-					  $get_section_name="select section_display_name from $bai_pro3.sections_master where sec_name=$section";
+					  $get_section_name="select section_display_name from $bai_pro3.sections_master where sec_name='$section'";
 					  $sql_result25=mysqli_query($link, $get_section_name) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
 					  while($sql_row25=mysqli_fetch_array($sql_result25))
 					  {
