@@ -3,9 +3,10 @@
 	// $username = "baiall";
 	// $password = "baiall";
 	// $dbname = "bai_pro3";
+	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 	$plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
-	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+
 	$conn=$link;
 
 	// Create connection
