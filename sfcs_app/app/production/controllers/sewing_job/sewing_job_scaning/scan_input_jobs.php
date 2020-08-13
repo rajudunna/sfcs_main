@@ -350,6 +350,11 @@ $(document).ready(function()
 					module_flag = 1; // block
 					restrict_msg = 'Invalid Input. Please Check And Try Again !!!';
 				}
+				else if (response == 11)
+				{
+					module_flag = 1; // block
+					restrict_msg = 'Job is already reporting by other user';
+				}
 				else if (response == 8)
 				{
 					module_flag = 1; // block
