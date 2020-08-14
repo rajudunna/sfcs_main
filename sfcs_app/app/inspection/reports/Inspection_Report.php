@@ -39,7 +39,7 @@ From Date: <input type="text" data-toggle='datepicker' class="form-control" name
 
 <?php
 // due to buyer division issue ,we ara taking buyers from sticker report
-$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report";
+$sql="SELECT DISTINCT buyer FROM $bai_rm_pj1.sticker_report where buyer!=''";
 // $sql="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
