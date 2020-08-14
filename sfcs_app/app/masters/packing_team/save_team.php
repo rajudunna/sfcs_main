@@ -21,7 +21,7 @@
             if($count == 2){
                 echo"<script>setTimeout(function () { 
                     swal({
-                    title: 'Packing Method Already Existed!',
+                    title: 'Packing Team Already Existed!',
                     text: 'Message!',
                     type: 'warning',
                     confirmButtonText: 'OK'
@@ -56,7 +56,7 @@
             if(mysqli_num_rows($sql_result)>0){
                 echo"<script>setTimeout(function () { 
                     swal({
-                    title: 'Packing Method Already Existed!',
+                    title: 'Packing Team Already Existed!',
                     text: 'Message!',
                     type: 'warning',
                     confirmButtonText: 'OK'
