@@ -86,7 +86,7 @@
 			$destination=$row['destination']; 
 			$packing_mode=$row['packing_mode']; 
 			$old_size=$row['old_size']; 
-			$jobs_array[] = $input_job_no;
+			$jobs_array[] = $input_job_no_random;
 			$sref_id=$row['sref_id']; 
 			$pac_seq_no=$row['pac_seq_no']; 
 			
@@ -196,18 +196,18 @@
 <?php
 function update_barcode_sequences($input_job_random){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
-             where input_job_no_random = '$input_job_random' ";
+    $query = "select tid from $bai_pro3.pac_stat_log_input_job 
+             where input_job_no_random = '$input_job_random' order by tid DESC";
     $result = mysqli_query($link,$query);
     while($row = mysqli_fetch_array($result)){
-        $tids = $row['tid'];
-        $tid = explode(',',$tids);
-        $counter = sizeof($tid);
-        foreach($tid as $id){
-            $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
-            mysqli_query($link,$update_query) or exit('Unable to update');
-            $counter--;
-        }
+        $tids[] = $row['tid'];
+	}
+	// $tid = explode(',',$tids);
+	$counter = sizeof($tids);
+	foreach($tids as $id){
+		$update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+		mysqli_query($link,$update_query) or exit('Unable to update');
+		$counter--;
 	}
 	return true;
 }  
