@@ -62,7 +62,7 @@ $result_oper = $link->query($qry_get_operation_name);
 				<div class="form-group col-md-3">
 					<label for="title">Select Job / Docket / Carton:</label>
 					<select name="bundle" class="form-control" id='bundle' style="style">
-					<option value='0'>Select Sewing Job Number</option>
+					<option value='0'>Select Job / Docket / Carton</option>
 					</select>
 				</div>
 			</div>
@@ -195,7 +195,7 @@ $(document).ready(function(){
 		$('#color').empty();
 		$('select[name="color"]').append('<option value="0">Select Color</option>');
 		$('#bundle').empty();
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 
 		$.ajax
 			({
@@ -226,7 +226,7 @@ $(document).ready(function(){
 		$(".dynamic_data").html(" ");
 		$('select[name="color"]').append('<option value="0">Select Color</option>');
 		$('#bundle').empty();
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 		$('#loading-image').show();
 		var pro_schedule_color = $('#schedule option:selected').text();
 		$.ajax
@@ -251,7 +251,7 @@ $(document).ready(function(){
 	{
 		$('#bundle').empty();
 		$("#dynamic_data").html("");
-		$('select[name="bundle"]').append('<option value="0">Select Sewing Job Number</option>');
+		$('select[name="bundle"]').append('<option value="0">Select Job / Docket / Carton No</option>');
 		$('#loading-image').show();
 		//$('#loading-image').show();
 		var color_name = window.btoa(unescape(encodeURIComponent(($('#color option:selected').text()))));
