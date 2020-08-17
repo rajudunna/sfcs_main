@@ -366,7 +366,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,
 				size_title,color,input_job_no_random_ref from $brandix_bts.bundle_creation_data_temp where $time_query1
 				sfcs_smv > 0 $shift_value1 $section_value1 and operation_id in ($sewing_operations) GROUP BY operation_id,
-				assigned_module,style,schedule,input_job_no,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				assigned_module,style,schedule,input_job_no,shift,color,docket_number,size_title ORDER BY style,schedule,shift,operation_id,input_job_no*1";
 				$sql_result23=mysqli_query($link, $bcd_qry) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result23)>0)
 				{
