@@ -104,8 +104,14 @@ if($attendance_integration=='HRMS')
 else
 {
 	//today
-	$date=date("Y-m-d"); 
-	//$date='2020-07-23'; 
+	if($_GET['date'])
+	{
+		$date=$_GET['date'];
+	}
+	else
+	{
+		$date=date("Y-m-d");
+	} 
 	$conn = odbc_connect("$hcm_sql_driver_name;Server=$hcm_sql_server;Database=$hcm_db;",$hcm_sql_user,$hcm_sql_pass);
 
 	$hcm_module=array();
