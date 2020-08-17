@@ -61,7 +61,7 @@ if(!(in_array($view,$has_permission)))
 if(isset($_POST['submit']))
 {
 	$lid=$_POST['lid'];
-	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $wms.store_in where barcode_number=\"$lid\" and and plant_code='".$plant_code."'";
+	$sql="select lot_no,qty_rec,qty_issued,qty_ret,ref1,ref4 from $wms.store_in where barcode_number=\"$lid\" and plant_code='".$plant_code."'";
 	$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	if(mysqli_affected_rows($link)>0)
