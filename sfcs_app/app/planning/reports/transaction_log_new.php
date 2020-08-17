@@ -177,8 +177,8 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 		{
 		  $modules[]=$sql_row24['module_name'];
 		}
-		$modulesData = implode(',', $modules);
-		$section_value1 = "and assigned_module in ('$modulesData')";
+		$modulesData = "'" . implode("', '", $modules ) ."'";
+		$section_value1 = "and assigned_module in ($modulesData)";
 	}
 	else 
 	{
@@ -366,7 +366,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 				shift,input_job_no,sum(recevied_qty) as qty,operation_id,style,docket_number,
 				size_title,color,input_job_no_random_ref from $brandix_bts.bundle_creation_data_temp where $time_query1
 				sfcs_smv > 0 $shift_value1 $section_value1 and operation_id in ($sewing_operations) GROUP BY operation_id,
-				assigned_module,style,schedule,input_job_no,shift,color,docket_number ORDER BY style,schedule,shift,operation_id,input_job_no*1";
+				assigned_module,style,schedule,input_job_no,shift,color,docket_number,size_title ORDER BY style,schedule,shift,operation_id,input_job_no*1";
 				$sql_result23=mysqli_query($link, $bcd_qry) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result23)>0)
 				{
@@ -398,7 +398,7 @@ echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="
 						$sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","id",$type,$link);
 						$display = $sewing_prefi.leading_zeros($input_job_no,3);
 					  //To get section name from sections_master
-					  $get_section_name="select section_display_name from $bai_pro3.sections_master where sec_name=$section";
+					  $get_section_name="select section_display_name from $bai_pro3.sections_master where sec_name='$section'";
 					  $sql_result25=mysqli_query($link, $get_section_name) or exit("Sql Error34".mysqli_error($GLOBALS["___mysqli_ston"]));
 					  while($sql_row25=mysqli_fetch_array($sql_result25))
 					  {
