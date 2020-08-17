@@ -217,13 +217,13 @@ $m3_inputs="m3_inputs";
 $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $temp_pool_db="temp_pool_db";
 /*These all are related 2.0 integration databses*/
-$mdm="mdm";
-$oms="oms";
-$pps="pps";
-$pms="pms";
-$sms="sms";
+$mdm="mdm_prod";
+$oms="oms_prod";
+$pps="pps_prod";
+$pms="pms_prod";
+$sms="sms_prod";
 $tms="tms";
-$wms="wms";
+$wms="wms_prod";
 $module_limit = 32;
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
