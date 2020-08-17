@@ -227,11 +227,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 
 	/**
 	 * function to get dockets
-	 * @param:po_number,plantcode,docket_type(norma-0,Binding-1)
+	 * @param:po_number,plantcode,docket_type(norma-false,Binding-true)
 	 * @return:docket_number
 	 */
 	if($sub_po!=''){
-		$result_bindingdockets=getDocketDetails($sub_po,$plantcode,1);
+		$result_bindingdockets=getDocketDetails($sub_po,$plantcode,true);
 		$binding_dockets=$result_bindingdockets['docket_number'];
 	}
 	
