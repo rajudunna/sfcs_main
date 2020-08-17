@@ -394,7 +394,7 @@ $username = $_SESSION['userName'];
 							}
 							$lot_number = implode("','", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM wms.sticker_report sr LEFT JOIN wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec, si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $wms.sticker_report sr LEFT JOIN $wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.lot_no='$lot_no_inp' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 
 						if ($po_no != '' && ($lot_no_inp == '' && $supplier_invoice == '' && $supplier_batch == '')) {
@@ -406,7 +406,7 @@ $username = $_SESSION['userName'];
 							}
 							$lot_number = implode("','", $lot_nos);
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $wms.sticker_report sr LEFT JOIN wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $wms.sticker_report sr LEFT JOIN $wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.po_no='$po_no' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_invoice != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_batch == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $wms.sticker_report WHERE inv_no=\"" . ($supplier_invoice) . "\" and plant_code='".$plant_code."'";
@@ -419,7 +419,7 @@ $username = $_SESSION['userName'];
 							$lot_number = implode("','", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM wms.sticker_report sr LEFT JOIN wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $wms.sticker_report sr LEFT JOIN $wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.inv_no='$supplier_invoice' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 						if ($supplier_batch != '' && ($lot_no_inp == '' && $po_no == '' && $supplier_invoice == '')) {
 							$sql_lot_no = "SELECT lot_no FROM $wms.sticker_report WHERE batch_no=\"" . ($supplier_batch) . "\" and plant_code='".$plant_code."'";
@@ -432,7 +432,7 @@ $username = $_SESSION['userName'];
 							$lot_number = implode("','", $lot_nos);
 
 
-							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM wms.sticker_report sr LEFT JOIN wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
+							$sql_po_no = "SELECT sr.po_no as po_no,sr.po_line as po_line,sr.po_subline as po_subline,sr.inv_no as inv_no,sr.item as item,sr.item_desc as item_desc,sr.lot_no as lot_no,sr.batch_no as batch_no, si.supplier_no as supplier_no,si.ref2 as ref2,si.qty_rec as qty_rec,si.tid as tid,si.ref3 as ctex_width,si.ref5 as ctex_length,si.four_point_status as four_point_status,sr.item_name as item_name,sr.rm_color as rm_color FROM $wms.sticker_report sr LEFT JOIN $wms.store_in si ON si.lot_no=sr.lot_no WHERE sr.batch_no='$supplier_batch' AND si.lot_no IN('$lot_number') GROUP BY si.tid order by si.lot_no*1,si.ref2*1";
 						}
 					//echo $sql_po_no;
 						$sql_result_po = mysqli_query($link, $sql_po_no) or exit(message_sql());
