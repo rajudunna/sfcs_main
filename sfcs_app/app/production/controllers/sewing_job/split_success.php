@@ -89,10 +89,18 @@
 			$jobs_array[] = $input_job_no_random;
 			$sref_id=$row['sref_id']; 
 			$pac_seq_no=$row['pac_seq_no']; 
-			
+			$quantity = 1;
 			$query_check = "SELECT * FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
 			$res_query_check=mysqli_query($link,$query_check);
-			if (mysqli_num_rows($res_query_check) == 0) 
+			$query_qty_check = "SELECT sum(recevied_qty) as rec,sum(rejected_qty) as rej FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
+			$res_query_qty_check=mysqli_query($link,$query_qty_check);
+			while($qty_res = mysqli_fetch_array($res_query_qty_check))
+			{
+				$rec_qty = $qty_res['rec'];
+				$rej_qty = $qty_res['rej'];
+				$quantity = $rec_qty + $rej_qty ;
+			}
+			if (mysqli_num_rows($res_query_check) == 0 || $quantity == 0) 
 			{
 				if ($qty == 0) 
 				{
