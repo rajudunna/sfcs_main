@@ -1516,7 +1516,7 @@ function validating_with_module($pre_array_module)
     $operation = $pre_array_module[2];
     $screen = $pre_array_module[3];
     $scan_type = $pre_array_module[4];
-
+	$request_job_no=$job_no;
     $column_to_search = $job_no;
     $column_in_pack_summary = 'tid';
     if($scan_type == 1)
@@ -1763,21 +1763,30 @@ function validating_with_module($pre_array_module)
     else if($short_ship_status== 3){
         $response_flag = 8;
     }
-	$sewing_status22 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$job_no' and operation_id=$operation and status='reporting'";
+	//$sewing_status22 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$request_job_no' and operation_id=$operation and status='reporting'";
 	//echo $sewing_status2 ;
-	$sewing_status_result22=mysqli_query($link, $sewing_status22)or exit("get_sewing_jobs_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sewing_status_result22)>0)
-	{
-		$response_flag = 11;
+	//$sewing_status_result22=mysqli_query($link, $sewing_status22)or exit("get_sewing_jobs_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//if(mysqli_num_rows($sewing_status_result22)>0)
+	//{
+		//$response_flag = 11;
 		//echo 'test'.$response_flag;
-	}
+	//}
     // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
     if ($screen == 'wout_keystroke')
     {
-        return $response_flag;
+		return $response_flag;
     }
     else
-    {
+    { 
+       $sewing_status22 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$request_job_no' and operation_id=$operation and status='reporting'";
+	   //echo $sewing_status2 ;
+	   $sewing_status_result22=mysqli_query($link, $sewing_status22)or exit("get_sewing_jobs_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   if(mysqli_num_rows($sewing_status_result22)>0)
+	   {
+		 $response_flag = 11;
+		//echo 'test'.$response_flag;
+	   }
+       
         echo $response_flag;
     }
 	

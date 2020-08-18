@@ -68,18 +68,18 @@ $type = $form;
 $barcode_sequence = $new_data['barcode_sequence'];
 $barcode_generation =  $new_data['barcode_generation'];
 $emb_cut_check_flag = $new_data['emb_cut_check_flag'];
-
+$request_job_no=$b_job_no;
 $modules=implode(",",array_unique($b_module));  
 
-$reqst_status="INSERT INTO `bai_pro3`.`request_log` (`request_time`, `sewing_job_no`, `ops_id`, `user_name`, `reported_qty`, `module_no`) VALUES ('".date("Y-m-d H:i:s")."', '$b_job_no', '$b_op_id', '$username',$rep_sum_qty, '$modules')";
+$reqst_status="INSERT INTO `bai_pro3`.`request_log` (`request_time`, `sewing_job_no`, `ops_id`, `user_name`, `reported_qty`, `module_no`) VALUES ('".date("Y-m-d H:i:s")."', '$request_job_no', '$b_op_id', '$username',$rep_sum_qty, '$modules')";
 $reqst_status_result=mysqli_query($link, $reqst_status)or exit("get_reqst_sewing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $request_id = mysqli_insert_id($link);
 
-$sewing_status = "select * from bai_pro3.sewing_scanning_status where sewing_job='$b_job_no' and operation_id=$b_op_id";
+$sewing_status = "select * from bai_pro3.sewing_scanning_status where sewing_job='$request_job_no' and operation_id=$b_op_id";
 $sewing_status_result=mysqli_query($link, $sewing_status)or exit("get_sewing_statuss_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sewing_status_result) == 0)
 {
-	$sql_status_scan="INSERT INTO `bai_pro3`.`sewing_scanning_status` (`sewing_job`, `operation_id`, `module`, `status`, `log_user`) VALUES ('$b_job_no', $b_op_id, '$modules', 'reporting', '$username')";
+	$sql_status_scan="INSERT INTO `bai_pro3`.`sewing_scanning_status` (`sewing_job`, `operation_id`, `module`, `status`, `log_user`) VALUES ('$request_job_no', $b_op_id, '$modules', 'reporting', '$username')";
 	$sql_status_result=mysqli_query($link, $sql_status_scan)or exit("get_sewing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$affectced_rows = mysqli_affected_rows($link);
 	if($affectced_rows==0)
@@ -93,7 +93,7 @@ if(mysqli_num_rows($sewing_status_result) == 0)
 }
 else
 {
-	$sewing_status2 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$b_job_no' and operation_id=$b_op_id";
+	$sewing_status2 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$request_job_no' and operation_id=$b_op_id";
 	$sewing_status_result2=mysqli_query($link, $sewing_status2)or exit("get_sewing_status_new_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sewing_reslt=mysqli_fetch_array($sewing_status_result2))
 	{
@@ -102,7 +102,7 @@ else
 	
 	if($status_sew=='open')
 	{
-		$status_update="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'reporting' WHERE sewing_job = '$b_job_no' AND `operation_id` = $b_op_id AND status='open'";
+		$status_update="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'reporting' WHERE sewing_job = '$request_job_no' AND `operation_id` = $b_op_id AND status='open'";
 		$status_update_result=mysqli_query($link, $status_update)or exit($status_update."get_sewing_new_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$affectced_rows=mysqli_affected_rows($link);
 		if($affectced_rows==0)
@@ -2090,7 +2090,8 @@ if($status_sew=='open')
 		$close_time_update="UPDATE `bai_pro3`.`request_log` SET `close_time` = '$closing_time' WHERE `id` = $request_id ";
 		$close_time_reslt=mysqli_query($link, $close_time_update)or exit("get_sewing_closing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 	}
-	$status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open' WHERE sewing_job = '$b_job_no' AND `operation_id` = $b_op_id";
+	
+	$status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open' WHERE sewing_job = '$request_job_no' AND `operation_id` = $b_op_id";
 	$status_update_reslt=mysqli_query($link, $status_update_last)or exit("get_sewing_last_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));  
 }
 else{
