@@ -102,7 +102,7 @@ if(isset($_POST['download']))
 		foreach($grn_details as $codes)
 		{
 			$code=explode("-",$codes);
-			$cluster_code=$code[0];
+			$cluster_code=$plant_code;
 			$central_wh_code=$code[1];
 			$plant_wh_code=$code[2];
 			$query_text = "CALL $m3_db.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."','".$comp_no."','".$central_wh_code."','".$plant_wh_code."','".$date_val."','".$date_val."',0,'%','%','$mode')";
