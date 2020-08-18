@@ -49,10 +49,10 @@ function leading_zeros($value, $places)
 
 
 function get_details($module){
-        $counter = 0;
-        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
-        
+    $counter = 0;
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
+    global $plant_code;    
 
     $html_out = "<div class='panel panel-primary'>";
      $html_out.= "<div class='panel-heading'><h3>Module -$module</h3></div>";
@@ -65,104 +65,74 @@ function get_details($module){
                          <td>Sewing Job Number</td>
                          <td>Style</td>
                          <td>Schedule</td>
+                         <td>Po Number</td>
                      </tr>
                  </thead>
                  <tbody>";
-    $check_module="Select input_module,input_job_no_random_ref From $pps.plan_dashboard_input where input_module='$module' and plan_code='$plant_code'";
-    //echo $check_module;
-    $result1 = mysqli_query($link, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //To check module
+    $check_module="SELECT task_header_id,resource_id FROM $tms.task_header where resource_id='$module' and plan_code='$plant_code'";
+    $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row1 = mysqli_fetch_array($result1))
     {
-        $input_job=$row1['input_job_no_random_ref'];
-        $module=$row1['input_module'];
-        
-        // echo "<b>Module:</b> $module | <b>input_job:</b> $input_job"; 
-        //To get style and schedule
-        $get_details="select order_style_no,order_del_no,order_col_des,type_of_sewing,input_job_no from $bai_pro3.packing_summary_input where input_job_no_random='$input_job'";
-       // echo $get_details;
-        $get_details_result=mysqli_query($link, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($row2=mysqli_fetch_array($get_details_result))
-        {
-            $style=$row2['order_style_no'];
-            $schedule=$row2['order_del_no'];
-            $color=$row2['order_col_des'];
-            $type_name=$row2['type_of_sewing'];
-            $job=$row2['input_job_no'];
-        }
+        $task_header_id[] = $row1['task_header_id'];
+        $module = $row1['resource_id'];
+    }
 
-     
+    //To get IPS Routing Operation
+    $application='Input Planning System';
+    $to_get_map_id="SELECT operation_map_id FROM `pms`.`operation_routing` WHERE dashboard_name='$application'";
+    //echo $scanning_query;
+    $map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row1=mysqli_fetch_array($map_id_result))
+    {
+        $operation_map_id=$sql_row1['operation_map_id'];
+    }
+    $to_get_ops_code="SELECT operation_code FROM `pms`.`operation_mapping` WHERE operation_map_id='$operation_map_id'";
+    $get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row2=mysqli_fetch_array($get_ops_result))
+    {
+        $operation_code=$sql_row2['operation_code'];
+    }
 
+    //To get job,style,schedule details
+    $get_details="SELECT style,schedule,sewingjobno,ponumber FROM $tms.task_attributes where task_jobs_id in ('" . implode ( "', '", $task_header_id ) . "') and plan_code='$plant_code'";
+    $get_details_result=mysqli_query($link_new, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row2=mysqli_fetch_array($get_details_result))
+    {
+      $style = $row2['style'];
+      $schedule[] = $row2['schedule'];
+      $jobno = $row2['sewingjobno'];
+      $ponumber = $row2['ponumber'];
 
-        //To get Operation from Operation Routing For IPS
-        $application='IPS';
-        $scanning_query=" select * from $brandix_bts.tbl_ims_ops where appilication='$application'";
-        //echo $scanning_query;
-        $scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_row1=mysqli_fetch_array($scanning_result))
-        {
-            $operation_name=$sql_row1['operation_name'];
-            $operation_code=$sql_row1['operation_code'];
-        }
-        if($operation_code == 'Auto'){
-            $get_ips_op = get_ips_operation_code($link,$style,$color);
-            $operation_code=$get_ips_op['operation_code'];
-            $operation_name=$get_ips_op['operation_name'];
-        }
+      
+     //Function to check whether sewing job is scanned or not
+     $check_status= random_function($jobno,$operation_code,$plant_code); 
 
-        // To get Prefix
-        $get_prefix="select * from  $pms.tbl_sewing_job_prefix where type_of_sewing ='$type_name' and plant_code='$plant_code'";
-        //echo $get_prefix;
-        $get_result=mysqli_query($link, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($row3=mysqli_fetch_array($get_result))
-        {
-          $prefix=$row3['prefix'];
-        }
+     // To get Prefix
+     $get_prefix="select * from $mdm.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
+     //echo $get_prefix;
+     $get_result=mysqli_query($link_new, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
+     while($row3=mysqli_fetch_array($get_result))
+     {
+       $prefix=$row3['prefix'];
+     }
 
-        
-        $display=$prefix.''.leading_zeros($job,3);
-        
-
-        $bcd_query="select sum(recevied_qty) as rec From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$input_job' and operation_id = $operation_code group by input_job_no_random_ref";
-        //echo $bcd_query;
-        $bcd_result=mysqli_query($link, $bcd_query)or exit("recevied qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-        // $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_name,$input_job,$link);
-
-        $sql_num_check=mysqli_num_rows($bcd_result);
-        if($sql_num_check >0)
-        {
-            while($sql_row2=mysqli_fetch_array($bcd_result))
-            {
-                $rec_qty=$sql_row2['rec'];
-                // $code.=$input_job."-".$sql_row2['style']."-".$sql_row2['schedule']."-".$sql_row2['color'];
-                if ($rec_qty == 0)
-                {
-                    $counter++;
-                    $html_out.= "<tr>";
-                    $html_out.= "<td>
-                    <input type='hidden' value='$input_job' id='job_$counter'>
-                    <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-                    <td>$display</td>
-                    <td>$style</td>
-                    <td>$schedule</td>";
-                    $html_out.= "</tr>";
-                }
-                 
-            }
-        }else
-        {
-                    $counter++;
-                    $html_out.= "<tr>";
-                    $html_out.= "<td>
-                    <input type='hidden' value='$input_job' id='job_$counter'>
-                    <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-                    <td>$display</td>
-                    <td>$style</td>
-                    <td>$schedule</td>";
-                    $html_out.= "</tr>";
-        }
-       
-    }   
+     $display=$prefix.''.leading_zeros($jobno,3);
+     $schedules = implode(",",$schedule);
+     if ($check_status == 0)
+     {
+        $counter++;
+        $html_out.= "<tr>";
+        $html_out.= "<td>
+        <input type='hidden' value='$input_job' id='job_$counter'>
+        <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
+        <td>$display</td>
+        <td>$style</td>
+        <td>$schedules</td>
+        <td>$ponumber</td>";
+        $html_out.= "</tr>";
+     }
+    }    
     if($counter == 0){
         $json['records'] = 0;
         echo json_encode($json);    
@@ -178,14 +148,20 @@ function get_details($module){
 function save_details($data,$module,$module1){
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     $counter = 0;
+    global $plant_code;
+    global $username;
     foreach($data['jobs'] as $job){
 
-        $plan_query="UPDATE $bai_pro3.plan_dashboard_input SET input_module = '$module',updated_user='$username',updated_at=NOW() where input_job_no_random_ref = '$job' AND plant_code='$plant_code'";
-        mysqli_query($link, $plan_query)or exit("plan_update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        //To get task_header_id
+        $get_task_header_id="SELECT task_jobs_id FROM $tms.task_attributes where sewingjobno='$job' AND plant_code='$plant_code'";
+        $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row1 = mysqli_fetch_array($result1))
+        {
+           $task_header_id = $row1['task_header_id'];
+        }  
 
-
-        $bcd_update_query="UPDATE $brandix_bts.bundle_creation_data SET assigned_module='$module' where input_job_no_random_ref = '$job'";
-        mysqli_query($link, $bcd_update_query)or exit("update qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $task_header_update="UPDATE `tms`.`task_header` SET resource_id= WHERE task_header_id='$task_header_id' AND plant_code='$plant_code'";
+        mysqli_query($link, $task_header_update)or exit("task_header_update error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."','".$username."')";
         mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
