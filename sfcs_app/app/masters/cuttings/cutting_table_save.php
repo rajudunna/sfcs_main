@@ -3,6 +3,7 @@
   <script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 // var_dump($_POST);die();
 // if(isset($_REQUEST['tid'])){
 // 	//echo "Row id".$_REQUEST['supplier_code'];
@@ -18,7 +19,7 @@ $tbl_id=$_POST['tbl_id'];
 $emp_id =$_POST['emp_id'];
 // echo $tbl_name;die();
 $emp_name =$_POST['emp_name'];
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+
 $conn=$link;
 // echo strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0
 if (strlen(trim($emp_id)) == 0 || strlen(trim($emp_name)) == 0) {
