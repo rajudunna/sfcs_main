@@ -709,12 +709,25 @@ function delet(docs_id){
                             var schedule = $("#schedule").val();
                             window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
                         } else {
-							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+							var data = $.parseJSON(res);
+							if(data['final'] == 'validating'){
+								sweetAlert('Cut Sewing jobs already generating for the same schedule','Please wait','');
+						        //$("#markers").prop("disabled", true);
+								var optionSelected = $("option:selected", this);
+								var color = $("#color").val();
+								var style = $("#style").val();
+								var schedule = $("#schedule").val();
+								window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
+								
+							}
+							else{
+							sweetAlert('Cannot Proceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
                             setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
+							}	
                         }
 					} else {
 						

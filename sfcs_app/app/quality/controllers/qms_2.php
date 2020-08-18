@@ -313,8 +313,11 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	}
 
 	 $sewing_cat = 'sewing';
+	 $cutting_cat = 'cutting';
+	 $embs_cat = 'Send PF';
+	 $embr_cat = 'Receive PF';
 	$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-						WHERE trim(category) = '$sewing_cat' ";
+						WHERE trim(category) in ('$sewing_cat','$cutting_cat','$embs_cat','$embr_cat') ";
 	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
 	while($row=mysqli_fetch_array($op_code_result)) 
 	{

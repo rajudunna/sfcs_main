@@ -97,7 +97,7 @@ function ajax_calls(value,sync_type){
   $('#sec-'+value).html('');
   $.ajax({
       url: "<?= $url ?>?sec="+value+"&priority_limit="+$('#view_priority').val()
-  }).done(function(data) {
+  }).done(function(data) {  
       try{
         var r_data = JSON.parse(data) ;
         $('#sec-'+r_data.sec).html(r_data.data);
@@ -108,6 +108,37 @@ function ajax_calls(value,sync_type){
             ajax_calls(sec_id_ar[ind+1],true);
           }
         }
+        $('a[rel=tooltip]').hover(function(e) {
+  var tip = $(this).attr('title');  
+  
+
+  $(this).attr('title','');
+  
+ 
+  $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
+  
+}).mousemove(function(e) {
+
+
+  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
+  console.log(e);
+
+  $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+  $('#tooltip').css('left',$(this).offset.left - 255 );
+   $('#tooltip').css('margin-left','10px' );
+   $('#tooltip').css('text-align','left' );
+   $('#tooltip').css('margin-top','10px' );
+   $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('z-index', '999999' );
+}).mouseout(function() {
+
+  //Put back the title attribute's value
+  $(this).attr('title',$('.tipBody').html());
+
+  //Remove the appended tooltip template
+  $(this).children('div#tooltip').remove();
+  
+});
       }catch(err){
         if(sync_type){
           $('#sec-'+value).html('<b>couldn\'t fetch the data & It will automatically refresh in 2 mins</b>');
@@ -190,7 +221,10 @@ function blink_new1(x)
 	}
 }
 </script>
+
+
 <style>
+
 .sec-box{
     min-height:100px;
 }
@@ -498,6 +532,62 @@ border: 1px solid black;
 }
 
 </style>
+<style>
+.tooltip {
+    
+    outline: none;
+    cursor: auto; 
+    text-decoration: none;
+    position: relative;
+    color:#333;
+    
+  }
+  .tooltip span {
+    margin-left: -1500em;
+    position: absolute;
+    
+  }
+  .tooltip:hover span {
+    border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    position: absolute; 
+    left: 0em; top: 0em; z-index: 99;
+    margin-left: -100px; width: 150px;
+    margin-top: -100px;
+    
+  }
+  .tooltip:hover em {
+      font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+      display: block; padding: 0.2em 0 0.6em 0;
+    }
+
+  /* Tooltip */
+.red-tooltip + .tooltip > .tooltip-inner {
+background-color: black;
+width:350px;
+padding-top:10px;
+padding-bottom:10px;
+}
+#tooltip {
+position:absolute;
+z-index:9999;
+color:#fff;
+font-size:12px;
+width:250px;
+pointer-events: none; 
+}
 
 
+
+
+#tooltip .tipBody {
+background-color:#000;
+padding-left:10px;
+height:100%;
+
+}
+
+
+</style>
 
