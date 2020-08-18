@@ -1,7 +1,9 @@
 <?php  
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
-	$has_permission=haspermission($_GET['r']);	
+	$has_permission=haspermission($_GET['r']);
+	$plantcode=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];
 ?> 
 <script type="text/javascript"> 
  
@@ -115,12 +117,21 @@ function check_tot()
 					</div>
 				</form>	
 <?php
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
-
 if(isset($_POST['submit']))
 {
 	$today=$_POST['date'];
+	$split_date=explode("-",$today);
+	$year=$split_date[0];
+	$month=$split_date[1];
+	/** validation for selected month plan available or not */
+	$qry_monthly_plan="SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
+	$monthly_plan_result=mysqli_query($link_new, $qry_monthly_plan) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$monthly_plan_num=mysqli_num_rows($monthly_plan_result);
+	if($monthly_plan_num>0){
+		while($monthly_plan_row=mysqli_fetch_array($monthly_plan_result))
+		{
+			$monthly_production_plan_upload_log_id=$monthly_plan_row['monthly_production_plan_upload_log_id'];
+		}
 ?>			
 <form method="POST" action="#" onsubmit="return check_tot()"> 
 	<div style="width:500px;margin-left:auto;margin-right:auto;"> 
@@ -143,12 +154,13 @@ if(isset($_POST['submit']))
 	 * @return:workstations
 	 */
 	$department_type="Sewing";
+	$reason_type="SEWING";
 	$result_worksation_id=getWorkstations($department_type,$plantcode);
 	$workstations=$result_worksation_id['workstation'];
 	foreach($workstations as $work_id=>$work_des)
 	{
 		$mod_names[]=$work_des;
-		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE planned_date='$today' AND row_name='$work_des' AND plant_code=''";
+		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE monthly_production_plan_upload_log_id='$monthly_production_plan_upload_log_id'";
 		$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
 		if($getPlannedQty_num>0){
@@ -163,8 +175,8 @@ if(isset($_POST['submit']))
 			$frv[$work_des]=0;
 			$frv_id[$work_des]=0;			
 		}
-		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'"; 
-		$result12=mysqli_query($link, $sql12) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'";
+		$result12=mysqli_query($link, $sql12) or exit("Sql Error at line_forecast " . mysqli_error($GLOBALS["___mysqli_ston"])); 
 		if(mysqli_num_rows($result12)) 
 		{ 
 			while($row12=mysqli_fetch_array($result12))
@@ -177,11 +189,11 @@ if(isset($_POST['submit']))
 		{ 
 			$lfr_qty[$work_des]=0;
 		}
-	} 
-    for($i=0;$i<sizeof($mod_names);$i++) 
-    { 
-
- ?> 
+	}
+	
+	for($i=0;$i<sizeof($mod_names);$i++) 
+	{ 
+ 	?> 
     <tr id="row_val<?php echo $i; ?>"> 
         <td> 
 		<?php echo $mod_names[$i]; ?> 
@@ -199,7 +211,7 @@ if(isset($_POST['submit']))
         <td>         
         <?php 
 		echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
-		$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='Sewing'"; 
+		$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='$reason_type'"; 
 		echo "<option value='NIL'>Select Reason</option>";
         $ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($row=mysqli_fetch_array($ResultLineReasons)) 
@@ -218,7 +230,7 @@ if(isset($_POST['submit']))
 	</tr> 
 	
 <?php 
-	}
+}
 ?>
 	</table>
 	<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
@@ -232,13 +244,13 @@ if(isset($_POST['submit']))
 		</div>	
 		<?php
 	}
-	?>	
-	
-	</div>
-			
-	
-	<form> 
+	?>		
+</div>	
+<form> 
 <?php
+}else{
+	echo "<script>sweetAlert('No plan for selected month.','','info');</script>";
+	}
 }
 if(isset($_POST['update']))
 {
@@ -257,15 +269,13 @@ if(isset($_POST['update']))
 			$rows=mysqli_num_rows($result1);
 			if($rows==0)
 			{
-				$sql="INSERT INTO $pps.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`,plant_code,created_user,updated_user) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]', '$plancode', '$username', '$username')";
-				//echo $sql."<br>";
+				$sql="INSERT INTO $pps.`line_forecast` (`forcast_id`, `module`, `qty`, `date`, `reason`,plant_code,created_user,updated_user) VALUES ('$fr_id[$i]', '$fr_mod[$i]', '$fc_qty[$i]', '$daten', '$fr_reason[$i]', '$plantcode', '$username', '$username')";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 			}
 			else
 			{
 				$sql="update $pps.`line_forecast` set qty ='$fc_qty[$i]', reason ='$fr_reason[$i]', updated_user ='$username',updated_at=NOW() where module ='$fr_mod[$i]' and  date ='$daten' and plant_code ='$plantcode'";
-				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));	
 				
 			}
