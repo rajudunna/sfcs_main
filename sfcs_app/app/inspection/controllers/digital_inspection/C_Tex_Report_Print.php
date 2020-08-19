@@ -1824,7 +1824,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $pps.inspection_db where plant_code='$plantcode' and batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
+$sql="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
