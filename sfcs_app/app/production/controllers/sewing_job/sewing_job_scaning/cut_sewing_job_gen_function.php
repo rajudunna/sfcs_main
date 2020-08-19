@@ -31,19 +31,24 @@ if($_POST['modal_submit'])
 				insertMOQuantitiesSewing($schedule,$inserted_id);		
 				$res1['status'] = true;
 				echo json_encode($res1);
-			} else {
+			} 
+			else 
+			{
 				$res1['status'] = false;
+				$res1['final'] = 'first_cut';
 				echo json_encode($res1);
 				exit();
 			} 
         }
-        else{
-		$res1['final'] = 'validating';
-		echo json_encode($res1);
-	    exit();
+		else
+		{
+			$res1['final'] = 'validating';
+			echo json_encode($res1);
+			exit();
 	    }			
 	}
-	else{
+	else
+	{
 		$res1['final'] = 'validating';
 		echo json_encode($res1);
 	    exit();
@@ -496,6 +501,10 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 		
 		return true;
 	} else {
+
+		$delete_query = "DELETE FROM `bai_pro3`.`sewing_jobs_ref` where id = $inserted_id and bundles_count = 0";
+		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleteing the sewing jobs ref");
+
 		return false;
 	}
 }
