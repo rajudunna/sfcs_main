@@ -6,6 +6,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 <?php
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 // echo $_POST['table_name'];
 $team_id =$_POST['team_id'];
 $emp_id=$_POST['emp_id'];
@@ -23,7 +24,6 @@ $username=$_SESSION['userName'];
 // $username = "baiall";
 // $password = "baiall";
 // $dbname = "bai_rm_pj1";
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 
 // // Create connection
