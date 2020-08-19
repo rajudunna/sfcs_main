@@ -94,7 +94,7 @@ $username = $_SESSION['userName'];
 					echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 				}else{
 					//insert qry here
-					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user,updated_user,updated_at) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."','".$username."',NOW())";
+					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user,updated_user,updated_at,created_at) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
 					$update_locations=mysqli_query($link, $qry_insertloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					//$url = getFullURL($_GET['r'],'add_newlocation.php','N');
 					//header("Location: ".$url);
