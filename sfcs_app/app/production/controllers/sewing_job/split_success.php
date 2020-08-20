@@ -133,7 +133,8 @@
 						if(mysqli_num_rows($update_result) > 0)
 							continue;
 						*/
-					}else{
+					}else
+					{
 						//Updating existing bundle 
 						/*
 						$update_mo = "Update  $bai_pro3.mo_operation_quantites set input_job_no='$temp_input_job_no',
@@ -141,29 +142,35 @@
 									  where bundle_no = '$tid' and input_job_random = '$temp_input_job_no_random' 
 									  and input_job_no = '$temp_input_job_no'";
 									  */
-						$update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty'
-									  where ref_no = $tid "; 
-									// ref_no='$inserted_tid'             
-						$update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
-				
-						//getting mo_no,op_desc from mo_operation_quantities
-						$mos = "Select mo_no,op_desc,op_code 
-								from $bai_pro3.mo_operation_quantites where ref_no = $tid  
-								group by op_desc";
-		
-						$mos_result = mysqli_query($link,$mos); 
-						while($row = mysqli_fetch_array($mos_result)){
-							$mo_no = $row['mo_no'];
-							$ops[$row['op_code']] = $row['op_desc'];
-						}
-						//Inserting the new bundle quantity
-						foreach(array_unique($ops) as $op_code=>$op_desc){
-							$insert_mo = "Insert into $bai_pro3.mo_operation_quantites
-										(date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
-										('".date('Y-m-d H:i:s')."','$mo_no',$inserted_tid,$qty,$op_code,'$op_desc')";          
-							mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
-						}
-						unset($ops);
+					    if($nqty>0)
+						{
+							$sql_orders_ops = "SELECT * FROM brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
+			
+							$sql_orders_ops_rslt = mysqli_query($link,$sql_orders_ops); 
+							while($row_orders_ops = mysqli_fetch_array($sql_orders_ops_rslt))
+							{
+								$ops_code_sew[]=$row_orders_ops['operation_code'];
+							}
+							$ops_sew=implode(",",$ops_code_sew);
+							$update_mo = "Update $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty' where ref_no = $tid and op_code in($ops_sew)"; 
+										// ref_no='$inserted_tid'             
+							$update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
+							//getting mo_no,op_desc from mo_operation_quantities
+							$mos = "Select mo_no,op_code,op_desc from $bai_pro3.mo_operation_quantites where ref_no = $tid and op_code in($ops_sew) group by op_desc";
+							$mos_result = mysqli_query($link,$mos); 
+							while($row = mysqli_fetch_array($mos_result)){
+								$mo_no = $row['mo_no'];
+								$ops[$row['op_code']] = $row['op_desc'];
+							}
+							//Inserting the new bundle quantity
+							foreach(array_unique($ops) as $op_code=>$op_desc){
+								$insert_mo = "Insert into $bai_pro3.mo_operation_quantites
+											(date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
+											('".date('Y-m-d H:i:s')."','$mo_no',$inserted_tid,$qty,$op_code,'$op_desc')";          
+								mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
+							}
+							unset($ops);
+						}	
 					}
 					//------------------------------------MO Filling Logic Ends----------------------------------------------
 				}
