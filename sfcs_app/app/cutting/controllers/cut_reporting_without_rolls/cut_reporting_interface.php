@@ -281,7 +281,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Joints</th>
                             <th>Endbits</th>
                             <th>Shortages</th>
-                            <th>Rejection Pieces</th>
+                            <!--<th>Rejection Pieces</th>-->
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -314,8 +314,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
                             <!--no changes but roll backed then hard push-->
                             
-                            <td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
-                            </td>
+                            <!--<td><input type='button' style='display : block' class='btn btn-sm btn-danger' id='rejections_panel_btn' value='Show Rejections'>
+                            </td>-->
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
                     </tbody>
@@ -487,6 +487,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 ?>
 
 <script>
+
     $('#enablecutreportdetails').hide();
     var avl_plies = 0;
     var doc_no = 0;
@@ -1669,53 +1670,52 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 return index == 0 ? word.toUpperCase() : word.toLowerCase(); 
             }).replace(/\s+/g, ''); 
         }
-
+    
+    
     function loadDetails(doc_no){
-        $.ajax({
-            url : '<?= $get_url ?>?doc_no='+doc_no
-        }).done(function(res){
-            GLOBAL_CALL = 0;
-            var data = $.parseJSON(res);
-            console.log(data);
-            avl_plies = Number(data.avl_plies);
-            fab_req = Number(data.fab_required);
-            console.log(data);
-            console.log(data.avl_plies);
-            if(data.child_docket == '1'){
-                swal('Error','Child Docket Cannot be Reported','error');
-                return false;
-            }
-            if(data.can_report == '0'){
-                swal('Error','You Cannot Report This Docket','error');
-                return false;
-            }
-            if(data.can_report == '2'){
-                swal('Error','Fabric is not yet issued for this Docket','error');
-                return false;
-            }
-            if(data.can_report == '3'){
-                swal('Error','Recut Docket is not yet Approved','error');
-                return false;
-            }
-            
-            if(data.error == '1'){
-                swal('Error','Docket Doesnt Exist','error');
-                return false;
-            }
-            if(data.error == '2'){
-                swal('Error','Short Shipment Done Temporarly','error');
-                return false;
-            }
-            if(data.error == '3'){
-                swal('Error','Short Shipment Done Perminently','error');
-                return false;
-            }
+        //sample dummy data json
+            var status='True';
+            var Message="Docket Doesnt Exist";
+            //var getData=res.data;
+            var getData={
+                "docketNumber": "D123",
+                "componentGroup":"Compo Grp",
+                "category":"Body",
+                "style":"BCIDPG2526",
+                "fgColor":"Yark Yellow",
+                "schedules":"John",
+                "docketType":"Normal",
+                "quantity":"152",
+                "cutStatus":"Done",
+                "plannedPlies":"25",
+                "reportedPlies":"10",
+                "fabricRequired":"256",
+                "sizeRatios": [
+                    {
+                        "size": "S",
+                        "ratio": "8"
+                    },
+                    {
+                        "size": "M",
+                        "ratio": "5"
+                    },        
+                    {
+                        "size": "L",
+                        "ratio": "3"
+                    }
+                    ],
+            };
 
-            if(data.partial == '1'){
+        if(status){
+            console.log(getData);
+            
+            avl_plies = Number(getData.plannedPlies);
+            fab_req = Number(getData.fabricRequired);
+            if(getData.cutStatus == 'IN-PROGRESS'){
                 $('#hide_details_reported').css({'display':'block'});
                 $('#hide_details_reporting').css({'display':'block'});
                 $('#hide_details_reporting_ratios').css({'display':'block'});
-            }else if(data.cut_done == '1'){
+            }else if(getData.cutStatus == 'DONE'){
                 $('#hide_details_reported').css({'display':'block'});
                 $('#hide_details_reporting').css({'display':'none'});
                 $('#hide_details_reporting_ratios').css({'display':'none'});
@@ -1723,9 +1723,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#hide_details_reported').css({'display':'none'});
                 $('#hide_details_reporting').css({'display':'block'});
                 $('#hide_details_reporting_ratios').css({'display':'block'});
-                //alert();
+                
             }
-            if(data.partial_roll_wise == '1'){
+            
+            /*if(data.partial_roll_wise == '1'){
                 $('#hide_details_reported_roll_wise').css({'display':'block'});
                 $rollwisestatus=true;
             }
@@ -1735,10 +1736,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }else{
                 $('#hide_details_reported_roll_wise').css({'display':'none'});
                 $rollwisestatus=false;
-            }
+            }*/
+            console.log(getData.style);
             var i;
             var sno=1;
             $('#reported_table_roll_wise tbody').html('');
+            /*
             if($rollwisestatus)
             {
                 if(data.rollwisedetails) 
@@ -1761,46 +1764,50 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 }
 
             }
-
+            */
             $('.d_doc_type').css({'display':'block'});
             $('#d_total_rejections').css({'display':'none'});
             //storing doc,plies in hidden fields for post refference
-            $('#post_doc_no').val(data.doc_no);
-            $('#p_plies').val(data.p_plies);
-            $('#doc_target_type').val(data.doc_target_type);
-            $('#ratio').val(data.ratio);
+            $('#post_doc_no').val(getData.docketNumber);
+            $('#p_plies').val(getData.plannedPlies);
+            $('#doc_target_type').val(getData.doc_target_type);
+            $('#ratio').val(getData.ratio);
             
-            $('#fab_required').val(data.fab_required);
-            $('#r_fab_required').html(data.fab_required);
+            $('#fab_required').val(getData.fabricRequired);
+            $('#r_fab_required').html(getData.fabricRequired);
 
-            $('#mk_length').val(data.marklength);
+            //$('#mk_length').val(data.marklength);
 
-            $('#binding_consum').val(data.binding_consumption);
-            $('#seperat_dock').val(data.seperate_docket);
+            //$('#binding_consum').val(data.binding_consumption);
+            //$('#seperat_dock').val(data.seperate_docket);
 
 
             //doc type
              
-            $('#d_doc_type').html(camelCase(data.doc_target_type)+' Docket');
+            $('#d_doc_type').html(camelCase(getData.docketType)+' Docket');
             
             //setting size wise ratios
-            $('#hide_details_reporting_ratios').html(data.ratio_data);
+            //$('#hide_details_reporting_ratios').html(data.ratio_data);
+            
             //setting values for display table    
-            $('#d_doc_no').html(doc_no);
-            $('#d_cut_no').html(data.acut_no);
-            $('#d_cut_status').html(data.act_cut_status);
-            $('#d_cut_issue_status').html(data.fab_status);
-            $('#d_good_pieces').html(data.good_pieces);
+            $('#d_doc_no').html(getData.docketNumber);
+            $('#d_cut_no').html(getData.docketNumber);
+            $('#d_cut_status').html(getData.cutStatus);
+            //$('#d_cut_issue_status').html(data.fab_status);
+            //$('#d_good_pieces').html(data.good_pieces);
+            /*
             if(Number(data.rej_pieces) > 0){
                 $('#d_rej_pieces').html(data.rej_pieces+"<br/><input type='button' class='btn btn-xs btn-info' value='info' onclick='toggleMe();'>");
                 $('#rejections_show_table').html(data.rej_size_wise_details);
             }else{
                 $('#d_rej_pieces').html(data.rej_pieces);
-            }
-            $('#d_date').html(data.date);
+            }*/
+            
+            /*$('#d_date').html(data.date);
             $('#d_section').html(data.section);
             $('#d_module').html(data.module);
             $('#d_shift').html(data.shift);
+            
             $('#d_fab_rec').html(data.fab_received);
             $('#d_fab_ret').html(data.fab_returned);
             $('#d_damages').html(data.damages);
@@ -1808,17 +1815,17 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_endbits').html(data.endbits);
             $('#d_shortages').html(data.shortages);
             $('#d_reported').html(data.reported);
-            $('#r_doc_qty').html(data.doc_qty);
+            $('#r_doc_qty').html(data.doc_qty);*/
+
             //setting values for reporting table
-            $('#r_doc_no').html(doc_no);
-            $('#r_cut_status').html(data.act_cut_status);
-            $('#r_plan_plies').html(data.p_plies);
-            $('#r_reported_plies').html(data.a_plies);
-           
+            $('#r_doc_no').html(getData.docketNumber);
+            $('#r_cut_status').html(getData.cutStatus);
+            $('#r_plan_plies').html(getData.plannedPlies);
+            $('#r_reported_plies').html(getData.plannedPlies);
             //setting value to style,schedule,color
-            $('#d_style').html(data.styles);
-            $('#d_schedule').html(data.schedules);
-            $('#d_color').html(data.colors);
+            $('#d_style').html(getData.style);
+            $('#d_schedule').html(getData.docketNumber);
+            $('#d_color').html(getData.fgColor);
             if($('#good_report').val() == 'readonly'){
                 $('#c_plies').attr('readonly', true);
                 $('#cut_report').attr('disabled', true);
@@ -1836,9 +1843,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             // $('#c_plies').val(avl_plies);
             $('#fab_received').val(fab_req);
 
-            $('#post_style').val(data.styles);
-            $('#post_schedule').val(data.schedules);
-            $('#post_color').val(data.colors);
+            $('#post_style').val(getData.style);
+            $('#post_schedule').val(getData.docketNumber);
+            $('#post_color').val(getData.fgColor);
 
             //resetting the submmit button
             $('#submit').css({'display':'block'});
@@ -1872,11 +1879,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 $('#joints').attr('readonly', false);
                 $('#endbits').attr('readonly', false);
                 calculatecutreport();
-                //$('#shortages').attr('readonly', false);
-        }).fail(function(){
-            swal('Network Error while getting Details','','error');
-            return;
-        });
+                
+        }else{
+            swal('Error',"'+message+'",'error');
+            return false;
+        }
+            GLOBAL_CALL = 0;        
     }
 
     function toggleMe(){
