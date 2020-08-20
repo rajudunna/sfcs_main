@@ -744,14 +744,14 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     $workstations = implode("','", $workstationtype);
     /**Getting work stations against workstation type*/
-    $qry_workstations="SELECT workstation_id,workstation_description FROM $pms.workstation WHERE is_active=1 AND workstation_type_id IN ('$workstations')";
+    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND workstation_type_id IN ('$workstations')";
     $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstation=array();
     $workstations_result_num=mysqli_num_rows($workstations_result);
     if($workstations_result_num>0){
         while($workstations_row=mysqli_fetch_array($workstations_result))
         {
-            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_description'];
+            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
         }
     }
 
@@ -886,34 +886,5 @@ function getCutNumber($jm_cut_job_id){
     );
 }
 
-/*
-    function to get modules from workastations
-    @params:category,plantcode
-    @returns:modules
-*/
-function get_modules($category,$plant_code){
-    global $link_new;
-    global $pms; 
-    $work_mod = array();
-   //To get workstation_id from workstation table
-    $get_workstation_id="SELECT workstation_type_id FROM `pms`.`workstation_type` WHERE workstation_type_code='$category' AND plant_code='$plantcode'";
-    $sql_resultx=mysqli_query($link_new, $get_workstation_id) or exit("Sewing workstation was not availabe");
-    while($sql_rowx=mysqli_fetch_array($sql_resultx))
-    {
-        $workstation_id=$sql_rowx['workstation_type_id']; 
-    }
-
-    //To get workstations
-    $get_workstations="SELECT workstation_code FROM `pms`.`workstation` WHERE workstation_type_id='$workstation_id' AND plant_code='$plantcode'";
-    $sql_result1=mysqli_query($link_new, $get_workstations) or exit("NO Modules availabe");
-    while ($row1=mysqli_fetch_array($sql_result1))
-    {
-        $work_mod[]=$row1['workstation_code'];
-    } 
-    $modules=array_unique($work_mod);
-    return array(
-    'modules' => $modules
-    );
-}
 
 ?>

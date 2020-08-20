@@ -10,8 +10,9 @@
     $username =  $_session['userName'];
 
     //Function to get modules based on category
-    $category="sewing";
-    $work_mod=get_modules($category,$plantcode);
+    $department='Sewing';
+    $result_worksation_id=getWorkstations($department,$plantcode);
+    $workstations=$result_worksation_id['workstation'];
 ?>
 
 <script type="text/javascript">
@@ -120,7 +121,7 @@
                             <select  name="module" class="form-control" id="module">
                                 <option value="" disabled selected>Select Module</option>
                                 <?php
-                                    foreach($work_mod as $module)
+                                    foreach($workstations as $module)
                                         echo "<option value='$module'>$module</option>"
                                 ?>
                             </select>
@@ -145,7 +146,7 @@
                             <select  name="to_module" class="form-control" id="to_module">
                             <option value="" disabled selected>Select Module</option>
                             <?php
-                                foreach($work_mod as $module)
+                                foreach($workstations as $module)
                                     echo "<option value='$module'>$module</option>"
                             ?>
                         </select>

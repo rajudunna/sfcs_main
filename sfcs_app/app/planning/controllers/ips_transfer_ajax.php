@@ -93,16 +93,22 @@ function get_details($module){
     {
         $operation_code=$sql_row2['operation_code'];
     }
+   
+    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+
+    $job_detail_attributes=[];
 
     //To get job,style,schedule details
-    $get_details="SELECT style,schedule,sewingjobno,ponumber FROM $tms.task_attributes where task_jobs_id in ('" . implode ( "', '", $task_header_id ) . "') and plan_code='$plant_code'";
+    $get_details="SELECT * FROM $tms.task_attributes where task_jobs_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'";
     $get_details_result=mysqli_query($link_new, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row2=mysqli_fetch_array($get_details_result))
     {
-      $style = $row2['style'];
-      $schedule[] = $row2['schedule'];
-      $jobno = $row2['sewingjobno'];
-      $ponumber = $row2['ponumber'];
+       foreach($sewing_job_attributes as $key=> $val){
+        if($val == $row2['attribute_name'])
+        {
+           $job_detail_attributes[$val] = $row2['attribute_value'];
+        }
+    }
 
       
      //Function to check whether sewing job is scanned or not
@@ -116,20 +122,21 @@ function get_details($module){
      {
        $prefix=$row3['prefix'];
      }
-
+     $jobno=$job_detail_attributes[$sewing_job_attributes['sewingjobno']];
      $display=$prefix.''.leading_zeros($jobno,3);
+     $schedule=$job_detail_attributes[$sewing_job_attributes['schedule']];
      $schedules = implode(",",$schedule);
      if ($check_status == 0)
      {
         $counter++;
         $html_out.= "<tr>";
         $html_out.= "<td>
-        <input type='hidden' value='$input_job' id='job_$counter'>
+        <input type='hidden' value='$jobno' id='job_$counter'>
         <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
         <td>$display</td>
-        <td>$style</td>
+        <td>$job_detail_attributes[$sewing_job_attributes['style']]</td>
         <td>$schedules</td>
-        <td>$ponumber</td>";
+        <td>$job_detail_attributes[$sewing_job_attributes['ponumber']]</td>";
         $html_out.= "</tr>";
      }
     }    
