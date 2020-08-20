@@ -261,15 +261,24 @@ if(isset($_POST['submit']))
 		$start_time_am=$rows1231['start_time'];
 		$end_time_am=$rows1231['end_time'];
 	}
-	// $sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$time_value_pm'"; 
-	// $sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($rows125=mysqli_fetch_array($sql_result25))
-	// {
-	// 	$start_time_pm=$rows125['start_time'];
-	// 	$end_time_pm=$rows125['end_time'];
-	// }
-
-	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."'))) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no";
+	$sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$time_value_pm'"; 
+	$sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($rows125=mysqli_fetch_array($sql_result25))
+	{
+		$start_time_pm=$rows125['start_time'];
+		$end_time_pm=$rows125['end_time'];
+	}
+	// $shift_new=["general"];
+	$shift_new1="general";
+	$shift_all=$shifts_array;
+	$shift_query="";
+	if(!in_array($shift_new1,$shift_all))
+	{
+		$shift_query="OR (TIME(bac_lastup) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))";
+		
+	}
+	// var_dump($shifts_array);
+	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $bai_pro.bai_log_buf WHERE bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) $shift_query) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no;";
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
