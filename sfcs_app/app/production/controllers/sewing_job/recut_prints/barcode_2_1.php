@@ -125,7 +125,7 @@
 							$html.= "<td colspan=4></td>";
 						$html.='</tr> 
 								<tr>
-									<td colspan=9><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,25).'</td>
+									<td colspan=9><b>Color:</b>'.substr($barcode_rslt['order_col_des'],0,35).'</td>
 								</tr>
 								<tr>	
 									<td colspan=6><b>CutNo:</b>'.$color_code.'</td>
