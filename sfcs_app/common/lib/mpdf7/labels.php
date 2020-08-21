@@ -149,8 +149,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			case "Elastic":	
 			{	
 				$html.= '<tr><td>ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
- 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong>: <strong>$ref4</strong></td></tr>";
+				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
+				 if(strlen($item_desc)>25){
+					$item_color=substr($item_desc, 0, 25)."..";
+				}else{
+					$item_color=$item_desc;
+				}
+				$html.= "<tr><td>COLOR : <strong>".str_pad($item_color, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong>: <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / Loc # : <b>$ref1</b>  / REF NO : <strong>$remarks</strong></td></tr>";
  				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>/ REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots  / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
@@ -163,8 +168,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			case "Lace":	
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
- 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
+				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
+				 if(strlen($item_desc)>25){
+					$item_color=substr($item_desc, 0, 25)."..";
+				}else{
+					$item_color=$item_desc;
+				}
+				$html.= "<tr><td>COLOR : <strong>".str_pad($item_color, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> /  Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."/ </b>/ SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN D: <strong>$grn_date</strong> / Qty (".$uom_ref.") : <strong> $qty_rec</strong></td></tr>";
@@ -180,7 +190,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT).$item_name2."</strong></td></tr>"; 
-				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
+				if(strlen($item_desc)>25){
+					$item_color=substr($item_desc, 0, 25)."..";
+				}else{
+					$item_color=$item_desc;
+				}
+				$html.= "<tr><td>COLOR : <strong>".str_pad($item_color, 21, " ", STR_PAD_RIGHT)."</strong> / <strong>Shade </strong> : <strong>$ref4</strong></td></tr>";
 				//$html.= "<tr><td>PO No : <strong>$po_no</strong> / REF NO # : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO # : <strong>$remarks</strong>/ PKG # : <b>$pkg_no</b>   </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b>/$child_lots / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b>  </td></tr>";
@@ -196,8 +211,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			case "Thread":	
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
- 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
+				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
+				 if(strlen($item_desc)>25){
+					$item_color=substr($item_desc, 0, 25)."..";
+				}else{
+					$item_color=$item_desc;
+				}
+				$html.= "<tr><td>COLOR : <strong>".str_pad($item_color, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong> / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b></td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong> / GRN D: <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
@@ -209,7 +229,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				$html.= "<tr><td>COLOR : <strong>".str_pad($item_desc, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
+				if(strlen($item_desc)>25){
+					$item_color=substr($item_desc, 0, 25)."..";
+				}else{
+					$item_color=$item_desc;
+				}
+				$html.= "<tr><td>COLOR : <strong>".str_pad($item_color, 21, " ", STR_PAD_RIGHT)."</strong> / Shade : <strong>$ref4</strong></td></tr>";
 				$html.= "<tr><td>PO No : <strong>".str_pad($po_no, 7, " ", STR_PAD_RIGHT)."</strong>  / REF NO : <strong>$remarks</strong> / PKG # : <b>$pkg_no</b> </td></tr>";
 				$html.= "<tr><td>LOT No : <b>".str_pad($lot_no, 10, " ", STR_PAD_RIGHT)."</b> / Loc # : <b>".str_pad($ref1, 6, " ", STR_PAD_RIGHT)."</b> / SRoll # : <b>".$sno."</b> </td></tr>";
 				$html.= "<tr><td>REC # : <strong>".str_pad($rec_no, 11, " ", STR_PAD_RIGHT)." </strong>/ GRN Date : <strong>$grn_date</strong>/ Qty (".$uom_ref.") : <strong>$qty_rec</strong></td></tr>";
