@@ -10,8 +10,8 @@ $cut_no = '';
 
 
 foreach($sizes_array as $size){
-    $a_sizes_sum .= 'a_'.$size.'+';
-    $a_sizes_str .= 'a_'.$size.',';
+    $a_sizes_sum .= 'p_'.$size.'+';
+    $a_sizes_str .= 'p_'.$size.',';
 }
 $a_sizes_sum = rtrim($a_sizes_sum,'+');
 $a_sizes_str = rtrim($a_sizes_str,',');
