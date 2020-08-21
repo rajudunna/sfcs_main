@@ -153,7 +153,7 @@
 							</td>							
 							</tr>
 						<tr>
-							<td colspan=4>'.$color.'</td>
+							<td>'.$color.'</td>
 						</tr>	
 						<tr>
 							<td colspan=8>
@@ -164,14 +164,14 @@
 							</div>
 						</tr>
 						<tr>
-							<td colspan=4>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
+							<td>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
 							if($shade != '')
 								$html.= " / <b>$shade</b></td>";	
 							else
 								$html.= "</td>";	
 						// 	$html.='</tr> 
 						// <tr>	
-						$html.= '<td colspan=8>'.$color_code.' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+						$html.= '<td colspan=8 style="text-align:right;">'.$color_code.' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 						</tr>
 					</table>
 					</div><br><br><br><br><br>';			 
@@ -188,7 +188,7 @@
 						</td>							
 						</tr>
 					<tr>
-						<td colspan=4>'.$color.'</td>
+						<td>'.$color.'</td>
 					</tr>	
 					<tr>
 						<td colspan=8>
@@ -199,14 +199,14 @@
 						</div>
 					</tr>
 					<tr>
-						<td colspan=4>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
+						<td>'.trim($barcode_rslt['size_code']).' / '.trim($destination);
 						if($shade != '')
 							$html.= " / <b>$shade</b></td>";	
 						else
 							$html.= "</td>";	
 					// 	$html.='</tr> 
 					// <tr>	
-					$html.='<td>'.$color_code.' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
+					$html.='<td colspan=4 style="text-align:right;"> '.$color_code.' / '.$display1.' / '.trim(str_pad($quantity,3,"0", STR_PAD_LEFT)).'</td>
 					</tr>
 				</table>
 				</div><br><br><br><br><br>';
