@@ -2,67 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 
-//list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);
-//$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-//$username=strtolower($username_list[1]);
-// $username="sfcsproject1";
-// echo $username;
-
-// $authorized=array("sfcsproject1");
-// $super_user=array("sfcsproject1");
 $has_perm=haspermission($_GET['r']);
-$hour=date("H.i");
-
-	if(in_array($authorized,$has_perm))
-	{
-		
-		//New Implementation to restrict as per time lines to update Planning Board 20111211
-		$hour=date("H.i");
-		
-		//if(($hour>=7.45 and $hour<=10.00) or ($hour>=15.15 and $hour<=16.45)) //OLD
-		//GOOD ONE if(($hour>=7.45 and $hour<=10.45) or ($hour>=12.30 and $hour<=14.00) or ($hour>=16.00 and $hour<=17.30))
-		//if(($hour>=7.15 and $hour<=9.45) or ($hour>=15.15 and $hour<=17.15))
-		// if(($hour>=06.00 and $hour<=09.00) or ($hour>=14.00 and $hour<=19.00))
-		// {
-			
-		// }
-		// else
-		// {
-			// $url=getFullURLLevel($_GET['r'],'time_out.php',1,'N');
-			// header("Location:$url&msg=1");
-		// }
-	}
-	else
-	{
-		$url=getFullURLLevel($_GET['r'],'/common/config/restricted.php',4,'N');
-	   header("Location:$url");
-	}
-	
-
-
-// $criteria="where left(order_style_no,1) in (".$global_style_codes.")";
-/*if(!(in_array($authorized,$has_perm)))
-{
-	//exploding the users list into buyer level
-	include("style_allocation.php");
-	
-	for($i=0;$i<sizeof($styles_names);$i++)
-	{
-		$style_users=$style_auth[$i];
-		$style_users_ex=explode(",",$style_users);
-		if(in_array($username,$style_users_ex))
-		{
-			$criteria_styles[]=$styles_list[$i];
-		}
-	}
-	var_dump($criteria_styles);
-	die();
-
-	//$criteria=" where left(order_style_no,1) in (".$global_style_codes.") and  left(order_style_no,1) in (".implode(",",$criteria_styles).")";
-	
-}
-*/
-
 ?>
 
 <!-- <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> -->
@@ -204,8 +144,8 @@ $cutno=$_GET['cutno'];
 	@returns: $style
 	*/
 
-	if($plantcode!=''){
-		$result_mp_color_details=getMpColorDetail($plantcode);
+	if($plant_code!=''){
+		$result_mp_color_details=getMpColorDetail($plant_code);
 		$style=$result_mp_color_details['style'];
 	}
 	echo "<div class='row'>"; 
@@ -230,8 +170,8 @@ $cutno=$_GET['cutno'];
 @params : plantcode,style
 @returns: schedule
 */
-	if($get_style!=''&& $plantcode!=''){
-		$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+	if($get_style!=''&& $plant_code!=''){
+		$result_bulk_schedules=getBulkSchedules($get_style,$plant_code);
 		$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
 	}  
 	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
@@ -256,8 +196,8 @@ $cutno=$_GET['cutno'];
 @params : plantcode,schedule
 @returns: color
 */
-if($get_schedule!='' && $plantcode!=''){
-		$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+if($get_schedule!='' && $plant_code!=''){
+		$result_bulk_colors=getBulkColors($get_schedule,$plant_code);
 		$bulk_color=$result_bulk_colors['color_bulk'];
 	}
 	echo "<div class='col-sm-3'><label>Select Color: </label>";  
@@ -282,8 +222,8 @@ if($get_schedule!='' && $plantcode!=''){
 	@params : plantcode,schedule,color
 	@returns: mpo
 	*/
-	if($get_schedule!='' && $get_color!='' && $plantcode!=''){
-		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+	if($get_schedule!='' && $get_color!='' && $plant_code!=''){
+		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plant_code);
 		$master_po_description=$result_bulk_MPO['master_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
@@ -307,8 +247,8 @@ if($get_schedule!='' && $plantcode!=''){
 		@params : plantcode,mpo
 		@returns: subpo
 		*/
-	if($get_mpo!='' && $plantcode!=''){
-		$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+	if($get_mpo!='' && $plant_code!=''){
+		$result_bulk_subPO=getBulkSubPo($get_mpo,$plant_code);
 		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
@@ -333,8 +273,8 @@ if($get_schedule!='' && $plantcode!=''){
 		@params : plantcode,subpo
 		@returns: cutno
 		*/
-	if($get_sub_po!='' && $plantcode!=''){
-		$result_cutno=getCutDetails($get_sub_po,$plantcode);
+	if($get_sub_po!='' && $plant_code!=''){
+		$result_cutno=getCutDetails($get_sub_po,$plant_code);
 		$cut_number=$result_cutno['cut_number'];
 	}
 	echo "<div class='col-sm-3'><label>Select Cut: </label>";  
@@ -354,18 +294,32 @@ if($get_schedule!='' && $plantcode!=''){
 ?>
 
 <?php
-$tasktype='SEWING';
-	/*function to get Sewing Jobs Available from check_task_header_status
-	@params : plantcode,subpo,task type
-	@returns: Sewing Jobs Available status
-	*/
-	if($plantcode!='')
-    {
-    	$result_get_task_status=getJobsStatus($get_sub_po,$tasktype,$plantcode);
-        $status=$result_get_task_status['task_status'];
+ $tasktype='SEWING';
+// 	function to get Sewing Jobs Available from check_task_header_status
+// 	@params : plantcode,subpo,task type
+// 	@returns: Sewing Jobs Available status
+	
+// 	if($plant_code!='')
+//     {
+//     	$result_get_task_status=getJobsStatus($get_sub_po,$tasktype,$plant_code);
+//         $status=$result_get_task_status['task_status'];
+//     }
+    //Qry to fetch jm_job_header_id from jm_jobs_header
+    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
+    $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
+    if($jm_job_header_id_result_num>0){
+        while($jm_job_header_id_row=mysqli_fetch_array($jm_job_header_id_result))
+        {
+            $jm_job_header_id[]=$jm_job_header_id_row['jm_job_header_id'];
+        }
     }
+    //Qry to check sewing job planned or not
+    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_header_id in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$task_type'";
+    $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+    $job_status_num=mysqli_num_rows($job_status_result);
     echo "</br><div class='col-sm-3'>"; 
-    if($status=='OPEN')
+    if($job_status_num > 0)
     {
       echo "Sewing Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
       echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
