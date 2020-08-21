@@ -54,17 +54,33 @@ function getJobDetails($inputObj)
     }';
 }
 
-if(isset($_GET['saveInputJob']))
+if(isset($_GET['reportData']))
 {
-    $saveInputJob = $_GET['saveInputJob'];
-    if($saveInputJob != '')
+    $reportData = $_GET['reportData'];
+    if($reportData != '')
     {
-        saveInputJob($saveInputJob);
+        reportData($reportData);
     }
 }
 
-function saveInputJob($saveInputJob){
-    
+function reportData($reportData){
+    echo '{
+        "transactionsData" : [{
+            "jobNo": "12",
+            "bundleNo": "1",
+            "fgColor": "blue",
+            "size": "x",
+            "reportedQty": "10",
+            "rejectedQty": "0"
+        },{
+            "jobNo": "12",
+            "bundleNo": "2",
+            "fgColor": "blue",
+            "size": "xs",
+            "reportedQty": "20",
+            "rejectedQty": "5"
+        }]
+    }';
 }
 
 ?>

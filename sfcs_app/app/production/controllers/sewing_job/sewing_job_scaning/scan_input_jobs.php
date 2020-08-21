@@ -330,7 +330,6 @@ $(document).ready(function()
         } else if(barcode_generation == 1){
 		    var inputObj = {sewingJobNo:job_number, plantCode:plant_code, operationCode:operation_id};
         }
-
         var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
         $.ajax({
             type: "POST",
@@ -347,7 +346,6 @@ $(document).ready(function()
 });
 
 function tableConstruction(data){
-    console.log(data);
     s_no = 0;
     if(data)
     {
@@ -680,20 +678,40 @@ function check_pack()
 	}
 	else {
 		console.log(reportData);
-		// $('.submission').hide();
-		// $('#progressbar').show();
-		// $('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
-		// $('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-		// var function_text = url;
-		// document.getElementById('dynamic_table1').innerHTML = '';
-		// document.getElementById('style_show').innerHTML = '';
-		// document.getElementById('schedule_show').innerHTML = '';
-		// document.getElementById('color_show').innerHTML = '';
-		// document.getElementById('job_number').value = '';
-		// document.getElementById('module_show').innerHTML = '';
-		// document.getElementById('pre_data').innerHTML ='';
-		// $('#flag_validation').val(0);
-		// $('#smart_btn_arear').hide();
+		$('.submission').hide();
+		$('#progressbar').show();
+		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
+		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
+		document.getElementById('dynamic_table1').innerHTML = '';
+		document.getElementById('style_show').innerHTML = '';
+		document.getElementById('schedule_show').innerHTML = '';
+		document.getElementById('color_show').innerHTML = '';
+		document.getElementById('job_number').value = '';
+		document.getElementById('module_show').innerHTML = '';
+		document.getElementById('pre_data').innerHTML ='';
+		$('#flag_validation').val(0);
+		$('#smart_btn_arear').hide();
+        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+		$.ajax({
+			type: "POST",
+			url: function_text+"?reportData="+reportData,
+			success: function(response) 
+			{
+				var data = JSON.parse(response);
+				$('#pre_pre_data').show();
+				var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
+				for(var z=0; z<data.transactionsData.length; z++){
+					table_data += "<tr><td>"+data.transactionsData[z].jobNo+"</td><td>"+data.transactionsData[z].bundleNo+"</td><td>"+data.transactionsData[z].fgColor+"</td><td>"+data.transactionsData[z].size+"</td><td>"+data.transactionsData[z].reportedQty+"<td>"+data.transactionsData[z].rejectedQty+"</td>";
+				}
+				table_data += "</tbody></table></div></div></div>";
+				document.getElementById('pre_data').innerHTML = table_data;
+				$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
+				$('.progress').hide();
+				$('#smart_btn_arear').show();
+			
+			}
+		});
+		
 	}
 	
 }
