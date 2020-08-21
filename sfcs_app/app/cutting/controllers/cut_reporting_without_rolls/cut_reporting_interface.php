@@ -2,6 +2,8 @@
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+
 
 $has_permission=haspermission($_GET['r']); 
 
@@ -62,17 +64,11 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table";
-$cut_table_result = mysqli_query($link,$cut_table_query);
-while($row = mysqli_fetch_array($cut_table_result)){
-    $cut_tables[$row['tbl_id']] = $row['tbl_name'];
-}
-
-$team_leaders_query = "SELECT * from $bai_pro3.tbl_leader_name";
-$team_leaders_result = mysqli_query($link,$team_leaders_query);
-while($row = mysqli_fetch_array($team_leaders_result)){
-    $team_leaders[$row['id']] = $row['emp_name'];
-}
+$department="Cutting";
+$plantcode="L01";
+$department_type="Sewing";
+$result_worksation_id=getWorkstations($department_type,$plantcode);
+$workstations=$result_worksation_id['workstation'];
 
 
 $location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
@@ -82,7 +78,7 @@ while($row = mysqli_fetch_array($location_result))
     $locations[] = $row['loc_name'];
 }
 
-$rejection_reason_query = "SELECT reason_code,reason_desc,m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type = 'P' ";
+$rejection_reason_query = "SELECT reason_code,reason_desc,m3_reason_code from $mdm.reasons where form_type = 'P' ";
 $rejection_reason_result = mysqli_query($link,$rejection_reason_query); 
 while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
@@ -233,7 +229,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                <select class='form-control' id='cut_table'>
                     <option value='' disabled selected>Select Table</option>
                 <?php
-                    foreach($cut_tables as $id => $cut_table){
+                    foreach($workstations as $id => $cut_table){
                         echo "<option value='$id'>$cut_table</option>";
                     }
                 ?>
