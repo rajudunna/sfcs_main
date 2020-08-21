@@ -217,7 +217,7 @@ if(isset($_POST['submit']) || $module)
 			{           
 				for($kk=0;$kk<sizeof($pending);$kk++)
 				{ 
-                    if($style='' && $color='')
+                    if($style == '' && $color == '')
 					{
 						$getting_style_clr="select order_style_no,order_col_des from bai_pro3.packing_summary_input where input_job_no_random='".$pending[$kk]."' group by input_job_no_random ";
 						$style_clr_rslt=mysqli_query($link, $getting_style_clr)or exit("getting_style_clr".mysqli_error($GLOBALS["___mysqli_ston"]));
