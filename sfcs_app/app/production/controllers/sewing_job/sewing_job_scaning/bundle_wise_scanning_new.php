@@ -23,7 +23,7 @@ if(isset($_GET['gatepass'])){
         <div class="row">
             <div class="col-md-4">
                 <label>Shifts:<span title='Its a Mandatory Field'><font color='red'>*</font></span></label>
-				<select class='form-control' name = 'shift' required>
+				<select class='form-control' name = 'shift' id = 'shift' required>
 					<option value="">Select Shift</option>
 					<?php 
 					$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";

@@ -32,7 +32,7 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 <div class="row">
 <div class="col-md-4">
 <label>Shifts:<span title='Its a Mandatory Field'><font color='red'>*</font></span></label>
-<select class='form-control' name = 'shift' required>
+<select class='form-control' name = 'shift' id = 'shift' required>
 	<option value="">Select Shift</option>
 	<?php 
 	$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
@@ -48,7 +48,7 @@ GROUP BY tm.operation_code ORDER BY tm.operation_code";
 </div>
 <div class="col-md-4">
 <label>Select Operation:<span title='Its a Mandatory Field'><font color='red'>*</font></span></label>
-	<select class='form-control' name = 'operation'  id = 'operation' required>
+	<select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
 		<?php 
 		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
