@@ -367,7 +367,7 @@ while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
     
     $dockets_for_cut[$doc_for_cut]['category'] = $other_docket_category;
     $dockets_for_cut[$doc_for_cut]['doc_no'] = $doc_for_cut;
-    $dockets_for_cut[$doc_for_cut]['fab_required'] = round($material_req);
+    $dockets_for_cut[$doc_for_cut]['fab_required'] = round($material_req,2);
     $dockets_for_cut[$doc_for_cut]['a_plies'] = $docket_row['a_plies'];
     $dockets_for_cut[$doc_for_cut]['doc_qty'] = $docket_row['p_plies'] * $docket_row['ratio'];
     $dockets_for_cut[$doc_for_cut]['p_plies'] =  $docket_row['p_plies'];
@@ -377,7 +377,7 @@ while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
 $response_data['dockets_for_cut'] = $dockets_for_cut;
 $response_data['category'] = $category;
 $response_data['doc_no'] = $doc_no;
-$response_data['fab_required'] = round($fab_required); 
+$response_data['fab_required'] = round($fab_required,2); 
 $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
