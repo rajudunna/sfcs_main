@@ -157,17 +157,21 @@ function save_details($data,$module,$module1){
     $counter = 0;
     global $plant_code;
     global $username;
+    global $link_new;
+    global $tms;
+    global $pps;
+    global $pts;
     foreach($data['jobs'] as $job){
 
         //To get task_header_id
-        $get_task_header_id="SELECT task_jobs_id FROM $tms.task_attributes where sewingjobno='$job' AND plant_code='$plant_code'";
+        $get_task_header_id="SELECT job_header_id FROM $pps.job_group_header where jobno='$job' AND plant_code='$plant_code'";
         $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row1 = mysqli_fetch_array($result1))
         {
-           $task_header_id = $row1['task_header_id'];
+           $job_header_id = $row1['job_header_id'];
         }  
 
-        $task_header_update="UPDATE `tms`.`task_header` SET resource_id= WHERE task_header_id='$task_header_id' AND plant_code='$plant_code'";
+        $task_header_update="UPDATE $tms.`task_header` SET resource_id='$module' WHERE task_ref='$job_header_id' AND resource_id='$module1' AND plant_code='$plant_code' AND task_type='SEWING'";
         mysqli_query($link, $task_header_update)or exit("task_header_update error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
         $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."','".$username."')";
