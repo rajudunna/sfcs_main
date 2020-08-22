@@ -315,7 +315,7 @@ if($get_schedule!='' && $plant_code!=''){
         }
     }
     //Qry to check sewing job planned or not
-    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_header_id in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$task_type'";
+    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$task_type'";
     $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
     $job_status_num=mysqli_num_rows($job_status_result);
     echo "</br><div class='col-sm-3'>"; 

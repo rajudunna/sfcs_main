@@ -4,10 +4,6 @@
 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));	
-	$userName = getrbac_user()['uname'];
-	// $department='Embellishment';
-	// getWorkstations($department,$plant_code);
-	// exit;
     $jobtype='SEWING';
 	$list=$_POST['listOfItems'];
 	

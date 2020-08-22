@@ -706,7 +706,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		        echo "<ul id='".$work_id."' style='width:150px'>";
 		         //Qry to fetch task_header_id from task_header
 		         $task_header_id=array();
-		         $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$task_type' AND plant_code='$plant_code'";
+		         $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$task_type' AND plant_code='$plant_code' ORDER BY priority";
 		         $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
 		         while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
 		         {
@@ -721,19 +721,20 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		          $task_job_reference[] = $refrence_no_row['task_job_reference'];
 		         }
 		        //Qry to get sewing jobs from jm_jobs_header
-		        $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id FROM $pps.jm_jobs_header WHERE jm_job_header_id IN('".implode("','" , $task_job_reference)."')";
+		        $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id,quantity FROM $pps.job_group_header WHERE jg_header_id IN('".implode("','" , $task_job_reference)."')";
 		        $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 		        $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
 		        if($toget_sewing_jobs_num>0){
 		          while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
 		          {
 		            $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_job_header_id']; 
+		            $job_quantity[$toget_sewing_jobs_row['quantity']]=$toget_sewing_jobs_row['jm_job_header_id'];
 		          }
 		        }
 		        
 		        //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
 		        $job_detail_attributes=[];
-		        $qry_toget_style_sch="SELECT * FROM $tms.task_attributes where task_jobs_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'"; 
+		        $qry_toget_style_sch="SELECT * FROM $tms.task_attributes where task_header_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'"; 
 		        $qry_toget_style_sch_result=mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
 		        while($row2=mysqli_fetch_array($get_details_result))
 		        {
@@ -753,16 +754,6 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		        $doc_qty=0;  
 		        foreach($job_number as $sew_num=>$jm_sew_id)
 		        {
-		          //to get qty from jm job lines
-		          $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_lines where jm_job_header_id='$jm_sew_id'";
-		          $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
-		          $toget_qty=mysqli_num_rows($toget_qty_qry_result);
-		          if($toget_qty>0){
-		           while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
-		           {
-		             $sew_qty = $toget_qty_det['qty'];
-		           }
-		          }
 		                           
 		          $id="#33AADD"; //default existing color
 		                                    
@@ -774,7 +765,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		          {
 		            $id="#008080";
 		          }
-		          $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$sew_qty,50);
+		          $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$job_quantity[$jm_sew_id],50);
 
 		         echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>';  
 		        }
