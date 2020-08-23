@@ -1,8 +1,8 @@
 /*#4141 Create, Alter, Insert, Update Queries*/
 
-INSERT INTO central_administration_sfcs.tbl_menu_list (menu_pid, page_id, fk_group_id, fk_app_id, parent_id, link_type, link_visibility,link_location,link_description) VALUES ('1685', 'SFCS_1684', '8', '8', '70', '1', '1','/sfcs_app/app/production/reports/efficiency_report.php','Efficiency Report'); 
+-- INSERT INTO central_administration_sfcs.tbl_menu_list (menu_pid, page_id, fk_group_id, fk_app_id, parent_id, link_type, link_visibility,link_location,link_description) VALUES ('1685', 'SFCS_1684', '8', '8', '70', '1', '1','/sfcs_app/app/production/reports/efficiency_report.php','Efficiency Report'); 
 
-INSERT INTO central_administration_sfcs.rbac_role_menu (menu_pid, menu_description, roll_id) VALUES ('1685', 'Efficiency Report', '1');
+-- INSERT INTO central_administration_sfcs.rbac_role_menu (menu_pid, menu_description, roll_id) VALUES ('1685', 'Efficiency Report', '1');
 
 ALTER TABLE bai_pro.pro_attendance  ADD COLUMN break_hours INT(10) NULL AFTER jumper;
 
