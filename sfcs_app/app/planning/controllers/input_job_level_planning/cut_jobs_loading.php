@@ -1,8 +1,11 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
-
-$has_perm=haspermission($_GET['r']);
+$plant_code = $_session['plantCode'];
+$username =  $_session['userName'];
+// $test=enum::sewing_type;
+// echo $test;
+// die();
 ?>
 
 <!-- <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> -->
@@ -131,7 +134,7 @@ $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Input Job Sequence Move</a></div>
+<div class="panel-heading"><strong>Input Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Input Job Sequence Move</a></div>
 <div class="panel-body">
 <div class="form-inline">
 <div class="form-group">
@@ -294,16 +297,7 @@ if($get_schedule!='' && $plant_code!=''){
 ?>
 
 <?php
- $tasktype='SEWING';
-// 	function to get Sewing Jobs Available from check_task_header_status
-// 	@params : plantcode,subpo,task type
-// 	@returns: Sewing Jobs Available status
-	
-// 	if($plant_code!='')
-//     {
-//     	$result_get_task_status=getJobsStatus($get_sub_po,$tasktype,$plant_code);
-//         $status=$result_get_task_status['task_status'];
-//     }
+    $tasktype = TaskTypeEnum::SEWINGJOB;
     //Qry to fetch jm_job_header_id from jm_jobs_header
     $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
     $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -315,7 +309,7 @@ if($get_schedule!='' && $plant_code!=''){
         }
     }
     //Qry to check sewing job planned or not
-    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$task_type'";
+    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$tasktype'";
     $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
     $job_status_num=mysqli_num_rows($job_status_result);
     echo "</br><div class='col-sm-3'>"; 

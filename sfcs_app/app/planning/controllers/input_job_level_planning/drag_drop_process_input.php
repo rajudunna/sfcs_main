@@ -1,14 +1,18 @@
 
 <?php
 
-
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));	
-    $jobtype='SEWING';
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+	$plant_code = $_session['plantCode'];
+    $username =  $_session['userName'];	
+    $tasktype = TaskTypeEnum::SEWINGJOB;
 	$list=$_POST['listOfItems'];
 	
-	/** Function to send */
-	$planned_response=updatePlanDocketJobs($list,$jobtype);
+	/** Function to update jobs using workstations
+	   * @param:inputjobs and work stations
+	   * @return:true/false
+   * */
+	$planned_response=updatePlanDocketJobs($list,$tasktype,$plant_code);
 	if($planned_response==1){
 		echo "<script>swal(Job Planned Successfully','info');</script>";
 		 $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/IPS/tms_dashboard_input_v22.php',3,'N');

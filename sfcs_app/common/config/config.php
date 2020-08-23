@@ -276,4 +276,17 @@ while($methods=mysqli_fetch_array($pack_result))
 
     // }
 //===================================================*/
+class TaskTypeEnum { 
+    const CUTJOB = 'CUTJOB';
+    const DOCKET = 'DOCKET';
+    const DOCKETBUNDLE = 'DOCKETBUNDLE';
+    const SEWINGJOB = 'SEWINGJOB';
+    const PACKINGJOB = 'PACKINGJOB';
+    const CARTON = 'CARTON';
+    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
+    const LOGICALBUNDLE = 'LOGICALBUNDLE';
+    const POLYBAG = 'POLYBAG';
+    const plannedsewingjob = 'PSJ';
+    const plannedsewingembellishmentjob = 'PSEJ';
+}
 ?>
