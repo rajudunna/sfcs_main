@@ -51,7 +51,6 @@ function leading_zeros($value, $places)
 function get_details($module){
     $counter = 0;
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
     global $plant_code;    
 
     $html_out = "<div class='panel panel-primary'>";
@@ -69,8 +68,9 @@ function get_details($module){
                      </tr>
                  </thead>
                  <tbody>";
+    $tasktype = TaskTypeEnum::SEWINGJOB;             
     //To check module
-    $check_module="SELECT task_header_id,resource_id FROM $tms.task_header where resource_id='$module' and plan_code='$plant_code'";
+    $check_module="SELECT task_header_id,resource_id FROM $tms.task_header where resource_id='$module' and task_type='$tasktype' and plan_code='$plant_code'";
     $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row1 = mysqli_fetch_array($result1))
     {
@@ -93,8 +93,6 @@ function get_details($module){
     {
         $operation_code=$sql_row2['operation_code'];
     }
-   
-    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
 
     $job_detail_attributes=[];
 
@@ -112,7 +110,7 @@ function get_details($module){
 
       
      //Function to check whether sewing job is scanned or not
-     $check_status= random_function($jobno,$operation_code,$plant_code); 
+     //$check_status= random_function($jobno,$operation_code,$plant_code); 
 
      // To get Prefix
      $get_prefix="select * from $mdm.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
@@ -126,8 +124,8 @@ function get_details($module){
      $display=$prefix.''.leading_zeros($jobno,3);
      $schedule=$job_detail_attributes[$sewing_job_attributes['schedule']];
      $schedules = implode(",",$schedule);
-     if ($check_status == 0)
-     {
+     // if ($check_status == 0)
+     // {
         $counter++;
         $html_out.= "<tr>";
         $html_out.= "<td>
@@ -138,7 +136,7 @@ function get_details($module){
         <td>$schedules</td>
         <td>$job_detail_attributes[$sewing_job_attributes['ponumber']]</td>";
         $html_out.= "</tr>";
-     }
+     // }
     }    
     if($counter == 0){
         $json['records'] = 0;
