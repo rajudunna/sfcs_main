@@ -123,135 +123,141 @@ if(isset($_POST['submit']))
 	$split_date=explode("-",$today);
 	$year=$split_date[0];
 	$month=$split_date[1];
-	/** validation for selected month plan available or not */
-	$qry_monthly_plan="SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
-	$monthly_plan_result=mysqli_query($link_new, $qry_monthly_plan) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$monthly_plan_num=mysqli_num_rows($monthly_plan_result);
-	if($monthly_plan_num>0){
-		while($monthly_plan_row=mysqli_fetch_array($monthly_plan_result))
-		{
-			$monthly_production_plan_upload_log_id=$monthly_plan_row['monthly_production_plan_upload_log_id'];
-		}
-?>			
-<form method="POST" action="#" onsubmit="return check_tot()"> 
-	<div style="width:500px;margin-left:auto;margin-right:auto;"> 
-	<div class="row"> 
-	<div class="col-md-1"></div> 
-	<div class="col-md-8" style='max-height:600px;overflow-y:scroll;'> 
-		<table class="table table-bordered"> 
-		<tr> 
-		<th> Module </th> 
-		<th> FR Plan </th> 
-		<th> Quantity (Forcast) </th> 
-		<th> Reason </th> 
-		</tr> 
-<?php  
-	$frv=array(); 
-	$frv_id=array(); 
-	$mod_names=array();
-	/** function to get work stations department sewing type
-	 * @param:department_type(sewing)
-	 * @return:workstations
-	 */
-	$department_type="Sewing";
+	$department_type="SEWING";
 	$reason_type="SEWING";
 	$result_worksation_id=getWorkstations($department_type,$plantcode);
 	$workstations=$result_worksation_id['workstation'];
-	foreach($workstations as $work_id=>$work_des)
-	{
-		$mod_names[]=$work_des;
-		$getPlannedQty="SELECT monthly_production_plan_id,SUM(planned_qty) AS qty FROM $pps.monthly_production_plan WHERE monthly_production_plan_upload_log_id='$monthly_production_plan_upload_log_id'";
-		$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
-		if($getPlannedQty_num>0){
-			while($workstations_row=mysqli_fetch_array($getPlannedQty_result))
+
+	if(sizeof($workstations)>0){
+				/** validation for selected month plan available or not */
+			$qry_monthly_plan="SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
+			$monthly_plan_result=mysqli_query($link_new, $qry_monthly_plan) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$monthly_plan_num=mysqli_num_rows($monthly_plan_result);
+			if($monthly_plan_num>0){
+				while($monthly_plan_row=mysqli_fetch_array($monthly_plan_result))
+				{
+					$monthly_production_plan_upload_log_id=$monthly_plan_row['monthly_production_plan_upload_log_id'];
+				}
+		?>			
+		<form method="POST" action="#" onsubmit="return check_tot()"> 
+			<div style="width:500px;margin-left:auto;margin-right:auto;"> 
+			<div class="row"> 
+			<div class="col-md-1"></div> 
+			<div class="col-md-8" style='max-height:600px;overflow-y:scroll;'> 
+				<table class="table table-bordered"> 
+				<tr> 
+				<th> Module </th> 
+				<th> FR Plan </th> 
+				<th> Quantity (Forcast) </th> 
+				<th> Reason </th> 
+				</tr> 
+		<?php  
+			$frv=array(); 
+			$frv_id=array(); 
+			$mod_names=array();
+			/** function to get work stations department sewing type
+			 * @param:department_type(sewing)
+			 * @return:workstations
+			 */
+			foreach($workstations as $work_id=>$work_des)
 			{
-				$frv[$work_des]=$workstations_row['qty'];
-				$frv_id[$work_des]=$workstations_row['monthly_production_plan_id'];
+				$mod_names[]=$work_des;
+				$getPlannedQty="SELECT monthly_production_plan_id,planned_qty AS qty FROM $pps.monthly_production_plan WHERE monthly_production_plan_upload_log_id='$monthly_production_plan_upload_log_id' AND planned_date='$today' AND row_name='$work_des'";
+				$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
+				if($getPlannedQty_num>0){
+					while($workstations_row=mysqli_fetch_array($getPlannedQty_result))
+					{
+						$frv[$work_des]=$workstations_row['qty'];
+						$frv_id[$work_des]=$workstations_row['monthly_production_plan_id'];
+					}
+				}
+				else 
+				{ 
+					$frv[$work_des]=0;
+					$frv_id[$work_des]=0;			
+				}
+				$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'";
+				$result12=mysqli_query($link, $sql12) or exit("Sql Error at line_forecast " . mysqli_error($GLOBALS["___mysqli_ston"])); 
+				if(mysqli_num_rows($result12)) 
+				{ 
+					while($row12=mysqli_fetch_array($result12))
+					{				
+						$lfr_qty[$work_des]=$row12['qty'];
+						$lfr_reason[$work_des]=$row12['reason'];
+					}			
+				} 
+				else 
+				{ 
+					$lfr_qty[$work_des]=0;
+				}
 			}
+			
+			for($i=0;$i<sizeof($mod_names);$i++) 
+			{ 
+			?> 
+			<tr id="row_val<?php echo $i; ?>"> 
+				<td> 
+				<?php echo $mod_names[$i]; ?> 
+				<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module[<?php echo $i; ?>]" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
+				<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id[<?php echo $i; ?>]" id="fr_id<?php echo $i; ?>">		
+				</td> 
+				<td> 
+				<input type="hidden" name="fr[<?php echo $i; ?>]" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
+				<?php  echo $frv[$mod_names[$i]];  ?> 
+				</td> 
+				<td> 
+				<input type="text" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" class="integer form-control" onfocus="if(this.value==0){this.value=''}" onblur="javascript: if(this.value==''){this.value=0;}" name="lfr[<?php echo $i; ?>]" id="lfr<?php echo $i; ?>" onchange="check_data(this.value,<?php echo $i; ?>)"> 
+				<input type="hidden" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" name="lfr_ori[<?php echo $i; ?>]" id="lfr_ori<?php echo $i; ?>">
+				</td> 
+				<td>         
+				<?php 
+				echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
+				$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='$reason_type'"; 
+				echo "<option value='NIL'>Select Reason</option>";
+				$ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($row=mysqli_fetch_array($ResultLineReasons)) 
+				{
+					if ($lfr_reason[$mod_names[$i]] == $row["internal_reason_description"])
+					{
+						$selected = 'selected';
+					} else {
+						$selected = '';
+					}
+					echo "<option value='".$row["internal_reason_description"]."' $selected>".$row["internal_reason_description"]."</option>";	
+				} 
+				echo "</select>";
+				?> 
+				</td>              
+			</tr> 
+			
+		<?php 
 		}
-		else 
-		{ 
-			$frv[$work_des]=0;
-			$frv_id[$work_des]=0;			
-		}
-		$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'";
-		$result12=mysqli_query($link, $sql12) or exit("Sql Error at line_forecast " . mysqli_error($GLOBALS["___mysqli_ston"])); 
-		if(mysqli_num_rows($result12)) 
-		{ 
-			while($row12=mysqli_fetch_array($result12))
-			{				
-				$lfr_qty[$work_des]=$row12['qty'];
-				$lfr_reason[$work_des]=$row12['reason'];
-			}			
-		} 
-		else 
-		{ 
-			$lfr_qty[$work_des]=0;
-		}
-	}
-	
-	for($i=0;$i<sizeof($mod_names);$i++) 
-	{ 
- 	?> 
-    <tr id="row_val<?php echo $i; ?>"> 
-        <td> 
-		<?php echo $mod_names[$i]; ?> 
-		<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module[<?php echo $i; ?>]" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
-		<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id[<?php echo $i; ?>]" id="fr_id<?php echo $i; ?>">		
-        </td> 
-        <td> 
-        <input type="hidden" name="fr[<?php echo $i; ?>]" id="fr<?php echo $i; ?>" value='<?php echo $frv[$mod_names[$i]];  ?>'> 
-		<?php  echo $frv[$mod_names[$i]];  ?> 
-        </td> 
-        <td> 
-		<input type="text" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" class="integer form-control" onfocus="if(this.value==0){this.value=''}" onblur="javascript: if(this.value==''){this.value=0;}" name="lfr[<?php echo $i; ?>]" id="lfr<?php echo $i; ?>" onchange="check_data(this.value,<?php echo $i; ?>)"> 
-		<input type="hidden" value="<?php echo $lfr_qty[$mod_names[$i]]; ?>" name="lfr_ori[<?php echo $i; ?>]" id="lfr_ori<?php echo $i; ?>">
-        </td> 
-        <td>         
-        <?php 
-		echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
-		$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='$reason_type'"; 
-		echo "<option value='NIL'>Select Reason</option>";
-        $ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
-        while($row=mysqli_fetch_array($ResultLineReasons)) 
-        {
-        	if ($lfr_reason[$mod_names[$i]] == $row["internal_reason_description"])
-        	{
-        		$selected = 'selected';
-        	} else {
-        		$selected = '';
-        	}
-			echo "<option value='".$row["internal_reason_description"]."' $selected>".$row["internal_reason_description"]."</option>";	
-        } 
-		echo "</select>";
-        ?> 
-        </td>              
-	</tr> 
-	
-<?php 
-}
-?>
-	</table>
-	<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
-	<input type="hidden" value="<?php echo $today; ?>" name="daten" id="daten">
-	<?php
-	if(array_sum($lfr_qty)==0 || in_array($update,$has_permission))
-	{
 		?>
-		<div class='col-sm-3'><br>
-		<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
+			</table>
+			<input type="hidden" value="<?php echo sizeof($mod_names); ?>" name="tot_mod" id="tot_mod">
+			<input type="hidden" value="<?php echo $today; ?>" name="daten" id="daten">
+			<?php
+			if(array_sum($lfr_qty)==0 || in_array($update,$has_permission))
+			{
+				?>
+				<div class='col-sm-3'><br>
+				<input type="submit" name="update" id="update" value="Update" class="btn btn-primary">
+				</div>	
+				<?php
+			}
+			?>		
 		</div>	
+		<form> 
 		<?php
-	}
-	?>		
-</div>	
-<form> 
-<?php
-}else{
-	echo "<script>sweetAlert('No plan for selected month.','','info');</script>";
+		}else{
+			echo "<script>sweetAlert('No plan for selected month.','','info');</script>";
+			}
+	}else{
+		echo "<script>sweetAlert('No Workstations Found.','','info');</script>";
 	}
 }
+	
 if(isset($_POST['update']))
 {
 	$daten=$_POST['daten'];
