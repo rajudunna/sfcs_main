@@ -1,4 +1,3 @@
-
 <?php
 $double_modules=array();
 $dashboard_name="TMS";
@@ -668,11 +667,11 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$order_col='';
 				if(in_array($authorized,$has_permission))
 				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" title=\"$title\" rel='tooltip'><font style=\"color:black;\">$letter</font></a></div></div></div>";
+					echo "<a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><font style=\"color:black;\">$letter</font></div></div></div></a>";
 				}
 				else
 				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><a title=\"$title\" rel='tooltip'></a></div></div></div>";
+					echo "<a data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ></div></div></div></a>";
 				}					
 				$y++;			
 			}
@@ -743,10 +742,10 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 ?>
 <script>
 $(document).ready(function() {
-$('a[rel=tooltip]').hover(function(e) {
+$('a[rel=tooltip]').mouseover(function(e) {
   
-  var tip = $(this).attr('title');  
-  $(this).attr('title','');
+  var tip = $(this).attr('data-title');  
+  $(this).attr('data-title','');
   $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
   
 }).mousemove(function(e) {
@@ -765,7 +764,7 @@ $('a[rel=tooltip]').hover(function(e) {
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
 
-  $(this).attr('title',$('.tipBody').html());
+  $(this).attr('data-title',$('.tipBody').html());
   $(this).children('div#tooltip').remove();
   
 });
@@ -821,7 +820,7 @@ position:absolute;
 z-index:9999;
 color:#fff;
 font-size:12px;
-width:250px;
+width:220px;
 pointer-events: none; 
 
 }
