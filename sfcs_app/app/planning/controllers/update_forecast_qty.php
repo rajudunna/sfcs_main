@@ -213,7 +213,7 @@ if(isset($_POST['submit']))
 				<td>         
 				<?php 
 				echo "<select name='line_reson[".$i."]' class='form-control' id='line_reson".$i."' onchange='check_stat(this.value,$i)'>";
-				$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE reason_group='LineReason' AND department_type='$reason_type'"; 
+				$qryLineReasons="SELECT internal_reason_description FROM $mdm.reasons WHERE department_type='$reason_type'"; 
 				echo "<option value='NIL'>Select Reason</option>";
 				$ResultLineReasons=mysqli_query($link_new, $qryLineReasons) or exit("Sql Error at line Reasons" . mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($row=mysqli_fetch_array($ResultLineReasons)) 
