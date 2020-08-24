@@ -612,6 +612,9 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $link_new;
     global $pps;
     global $tms;
+    global $TaskTypeEnum;
+    
+    $check_type=TaskTypeEnum::SEWINGJOB;
     try
     {
         $list_db=array();
@@ -686,15 +689,17 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     /**update resource id tasks jobs with task_header*/
                     $Qry_update_taskjobs="UPDATE $tms.task_jobs SET task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                    // $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_jobs_id='$task_jobs_id' AND plant_code='$plantcode'";
-                    // $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    // while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
-                    // {
-
-                    // }
-
-
+                    
+                    if($tasktype == $check_type)
+                    {
+                        $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode'";
+                        $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
+                        {
+                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values($task_attributes_row['attribute_name'],$task_attributes_row['attribute_value'],'$plantcode',NOW(),'$last_id')";
+                            $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }
+                    } 
                 }
 
             }
