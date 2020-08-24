@@ -65,6 +65,8 @@
         </form>
 
         <?php
+            $tasktype = TaskTypeEnum::SEWINGJOB;
+            $job_group_type=TaskTypeEnum::plannedsewingjob;
             if($_POST['submit']){
                 echo "<hr>"; 
                 $module= $_POST['module'];    
@@ -75,7 +77,7 @@
 
                //Qry to fetch task_header_id from task_header
                $task_header_id=array();
-               $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$task_type' AND plant_code='$plant_code'";
+               $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$module' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plant_code'";
                $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
                {
@@ -90,16 +92,8 @@
                $task_job_reference[] = $refrence_no_row['task_job_reference'];
                }
                //Qry to get sewing jobs from jm_jobs_header
-               $qry_toget_sewing_jobs="SELECT job_number,jm_job_header_id,quantity FROM $pps.job_group_header WHERE jg_header_id IN('".implode("','" , $task_job_reference)."')";
-               $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-               $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
-               if($toget_sewing_jobs_num>0){
-                   while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
-                   {
-                   $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_job_header_id'];
-                   $job_quantity[$toget_sewing_jobs_row['quantity']]=$toget_sewing_jobs_row['jm_job_header_id'];
-                   }
-               }
+               $result_planned_jobs=getPlannedJobs($module,$tasktype,$plant_code);
+               $job_number=$result_planned_jobs['job_number'];
 
                $no_of_jobs = $toget_sewing_jobs_num;
                
