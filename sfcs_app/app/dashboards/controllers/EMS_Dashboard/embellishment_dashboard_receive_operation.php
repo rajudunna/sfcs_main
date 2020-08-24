@@ -22,13 +22,13 @@
 <script>
 $(document).ready(function() {
 //Select all anchor tag with rel set to tooltip
-$('a[rel=tooltip]').hover(function(e) {
+$('a[rel=tooltip]').mouseover(function(e) {
   
   //Grab the title attribute's value and assign it to a variable
-  var tip = $(this).attr('title');  
+  var tip = $(this).attr('data-title');  
   
   //Remove the title attribute's to avoid the native tooltip from the browser
-  $(this).attr('title','');
+  $(this).attr('data-title','');
   
   //Append the tooltip template and its value
   $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
@@ -42,15 +42,15 @@ $('a[rel=tooltip]').hover(function(e) {
   //e.pageY + 0.5 * e.view.parent.pageYOffset
   $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','10px' );
+   $('#tooltip').css('margin-left','50px' );
    $('#tooltip').css('text-align','left' );
-   $('#tooltip').css('margin-top','10px' );
+   $('#tooltip').css('margin-top','20px' );
    $('#tooltip').css('position', 'absolute' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
 
   //Put back the title attribute's value
-  $(this).attr('title',$('.tipBody').html());
+  $(this).attr('data-title',$('.tipBody').html());
 
   //Remove the appended tooltip template
   $(this).children('div#tooltip').remove();
@@ -115,7 +115,7 @@ position:absolute;
 z-index:9999;
 color:#fff;
 font-size:12px;
-width:250px;
+width:220px;
 pointer-events: none; 
 
 }
@@ -700,7 +700,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           
           if($send_qty > 0)
           {            
-            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;'><a onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;' title='$title' rel='tooltip'>$schedule(".implode(", ",$club_c_code).")-OP:$receive_op_code</a></div></div><br>"; 
+            echo "<a onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;' data-title='$title' rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;'>$schedule(".implode(", ",$club_c_code).")-OP:$receive_op_code</div></div></a><br>"; 
           }          
         }
 		}
