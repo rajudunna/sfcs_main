@@ -5,28 +5,28 @@
     $status = 'F';
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
+    $tasktype=TaskTypeEnum::SEWINGJOB;
     if( isset($_GET['job_no']) && $_GET['job_no']!=''){
         $job_r = $_GET['job_no'];
         $job = $_GET['job'];
 
         //Back up jobs
         $insert_log = "Insert into $pms.delete_jobs_log values (`input_job_no_random`,`username`,`date_time`,`plant_code`,`created_user`,`updated_user`) 
-                    values('$job_r','$username','".date('Y-m-d H:i:s')."','".$plant_code."','".$username."','".$username."')";
+                    values('$job','$username','".date('Y-m-d H:i:s')."','".$plant_code."','".$username."','".$username."')";
         mysqli_query($link,$insert_log);
-
-        $insert_qry_ips = "INSERT IGNORE INTO `$pps`.`plan_dashboard_input_backup` 
-                SELECT * FROM `$pps`.`plan_dashboard_input`
-                WHERE plant_code='$plant_code' AND input_job_no_random_ref = '$job_r'";
-        mysqli_query($link, $insert_qry_ips) or exit("insert_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-        $update_qry_ips = "UPDATE plan_dashboard_input_backup set updated_user='$username',updated_at=NOW() WHERE plant_code='$plant_code' AND input_job_no_random_ref = '$job_r'";
-        mysqli_query($link, $update_qry_ips) or exit("update_qry_ips".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-        $delete_query = "Delete from $pps.plan_dashboard_input where plant_code='$plant_code' and input_job_no_random_ref='$job_r'" ;
-        $delete_result = mysqli_query($link,$delete_query) or exit("Problem Encountered While Deleting The Job");
+        
+        //get task_header from task_jobs
+        $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$job_r' AND plant_code='$plant_code' AND task_type='$tasktype'";
+        $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
+        {
+            $task_header_id=$qry_header_id_row['task_header_id'];
+        }
+        $update_qry_task_header = "UPDATE $tms.task_header set task_status='HOLD',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+        mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
        
         echo "<script>$(document).ready(function(){
-                            swal('Input Job Deleted Successfully','','success');
+                    swal('Input Job Deleted Successfully','','success');
                 });
                 </script>";
         
@@ -44,11 +44,13 @@
                     <th>Sno</th>
                     <th>Style</th>
                     <th>Schedule</th>
+                    <th>Color</th>
+                    <th>PO Number</th>
                     <th>Job No</th>
                     <th>Original Qty</th>
                     <th>Module</th>
                     <th>Docket No's</th>
-                    <th>Received Qty</th>
+                    <!-- <th>Received Qty</th> -->
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -56,117 +58,130 @@
                 <?php
                     //getting the operation code from the masters table
                     $counter = 0;
-                    $op_code_query = "Select operation_code from $brandix_bts.tbl_ims_ops where appilication = '$application' ";
-                    $op_code_result = mysqli_query($link,$op_code_query);
-                    while($row = mysqli_fetch_array($op_code_result)){
-                        $op_code = $row['operation_code'];
+                    //To get IPS Routing Operation
+                    $application='Input Planning System';
+                    $to_get_map_id="SELECT operation_map_id FROM `pms`.`operation_routing` WHERE dashboard_name='$application' AND plant_code='$plant_code'";
+                    //echo $scanning_query;
+                    $map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row1=mysqli_fetch_array($map_id_result))
+                    {
+                        $operation_map_id=$sql_row1['operation_map_id'];
+                    }
+                    $to_get_ops_code="SELECT operation_code FROM `pms`.`operation_mapping` WHERE operation_map_id='$operation_map_id' AND plant_code='$plant_code'";
+                    $get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row2=mysqli_fetch_array($get_ops_result))
+                    {
+                        $operation_code=$sql_row2['operation_code'];
                     }
 
-                    //getting dockets with 0,F status
-                    /*
-                    $fail_dockets_query = "select doc_no from $bai_pro3.cps_log where remaining_qty = 0
-                                           and reported_status = '$status'";
-                    $fail_dockets_result = mysqli_query($link,$fail_dockets_query);
-                    while($row = mysqli_fetch_array($fail_dockets_result)){
-                        $dockets[] = $row['doc_no'];
+                    $tasktype=TaskTypeEnum::SEWINGJOB;
+                    $task_header_id=array();
+                    $resource_id=array();
+                    $get_task_header_id="SELECT task_header_id,resource_id,task_ref FROM $tms.task_header WHERE task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plant_code'";
+                    $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
+                    {
+                       $task_header_id[] = $task_header_id_row['task_header_id'];
+                       $resource_id[$task_header_id_row['task_ref']]=$task_header_id_row['resource_id'];
                     }
-                    $dockets = array_unique($dockets);
-                    $dockets_str = implode(',',$dockets);
-                    */
-                
-                    // if($dockets_str == '')
-                    //     $dockets_str = '""';
-                    //getting all jobs with the above dockets
-                    // $jobs_query = "Select style,color,schedule,input_job_no,bcd.input_job_no_random_ref,
-                    //                group_concat(distinct docket_number) as doc_str,
-                    //                group_concat(bundle_number) as bun_str,SUM(original_qty) as oqty,
-                    //                SUM(recevied_qty) as rqty,assigned_module 
-                    //                from $bai_pro3.plan_dashboard_input pdi 
-                    //                LEFT JOIN $brandix_bts.bundle_creation_data bcd ON pdi.input_job_no_random_ref  =  bcd.input_job_no_random_ref
-                    //                where operation_id = '$op_code'
-                    //                GROUP BY pdi.input_job_no_random_ref";   
 
-                    $jobs_query = "SELECT input_job_no_random_ref,doc_no,input_module from $bai_pro3.plan_dashboard_input pdi 
-                                left join $bai_pro3.plan_dashboard pd ON pd.track_id = pdi.track_id";              
-                    //echo $jobs_query;          
-                    $jobs_result = mysqli_query($link,$jobs_query) or exit("No Jobs Found");
-                    while($row = mysqli_fetch_array($jobs_result)){
-                        $flag = 1;
-                        $job_no_r= $row['input_job_no_random_ref'];
-                        $module  = $row['input_module'];
-
-                        //getting job no
-                        $job_no_query = "SELECT input_job_no,group_concat(distinct doc_no) as doc_str,
-                                    SUM(carton_act_qty) as oqty
-                                    FROM bai_pro3.pac_stat_log_input_job WHERE input_job_no_random = '$job_no_r'";
-                        $job_no_result = mysqli_query($link,$job_no_query);
-                        if(mysqli_num_rows($job_no_result) > 0){
-                            $jrow = mysqli_fetch_array($job_no_result);
-                            $job_no  = $jrow['input_job_no'];
-                            $doc_str = rtrim($jrow['doc_str'],',');
-                            $org_qty = $jrow['oqty'];
-                            
-
-                            //getting all details
-                            $details_query = "SELECT style,color,schedule from $brandix_bts.bundle_creation_data 
-                                    where docket_number IN ($doc_str) limit 1";
-                            $details_result = mysqli_query($link,$details_query);
-                            if(mysqli_num_rows($details_result) > 0){
-                                $drow = mysqli_fetch_array($details_result);
-                                $style   = $drow['style'];
-                                $schedule= $drow['schedule'];
-                                $color   = $drow['color'];
-                                    
-                                //getting scanned_qty
-                                $scanned_qty_query = "SELECT SUM(recevied_qty) as rqty from $brandix_bts.bundle_creation_data 
-                                        where  input_job_no_random_ref = '$job_no_r'";
-                                $scanned_qty_result = mysqli_query($link,$scanned_qty_query);
-                                $srow = mysqli_fetch_array($link,$scanned_qty_result);
-                                $rem_qty = $srow['rqty'] > 0 ? $srow['rqty'] : 0;
-                                
-                            
-                                $pre_opcode_query = "SELECT operation_code as op_code FROM $brandix_bts.tbl_style_ops_master 
-                                                    WHERE style='$style' and color='$color' 
-                                                    and operation_code < $op_code ORDER BY operation_order DESC LIMIT 1 ";
-                                $pre_opcode_result = mysqli_query($link,$pre_opcode_query) or exit("Pre Operation not found");
-                                while($oprow = mysqli_fetch_array($pre_opcode_result)){
-                                    $pre_op_code = $oprow['op_code'];
-                                }
-                                //getting the status of dockets with the pre ops code
-                                $fail_dockets_query = "Select reported_status,remaining_qty from $bai_pro3.cps_log 
-                                                    Where doc_no in ($doc_str) and operation_code='$pre_op_code'";
-                                $fail_dockets_result = mysqli_query($link,$fail_dockets_query) or exit("Cannot Get Reported Status");
-                                while($frow = mysqli_fetch_array($fail_dockets_result)){
-                                    if( $frow['remaining_qty'] == 0 && $frow['reported_status']=='F' ){
-                                        $flag = 0;
-                                    }else{
-                                        $flag = 1;
-                                        break;
-                                    }
-                                }
-
-                                if($flag == 0){
-                                    $url = 'index.php?r='.$_GET['r']."&job_no=$job_no_r&job=$job_no";
-                                    $counter++;
-                                    echo "<tr>";
-                                        echo "<td>$counter</td>"; 
-                                        echo "<td>$style</td>"; 
-                                        echo "<td>$schedule</td>";
-                                        echo "<td>J$job_no</td>";                   
-                                        echo "<td>$org_qty</td>";
-                                        echo "<td>$module</td>";
-                                        echo "<td>$doc_str</td>";
-                                        echo "<td>$rem_qty</td>";
-                                        echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
-                                                class='btn btn-danger btn-sm'>Remove From IPS</a></td>";
-                                    echo "</tr>";
-                                }
-                            }
+                    //To get taskrefrence from task_jobs based on resourceid 
+                    $task_job_reference=array(); 
+                    $get_refrence_no="SELECT task_job_reference FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plant_code' AND task_type='$tasktype'";
+                    $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+                    {
+                      $task_job_reference[] = $refrence_no_row['task_job_reference'];
+                    }
+                    //Qry to get sewing jobs from jm_jobs_header
+                    $job_group_type=TaskTypeEnum::plannedsewingjob;
+                    $job_number=array();
+                    $ponumber=array();
+                    $masterponumber=array();
+                    $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id,po_number,master_po_number FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plant_code' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
+                    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+                    if($toget_sewing_jobs_num>0){
+                        while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+                        {
+                          $job_number[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['job_number'];
+                          $ponumber[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['po_number'];
+                          $masterponumber[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['master_po_number'];
                         }
                     }
-                    if($counter == 0){
-                        echo "<tr><td colspan=9><div class='alert alert-danger'>No Data Found</div></td></tr>";
-                    }
+
+
+
+                    // //Function to check whether previous operation qty fully scanned or not
+                    // $check_status= random_function($jobno,$operation_code,$plant_code);
+                    
+                    
+                    foreach($job_number as $key=>$value)
+                    {
+
+                      //get style,color
+                      $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plantcode' and master_po_number='$masterponumber[$value]'";
+                      $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+                      {
+                        $style=$mp_color_detail_row['style'];
+                        $color=$$mp_color_detail_row['color'];
+                      }
+                      //To get schedules
+                      $result_bulk_schedules=getBulkSchedules($style,$plant_code);
+                      $bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+                      $schedules = implode(",",$bulk_schedule);
+                      
+                      //to get dockets
+                      $result_dockets=getDocketDetails($ponumber[$value],$plant_code,0);
+                      $docket_numbers=$result_dockets['docket_number'];
+                      $dockets=implode(",",$docket_numbers);
+                      //to get qty from jm job lines
+                      $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
+                      $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      $toget_qty=mysqli_num_rows($toget_qty_qry_result);
+                      if($toget_qty>0){
+                         while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
+                         {
+                          $sew_qty = $toget_qty_det['qty'];
+                         }
+                      }
+                      //get_module
+                      $qry_get_module="SELECT resource_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key'";
+                      $get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($get_module_row=mysqli_fetch_array($get_module_result))
+                      {
+                        $resource_id = $get_module_row['resource_id'];
+                      }
+                      $jg_header_id=$job_number[$key];
+                      $job_number=$job_number[$value];
+                      if($check_status == 0){
+                        $url = 'index.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
+                        $counter++;
+                        echo "<tr>";
+                            echo "<td>$counter</td>"; 
+                            echo "<td>$style</td>"; 
+                            echo "<td>$schedules</td>";
+                            echo "<td>$color</td>";
+                            echo "<td>$ponumber[$value]</td>"; 
+                            echo "<td>$job_number</td>";                   
+                            echo "<td>$sew_qty</td>";
+                            echo "<td>$resource_id</td>";
+                            echo "<td>$dockets</td>";
+                            // echo "<td>$rem_qty</td>";
+                            echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
+                                    class='btn btn-danger btn-sm'>Remove From IPS</a></td>";
+                        echo "</tr>";
+                        }
+                        else
+                        {
+                           if($counter == 0){
+                            echo "<tr><td colspan=9><div class='alert alert-danger'>No Data Found</div></td></tr>";
+                           }
+                        }
+
+
+                    }    
                 ?>
             </tbody>
         </table>
