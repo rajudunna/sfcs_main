@@ -33,7 +33,6 @@ $whoops->register();
 </div>"; -->
                     <?php
                     if (isset($_GET['r']) && $_GET['r'] != '') {
-                        if (hasviewpermission($_GET['r'])) {
                             $get_file_path = getFILE($_GET['r']);
                             if ($get_file_path) {
                                 if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {
@@ -72,17 +71,7 @@ $whoops->register();
                                         </div>
                                     </div>";
                             }
-                        } else {
-                            echo "<div class='col-sm-12'>
-                                    <div class='col-sm-4'><h1 style='font-size: 150px !important;margin: 68px 0px 0px 100px;' class='text-center text-warning'><i class='fa fa-user-times'></i></h1></div>
-                                    <div class='col-sm-8'>
-                                    <br/><br/><br/>
-                                    <h1 class='text-danger text-center'><i class='fa fa-ban'></i> Restricted..</h1>
-                                    <br/><br/><br/><br/>
-                                    <h1 class='text-danger text-center'>unauthorized access..</h1>
-                                    </div>
-                                </div>";
-                        }
+                        
                     } elseif ($link_ui == Null) {
                         echo "<div class='col-sm-12'>
                                 <br/><br/><br/>
