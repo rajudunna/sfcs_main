@@ -125,16 +125,13 @@ else
 	{
 		$sql_shift="select sum(present) as nop from $bai_pro.pro_attendance where date='".$date."' and shift='".$shifts_array[$i]."'";
 		$result_shift=mysqli_query($link, $sql_shift) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($result_shift)==0)
+		while($sql_shift_rows=mysqli_fetch_array($result_shift))
 		{			
-			while($sql_shift_rows=mysqli_fetch_array($result_shift))
-			{			
-				if($sql_shift_rows['nop']>0)
-				{
-					$teams[]=$shifts_array[$k];	
-				}	
-			}			
-		}
+			if($sql_shift_rows['nop']>0)
+			{
+				$teams[]=$shifts_array[$k];	
+			}	
+		}		
 	}
 	
 	//HCM Module Mapping
@@ -173,9 +170,13 @@ else
 						//echo "No result<br>";
 						$module=$hcm_module[$hcm_modules[$iii]];
 						$team=$hcm_shift[$hcm_shifts[$ii]];
-						$sql1="insert into $bai_pro.pro_attendance (date,module,shift,present,absent,break_hours) VALUES ('".$date."','$module','".$team."',0,0,".$breakhours.")";								
-						mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
-
+						$sqla1="select * from $bai_pro.pro_attendance where date='".$date."' and module='".$module."' and shift='".$team."'";
+						$sqlresa1=mysqli_query($link, $sqla1) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sqlresa1)==0)
+						{
+							$sql1="insert into $bai_pro.pro_attendance (date,module,shift,present,absent,break_hours) VALUES ('".$date."','$module','".$team."',0,0,".$breakhours.")";						
+							mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
 					}
 					else
 					{
