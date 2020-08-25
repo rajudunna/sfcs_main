@@ -24,7 +24,7 @@ mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_
 
 $sql="truncate table $bai_pro.tbl_freez_plan_log";
 
-mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+//mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $handle=fopen($filepath,"r");
 fgetcsv($handle);

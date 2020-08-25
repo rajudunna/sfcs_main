@@ -86,13 +86,24 @@
 			$destination=$row['destination']; 
 			$packing_mode=$row['packing_mode']; 
 			$old_size=$row['old_size']; 
-			$jobs_array[] = $input_job_no;
+			$jobs_array[] = $input_job_no_random;
 			$sref_id=$row['sref_id']; 
 			$pac_seq_no=$row['pac_seq_no']; 
-			
+			$quantity = 1; //assigning some value to set default value
 			$query_check = "SELECT * FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
 			$res_query_check=mysqli_query($link,$query_check);
-			if (mysqli_num_rows($res_query_check) == 0) 
+			if(mysqli_num_rows($res_query_check) > 0)
+			{
+				$query_qty_check = "SELECT sum(recevied_qty) as rec,sum(rejected_qty) as rej FROM $brandix_bts.`bundle_creation_data_temp` WHERE input_job_no_random_ref='$input_job_no_random'";
+				$res_query_qty_check=mysqli_query($link,$query_qty_check);
+				while($qty_res = mysqli_fetch_array($res_query_qty_check))
+				{
+					$rec_qty = $qty_res['rec'];
+					$rej_qty = $qty_res['rej'];
+					$quantity = $rec_qty + $rej_qty ;
+				}
+			}
+			if (mysqli_num_rows($res_query_check) == 0 || $quantity == 0) 
 			{
 				if ($qty == 0) 
 				{
@@ -133,7 +144,8 @@
 						if(mysqli_num_rows($update_result) > 0)
 							continue;
 						*/
-					}else{
+					}else
+					{
 						//Updating existing bundle 
 						/*
 						$update_mo = "Update  $bai_pro3.mo_operation_quantites set input_job_no='$temp_input_job_no',
@@ -141,29 +153,35 @@
 									  where bundle_no = '$tid' and input_job_random = '$temp_input_job_no_random' 
 									  and input_job_no = '$temp_input_job_no'";
 									  */
-						$update_mo = "Update  $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty'
-									  where ref_no = $tid "; 
-									// ref_no='$inserted_tid'             
-						$update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
-				
-						//getting mo_no,op_desc from mo_operation_quantities
-						$mos = "Select mo_no,op_desc,op_code 
-								from $bai_pro3.mo_operation_quantites where ref_no = $tid  
-								group by op_desc";
-		
-						$mos_result = mysqli_query($link,$mos); 
-						while($row = mysqli_fetch_array($mos_result)){
-							$mo_no = $row['mo_no'];
-							$ops[$row['op_code']] = $row['op_desc'];
-						}
-						//Inserting the new bundle quantity
-						foreach(array_unique($ops) as $op_code=>$op_desc){
-							$insert_mo = "Insert into $bai_pro3.mo_operation_quantites
-										(date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
-										('".date('Y-m-d H:i:s')."','$mo_no',$inserted_tid,$qty,$op_code,'$op_desc')";          
-							mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
-						}
-						unset($ops);
+					    if($nqty>0)
+						{
+							$sql_orders_ops = "SELECT * FROM brandix_bts.tbl_orders_ops_ref WHERE category='sewing'";
+			
+							$sql_orders_ops_rslt = mysqli_query($link,$sql_orders_ops); 
+							while($row_orders_ops = mysqli_fetch_array($sql_orders_ops_rslt))
+							{
+								$ops_code_sew[]=$row_orders_ops['operation_code'];
+							}
+							$ops_sew=implode(",",$ops_code_sew);
+							$update_mo = "Update $bai_pro3.mo_operation_quantites set bundle_quantity='$nqty' where ref_no = $tid and op_code in($ops_sew)"; 
+										// ref_no='$inserted_tid'             
+							$update_result = mysqli_query($link,$update_mo) or exit('An error While Updating MO Quantities');        
+							//getting mo_no,op_desc from mo_operation_quantities
+							$mos = "Select mo_no,op_code,op_desc from $bai_pro3.mo_operation_quantites where ref_no = $tid and op_code in($ops_sew) group by op_desc";
+							$mos_result = mysqli_query($link,$mos); 
+							while($row = mysqli_fetch_array($mos_result)){
+								$mo_no = $row['mo_no'];
+								$ops[$row['op_code']] = $row['op_desc'];
+							}
+							//Inserting the new bundle quantity
+							foreach(array_unique($ops) as $op_code=>$op_desc){
+								$insert_mo = "Insert into $bai_pro3.mo_operation_quantites
+											(date_time,mo_no,ref_no,bundle_quantity,op_code,op_desc) values 
+											('".date('Y-m-d H:i:s')."','$mo_no',$inserted_tid,$qty,$op_code,'$op_desc')";          
+								mysqli_query($link,$insert_mo) or exit("Problem while inserting to mo quantities");            
+							}
+							unset($ops);
+						}	
 					}
 					//------------------------------------MO Filling Logic Ends----------------------------------------------
 				}
@@ -196,18 +214,18 @@
 <?php
 function update_barcode_sequences($input_job_random){
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-    $query = "select group_concat(tid order by tid DESC) as tid from $bai_pro3.pac_stat_log_input_job 
-             where input_job_no_random = '$input_job_random' ";
+    $query = "select tid from $bai_pro3.pac_stat_log_input_job 
+             where input_job_no_random = '$input_job_random' order by tid DESC";
     $result = mysqli_query($link,$query);
     while($row = mysqli_fetch_array($result)){
-        $tids = $row['tid'];
-        $tid = explode(',',$tids);
-        $counter = sizeof($tid);
-        foreach($tid as $id){
-            $update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
-            mysqli_query($link,$update_query) or exit('Unable to update');
-            $counter--;
-        }
+        $tids[] = $row['tid'];
+	}
+	// $tid = explode(',',$tids);
+	$counter = sizeof($tids);
+	foreach($tids as $id){
+		$update_query = "Update $bai_pro3.pac_stat_log_input_job set barcode_sequence = $counter where tid='$id'";
+		mysqli_query($link,$update_query) or exit('Unable to update');
+		$counter--;
 	}
 	return true;
 }  

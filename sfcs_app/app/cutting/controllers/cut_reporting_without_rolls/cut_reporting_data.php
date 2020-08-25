@@ -435,8 +435,8 @@ function getRejectionDetails($doc_no,$all_docs){
     $ratio_result = mysqli_query($link,$ratio_query) or exit('Problem in getting rejections');
     while($row = mysqli_fetch_array($ratio_result)){
         foreach($sizes_array as $size){
-            if($row["a_$size"] > 0)
-                $old_sizes_ratio[$size] = $row["a_$size"];
+            if($row["p_$size"] > 0)
+                $old_sizes_ratio[$size] = $row["p_$size"];
         }
     }
 
@@ -466,8 +466,8 @@ function getSizesRatio($doc_no,$all_docs){
     $ratio_result = mysqli_query($link,$ratio_query) or exit('Problem in getting rejections');
     while($row = mysqli_fetch_array($ratio_result)){
         foreach($sizes_array as $size){
-            if($row["a_$size"] > 0)
-                $old_sizes_ratio[$size] = $row["a_$size"];
+            if($row["p_$size"] > 0)
+                $old_sizes_ratio[$size] = $row["p_$size"];
         }
     }
 
