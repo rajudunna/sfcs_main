@@ -123,7 +123,7 @@ else
 	//HCM Module Mapping
 	for($k=0; $k < sizeof($shifts_array); $k++)
 	{
-		$sql_shift="select sum(present) as nop from $bai_pro.pro_attendance where date='".$date."' and shift='".$shifts_array[$i]."'";
+		$sql_shift="select sum(present) as nop from $bai_pro.pro_attendance where date='".$date."' and shift='".$shifts_array[$k]."'";
 		$result_shift=mysqli_query($link, $sql_shift) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_shift_rows=mysqli_fetch_array($result_shift))
 		{			
