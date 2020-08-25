@@ -16,7 +16,7 @@ $username = $_SESSION['userName'];
 	$sql_result1b=mysqli_query($link, $sql1b) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	$total_batches_updated=mysqli_num_rows($sql_result1b);
 	
-	$sql2c="select * from $wms.supplier_performance_track where DATE(grn_date) between \"".$sdate."\" AND \"".$edate."\" AND impact=\"Yes\" AND and plant_code='".$plant_code."'";
+	$sql2c="select * from $wms.supplier_performance_track where DATE(grn_date) between \"".$sdate."\" AND \"".$edate."\" AND impact=\"Yes\" AND plant_code='".$plant_code."'";
 	$sql_result2c=mysqli_query($link, $sql2c) or exit("Sql Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	$total_batches_fail=mysqli_num_rows($sql_result2c);
 	

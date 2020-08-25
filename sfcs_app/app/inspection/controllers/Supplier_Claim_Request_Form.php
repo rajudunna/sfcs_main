@@ -11,7 +11,7 @@ $username = $_SESSION['userName'];
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value
+	window.location.href ="index-no-navi.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value
 }
 function hide()
 {
