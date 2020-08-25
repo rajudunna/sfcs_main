@@ -1710,12 +1710,12 @@ table
 <div style="float:left;">
 <h5 style='color:red;'><b>*All Green Fields are mandatory to confirm*</b></h5>
 </div>
-<div style="float:right;">
+<!-- <div style="float:right;">
 	<?php
 	$url = getURL(getBASE($_GET['r'])['base'].'/c_Tex_index.php')['url'];
 	?>
 	<a href="<?php echo $url; ?>" class="btn btn-primary">Back</a>
-</div>
+</div> -->
 
 
 
