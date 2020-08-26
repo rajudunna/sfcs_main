@@ -621,12 +621,11 @@ $(document).ready(function()
 			 title: "Cant Upload",
 			 text: "File is too big.",
 			 type: "info",
-			 timer: 5000
+			 timer: 10000
 			 });
-			 function () {
-				this.value = "";
-			 };
-			
+			 
+			this.value = "";
+			 
 			};
 		};
 	}
