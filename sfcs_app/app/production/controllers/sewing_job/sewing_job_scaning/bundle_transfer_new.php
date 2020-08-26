@@ -15,23 +15,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'bundle_transfer_barcode_scaning_new.php',0,'N');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$category="sewing";
-    $query_get_schedule_data= "SELECT id,operation_code,operation_name FROM $brandix_bts.tbl_orders_ops_ref 
-    WHERE category='".$category."' AND display_operations='yes' ORDER BY id";
-    $result = $link->query($query_get_schedule_data);
-    while($row = $result->fetch_assoc()){
-        $ops_array[$row['operation_code']] = $row['operation_name'];
-        $ops_array1[$row['operation_code']] = $row['id'];
-        
-}
-// var_dump($ops_array1);
-$modules= "SELECT id,module_name FROM $bai_pro3.module_master where status='active'";
-$result1 = $link->query($modules);
-    while($row = $result1->fetch_assoc()){
-    
-    $ops_array2[$row['module_name']] = $row['id'];
-   
-}
+
   
 ?>
 <div class="panel panel-primary " id="module_scanBarcode">
