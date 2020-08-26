@@ -455,14 +455,13 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                 </thead>
                 <tbody>
                     <?php
-                        //getting rejection reasons from mdm with category filter as inspection
-                        $select_resons = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
-                        $get_reasons = mysqli_query($link_new, $select_resons) or exit("get_parent_id Error--6" .mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $select_resons = "select * from $wms.`reject_reasons`";
+                        $get_reasons = mysqli_query($link, $select_resons) or exit("get_parent_id Error--6" .mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         while ($row122 = mysqli_fetch_array($get_reasons)) 
                         {
-                            $reject_code = $row122['internal_reason_code'];
-                            $reject_desc = $row122['internal_reason_description'];
+                            $reject_code = $row122['reject_code'];
+                            $reject_desc = $row122['reject_desc'];
                             $num_rows = mysqli_num_rows($get_reasons);
                             if($num_rows>=1)
                             {
