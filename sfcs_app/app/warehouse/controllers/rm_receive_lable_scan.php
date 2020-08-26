@@ -2,8 +2,8 @@
     <head>
         <?php 
             include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-            $plant_code = $_SESSION['plantCode'];
-	        $username = $_SESSION['userName'];
+            $plant_code = $_GET['plantcode'];
+	        $username = $_GET['username'];
         ?>
     </head>
 <?php
@@ -24,7 +24,7 @@ else
     <form name="input" method="post" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form data">
         <?php
             
-            $query="SELECT * FROM $wms.plant_details where plantcode !='$plant_code'";
+            $query="SELECT plant_code FROM $pms.plant where plant_code !='$plant_code'";
             $query_result=mysqli_query($link, $query) or exit("Error getting Plant Details");
             echo "<tr>
                     <td>Sender Plant Name</td><td>:</td></br>
@@ -34,13 +34,13 @@ else
             
             while($row=mysqli_fetch_array($query_result))
             {
-                if(str_replace(" ","",$row['plantcode'])==str_replace(" ","",$plant_name2))
+                if(str_replace(" ","",$row['plant_code'])==str_replace(" ","",$plant_name2))
                 {
-                    echo "<option value=\"".$row['plantcode']."\" selected>".$row['plant_name']."</option>";
+                    echo "<option value=\"".$row['plant_code']."\" selected>".$row['plant_code']."</option>";
                 }
                 else
                 {
-                    echo "<option value=\"".$row['plantcode']."\">".$row['plant_name']."</option>";
+                    echo "<option value=\"".$row['plant_code']."\">".$row['plant_code']."</option>";
                 }
                 // echo "<option value='".$row['plant_code']."'>".$row['plant_name']."</option>";
             }
