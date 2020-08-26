@@ -34,39 +34,37 @@ function oper_display(){
    	<div class="panel-body">
 	    <form method="post" name="test">
 		    <div class="col-sm-2 form-group">
-              <label for='style'>Shift:<span style ='color:red'>*</span></label>  
-              
-			<select class='form-control' name="shift" id="shift" required>
-                <option selected="selected" value=''>--Select Shift--</option>
-                 <?php
-                  foreach($shifts_array as $name) { ?>
-                     <option value="<?php echo $name['name'] ?>"><?php echo $name['name'] ?></option>
-                        <?php
-                         } 
-                        ?>
-                </select> 
+              <label>Shifts:<span title='Its a Mandatory Field'><font color='red'>*</font></span></label>
+				<select class='form-control' name = 'shift' id = 'shift' required>
+					<option value="">Select Shift</option>
+					<?php 
+					$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+					echo $shift_sql;
+					$shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($shift_row = mysqli_fetch_array($shift_sql_res))
+					{
+						$shift_code=$shift_row['shift_code'];
+						echo "<option value='".$shift_code."' >".$shift_code."</option>"; 
+					}
+					?>
+				</select>
             </div>     
             <div class="col-sm-2 form-group" id="operation_sec" >
-                        <label for='operation'>Select Operation:<span style ='color:red'>*</span></label>
-						<?php
-							echo "<select class='form-control' name='operation' id='operation'>";
-                            $sql="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE category ='sewing' and display_operations='yes' group by operation_name";
-                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            echo "<option value='0' selected='selected'>--Select Operation--</option>";
-                            while($sql_row=mysqli_fetch_array($sql_result))
-                            {
-                                if(str_replace(" ","",$sql_row['operation_code'])==str_replace(" ","",$operation_name))
-                                {
-                                    echo "<option value=\"".$sql_row['operation_code']."\" selected>".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
-                                }
-                                else
-                                {
-                                    echo "<option value=\"".$sql_row['operation_code']."\">".$sql_row['operation_name'].'-'.$sql_row['operation_code']."</option>";
-                                }
-                            }
-                            echo "</select>";
-							?>
-							</div>    
+                    <label>Select Operation:<span title='Its a Mandatory Field'><font color='red'>*</font></span></label>
+                    <select class='form-control' name = 'operation'  id = 'operation' required>
+                        <option value="">Select Operation</option>
+                        <?php 
+                        $sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
+                        $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_rowy=mysqli_fetch_array($sql_resulty))
+                        {
+                            $operation_code=$sql_rowy['operation_code'];
+                            $operation_name=$sql_rowy['operation_name'];
+                            echo "<option value='".$operation_code."' >".$operation_name.' - '.$operation_code."</option>"; 
+                        }
+                        ?>
+                    </select>
+			</div>    
                             <div class="col-sm-2 form-group" style="padding-top:20px;">
                         <?php
                           echo "<input class='btn btn-success' type=\"submit\" value=\"Start\" name=\"submit\" id=\"submit_data\">";
