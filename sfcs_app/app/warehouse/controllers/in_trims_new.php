@@ -3,8 +3,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
+
+$plantcode=$_GET['plantcode'];
+$username=$_GET['username'];
  ?>
 <script>
 
