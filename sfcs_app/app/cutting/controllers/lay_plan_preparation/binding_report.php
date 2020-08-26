@@ -85,7 +85,6 @@ function checkAll()
 <?php
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$plantcode="Q01";
 //function to get style from mp_color_details
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
