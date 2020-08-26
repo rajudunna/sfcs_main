@@ -2222,7 +2222,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
 	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
-	  			$reject_reason_query="select * from $wms.reject_reasons where plant_code='".$plant_code."'";
+	  			$reject_reason_query="select * from $wms.reject_reasons";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
