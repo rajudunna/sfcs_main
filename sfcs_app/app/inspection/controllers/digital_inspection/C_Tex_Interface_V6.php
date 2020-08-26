@@ -2238,13 +2238,13 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
   	
-	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
-	{
+	// if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
+	// {
 	//$update_access
 	
 		echo '<input type="checkbox" name="option"  id="option"  onclick="javascript:enableButton();">Enable <input type="submit" value="Save" class="btn btn-primary confirm-submit" disabled="true"  id="put" name="put" /><br>';		
 		echo '<input type="checkbox" name="option1"  id="option1" onclick="javascript:enableButton1();">Enable <input type="submit" value="Confirm" id="confirm" name="confirm"  class="btn btn-primary confirm-submit" disabled="true" /><br>';		
-	}
+	// }
 
   }
  
@@ -2642,7 +2642,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	 		//getting rejection reasons from mdm with category filter as inspection
-			  $reject_reason_query = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
+			  $reject_reason_query = "select * FROM $wms.reject_reasons";
 			  $reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// while($row1=mysqli_fetch_array($reject_reasons))
