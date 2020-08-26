@@ -15,16 +15,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new.php',0,'N');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$category="'sewing'";
-    $query_get_schedule_data= "SELECT tm.operation_code,tm.id,tm.operation_name FROM $brandix_bts.tbl_orders_ops_ref tm
-    WHERE category IN ($category) AND display_operations='yes'
-GROUP BY tm.operation_code ORDER BY tm.operation_code";
-    $result = $link->query($query_get_schedule_data);
-    while($row = $result->fetch_assoc()){
-        $ops_array[$row['operation_code']] = $row['operation_name'];
-        $ops_array1[$row['operation_code']] = $row['id'];
-}
-// var_dump($ops_array1);
+
 
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
