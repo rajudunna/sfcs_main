@@ -24,14 +24,14 @@ function getJmDockets($doc_num,$plant_code){
     $remark3='';
     $remark4='';
     $created_at='';
-    $qry_jm_dockets="SELECT `style`,`fg_color`,`plies`,`jm_cut_job_id`,`ratio_comp_group_id`,DATE(created_at) as created_at FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND docket_number=$doc_num";
+    $qry_jm_dockets="SELECT `fg_color`,`plies`,`jm_cut_job_id`,`ratio_comp_group_id`,DATE(created_at) as created_at FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND docket_number=$doc_num";
+    //echo "</br>jm_dockets".$qry_jm_dockets;
     $jm_dockets_result=mysqli_query($link_new, $qry_jm_dockets) or exit("Sql Error_at_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_dockets_num=mysqli_num_rows($jm_dockets_result);
     /**From this above query we can get ratio compo group id */
     if($jm_dockets_num>0){
         while($sql_row1=mysqli_fetch_array($jm_dockets_result))
         {
-            $style = $sql_row1['style'];
             $fg_color=$sql_row1['fg_color'];
             $plies=$sql_row1['plies'];
             $jm_cut_job_id=$sql_row1['jm_cut_job_id'];
@@ -135,6 +135,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
     $master_po_details_id='';
     $master_po_details_id='';
     $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE ratio_wise_component_group_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
+    //echo "</br> Qryratio".$qry_ratio_component_group;
     $ratio_component_group_result=mysqli_query($link_new, $qry_ratio_component_group) or exit("Sql Errorat_ratio_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
         $ratio_component_group_num=mysqli_num_rows($ratio_component_group_result);
         if($ratio_component_group_num>0){
@@ -144,8 +145,10 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
                 $component_group_id = $sql_row1['component_group_id'];
                 $fabric_saving = $sql_row1['fabric_saving'];
             }
+            //echo "</br>Comp grp ID: ".$component_group_id;
             /**Getting fabric categoery and item code by using component group from lp_ratio_component_group */
             $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
+            //echo "</br> Com group : ".$qry_component_group;
             $qry_component_group_result=mysqli_query($link_new, $qry_component_group) or exit("Sql Errorat_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
             $component_group_num=mysqli_num_rows($qry_component_group_result);
             if($component_group_num>0){
@@ -586,6 +589,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     $docs=array();
     //qry to get cutjobid
     $qry_cut_numbers="SELECT jm_cut_job_id FROM $pps.jm_cut_job WHERE po_number='$sub_po' AND plant_code='$plantcode'";
+    //echo "</br>Cut jobs : ".$qry_cut_numbers;
     $toget_cut_result=mysqli_query($link_new, $qry_cut_numbers) or exit("Sql Error at cutnumbers".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_cut_num=mysqli_num_rows($toget_cut_result);
       if($toget_cut_num>0){
@@ -596,6 +600,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
      }
      //qry to get dockets using cut_job_id
     $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id='$cut_job_id' AND is_binding='$docket_type' AND plant_code='$plantcode' order by docket_number ASC";
+    //echo "</br>Docks : ".$qry_get_dockets;
     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
