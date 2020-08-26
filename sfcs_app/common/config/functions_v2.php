@@ -595,23 +595,36 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
       if($toget_cut_num>0){
         while($toget_cut_row=mysqli_fetch_array($toget_cut_result))
         {
-          $cut_job_id=$toget_cut_row['jm_cut_job_id']; 
+          $cut_job_id[]=$toget_cut_row['jm_cut_job_id'];
         }
-     }
+    }
+    $cut_job_id = implode("','", $cut_job_id);
      //qry to get dockets using cut_job_id
-    $qry_get_dockets="SELECT docket_number,jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id='$cut_job_id' AND is_binding='$docket_type' AND plant_code='$plantcode' order by docket_number ASC";
-    //echo "</br>Docks : ".$qry_get_dockets;
+    $qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id in ('$cut_job_id') AND plant_code='$plantcode' order by docket_number ASC";
     $toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_dockets_num=mysqli_num_rows($toget_dockets_result);
     if($toget_dockets_num>0){
-    while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
-        {
-            $docs[$toget_docket_row['docket_number']]=$toget_docket_row['jm_docket_id']; 
-        }
-    }
+        while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
+            {
+                $jm_dockets[]=$toget_docket_row['jm_docket_id']; 
+            }
+        
+        //$jm_dockets=array_values(array_unique($jm_dockets));
+        $jm_dockets = implode("','", $jm_dockets);
 
+    }
+    //qry to get dockets in through dockets id
+    $qry_get_docketlines="SELECT jm_docket_line_id,docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_id IN ('$jm_dockets') AND plant_code='$plantcode' AND is_binding='$docket_type'";
+    $qry_get_docketlines_result=mysqli_query($link_new, $qry_get_docketlines) or exit("Sql Error at docket lines".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $docketlines_num=mysqli_num_rows($qry_get_docketlines_result);
+    if($docketlines_num>0){
+        while($docketline_row=mysqli_fetch_array($qry_get_docketlines_result))
+            {
+                $docket_lines[$docketline_row["docket_line_number"]]=$docketline_row["jm_docket_line_id"]; 
+            }
+        }
     return array(
-        'docket_number' => $docs
+        'docket_lines' => $docket_lines
     );
   }
 

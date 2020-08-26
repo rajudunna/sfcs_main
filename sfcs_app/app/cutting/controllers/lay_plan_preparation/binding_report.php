@@ -85,6 +85,7 @@ function checkAll()
 <?php
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+$plantcode="Q01";
 //function to get style from mp_color_details
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
@@ -186,10 +187,10 @@ echo "</select></div>";
 /* function to get binding dockets
 	In below function is_binding=1 then it is binding docket
 */
-	$bindingtype="TRUE";
+	$bindingtype="1";
 	if($get_sub_po!=''){
 		$result_bindingdockets=getDocketDetails($get_sub_po,$plantcode,$bindingtype);
-		$binding_dockets=$result_bindingdockets['docket_number'];
+		$binding_dockets=$result_bindingdockets['docket_lines'];
 	}
     echo "</br><div class='col-sm-3'>"; 
     if(sizeof($binding_dockets)>0)
@@ -234,7 +235,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	 */
 	if($sub_po!=''){
 		$result_bindingdockets=getDocketDetails($sub_po,$plantcode,$bindingtype);
-		$binding_dockets=$result_bindingdockets['docket_number'];
+		$binding_dockets=$result_bindingdockets['docket_lines'];
 	}
 	//var_dump($binding_dockets);
 	echo "<div class='col-sm-3'>
