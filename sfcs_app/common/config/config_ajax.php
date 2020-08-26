@@ -13,13 +13,15 @@ $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 $username='sfcsproject1';
 
-$global_facility_code=$conf1->get('plantcode');
+//$global_facility_code=$conf1->get('plantcode');
 $enable_api_call = $conf1->get('enable-api-call');
 $sewing_rejection=$conf1->get('sewing_rejection');
 
 /**at the time of getting data from pms and pps tables we inlcude plantcode also */
-$plantcode=$global_facility_code;
-
+//$plantcode=$global_facility_code;
+session_start();
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 // function get_config_values($config_id){
 //     error_reporting(0);
 //     $conf = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");

@@ -616,8 +616,17 @@ $(document).ready(function()
 	if(uploadField != null){
 		uploadField.onchange = function() {
 			if(this.files[0].size > 5300000){
-			sweetAlert('File is too big','Cant Upload','info');
-			this.value = "";
+			// sweetAlert('File is too big','Cant Upload','info');
+			swal({
+			 title: "Cant Upload",
+			 text: "File is too big.",
+			 type: "info",
+			 timer: 5000
+			 });
+			 function () {
+				this.value = "";
+			 };
+			
 			};
 		};
 	}

@@ -177,7 +177,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 						echo"<tbody>";
 						
 						//getting data from locaytion_db in bai rm pj1
-						$qry_locations=" select * from $wms.location_db where plant_code='".$plant_code."'";
+						$qry_locations=" select * from $wms.location_db where plant_code='".$plant_code."' ORDER BY sno DESC";
 						//echo $qry_locations;
 						//mysqli_query($link11, $qry_locations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $qry_locations);
