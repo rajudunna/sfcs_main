@@ -747,14 +747,14 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     }
     $workstations = implode("','", $workstationtype);
     /**Getting work stations against workstation type*/
-    $qry_workstations="SELECT workstation_id,workstation_description FROM $pms.workstation WHERE is_active=1 AND workstation_type_id IN ('$workstations')";
+    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND workstation_type_id IN ('$workstations')";
     $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstation=array();
     $workstations_result_num=mysqli_num_rows($workstations_result);
     if($workstations_result_num>0){
         while($workstations_row=mysqli_fetch_array($workstations_result))
         {
-            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_description'];
+            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
         }
     }
 
@@ -955,7 +955,6 @@ function getCutNumber($jm_cut_job_id){
         'cut_number' => $cut_number
     );
 }
-
 
 
 ?>

@@ -84,4 +84,23 @@ while($sql_row=mysqli_fetch_array($res_query))
 {
 	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
 }
+
+//TaskAttributeNamesEnum
+$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+
+
+class TaskTypeEnum { 
+    const CUTJOB = 'CUTJOB';
+    const DOCKET = 'DOCKET';
+    const DOCKETBUNDLE = 'DOCKETBUNDLE';
+    const SEWINGJOB = 'SEWINGJOB';
+    const PACKINGJOB = 'PACKINGJOB';
+    const CARTON = 'CARTON';
+    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
+    const LOGICALBUNDLE = 'LOGICALBUNDLE';
+    const POLYBAG = 'POLYBAG';
+    const plannedsewingjob = 'PSJ';
+    const plannedsewingembellishmentjob = 'PSEJ';
+}
+
 ?>
