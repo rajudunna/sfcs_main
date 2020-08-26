@@ -222,7 +222,6 @@ if(isset($_POST['show']))
 	$lot_no_ref_new=$_POST["sellotnosrefnew"];
 	$plant_code=$_POST["plant"];
 	$user=$_POST["user"];
-	
 	if ($comcat_type=='' or $batch_no=='' or empty($lot_no_ref_new))
 	{
 		echo "";
@@ -236,7 +235,6 @@ if(isset($_POST['show']))
 		}
 		
 		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR ',')) AS lot_no FROM $wms.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."') and plant_code='".$plant_code."'";
-		echo $sql2."<br>";
 		$result2=mysqli_query($link, $sql2) or die("Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		if(mysqli_num_rows($result2) > 0)
@@ -342,7 +340,7 @@ if(isset($_POST['show']))
 			
 			echo "<table  styel=' border: 1px solid black;' runat=\"server\" class='table jambo_table bulk_action table-bordered'>";
 			echo "<tr class='headings'>";
-			echo "<th class=\"style1\"><input type=\"hidden\" class=\"form-control\" name=\"txtcomcat\" value=\"".$comcat_type."\" />Complaint Product</th><td>".$comcat_type."</td>";
+			echo "<th class=\"style1\"><input type=\"hidden\" class=\"form-control\" name=\"txtcomcat\" value=\"".$comcat_type."\" /><input type=\"hidden\" class=\"form-control\" name=\"plant_code\" value=\"".$plant_code."\" /><input type=\"hidden\" class=\"form-control\" name=\"username\" value=\"".$user."\" />Complaint Product</th><td>".$comcat_type."</td>";
 			echo "<th>Complaint Category</th>";
 	
 			echo "<td>";
@@ -596,6 +594,8 @@ if(isset($_POST['submitx']))
 	$invoice_ref=$_POST["selrejinvs"];
 	$item_name_ref=$_POST["selrejitemname"];
 	$comcat_type_ref=$_POST["txtcomcat"];
+	$plant_code=$_POST["plant_code"];
+	$username=$_POST["username"];
 	$comcat_mode_ref=$_POST["selcomcat"];
 	$uom_ref=$_POST["seluom"];
 	$comaplint_remarks=$_POST["txtcomremarks"];
@@ -739,7 +739,7 @@ if(isset($_POST['submitx']))
 	
 	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
 	$url = getFullURLLevel($_GET['r'],'Supplier_Claim_Request_Form.php',0,'N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"$url&batch=$batch_no_ref&sellotnosrefnew=$lot_no_ref_final&selcompro=$comcat_type_ref\"; }</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"$url&batch=$batch_no_ref&sellotnosrefnew=$lot_no_ref_final&selcompro=$comcat_type_ref&plant_code=$plant_code\"; }</script>";
 }
 ?>
 </body>
