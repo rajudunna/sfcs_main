@@ -5,13 +5,12 @@ $Page_Id='SFCS_0053';
 $has_permission=haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
-
 ?>
 <script>
 
 function firstbox()
 {
-	window.location.href ="index-no-navi.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value
+	window.location.href ="index-no-navi.php?r=<?= $_GET['r']?>&batch="+document.test.txtbatch.value+"&plantcode=<?=$plant_code?>&username=<?=$username?>"
 }
 function hide()
 {
@@ -128,6 +127,8 @@ function enableButton()
 <?php
 $comcat=$_POST["selcompro"];
 $batch_no=$_POST["txtbatch"];
+$plant=$_POST["plant"];
+$user=$_POST["user"];
 $lot_no_ref_new_test=$_POST["sellotnosrefnew"];
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
@@ -136,6 +137,8 @@ if(isset($_POST['txtbatch']))
 {
 	$comcat=$_POST['selcompro'];
 	$batch_no=$_POST["txtbatch"];
+	$plant=$_POST["plant"];
+	$user=$_POST["user"];
 	$lot_no_ref_new_test=$_POST["sellotnosrefnew"];
 }
 else
@@ -145,24 +148,20 @@ else
 }
 
 ?>
-<?php
-
-if(in_array($authorized,$has_permission))
-{
-echo '<a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Request_Form.php","N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"reports/Supplier_Claim_Log_Form.php",1,"N").'">Log</a> <hr>';
-}
-
-?>
 <form id="testx" name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="POST">
 
 Enter Batch No <input type="text" class="form-control"  style="width: 150px;  display: inline-block;" name="txtbatch" id="txtbatch" onblur="firstbox();" 
 size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $batch_no; } else { echo $_GET['batch']; } ?>" /> 
+<input type="hidden" id="plant" name="plant" value="<?php if(isset($_POST['txtbatch'])) { echo $plant; } else { echo $_GET['plantcode']; } ?>" />
+<input type="hidden" id="user" name="user" value="<?php if(isset($_POST['txtbatch'])) { echo $user; } else { echo $_GET['username']; } ?>" />
 
 
 
 <?php
 error_reporting(0);
 $batch=$_GET["batch"];
+$plant_code=$_GET["plantcode"];
+$username=$_GET["username"];
 $batch_temp = $batch;
 if($batch=="")
 {
@@ -182,13 +181,14 @@ $row=mysqli_fetch_array($result);
 	{ 
 		$value_comp=$comcat;
 		$batch = $batch_no;
-	}	
+		$plant_code=$plant;
+	}
+	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and plant_code='".$plant_code."' and length(batch_no) > 0";	
 	echo "<input type='text' readonly value='$value_comp' name=\"selcompro\" id='selcompro' class='form-control' style='width: 150px;  display: inline-block;'>";
 	
 	echo "Select Lot Nos";
 	echo "<select name=\"sellotnosrefnew[]\"  class='form-control' onclick='return check_batch();' style='width: 150px;  display: inline-block;' multiple>";
 	echo "<option value='' selected>Please Select</option>";
-	$sql1="SELECT DISTINCT(lot_no) AS lot_no FROM $wms.sticker_report WHERE batch_no=\"".$batch."\" and plant_code='".$plant_code."' and length(batch_no) > 0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -220,6 +220,8 @@ if(isset($_POST['show']))
 	$comcat_type=$_POST["selcompro"];
 	$batch_no=$_POST["txtbatch"];
 	$lot_no_ref_new=$_POST["sellotnosrefnew"];
+	$plant_code=$_POST["plant"];
+	$user=$_POST["user"];
 	
 	if ($comcat_type=='' or $batch_no=='' or empty($lot_no_ref_new))
 	{
@@ -227,17 +229,14 @@ if(isset($_POST['show']))
 	}
 	else 
 	{
-		include("Supplier_Claim_Log_Form_req.php");
-	
 		if(sizeof($lot_no_ref_new) > 0)
 		{
 
 			$lot_no_ref_new_final=implode("','",$lot_no_ref_new);
 		}
 		
-		
 		$sql2="SELECT TRIM(GROUP_CONCAT(DISTINCT lot_no SEPARATOR ',')) AS lot_no FROM $wms.sticker_report WHERE batch_no='".trim($batch_no)."' and lot_no in ('".$lot_no_ref_new_final."') and plant_code='".$plant_code."'";
-		// echo $sql2."<br>";
+		echo $sql2."<br>";
 		$result2=mysqli_query($link, $sql2) or die("Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		if(mysqli_num_rows($result2) > 0)
