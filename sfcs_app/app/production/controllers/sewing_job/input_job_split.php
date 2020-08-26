@@ -1,81 +1,98 @@
-<?php 
-    // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'dbconf.php',0,'R'));
-    // //require_once('phplogin/auth.php');
-    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php");
-    // include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-    // include("../../../common/config/dbconf.php");
+<?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    $has_permission=haspermission($_GET['r']);
-?>
+    $plant_code = $_SESSION['plantCode'];
+?> 
 
-<title>Sewing Job Split</title>
-<?php
-    include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R'));
-?>
-
-<div class="panel panel-primary"><div class="panel-heading">Sewing Jobs Split</div><div class="panel-body">
-<?php
-    // if($username=="hasithada" or $username=="" or $username=="sfcsproject1" or $username=="chathurikap")
-    if(in_array($update,$has_permission))
-    {
-        ?>
+<div class="panel panel-primary">
+    <div class="panel-heading">Sewing Jobs Split</div>
+    <div class="panel-body">
         <form name="input" method="post" action="?r=<?= $_GET['r'] ?>">
             <div class="row">
                 <div class="col-md-4">       
-                <?php
-                    echo '<label>Enter Schedule No : </label>
-                    <input type="text" class="integer form-control" required name="schedule" value="">
+                    <label>Enter Schedule No : </label>
+                    <input type="text" class="integer form-control" required name="schedule" id='schedule' value="">
+                    <input type="hidden" name="plant_code" id='plant_code' value="<?php echo $plant_code;?>">
                 </div><br/>
-                    <div clas="col-md-4"><input type="submit" name="submit" value="Split" class="btn btn-success"></div>
+                <div clas="col-md-4">
+                    <input type="submit" name="submit" value="Submit" class="btn btn-success">
+                </div>
             </div>
-        </form><br/>'; 
-    }else{
-        echo "<br><div class='alert alert-danger'>You are Not Authorized to Split Sewing Jobs</div>";
-    }
+        </form>
 
-if(isset($_POST['submit']) || isset($_GET['schedule']))
-{
-    if (isset($_GET['schedule'])) {
-        $schedule=$_GET['schedule'];
-    } else {
-        $schedule=$_POST['schedule'];
-    }
-    echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a></b></h4>';
-    // $unconditional_remove=$_POST['unconditional_remove'];
-    $sql="SELECT input_job_no,input_job_no_random, order_del_no, order_col_des, mrn_status FROM $bai_pro3.packing_summary_input WHERE order_del_no='$schedule' group by input_job_no ORDER BY input_job_no*1 ";
-    // echo $sql;
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $rowcount=mysqli_num_rows($sql_result);
-    if ($rowcount>0) 
-    {
-	    echo "<div style='width:1000px;'>";
-	    echo "<span style='color:black;text-weight:bold;'>Select Sewing Job Number You want To Split: </span><br><br>";
-	    while($sql_row=mysqli_fetch_array($sql_result))
-	    {
-            $order_del_no=$sql_row['order_del_no'];
-            $order_col_des=$sql_row['order_col_des'];
-	        $input_job_no=$sql_row['input_job_no'];
-	        $input_job_no_ran=$sql_row['input_job_no_random'];
-            $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$order_del_no,$order_col_des,$input_job_no,$link);
-	        $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-			if($sql_row['mrn_status']==1)
-			{
-				echo "<a class='btn btn-danger'>".$display."</a>"."";	
-			}
-			else
-			{				
-				echo "<a href='$split_jobs&sch=$schedule&job=$input_job_no&rand_no=$input_job_no_ran' class='btn btn-warning'>".$display."</a>"."";
-			}
-	    }
-	    echo "</div>";
-    } else {
-    	echo '<div class="alert alert-danger">
-			  <strong>Warning!</strong> No Sewing Jobs Available for this Schedule Number.
-			</div>';
-    }
-}
-?>
+        <?php
+        if(isset($_POST['submit']) || isset($_GET['schedule']))
+        {
+            $schedule=$_POST['schedule'];
+            $poNumbers = ['PO01','PO12','PO77','PO01','PO09'];
+            echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a><input type="hidden" name="schedule1" id="schedule1" value='.$schedule.'></b></h4>';
+            $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
+            foreach($poNumbers as $po_number){
+                echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs(this.value) value=$po_number>";
+            }
+        }
+        ?>
+        <br/>
+        <div id ="dynamic_table">
+		</div>
+    </div>
 </div>
-</div>
+
+<script>
+    function getSewingJobs(po_number){
+        var po = po_number;
+        var plant_code = $('#plant_code').val();
+        var inputObj = {poNumber:po,plantCode:plant_code};
+        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+        var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
+        $.ajax({
+            type: "POST",
+            url: function_text+"?inputObj="+inputObj,
+            success: function(response) 
+            {
+                var data = JSON.parse(response);
+				var sewing_job_list ='';
+                $.each(data.sewingJobNumbers, function( index, sewing_job ) {
+                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
+                });
+                $('#dynamic_table').html(sewing_job_list);
+            }
+        });
+    }
+    function sendData(sewing_job,po){
+        var schedule = $('#schedule1').val();
+        var plant_code = $('#plant_code').val();
+        var function_text = "<?php echo getFullURL($_GET['r'],'split_jobs.php','N'); ?>";
+        window.location.href = function_text+'&sewing_job='+sewing_job+'&po_number='+po+'&schedule='+schedule+'&plant_code='+plant_code ;
+
+    }
+    
+    function verify_split(t){
+        var id = t.id;
+        var st_id = 'qty'+id;
+        var ent = document.getElementById(id).value;
+        var qty = document.getElementById(st_id).value;
+        if(Number(ent) > Number(qty) ){
+            sweetAlert('Error','The quantity to be splitted is more than Total Job Quantity','warning');
+            document.getElementById(id).value = 0;
+        }
+    }
+    function verify_qty()
+    {           
+        var tot = Number(document.getElementById('total').value);
+        var n=0;
+        for(var j=1;j<=tot;j++)
+        {
+            n=n+Number(document.getElementById(j).value);
+        }
+        if(n>0)
+        {
+            return true;
+        }
+        else
+        {
+                sweetAlert('Error','Please update the quantity for any Bundle','warning');
+                return false;
+        }	
+    }
+</script>
