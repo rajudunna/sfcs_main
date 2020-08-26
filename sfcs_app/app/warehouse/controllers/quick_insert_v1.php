@@ -50,11 +50,12 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 echo'<td>Date:</td><td> <input type="text" class="form-control" name="date" value="'.date("Y-m-d").'"></td>';
 
 echo '<td style="padding:4px;">Locaton:</td><td><select class="form-control" name="ref1">';
-echo "<option value=\"\"></option>";
+
 $sql="select * from $wms.location_db where plant_code='$plant_code' and status=1 order by sno";
 mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
+echo "<option>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	echo "<option value=\"".$sql_row['location_id']."\">".$sql_row['location_id']."</option>";
