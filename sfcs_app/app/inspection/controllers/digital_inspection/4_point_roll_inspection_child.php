@@ -524,7 +524,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                     <tbody>
                     <input type="hidden" value="" name="hidenMaxCount" id="hidenMaxCount">
                     <?php
-                        $select_four_points = "SELECT GROUP_CONCAT(selected_point) AS selcted_points,GROUP_CONCAT(points) AS points,code,description  FROM `wms`.`four_points_table` WHERE insp_child_id='". $sno_points."' and plant_code='".$plant_code."' GROUP BY CODE ";
+                        $select_four_points = "SELECT GROUP_CONCAT(selected_point) AS selcted_points,GROUP_CONCAT(points) AS points,code,description  FROM $wms.`four_points_table` WHERE insp_child_id='". $sno_points."' and plant_code='".$plant_code."' GROUP BY CODE ";
                         $fourpoints_result = mysqli_query($link, $select_four_points) or exit("get_parent_id Error--12" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         $num_rows = mysqli_num_rows($fourpoints_result);
 
