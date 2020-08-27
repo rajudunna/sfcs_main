@@ -150,7 +150,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 						  $for_last_val = $last_id_ref+$iro_cnt;
 						  for($last_id=$last_id_ref;$last_id<$for_last_val;$last_id++){
 
-							$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$last_id;
+							$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid=".$last_id;
 							//echo "Update : ".$update_query."</br>"; 
 						  $sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -265,7 +265,7 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 					$qty_count += 1;
 					$last_id = mysqli_insert_id($link);
 					
-					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
+					$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$plantcode."-',tid),updated_user='$username',updated_at='".date('Y-m-d')."' where plant_code='$plantcode' and tid='$last_id'";
 					$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}

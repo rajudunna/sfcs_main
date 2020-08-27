@@ -261,7 +261,7 @@ if($sql_num_check>0)
 			$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
 
 			echo "<tr>";
-			if($status==0)
+			if(($status==0) && ($available>0))
 			{
 				echo "<td>$location</td><td>$box</td><td>$available</td>";
 				echo '<td><input type="text" class="form-control float" name="qty_issued[]" value="" onchange="if(check1(this.value, '.$available.')==1010){ this.value=0;} "  ></td>';
