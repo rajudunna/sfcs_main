@@ -85,7 +85,6 @@ function checkAll()
 <?php
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$plantcode="Q01";
 //function to get style from mp_color_details
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
@@ -237,7 +236,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		$result_bindingdockets=getDocketDetails($sub_po,$plantcode,$bindingtype);
 		$binding_dockets=$result_bindingdockets['docket_lines'];
 	}
-	//var_dump($binding_dockets);
+	
 	echo "<div class='col-sm-3'>
 	<b>Style : </b> <h4><span class='label label-primary'>".$style."</span></h4>";
 	echo "</div>";
