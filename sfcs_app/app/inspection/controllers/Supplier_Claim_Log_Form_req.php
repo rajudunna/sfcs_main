@@ -96,7 +96,7 @@ while ($row1=mysqli_fetch_array($count))
 					}
 				}
 
-				$sql3="select unique_id as uid,log_date as upd from  $pps.inspection_db where batch_ref=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";
+				$sql3="select unique_id as uid,log_date as upd from  $wms.inspection_db where batch_ref=\"".$reject_batch_no."\" and plant_code='".$plant_code."'";
 				$result3=mysqli_query($link, $sql3) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row3=mysqli_fetch_array($result3))
 				{

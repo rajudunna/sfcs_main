@@ -1824,7 +1824,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $pps.inspection_db where plant_code='$plantcode' and batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
+$sql="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") ";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2342,14 +2342,15 @@ if($num_check>0)
 	  echo "<td class=xl12824082 colspan=6 width=98 style='border-left:none;width:130pt'>".wordwrap($temp[14],10,"<br>\n")."</td>
 	  <td class=xl9624082 colspan=14 width=98 style='border-left:none;width:130pt'>";
 				//getting rejection reasons from mdm with category filter as inspection
-	  			$reject_reason_query = "select * from $mdm.reasons where plant_code='$plantcode' and department_type = '" . $department_reasons['Inspection'] . "'";
+	  			$reject_reason_query = "select * FROM $wms.reject_reasons";
 				$reject_reasons=mysqli_query($link_new, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row1=mysqli_fetch_array($reject_reasons))
-				{
-					if ($temp[15] == $row1['internal_reason_code']) {
-						echo wordwrap($row1["internal_reason_description"],25,"<br>\n");
+	    		while($row1=mysqli_fetch_array($reject_reasons))
+	    		{
+					if ($temp[15] == $row1['tid']) 
+					{
+						echo "<option value=".$row1['tid']." selected>".$row1["reject_desc"]."</option>";
 					}
-				}
+				}	
 	 echo "</td>
 	 </tr>";
 	

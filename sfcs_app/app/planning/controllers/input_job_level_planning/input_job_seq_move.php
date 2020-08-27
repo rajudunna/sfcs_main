@@ -65,76 +65,80 @@
         </form>
 
         <?php
+            $tasktype = TaskTypeEnum::SEWINGJOB;
+            $job_group_type=TaskTypeEnum::plannedsewingjob;
             if($_POST['submit']){
                 echo "<hr>"; 
-
-                $temp_table_name="temp_pool_db.plan_dash_doc_summ_input_".$username;
-
-                $sql="DROP TABLE IF EXISTS $temp_table_name";
-                // echo $sql."<br/>";
-                mysqli_query($link, $sql) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
-                
-                $sql="CREATE  TABLE $temp_table_name ENGINE = MYISAM SELECT act_cut_status,doc_no,order_style_no,order_del_no,order_col_des,carton_act_qty as total,input_job_no as acutno,group_concat(distinct char(color_code)) as color_code,input_job_no,input_job_no_random_ref,input_module from $bai_pro3.plan_dash_doc_summ_input where (input_trims_status!=4 or input_trims_status IS NULL or input_panel_status!=2 or input_panel_status IS NULL) AND short_shipment_status = 0 GROUP BY input_job_no_random_ref order by input_priority";
-                mysqli_query($link, $sql) or exit("$sql Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                $module= $_POST['module'];
-
-                $sql1="SELECT * from $temp_table_name where input_module='$module'";
-
-                $sql_result1=mysqli_query($link, $sql1) or exit("$sql1 Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-                $sql_num_check=mysqli_num_rows($sql_result1);
-                    
+                $module= $_POST['module'];    
                 echo "<h3><span class='label label-success'>Selected Module : ". $module."</span></h3>";
                 echo '<form action="'.getFullURLLevel($_GET['r'],'input_job_seq_update.php',0,'N').'" method="post" name="myForm">';
                 echo '<div class="row"><div class="col-md-4">';
                 echo '<ul id="sortable" module="'.$module.'" class="ui-sortable">';
-                $input_jobs = array();
-                $no_of_jobs = mysqli_num_rows($sql_result1);
-                while($sql_row1=mysqli_fetch_array($sql_result1))
-                {
-                    $type_of_sewing=$sql_row1['type_of_sewing'];
-                    $doc_no_ref=$sql_row1['doc_no'];
-                    $doc_no=$sql_row1["input_job_no_random_ref"];						
-                    $style1=$sql_row1['order_style_no'];
-                    $schedule1=$sql_row1['order_del_no'];
-                    $color1=$sql_row1['order_col_des'];
-                    $total_qty1=$sql_row1['total'];
-                    $cut_no1=$sql_row1['acutno'];
-                    $color_code1=$sql_row1['color_code'];
-                    
-                    $input_priority=$sql_row1['input_priority'];
 
-                    $sql_style_id="SELECT DISTINCT style_id as sid FROM $bai_pro3.BAI_ORDERS_DB_CONFIRM WHERE order_STYLE_NO=\"$style1\" and order_del_no=\"$schedule1\" LIMIT 1";
-                    $sql_result_id=mysqli_query($link, $sql_style_id) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row_id=mysqli_fetch_array($sql_result_id))
-                    {
-                        $style_id_new=$sql_row_id["sid"];
-                    }
-                        
-                    $get_fab_req_details="SELECT * FROM $pms.fabric_priorities WHERE doc_ref_club=\"$doc_no_ref\" AND plant_code='$plant_code' ";
-                    $get_fab_req_result=mysqli_query($link, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $resulted_rows = mysqli_num_rows($get_fab_req_result);
+               //Qry to fetch task_header_id from task_header
+               $task_header_id=array();
+               $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$module' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plant_code'";
+               $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+               while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
+               {
+               $task_header_id[] = $task_header_id_row['task_header_id'];
+               }
+               //To get taskrefrence from task_jobs based on resourceid
+               $task_job_reference=array();
+               $get_refrence_no="SELECT task_job_reference FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plant_code'";
+               $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+               while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+               {
+               $task_job_reference[] = $refrence_no_row['task_job_reference'];
+               }
+               //Qry to get sewing jobs from jm_jobs_header
+               $result_planned_jobs=getPlannedJobs($module,$tasktype,$plant_code);
+               $job_number=$result_planned_jobs['job_number'];
 
-
-                    // add by Chathuranga	
-                    
-                    
-                    $display_prefix1 = get_sewing_job_prefix("prefix","$pms.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-                    $bg_color1 = get_sewing_job_prefix("bg_color","$pms.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule1,$color1,$cut_no1,$link);
-
-                    $title=str_pad("Style:".$style1,80)."\n".str_pad("Schedule:".$schedule1,80)."\n".str_pad("Job No:".$display_prefix1,80)."\n".str_pad("Qty:".$total_qty1,90);   
-                    if($style1){
-                        if($bg_color1 == 'white'){
-                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:red;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
-                        }else if($bg_color1 == 'yellow'){
-                            echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:white;border: 4px solid yellow;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
-                        }else{
-                            if($style_id_new !== NULL){
-                                echo '<li class="ui-state-default" id="'.$doc_no.'"  style="background-color:'.$bg_color1.';"  title="'.$title.'" ><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="red">'.$display_prefix1."(".$style_id_new." - ".$schedule1.')</font></strong></li>';
-                            }
+               $no_of_jobs = $toget_sewing_jobs_num;
+               
+               //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
+               $job_detail_attributes=[];
+               $qry_toget_style_sch="SELECT * FROM $tms.task_attributes where task_header_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'";
+               $qry_toget_style_sch_result=mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+               while($row2=mysqli_fetch_array($get_details_result))
+               {
+                    foreach($sewing_job_attributes as $key=> $val){
+                        if($val == $row2['attribute_name'])
+                        {
+                            $job_detail_attributes[$val] = $row2['attribute_value'];
                         }
                     }
-                }
+               }
+               $style1=$job_detail_attributes[$sewing_job_attributes['style']];
+               $color1=$job_detail_attributes[$sewing_job_attributes['color']];
+                   
+               //Function to get schedules from getBulkSchedules based on style,plantcode
+               $result_schedules=getBulkSchedules($style,$plant_code);
+               $schedule_details=$result_schedules['bulk_schedule'];
+               $schedule1=implode("," , $schedule_details);
+               $doc_qty=0;  
+               foreach($job_number as $sew_num=>$jm_sew_id)
+               {
+                                   
+                   $id="#33AADD"; //default existing color
+                                           
+                   if($style==$style1 and $color==$color1)
+                   {
+                   $id="red";
+                   }
+                   else
+                   {
+                   $id="#008080";
+                   }
+                   $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$job_quantity[$jm_sew_id],50);
+
+                   echo '<li class="ui-state-default" id="'.$jm_sew_id.'"  style="background-color:red;" title="'.$title.'"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span><strong><font color="black">'.$sew_num.'</font></strong></li>';
+
+
+               }
+                
+
                 echo '</ul></div></div><br>';
                 echo '<input type="hidden" name="listOfItems" value="">';
                 if($no_of_jobs > 0){

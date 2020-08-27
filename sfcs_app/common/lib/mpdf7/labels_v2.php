@@ -6,6 +6,8 @@
   require_once 'vendor/autoload.php';
   // echo __DIR__ . '\vendor\autoload.php';
   // die();
+	$plant_code = $_SESSION['plantCode'];
+
   $mpdf = new \Mpdf\Mpdf([
 	  'mode' => 'utf-8', 
 	  'format' => [50, 100], 
@@ -57,13 +59,13 @@ margin-right: 10px;
 <body>';
 
 
-$sqlm="select lot_no from $bai_rm_pj1.sticker_report where inv_no =\"$inv_no\" or batch_no=\"$inv_no\" or po_no=\"$inv_no\"";
+$sqlm="select lot_no from $bai_rm_pj1.sticker_report where plant_code = '$plant_code' and inv_no =\"$inv_no\" or batch_no=\"$inv_no\" or po_no=\"$inv_no\"";
 $sql_resultm=mysqli_query($link,$sqlm) or exit("Sql Error".mysql_error());
 while($sql_rowm=mysqli_fetch_array($sql_resultm))
 {
 	$lot_no=$sql_rowm['lot_no'];
 
-	$sql="select * from $bai_rm_pj1.sticker_report where lot_no like \"%".trim($lot_no)."%\"";
+	$sql="select * from $bai_rm_pj1.sticker_report where plant_code = '$plant_code' and lot_no like \"%".trim($lot_no)."%\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -90,7 +92,7 @@ while($sql_rowm=mysqli_fetch_array($sql_resultm))
 // 	$child_lots=$sql_row['child_lots'];
 // }
 
-	$sql="select * from $bai_rm_pj1.store_in where lot_no like \"%".trim($lot_no)."%\"";
+	$sql="select * from $bai_rm_pj1.store_in where plant_code = '$plant_code' and lot_no like \"%".trim($lot_no)."%\"";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 	$tot_labels=mysqli_num_rows($sql_result);
 	$x=1;

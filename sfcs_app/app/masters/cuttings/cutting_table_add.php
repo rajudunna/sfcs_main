@@ -17,6 +17,7 @@
 
 <body>
 <?php 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
     if(isset($_GET['tid'])){

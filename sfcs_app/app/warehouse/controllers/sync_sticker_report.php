@@ -84,6 +84,7 @@ $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 $url1 = getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R');
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
+$current_date = date('Y-m-d h:i:s');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url1);
 $company_num = $company_no;
@@ -101,7 +102,7 @@ if(isset($_POST['download']))
 		foreach($grn_details as $codes)
 		{
 			$code=explode("-",$codes);
-			$cluster_code=$code[0];
+			$cluster_code=$plant_code;
 			$central_wh_code=$code[1];
 			$plant_wh_code=$code[2];
 			$query_text = "CALL $m3_db.RPT_APL_SFCS_M3_INTEGRATION('".$cluster_code."','".$comp_no."','".$central_wh_code."','".$plant_wh_code."','".$date_val."','".$date_val."',0,'%','%','$mode')";
@@ -140,10 +141,10 @@ if(isset($_POST['download']))
 			    $api_data = json_decode($api_data, true);
 			    $rm_color = $api_data['MIRecord'][0]['NameValue'][0]['Value'];
 				
-				$sql_lot = "INSERT IGNORE INTO $wms.sticker_report (lot_no) VALUES (\"".$lot_num."\")";
+				$sql_lot = "INSERT IGNORE INTO $wms.sticker_report (lot_no,plant_code,created_user,created_at,updated_user,updated_at) VALUES (\"".$lot_num."\",'$plantcode','$username','$current_date','$username','$current_date')";
 				//echo $sql_lot."</br>";
 				$result_lot = mysqli_query($link, $sql_lot);
-				$sql_sticker_det = "UPDATE $wms.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = \"".$grn_entry_no."\", grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\", rm_color = \"".$rm_color."\",created_user = \"".$username."\",updated_user = \"".$username."\", plant_code = \"".$plant_code."\" WHERE lot_no = \"".$lot_num."\"";
+				$sql_sticker_det = "UPDATE $wms.sticker_report SET po_line = \"".$po_line."\" , po_subline = \"".$po_subline."\", item = \"".$item_no."\", item_name = \"".$item_name."\", item_desc = \"".$item_des."\", inv_no = \"".$invoice_no."\", po_no = \"".$po_ro."\", rec_no = \"".$del_no."\", rec_qty = \"".$rec_qty."\", lot_no = \"".$lot_num."\", batch_no = \"".$batch_num ."\", buyer = \"".$buyer_buss_area."\", product_group = \"".$proc_grp."\", pkg_no = \"".$grn_entry_no."\", grn_date = \"".$grn_date."\", supplier = \"".$supp_name."\", uom = \"".$umo."\", grn_location = \"".$grn_loc."\", po_line_price = \"".$po_line."\", po_total_cost = \"".$po_tot_val."\", style_no = \"".$style."\", grn_type = \"".$mode."\", rm_color = \"".$rm_color."\",created_user = \"".$username."\",updated_user = \"".$username."\", plant_code = \"".$plant_code."\" WHERE lot_no = \"".$lot_num."\" and plant_code='$plantcode'";
 				//echo $sql_sticker_det."</br>";
 				$result_rec_insert = mysqli_query($link, $sql_sticker_det);
 				if($result_rec_insert)

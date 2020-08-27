@@ -8,68 +8,8 @@ Change Log:
 <?php
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	// require_once('phplogin/auth.php');
-	ob_start();
-	$has_permission = haspermission($_GET['r']);
-	$plant_code = $_SESSION['plantCode'];
-	$username = $_SESSION['userName'];
-
-	
-	// require_once "ajax-autocomplete/config.php";
-	// $url = getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R');
-	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-	// $url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
-	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
-	// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	ob_start();	
 ?>
-
-<?php
-//$authorized=array("kirang","maheswararaok","nazeers","sureshg","sivashankarb","baiadmn","bainet","kirang","apparaoo","kirang","narasingaraon","ramprasadk","demudun","pothurajus","kirang");
-
-/*
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
-
-$sql="select * from menu_index where list_id=161";
-$result=mysql_query($sql,$link1) or mysql_error("Error=".mysql_error());
-while($row=mysql_fetch_array($result))
-{
-	$users=$row["auth_members"];
-}
-
-$auth_users=explode(",",$users);
-*/
-if(in_array($view,$has_permission))
-{
-	
-} 
-else
-{
-	header("Location:restrict.php");		
-}
-
-?>
-
-<!-- <script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>
-<script type='text/javascript' src='ajax-autocomplete/jquery.autocomplete.js'></script>
-<link rel="stylesheet" type="text/css" href="ajax-autocomplete/jquery.autocomplete.css" /> -->
-
-<script type="text/javascript">
-// $().ready(function() {
-// 	$("#course").autocomplete("ajax-autocomplete/get_course_list_rec_no.php", {
-// 		width: 260,
-// 		matchContains: true,
-// 		//mustMatch: true,
-// 		//minChars: 0,
-// 		//multiple: true,
-// 		//highlight: false,
-// 		//multipleSeparator: ",",
-// 		selectFirst: false
-// 	});
-// });
-</script>
-
-
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
   <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
@@ -90,6 +30,8 @@ else
 ?>
 
 <?php
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 if(isset($_POST['submit']))
 {	
@@ -228,7 +170,7 @@ echo "<div class='panel panel-default'>
 					<b>Item Description :</b> $item_desc
 				</div>
 				<div class='col-md-3'>
-					<b>Item Name :</b> $item_name
+					<b>Item Name :</b> '".chunk_split($item_name, 30, '<br/>')."'
 				</div>
 			</div>
 			<br/>
@@ -616,8 +558,16 @@ $(document).ready(function()
 	if(uploadField != null){
 		uploadField.onchange = function() {
 			if(this.files[0].size > 5300000){
-			sweetAlert('File is too big','Cant Upload','info');
+			// sweetAlert('File is too big','Cant Upload','info');
+			swal({
+			 title: "Cant Upload",
+			 text: "File is too big.",
+			 type: "info",
+			 timer: 10000
+			 });
+			 
 			this.value = "";
+			 
 			};
 		};
 	}

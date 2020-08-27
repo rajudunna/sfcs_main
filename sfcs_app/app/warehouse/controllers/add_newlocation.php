@@ -94,7 +94,7 @@ $username = $_SESSION['userName'];
 					echo "<script>sweetAlert('Warning','Location Already Existed..','error')</script>";
 				}else{
 					//insert qry here
-					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user,updated_user,updated_at) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."','".$username."',NOW())";
+					$qry_insertloc="INSERT INTO $wms.location_db (location_id,STATUS,product,plant_code,created_user,updated_user,updated_at,created_at) VALUES ('$location_name','$location_status','$product','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
 					$update_locations=mysqli_query($link, $qry_insertloc) or exit("update_buyer_code_qry Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					//$url = getFullURL($_GET['r'],'add_newlocation.php','N');
 					//header("Location: ".$url);
@@ -135,7 +135,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 						echo'<div class="form-inline">';
 							echo'<div class="form-group">';
 								echo '<b>Category : </b><select class="form-control" name="product" id="product" required>
-									<option></option>
+									<option>Please Select</option>
 									<option value="Fabric" '.$fabric.'>Fabric</option>
 									<option value="Trim" '.$trim.'>Trim</option>
 								</select>&nbsp;&nbsp;';
@@ -177,7 +177,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 						echo"<tbody>";
 						
 						//getting data from locaytion_db in bai rm pj1
-						$qry_locations=" select * from $wms.location_db where plant_code='".$plant_code."'";
+						$qry_locations=" select * from $wms.location_db where plant_code='".$plant_code."' ORDER BY sno DESC";
 						//echo $qry_locations;
 						//mysqli_query($link11, $qry_locations) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result=mysqli_query($link, $qry_locations);
@@ -228,7 +228,16 @@ if(action == ""){
 }
 $("#add").click(function(){
 	$("#form").show();
+	$("#loc_name").val('');
 	$("#table").hide();
+});
+$(function() {
+        $('#loc_name').on('keypress', function(e) {
+            if (e.which == 32){
+                console.log('Space Detected');
+                return false;
+            }
+        });
 });
 </script>
 

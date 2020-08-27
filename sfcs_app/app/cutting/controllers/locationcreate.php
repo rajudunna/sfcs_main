@@ -10,10 +10,11 @@
 </style>
 
 <?php
+error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-	error_reporting(0);
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+
 	$flag='';
 	if (isset($_GET['edit_id'])) {
 		$loc_id = $_GET['edit_id'];

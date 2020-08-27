@@ -5,7 +5,8 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
-?>
+	$current_date = date('Y-m-d h:i:s');
+	?>
 
 
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
@@ -49,11 +50,12 @@ if(isset($_POST['submit']) or isset($_GET['ref']))
 echo'<td>Date:</td><td> <input type="text" class="form-control" name="date" value="'.date("Y-m-d").'"></td>';
 
 echo '<td style="padding:4px;">Locaton:</td><td><select class="form-control" name="ref1">';
-echo "<option value=\"\"></option>";
+
 $sql="select * from $wms.location_db where plant_code='$plant_code' and status=1 order by sno";
 mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
+echo "<option>Please Select</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	echo "<option value=\"".$sql_row['location_id']."\">".$sql_row['location_id']."</option>";
@@ -108,7 +110,7 @@ echo "<td><a href=\"$url?lot_no=$ref\" onclick=\"Popup=window.open('$url?lot_no=
 		while($sql_row1=mysqli_fetch_array($main_result))
 		{
 			
-			$sql="select coalesce(sum(qty_rec),0) as \"in\" from $wms.store_in where plant_code='$plant_code' lot_no=\"".$sql_row1['lot_no']."\"";
+			$sql="select coalesce(sum(qty_rec),0) as \"in\" from $wms.store_in where plant_code='$plant_code' and lot_no=\"".$sql_row1['lot_no']."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))
 			{
@@ -201,11 +203,11 @@ if(!empty($_POST['put']) && isset($_POST['put']))
 		if($qty[$i]>0)
 		{
 		
-		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,updated_user) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$username')";
+		$sql="insert into $wms.store_in (lot_no, ref1, ref2, qty_rec, date, remarks, log_user,plant_code,created_user,created_at,updated_user,updated_at) values ('$lot_no[$i]', '$ref1', '$box[$i]', $qty[$i], '$date', '$remarks[$i]','$user_name','$plant_code','$username','$current_date','$username','$current_date')";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$last_id = mysqli_insert_id($link);
 
-		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid) where plant_code='$plant_code' AND tid='$last_id'";
+		$update_query="UPDATE `$wms`.`store_in` SET barcode_number=CONCAT('".$global_facility_code."-',tid),updated_user='$username',updated_at='$current_date' where plant_code='$plant_code' AND tid='$last_id'";
 		$sql_result1=mysqli_query($link, $update_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}

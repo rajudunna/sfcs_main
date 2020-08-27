@@ -1794,7 +1794,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $pps.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select * from $wms.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -2200,34 +2200,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	}
 }
 
-if($num_check>0)
-{
-	$schedule=array();
-	$job=array();
-	
-	if(sizeof($doc_db)>0)
-	{
-		$sql="select material_req,order_del_no,color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$doc_db).")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$schedule[]=$sql_row['order_del_no'];
-			$job[]=chr($sql_row['color_code']).$sql_row['acutno'];
-		}
-	}
-	
-	if(sizeof($recut_doc_db)>0)
-	{
-		$sql="select material_req,order_del_no,color_code,acutno from $bai_pro3.order_cat_recut_doc_mk_mix where doc_no in (".implode(",",$recut_doc_db).")";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Errorg".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$schedule[]=$sql_row['order_del_no'];
-			$job[]="R".$sql_row['acutno'];
-		}
-	}
-		
-}
+
 	//For Showing Issued Details in Report
 	
 	  echo "<td height=20 class=xl12824082 style='height:25pt'>".$temp[1]."</td>
@@ -2249,7 +2222,7 @@ if($num_check>0)
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
 	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
-	  			$reject_reason_query="select * from $wms.reject_reasons where plant_code='".$plant_code."'";
+	  			$reject_reason_query="select * from $wms.reject_reasons";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{
@@ -2260,7 +2233,7 @@ if($num_check>0)
 	 echo "</td>
 	 </tr>";
 	
-	unset($doc_db,$recut_doc_db,$qty,$schedule,$job);
+	unset($doc_db,$recut_doc_db,$qty);
  }
   
  ?>

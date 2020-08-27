@@ -4,10 +4,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 
 <?php
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $team_id=$_GET['team_id'];
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $conn=$link;
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());

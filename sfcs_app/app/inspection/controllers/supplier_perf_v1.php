@@ -390,7 +390,7 @@ if(mysqli_num_rows($sql_result) > 0){
             }
 
             
-            $sql2l="select date(log_date) as dat,consumption,act_gsm,pur_gsm,pur_width,act_width,qty_insp,unique_id,pts,fallout,skew_cat,skew,shrink_l, shrink_w, date(log_date) as entdate,status from $pps.inspection_db where batch_ref=\"".$batch_ref."\" and plant_code='".$plant_code."'";
+            $sql2l="select date(log_date) as dat,consumption,act_gsm,pur_gsm,pur_width,act_width,qty_insp,unique_id,pts,fallout,skew_cat,skew,shrink_l, shrink_w, date(log_date) as entdate,status from $wms.inspection_db where batch_ref=\"".$batch_ref."\" and plant_code='".$plant_code."'";
             // echo $sql2l."<br>";
             $sql_result2l=mysqli_query($link, $sql2l) or exit("Sql Error".$sql2l.mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row2l=mysqli_fetch_array($sql_result2l))

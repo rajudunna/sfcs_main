@@ -3,7 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',2,'R'));
-$has_permission=haspermission($_GET['r']);
+//$has_permission=haspermission($_GET['r']);
 ?>
 <script>
 		
@@ -1818,7 +1818,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $pps.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
+$sql="select * from $wms.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1992,7 +1992,7 @@ tags will be replaced.-->
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>Consumption<span style='mso-spacerun:yes'></span></td>
-  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"    id=\"consumption\" name=\"consumption\" value='".$consumption."' />"; } else { echo $consumption; }?></td>
+  <td colspan=2 class=xl9324082 dir=LTR width=130 style='border-left:none;  width:98pt'><?php  echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"    id=\"consumption\" name=\"consumption\" value='".$consumption."' />"; ?></td>
   <td colspan=7 class=xl12224082 style='border-right:.5pt solid black;  border-left:none'>Inspection Summary</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Supplier</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'>
@@ -2008,7 +2008,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty In (<?php echo $fab_uom; ?>)</td>
   <td colspan=2 class=xl10324082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php echo round($rec_qty1,2); ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>PTS/100 Sq.Yd.</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; } else { echo $pts; }?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php  echo "<input onchange=\"change_head(1,this.name)\" type=\"text\" class=\"textbox float req_man\"  id=\"pts\" name=\"pts\" value='".$pts."' />"; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Package</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php echo $pkg_no; ?></td>
  </tr>
@@ -2018,12 +2018,12 @@ tags will be replaced.-->
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;  width:102pt'>Qty Inspected</td>
   <td colspan=2 class=xl10524082 dir=LTR width=128 style='border-right:.5pt solid black;  border-left:none;width:96pt'><?php if($qty_insp > 0) {echo $qty_insp;} else { echo "0";} ?></td>
   <td class=xl9424082 dir=LTR width=99 style='border-top:none;border-left:none;  width:74pt'>Fallout</td>
-  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >'; } else { echo $fallout; }?></td>
+  <td colspan=2 class=xl10324082 dir=LTR width=145 style='border-right:.5pt solid black;  width:109pt'><?php  echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="fallout" name="fallout" value="'.$fallout.'" >';?></td>
   
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;width:102pt'>Pur. GSM</td>
-  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4  type="text" class="textbox float req_man"   id="pur_gsm" name="pur_gsm"  value="'.$pur_gsm.'" >'; } else { echo $pur_gsm; }?></td>
+  <td class=xl9324082 dir=LTR style='border-left:none; width:102pt'><?php echo '<input onchange="change_head(1,this.name)" size=4  type="text" class="textbox float req_man"   id="pur_gsm" name="pur_gsm"  value="'.$pur_gsm.'" >'; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none; style="align:center;" width:102pt'>Act. GSM</td>
-  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" size=4 type="text" class="textbox float req_man" id="act_gsm" name="act_gsm"  value="'.$act_gsm.'" >'; } else { echo $act_gsm; }?></td>
+  <td colspan=1 class=xl9324082 dir=LTR width=136 style='border-left:none; width:102pt'><?php  echo '<input onchange="change_head(1,this.name)" size=4 type="text" class="textbox float req_man" id="act_gsm" name="act_gsm"  value="'.$act_gsm.'" >';?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>GRN Date</td>
@@ -2036,8 +2036,7 @@ tags will be replaced.-->
 
 
   <?php 
- if(in_array($authorized,$has_permission))
- {
+ 
  	 echo "<select onchange='change_head(1,this.name)'  id='skew_cat' name='skew_cat' class='listbox req_man'>";
 	 if($skew_cat==1)
 	 {
@@ -2066,34 +2065,15 @@ tags will be replaced.-->
 	 }
 	 
 	 echo "</select>"; 
- }
- else
- {
-     if($skew_cat==1)
-	 {
-	 	echo "Skewness";
-	 }
-	 else if($skew_cat==2)
-	 {
-	 	echo "Bowing";
-	 }	 
-	 else if($skew_cat=="" or $skew_cat==0)
-	 {
-	 	echo "NIL";
-	 }
-	 else
-	 {
-	 	echo "NIL";
-	 }
- 	
- }  
+ 
+   
     ?></td>
   <td colspan=2 class=xl9424082 dir=LTR width=145 style='border-right:.5pt solid black;
-  width:109pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text"  class="textbox float req_man" id="skew" name="skew" value="'.$skew.'" />'; } else { echo $skew; } ?></td>
+  width:109pt'><?php  echo '<input onchange="change_head(1,this.name)"  type="text"  class="textbox float req_man" id="skew" name="skew" value="'.$skew.'" />'; ?></td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='border-left:none;
   width:102pt'>Purchase Width</td>
   <td colspan=4 class=xl9324082 dir=LTR width=272 style='border-right:1.0pt solid black;
-  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="pur_width" name="pur_width" value="'.$pur_width.'" />';} else { echo $pur_width; } ?></td>
+  border-left:none;width:204pt'><?php  echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="pur_width" name="pur_width" value="'.$pur_width.'" />'; ?></td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9724082 dir=LTR width=80 style='height:20.1pt;  border-top:none;width:60pt'>No of rolls</td>
@@ -2104,7 +2084,7 @@ tags will be replaced.-->
   <td class=xl9324082 dir=LTR width=77 style='border-top:none;border-left:none;  width:58pt'>L%</td>
   <td class=xl9424082 dir=LTR width=68 style='border-top:none;border-left:none;  width:51pt'>W%</td>
   <td colspan=2 class=xl9324082 dir=LTR width=136 style='width:102pt'>Actual  Width</td>
-  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="act_width" name="act_width" value="'.$act_width.'" />';} else { echo $act_width; } ?> </td>
+  <td colspan=4 class=xl13524082 dir=LTR width=272 style='border-right:1.0pt solid black;  border-left:none;width:204pt'><?php  echo '<input onchange="change_head(1,this.name)"  type="text" class="textbox float req_man"  id="act_width" name="act_width" value="'.$act_width.'" />'; ?> </td>
  </tr>
  <tr height=26 style='mso-height-source:userset;height:20.1pt'>
   <td height=26 class=xl9824082 dir=LTR width=80 style='height:20.1pt;
@@ -2114,8 +2094,7 @@ tags will be replaced.-->
   width:102pt'>Fabric Way</td>
   <td colspan=2 class=xl11424082 style='border-right:.5pt solid black;
   border-left:none'><?php 
- if(in_array($authorized,$has_permission))
- {
+ 
 	 echo "<select onchange='change_head(1,this.name)' id='gmt_way'  name='gmt_way' class='listbox req_man'>";
 	 
 	  if($gmt_way=="" or $gmt_way==0)
@@ -2153,33 +2132,11 @@ tags will be replaced.-->
 	 }
 
 	 echo "</select>"; 
- }
- else
- {
- 	 if($gmt_way=="" or $gmt_way==0)
-	 {
-	 	echo "";
-	 }
-	 else if($gmt_way==1)
-	 {
-	 	echo "N/A";
-	 }
-	 else if($gmt_way==2)
-	 {
-	 	echo "One Way";
-	 }
-	 else if($gmt_way==3)
-	 {
-	 	echo "Two Way";
-	 }
-	 else
-	 {
-	 	echo "";
-	 }
- }  
+ 
+  
     ?></td>
-  <td class=xl11324082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />';  } else { echo $shrink_l; } ?> </td>
-  <td class=xl11424082 style='border-top:none;border-left:none'><?php if(in_array($authorized,$has_permission)) { echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  } else { echo $shrink_w; } ?> </td>
+  <td class=xl11324082 style='border-top:none;border-left:none'><?php  echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_l" name="shrink_l" value="'.$shrink_l.'" />'; ?> </td>
+  <td class=xl11424082 style='border-top:none;border-left:none'><?php echo '<input onchange="change_head(1,this.name)" onkeypress="return isFloat(event)" type="text" class="textbox req_man"  id="shrink_w" name="shrink_w" value="'.$shrink_w.'" />';  ?> </td>
   <td colspan=2 class=xl11324082>Invoice</td>
   <td class='scroll_number' colspan=4 class=xl11324082 style='border-right:1.0pt solid black'><?php echo $inv_no; ?></td>
  </tr>
@@ -2238,13 +2195,13 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
   	
-	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
-	{
+	// if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
+	// {
 	//$update_access
 	
 		echo '<input type="checkbox" name="option"  id="option"  onclick="javascript:enableButton();">Enable <input type="submit" value="Save" class="btn btn-primary confirm-submit" disabled="true"  id="put" name="put" /><br>';		
 		echo '<input type="checkbox" name="option1"  id="option1" onclick="javascript:enableButton1();">Enable <input type="submit" value="Confirm" id="confirm" name="confirm"  class="btn btn-primary confirm-submit" disabled="true" /><br>';		
-	}
+	// }
 
   }
  
@@ -2431,8 +2388,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		$shade_group_total[array_search($temp[2],$scount_temp2)]+=$temp[3];
 	}
 	//for shade wise category
-	if(in_array($authorized,$has_permission))
-	{
+	
 		if ($temp[16]+$temp[20] > 0 && $temp[4] > 0) 
 		{
 			$readonly = 'readonly';
@@ -2444,40 +2400,20 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 		}
 	
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
-		if(!in_array($authorized,$has_permission))
-		{
+		
 			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); value=\"".trim($temp[2])."\" />";
-		}
-		else
-		{
-			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);  value=\"".trim($temp[2])."\" />";
-		}	
+			
 
-		if(!in_array($authorized,$has_permission))
-		{
+		
 			$temp_shade_tag1.=$temp[17]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade1[$i]\" name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[17])."\" />";
-		}
-		else
-		{
-			$temp_shade_tag1.="<input type=\"text\" class='textbox alpha shade_grp1 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade1[$i]\"  name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' \"".$temp[1]."\", $i)' value=\"".trim($temp[17])."\" />";
-		}
 		
-		if(!in_array($authorized,$has_permission))
-		{
+		
+		
 			$temp_shade_tag2.=$temp[18]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade2[$i]\" name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
-		}
-		else
-		{
-			$temp_shade_tag2.="<input type=\"text\" class='textbox alpha shade_grp2 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade2[$i]\"  name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
-		}
 		
-	}
-	else
-	{
-		$temp_shade_tag.=$temp[2];
-		$temp_shade_tag1.=$temp[17];
-		$temp_shade_tag2.=$temp[18];
-	}
+		
+	
+	
 	if($temp[1]=="")
 	{
 		$temp[1]="N/A";
@@ -2616,8 +2552,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  }
 	else
 		{	
-		  if(in_array($authorized,$has_permission))
-		  {	  
+		  	  
 			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>
 				<select name=\"roll_status[$i]\" id='roll_status[$i]'  onchange='change_body(2,this.name,$i)' ".$dropdown_read." class='listbox' id='roll_status[$i]'>";
 			for($iq=0;$iq<sizeof($roll_status);$iq++)
@@ -2631,18 +2566,14 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 					echo "<option value='".$iq."'>".$roll_status[$iq]."</option>";	
 				}
 			}
-			echo "</select></td>";
-		  } 	
-		  else
-		  {
-			echo "<td class=xl13024082 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>".$roll_status[$temp[10]]."<input type=\"hidden\" class='textbox' id=\"roll_status[$i]\"  name=\"roll_status[$i]\" maxlength=\"3\" onchange='change_body(2,this.name,$i)' value=\"".$temp[10]."\" /></td>";	
-		  }
+			echo "</select></td>"; 	
+		  
 		} 	
 			  
 
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	 		//getting rejection reasons from mdm with category filter as inspection
-			  $reject_reason_query = "select * FROM $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "'";
+			  $reject_reason_query = "select * FROM $wms.reject_reasons";
 			  $reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// while($row1=mysqli_fetch_array($reject_reasons))
@@ -2663,17 +2594,13 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  			<option value='' selected >NIL</option>";
 	    		while($row1=mysqli_fetch_array($reject_reasons2))
 	    		{
-					$dd_value = $row1['internal_reason_code'] . '~~' . $row1['external_reason_code'];
-
-					$dd_lable = $row1['internal_reason_code'] . '-' . $row1["internal_reason_description"];
-
-					if ($temp[15] == $row1['internal_reason_code']) 
+					if ($temp[15] == $row1['tid']) 
 					{
-						echo "<option value=".$dd_value." selected>".$dd_lable."</option>";
+						echo "<option value=".$row1['tid']." selected>".$row1["reject_desc"]."</option>";
 					} 
 					else 
 					{
-						echo "<option value=".$dd_value.">".$dd_lable."</option>";
+						echo "<option value=".$row1['tid'].">".$row1["reject_desc"]."</option>";
 					}
 				}
 				
@@ -2934,14 +2861,14 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	
 	if($head_check>0)
 	{
-		$sql="insert ignore into $pps.inspection_db(batch_ref) values (\"$lot_no_new\")";
+		$sql="insert ignore into $wms.inspection_db(batch_ref) values (\"$lot_no_new\")";
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 		if(mysqli_affected_rows($link))
 		{
 			//For Total batched inspeciton done in current month.
-			$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y") ;
+			$sql="select log_date from $wms.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y") ;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($sql_result);
 		  	  for($i=0;$i<sizeof($suppliers);$i++)
@@ -2958,32 +2885,32 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 					}
 					
 					//For Total batched inspeciton done in current month for current supplier.
-					$sql="select log_date from $pps.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
+					$sql="select log_date from $wms.inspection_db where plant_code='".$plant_code."' and month(log_date)=".date("m")." and year(log_date)=".date("Y")." and unique_id like \"%".strtoupper($letters)."%\"";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$count2=mysqli_num_rows($sql_result);
 					$count=strtoupper($letters)."/".str_pad($count,4,"0",STR_PAD_LEFT)."/".str_pad($count2,3,"0",STR_PAD_LEFT);
 				}
 				
 			  }
-		  	$sql="update $pps.inspection_db set unique_id=\"$count\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+		  	$sql="update $wms.inspection_db set unique_id=\"$count\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		  	//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
-		$sql="update $pps.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+		$sql="update $wms.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		// echo "Upadte Qry :".$sql;
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
-	$sql="update $pps.inspection_db set status=0,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+	$sql="update $wms.inspection_db set status=0,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(isset($_POST['confirm']))
 	{
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
-		$sql1="update $pps.inspection_db set status=1,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
+		$sql1="update $wms.inspection_db set status=1,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
@@ -3007,50 +2934,39 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$shrinkage_group = $_POST["shrinkage_group"];
 	$roll_remarks = $_POST["roll_remarks"];
 
-	if(in_array($authorized,$has_permission))
-	{
+	
 		$ele_shade=$_POST['ele_shade'];
-	}
-	if(in_array($authorized,$has_permission))
-	{
+	
+	
 		$ele_shade1=$_POST['ele_shade1'];
-	}
-	if(in_array($authorized,$has_permission))
-	{
+	
+	
 		$ele_shade2=$_POST['ele_shade2'];
-	}
+	
 	
 	for($i=0;$i<$tot_elements;$i++)
 	{	
 		if($ele_check[$i]>0)
 		{
 			$add_query="";
-			if(in_array($authorized,$has_permission))
-			{
-				$add_query=", ref4=\"".$ele_shade[$i]."\", shade_grp=\"".$ele_shade1[$i]."\", act_width_grp=\"".$ele_shade2[$i]."\"";
-			}
-			$rejection_code_explode = explode("~~", $rejection_reason[$i]);
-			$internal_code = $rejection_code_explode[0];
-			$external_code = $rejection_code_explode[1];
-			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]>$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
-			{
-				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason, external_reason_code,shade_grp,act_width_grp, roll_remarks,plant_code,created_user,updated_user)
-				    select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"". $internal_code."\",\"". $external_code ."\",\"".$ele_shade1[$i]."\",\"".$ele_shade2[$i]."\", roll_remarks,'".$plant_code."','".$username."','".$username."' FROM $wms.store_in WHERE tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
-				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
-					   //
-				  	   
-				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $wms.store_in set rejection_reason='', qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks='', roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\" ,updated_at=NOW()$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
-				//   echo $sql1.'<br/>';
-				//   die();
-				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
+				$add_query=", ref4=\"".$ele_shade[$i]."\", shade_grp=\"".$ele_shade1[$i]."\", act_width_grp=\"".$ele_shade2[$i]."\"";
+			
+
+			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			{
+				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$new_tid=mysqli_insert_id($link);  
+					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plantcode' and  tid=".$new_tid;
+					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
+				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$internal_code. "\",, external_reason_code=\"" . $external_code . "\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\" ,updated_user= '".$username."',updated_at=NOW()$add_query where tid=".$ele_tid[$i]." and plant_code='".$plant_code."'";
-				// echo $sql.'<br/>';
-				// die();
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
