@@ -12,6 +12,7 @@ $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
 
 $global_facility_code=$conf1->get('plantcode');
+
 $enable_api_call = $conf1->get('enable-api-call');
 $sewing_rejection=$conf1->get('sewing_rejection');
 // function get_config_values($config_id){
@@ -26,6 +27,8 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 $global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
+
+$plant_wh_code=$conf1->get('fg_wh_code');
 
 $barcode_gen_emb=$conf1->get('barcode_gen_emb');
 //SFCS Db Configurations

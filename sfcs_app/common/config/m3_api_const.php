@@ -7,6 +7,13 @@ $api_password = $conf->get('api-password');
 $api_hostname = $conf->get('api-host-name');
 $api_port_no = $conf->get('api-port');
 
+
+//FG Warehouse API Calls Details
+
+$fg_token = $conf->get('fg-api-bearer-token');
+$fg_api_hostname = $conf->get('fg-api-host-name');
+$fg_api_port_no = $conf->get('fg-api-port');
+
 $facility_code = $conf->get('plantcode');
 
 //REST API TimeOut
