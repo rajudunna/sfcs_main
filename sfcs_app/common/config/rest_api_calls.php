@@ -105,12 +105,13 @@ class rest_api_calls {
 		}
 	} 
 	
+	//Calling FG Warehouse API
 	public function postCartonInfo($carton_info, $warehouse_id, $unique_key) {
-		$url = $fg_api_hostname.":".$fg_api_port_no."/finished-goods-inventory"; // the post url of the m3 server
-		$bearer_token = $fg_token; // the bearer token which brandix need to provide
-		$port_no = $fg_api_port_no;
 		$include_path=getenv('config_job_path');
 		include($include_path.'\sfcs_app\common\config\m3_api_const.php');
+		$url = $fg_api_hostname.":".$fg_api_port_no."/finished-goods-inventory"; // the post url of the m3 server
+		$bearer_token = $fg_token; // the bearer token which brandix need to provide
+		$port_no = $fg_api_port_no;		
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
 			CURLOPT_PORT => $port_no,
@@ -140,13 +141,12 @@ class rest_api_calls {
 	    // writing_logs_to_file($unique_key, $response);
 		
 		curl_close($curl);
-		
+			
 		if($httpcode >= 200 && $httpcode < 300){
 			if($err){
-				//return "cURL Error #:" . $err;
 				$reposnse1['@type']     = 'ServerReturnedNOK';
 				$reposnse1['Message']   = $err; 
-				$reposnse1['status'] = false;
+				$reposnse1['api_status'] = 'fail';
 				return json_encode($reposnse1);
 			}else{
 				return $response;
@@ -154,7 +154,7 @@ class rest_api_calls {
 		}else{
 			$reposnse1['@type']     = 'ServerReturnedNOK';
 			$reposnse1['Message']   = 'API Call failed due to '.$httpcode.' code';
-			$reposnse1['status'] = false;
+			$reposnse1['api_status'] = 'fail';
 			return json_encode($reposnse1);
 		}
 	}  

@@ -1,10 +1,8 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
-	include("../../../../common/config/rest_api_calls.php");
 
-	//API related data
-	$plant_code = $global_facility_code;
+	$plant_code = $plant_wh_code;
 	// $b_op_id='200';
 	// $b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
 	// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
@@ -239,18 +237,22 @@
 									"confirmedDeliveryDate" : "'.$order_date.'"
 								}
 								]';	
-								$post_carton_response = postCartonInfo($carton_info, $plant_code, $carton_id);
-								if ($post_carton_response['status'] == false) {
+								
+								$post_carton_response = $obj->postCartonInfo($carton_info, $plant_code, $carton_id);
+								$decoded = json_decode($post_carton_response,true);
+								
+								if($decoded['api_status'] == 'fail') {
 									// the API is unsuccessfull
 									$update_fg_id="update $bai_pro3.pac_stat set fg_status='fail'  where id = ".$carton_id."";
 									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
 								} else {
 									// the API is successfull
-									$inventory_id = $post_carton_response[0]['id'];
+									$inventory_id = $decoded[0]['id'];
 									$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id."";
 									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
 								}								
 							}
+							
 						}
 					}
 					else
@@ -279,4 +281,6 @@
 		}
 		echo json_encode($result_array);
 	}
+	
+	
 ?>
