@@ -18,9 +18,11 @@ body { zoom:72%;}
 </style>
 <?php
 include('../../../common/config/config.php');
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+// $plant_code = $_SESSION['plantCode'];
+// $username = $_SESSION['userName'];
 $inpsect_id=$_GET['parent_id'];
+$plant_code=$_GET['plant_code'];
+$username=$_GET['username'];
 $get_details21 = "select * from $wms.`inspection_population` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_rolls_data=mysqli_num_rows($details_result21);

@@ -55,7 +55,7 @@ if(in_array($authorized,$has_permission))
 	echo '<a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"controllers/Supplier_Claim_Request_Form.php",1,"N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Log_Form.php","N").'">Log</a> <hr>';
 }
 ?>
-<form  action="index.php?r=<?php echo $_GET['r']; ?>" method="POST" name="test">
+<form  action="index-no-navi.php?r=<?php echo $_GET['r']; ?>" method="POST" name="test">
 <div class="row">
 <div class='col-lg-2'>
 	<label class='control-label'>Start Date: </label><br>

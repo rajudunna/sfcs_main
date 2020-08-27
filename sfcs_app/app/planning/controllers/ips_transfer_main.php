@@ -4,29 +4,15 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
     include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_v2.php");
     $url = getFullURLLevel($_GET['r'],'ips_transfer_ajax.php',0,'R');
-    
-    $sqlx="select * from $bai_pro3.module_master where status='active' order by module_name*1";
-    //echo $sqlx;
-    $sql_resultx=mysqli_query($link, $sqlx) or exit("NO sections availabel");
-    while($sql_rowx=mysqli_fetch_array($sql_resultx))
-    {
-        $modules[]=$sql_rowx['module_name']; 
-    }
-    $mods = implode(',',$modules);
-    $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
-    $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
-    while ($row2=mysqli_fetch_array($sql_res)) 
-    {
-        $short_key = $row2['short_cut_code'];
-    }
-    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods) and operation_code = '$short_key'";
-    //echo  $work_station_module;
-    $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
-    while ($row1=mysqli_fetch_array($sql_result1))
-    {
-        $work_mod[]=$row1['module'];
-    }
+    $plantcode = $_session['plantCode'];
+    $username =  $_session['userName'];
+
+    //Function to get modules based on category
+    $department='Sewing';
+    $result_worksation_id=getWorkstations($department,$plantcode);
+    $workstations=$result_worksation_id['workstation'];
 ?>
 
 <script type="text/javascript">
@@ -135,7 +121,7 @@
                             <select  name="module" class="form-control" id="module">
                                 <option value="" disabled selected>Select Module</option>
                                 <?php
-                                    foreach($work_mod as $module)
+                                    foreach($workstations as $module)
                                         echo "<option value='$module'>$module</option>"
                                 ?>
                             </select>
@@ -160,7 +146,7 @@
                             <select  name="to_module" class="form-control" id="to_module">
                             <option value="" disabled selected>Select Module</option>
                             <?php
-                                foreach($work_mod as $module)
+                                foreach($workstations as $module)
                                     echo "<option value='$module'>$module</option>"
                             ?>
                         </select>

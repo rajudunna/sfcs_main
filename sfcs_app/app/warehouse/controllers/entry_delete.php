@@ -305,7 +305,7 @@ if(isset($_POST['submit2']))
 			echo '<div style=" color:blue; display:none;" id="process_message" name="process_message">
 			Please Wait
 			</div>';
-			echo '<input type="hidden" value="'.$lot_no.'" name="lot_no"><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable<input type="submit" value="Delete" name="put" id="put" onclick="return check_reason();"
+			echo '<input type="hidden" value="'.$lot_no.'" name="lot_no"><input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable&nbsp&nbsp<input type="submit" value="Delete" name="put" id="put" onclick="return check_reason();"
 			 class="btn btn-danger btn-sm confirm-submit" />';
 			//  onclick="javascript:button_disable();"
 

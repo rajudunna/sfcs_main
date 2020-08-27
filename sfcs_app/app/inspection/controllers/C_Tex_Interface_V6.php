@@ -1710,12 +1710,12 @@ table
 <div style="float:left;">
 <h5 style='color:red;'><b>*All Green Fields are mandatory to confirm*</b></h5>
 </div>
-<div style="float:right;">
+<!-- <div style="float:right;">
 	<?php
 	$url = getURL(getBASE($_GET['r'])['base'].'/c_Tex_index.php')['url'];
 	?>
 	<a href="<?php echo $url; ?>" class="btn btn-primary">Back</a>
-</div>
+</div> -->
 
 
 
@@ -2179,13 +2179,13 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
   {
   	
   	echo '<input type="hidden" id="lot_no"  name="lot_no" value="'.$lot_no.'">';
-	if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
-	{
+	// if(in_array($authorized,$has_permission) or in_array($update,$has_permission))
+	// {
 	//$update_access
 	
 		echo '<input type="checkbox" name="option"  id="option"  onclick="javascript:enableButton();">Enable <input type="submit" value="Save" class="btn btn-primary confirm-submit" disabled="true"  id="put" name="put" /><br>';		
 		echo '<input type="checkbox" name="option1"  id="option1" onclick="javascript:enableButton1();">Enable <input type="submit" value="Confirm" id="confirm" name="confirm"  class="btn btn-primary confirm-submit" disabled="true" /><br>';		
-	}
+	// }
 
   }
  
@@ -2379,7 +2379,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
-	  		$reject_reason_query="select * FROM $wms.reject_reasons where  plant_code='$plantcode'";
+	  		$reject_reason_query="select * FROM $wms.reject_reasons";
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// while($row1=mysqli_fetch_array($reject_reasons))
 			// {
@@ -2720,7 +2720,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$new_tid=mysqli_insert_id($link);  
-					$sql22="update wms.store_in set barcode_number='".$facility_code."-".$new_tid."' where plant_code='$plantcode' and  tid=".$new_tid;
+					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plantcode' and  tid=".$new_tid;
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
 				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];

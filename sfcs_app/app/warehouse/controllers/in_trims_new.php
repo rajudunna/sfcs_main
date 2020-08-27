@@ -3,8 +3,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
+
+$plantcode=$_GET['plantcode'];
+$username=$_GET['username'];
  ?>
 <script>
 
@@ -34,6 +35,7 @@ if(isset($_GET['location']))
 {
 	$location=$_GET['location'];
 	$result_status=$_GET['status'];
+	$plantcode=$_GET['plantcode'];
 	if($result_status<4)
 	{		
 		echo "<h3>Location: <font color=green>$location</font></h3>";
@@ -84,6 +86,7 @@ if(isset($_GET['location']))
 <input type="hidden" name="barcode" value="<?php echo $code; ?>">
 <input type="hidden" name="location" value="<?php echo $location; ?>">
 <input type="hidden" name="status" value="<?php echo $status; ?>">
+<input type="hidden" name="plantcode" value="<?php echo $plantcode; ?>">
 <input type="hidden" name="check4" value="check">
 </form>
 
@@ -94,6 +97,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
 	$code=$_POST['cartonid'];
 	$location=$_POST['location'];
+	$plantcode=$_POST['plantcode'];
 	if($location=='')
 	{
 		$location=$code;
@@ -102,13 +106,13 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 		if(mysqli_num_rows($sql_result)>0)
 		{
 			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
 
 		}
 		else
 		{
 			$status=5;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
 		}	
 	}
 	else
@@ -118,7 +122,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 		if(mysqli_num_rows($sql_result12))
 		{
 			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
 		}
 		else
 		{	
@@ -150,12 +154,12 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 						$status=2;
 					}
 				}				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";			
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";			
 			}
 			else
 			{
 				$status=3;
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
 			}
 		}
 	}	
@@ -165,6 +169,7 @@ if(isset($_POST['check2']))
 {
 	$code=$_POST['cartonid2'];
 	$location=$_POST['location'];
+	$plantcode=$_POST['plantcode'];
 	if($location=='')
 	{
 		$location=$code;
@@ -173,13 +178,13 @@ if(isset($_POST['check2']))
 		if(mysqli_num_rows($sql_result)>0)
 		{
 			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
 
 		}
 		else
 		{
 			$status=5;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
 		}	
 	}
 	else
@@ -189,7 +194,7 @@ if(isset($_POST['check2']))
 		if(mysqli_num_rows($sql_result12))
 		{
 			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
 		}
 		else
 		{		
@@ -222,12 +227,12 @@ if(isset($_POST['check2']))
 						$status=2;
 					}
 				}				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";		
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";		
 			}
 			else
 			{
 				$status=3;
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status\"; }</script>";
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
 			}
 		}
 	}

@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Plan Dashboard</title>
+<title>Embellishment Plan Dashboard</title>
 <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php">
 <style>
 body
@@ -158,12 +158,23 @@ $get_sub_po=$_GET['sub_po'];
 				} 
 	echo "</select></div>";
 echo "</br><div class='col-sm-3'>";
-$tasktype='EMBJOB';
-//Function to get status from getJobsStatus based on subpo,tasktype,plantcode 
-$result_get_task_status=getJobsStatus($get_sub_po,$tasktype,$plantcode);
-$status=$result_get_task_status['task_status'];
+ $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
+ //Qry to fetch jm_job_header_id from jm_jobs_header
+ $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
+ $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+ $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
+ if($jm_job_header_id_result_num>0){
+    while($jm_job_header_id_row=mysqli_fetch_array($jm_job_header_id_result))
+    {
+        $jm_job_header_id[]=$jm_job_header_id_row['jm_job_header_id'];
+    }
+ }
+ //Qry to check sewing job planned or not
+ $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$tasktype'";
+ $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+ $job_status_num=mysqli_num_rows($job_status_result);
 
-if($status=='OPEN')
+if($job_status_num > 0)
 {
   echo "Cut Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
   echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
