@@ -146,18 +146,20 @@ if(isset($_POST["submit"]))
 		$aod_nos[]=$row_dat["disp"];
 	}
 
-	$query="where schedule_no > 0 and ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\" order by left(style,1)";
+	//$query="where schedule_no > 0 and ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\" order by left(style,1)";
+	$query="where schedule_no > 0 and ex_factory_date between \"".trim($sdat)."\" and  \"".trim($edat)."\" order by left(style,1)";
 	if($division!="All")
 	{
 		$buyer_division=urldecode($_POST["division"]);
 		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
-		$query="where schedule_no > 0 and buyer_division in (".$buyer_division_ref.") and ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\" order by left(style,1)";
+		$query="where schedule_no > 0 and buyer_division in (".$buyer_division_ref.") and ex_factory_date between \"".trim($sdat)."\" and  \"".trim($edat)."\" order by left(style,1)";
 	}
 
 	$sch_nos=array();
 	//$sql_sch="select distinct ship_schedule as sch from bai_pro3.ship_stat_log where disp_note_no in (".implode(",",$aod_nos).")";
 	//$sql_sch="select distinct schedule_no as sch from bai_pro4.shipment_plan_ref where ex_factory_date between \"$sdat\" and \"$edat\"";
-	$sql_sch="select distinct schedule_no as sch from $bai_pro4.week_delivery_plan_ref $query";
+	//$sql_sch="select distinct schedule_no as sch from $bai_pro4.week_delivery_plan_ref $query";
+	$sql_sch="select distinct schedule_no as sch from $bai_pro4.shipment_plan $query";
 	//echo $sql_sch."<br>";
 	$result_sch=mysqli_query($link, $sql_sch) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row_sch=mysqli_fetch_array($result_sch))
@@ -234,7 +236,7 @@ if(isset($_POST["submit"]))
 				$cut_total_qty=0;
 				$issued_qty=0;
 				$recut_issued_qty=0;
-				$sql="select * from $bai_pro3.bai_orders_db where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+				$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 				//echo $sql."<br>";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
@@ -290,7 +292,7 @@ if(isset($_POST["submit"]))
 				{
 					$cut_total_qty=$cut_total_qty+$row["doc_qty"];
 				}
-
+				
 
 				$sql="SELECT SUM(p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies AS doc_qty,doc_no FROM $bai_pro3.plandoc_stat_log WHERE order_tid ='$order_tid' and cat_ref=$cat_ref and fabric_status=\"5\" GROUP BY doc_no";
 				////echo $sql."<br>";
@@ -307,21 +309,21 @@ if(isset($_POST["submit"]))
 				{
 					$cut_comp_iss_qty=$cut_comp_iss_qty+$row["doc_qty"];
 				}
-
+				
 				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid ='$order_tid' and cat_ref=$cat_ref";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$ratios_no_count=mysqli_num_rows($result);
 				$docketnos[]=-1;
-				$docketno[]=-1;
+				$docketno[]=-1;				
 				$sql="select * from $bai_pro3.plandoc_stat_log where order_tid ='$order_tid' and cat_ref=$cat_ref and fabric_status=\"5\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$cut_no_count=mysqli_num_rows($result);
 				while($row=mysqli_fetch_array($result))
 				{
-					$docketnos[]="\"D".$row["doc_no"]."\"";
+					$docketnos[]="D".$row["doc_no"];
 					$docketno[]=$row["doc_no"];
 				}
-
+				
 				$recut_docketnos[]=-1;
 				$recut_docketno[]=-1;
 				$sql="select * from $bai_pro3.recut_v2 where order_tid ='$order_tid' and cat_ref=\"$cat_ref\"";
@@ -329,17 +331,18 @@ if(isset($_POST["submit"]))
 				//$cut_no_count=mysql_num_rows($result);
 				while($row=mysqli_fetch_array($result))
 				{
-					$recut_docketnos[]="\"R".$row["doc_no"]."\"";
+					$recut_docketnos[]="R".$row["doc_no"];
 					$recut_docketno[]=$row["doc_no"];
 				}
 				//echo implode(",",$docketnos);
-				$sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no=$schedule and color=\"".$color."\" and ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\"";
+				//$sql="select max(ex_factory_date_new) as dat,max(ship_tid) as tid from $bai_pro4.week_delivery_plan_ref where schedule_no=$schedule and color=\"".$color."\" and ex_factory_date_new between \"".trim($sdat)."\" and  \"".trim($edat)."\"";
+				$sql="select max(ex_factory_date) as dat from $bai_pro4.shipment_plan where schedule_no=\"".$schedule."\" and color=\"".$color."\" and ex_factory_date between \"".trim($sdat)."\" and  \"".trim($edat)."\"";
 				//echo $sql."<br>";
 				//$sql="select ex_factory_date,ship_tid from bai_pro4.shipment_plan where schedule_no=$schedule and color=\"".$color."\"";
 				$result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($result))
 				{
-					$ship_tid=$row["tid"];
+					//$ship_tid=$row["tid"];
 					$ex_factory_date_new=$row["dat"];
 				}
 
