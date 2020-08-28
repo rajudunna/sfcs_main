@@ -42,22 +42,32 @@
     function getSewingJobs(po_number){
         var po = po_number;
         var plant_code = $('#plant_code').val();
-        var inputObj = {poNumber:po,plantCode:plant_code};
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+        var inputObj = {"poNumber":po,"plantCode":plant_code};
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var data = JSON.parse(response);
-				var sewing_job_list ='';
-                $.each(data.sewingJobNumbers, function( index, sewing_job ) {
-                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
-                });
+			type: "POST",
+			url: "http://192.168.0.34:3336/jobs-generation/getJobNumbersByPo",
+			data: inputObj,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					var data = JSON.parse(res);
+					var sewing_job_list ='';
+	                $.each(data.sewingJobNumbers, function( index, sewing_job ) {
+	                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
+	                });
                 $('#dynamic_table').html(sewing_job_list);
-            }
-        });
+				}
+				else
+				{
+					swal(res.internalMessage);
+				}                       
+			},
+			error: function(res){
+				swal('Error in getting data');
+			}
+		});
     }
     function sendData(sewing_job,po){
         var schedule = $('#schedule1').val();

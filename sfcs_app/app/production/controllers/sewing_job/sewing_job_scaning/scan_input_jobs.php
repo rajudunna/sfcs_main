@@ -263,9 +263,10 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 		
 		</div>
 	</div>
+	 <!--
 	<div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog">
-				  <!-- Modal content-->
+				 
 				    <div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close"  id = "cancel" data-dismiss="modal" onclick='neglecting_function()'>&times;</button>
@@ -317,7 +318,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						</div>
 					</div>
 			</div>
-	</div>
+	</div> -->
 	
 </body>
 <script>
@@ -339,12 +340,14 @@ $(document).ready(function()
 		var module_flag = null;	var restrict_msg = '';
         if(barcode_generation == 0){
 		    var inputObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "http://192.168.0.155:3336/fg-retrieving/getJobDetailsForBundleNumber";
         } else if(barcode_generation == 1){
 		    var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "http://192.168.0.155:3336/fg-retrieving/getJobDetailsForSewingJob";
         }		
 		$.ajax({
 			type: "POST",
-			url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+			url: url,
 			data: inputObj,
 			success: function (res) {            
 				//console.log(res.data);
@@ -719,7 +722,7 @@ function check_pack()
     
 		$.ajax({
 			type: "POST",
-			url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+			url: "http://192.168.0.155:3336/fg-reporting/reportSemiGmtOrGmtJob",
 			data:  JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
@@ -738,6 +741,7 @@ function check_pack()
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
+					swal(res.internalMessage);
 				}
 				else
 				{

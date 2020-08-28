@@ -69,7 +69,7 @@ th,td{
 				<?php }?>
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
-					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'">
+					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -126,11 +126,13 @@ $(document).ready(function()
 		const data={
 						"barcode": barcode,
 						"plantCode": plantCode,
-						"operationCode": operation_id
+						"operationCode": operation_id,
+						"createdUser": <?= $username ?>,
+						"reportAsFullGood": true
 				    }
 		$.ajax({
 			type: "POST",
-			url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+			url: "http://192.168.0.155:3336/fg-reporting/reportSemiGmtOrGmtBarcode",
 			data: data,
 			success: function (res) {            
 				//console.log(res.data);
@@ -138,6 +140,7 @@ $(document).ready(function()
 				{
 					bundet=res.data
 					tableConstruction(bundet);
+					swal(res.internalMessage);
 				}
 				else
 				{

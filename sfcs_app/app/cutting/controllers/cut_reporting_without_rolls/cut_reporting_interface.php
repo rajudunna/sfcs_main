@@ -1261,18 +1261,18 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
         if(total_rejected_pieces > 0)
             rejections_flag = 1;
-        // var form_data = {
-        //                 doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
-        //                 fab_received:rec,returned_to:returned_to,damages:damages,
-        //                 shortages:shortages,bundle_location:bundle_location,shift:shift,joints_endbits:joints_endbits,
-        //                 cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
-        //                 style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
-        //                 full_reporting_flag : full_reporting_flag,  
-        //                 data:data,
-        //                 rollwisestatus:rollwisestatus,
+        var form_data = {
+                        doc_no:post_doc_no,c_plies:c_plies,fab_returned:ret_to,
+                        fab_received:rec,returned_to:returned_to,damages:damages,
+                        shortages:shortages,bundle_location:bundle_location,shift:shift,joints_endbits:joints_endbits,
+                        cut_table:cut_table,team_leader:team_leader,doc_target_type:doc_target_type,
+                        style:style,color:color,schedule:schedule,rejections_flag:rejections_flag,rejections:rejections_post,
+                        full_reporting_flag : full_reporting_flag,  
+                        data:data,
+                        rollwisestatus:rollwisestatus,
                         
-        //                 //ratios:ratios
-        //             };    
+                        //ratios:ratios
+                    };    
         var reportData = new Object();
         reportData.docketNumber = $('#r_doc_no').text();
         reportData.shift = $('#shift').val();
