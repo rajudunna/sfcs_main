@@ -2857,11 +2857,11 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$lot_no_new=trim($_POST['lot_no']); //Batch Number
 	$lot_ref=$_POST['lot_ref'];	
 	$main_id=$_POST['parent_id'];
-	$consumption_ref=$_POST["consumption"];
+	$consumption_ref=$_POST['consumption'];
 	
 	if($head_check>0)
 	{
-		$sql="insert ignore into $wms.inspection_db(batch_ref) values (\"$lot_no_new\")";
+		$sql="insert ignore into $wms.inspection_db(batch_ref,plant_code) values (\"$lot_no_new\",\"$plant_code\")";
 		//echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
@@ -2898,10 +2898,11 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		}
 		
 		$sql="update $wms.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
-		// echo "Upadte Qry :".$sql;
+		 echo "Upadte Qry :".$sql;
+
 		// exit;
 		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
+		 
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
 	$sql="update $wms.inspection_db set status=0,updated_user= '".$username."',updated_at=NOW() where batch_ref=\"$lot_no_new\" and plant_code='".$plant_code."'";
@@ -2955,23 +2956,23 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 
 			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
-				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plant_code' and  tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$new_tid=mysqli_insert_id($link);  
-					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plantcode' and  tid=".$new_tid;
+					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plant_code' and  tid=".$new_tid;
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
-				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
-				 mysqli_query($link, $sql1) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));			
+				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
+				 mysqli_query($link, $sql1) or exit("Sql Error9=2222".mysqli_error($GLOBALS["___mysqli_ston"]));			
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
-				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
+				mysqli_query($link, $sql) or exit("Sql Error9=111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
 	}
-
+	//die();
 	echo "<h2>Please Wait While Updating Data.</h2>";
 	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
 	echo "<script type='text/javascript'>";
