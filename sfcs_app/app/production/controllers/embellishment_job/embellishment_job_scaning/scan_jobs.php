@@ -16,18 +16,6 @@
 		$form_type = 'Sewing';
 	}
 
-	// if (in_array($override_sewing_limitation,$has_permission))
-	// {
-	// 	$value = 'authorized';
-	// }
-	// else
-	// {
-	// 	$value = 'not_authorized';
-	// }
-
-	
-	// echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
-	
 	if ($_GET['operation_id'])
 	{
 		$input_job_no_random_ref=$_GET['input_job_no_random_ref'];
@@ -49,11 +37,6 @@
 			$operation_code_routing=$sql_row['operation_code'];
 		}
 
-		// if($operation_code_routing == 'Auto'){
-		// 	$get_ips_op = get_ips_operation_code($link,$style,$color);
-		// 	$operation_code_routing=$get_ips_op['operation_code'];
-		// }
-
 	} else {
 		$schedule=$_POST['schedule'];
 		$color=$_POST['color'];
@@ -67,40 +50,6 @@
 		$read_only_job_no = '';
 		$operation_code_routing='';
 	}
-
-	// $access_report = $operation_code.'-G';
-	// $access_reject = $operation_code.'-R';
-
-	// $access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
-	// $result = $link->query($access_qry);
-	
-	// if($result->num_rows > 0){
-	// 	if (in_array($$access_report,$has_permission))
-	// 	{
-	// 		$good_report = '';
-	// 	}
-	// 	else
-	// 	{
-	// 		$good_report = 'readonly';
-	// 	}
-	// 	if (in_array($$access_reject,$has_permission))
-	// 	{
-	// 		$reject_report = '';
-	// 	}
-	// 	else
-	// 	{
-	// 		$reject_report = 'readonly';
-	// 	}
-	// } else {
-	// 	$good_report = '';
-	// 	$reject_report = '';
-	// }
-	
-	// echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
-	// echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
-
-	
-	
 
 	echo '<input type="hidden" name="operation_code_routing" id="operation_code_routing" value="'.$operation_code_routing.'">';
 	echo '<input type="hidden" name="sewing_rejection" id="sewing_rejection" value="'.$sewing_rejection.'">';
