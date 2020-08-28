@@ -2861,9 +2861,13 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	
 	if($head_check>0)
 	{
-		$sql="insert ignore into $wms.inspection_db(batch_ref,plant_code) values (\"$lot_no_new\",\"$plant_code\")";
-		//echo $sql;
-		mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_check="select batch_ref from $wms.inspection_db where plant_code='".$plant_code."' and  batch_ref=\"$lot_no_new\"";
+		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_check_res)==0)
+		{
+			$sql="insert into $wms.inspection_db(batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$lot_no_new\",'".$plant_code."','$username','NOW()','$username','NOW()')";
+			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		}
 			
 		if(mysqli_affected_rows($link))
 		{
@@ -2967,7 +2971,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			}
 			else
 			{
-				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
+				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
 				mysqli_query($link, $sql) or exit("Sql Error9=111".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}
