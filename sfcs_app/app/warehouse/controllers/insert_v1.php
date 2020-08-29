@@ -170,7 +170,7 @@ echo "<div class='panel panel-default'>
 					<b>Item Description :</b> $item_desc
 				</div>
 				<div class='col-md-3'>
-					<b>Item Name :</b> '".chunk_split($item_name, 30, '<br/>')."'
+					<b>Item Name :</b> '".chunk_split($item_name, 21, '<br/>')."'
 				</div>
 			</div>
 			<br/>
