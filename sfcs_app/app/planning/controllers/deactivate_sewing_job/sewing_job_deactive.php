@@ -31,7 +31,7 @@ if($_GET['module']){
             <select class='form-control' name=\"module\" id=\"module\" onchange=\"secondbox();\" id='module' required>";
             foreach($workstations as $module)
             {
-                echo "<option value='$module'>$module</option>"
+                echo "<option value='$module'>$module</option>";
             }
             echo "</select>
             </div>";
