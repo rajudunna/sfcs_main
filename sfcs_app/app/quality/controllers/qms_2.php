@@ -46,7 +46,7 @@ $(document).ready(function(){
 <input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 <div class='col-md-2 col-sm-3 col-xs-12'>
 <input type="submit" value="Search" name="search" id="search" class="btn btn-success" style="margin-top: 34px;">
-<a href="<?= getFullURL($_GET['r'],'qms_3.php','N'); ?>"  class="btn btn-link"><p style="margin-top: -31px;margin-left: 70px;">Deleted Transactions</p></a>
+<input type="submit" value="Deleted Transactions" name="transactions" id="transactions" class="btn btn-info" style="margin-top: 34px;">
 </div>
 
 </form>
@@ -140,4 +140,47 @@ function deletetrn(id,operation,inpjob)
 		}
 	});
 }
+
+$('#search').on('click', function(){
+	var plant_code = $('#plant_code').val();
+	$('#dynamic_table1').html('');
+	var inputObj = {plantCode:plant_code};
+	var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+	$.ajax({
+		type: "POST",
+		url: function_text+"?inputObj="+inputObj,
+		success: function(response) 
+		{
+			var delbundet = JSON.parse(response);
+			deleteTableConstruction(delbundet);
+		}
+	});
+});
+
+function deleteTableConstruction(delbundet){
+	console.log(delbundet);
+	s_no = 0;
+    if(delbundet)
+    {
+		$('#dynamic_table1').html('');
+		for(var i=0;i<delbundet.data.length;i++)
+        {
+			var hidden_class='';
+			if(i==0)
+            {
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Date</th><th>Size</th><th>Quantity</th></tr></thead><tbody>";
+                $("#dynamic_table1").append(markup);
+            }
+            s_no++;
+			
+			var markup1 = "<tr class="+hidden_class+"><td data-title='style'>"+s_no+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='schedule'>"+bundet.data[i].schedule+"</td><td data-title='color'>"+bundet.data[i].color+"</td><td data-title='date'>"+bundet.data[i].date+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='quantity'>"+bundet.data[i].quantity+"</td></tr>";
+            $("#dynamic_table").append(markup1);
+            $("#dynamic_table").hide();
+
+		}
+	}
+	var markup99 = "</tbody></table></div></div></div>";
+    $("#dynamic_table").append(markup99);
+    $("#dynamic_table").show();
+}	
 </script>
