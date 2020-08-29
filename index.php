@@ -10,6 +10,10 @@ include "template/helper.php";
 include "template/header.php";
 include "template/sidemenu.php";
 require_once 'sfcs_app/common/vendor/autoload.php';
+include 'sfcs_app/common/config/log4php-library.php';
+$request_id=rand();
+$_REQUEST['unique_request'] = $request_id;
+log_request($request_id);
 
 $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
