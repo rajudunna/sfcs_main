@@ -81,7 +81,7 @@
                             <label>Style: </label>";
                                 // Style
                                 echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-                                $sql="select * from $bai_pro3.pac_stat group by style order by style*1";
+                                $sql="select * from $bai_pro3.pac_stat group by style order by style";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
                                 $sql_num_check=mysqli_num_rows($sql_result);
                                 echo "<option value=''>Please Select</option>";

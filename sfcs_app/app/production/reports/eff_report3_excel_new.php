@@ -2974,7 +2974,7 @@ if(isset($_POST['submit']))
 
 
 // For Grand Eff Calculation
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
+	//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_Eff_for_daily.php',0,'R'));
 //to fasten system
 
 	$sql="truncate $bai_pro.grand_rep_temp";

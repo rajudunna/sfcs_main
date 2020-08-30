@@ -6,7 +6,12 @@
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R'));
 ?> 
-
+<script>
+$(document).ready(function()
+{
+   $("#split_btn").hide();
+});
+</script>
 <div class="panel panel-primary">
     <div class="panel-heading">Carton Split</div>
     <div class="panel-body">
@@ -91,6 +96,7 @@
 </div>
     <script>
         function verify_split(t){
+            $('#split_btn').show();
             var id = t.id;
             var st_id = 'qty'+id;
             var ent = document.getElementById(id).value;
@@ -98,10 +104,16 @@
             if(Number(ent) > Number(qty) ){
                 sweetAlert('Error','The quantity to be splitted is more than Total Job Quantity','warning');
                 document.getElementById(id).value = 0;
+                $('#split_btn').hide();
+            }
+            if(Number(ent) <= 0)
+            {
+                $('#split_btn').hide();
             }
         }
 		function verify_qty()
-		{           
+		{
+            $('#split_btn').hide();
 			var tot = Number(document.getElementById('total').value);
 			var n=0;
 			for(var j=1;j<=tot;j++)

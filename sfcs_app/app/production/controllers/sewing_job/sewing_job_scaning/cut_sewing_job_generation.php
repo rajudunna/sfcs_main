@@ -698,25 +698,47 @@ function delet(docs_id){
 					$("#generate_message").css("display","none");
                     // console.log(res);
 					document.getElementById("loading-image").style.display = "none";
-					if(res) {
+					if(res) 
+                    {
 						
-						if(res['status'] == true){
+						if(res['status'] == true)
+                        {
                             sweetAlert('Cut Sewing jobs generated successfully','','');
                             var optionSelected = $("option:selected", this);
                             var color = $("#color").val();
                             var style = $("#style").val();
                             var schedule = $("#schedule").val();
                             window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
-                        } else {
-							sweetAlert('Cannot Porceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
-                            var optionSelected = $("option:selected", this);
-                            var color = $("#color").val();
-                            var style = $("#style").val();
-                            var schedule = $("#schedule").val();
-                            setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
+                        } 
+                        else 
+                        {
+                            var val1 = res['final'];
+                            if(val1 == 'first_cut')
+                            {
+                                sweetAlert('Cannot Proceed sewing Jobs because selection is Fisrt Cut',' Lay Plan Not Prepared for Complete Qty.','');
+                                var optionSelected = $("option:selected", this);
+                                var color = $("#color").val();
+                                var style = $("#style").val();
+                                var schedule = $("#schedule").val();
+                                setTimeout(function(){window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))} , 2000);
+							}
+
+							var data = $.parseJSON(res);
+							if(data['final'] == 'validating')
+                            {
+								sweetAlert('Cut Sewing jobs already generating for the same schedule','Please wait','');
+						        //$("#markers").prop("disabled", true);
+								var optionSelected = $("option:selected", this);
+								var color = $("#color").val();
+								var style = $("#style").val();
+								var schedule = $("#schedule").val();
+								window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style)))+"&schedule="+schedule+"&color="+window.btoa(unescape(encodeURIComponent(color)))
+								
+							}	
                         }
-					} else {
-						
+					} 
+                    else 
+                    {
 						sweetAlert('Cut Sewing jobs generation failed','','');
 						$("#markers").prop("disabled", false);
 					}

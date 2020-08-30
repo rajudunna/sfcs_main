@@ -20,7 +20,7 @@
 			$complaint_clasification=$row["Complaint_clasification"];
 			$complaint_category=$row["complaint_category"];			
 			$status = $row['status'];
-			if($status == 0) 
+			if($status == 1) 
 			{
 				$cat_status = "Active";
 			}else{ 

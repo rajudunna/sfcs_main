@@ -11,37 +11,61 @@ if($_POST['modal_submit'])
     $schedule = $_POST['schedule1'];
     $style = $_POST['style1'];
     $color = $_POST['color1'];
-    
-    $ins_qry2 = "INSERT INTO $bai_pro3.`sewing_jobs_ref` (style,schedule,bundles_count,log_time) VALUES ('".$style."','".$schedule."','0',NOW())";
-    $result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$inserted_id = mysqli_insert_id($link);
-
-	$cps_qry= "select * from $bai_pro3.plan_cut_bundle where style='$style' and schedule='$schedule' and color='$color'";
-    $result_cps_qry = $link->query($cps_qry);
-    if(mysqli_num_rows($result_cps_qry) > 0)
-    {
-        //for 2932 diferenciting 
-        $new_logic = true;
-    } else {
-        $new_logic = false;
-	}
-	if($new_logic){
-		$sewing_bundle_generation = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-	} else {
-		$sewing_bundle_generation = sewing_bundle_generation($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
-	}
-    // echo $sewing_bundle_generation;
-    // die();
-    if($sewing_bundle_generation)
+    $sql_new="select * from $bai_pro3.pac_stat_log_input_job where doc_no in($docs)";
+    $sql_result_new=mysqli_query($link, $sql_new) or exit("Issue while Selecting pac_stat_log_input_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sql_result_new) == 0)
 	{
-		insertMOQuantitiesSewing($schedule,$inserted_id);		
-        $res1['status'] = true;
-        echo json_encode($res1);
-    } else {
-        $res1['status'] = false;
-        echo json_encode($res1);
-        exit();
-	}   
+		$sql_new11="select * from $bai_pro3.sewing_jobs_ref where schedule='$schedule' and bundles_count=0";
+        $sql_result_new11=mysqli_query($link, $sql_new11) or exit("Issue while Selecting sewing_jobs_ref".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result_new11) == 0)
+		{
+			$ins_qry2 = "INSERT INTO $bai_pro3.`sewing_jobs_ref` (style,schedule,bundles_count,log_time,log_user) VALUES ('".$style."','".$schedule."','0',NOW(),'$username')";
+			$result_time2 = mysqli_query($link, $ins_qry2) or exit("Sql Error update downtime log".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$inserted_id = mysqli_insert_id($link);
+			$cps_qry= "select * from $bai_pro3.plan_cut_bundle where style='$style' and schedule='$schedule' and color='$color'";
+			$result_cps_qry = $link->query($cps_qry);
+			if(mysqli_num_rows($result_cps_qry) > 0)
+			{
+				//for 2932 diferenciting 
+				$new_logic = true;
+			} else {
+				$new_logic = false;
+			}
+			if($new_logic){
+				$sewing_bundle_generation = plan_logical_bundles($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
+			} else {
+				$sewing_bundle_generation = sewing_bundle_generation($docs,$jobcount,$bundle_qty,$inserted_id,$schedule,$cuts);
+			}
+			// echo $sewing_bundle_generation;
+			// die();
+			if($sewing_bundle_generation)
+			{
+				insertMOQuantitiesSewing($schedule,$inserted_id);		
+				$res1['status'] = true;
+				echo json_encode($res1);
+			} 
+			else 
+			{
+				$res1['status'] = false;
+				$res1['final'] = 'first_cut';
+				echo json_encode($res1);
+				exit();
+			} 
+        }
+		else
+		{
+			$res1['final'] = 'validating';
+			echo json_encode($res1);
+			exit();
+	    }			
+	}
+	else
+	{
+		$res1['final'] = 'validating';
+		echo json_encode($res1);
+	    exit();
+    }
+    
 }
 function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inserted_id,$schedule,$cut) 
 {	
@@ -489,6 +513,10 @@ function sewing_bundle_generation($doc_list,$plan_jobcount,$plan_bundleqty,$inse
 		
 		return true;
 	} else {
+
+		$delete_query = "DELETE FROM `bai_pro3`.`sewing_jobs_ref` where id = $inserted_id and bundles_count = 0";
+		$delete_result = mysqli_query($link,$delete_query) or exit("Problem while deleteing the sewing jobs ref");
+
 		return false;
 	}
 }
