@@ -81,10 +81,17 @@ else
 		// $result6= mysqli_query($conn, $embellishment_plan_dashboard);
 		// $rowcount6=mysqli_num_rows($result6);
 
-		$embellishment_plan_dashboard_check_bcd="select * from $brandix_bts.bundle_creation_data WHERE assigned_module='$module' and bundle_qty_status=0";
-		$result61= mysqli_query($conn, $embellishment_plan_dashboard_check_bcd);
-		$rowcount61=mysqli_num_rows($result61);
+		$operations_qry="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' AND display_operations='yes'";
+		$operations_res=mysqli_query($link,$operations_qry) or exit("Sql Error_operations".mysqli_error());
+		while($row_res=mysqli_fetch_array($operations_res))
+		{
+			$operations[] = $row_res['operation_code'];
+		}
+		$sewing_operations = implode ( ", ", $operations);
 
+		$plan_dashboard_check_bcd="select * from $brandix_bts.bundle_creation_data WHERE operation_id in ($sewing_operations) and assigned_module='$module' and bundle_qty_status=0";
+		$result61= mysqli_query($conn, $plan_dashboard_check_bcd);
+		$rowcount61=mysqli_num_rows($result61);
 		
 		if($rowcount2>0 or $rowcount4>0 or $rowcount61>0)
 		{
