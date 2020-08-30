@@ -117,7 +117,7 @@ function tableConstruction(bundet){
 	
 }
 
-function deletetrn(id,operation,inpjob)
+function deletetrn(id,operation,inpjob,btn)
 {
 	var mainid = id; 
 	var operation_id = operation; 
