@@ -173,7 +173,7 @@ function deleteTableConstruction(delbundet){
             }
             s_no++;
 			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='style'>"+s_no+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='schedule'>"+bundet.data[i].schedule+"</td><td data-title='color'>"+bundet.data[i].color+"</td><td data-title='date'>"+bundet.data[i].date+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='quantity'>"+bundet.data[i].quantity+"</td></tr>";
+			var markup1 = "<tr class="+hidden_class+"><td data-title='style'>"+s_no+"</td><td data-title='style'>"+delbundet.data[i].style+"</td><td data-title='schedule'>"+delbundet.data[i].schedule+"</td><td data-title='color'>"+delbundet.data[i].color+"</td><td data-title='date'>"+delbundet.data[i].date+"</td><td data-title='size'>"+delbundet.data[i].size+"</td><td data-title='quantity'>"+delbundet.data[i].quantity+"</td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 
