@@ -35,10 +35,11 @@ $('div[rel=tooltip]').mouseover(function(e) {
   //e.pageY + 0.5 * e.view.parent.pageYOffset
   $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','20px' );
+   $('#tooltip').css('margin-left','-38px' );
    $('#tooltip').css('text-align','left' );
-   $('#tooltip').css('margin-top','25px' );
+   $('#tooltip').css('margin-top','10px' );
    $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('display', 'inline-block' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
 
