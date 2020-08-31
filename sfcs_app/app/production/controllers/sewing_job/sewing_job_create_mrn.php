@@ -82,9 +82,12 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
+	include(getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',4,'R')); 
+	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
 	$plant_code = $_session['plantCode'];
 	$username =  $_session['userName'];
 	$has_permission=haspermission($_GET['r']);
+    $main_url=getFullURL($_GET['r'],'sewing_job_create_mrn.php','R');
 
 	$get_style=$_GET['style'];
 	$get_schedule=$_GET['schedule'];
@@ -241,8 +244,26 @@
 					$color=$_GET['color']; 
 					$mpo=$_GET['mpo']; 
 					$sub_po=$_GET['sub_po']; 
-					
+					//get operations_version_id
+					$get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$mpo' AND plant_code='$plant_code'";
+					$version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+					log_statement('debug',$get_operations_version_id,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+					while($row14=mysqli_fetch_array($version_id_result))
+					{
+                      $operations_version_id = $row14['operations_version_id'];
+					}
 					$op_code1=1;
+					$result_mrn_operation=getJobGroups($style,$color,$plant_code,$operations_version_id);
+					$operation_codes=$result_mrn_operation['styleColorOps'];
+					foreach($operation_codes as $key){
+						
+						if($op_code1  == $key['operationCode'])
+						{
+                          $status = "True";
+						}
+					}	
+					
 					if ($style =='NIL' or $schedule =='NIL') 
 					{						
 						echo " ";
@@ -252,6 +273,8 @@
 						//check jobs are avaialabe or not
 						$check_jobs="SELECT jm_job_header_id,job_header_type FROM $pps.jm_job_header WHERE sub_po='$sub_po' AND ref_type='SEWING' AND plant_code='$plant_code'";
 						$check_jobs_result=mysqli_query($link_new, $check_jobs) or exit("Sql Error at check_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$check_jobs,$main_url,__LINE__);
+					    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 						while($row1=mysqli_fetch_array($check_jobs_result))
 						{
 							$job_header_id=$check_jobs_result['jm_job_header_id'];
@@ -261,6 +284,8 @@
 						$job_number=array();
 						$get_input_jobs="SELECT job_number,jm_jg_header_id,mrn_status FROM $pps.jm_jg_header WHERE jm_job_header='$job_header_id' AND plant_code='$plant_code'";
 						$get_input_jobs_result=mysqli_query($link_new, $get_input_jobs) or exit("Sql Error at get_input_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$get_input_jobs,$main_url,__LINE__);
+					    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 						while($row2=mysqli_fetch_array($get_input_jobs_result))
 						{
 							$job_number[$get_input_jobs_result['jm_jg_header_id']]=$get_input_jobs_result['job_number'];
@@ -269,6 +294,8 @@
 						//get bgcolor fron prefix
 						$get_prefix_color="SELECT bg_color FROM $mdm.tbl_sewing_job_prefix WHERE prefix_name='$job_header_type' AND plant_code='$plant_code'";
 						$sql_result88=mysqli_query($link_new, $get_prefix_color) or exit("Sql Error44b $get_prefix_color".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$get_prefix_color,$main_url,__LINE__);
+					    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 						while($row3=mysqli_fetch_array($sql_result88))
 						{
 							$bg_color=$row3["bg_color"];
@@ -298,6 +325,8 @@
                                 //to get qty from jm job lines
 								$toget_qty_qry="SELECT sum(quantity) as qty,GROUP_CONCAT(DISTINCT size ORDER BY m3_size_code) AS size,fg_color from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
 								$toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$toget_qty_qry,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								$toget_qty=mysqli_num_rows($toget_qty_qry_result);
 								if($toget_qty>0){
 									while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
@@ -328,13 +357,14 @@
 								}
 								else
 								{
-									//API call to check whether MRN operation is there are not
-									$op_code=1;
-									if($op_code>0)
+									//Checking if MRN operation is there or not
+									if($status == "True")
 									{
                                      	//check wheter sewing job planned or not
 										$qry_get_module="SELECT * FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key'";
 										$get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+										log_statement('debug',$qry_get_module,$main_url,__LINE__);
+					                    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 										$sql_num_check_count_new=mysqli_num_rows($get_module_result);
 											
 										if($sql_num_check_count_new>0){
@@ -375,18 +405,23 @@
 							$jmjgheaderid=$_GET['jm_jg_header_id'];
 							$mpo=$_GET['mpo'];
 							$sub_po=$_GET['sub_po'];
-
+							$op_code1=1;
+							
 							//added m3 db in query
 							$conn = odbc_connect("$ms_sql_driver_name;Server=$ms_sql_odbc_server;Database=$mssql_db;", $ms_sql_odbc_user,$ms_sql_odbc_pass);
 							//To check MRN status
 							$check_mrn="SELECT * FROM $pps.jm_jg_header WHERE jm_jg_header_id='$jmjgheaderid' AND mrn_status ='1' AND plant_code='$plant_code'";
-                            $check_mrn_result=mysqli_query($link_new, $check_mrn) or exit("check_mrn".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$check_mrn_result=mysqli_query($link_new, $check_mrn) or exit("check_mrn".mysqli_error($GLOBALS["___mysqli_ston"]));
+							log_statement('debug',$check_mrn,$main_url,__LINE__);
+					        log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 							$sql_num_check1=mysqli_num_rows($check_mrn_result);
 							if($sql_num_check1 > 0)
 							{
                                //To get resource id
 								$qry_get_module="SELECT resource_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$jmjgheaderid' AND task_header.plant_code='$plant_code'";
 								$get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$qry_get_module,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($get_module_row=mysqli_fetch_array($get_module_result))
 								{
 									$module = $get_module_row['resource_id'];
@@ -394,6 +429,8 @@
 								//to get qty from jm job lines
 								$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' AND plant_code='$plant_code'";
 								$toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$toget_qty_qry,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								$toget_qty=mysqli_num_rows($toget_qty_qry_result);
 								while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
 								{
@@ -409,6 +446,8 @@
 								//To get mo_number
 								$get_mo_number="SELECT mo_number FROM $pps.jm_job_bundle_mo_qty LEFT JOIN $pps.jm_job_bundles ON jm_job_bundle_mo_qty.jm_job_bundle_id = jm_job_bundles.jm_job_bundle_id WHERE jm_jg_header_id='$jmjgheaderid' AND jm_job_bundle_mo_qty.plant_code='$plant_code'";
 								$mo_number_result=mysqli_query($link_new, $get_mo_number) or exit("Sql Error at get_mo_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$get_mo_number,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($row4=mysqli_fetch_array($mo_number_result))
 								{
                                   $mo_number=$row4['mo_number'];
@@ -416,19 +455,23 @@
 								//To get customer_order_no
 								$get_co="SELECT customer_order_no $oms.oms_mo_details WHERE mo_number='$mo_number' AND plant_code='$plant_code'";
 								$co_result=mysqli_query($link_new, $get_co) or exit("Sql Error at get_co".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$get_co,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($row5=mysqli_fetch_array($co_result))
 								{
                                   $co_no=$row5['customer_order_no'];
 								}	
 								$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 								$values = array();
-								array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_number . "','" . $op_code . "','" . $sew_qty . "','".$employee_no."','".$remarks."','".$co_no."','".$schedule."',NULL,'1','1','1','1')");
+								array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_number . "','" . $op_code1 . "','" . $sew_qty . "','".$employee_no."','".$remarks."','".$co_no."','".$schedule."',NULL,'1','1','1','1')");
 								$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
 								$odbc_num_check=odbc_num_rows($mssql_insert_query_result);
 								if($odbc_num_check>0)
 								{
 									$pass_update1="UPDATE $pps.jm_jg_header SET mrn_status='0' WHERE job_number='$inputjobno' AND jm_jg_header_id='$jmjgheaderid' AND plant_code='$plant_code'";
 									$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+									log_statement('debug',$pass_update1,$main_url,__LINE__);
+					                log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 									$('#loading-image').hide();
 									function Redirect() {
@@ -475,8 +518,10 @@
 							if($promis_val==1)
 							{
 								$conn2 = odbc_connect("$promis_sql_driver_name;Server=$promis_sql_odbc_server;Database=$promis_db;", $promis_sql_odbc_user,$promis_sql_odbc_pass);
-								$get_module_desc = "select * from $pps.promis_module_mapping";
+								$get_module_desc = "select * from $pps.promis_module_mapping WHERE plant_code='$plant_code'";
 								$result_module = $link->query($get_module_desc);
+								log_statement('debug',$get_module_desc,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($row_mod = $result_module->fetch_assoc())
 								{
 									$prom_div_name[$row_mod['sfcs_module_name']] = $row_mod['promis_division_name'];
@@ -485,13 +530,17 @@
 
                            //To check MRN status
 							$check_mrn="SELECT * FROM $pps.jm_jg_header WHERE jm_jg_header_id='$jmjgheaderid' AND (mrn_status IS NULL OR mrn_status='0') AND plant_code='$plant_code'";
-                            $check_mrn_result=mysqli_query($link_new, $check_mrn) or exit("check_mrn".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$check_mrn_result=mysqli_query($link_new, $check_mrn) or exit("check_mrn".mysqli_error($GLOBALS["___mysqli_ston"]));
+							log_statement('debug',$check_mrn,$main_url,__LINE__);
+					        log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 							$sql_num_check1=mysqli_num_rows($check_mrn_result);
 							if($sql_num_check1 > 0)
 							{
 							    //To get resource id
 								$qry_get_module="SELECT resource_id,planned_date_time FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$jmjgheaderid' AND task_header.plant_code='$plant_code'";
 								$get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$qry_get_module,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($get_module_row=mysqli_fetch_array($get_module_result))
 								{
 									$module = $get_module_row['resource_id'];
@@ -500,6 +549,8 @@
 								//to get qty from jm job lines
 								$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' AND plant_code='$plant_code'";
 								$toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$toget_qty_qry,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								$toget_qty=mysqli_num_rows($toget_qty_qry_result);
 								while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
 								{
@@ -515,6 +566,8 @@
 								//To get mo_number
 								$get_mo_number="SELECT mo_number FROM $pps.jm_job_bundle_mo_qty LEFT JOIN $pps.jm_job_bundles ON jm_job_bundle_mo_qty.jm_job_bundle_id = jm_job_bundles.jm_job_bundle_id WHERE jm_jg_header_id='$jmjgheaderid' AND jm_job_bundle_mo_qty.plant_code='$plant_code'";
 								$mo_number_result=mysqli_query($link_new, $get_mo_number) or exit("Sql Error at get_mo_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$get_mo_number,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($row4=mysqli_fetch_array($mo_number_result))
 								{
                                   $mo_number=$row4['mo_number'];
@@ -522,6 +575,8 @@
 								//To get customer_order_no
 								$get_co="SELECT customer_order_no $oms.oms_mo_details WHERE mo_number='$mo_number' AND plant_code='$plant_code'";
 								$co_result=mysqli_query($link_new, $get_co) or exit("Sql Error at get_co".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$get_co,$main_url,__LINE__);
+					            log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($row5=mysqli_fetch_array($co_result))
 								{
                                   $co_no=$row5['customer_order_no'];
@@ -533,13 +588,15 @@
 								}
 								$mssql_insert_query="insert into [$mssql_db].[dbo].[M3_MRN_Link] (Company,Facility,MONo,OperationNo, ManufacturedQty,EmployeeNo,Remark,CONO,Schedule,Status,DSP1,DSP2,DSP3,DSP4) values";
 								$values = array();
-								array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_number . "','" . $op_code . "','" . $sew_qty . "','".$employee_no."','".$remarks."','".$co_no."','".$schedule."',NULL,'1','1','1','1')");
+								array_push($values, "('" . $company_no . "','" . $facility_code . "','" . $mo_number . "','" . $op_code1 . "','" . $sew_qty . "','".$employee_no."','".$remarks."','".$co_no."','".$schedule."',NULL,'1','1','1','1')");
 								$mssql_insert_query_result=odbc_exec($conn, $mssql_insert_query . implode(', ', $values));
 								$odbc_num_check=odbc_num_rows($mssql_insert_query_result);
 								if($odbc_num_check>0)
 								{
 									$pass_update1="UPDATE $pps.jm_jg_header SET mrn_status='0' WHERE job_number='$inputjobno' AND jm_jg_header_id='$jmjgheaderid' AND plant_code='$plant_code'";
 									$pass_update1_result=mysqli_query($link, $pass_update1) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+									log_statement('debug',$pass_update1,$main_url,__LINE__);
+					                log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 									echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 									$('#loading-image').hide();
 									function Redirect() {
