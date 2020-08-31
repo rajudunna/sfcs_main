@@ -148,7 +148,7 @@ if(isset($_POST['submit']))
 				<tr> 
 				<th> Module </th> 
 				<th> FR Plan </th> 
-				<th> Quantity (Forcast) </th> 
+				<th> Quantity (Forecast) </th> 
 				<th> Reason </th> 
 				</tr> 
 		<?php  
