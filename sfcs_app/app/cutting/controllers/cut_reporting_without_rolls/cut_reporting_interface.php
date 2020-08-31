@@ -16,30 +16,31 @@ else
 $operation_code = 15;
 $access_report = $operation_code.'-G';
 $access_reject = $operation_code.'-R';
-$access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
-$result = $link->query($access_qry);
-if($result->num_rows > 0){
-    if (in_array($$access_report,$has_permission))
-    {
-        $good_report = '';
-    }
-    else
-    {
-        $good_report = 'readonly';
-    }
-    if (in_array($$access_reject,$has_permission))
-    {
-        $reject_report = '';
-    }
-    else
-    {
-        $reject_report = 'readonly';
-    }
-} else {
-    $good_report = '';
-    $reject_report = '';
-}
-
+// $access_qry=" select * from $central_administration_sfcs.rbac_permission where (permission_name = '$access_report' or permission_name = '$access_reject') and status='active'";
+// $result = $link->query($access_qry);
+// if($result->num_rows > 0){
+//     if (in_array($$access_report,$has_permission))
+//     {
+//         $good_report = '';
+//     }
+//     else
+//     {
+//         $good_report = 'readonly';
+//     }
+//     if (in_array($$access_reject,$has_permission))
+//     {
+//         $reject_report = '';
+//     }
+//     else
+//     {
+//         $reject_report = 'readonly';
+//     }
+// } else {
+//     $good_report = '';
+//     $reject_report = '';
+// }
+$good_report = '';
+$reject_report = '';
 echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
 echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
@@ -54,7 +55,7 @@ if(isset($_GET['doc_no'])){
     </script>";
     
 
-$sql12="SELECT * from $bai_rm_pj1.fabric_cad_allocation where doc_no = '".$doc_no."'";
+$sql12="SELECT * from $wms.fabric_cad_allocation where doc_no = '".$doc_no."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 }
@@ -1324,7 +1325,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log(reportData);
         $.ajax({
                     type: "POST",
-                    url: "http://192.168.0.155:3336/cut-reporting/layReporting",
+                    url: "<?php echo $BackendServ_ip?>/cut-reporting/layReporting",
                     data:  JSON.stringify(reportData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1751,7 +1752,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     }
         $.ajax({
                 type: "POST",
-                url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+                url: "<?php echo $BackendServ_ip?>/cut-reporting/getLayReportingDetails",
                 data: data,
                 success: function (res) {            
                     //console.log(res.data);
