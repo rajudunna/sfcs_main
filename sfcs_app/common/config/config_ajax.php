@@ -11,7 +11,6 @@ $api_port_no  = $conf1->get('api-port');
 
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 $username=strtolower($username_list[1]);
-$username='sfcsproject1';
 
 //$global_facility_code=$conf1->get('plantcode');
 $enable_api_call = $conf1->get('enable-api-call');
@@ -105,4 +104,6 @@ class TaskTypeEnum {
     const plannedsewingembellishmentjob = 'PSEJ';
 }
 
+//IP for backend services
+$BackendServ_ip="http://192.168.0.155:3336";
 ?>

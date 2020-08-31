@@ -82,21 +82,34 @@ $(document).ready(function()
 		var operation_id = $('#operation_id').val();
 		var plant_code = $('#plant_code').val();
 		var tomodule = $('#module').val();
-        var inputObj = {barcode:barcode, plantCode:plant_code, operationCode:operation_id, module:tomodule};
-        
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+        var bundet;
+		const data={
+						"barcode": barcode,
+						"plantCode": plant_code,
+						"operationCode": operation_id,
+                        "module": tomodule
+				    }
         $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var bundet = JSON.parse(response);
-                tableConstruction(bundet);
-            }
-        });
-	});
-		
-	
+			type: "POST",
+			url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+			data: data,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					bundet=res.data
+					tableConstruction(bundet);
+				}
+				else
+				{
+					swal(res.internalMessage);
+				}                       
+			},
+			error: function(res){
+				swal('Error in getting data');
+			}
+		});
+	});	
 });
 
 function tableConstruction(bundet){

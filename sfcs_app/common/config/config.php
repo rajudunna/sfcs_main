@@ -289,4 +289,9 @@ class TaskTypeEnum {
     const plannedsewingjob = 'PSJ';
     const plannedsewingembellishmentjob = 'PSEJ';
 }
+
+//IP for backend services
+$BackendServ_ip="http://192.168.0.155:3336";
+
+
 ?>

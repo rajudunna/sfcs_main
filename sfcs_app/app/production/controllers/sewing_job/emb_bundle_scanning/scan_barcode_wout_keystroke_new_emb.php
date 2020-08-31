@@ -122,19 +122,12 @@ $(document).ready(function()
 			var operation_id = res[1];
 		}
 		var plant_code = $('#plant_code').val();
-		var bundet;
-		const data={
-						"barcode": barcode,
-						"plantCode": plantCode,
-						"operationCode": operation_id,
-						"createdUser": <?= $username ?>,
-						"shift": <?=shift ?>,
-						"reportAsFullGood": true
-				    }
-		$.ajax({
+        var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": <?= $shift?>};
+        
+        $.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportSemiGmtOrGmtBarcode",
-			data: data,
+			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportPanelFormBarcode",
+			data: embObj,
 			success: function (res) {            
 				//console.log(res.data);
 				if(res.status)
@@ -152,7 +145,9 @@ $(document).ready(function()
 				swal('Error in getting data');
 			}
 		});
-	});			
+	});
+		
+	
 });
 
 function tableConstruction(bundet){
