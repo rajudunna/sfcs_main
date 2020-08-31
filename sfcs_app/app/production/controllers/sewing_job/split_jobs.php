@@ -31,7 +31,7 @@ $(document).ready(function() {
         var sjObj = {"sewingJobNumber":sj,"plantCode":plant_code};
         $.ajax({
 			type: "POST",
-			url: "http://192.168.0.34:3336/jobs-generation/getJobBundleDetailsWithBundles",
+			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobBundleDetailsWithBundles",
 			data: sjObj,
 			success: function (res) {            
 				//console.log(res.data);
@@ -73,7 +73,7 @@ function sendResponse(){
     console.log(outputObj);
     $.ajax({
         type: "POST",
-        url: "http://192.168.0.34:3336/jobs-generation/spllitSewingJob",
+        url: "<?php echo $BackendServ_ip?>/jobs-generation/spllitSewingJob",
         data: outputObj,
         success: function (res) {            
             //console.log(res.data);

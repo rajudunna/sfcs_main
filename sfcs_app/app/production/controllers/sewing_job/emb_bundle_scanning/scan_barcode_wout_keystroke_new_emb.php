@@ -126,7 +126,7 @@ $(document).ready(function()
         
         $.ajax({
 			type: "POST",
-			url: "http://192.168.0.155:3336/fg-reporting/reportPanelFormBarcode",
+			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportPanelFormBarcode",
 			data: embObj,
 			success: function (res) {            
 				//console.log(res.data);

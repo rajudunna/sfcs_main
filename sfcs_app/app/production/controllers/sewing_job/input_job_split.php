@@ -87,7 +87,7 @@
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         $.ajax({
 			type: "POST",
-			url: "http://192.168.0.34:3336/jobs-generation/getJobNumbersByPo",
+			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobNumbersByPo",
 			data: inputObj,
 			success: function (res) {            
 				//console.log(res.data);
