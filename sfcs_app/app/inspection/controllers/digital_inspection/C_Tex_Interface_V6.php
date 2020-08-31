@@ -2401,15 +2401,11 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 	
 		echo "<input type='hidden' name=\"qty_allocated[$i]\" id=\"qty_allocated[$i]\" value='".$temp[16]."'>";
 		
-			$temp_shade_tag.=$temp[2]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade[$i]\" name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i); value=\"".trim($temp[2])."\" />";
-			
-
+			$temp_shade_tag.="<input type=\"text\" class='textbox alpha shade_grp unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade[$i]\"  name=\"ele_shade[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);  value=\"".trim($temp[2])."\" />";
 		
-			$temp_shade_tag1.=$temp[17]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade1[$i]\" name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[17])."\" />";
+			$temp_shade_tag1.="<input type=\"text\" class='textbox alpha shade_grp1 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade1[$i]\"  name=\"ele_shade1[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' \"".$temp[1]."\", $i)' value=\"".trim($temp[17])."\" />";
 		
-		
-		
-			$temp_shade_tag2.=$temp[18]."<input type=\"hidden\" ".$readonly." class='textbox alpha unique_shade_".$temp[1]."' id=\"ele_shade2[$i]\" name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
+			$temp_shade_tag2.="<input type=\"text\" class='textbox alpha shade_grp2 unique_shade_".$temp[1]."' ".$readonly." id=\"ele_shade2[$i]\"  name=\"ele_shade2[$i]\" maxlength=\"8\" onchange='change_body(2,this.name,$i);' value=\"".trim($temp[18])."\" />";
 		
 		
 	
