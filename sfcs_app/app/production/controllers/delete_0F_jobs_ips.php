@@ -60,14 +60,14 @@
                     $counter = 0;
                     //To get IPS Routing Operation
                     $application='Input Planning System';
-                    $to_get_map_id="SELECT operation_map_id FROM `pms`.`operation_routing` WHERE dashboard_name='$application' AND plant_code='$plant_code'";
+                    $to_get_map_id="SELECT operation_map_id FROM $pms.`operation_routing` WHERE dashboard_name='$application' AND plant_code='$plant_code'";
                     //echo $scanning_query;
                     $map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row1=mysqli_fetch_array($map_id_result))
                     {
                         $operation_map_id=$sql_row1['operation_map_id'];
                     }
-                    $to_get_ops_code="SELECT operation_code FROM `pms`.`operation_mapping` WHERE operation_map_id='$operation_map_id' AND plant_code='$plant_code'";
+                    $to_get_ops_code="SELECT operation_code FROM $pms.`operation_mapping` WHERE operation_map_id='$operation_map_id' AND plant_code='$plant_code'";
                     $get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row2=mysqli_fetch_array($get_ops_result))
                     {
@@ -98,8 +98,8 @@
                     $job_number=array();
                     $ponumber=array();
                     $masterponumber=array();
-                    $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id,po_number,master_po_number FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plant_code' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
-                    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id,po_number,master_po_number FROM $pps.jm_jg_header LEFT JOIN $pps.jm_job_header on jm_job_header.jm_job_header_id=jm_jg_header.jm_job_header  WHERE job_group_type='$job_group_type' AND jm_jg_header.plant_code='$plant_code' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
+                    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
                     if($toget_sewing_jobs_num>0){
                         while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
