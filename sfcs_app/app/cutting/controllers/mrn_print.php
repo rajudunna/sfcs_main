@@ -19,7 +19,7 @@ else
 	$print_status="Original";
 }
 
-$sql="select * from $wms.mrn_track where tid=$mrn_id and and plant_code='$plant_code'";
+$sql="select * from $wms.mrn_track where tid=$mrn_id and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -48,11 +48,11 @@ $approvedqty=$sql_row["avail_qty"];
 $issuedqty=$sql_row["issued_qty"];
 $remarks=$sql_row["remarks"];
 }
-$sql112="select co_no from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" and order_col_des=\"$color\"";
+$sql112="select customer_order_no from $oms.oms_mo_details where schedule=\"$schedule\" and plant_code=\"$plant_code\"";
 $sql_result112=mysqli_query($link, $sql112) or exit("Sql Error3".$sql112."".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row112=mysqli_fetch_array($sql_result112))
 {
-	$co_no=$sql_row112['co_no'];
+	$co_no=$sql_row112['customer_order_no'];
 }
 $sql="select group_concat(lable_id) as lbl from $wms.mrn_out_allocation where mrn_tid=$mrn_id and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2246,8 +2246,8 @@ tags will be replaced.-->
 <?php
 if($_GET["print_status"]==0)
 {
-	$sql="update $wms.mrn_track set status=8 where tid=$mrn_id,updated_user= '$username',updated_at=NOW() and plant_code='$plant_code'";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql="update $wms.mrn_track set status=8,updated_user= '$username',updated_at=NOW() where tid=$mrn_id and plant_code='$plant_code'";
+	mysqli_query($link, $sql) or exit("$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 ?>
 
