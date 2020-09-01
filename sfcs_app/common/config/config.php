@@ -291,7 +291,7 @@ class TaskTypeEnum {
 }
 
 //IP for backend services
-$BackendServ_ip="http://192.168.0.155:3336";
+$BackendServ_ip="http://192.168.0.34:3336";
 
 
 ?>
