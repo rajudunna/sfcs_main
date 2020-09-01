@@ -1,23 +1,11 @@
 <?php
-// include("dbconf.php");
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',3,'R'));
-//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-
-//$has_perm=haspermission($_GET['r']);
-// $view_access=user_acl("SFCS_0142",$username,1,$group_id_sfcs);
-// $auth_users=user_acl("SFCS_0142",$username,7,$group_id_sfcs);
-// $url=getFullURL($_GET['r'],'restricted.php','N');
- //$auth_users=array("kirang","mohanr","gayanl","buddhikam");
-// if(!in_array($authorized,$has_perm))
-// {
-// 	header("Location:$url");
-// }
-
-
+$url = getFullURLLEVEL($_GET['r'],'qms_2.php',0,'N');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
-
 
 <head>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',3,'R'); ?>"></script>
@@ -28,45 +16,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',3,'R'); ?>"></script>
 
-<!---<style type="text/css">
-#div-1a {
- position:absolute;
- top:65px;
- right:0;
- width:auto;
-float:right;
-
-</style>
-
-
-
-<style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-@import "TableFilter_EN/filtergrid.css";
-
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	/* margin:15px; padding:15px; border:1px solid #666; */
-	font-family:Arial, Helvetica, sans-serif; font-size:88%; 
-}
-h2{ margin-top: 50px; }
-caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
-pre{ font-size:13px;  padding:5px; background-color:#f4f4f4; solid #ccc;  }
-.mytable{
-	width:100%; font-size:12px;
-	}
-div.tools{ margin:5px; }
-div.tools input{ background-color:#f4f4f4; outset #f4f4f4; margin:2px; }
-.mytable th{ background-color:#29759c; color:#FFF; padding:2px; solid #ccc; white-space: nowrap;}
-td{ padding:2px; white-space: nowrap;}
-</style> -->
 <script type="text/javascript">
 $(document).ready(function(){
- $("#tag").autocomplete("autocomplete.php", {
+ $("#schedule").autocomplete("autocomplete.php", {
 		selectFirst: true
 	});
 	$("#fade1").fadeOut(3000);
@@ -76,7 +28,6 @@ $(document).ready(function(){
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 </head>
 
-<!-- <div id="page_heading"><span style="float"><h3>Quality Rejection Reversal Form</h3></span><span style="float: right">&nbsp;</span></div> -->
 <br/>
 
 <div class='panel panel-primary'>
@@ -85,292 +36,22 @@ $(document).ready(function(){
 <div class='form-group'>
 <div class='table-responsive'>
 
-<form action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="POST">
+<form action='<?php echo $url ?>' method="POST">
 
 
 <div class='col-md-3 col-sm-3 col-xs-12'>
-<h5>Schedule:</h5><input name="schedule" type="text" class="form-control col-md-7 col-xs-12 float" value="<?php $_POST['schedule'];?>" id="tag" size="20" required/>
+<h5>Schedule:</h5><input name="schedule" type="text" class="form-control col-md-7 col-xs-12 float" value="<?php $_POST['schedule'];?>" id="schedule" size="20" required/>
 </div>
+<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
+<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 <div class='col-md-2 col-sm-3 col-xs-12'>
-<input type="submit" value="Search" name="search" class="btn btn-success" style="margin-top: 34px;">
-<a href="<?= getFullURL($_GET['r'],'qms_3.php','N'); ?>"  class="btn btn-link"><p style="margin-top: -31px;margin-left: 70px;">Deleted Transactions</p></a>
+<input type="submit" value="Search" name="search" id="search" class="btn btn-success" style="margin-top: 34px;">
+<input type="submit" value="Deleted Transactions" name="transactions" id="transactions" class="btn btn-info" style="margin-top: 34px;">
 </div>
 
 </form>
-
-
-<?php 
-if(isset($_GET['tid']))
-{
-
-	$tid_ref=$_GET['tid'];
-	$locationid=$_GET['location'];
-	$qms_qty=$_GET['qms_qty1'];
-	$parent_id = $_GET['parent_id'];
-	$bcd_id = $_GET['bcd_id'];
-	$plant_code = $_SESSION['plantCode'];
-	$username = $_SESSION['userName'];
-	
-	$sql1="select bundle_no,qms_style,qms_color,input_job_no,operation_id,qms_size,SUBSTRING_INDEX(remarks,'-',1) as module,SUBSTRING_INDEX(remarks,'-',-1) AS form,ref1,doc_no,qms_schedule from $pps.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
-	// echo $sql1."<br>";
-	// die();
-	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($result1))
-	{
-		$input_job_no=$sql_row["input_job_no"];
-		$operation_id=$sql_row["operation_id"];
-		$qms_size=$sql_row["qms_size"];
-		$module_ref=$sql_row["module"];
-		$rejections_ref=$sql_row["ref1"];
-		$style=$sql_row["qms_style"];
-		$color=$sql_row["qms_color"];
-		$bundle_no_ref=$sql_row["bundle_no"];
-		$doc_no = $sql_row['doc_no'];
-		$schedule = $sql_row['qms_schedule'];
-		$form = $sql_row['form'];
-	}
-	
-	$emb_cut_check_flag = 0;
-	$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$operation_id";
-	// echo $ops_seq_check;
-	$result_ops_seq_check = $link->query($ops_seq_check);
-	if($result_ops_seq_check->num_rows > 0)
-	{
-		while($row = $result_ops_seq_check->fetch_assoc()) 
-		{
-			$ops_seq = $row['ops_sequence'];
-			$seq_id = $row['id'];
-			$ops_order = $row['operation_order'];
-		}
-	}
-	$pre_ops_check = "select operation_code from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' AND ops_sequence = '$ops_seq' AND CAST(operation_order AS CHAR) < '$ops_order' and operation_code NOT IN  (10,200) ORDER BY operation_order DESC LIMIT 1";
-	$result_pre_ops_check = $link->query($pre_ops_check);
-	if($result_pre_ops_check->num_rows > 0)
-	{
-		while($row = $result_pre_ops_check->fetch_assoc()) 
-		{
-			$pre_ops_code = $row['operation_code'];
-		}
-		$category=['cutting','Send PF','Receive PF'];
-		$checking_qry = "SELECT category FROM `brandix_bts`.`tbl_orders_ops_ref` WHERE operation_code = '$pre_ops_code'";
-		$result_checking_qry = $link->query($checking_qry);
-		while($row_cat = $result_checking_qry->fetch_assoc()) 
-		{
-			$category_act = $row_cat['category'];
-		}
-		if(in_array($category_act,$category))
-		{
-			$emb_cut_check_flag = 1;
-		}
-	}
-	if($emb_cut_check_flag == 1)
-	{
-		$cps_update = "update $bai_pro3.cps_log set remaining_qty=remaining_qty+$qms_qty where doc_no = $doc_no and operation_code = $pre_ops_code and size_code = '$qms_size'";
-		mysqli_query($link, $cps_update) or die("Sql error".$cps_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	}
-	// $ops_sequence="SELECT ops_sequence FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND operation_code='".$operation_id."'";
-	// $ops_sequence_sql_result=mysqli_query($link,$ops_sequence) or exit("ops_sequence Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($ops_sequence_row = mysqli_fetch_array($ops_sequence_sql_result))
-	// {
-	// 	$ops_sequence=$ops_sequence_row["ops_sequence"];
-	// }
-	// $form="P";
-	// if($ops_sequence > 0)
-	// {	
-	// 	$max_ops="SELECT max(id) as operation_code FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND ops_sequence='".$ops_sequence."'";
-	// 	$max_ops_sql_result=mysqli_query($link,$max_ops) or exit("max_ops Error".$max_ops.mysqli_error($GLOBALS["___mysqli_ston"]));
-	// 	while($max_ops_row = mysqli_fetch_array($max_ops_sql_result))
-	// 	{
-	// 		$max_ops_code=$max_ops_row["operation_code"];
-	// 	}
-		
-	// 	$ops_dependency="SELECT ops_dependency FROM $brandix_bts.tbl_style_ops_master WHERE style='".$style."' AND COLOR='".$color."' AND id='".$max_ops_code."'";
-	// 	$ops_dependency_sql_result=mysqli_query($link,$ops_dependency) or exit("ops_dependency Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
-	// 	while($ops_dependency_row = mysqli_fetch_array($ops_dependency_sql_result))
-	// 	{
-	// 		$ops_dependency=$ops_dependency_row["ops_dependency"];
-	// 	}
-		
-	// 	if($ops_dependency > 0)
-	// 	{
-	// 		if($ops_dependency < 130)
-	// 		{
-	// 			$form="P";
-	// 		}
-	// 		else
-	// 		{
-	// 			$form="G";
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if($operation_id < 130)
-	// 		{
-	// 			$form="P";
-	// 		}
-	// 		else
-	// 		{
-	// 			$form="G";
-	// 		}
-	// 	}
-	// }
-	// else
-	// {
-	// 	if($operation_id < 130)
-	// 	{
-	// 		$form="P";
-	// 	}
-	// 	else
-	// 	{
-	// 		$form="G";
-	// 	}
-	// }
-	
-	// echo "<br>Form=".$form."<br><br>";
-	$reason = array();	$r_reasons = array();	$reason_qty = array();
-	$rejections_ref_explode=explode("$",$rejections_ref);
-	for ($i=0; $i < sizeof($rejections_ref_explode); $i++)
-	{ 
-		$rejections_ref_explode_ref=explode("-",$rejections_ref_explode[$i]);
-		$reason[] = $rejections_ref_explode_ref[0];
-		$reason_qty[] = $rejections_ref_explode_ref[1];
-	}
-
-	for ($z=0; $z < sizeof($reason); $z++)
-	{ 
-		$rej_code="select m3_reason_code from $bai_pro3.bai_qms_rejection_reason where form_type='".$form."' and reason_code='".$reason[$z]."'";
-		$rej_code_sql_result=mysqli_query($link,$rej_code) or exit("m3_reason_code Error".$ops_dependency.mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($rej_code_row = mysqli_fetch_array($rej_code_sql_result))
-		{
-			$r_reasons[]=$rej_code_row["m3_reason_code"];
-		}
-	}
-	// die();
-	$bts_update="update $brandix_bts.bundle_creation_data set rejected_qty=rejected_qty-".$qms_qty." where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."'";
-	// echo $bts_update."<br>";
-	mysqli_query($link, $bts_update) or die("Sql error".$bts_update.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	// echo $bts_update.'</br>';
-	$bts_insert="insert into $brandix_bts.bundle_creation_data_temp(cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,rejected_qty,docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id) select cut_number,style,SCHEDULE,color,size_id,size_title,sfcs_smv,bundle_number,'".(-1*$qms_qty)."',docket_number,assigned_module,remarks,shift,input_job_no,input_job_no_random_ref,operation_id from $brandix_bts.bundle_creation_data_temp where bundle_number='".$bundle_no_ref."' and input_job_no_random_ref='".$input_job_no."' and operation_id='".$operation_id."' and assigned_module='".$module_ref."' and size_id='".$qms_size."' limit 1";
-	// echo $bts_insert;
-	mysqli_query($link,$bts_insert) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	
-	$updated = updateM3TransactionsRejectionsReversal($bundle_no_ref,$operation_id,$reason_qty,$r_reasons);
-
-	//Insert selected row into table deleted table
-	$sql1="insert ignore into $pps.bai_qms_db_deleted select * from $pps.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."' ";
-	// echo $sql1."<br>";
-	$result1=mysqli_query($link, $sql1) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	//reduce qty from location table based on location
-	if($locationid != null) {
-		$sql3="update $pps.bai_qms_location_db set qms_cur_qty=(qms_cur_qty-$qms_qty),updated_user='$username',updated_at=NOW() where qms_location_id='".$locationid."' and plant_code='$plant_code'";
-		// echo $sql3."<br>";
-		$result3=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	}
-	//delete selected row from bai_qms_db table
-	$sql2="delete from $pps.bai_qms_db where plant_code='$plant_code' and qms_tid='".$tid_ref."'";
-	// echo $sql2."<br>";
-	$result2=mysqli_query($link, $sql2) or die("Sql error".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
-	
-	//updating rejection_log_chile
-
-	$update_qry = "update $tms.rejection_log_child set rejected_qty = rejected_qty-$qms_qty,updated_user='$username',updated_at=NOW() where bcd_id = $bcd_id";
-	// echo $update_qry.'</br>';
-	mysqli_query($link, $update_qry) or die("update_qry".$sql2.mysqli_errno($GLOBALS["___mysqli_ston"]));
-
-	$search_qry="SELECT id FROM $tms.rejections_log where plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color'";
-					// echo $search_qry;
-	$result_search_qry = mysqli_query($link,$search_qry) or exit("rejections_log search query".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if($result_search_qry->num_rows > 0)
-	{
-		while($row_result_search_qry=mysqli_fetch_array($result_search_qry))
-		{
-
-			$rejection_log_id = $row_result_search_qry['id'];
-			$update_qry_rej_lg = "update $tms.rejections_log set rejected_qty = rejected_qty-$qms_qty,remaining_qty=remaining_qty-$qms_qty,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and id = $rejection_log_id";
-			// echo $update_qry_rej_lg;
-			$update_qry_rej_lg = $link->query($update_qry_rej_lg);
-			$parent_id = $rejection_log_id;
-
-		}
-
-	}
-	$url = '?r='.$_GET['r'];
-	echo "<script>sweetAlert('Deleted Successfully!!!','','success');window.location = '".$url."'</script>"; 
-	
-}
-if(isset($_POST['search']) || $_GET['schedule_id'])
-{
-	
-	$schedule=$_POST['schedule'];
-	if($_GET['schedule_id'])
-	{
-		$schedule=$_GET['schedule_id'];
-	}
-	$sql3="SELECT order_style_no,order_del_no FROM bai_pro3.`bai_orders_db` WHERE order_del_no='".$schedule."'";
-	$getstyle=mysqli_query($link, $sql3) or die("Sql error".$sql3.mysqli_errno($GLOBALS["___mysqli_ston"]));;
-	while($getresult=mysqli_fetch_array($getstyle))
-	{
-		$qms_style=$getresult['order_style_no'];
-		$qms_schedule=$getresult['order_del_no'];
-	}
-
-	 $sewing_cat = 'sewing';
-	$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-						WHERE trim(category) = '$sewing_cat' ";
-	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
-	while($row=mysqli_fetch_array($op_code_result)) 
-	{
-		$op_codes  = $row['codes'];	
-	}
-	if(short_shipment_status($qms_style,$qms_schedule,$link)){
-		$sql="SELECT rej.`parent_id`,rej.`bcd_id`,qms.qms_tid AS qms_tid,qms.`bundle_no` AS bundle_no,qms.`qms_qty` AS qms_qty,rej.`recut_qty`,
-		ref1,location_id,SUBSTRING_INDEX(qms.remarks,'-',-1) AS form,qms_style,qms_schedule,qms_color,qms_size,qms_remarks,qms.operation_id,qms.input_job_no,qms.log_date,log_time 
-		FROM $pms.bai_qms_db qms 
-		LEFT JOIN brandix_bts.`bundle_creation_data` bts ON bts.`bundle_number` = qms.`bundle_no` AND bts.`operation_id` = qms.`operation_id` 
-		LEFT JOIN $tms.`rejection_log_child` rej ON rej.`bcd_id` = bts.`id` LEFT JOIN  bai_pro3.`lay_plan_recut_track` track ON track.bcd_id=bts.id  WHERE qms_tran_type=3 AND qms_schedule='$schedule' 
-		AND recut_qty = 0 AND replaced_qty = 0 and bts.`operation_id` in ($op_codes) AND track.recut_raised_qty IS NULL
-		";
-		
-		$result=mysqli_query($link, $sql) or die("Sql error".$sql.mysqli_errno($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($result)>0)
-		{
-			$msg="<table border='1px' class=\"table table-bordered\"  id=\"table1\"><tr><th>Style</th><th>ScheduleNo</th><th>Color</th><th>Size</th><th>Qms_remarks</th><th>Rejection Type</th><th>Bundle_no</th><th>Operation_id</th><th>Input_job_no</th><th>Date</th><th>Quantity</th><th>Control</th></tr>";
-			while($row=mysqli_fetch_array($result))
-			{
-				$tid=$row["qms_tid"];
-				$location_id=$row["location_id"];
-				$qms_qty1=$row["qms_qty"];
-				$bcd_id = $row['bcd_id'];
-				$parent_id = $row['parent_id']; 
-				$form = $row['form'];
-
-				
-				if($row['form']=="G")
-				{
-					$form="Garment";
-				}else
-				{
-					$form="Panel";
-				}
-				
-				$url = '?r='.$_GET['r'];
-				$order_tid = '';
-				$qms_size_title = ims_sizes($order_tid,$row["qms_schedule"],$row["qms_style"],$row["qms_color"],$row["qms_size"],$link);
-				
-				$msg.="<tr><td>".$row["qms_style"]."</td><td>".$row["qms_schedule"]."</td><td>".$row["qms_color"]."</td><td>".$qms_size_title."</td><td>".$row["qms_remarks"]."</td><td>".$form."</td><td>".$row["bundle_no"]."</td><td>".$row["operation_id"]."</td><td>".$row["input_job_no"]."</td><td>".$row["log_date"]."</td><td>".$row["qms_qty"]."</td><td><a href=\"$url&tid=$tid&schedule_id=$schedule&location=$location_id&bcd_id=$bcd_id&parent_id=$parent_id&qms_qty1=$qms_qty1\" class=\"btn btn-danger\">Delete</a></td></tr>";		
-			}
-			$msg.="</table>";
-			echo $msg;
-		}
-		else
-		{
-			echo "<script>sweetAlert('This Schedule no is not available','','error')</script>";
-		}
-	}
-}
-
-
-?>
+<div id ="dynamic_table1">
+</div>
 </div>
 </div>
 </div>
@@ -383,4 +64,123 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 							loader_text: "Filtering data..."
 						};
 	setFilterGrid( "table1",table6_Props );
+</script>
+<script>
+$(document).ready(function() 
+{
+	$('#search').on('click', function(){
+		$('#dynamic_table1').html('');
+		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
+		var schedule = $('#schedule').val();
+		var inputObj = {schedule:schedule, plantCode:plant_code, userName:username};
+		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+        $.ajax({
+            type: "POST",
+            url: function_text+"?inputObj="+inputObj,
+            success: function(response) 
+            {
+                var bundet = JSON.parse(response);
+                tableConstruction(bundet);
+            }
+        });
+	});
+});		
+
+function tableConstruction(bundet){
+    console.log(bundet);
+	s_no = 0;
+    if(bundet)
+    {
+		$('#dynamic_table1').html('');
+		for(var i=0;i<bundet.data.length;i++)
+        {
+			var hidden_class='';
+			if(i==0)
+            {
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Size</th><th>QMS Remarks</th><th>Rejection Type</th><th>Bundle No</th><th>Operation Id</th><th>Input Job</th><th>Date</th><th>Quantity</th><th>Control</th></tr></thead><tbody>";
+                $("#dynamic_table1").append(markup);
+            }
+            s_no++;
+			
+			var markup1 = "<tr class="+hidden_class+"><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='schedule'>"+bundet.data[i].schedule+"</td><td data-title='color'>"+bundet.data[i].color+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='qmsRemarks'>"+bundet.data[i].qmsRemarks+"</td><td data-title='rejectionType'>"+bundet.data[i].rejectionType+"</td><td data-title='bundleNumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operationId'>"+bundet.data[i].operationId+"</td><td data-title='inputJob'>"+bundet.data[i].inputJob+"</td><td data-title='date'>"+bundet.data[i].date+"</td><td data-title='quantity'>"+bundet.data[i].quantity+"</td><td><button type='button' class='btn btn-danger btn-sm'  onclick='deletetrn("+bundet.data[i].id+","+bundet.data[i].operationId+","+bundet.data[i].inputJob+",this)'><i class='fa fa-trash-o' aria-hidden='true'>Delete</i></td></tr>";
+            $("#dynamic_table").append(markup1);
+            $("#dynamic_table").hide();
+
+		}
+	}
+	var markup99 = "</tbody></table></div></div></div>";
+    $("#dynamic_table").append(markup99);
+    $("#dynamic_table").show();
+    $('#schedule').val('');
+	
+	
+}
+
+function deletetrn(id,operation,inpjob,btn)
+{
+	var mainid = id; 
+	var operation_id = operation; 
+	var inputjobno = inpjob; 
+	var inputObj = {mainId:mainid, operationCode:operation_id, inputJob:inputjobno};
+	var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+	$.ajax({
+		type: "POST",
+		url: function_text+"?inputObj="+inputObj,
+		success: function(response) 
+		{
+			var bundet = JSON.parse(response);
+			var msg=bundet.status;
+			swal({
+			 title: "Deleted",
+			 text: msg,
+			 type: "success",
+			 timer: 10000
+			 });
+		}
+	});
+}
+
+$('#search').on('click', function(){
+	var plant_code = $('#plant_code').val();
+	$('#dynamic_table1').html('');
+	var inputObj = {plantCode:plant_code};
+	var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+	$.ajax({
+		type: "POST",
+		url: function_text+"?inputObj="+inputObj,
+		success: function(response) 
+		{
+			var delbundet = JSON.parse(response);
+			deleteTableConstruction(delbundet);
+		}
+	});
+});
+
+function deleteTableConstruction(delbundet){
+	console.log(delbundet);
+	s_no = 0;
+    if(delbundet)
+    {
+		$('#dynamic_table1').html('');
+		for(var i=0;i<delbundet.data.length;i++)
+        {
+			var hidden_class='';
+			if(i==0)
+            {
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Style</th><th>Schedule</th><th>Color</th><th>Date</th><th>Size</th><th>Quantity</th></tr></thead><tbody>";
+                $("#dynamic_table1").append(markup);
+            }
+            s_no++;
+			
+			var markup1 = "<tr class="+hidden_class+"><td data-title='style'>"+s_no+"</td><td data-title='style'>"+delbundet.data[i].style+"</td><td data-title='schedule'>"+delbundet.data[i].schedule+"</td><td data-title='color'>"+delbundet.data[i].color+"</td><td data-title='date'>"+delbundet.data[i].date+"</td><td data-title='size'>"+delbundet.data[i].size+"</td><td data-title='quantity'>"+delbundet.data[i].quantity+"</td></tr>";
+            $("#dynamic_table").append(markup1);
+            $("#dynamic_table").hide();
+
+		}
+	}
+	var markup99 = "</tbody></table></div></div></div>";
+    $("#dynamic_table").append(markup99);
+    $("#dynamic_table").show();
+}	
 </script>
