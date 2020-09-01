@@ -69,7 +69,7 @@ function validateQty(event)
 
 
 
-<form method="post" name="input2" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
+<form method="post" name="input2" action="<?php $_SERVER['PHP_SELF']; ?>">
 	<div class="row">
 		<div class='col-md-3'>
 		<label>Search Lot No: </label><input type="text" id="course" onkeypress="return validateQty(event);" class="form-control" name="lot_no" oninvalid="this.setCustomValidity('Please Enter Lot Number')" required />
@@ -81,7 +81,7 @@ function validateQty(event)
 
 <?php
 if(isset($_POST['submit']))
-{
+{	
 	$lot_no=$_POST['lot_no'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
@@ -98,7 +98,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $wms.sticker_report where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no from $wms.sticker_report where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -196,7 +196,7 @@ switch (trim($product_group))
 	}
 }
 
-$sql="select * from $wms.store_in where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
