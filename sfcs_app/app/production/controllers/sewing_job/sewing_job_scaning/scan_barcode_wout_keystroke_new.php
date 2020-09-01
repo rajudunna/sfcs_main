@@ -125,7 +125,7 @@ $(document).ready(function()
 		var bundet;
 		const data={
 						"barcode": barcode,
-						"plantCode": plantCode,
+						"plantCode": plant_code,
 						"operationCode": operation_id,
 						"createdUser": <?= $username ?>,
 						"shift": <?=shift ?>,
