@@ -69,7 +69,7 @@ th,td{
 				<?php }?>
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
-					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'">
+					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -122,21 +122,37 @@ $(document).ready(function()
 			var operation_id = res[1];
 		}
 		var plant_code = $('#plant_code').val();
-        var inputObj = {barcode:barcode, plantCode:plant_code, operationCode:operation_id};
-        
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
-        $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var bundet = JSON.parse(response);
-                tableConstruction(bundet);
-            }
-        });
-	});
-		
-	
+		var bundet;
+		const data={
+						"barcode": barcode,
+						"plantCode": plantCode,
+						"operationCode": operation_id,
+						"createdUser": <?= $username ?>,
+						"shift": <?=shift ?>,
+						"reportAsFullGood": true
+				    }
+		$.ajax({
+			type: "POST",
+			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+			data: data,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					bundet=res.data
+					tableConstruction(bundet);
+					swal(res.internalMessage);
+				}
+				else
+				{
+					swal(res.internalMessage);
+				}                       
+			},
+			error: function(res){
+				swal('Error in getting data');
+			}
+		});
+	});			
 });
 
 function tableConstruction(bundet){
