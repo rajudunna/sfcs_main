@@ -150,6 +150,8 @@ echo "<input type='hidden' name='reject_reasons' id='reject_reasons'>";
 if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
     $parent_id = $_GET['parent_id'] or $_POST['parent_id'];
     $store_id = $_GET['store_id'] or $_POST['store_id'];
+    $plant_code = $_GET['plant_code'] or $_POST['plant_code'];
+    $username = $_GET['username'] or $_POST['username'];
    echo "<input type='hidden' value= $store_id id='four_point_store_id'>";
 }
 $sno_points = $store_id;
@@ -333,6 +335,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
             <div class="panel panel-primary">
               <div class="panel-heading">4 Point Roll Information</div>
                 <div class="panel-body">
+				<div class="table-responsive col-sm-12">
                         <table class="table table-bordered">
                             <tbody>
                                 <tr style="background-color: antiquewhite;">
@@ -389,7 +392,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                                 ?>
                             </tbody>
                         </table>
-                       
+                       </div>
                     <div class="table-responsive col-sm-12">
                         <table class="table table-bordered">
                             <tbody>

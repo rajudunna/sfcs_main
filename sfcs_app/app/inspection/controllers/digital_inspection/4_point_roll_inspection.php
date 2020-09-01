@@ -372,13 +372,13 @@ $flag = false;
 								{
 									$val2_2 =1;
 									$status_main = 'Pending';
-									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id&plant_code=$plant_code&username=$username'";
 								}
 								else if($status == 2)
 								{
 									$val2_1=1;
 									$status_main = 'Inprogress';
-									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";									
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id&plant_code=$plant_code&username=$username'";									
 								}
 								else
 								{
