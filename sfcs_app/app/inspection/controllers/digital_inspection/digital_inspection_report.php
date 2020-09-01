@@ -328,6 +328,8 @@ $username = $_SESSION['userName'];
 					<div class="col-xs-6 col-sm-6 col-lg-6">
 						<div class="panel-body" style="background-color:#f5ecec">
 							<form class="form-horizontal form-label-left" method="post" name="input2">
+							<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
+							<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
 								<div class="form-group">
 									<label class="control-label col-md-3 col-sm-3 col-lg-3">
 										Enter PO NO<span class="required"></span>
@@ -380,6 +382,8 @@ $username = $_SESSION['userName'];
 
 					if (isset($_POST['submit'])) {
 						$po_no = $_POST['po_no'];
+						$plant_code = $_POST['plant_code'];
+						$username = $_POST['username'];
 						$lot_no_inp = $_POST['lot_no'];
 						$supplier_invoice = $_POST['supplier_invoice'];
 						$supplier_batch = $_POST['supplier_batch'];
@@ -469,6 +473,8 @@ $username = $_SESSION['userName'];
 					<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report.php", "0", "N") ?>" method="POST">
 						<input type="hidden" id="hide_rolls" name="hidden_rolls" value='0'>
 						<input type="hidden" id="hide_total" name="hidden_total" value='0'>
+						<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
+						<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
 						<table id="myTable" class="table table-striped table-bordered tableFixHead" cellspacing="0" width="100%">
 							<thead>
 								<tr>
@@ -635,6 +641,8 @@ $username = $_SESSION['userName'];
 	<?php
 	if (isset($_POST['bindingdata'])) {
 		$binddetails = $_POST['bindingdata'];
+		$plant_code = $_POST['plant_code'];
+		$username = $_POST['username'];
 		$count1 = count($binddetails);
 
 		if ($count1 > 0) {
@@ -694,7 +702,7 @@ $username = $_SESSION['userName'];
          // die();
 		echo "<script>swal('Successfully Selected.','Successfully','success')</script>";
 		$url = getFullURLLevel($_GET['r'], 'digital_inspection_report_v1.php', 0, 'N');
-		echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id'</script>";
+		echo "<script>location.href = '" . $url . "&parent_id=$lastinsert_id&plant_code=$plant_code&username=$username'</script>";
 	}
 	?>
 	</div>
