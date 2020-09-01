@@ -3,7 +3,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
-$plant_code = $_session['plantCode'];
+$plant_code =  $_session['plantCode'];
 $username =  $_session['userName'];
 ?>
 
@@ -162,7 +162,7 @@ $get_sub_po=$_GET['sub_po'];
 echo "</br><div class='col-sm-3'>";
  $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
  //Qry to fetch jm_job_header_id from jm_jobs_header
- $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
+ $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
  $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
  $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
  if($jm_job_header_id_result_num>0){
