@@ -956,8 +956,8 @@ $(document).ready(function(){
                         $result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row=mysqli_fetch_array($result17))
                         {
-                            $sql_sec=$sql_row["secid"];
-                            $section_display_name=$sql_row["secid"];
+                            $sql_sec=$sql_row["section_code"];
+                            $section_display_name=$sql_row["section_name"];
                             echo "<option value=\"".$sql_sec."\">".$section_display_name."</option>";
                                 
                         }
