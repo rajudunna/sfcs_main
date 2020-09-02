@@ -590,7 +590,7 @@
                                     else
                                     {echo $sql_rowwip12["input_date"]; }
                                     ?></td>
-                                    <td><?php echo $sql_rowwip12["assigned_module"]; ?></td>
+                                    <td><?php echo $input_module_new; ?></td>
                                     <?php $temp_module=$input_module_new; ?>
                                     <td><?php echo $sql_rowwip12["color"]; ?></td>
                                     <td><?php echo $sql_rowwip12["size_title"]; ?></td>
@@ -652,7 +652,7 @@
                             echo "</table>";
                             echo "</div>";
                             $tot=0;  
-                            //echo "Testing".$temp_module;
+                            //echo "Testing".$cnt_new;
                             $temp_jobno=$sql_row["job"];
                             if ($cnt_new=="0" || $cnt_new=="")
                             {
@@ -661,13 +661,16 @@
                                 // $result5555=mysqli_query($link, $sql5555) or die("Error-".$sql5555."-".mysqli_error($GLOBALS["___mysqli_ston"]));           
                                 // while($sql_row5555=mysqli_fetch_array($result5555))
                                 // {
+									if($input_module_new!='' || $input_module_new>0)
+									{
                                     ?>
                                     <span style="background-color:#009900;font-weight:bold;color:white">
                                     <?php   
-                                        echo "Planned module : ".$sql_row5555["input_module"];
+                                        echo "Planned module : ".$input_module_new;
                                     ?>
                                     </span>
                                     <?php
+									}
                                     
                                // }
                             }
