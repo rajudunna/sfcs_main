@@ -637,7 +637,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     {
         $list_db=array();
         $list_db=explode(";",$list);
-        $taskStatus="PLANNED";
+        $taskStatus="INPROGRESS";
     
         $j=1;
         for($i=0;$i<sizeof($list_db);$i++)
@@ -870,7 +870,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
-      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plantcode'";
+      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='INPROGRESS' AND task_type='$tasktype' AND plant_code='$plantcode'";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
       {
