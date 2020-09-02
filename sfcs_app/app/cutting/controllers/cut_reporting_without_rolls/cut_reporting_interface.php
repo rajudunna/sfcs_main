@@ -78,6 +78,12 @@ while($row = mysqli_fetch_array($location_result))
     $locations[] = $row['loc_name'];
 }
 
+$team_leaders_query = "SELECT * from $pms.tbl_leader_name";
+$team_leaders_result = mysqli_query($link,$team_leaders_query);
+while($row = mysqli_fetch_array($team_leaders_result)){
+    $team_leaders[$row['id']] = $row['emp_name'];
+}
+
 $rejection_reason_query = "SELECT reason_code,reason_desc,m3_reason_code from $mdm.reasons where form_type = 'P' ";
 $rejection_reason_result = mysqli_query($link,$rejection_reason_query); 
 while($row = mysqli_fetch_array($rejection_reason_result)){
@@ -113,7 +119,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <tr><td>Style</td>   <td id='d_style'></td>    </tr>
                     <tr><td>Schedule</td><td id='d_schedule'></td> </tr>
                     <tr><td>Color</td>   <td id='d_color'></td>    </tr>
-                    <tr><td>Docket Type</td><td id='d_doc_type'></td></tr>
+                    <!-- <tr><td>Docket Type</td><td id='d_doc_type'></td></tr> -->
                 </table>
             </div>
         </div>
@@ -1893,7 +1899,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         $('#r_reported_plies').html(getData.plannedPlies);
                         //setting value to style,schedule,color
                         $('#d_style').html(getData.style);
-                        $('#d_schedule').html(getData.docketNumber);
+                        $('#d_schedule').html(getData.schedules.toString());
                         $('#d_color').html(getData.fgColor);
                         if($('#good_report').val() == 'readonly'){
                             $('#c_plies').attr('readonly', true);

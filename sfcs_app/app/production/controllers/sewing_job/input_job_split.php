@@ -2,6 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
+    $username=$_SESSION['userName'];
 ?> 
 
 <div class="panel panel-primary">
@@ -90,15 +91,17 @@
 			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobNumbersByPo",
 			data: inputObj,
 			success: function (res) {            
-				//console.log(res.data);
+				console.log(res);
 				if(res.status)
 				{
-					var data = JSON.parse(res);
+					var data = res.data;
+                    console.log(data);
 					var sewing_job_list ='';
-	                $.each(data.sewingJobNumbers, function( index, sewing_job ) {
+	                $.each(data.job_number, function( index, sewing_job ) {
 	                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
 	                });
-                $('#dynamic_table').html(sewing_job_list);
+                    console.log(sewing_job_list);
+                    $('#dynamic_table').html(sewing_job_list);
 				}
 				else
 				{
