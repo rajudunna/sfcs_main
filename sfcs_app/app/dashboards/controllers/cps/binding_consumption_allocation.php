@@ -169,10 +169,10 @@ $binding_query = "select p.tot_bindreq_qty,c.doc_no from $pps.binding_consumptio
 $binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$binding_num=mysqli_num_rows($binding_query_result);
 	if($binding_num>0){
-		while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
+		while($binding_row=mysqli_fetch_array($binding_query_result))
 		{
-			$tot_bindreq_qty = $sql_row1['tot_bindreq_qty'];
-			$doc_num = $sql_row1['doc_no'];
+			$tot_bindreq_qty = $binding_row['tot_bindreq_qty'];
+			$doc_num = $binding_row['doc_no'];
 		}
 	}
 ?>
