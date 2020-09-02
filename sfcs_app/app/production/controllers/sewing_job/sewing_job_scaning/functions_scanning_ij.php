@@ -554,88 +554,90 @@ function getjobdetails($job_number)
 if(isset($_GET['job_rev_no']))
 {
     $job_rev_no = $_GET['job_rev_no'];
+    $job_plant_code = $_GET['plant_code'];
     if($job_rev_no != '')
     {
-        getjobreversaldetails($job_rev_no);
+        getjobreversaldetails($job_rev_no,$job_plant_code);
     }
 }
-function getjobreversaldetails($job_rev_no)
+function getjobreversaldetails($job_rev_no,$job_plant_code)
 {
     include("../../../../../common/config/config_ajax.php");    
-    $operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' AND os.display_operations='yes' GROUP BY operation_id";
-    $result_operations_qty = $link->query($operations_qty);
-    if($result_operations_qty->num_rows > 0)
-    {
-        while($row_result_operations_qty = $result_operations_qty->fetch_assoc()) 
-        {
-            
-            $json1[$row_result_operations_qty['operation_id']] = $row_result_operations_qty['operation_name'];
-        }
-    }
-    else
-    {
-        $json1['status'] = "No Operations Done for this job";
-    }
-    $get_module_no = "SELECT distinct assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$job_rev_no'";
-    $module_result = $link->query($get_module_no);
-    if($module_result->num_rows > 0)
-    {
-        while($module = $module_result->fetch_assoc()) 
-        {
-            
-            $json1['assigned_module'][] = $module['assigned_module'];
-        }
-    }
-    else
-    {
-        $json1['module_status'] = "No Module available for this job";
-    }
-    
-    $check_short_ship_status=0;
-    $selecting_style_schedule_color_qry = "select order_style_no,order_del_no,input_job_no from $bai_pro3.packing_summary_input WHERE input_job_no_random='$job_rev_no' ORDER BY tid";
-    $result_selecting_style_schedule_color_qry = $link->query($selecting_style_schedule_color_qry);
-    if($result_selecting_style_schedule_color_qry->num_rows > 0)
-    {
-        $check_short_ship_status=1;
-        while($row = $result_selecting_style_schedule_color_qry->fetch_assoc()) 
-        {
-            $style= $row['order_style_no'];
-            $schedule= $row['order_del_no'];
-            $input_job_no= $row['input_job_no'];
-        }
-    }
-    else
+    $query = "select * from $pps.jm_jobs_header WHERE job_number='$job_rev_no' and plant_code='$job_plant_code'";
+    $result_selecting_style_schedule_color_qry = $link->query($query);
+    if($result_selecting_style_schedule_color_qry->num_rows == 0)
     {
         $json1['invalid_status'] = 'Invalid Input. Please Check And Try Again !!!';
+    } else {
+        $json1["24"] = "Sent To In";
+        $json1["75"] = "Bundling";
+        $json1["100"] = "Sewing In";
+        $json1["130"] = "Sewing out";
+        $json1["190"] = "Poly Bag";
+        $json1["assigned_module"] = ["24","25"];
     }
+        
+        // assigned_module: ["24"]
 
-    $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
-    $shortship_res = mysqli_query($link,$query_short_shipment);
-    $count_short_ship = mysqli_num_rows($shortship_res);
-    if($count_short_ship >0) {
-        while($row_set=mysqli_fetch_array($shortship_res))
-        {
-            if($row_set['remove_type']==1) {
-                $short_ship_status=1;
-                $json1['short_shipment_status'] = 'Short Shipment Done Temporarly';
-            }else{
-                $short_ship_status=2;
-                $json1['short_shipment_status'] = 'Short Shipment Done Permanently';
-            }
-        }
-    }
-    $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
-    $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
-    $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
-    if($count_jobs_deactive >0) {
-        while($row_set1=mysqli_fetch_array($jobs_deactive_res))
-        {
-            if($row_set1['remove_type']==3) {
-                $short_ship_status=3;
-                $json1['short_shipment_status'] = 'Sewing Job is Deactivated';
-            }
-        }
-    }
+        // $operations_qty = "SELECT operation_name,operation_id FROM $brandix_bts.bundle_creation_data bc LEFT JOIN $brandix_bts.tbl_orders_ops_ref os ON os.operation_code=bc.operation_id WHERE input_job_no_random_ref='$job_rev_no' AND os.display_operations='yes' GROUP BY operation_id";
+        // $result_operations_qty = $link->query($operations_qty);
+        // if($result_operations_qty->num_rows > 0)
+        // {
+        //     while($row_result_operations_qty = $result_operations_qty->fetch_assoc()) 
+        //     {
+                
+        //         $json1[$row_result_operations_qty['operation_id']] = $row_result_operations_qty['operation_name'];
+        //     }
+        // }
+        // else
+        // {
+        //     $json1['status'] = "No Operations Done for this job";
+        // }
+        // $get_module_no = "SELECT distinct assigned_module FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='$job_rev_no'";
+        // $module_result = $link->query($get_module_no);
+        // if($module_result->num_rows > 0)
+        // {
+        //     while($module = $module_result->fetch_assoc()) 
+        //     {
+                
+        //         $json1['assigned_module'][] = $module['assigned_module'];
+        //     }
+        // }
+        // else
+        // {
+        //     $json1['module_status'] = "No Module available for this job";
+        // }
+       
+        
+
+    // $query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+    // $shortship_res = mysqli_query($link,$query_short_shipment);
+    // $count_short_ship = mysqli_num_rows($shortship_res);
+    // if($count_short_ship >0) {
+    //     while($row_set=mysqli_fetch_array($shortship_res))
+    //     {
+    //         if($row_set['remove_type']==1) {
+    //             $short_ship_status=1;
+    //             $json1['short_shipment_status'] = 'Short Shipment Done Temporarly';
+    //         }else{
+    //             $short_ship_status=2;
+    //             $json1['short_shipment_status'] = 'Short Shipment Done Permanently';
+    //         }
+    //     }
+    // }
+    // $query_jobs_deactive = "select * from bai_pro3.job_deactive_log where remove_type ='3' and style='".$style."' and schedule ='".$schedule."' and input_job_no = '".$input_job_no."'";
+    // $jobs_deactive_res = mysqli_query($link,$query_jobs_deactive);
+    // $count_jobs_deactive = mysqli_num_rows($jobs_deactive_res);
+    // if($count_jobs_deactive >0) {
+    //     while($row_set1=mysqli_fetch_array($jobs_deactive_res))
+    //     {
+    //         if($row_set1['remove_type']==3) {
+    //             $short_ship_status=3;
+    //             $json1['short_shipment_status'] = 'Sewing Job is Deactivated';
+    //         }
+    //     }
+    // }
+        
      echo json_encode($json1);
 }
 if(isset($_GET['data_rev']))

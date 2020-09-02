@@ -2,6 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $url = getFullURL($_GET['r'],'inputjob_reversal_scan.php','N');
+    $plant_code = $global_facility_code;
 ?>
 <div class="panel panel-primary " id="inputjob_scanning">
     <div class="panel-heading">Input Job Scanning</div>
@@ -10,12 +11,16 @@
         <div class="row">
             <div class="col-md-2">
                 <label>Shift:<span style="color:red">*</span></label>
-                <select class="form-control shift"  name="shift" id="shift" required>
+                <select class='form-control' name = 'shift' id='shift' required>
                     <option value="">Select Shift</option>
                     <?php 
-                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($_GET['shift']==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-                        <?php }
+                    $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+                    $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($shift_row = mysqli_fetch_array($shift_sql_res))
+                    {
+                        $shift_code=$shift_row['shift_code'];
+                        echo "<option value='".$shift_code."' >".$shift_code."</option>"; 
+                    }
                     ?>
                 </select>
             </div>
