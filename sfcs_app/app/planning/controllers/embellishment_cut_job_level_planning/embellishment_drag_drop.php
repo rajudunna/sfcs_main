@@ -5,8 +5,8 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	$has_perm=haspermission($_GET['r']);
 	$module_limit=14;
-	$plant_code = $_session['plantCode'];
-    $username =  $_session['userName'];	
+	$plant_code = $_SESSION['plantCode'];
+    $username =  $_SESSION['userName'];	
 
 ?>
 

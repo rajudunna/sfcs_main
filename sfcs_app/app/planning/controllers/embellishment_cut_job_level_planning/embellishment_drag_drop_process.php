@@ -4,8 +4,8 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));	
 	$userName = getrbac_user()['uname'];
-	$plant_code = $_session['plantCode'];
-    $username =  $_session['userName'];	
+	$plant_code = $_SESSION['plantCode'];
+    $username =  $_SESSION['userName'];	
     $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
 	$list=$_POST['listOfItems'];
 	
