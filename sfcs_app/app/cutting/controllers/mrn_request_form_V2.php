@@ -251,6 +251,8 @@ $(document).ready(function(){
 			var sty_id=document.getElementById('styles').value;
 			var sch_id=document.getElementById('schedules').value;
 			var color_id=document.getElementById('colors').value;
+			var plantcode=document.getElementById('plantcode').value;
+			var username=document.getElementById('username').value;
 			var cut_no=document.getElementById('cutnos').value;
 			var batch_ref=document.getElementById('batch_refs').value;
 			var section=document.getElementById('sections').value;
@@ -283,7 +285,7 @@ $(document).ready(function(){
 		$.ajax({
 			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_V2.php',
 			type:'POST',
-			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section},
+			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},
 			success: function (data) 
 			{              
 				$("#loading-image").hide();
@@ -316,7 +318,9 @@ $(document).ready(function(){
     <div class="panel-body">
         <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
-
+	
+			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
+			<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
             <?php
                 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_include.php',1,'R'));
 
@@ -617,11 +621,18 @@ $(document).ready(function(){
                     $inp_2=$_POST['schedule'];
                     $inp_3=str_replace("^","&",$_POST['color']);
                     $inp_4=$_POST["cutno"];
+                    $plant_code=$_POST["plantcode"];
+                    $username=$_POST["username"];
                     $count_ref=0;
                     //CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
                     $inp_5=$_POST["batchno"];
                     $post_color = $_POST['color'];
-                    $sql = "SELECT mo_no FROM $bai_pro3.mo_details WHERE style=\"$inp_1\" AND SCHEDULE=\"$inp_2\" AND color=\"$post_color\"";
+                    $sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
+					LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
+					LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
+					LEFT JOIN $pps.`jm_product_logical_bundle` jplb ON jplb.jm_cut_bundle_detail_id=jcbd.jm_cut_bundle_detail_id
+					LEFT JOIN $pps.`jm_pplb_mo_qty` jpmq ON jpmq.jm_product_logical_bundle_id=jplb.jm_product_logical_bundle_id
+					WHERE jc.cut_number=$inp_4";
                 
                     $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                     $MIRecords = array();
@@ -934,24 +945,19 @@ $(document).ready(function(){
                     }
 
                     echo "</table>";
-                    echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\">";
+                    echo "<input type=\"hidden\" name=\"style\" id=\"styles\" value=\"$inp_1\"><input type=\"hidden\" name=\"schedule\" id=\"schedules\" value=\"$inp_2\"><input type=\"hidden\" id=\"colors\" name=\"color\" value=\"$inp_3\"><input type=\"hidden\" id=\"cutnos\" name=\"cutno\" value=\"$inp_4\"><input type=\"hidden\"  id=\"batch_refs\" name=\"batch_ref\" value=\"$inp_5\"><input type=\"hidden\" name=\"trows\" id=\"trows\" value=\"$x\"><input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
 					
 					//echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
                     echo "<br/>";
                     if($check==1)
                     {
                         echo "<div class='col-md-3'>Section: <select name=\"section\" id=\"sections\" class='form-control'>";
-                        $sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
+                        $sql="SELECT section_code,section_name FROM pms.`sections` WHERE plant_code='$plant_code' AND is_active=1";
                         $result17=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row=mysqli_fetch_array($result17))
                         {
                             $sql_sec=$sql_row["secid"];
-                            $sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$sql_sec";
-                            $result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($sql_row12=mysqli_fetch_array($result12))
-                            {
-                                $section_display_name=$sql_row12["section_display_name"];
-                            }
+                            $section_display_name=$sql_row["secid"];
                             echo "<option value=\"".$sql_sec."\">".$section_display_name."</option>";
                                 
                         }

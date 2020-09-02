@@ -14,6 +14,8 @@ if(isset($_POST['dataset']))
 	$color=$_POST['color'];	
 	$cutno=$_POST['cutnum'];
 	$section=$_POST['section'];
+	$plant_code=$_POST['plantcode'];
+	$username=$_POST['username'];
     $batch_ref=$_POST['batch_refer'];
 	$rand=rand(1000,10000).date("Hs");
 	$table="Dear All, <br/><br/> Please find the below details of additional material request and as per given below remarks.<br/><br/>";
