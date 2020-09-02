@@ -161,26 +161,22 @@ function validate_but()
 <?php
 error_reporting(0);
 set_time_limit(20000);
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 $doc_no=$_GET['doc_no'];
-$doc_num = substr($doc_no,1);
-if (!isset($_GET['pop_restriction'])) {
-	$_GET['pop_restriction']=0;
-}
-if (!isset($_GET['group_docs'])) {
-	$_GET['group_docs']=0;
-}
-$pop_restriction=$_GET['pop_restriction'];
-$group_docs=$_GET['group_docs'];
+//getting docket number to get 
+$binding_query = "select p.tot_bindreq_qty,c.doc_no from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$doc_no."' and c.plant_code='".$plant_code."'";
+$binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$binding_num=mysqli_num_rows($binding_query_result);
+	if($binding_num>0){
+		while($sql_row1=mysqli_fetch_array($jm_cut_job_result))
+		{
+			$tot_bindreq_qty = $sql_row1['tot_bindreq_qty'];
+			$doc_num = $sql_row1['doc_no'];
+		}
+	}
 ?>
 
-<?php
-if(!(in_array($authorized,$has_permission)))
-{
-	header($_GET['r'],'restrict.php?group_docs=$group_docs','N');
-
-}
-
-?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
@@ -377,15 +373,15 @@ if($fabric_category!='')
 	echo "<td>".$material_item_code."</td>";
 	echo "<td>".$rm_description.'-'.$doc_num."</td>";
 	$extra=0;
-	echo "<td>".$material_required_qty."</td>";
+	echo "<td>".$tot_bindreq_qty."</td>";
 	$doc_cat=$fabric_category;
 	$doc_com=$material_item_code;
-	$doc_mer=$material_required_qty;
+	$doc_mer=$tot_bindreq_qty;
 	$cat_ref='B';
-	$total = $material_required_qty;
+	$total = $tot_bindreq_qty;
 	$docket_num[]=$doc_num;
 	{	
-		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_num0."\">";
+		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_num."\">";
 		//For New Implementation
 		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$doc_cat."\">";
 		echo "<input type=\"hidden\" name=\"doc_com[]\" value=\"".$doc_com."\">";
@@ -398,13 +394,13 @@ if($fabric_category!='')
 			if(sizeof($lotnos_array) ==''){
 				$Disable_allocate=1;
 			}
-			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$sql_row1['doc_no']."\" id='address' 
+			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" name=\"pms".$doc_num."\" id='address' 
 			      onkeyup='return verify_num(this,event)' onchange='return verify_num(this,event)' cols=12 rows=10 placeholder='No Lot Number Found, Please Enter Lot Number'>".$seperated_lots."</textarea><br/>";
 
 		}else{
 
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" id='address' onkeyup='return verify_num(this,event)'
-			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
+			     onchange='return verify_num(this,event)' name=\"pms".$doc_num."\" cols=12 rows=10 ></textarea><br/>";
 
 		}		
 		echo "</td>";		
