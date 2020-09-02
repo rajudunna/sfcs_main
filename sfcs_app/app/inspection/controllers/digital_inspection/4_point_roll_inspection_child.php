@@ -242,6 +242,8 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                 <div class="panel panel-primary">
                 <div class="panel-heading">4 Point Header Information</div>
                 <div class="panel-body">
+				<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
+				<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
                     <table class="table table-bordered">
                         <tbody>
                             <tr style="background-color: antiquewhite;">
@@ -587,6 +589,8 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
 if (isset($_POST['confirm'])) {
     
     $parent_id = $_POST['parent_id'];
+    $plant_code = $_POST['plant_code'];
+    $username = $_POST['username'];
     $fabric_composition = $_POST['fabric_composition'];
     if ($fabric_composition == '') {
         $fabric_composition = 0;
@@ -807,7 +811,7 @@ if (isset($_POST['confirm'])) {
         }
         echo "<script>swal('Confirmation Updated..','Successfully','success')</script>";
         $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-        echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+        echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code&username=$username'</script>";
     }
 }
 
@@ -819,6 +823,8 @@ if (isset($_POST['save'])) {
     $count = count($code);
     
     $parent_id = $_POST['parent_id'];
+	$plant_code = $_POST['plant_code'];
+    $username = $_POST['username'];
     $fabric_composition = $_POST['fabric_composition'];
     if ($fabric_composition == '') {
         $fabric_composition = 0;
@@ -1041,7 +1047,7 @@ if (isset($_POST['save'])) {
     
         echo "<script>swal('Data Updated..','Successfully','success')</script>";
         $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-        echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+        echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code&username=$username'</script>";
         die();
     }
     
