@@ -269,7 +269,7 @@ class TaskTypeEnum {
     const SEWINGJOB = 'SEWINGJOB';
     const PACKINGJOB = 'PACKINGJOB';
     const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBJOB';
+    const EMBELLISHMENTJOB = 'CUTEMBJOB';
     const LOGICALBUNDLE = 'LOGICALBUNDLE';
     const POLYBAG = 'POLYBAG';
     const PLANNEDSEWINGJOB = 'PSJ';
