@@ -24,8 +24,7 @@ function getJmDockets($doc_num,$plant_code){
     $remark3='';
     $remark4='';
     $created_at='';
-    $qry_jm_dockets="SELECT `fg_color`,`plies`,`jm_cut_job_id`,`ratio_comp_group_id`,DATE(created_at) as created_at FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND docket_number=$doc_num";
-    //echo "</br>jm_dockets".$qry_jm_dockets;
+    $qry_jm_dockets="SELECT jdl.`fg_color`,jdl.`plies`,jd.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jdl.created_at) as created_at FROM $pps.jm_dockets jd JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id=jd.jm_docket_id WHERE jd.plant_code='$plant_code' AND jdl.docket_line_number='$doc_num'";
     $jm_dockets_result=mysqli_query($link_new, $qry_jm_dockets) or exit("Sql Error_at_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_dockets_num=mysqli_num_rows($jm_dockets_result);
     /**From this above query we can get ratio compo group id */
@@ -791,11 +790,11 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     $check_type=TaskTypeEnum::SEWINGJOB;
     if($check_type == $tasktype)
     {
-      $job_group_type=TaskTypeEnum::plannedsewingjob;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
     }
     else
     {
-      $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
     }    
     $jm_job_header_id=array();
     $task_header_id=array();
@@ -863,11 +862,11 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       $check_type=TaskTypeEnum::SEWINGJOB;
       if($check_type == $tasktype)
       {
-        $job_group_type=TaskTypeEnum::plannedsewingjob;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
       }
       else
       {
-        $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();

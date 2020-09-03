@@ -229,11 +229,11 @@ $wms="wms_prod";
 $module_limit = 32;
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_select_db($link, $wms) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //Link For 2.0
 $link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_select_db($link, $wms) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size");
 
@@ -246,21 +246,7 @@ $order_joins_in_full="order_joins in ('0','1','2')";
 $order_joins_in_2 ="order_joins='2'";
 
 $order_joins_in_1 ="order_joins='1'";
-    
-$sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
-$res_query = mysqli_query($link, $sql_query);
-while($sql_row=mysqli_fetch_array($res_query))
-{
-	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
-}
 
-$pack_query="SELECT * FROM $bai_pro3.`pack_methods` WHERE STATUS='1'";
-// echo $pack_query;
-$pack_result=mysqli_query($link, $pack_query) or exit("Error getting pack details");
-while($methods=mysqli_fetch_array($pack_result))
-{
-    $pack_methods[]=$methods['pack_method_name'];
-}
 // var_dump($pack_methods);
 //***************************************************
 //======== for central warehouse connections ========
@@ -283,11 +269,11 @@ class TaskTypeEnum {
     const SEWINGJOB = 'SEWINGJOB';
     const PACKINGJOB = 'PACKINGJOB';
     const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
+    const EMBELLISHMENTJOB = 'EMBJOB';
     const LOGICALBUNDLE = 'LOGICALBUNDLE';
     const POLYBAG = 'POLYBAG';
-    const plannedsewingjob = 'PSJ';
-    const plannedsewingembellishmentjob = 'PSEJ';
+    const PLANNEDSEWINGJOB = 'PSJ';
+    const PLANNEDSEWINGEMBELLISHMENTJOB = 'PSEJ';
 }
 
 //IP for backend services
