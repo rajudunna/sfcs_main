@@ -283,11 +283,11 @@ class TaskTypeEnum {
     const SEWINGJOB = 'SEWINGJOB';
     const PACKINGJOB = 'PACKINGJOB';
     const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
+    const EMBELLISHMENTJOB = 'EMBJOB';
     const LOGICALBUNDLE = 'LOGICALBUNDLE';
     const POLYBAG = 'POLYBAG';
-    const plannedsewingjob = 'PSJ';
-    const plannedsewingembellishmentjob = 'PSEJ';
+    const PLANNEDSEWINGJOB = 'PSJ';
+    const PLANNEDSEWINGEMBELLISHMENTJOB = 'PSEJ';
 }
 
 //IP for backend services
