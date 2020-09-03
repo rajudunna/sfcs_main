@@ -309,6 +309,8 @@
 						contentToBeDragged = newItem;
 					}
 					dragContentObj.style.display='block';
+					dragContentObj.style.marginLeft='200px';
+			        dragContentObj.style.marginTop='68px';
 					dragContentObj.appendChild(contentToBeDragged);
 				}
 			}

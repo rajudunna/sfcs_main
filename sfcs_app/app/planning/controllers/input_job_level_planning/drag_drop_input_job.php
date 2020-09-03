@@ -329,6 +329,8 @@ $username =  $_SESSION['userName'];
 				contentToBeDragged = newItem;
 			}
 			dragContentObj.style.display='block';
+			dragContentObj.style.marginLeft='200px';
+			dragContentObj.style.marginTop='68px';
 			dragContentObj.appendChild(contentToBeDragged);
 		}
 	}
@@ -657,15 +659,14 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			$tasktype = TaskTypeEnum::SEWINGJOB;
 			$result_sew_jobs=getUnplannedJobs($sub_po,$tasktype,$plant_code);
 			$sewjobs=$result_sew_jobs['job_number'];
-			 // var_dump($dockets);
 			foreach($sewjobs as $sew_num=>$jm_sew_id){
 				$check="blue";
-				if($status=='OPEN')
-				{
+				 if($status=='OPEN')
+				 {
 				   echo "<li id=\"".$jm_sew_id."\" style=\" background-color:$check; color:white;\"  
 				   data-color='$check'  class='apply-remove'><strong>".$sew_num."</strong></li>";
-				}
-				else
+				 }
+				 else
 				{
 					
 				}
