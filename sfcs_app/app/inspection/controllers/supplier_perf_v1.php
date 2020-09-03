@@ -199,7 +199,9 @@ if(isset($_POST['filter']))
     $url=getFullURL($_GET['r'],'supplier_per_charts.php','N');
     $url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
     echo "<div id='main_div'>";
-    echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
+    $suppliers_list_ref_query_new=str_replace("'","*",$suppliers_list_ref_query);
+    $suppliers_list_ref_query_new=str_replace("&","~~~",$suppliers_list_ref_query_new);
+    echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".$suppliers_list_ref_query_new."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".$suppliers_list_ref_query_new."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
     echo "<br>";
     echo "<b style='color:red' >Note:Please Fill All Fields to Update Supplier Performance Report </b>";
     // include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
@@ -317,7 +319,7 @@ if(mysqli_num_rows($sql_result) > 0){
                 $fab_tech="";
             }
             //echo $log_time."</br>";
-            if($log_time=="0000-00-00 00:00:00"){
+            if($log_time=="0000-00-00 00:00:00" or $log_time==""){
                 $tr_color="#d00b0b";
             }else{
                 $tr_color="#2c7b038a";
