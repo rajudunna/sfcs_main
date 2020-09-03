@@ -791,11 +791,11 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     $check_type=TaskTypeEnum::SEWINGJOB;
     if($check_type == $tasktype)
     {
-      $job_group_type=TaskTypeEnum::plannedsewingjob;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
     }
     else
     {
-      $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
     }    
     $jm_job_header_id=array();
     $task_header_id=array();
@@ -862,11 +862,11 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       $check_type=TaskTypeEnum::SEWINGJOB;
       if($check_type == $tasktype)
       {
-        $job_group_type=TaskTypeEnum::plannedsewingjob;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
       }
       else
       {
-        $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
