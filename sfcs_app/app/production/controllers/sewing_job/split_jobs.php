@@ -1,3 +1,8 @@
+<?php
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    $plant_code = $_SESSION['plantCode'];
+?> 
 <div class="panel panel-primary">
     <div class="panel-heading">Sewing Jobs Split</div>
     <div class="panel-body">

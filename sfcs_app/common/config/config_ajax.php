@@ -79,13 +79,6 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
-$sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
-$res_query = mysqli_query($link, $sql_query);
-while($sql_row=mysqli_fetch_array($res_query))
-{
-	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
-}
-
 //TaskAttributeNamesEnum
 $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
 
@@ -97,13 +90,12 @@ class TaskTypeEnum {
     const SEWINGJOB = 'SEWINGJOB';
     const PACKINGJOB = 'PACKINGJOB';
     const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
+    const EMBELLISHMENTJOB = 'EMBJOB';
     const LOGICALBUNDLE = 'LOGICALBUNDLE';
     const POLYBAG = 'POLYBAG';
-    const plannedsewingjob = 'PSJ';
-    const plannedsewingembellishmentjob = 'PSEJ';
+    const PLANNEDSEWINGJOB = 'PSJ';
+    const PLANNEDSEWINGEMBELLISHMENTJOB = 'PSEJ';
 }
-
 //IP for backend services
 $BackendServ_ip="http://192.168.0.34:3336";
 ?>

@@ -1,11 +1,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
-$plant_code = $_session['plantCode'];
-$username =  $_session['userName'];
-// $test=enum::sewing_type;
-// echo $test;
-// die();
+$plant_code = $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];
+
 ?>
 
 <!-- <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> -->

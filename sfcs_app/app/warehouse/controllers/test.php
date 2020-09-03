@@ -1,5 +1,7 @@
 <?php 
-//include("security1.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
 //$view_access=user_acl("SFCS_0153",$username,1,$group_id_sfcs); 
@@ -17,6 +19,8 @@ $username = $_SESSION['userName'];
 		var style=document.getElementById('style').value;
 		var schedule=document.getElementById('schedule').value;
 		var color=document.getElementById('color').value;
+		var mpo=document.getElementById('mpo').value;
+		var sub_po=document.getElementById('sub_po').value;
 		if(style=='NIL')
 		{
 			sweetAlert('Please Select Style','','warning');
@@ -30,7 +34,18 @@ $username = $_SESSION['userName'];
 			sweetAlert('Please Select Color','','warning');
 			return false;
 		}
-		if(style !=='NIL' && schedule !=='NIL' && color !=='NIL'){
+		if(mpo=='NIL')
+		{
+			sweetAlert('Please Select MPO','','warning');
+			return false;
+		}
+		if(sub_po=='NIL')
+		{
+			sweetAlert('Please Select Sub PO','','warning');
+			return false;
+		}
+		
+		if(style !=='NIL' && schedule !=='NIL' && color !=='NIL' && mpo !=='NIL' && sub_po !=='NIL'){
 			var count = 0;
 			for (var i = 0; i<20; i++) {
 				var item=document.getElementById('item'+i).value;
@@ -63,7 +78,15 @@ function thirdbox()
 {
 	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
-
+function forthbox() 
+{ 
+	
+    window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value 
+}
+function fifthbox() 
+{ 
+    window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
+}
 
 </script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->	
@@ -75,22 +98,27 @@ function thirdbox()
 
 <body>
 
-<?php 
 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R')); 
-?>
 <?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+	$get_style=$_GET['style'];
+	$get_schedule=$_GET['schedule']; 
+	$get_color=$_GET['color'];
+	$get_mpo=$_GET['mpo'];
+	$get_sub_po=$_GET['sub_po'];
 
 ?>
 
-<form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
+<form name="test" action="<?php echo getFullURLLevel($_GET['r'],'test.php','0','N'); ?>" method="post">
 <?php
 
+
+//function to get style from mp_color_details
+if($plantcode!=''){
+	$result_mp_color_details=getMpColorDetail($plantcode);
+	$style=$result_mp_color_details['style'];
+}
 echo "<table class=\"table table-bordered\" align=\"center\"><tr><td width=\"800\">";
-if(sizeof($color)>0)
+if(sizeof($get_sub_po)>0)
 {
 	echo "<table align=\"center\" class=\"table table-bordered\"><tr><th>Sno</th><th>M3 Item Code</th><th>Reason</th><th>Quantity</th></tr>";
 	for($i=0;$i<20;$i++)
@@ -124,56 +152,44 @@ echo "Style&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select name=\"style\" id=
 //$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log)";
 //if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
 //{
-	$sql="select distinct order_style_no from $bai_pro3.bai_orders_db";	
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+
 
 echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-}
-
-}
+foreach ($style as $style_value) {
+	if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
+	{ 
+		echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
+	}
+} 
 
 echo "</select><br/><br/>";
 ?>
 
 <?php
 
+if($get_style!=''&& $plantcode!=''){
+	
+	$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+	$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+}  
 echo "Schedule <select name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" >";
 
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select distinct order_tid from plandoc_stat_log) and order_style_no=\"$style\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db where order_style_no=\"$style\"";	
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+
 
 echo "<option value=\"NIL\" selected>NIL</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
-}
-
+foreach ($bulk_schedule as $bulk_schedule_value) {
+	if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
+	{ 
+		echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
+	}
 }
 
 
@@ -181,37 +197,69 @@ echo "</select><br/><br/>";
 ?>
 
 <?php
-
+if($get_schedule!='' && $plantcode!=''){
+	$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+	$bulk_color=$result_bulk_colors['color_bulk'];
+}
 echo "Color&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"color\" id=\"color\" onchange=\"thirdbox();\" >";
 
-//$sql="select distinct order_style_no from bai_orders_db where order_tid in (select order_tid from plandoc_stat_log) and order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-//if(isset($_SESSION['SESS_MEMBER_ID']) || (trim($_SESSION['SESS_MEMBER_ID']) != '')) 
-//{
-	$sql="select distinct order_col_des from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-//}
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+
+
 
 echo "<option value=\"NIL\" selected>NIL</option>";
 	
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-
-if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-}
-else
-{
-	echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-}
-
-}
+foreach ($bulk_color as $bulk_color_value) {
+	if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
+	{ 
+		echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
+	}
+} 
 
 
 echo "</select><br/><br/>";
+//function to get master po's from mp_mo_qty based on schedule and color
+if($get_schedule!='' && $get_color!='' && $plantcode!=''){
+	$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+	$master_po_description=$result_bulk_MPO['master_po_description'];
+}
+echo "Master PO&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"mpo\" id=\"mpo\" onchange=\"forthbox();\" >";
 
+		echo"<option value=\"NIL\" selected>NIL</option>";
+			foreach ($master_po_description as $key=>$master_po_description_val) {
+				if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+				{ 
+					echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+				} 
+				else 
+				{ 
+					echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+				}
+			} 
+echo "</select></br></br>";
+
+//function to get sub po's from mp_mo_qty based on master PO's
+if($get_mpo!='' && $plantcode!=''){
+	$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+	$sub_po_description=$result_bulk_subPO['sub_po_description'];
+	
+}
+echo "Sub PO&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select name=\"sub_po\" id=\"sub_po\" onchange=\"fifthbox();\" >";
+		echo"<option value=\"NIL\" selected>NIL</option>";
+			foreach ($sub_po_description as $key=>$sub_po_description_val) {
+				if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
+				{ 
+					echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+				} 
+				else 
+				{ 
+					echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+				}
+			} 
+echo "</select></br></br>";
 echo "Trims&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;<select name=\"category\" id=\"category\" >";
 echo "<option value=\"1\">Accessories</option>";
 echo "<option value=\"2\">Fabric</option>";
@@ -254,16 +302,7 @@ echo "<font color=red>Point Person</font><br/><select id=\"spoc\"  name=\"spoc\"
 echo "</select><br/><br/><br/><br/><br/>";
 
 
-$sql="select order_tid,order_div from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-//echo $sql;
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$order_tid=$sql_row['order_tid'];
-	$customer=$sql_row['order_div'];
-}
+
 echo "<p align=\"right\"><input type=\"hidden\" name=\"division\" value=\"$customer\"><input type=\"submit\" class=\"btn btn-success\" value=\"Submit\" name=\"submit\" onclick=\"return check_all(event);\"></p>";
 echo "</td></tr></table>";
 
@@ -286,9 +325,10 @@ if(isset($_POST['submit']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$mpo=$_POST['mpo'];
+	$sub_po=$_POST['sub_po'];	
 	
 	$rand=date("Hi").rand();
-	$division=$_POST['division'];
 	$item=$_POST['item'];
 	$reason=$_POST['reason'];
 	$qty=$_POST['qty'];
@@ -306,7 +346,7 @@ if(isset($_POST['submit']))
 		if(strlen($item[$i])>0)
 		{
 			$count=1;
-			$sql="insert into $wms.manual_form(buyer,style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$division\",\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plant_code."','".$username."','".$username."',NOW())";
+			$sql="insert into $wms.manual_form(style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
