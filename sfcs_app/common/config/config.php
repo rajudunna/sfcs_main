@@ -153,7 +153,7 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 $plant_name = $conf1->get('plantname');
 
 //TaskAttributeNamesEnum
-$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
@@ -288,6 +288,19 @@ class TaskTypeEnum {
     const POLYBAG = 'POLYBAG';
     const plannedsewingjob = 'PSJ';
     const plannedsewingembellishmentjob = 'PSEJ';
+    const EMBJOB = 'EMBJOB';
+}
+
+class DepartmentTypeEnum
+{
+    const CUTTING = "CUTTING";
+    const SEWING= "SEWING";
+    const PACKING = "PACKING";
+    const INSPECTION= "INSPECTION";
+    const EMBELLISHMENT = "EMBELLISHMENT";
+    const MACHINE = "MACHINE";
+    const AQL="AQL";
+    const CIF="CIF";
 }
 
 //IP for backend services

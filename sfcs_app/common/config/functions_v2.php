@@ -869,24 +869,26 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
-      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plantcode'";
+      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='INPROGRESS' AND task_type='$tasktype' AND plant_code='$plantcode'";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
       {
-         $task_header_id[] = $task_header_id_row['task_header_id'];
+        $task_header_id[] = $task_header_id_row['task_header_id'];
+        $task_header_log_time[$task_header_id_row['task_header_id']] = $task_header_id_row['updated_at'];
       }
       //To get taskrefrence from task_jobs based on resourceid 
       $task_job_reference=array(); 
-      $get_refrence_no="SELECT task_job_reference FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode'";
+      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode'";
       $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
       {
         $task_job_reference[] = $refrence_no_row['task_job_reference'];
+        $task_job_ids[$refrence_no_row['task_job_id']] = $refrence_no_row['task_header_id'];
       }
       //Qry to get sewing jobs from jm_jobs_header
       $job_number='';
       $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
-      $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
       if($toget_sewing_jobs_num>0){
         while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
@@ -896,7 +898,10 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       return array(
           'job_number' => $job_number,
-          'task_header_id' => $task_header_id
+          'task_header_id' => $task_header_id,
+           'task_job_reference' => $task_job_reference,
+           'task_job_ids' => $task_job_ids,
+        'task_header_log_time'=> $task_header_log_time
       );
 } 
 
@@ -969,5 +974,68 @@ function getCutNumber($jm_cut_job_id){
     );
 }
 
+/**
+ * to get sections for the plant code
+ */
+function getSections($plant_code){
+    global $link_new;
+    global $pms;
+    $section_data=[];
+    $query="select * from $pms.sections where plant_code='$plant_code'";
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sections_rows_num = mysqli_num_rows($sql_res);
+    if ($sections_rows_num > 0) {
+        while ($sections_row = mysqli_fetch_array($sql_res)) {
+            $section_data[] = $sections_row;
+        }
+    }
+    return array(
+        'section_data' => $section_data
+    );
+}
+
+/**
+ * to get operations for plant code and operation category
+ */
+function getOperationsForCategory($plant_code, $category)
+{
+    global $link_new;
+    global $pms;
+    $operations_data = [];
+    $query = "select * from $pms.operation_mapping where plant_code='$plant_code' and operation_category = $category and sequence = 1 and is_active = 1 order by priority";
+
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $operations_rows_num = mysqli_num_rows($sql_res);
+    if ($operations_rows_num > 0) {
+        while ($operations_row = mysqli_fetch_array($sql_res)) {
+            $operations_data[] = $operations_row;
+        }
+    }
+    return array(
+        'operations_data' => $operations_data
+    );
+}
+
+/**
+ * get workstations based on section and plant
+ * 
+ */
+function getWorkstationsForSection($plant_code, $section){
+    global $link_new;
+    global $pms;
+    $operations_data = [];
+    $query = "select * from $pms.workstation where plant_code='$plant_code' and section_id = $section";
+
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstation_rows_num = mysqli_num_rows($sql_res);
+    if ($workstation_rows_num > 0) {
+        while ($workstation_row = mysqli_fetch_array($sql_res)) {
+            $workstation_data[] = $workstation_row;
+        }
+    }
+    return array(
+        'workstation_data' => $workstation_data
+    );
+}
 
 ?>
