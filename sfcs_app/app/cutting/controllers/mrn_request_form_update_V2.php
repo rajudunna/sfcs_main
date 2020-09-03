@@ -14,6 +14,8 @@ if(isset($_POST['dataset']))
 	$color=$_POST['color'];	
 	$cutno=$_POST['cutnum'];
 	$section=$_POST['section'];
+	$plant_code=$_POST['plantcode'];
+	$username=$_POST['username'];
     $batch_ref=$_POST['batch_refer'];
 	$rand=rand(1000,10000).date("Hs");
 	$table="Dear All, <br/><br/> Please find the below details of additional material request and as per given below remarks.<br/><br/>";
@@ -33,7 +35,7 @@ if(isset($_POST['dataset']))
 	}
     for($i=0;$i<sizeof($arryData);$i++)
 	{ 
-		$sql="insert into wms.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref,plant_code,created_user,updated_user,updated_at) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\",'".$plant_code."','".$username."','".$username."',NOW())";
+		$sql="insert into $wms.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref,plant_code,created_user,updated_user,updated_at) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\",'".$plant_code."','".$username."','".$username."',NOW())";
 		echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$test=1;
