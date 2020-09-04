@@ -68,7 +68,7 @@ if($section > 0){
 
 
              /*  BLOCK - 1 */
-            $sewing_wip = getsewingJobsData($section, $wkstation['workstation_code'],$get_operation);
+            $sewing_wip = getsewingJobsData($section, $wkstation['workstation_code'],$get_operation, $session_plant_code);
             $data.="<td rowspan=1 class='cut-td'>";
             $data.= $sewing_wip;
             $data.="&nbsp;</td>";
@@ -95,7 +95,7 @@ echo json_encode($section_data);
 
 <?php
 
-function getsewingJobsData($section,$wkstation,$get_operation)
+function getsewingJobsData($section,$wkstation,$get_operation, $session_plant_code)
 {
   include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/functions_v2.php');
