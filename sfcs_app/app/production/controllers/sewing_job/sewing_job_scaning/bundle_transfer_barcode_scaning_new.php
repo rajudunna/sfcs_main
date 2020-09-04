@@ -1,7 +1,6 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/get_bundle_transfer.php',5,'R'));
     $op_code=$_POST['operation_code'];
     $module = $_POST['Module'];
     $from_module = $_POST['assigned_module'];
@@ -42,15 +41,15 @@ th,td{
 			<div class="col-md-5">
 				<div class="col-padding">
                         <div class="row">
-                            <div class="col-md-12">
+                            <!-- <div class="col-md-12">
                             <h4><label>Operation Name : </label> <?php echo $op_code;?></h4>                    
-                            </div>
+                            </div> -->
                             <div class="col-md-12">
                             <h4><label>Module Name : </label>  <?php echo $module;?></h4>
                             </div>
                         </div>
                         <br/>
-                    <input type="hidden" id="operation_id" class="form-control input-lg" name="operation_id" value="<?php echo $op_code;?>">
+                    <!-- <input type="hidden" id="operation_id" class="form-control input-lg" name="operation_id" value="<?php echo $op_code;?>"> -->
                     <input type="hidden" id="module" class="form-control input-lg" name="module" value="<?php echo $module;?>">
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					<input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
@@ -79,19 +78,19 @@ $(document).ready(function()
 		$('#loading-image').show();
 		
 		var barcode = $('#barcode').val();
-		var operation_id = $('#operation_id').val();
+		// var operation_id = $('#operation_id').val();
 		var plant_code = $('#plant_code').val();
 		var tomodule = $('#module').val();
         var bundet;
 		const data={
-						"barcode": barcode,
+						"bundleNumber": [barcode],
 						"plantCode": plant_code,
-						"operationCode": operation_id,
-                        "module": tomodule
+                        "resourceId": tomodule,
+						"createdUser": <?= $username ?>
 				    }
         $.ajax({
 			type: "POST",
-			url: "http://192.168.0.155:3336/cut-reporting/getLayReportingDetails",
+			url: "<?php echo $BackendServ_ip?>/jobs-generation/transferBundlesToWorkStation",
 			data: data,
 			success: function (res) {            
 				//console.log(res.data);
@@ -128,7 +127,7 @@ function tableConstruction(bundet){
             }
             s_no++;
 			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='schedule'>"+bundet.data[i].schedule+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='bundleQty'>"+bundet.data[i].bundleQty+"</td><td data-title='fromModule'>"+bundet.data[i].fromModule+"</td><td data-title='toModule'>"+bundet.data[i].toModule+"</td><td data-title='status'>"+bundet.data[i].status+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
+			var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='bundleQty'>"+bundet.data[i].bundleQty+"</td><td data-title='fromModule'>"+bundet.data[i].fromModule+"</td><td data-title='toModule'>"+bundet.data[i].toModule+"</td><td data-title='status'>"+bundet.data[i].status+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 			
