@@ -13,7 +13,7 @@ if(isset($_GET['id'])){
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'bundle_transfer_barcode_scaning_new.php',0,'N');
-$plantcode=$_SESSION['plantCode'];
+$plantcode='Q01';
 $username=$_SESSION['userName'];
 
   
@@ -23,7 +23,7 @@ $username=$_SESSION['userName'];
 <div class="panel-body">
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
-<div class="col-md-4">
+<!-- <div class="col-md-4">
 <label for="title">Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
@@ -38,7 +38,7 @@ $username=$_SESSION['userName'];
 		}
 		?>
 	</select>
-</div>
+</div> -->
 <div class="col-md-4">
 <label for="title">To Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class="form-control select2" name="Module" id="Module" required>
