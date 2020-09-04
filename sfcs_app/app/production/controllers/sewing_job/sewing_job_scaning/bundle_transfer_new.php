@@ -13,7 +13,7 @@ if(isset($_GET['id'])){
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'bundle_transfer_barcode_scaning_new.php',0,'N');
-$plantcode='Q01';
+$plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 
   

@@ -5,7 +5,7 @@
     $module = $_POST['Module'];
     $from_module = $_POST['assigned_module'];
     $schedule = $_POST['schedule'];
-	$plantcode='Q01';
+	$plantcode=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
     $original_qty = $_POST['original_qty'];
     $ops_code = explode("-",$op_code)[1];
