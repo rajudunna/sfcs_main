@@ -563,11 +563,12 @@
 			include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',0,'R')); 
 			include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'embellishment_drag_drop_data.php',0,'R'));
 
-			$style=$style_ref;
-			$schedule=$schedule_ref;
-			$color=$color_ref;
-			$mpo=$mpo;
-			$sub_po=$sub_po;
+			$style=$_GET['style'];
+			$schedule=$_GET['schedule'];
+			$color=$_GET['color'];
+			$cutno=$_GET['cutno'];
+			$mpo=$_GET['mpo'];
+			$sub_po=$_GET['sub_po'];
             $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
             //Function to get status from getJobsStatus based on subpo,tasktype,plantcode 
             if($plant_code!='')
