@@ -4,7 +4,6 @@
 	<title>Carton Scanning</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
-		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
@@ -150,9 +149,9 @@
 			var emp_id = $("#emp_id").val();
 			var team_id = $("#team_id").val();
 			var operation_id = $("#operation_id").val();
+			var shift = $("#shift").val();
 			var plant_code = $("#plantcode").val();
 			var username = $("#username").val();
-			var shift = $("#shift").val();
 			if (carton_id != '')
 			{
 				$("#error_msg").hide();
@@ -247,11 +246,13 @@
 							$('#carton_id').focus();
 						}
 					}
-				    
-                    else
+					
+					else
                     {
                         swal(response.internalMessage);
                     }  
+					}
+
 				});
 			}
 		}
