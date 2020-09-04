@@ -208,7 +208,7 @@ echo "</div>"
 </form>
 </br>
 <?php
-if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
+if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link_new))
 {
 	$style=$_POST['style']; 
     $color=$_POST['color']; 
@@ -278,7 +278,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 			$plies=$resultDocketInfo['plies'];
 			$length=$resultDocketInfo['length'];
 			$jm_cut_job_id=$resultDocketInfo['jm_cut_job_id'];
-			$style=$resultDocketInfo['style'];
+			//$style=$resultDocketInfo['style'];
 			$fg_color=$resultDocketInfo['fg_color'];
 			//for thr particular docket required qty will calculate marker_length*plies
 			$finalbindingqty=$finalbindingqty+$material_required_qty;
@@ -302,20 +302,19 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 			$cut_number=$resultCutNumber['cut_number'];
 		}
 		
-		$gettingexistdata="select * from $pps.binding_consumption_items where compo_no='$material_item_code' and cutno='$cut_number' and doc_no='$docno'";
-		//echo "</br>Exsts : ".$gettingexistdata;
-		$sql_result=mysqli_query($link, $gettingexistdata) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$gettingexistdata="select * from $pps.binding_consumption_items where compo_no='$material_item_code' and cutno='$cut_number' and doc_no='$docno' and plant_code='".$plantcode."'";
+		$sql_result=mysqli_query($link_new, $gettingexistdata) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_confirm=mysqli_num_rows($sql_result);
 		
-		$gettingparentid="select parent_id from $pps.binding_consumption_items where compo_no='$material_item_code' and cutno='$cut_number' and doc_no='$docno'";
-		$sql_result_parent=mysqli_query($link, $gettingparentid) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$gettingparentid="select parent_id from $pps.binding_consumption_items where compo_no='$material_item_code' and cutno='$cut_number' and doc_no='$docno' and plant_code='".$plantcode."'";
+		$sql_result_parent=mysqli_query($link_new, $gettingparentid) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result_parent))
 		{
 			$parentid=$sql_row['parent_id'];
 		}
 		
-		$printqry="select status from $pps.binding_consumption where id='$parentid'";
-		$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$printqry="select status from $pps.binding_consumption where id='$parentid' and plant_code='".$plantcode."'";
+		$sql_result_print=mysqli_query($link_new, $printqry) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result_print))
 		{
 			$printstatus=$sql_row['status'];
@@ -339,7 +338,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		echo "<td>".round($material_required_qty,2)."</td>";
 		if($sql_num_confirm<1)
 		{
-			echo "<td><input type='checkbox'  name='bindingdata[]' value='".$material_item_code.'#'.$fabric_category.'#'.$cut_number.'#0#0#'.$material_required_qty.'#'.$docno.'#'.$style.'#'.$schedule.'#'.$color.'#'.$sub_po."'></td>";
+			echo "<td><input type='checkbox'  name='bindingdata[]' value='".$material_item_code.'#'.$fabric_category.'#'.$cut_number.'#0#0#'.$material_required_qty.'#'.$docno.'#'.$style.'#'.$schedule.'#'.$color.'#'.$sub_po.'#'.$plantcode.'#'.$username."'></td>";
 		}
 		else
 		{
@@ -382,15 +381,16 @@ if(isset($_POST['bindingdata']))
 			$schedule=$exp[8];
 			$color=$exp[9];
 			$po_number=$exp[10];
+			$plantcode=$exp[11];
+			$username=$exp[12];
 			
 			$totordqty=$totordqty+$reqqty;
 			$finalbindingqty=$finalbindingqty+$bindreqqty;			
 		}
-			$insertqry="INSERT INTO $pps.binding_consumption(style,schedule,color,category,tot_req_qty,tot_bindreq_qty,po_number,status) VALUES ('".$style."','".$schedule."','".$color."','".$category."',".$totordqty.",".$finalbindingqty.",'".$po_number."','Open')";
-			mysqli_query($link, $insertqry) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$insertqry="INSERT INTO $pps.binding_consumption(style,schedule,color,category,tot_req_qty,tot_bindreq_qty,po_number,status,plant_code,created_user,created_at,updated_user,updated_at) VALUES ('".$style."','".$schedule."','".$color."','".$category."',".$totordqty.",".$finalbindingqty.",'".$po_number."','Open','".$plantcode."','".$username."',NOW(),'".$username."',NOW())";
+			mysqli_query($link_new, $insertqry) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			$parent_id = mysqli_insert_id($link);
-
+			$parent_id = mysqli_insert_id($link_new);
 			for($j=0;$j<$count1;$j++)
 			{
 				$id = $binddetails[$j];
@@ -403,8 +403,8 @@ if(isset($_POST['bindingdata']))
 				$bindreqqty=$exp[5];
 				$docno=$exp[6];
 				
-				$insertbinditems="INSERT INTO $pps.binding_consumption_items(parent_id,compo_no,category,cutno,req_qty,bind_category,bind_req_qty,doc_no) VALUES (".$parent_id.",'".$compono."','".$category."','".$cutno."',".$reqqty.",'Binding',".$bindreqqty.",".$docno.")";
-				mysqli_query($link, $insertbinditems) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$insertbinditems="INSERT INTO $pps.binding_consumption_items(parent_id,compo_no,category,cutno,req_qty,bind_category,bind_req_qty,doc_no,plant_code,created_user,created_at,updated_user,updated_at) VALUES (".$parent_id.",'".$compono."','".$category."','".$cutno."',".$reqqty.",'Binding',".$bindreqqty.",".$docno.",'".$plantcode."','".$username."',NOW(),'".$username."',NOW())";
+				mysqli_query($link_new, $insertbinditems) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 			echo "<script>swal('Binding Fabric Requested','Successfully','success')</script>";
 		

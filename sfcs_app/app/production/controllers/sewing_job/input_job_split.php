@@ -2,6 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
+    $username=$_SESSION['userName'];
 ?> 
 
 <div class="panel panel-primary">
@@ -24,12 +25,53 @@
         if(isset($_POST['submit']) || isset($_GET['schedule']))
         {
             $schedule=$_POST['schedule'];
-            $poNumbers = ['PO01','PO12','PO77','PO01','PO09'];
-            echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a><input type="hidden" name="schedule1" id="schedule1" value='.$schedule.'></b></h4>';
-            $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
-            foreach($poNumbers as $po_number){
-                echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs(this.value) value=$po_number>";
+            //get mp_mo_qty details wrt schedule
+            $mp_mo_details_id=array();
+            $po_number_id=array();
+            $qry_MpMoQty="SELECT master_po_details_mo_quantity_id FROM $pps.mp_mo_qty WHERE schedule='$schedule' AND plant_code='$plant_code'";
+            $MpMoQty_result=mysqli_query($link_new, $qry_MpMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $MpMoQty_num=mysqli_num_rows($MpMoQty_result);
+            if($MpMoQty_num>0){
+                while($MpMoQty_row=mysqli_fetch_array($MpMoQty_result))
+                    {        
+                        $mp_mo_details_id[]=$MpMoQty_row["master_po_details_mo_quantity_id"];
+                    }
+                    $mp_mo_details_id = implode("','", $mp_mo_details_id);
+                    
+                    //qry to get po_numbers wrt master po details qty id
+                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE master_po_details_mo_quantity_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
+                    $MpSubMoQty_result=mysqli_query($link_new, $qry_MpSubMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $MpSubMoQty_num=mysqli_num_rows($MpSubMoQty_result);
+                    if($MpSubMoQty_num>0){
+                        while($MpSubMoQty_row=mysqli_fetch_array($MpSubMoQty_result))
+                        {        
+                            $po_number_id[]=$MpSubMoQty_row["po_number"];
+                        }
+                        $po_number_id = implode("','", $po_number_id);
+
+                        //qry to get po and description wrt po number
+                        $qry_MpSubOrder="SELECT po_number,po_description FROM $pps.mp_sub_order WHERE po_number IN ('$po_number_id') AND plant_code='$plant_code'";
+                        $MpSubOrder_result=mysqli_query($link_new, $qry_MpSubOrder) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $MpSubOrder_num=mysqli_num_rows($MpSubOrder_result);
+                        if($MpSubOrder_num>0){
+                            while($MpSubOrder_row=mysqli_fetch_array($MpSubOrder_result))
+                            {
+                                $PoDescription[$MpSubOrder_row["po_description"]]=$MpSubOrder_row["po_number"];
+                            }
+                        }
+                    }
             }
+            if(sizeof($PoDescription)>0){
+
+                    echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a><input type="hidden" name="schedule1" id="schedule1" value='.$schedule.'></b></h4>';
+                    $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
+                    foreach($PoDescription as $key=>$poDesc){
+                        echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs('".$poDesc."') value='".$key."'>";
+                    }
+            }else{
+                echo "</br></br><center><h4 style='color:red;'>No PO's Found on this <b>' ".$schedule." '</b> Schedule,Please Check Once</h4></center>";
+            }
+
         }
         ?>
         <br/>
@@ -42,22 +84,34 @@
     function getSewingJobs(po_number){
         var po = po_number;
         var plant_code = $('#plant_code').val();
-        var inputObj = {poNumber:po,plantCode:plant_code};
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+        var inputObj = {"poNumber":po,"plantCode":plant_code};
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var data = JSON.parse(response);
-				var sewing_job_list ='';
-                $.each(data.sewingJobNumbers, function( index, sewing_job ) {
-                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
-                });
-                $('#dynamic_table').html(sewing_job_list);
-            }
-        });
+			type: "POST",
+			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobNumbersByPo",
+			data: inputObj,
+			success: function (res) {            
+				console.log(res);
+				if(res.status)
+				{
+					var data = res.data;
+                    console.log(data);
+					var sewing_job_list ='';
+	                $.each(data.job_number, function( index, sewing_job ) {
+	                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
+	                });
+                    console.log(sewing_job_list);
+                    $('#dynamic_table').html(sewing_job_list);
+				}
+				else
+				{
+					swal(res.internalMessage);
+				}                       
+			},
+			error: function(res){
+				swal('Error in getting data');
+			}
+		});
     }
     function sendData(sewing_job,po){
         var schedule = $('#schedule1').val();

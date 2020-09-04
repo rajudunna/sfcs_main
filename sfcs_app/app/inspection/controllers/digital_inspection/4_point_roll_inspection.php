@@ -82,6 +82,8 @@ $username = $_SESSION['userName'];
 if(isset($_GET['parent_id']) or isset($_POST['parent_id']))
 {
 	$parent_id=$_GET['parent_id']  or $_POST['parent_id'];
+	$plant_code=$_GET['plant_code']  or $_POST['plant_code'];
+	$username=$_GET['username']  or $_POST['username'];
 	$sno=$_GET['id']  or $_POST['id'];
 }
 $pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
@@ -372,13 +374,13 @@ $flag = false;
 								{
 									$val2_2 =1;
 									$status_main = 'Pending';
-									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id&plant_code=$plant_code&username=$username'";
 								}
 								else if($status == 2)
 								{
 									$val2_1=1;
 									$status_main = 'Inprogress';
-									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id'";									
+									$h_ref="data-href='$url&parent_id=$parent_id&store_id=$store_in_id&plant_code=$plant_code&username=$username'";									
 								}
 								else
 								{
