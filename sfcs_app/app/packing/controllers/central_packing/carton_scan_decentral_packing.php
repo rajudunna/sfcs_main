@@ -4,12 +4,14 @@
 	<title>Carton Scanning</title>
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
-
 		$operation_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
+		$plant_code = $_GET['plant_code'];
+		$username = $_GET['username'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -55,6 +57,8 @@
 				<input type="hidden" name="team_id" id="team_id" value="<?php echo $team_id; ?>">
 				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
 				<input type="hidden" name="shift" id="shift" value="<?php echo $shift; ?>">
+				<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
+				<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
 				<div class="form-inline col-sm-5">
 					<label><font size="5">Carton ID: </font></label>
 					<input type="text" name="carton_id" class="form-control" id="carton_id" onkeypress="return AcceptOnlyNumbers(event);" placeholder="Enter Carton ID here">
@@ -146,6 +150,8 @@
 			var emp_id = $("#emp_id").val();
 			var team_id = $("#team_id").val();
 			var operation_id = $("#operation_id").val();
+			var plant_code = $("#plantcode").val();
+			var username = $("#username").val();
 			var shift = $("#shift").val();
 			if (carton_id != '')
 			{
@@ -154,13 +160,15 @@
 				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
-					url: function_text,
+					url: "<?php echo $BackendServ_ip?>/fg-reporting/reportCarton",
 					dataType: "json", 
-					type: "GET",
-					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id,operation_id:operation_id,shift:shift},    
+					type: "POST",
+					data: {barcode:carton_id,operation:operation_id,shift:shift,plantCode:plant_code,createdUser:username},    
 					cache: false,
 					success: function (response) 
 					{
+						if(response.status)
+                       {
 						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
 						console.log(response);
 						if(response['status']==1)
@@ -239,6 +247,11 @@
 							$('#carton_id').focus();
 						}
 					}
+				    
+                    else
+                    {
+                        swal(response.internalMessage);
+                    }  
 				});
 			}
 		}
