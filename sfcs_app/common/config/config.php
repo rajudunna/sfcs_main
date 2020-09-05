@@ -64,7 +64,6 @@ $facility_code=$global_facility_code;
 /**at the time of getting data from pms and pps tables we inlcude plantcode also */
 //$plantcode=$global_facility_code;
 session_start();
-$_SESSION['plantCode'] = 'AIP';
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 

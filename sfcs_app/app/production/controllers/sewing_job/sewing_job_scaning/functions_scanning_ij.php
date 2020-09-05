@@ -1,4 +1,9 @@
 <?php
+/*
+    function to get jobnumber details for reversal scanning
+    @params:job_number,plantcode
+    @returns:workstation_id,workstation_description,sewingjobtype,operations,master_po_number
+*/
 if(isset($_GET['job_number']))
 {
     $job_number = $_GET['job_number'];
@@ -14,6 +19,7 @@ function getjobreversaldetails($job_number,$plant_code)
     include("../../../../../common/config/config_ajax.php");    
     include("../../../../../common/config/sms_api_calls.php");   
     include("../../../../../common/config/server_urls.php");  
+    include("../../../../../common/config/enums.php"); 
 
 
     //to get remarks
@@ -58,19 +64,21 @@ function getjobreversaldetails($job_number,$plant_code)
         $color = $row3['color'];
         $op_version_id = $row3['operations_version_id'];
     } 
-
-
+    
+    $form_type=OperationType::GARMENTFORM;
+    $category_sewing=OperationCategory::SEWING;
+    $category_emb=OperationCategory::EMBELLISHMENT;
     // now make an API cal for SMS
     $smsData = getJobOpertions($style, $color, $plant_code, $op_version_id);
     $operations = [];
     foreach ($smsData as $key=>$operation) {
         $op_code = $operation['operationCode'];
         $op_desc = $operation['operationName'].' - '.$op_code;
-        if ($operation['operationForm'] == 'GARMENT-FORM' && ($operation['operationCategory'] == 'SEWING' || $operation['operationCategory'] == 'EMBELLISHMENT') ) {
+        if ($operation['operationForm'] == '$form_type' && ($operation['operationCategory'] == '$category_sewing' || $operation['operationCategory'] == '$category_emb') ) {
             $operations[$op_code] = $op_desc;
         }
     }
-
+    
     $sewing_job_data = [
         'workstation_id' => $workstation_id,
         'sew_job_type' => $sew_job_type,

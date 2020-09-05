@@ -1,6 +1,9 @@
-<?php
-
-  
+<?php  
+/*
+    function to get operations from SMS
+    @params:style,color,plantcode,operations_version_id
+    @returns:operationCode,operationName
+*/
 function getJobOpertions($style, $color, $plant, $variant) {
     include("api_calls.php");
     include("server_urls.php");

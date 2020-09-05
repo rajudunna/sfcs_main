@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
     $op_code=$_POST['operation_code'];
     $module = $_POST['Module'];
     $from_module = $_POST['assigned_module'];
@@ -90,7 +91,7 @@ $(document).ready(function()
 				    }
         $.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/jobs-generation/transferBundlesToWorkStation",
+			url: "<?php echo $PTS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
 			data: data,
 			success: function (res) {            
 				//console.log(res.data);
