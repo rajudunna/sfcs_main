@@ -2,7 +2,6 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'/common/config/server_urls.php',5,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 	$has_permission=haspermission($_GET['r']);
 	if (in_array($override_sewing_limitation,$has_permission))

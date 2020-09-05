@@ -19,7 +19,6 @@ $sewing_rejection=$conf1->get('sewing_rejection');
 /**at the time of getting data from pms and pps tables we inlcude plantcode also */
 //$plantcode=$global_facility_code;
 session_start();
-$_SESSION['plantCode'] = 'AIP';
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 // function get_config_values($config_id){
