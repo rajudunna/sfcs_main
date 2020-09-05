@@ -224,7 +224,7 @@ $oms="oms_prod";
 $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
-$tms="tms";
+$tms="tms_prod";
 $wms="wms_prod";
 $module_limit = 32;
 
