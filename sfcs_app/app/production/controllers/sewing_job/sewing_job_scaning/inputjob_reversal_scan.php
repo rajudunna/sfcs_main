@@ -1,6 +1,7 @@
 
 <?php
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'/common/config/server_urls.php',5,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3Updations.php',5,'R')); 
 
 	$has_permission=haspermission($_GET['r']);
@@ -14,7 +15,7 @@
 	}
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
 	//API related data
-	$plant_code = $global_facility_code;
+	// $plant_code = $global_facility_code;
 	$company_num = $company_no;
 	$host= $api_hostname;
 	$port= $api_port_no;
@@ -60,31 +61,24 @@
 			<div class='row'>
 				<div class="form-group col-md-3">
 					<label>Sewing Job Number:<span style="color:red">*</span></label>
-					<input type="text"  id="job_number" onkeyup="validateQty1(event,this);" class="form-control" required placeholder="Scan the Job..."/>
+					<input type="text"  id="job_number" class="form-control" required placeholder="Scan the Job..."/>
 				</div>
 				<div class='form-group col-md-3'>
 					<label>Remarks:<span style="color:red">*</span></label>
 					<select class='form-control sampling' name='sampling' id='sampling' style='width:100%;' required>	
-					<?php
-					$get_remark = "select prefix_name from $brandix_bts.tbl_sewing_job_prefix";
-					$get_remark_arry_req = $link->query($get_remark);
-					while($row_remark = $get_remark_arry_req->fetch_assoc()) 
-					{
-						echo "<option value='".$row_remark['prefix_name']."' >".$row_remark['prefix_name']."</option>";
-					}
-					?>					
+					<option value="" disabled>Select Remarks</option>			
 					</select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 					<select class="form-control select2" required name="module" id="module">
-						<option value="">Select Module</option>
+						<option value="" disabled>Select Module</option>
 					</select>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="title">Select Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 						<select class="form-control select2" required name="operation" id="operation">
-							<option value="0">Select Operation</option>
+							<option value="0" disabled>Select Operation</option>
 						</select>
 				</div>
 			</div>
@@ -103,29 +97,15 @@
 </body>
 
 <script>
-	function validateQty1(e,t) 
-	{
-		if(e.keyCode == 13)
-			return;
-		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*$/;
-		var v = document.getElementById(t.id);
-		if( !(v.value.match(c)) && v.value!=null ){
-			v.value = '';
-			return false;
-		}
-		return true;
-	}
-
 	$(document).ready(function() 
 	{
 		$('#job_number').focus();
 		$('#loading-image').hide();
-		var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
+		var url = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 		$("#job_number").change(function()
 		{
 			$('#loading-image').show();
-			var job_rev_no = $("#job_number").val();
+			var job_number = $("#job_number").val();
 			var plant_code = $("#plant_code").val();
 			$('#operation').empty();
 			$('#module').empty();
@@ -134,93 +114,70 @@
 			$('#dynamic_table1').html('');
 			$.ajax({
 				type: "POST",
-				url: function_text+"?job_rev_no="+job_rev_no+"&plant_code="+plant_code,
-				dataType: 'Json',
+				url: url+"?job_number="+job_number+"&plant_code="+plant_code,
+				dataType: 'JSON',
 				success: function (response) 
 				{
-					console.log(response);
 					$('#loading-image').hide();
-					if(response['invalid_status'])
-					{
-						sweetAlert(response['invalid_status'],'','error');
+
+					// {	
+					//	"workstation_id":"3add6c4a-fdde-4dfa-b665-17adc2723e55",
+					// 	"sew_job_type":"Normal",
+					// 	"workstaiton_desc":"cuttable1",
+					// 	"operations":{"130":"SEWINGOUT - 130"},
+					// 	"mp_number":"46e49155-547d-493a-bfa6-517855f5446f"
+					// }
+
+					if (!response['workstation_id'] || !response['sew_job_type'] || !response['workstaiton_desc']) {
+						swal('','Sewing job info not found', 'error');
 					}
-					else if(response['module_status'])
-					{
-						sweetAlert(response['module_status'],'','error');
+					if (!response['operations']) {
+						swal('','No operations found for the sewing job', 'error');
 					}
-					else if(response['operation_status'])
-					{
-						sweetAlert(response['operation_status'],'','error');
-					}
-					else
-					{
-						$.each(response, function(key, value)
-						{
-							if (key == 'assigned_module')
-							{
-								$.each(value, function (key1, value1)
-								{
-									if (value.length == 1)
-									{
-										selected_module = 'selected';
-									}
-									else
-									{
-										selected_module = '';
-									}
-									$('select[name="module"]').append('<option value="'+ value1 +'" '+selected_module+'>'+ value1 +'</option>');
-								});
-							}
-							else
-							{
-								$('select[name="operation"]').append('<option value="'+ key +'">'+ value +'</option>');
-							}
-						});
-					}
+					$('select[name="module"]').append('<option value="'+ response['workstation_id'] +'" selected>'+ response['workstaiton_desc']  +'</option>');
+					$('select[name="sampling"]').append('<option value="'+ response['sew_job_type'] +'" selected>'+ response['sew_job_type']  +'</option>');
+					$.each(response['operations'], function (opCode, opDesc) {
+						$('select[name="operation"]').append('<option value="'+ opCode +'">'+ opDesc  +'</option>');
+					});
+				},
+				error: function(error) {
+					$('#loading-image').hide();
+					swal('','Unable to load sewing job info', 'error');
 				}
 			});
+			
 		});
+
+
 		$('#operation').change(function()
 		{
 			$('#loading-image').show();
-			var ops = $('#operation').val();
+			var operation = $('#operation').val();
 			var job_no = $('#job_number').val();
 			var remarks = $('#sampling option:selected').text();
 			var module1 = $('#module').val();
-			var plant_code = $('#plant_code').val();
-			if (module1 == 0)
-			{
-				$('#loading-image').hide();
+			if (module1 == 0){
 				sweetAlert('Please Select Module','','warning');
 				$('#operation option').prop('selected', function() {
 					return this.defaultSelected;
 				});
 				$('#dynamic_table1').html('No Data Found');
-			}
-			else if (ops == 0)
-			{
-				$('#loading-image').hide();
+			} else if (operation == 0) {
 				sweetAlert('Please Select Valid Operation','','warning');
 				$('#dynamic_table1').html('No Data Found');
-			}
-			else
-			{
-				$('#loading-image').hide();
-				var ajax_function = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
-				var reverseObj = {sewingJobNo:job_no, plantCode:plant_code, operationCode:ops, resourceId:module1 };
+			} else {
+				var getReversalJobInfoUrl = '<?= $PTS_SERVER_IP.'/fg-retrieving/getJobDetailsForSewingJobReversal' ?>';
+				var reverseObj = {sewingJobNo: job_no, plantCode: '<?= $plant_code ?>', operationCode: operation};
 				// var reverseObj = [job_no,plant_code,ops,module1];
 				$.ajax({
 					type: "POST",
-					url: ajax_function+"?reverseObj="+reverseObj,
-					success: function (response) 
-					{
-						var response_data = JSON.parse(response);
-						var data = response_data['data'][0];
-						console.log(data['sizeQuantities']);
-						console.log(data);
-
-						if(response_data['status'])
+					url: getReversalJobInfoUrl,
+					data: reverseObj,
+					success: function (response) {
+						if(response['status'])
 						{
+							$('#loading-image').hide();
+							var data = response['data'];
 							var s_no=0;
 							var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="check_pack();"><input type="hidden" id="count_of_data" value='+data['sizeQuantities'].length+'></div>';
 							$("#dynamic_table1").append(btn);
@@ -233,12 +190,10 @@
 								var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data['sizeQuantities'][i]['docketNo']+"'><input type='hidden' name='operation_id' value='"+data['sizeQuantities'][i]['operationCode']+"'><input type='hidden' name='remarks' value='"+data['sizeQuantities'][i]['status']+"'><input type='hidden' name='mapped_color' value='"+data['fgColors']+"'><input type='hidden' name='size[]' value='"+data['sizeQuantities'][i]['size']+"'><input type='hidden' name='size_id[]' value='"+data['sizeQuantities'][i]['size']+"'><input type='hidden' name='input_job_no_random' value='"+job_no+"'><input type='hidden' name='style' value='"+data['style']+"'><input type='hidden' name='color[]' value='"+data['fgColors']+"'><input type='hidden' name='module[]' value='"+data['sizeQuantities'][i]['resourceId']+"'><input type='hidden' name='rep_qty[]' value='"+data['sizeQuantities'][i]['cumilativeReportedQty']+"'><td>"+s_no+"</td><td class='none'>"+data['sizeQuantities'][i]['docketNo']+"</td><td>"+data['sizeQuantities'][i]['fgcolor']+"</td><td>"+data['sizeQuantities'][i]['resourceId']+"</td><td>"+data['sizeQuantities'][i]['size']+"</td><td>"+data['sizeQuantities'][i]['inputJobQty']+"</td><td>"+data['sizeQuantities'][i]['cumilativeReportedQty']+"</td><td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQuantity']+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 								$("#dynamic_table").append(markup1);
 							}
-						}
-						else
-						{
+						} else {
 							sweetAlert(restrict_msg,'','error');
-							$('#loading-image').hide();
 							$('#dynamic_table1').html('No Data Found');
+							$('#loading-image').hide();
 						}
 					}
 				});
@@ -308,18 +263,17 @@
 			sizeQuantities.push(sizeQuantitiesObject);
 		}
 		rejectReportData.sizeQuantities = sizeQuantities;
-		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+		var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
 		$.ajax({
 			type: "POST",
-			url: function_text+"?rejectReportData="+rejectReportData,
+			url: seveSewJobReversalUrl,
+			data: rejectReportData,
 			success: function(response) 
 			{
 				var data = JSON.parse(response);
 				sweetAlert('',data['internalMessage'],'success');
 			}
-			});
-
-
+		});
 		$('.submission').hide();
 	}
 

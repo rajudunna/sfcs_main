@@ -64,6 +64,7 @@ $facility_code=$global_facility_code;
 /**at the time of getting data from pms and pps tables we inlcude plantcode also */
 //$plantcode=$global_facility_code;
 session_start();
+$_SESSION['plantCode'] = 'AIP';
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
@@ -224,7 +225,7 @@ $oms="oms_prod";
 $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
-$tms="tms";
+$tms="tms_prod";
 $wms="wms_prod";
 $module_limit = 32;
 
@@ -277,7 +278,7 @@ class TaskTypeEnum {
 }
 
 //IP for backend services
-$BackendServ_ip="http://192.168.0.155:3336";
+$BackendServ_ip="http://192.168.0.155:3341";
 
 
 ?>

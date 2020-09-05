@@ -2,7 +2,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $url = getFullURL($_GET['r'],'inputjob_reversal_scan.php','N');
-    $plant_code = $global_facility_code;
+    $plant_code = $plant_code;
 ?>
 <div class="panel panel-primary " id="inputjob_scanning">
     <div class="panel-heading">Input Job Scanning</div>
