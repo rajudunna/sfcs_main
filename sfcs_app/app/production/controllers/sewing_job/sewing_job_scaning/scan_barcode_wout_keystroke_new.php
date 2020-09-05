@@ -8,8 +8,8 @@
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
+	$plantcode=$_POST['plant_code'];
+	$username=$_POST['username'];
 	
 	if($gate_id=='')
 	{
@@ -122,14 +122,15 @@ $(document).ready(function()
 			var res = barcode.split('-');
 			var operation_id = res[1];
 		}
+
 		var plant_code = $('#plant_code').val();
 		var bundet;
 		const data={
 						"barcode": barcode,
 						"plantCode": plant_code,
 						"operationCode": operation_id,
-						"createdUser": <?= $username ?>,
-						"shift": <?=shift ?>,
+						"createdUser": '<?= $username ?>',
+						"shift": '<?=shift ?>',
 						"reportAsFullGood": true
 				    }
 		$.ajax({
@@ -137,20 +138,21 @@ $(document).ready(function()
 			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
 			data: data,
 			success: function (res) {            
-				//console.log(res.data);
 				if(res.status)
 				{
 					bundet=res.data
 					tableConstruction(bundet);
-					swal(res.internalMessage);
+					swal(res.internalMessage,'','success');
 				}
 				else
 				{
-					swal(res.internalMessage);
+					$('#loading-image').hide();
+					swal(res.internalMessage,'','error');
 				}                       
 			},
 			error: function(res){
-				swal('Error in getting data');
+				$('#loading-image').hide();
+				swal('Error',' in getting data','error');
 			}
 		});
 	});			
