@@ -26,7 +26,7 @@ if(isset($_POST['Save']))
             $rejected_qty = $_POST['rejected_qty'][$key];
             $ims_remarks = $_POST['ims_remarks'][$key];
             // $module = $_POST['module'];
-            $remove_type=3;
+            $remove_type=$_POST['remove_type'][$key];
             $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '0'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
@@ -133,11 +133,7 @@ if(isset($_POST['Save']))
                 }
 
                 //to remove jobs in WIP Dashboard
-                if($remove_type==3) {
-                    $change_status = 3;
-                } else {
-                    $change_status = 2;
-                }
+                $change_status = 4; // for bcd bundle_qty_status for sewing job deactivation
                 $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no='$input_job_no' and bundle_qty_status=0";
                 $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
@@ -154,14 +150,14 @@ if(isset($_POST['Save']))
             }
            
         }
-        else {
+        else if($_POST['remove_type'][$key] == '0'){
             $style = $_POST['style'][$key];
             $schedule = $_POST['schedule'][$key];
             $input_job_no = $_POST['input_job_no'][$key];
             $input_rand_ref = $_POST['input_rand_ref'][$key];
             // $module = $_POST['module'];
 
-            $remove_type='0';
+            $remove_type=$_POST['remove_type'][$key];
             $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
@@ -221,7 +217,7 @@ if(isset($_POST['Save']))
                                 $ips_tms_jobss1[]="'".$ips_chck_row_bkp['ips_tms_jobs']."'";
                             }
                             if(sizeof($ips_tms_jobss1)>0){
-                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobss1).")  and short_shipment_status=0";
+                                $update_ips_qry = "update $bai_pro3.plan_dashboard_input_backup set short_shipment_status = '$remove_type' where input_job_no_random_ref in (".implode(",",$ips_tms_jobss1).")  and short_shipment_status=4";
                                 $update_ips_qry_result = mysqli_query($link, $update_ips_qry) or exit("Sql Error113".mysqli_error($GLOBALS["___mysqli_ston"]));
                             }
         
@@ -263,12 +259,10 @@ if(isset($_POST['Save']))
                         }
         
                         //to remove jobs in WIP Dashboard
-                        if($remove_type==3) {
-                            $change_status = 3;
-                        } else {
-                            $change_status = 2;
-                        }
-                        $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no='$input_job_no' and bundle_qty_status=0";
+                        //for sewing job activation in bcd make bundle_qty_status
+                        $change_status = 0;
+                        
+                        $wip_chck_qry = "select id from $brandix_bts.bundle_creation_data where style='".$style."' and schedule='".$schedule."' and input_job_no='$input_job_no' and bundle_qty_status=4";
                         $wip_chck_qry_res=mysqli_query($link, $wip_chck_qry) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($wip_chck_row=mysqli_fetch_array($wip_chck_qry_res))
                         {
