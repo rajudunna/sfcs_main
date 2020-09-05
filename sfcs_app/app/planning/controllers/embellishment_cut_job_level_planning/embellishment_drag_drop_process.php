@@ -13,7 +13,7 @@
 	   * @param:inputjobs and work stations
 	   * @return:true/false
    * */
-	$planned_response=updatePlanDocketJobs($list,$tasktype);
+	$planned_response=updatePlanDocketJobs($list,$tasktype,$plant_code);
 	if($planned_response==1){
 		echo "<script>swal(Job Planned Successfully','info');</script>";
 		 $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/EMS_Dashboard/embellishment_dashboard_send_operation.php',3,'N');
