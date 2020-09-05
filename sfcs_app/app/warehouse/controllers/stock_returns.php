@@ -1,7 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
 <?php
 
-$has_permission = haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
@@ -152,46 +151,26 @@ switch (trim($product_group))
 	case "Elastic":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Lace":
 	{
 		echo "<th>Return Qty ($fab_uom)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Fabric":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Thread":
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	default:
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 }
