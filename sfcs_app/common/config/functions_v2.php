@@ -237,10 +237,10 @@ function getSizeRatios($ratio_id,$plant_code){
 */
 function getStickerData($material_item_code,$style,$plantcode){
     global $link_new;
-    global $bai_rm_pj1;
+    global $wms;
     $lotnos=array();
-    $qry_sticker_report="SELECT lot_no FROM $bai_rm_pj1.`sticker_report` WHERE item='$material_item_code' AND plant_code='$plantcode' AND style_no='$style'";
-    $sql_lotresult=mysqli_query($link_new, $qry_sticker_report) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $qry_sticker_report="SELECT lot_no FROM $wms.`sticker_report` WHERE item='$material_item_code' AND plant_code='$plantcode' AND style_no='$style'";
+    $sql_lotresult=mysqli_query($link_new, $qry_sticker_report) or exit("$qry_sticker_report".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sticker_report_num=mysqli_num_rows($sql_lotresult);
         if($sticker_report_num>0){
             while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
@@ -793,7 +793,7 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     }
     else
     {
-      $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
     }    
     $jm_job_header_id=array();
     $task_header_id=array();
@@ -865,7 +865,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       else
       {
-        $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGEMBELLISHMENTJOB;
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
