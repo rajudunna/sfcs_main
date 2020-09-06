@@ -238,19 +238,12 @@ function tableConstruction(jobsInfo){
 			var hidden_class='';
 			if(i==0)
             {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'>\
-				<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'>\
-				<thead class='cf'><tr><th>Schedule</th><th>Cutting</th><th>Input Job#</th><th>Quantity</th><th>Clubbing Details</th></tr></thead><tbody>";
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Schedule</th><th>Cutting</th><th>Input Job#</th><th>Quantity</th><th>Clubbing Details</th></tr></thead><tbody>";
                 $("#dynamic_table1").append(markup);
             }
             s_no++;
 			
-			var markup1 = "<tr class="+hidden_class+">\
-			<td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td>\
-			<td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" \
-			onclick='showdet(this,"+jobsInfo[i].inputJob+','+jobsInfo[i].schedule+");'></button></td>\
-			<td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td>\
-			<input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+			var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td><td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" onclick='showdet(this,"+jobsInfo[i].jobNumbers+,+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+","+jobsInfo[i].schedule.toString()+" ></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 
