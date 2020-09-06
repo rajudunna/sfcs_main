@@ -243,7 +243,7 @@ function tableConstruction(jobsInfo){
             }
             s_no++;
 			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td><td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" onclick='showdet(this,"+jobsInfo[i].jobNumbers+,+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+","+jobsInfo[i].schedule.toString()+" ></td></tr>";
+			var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td><td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" onclick='showdet(this,"+jobsInfo[i].jobNumbers+,+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 
