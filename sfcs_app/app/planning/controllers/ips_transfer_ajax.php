@@ -1,6 +1,8 @@
 
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_v2.php"); 
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/enums.php");
 error_reporting(0);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
@@ -19,40 +21,41 @@ if(isset($_GET['get_data'])){
     exit();
 }
 
-function leading_zeros($value, $places)
-{
-    $leading='';
+// function leading_zeros($value, $places)
+// {
+//     $leading='';
     
-    if(is_numeric($value))
-    {
-        for($x = 1; $x <= $places; $x++)
-        {
-            $ceiling = pow(10, $x);
-            if($value < $ceiling)
-            {
-                $zeros = $places - $x;
-                for($y = 1; $y <= $zeros; $y++)
-                {
-                    $leading .= "0";
-                }
-            $x = $places + 1;
-            }
-        }
-        $output = $leading . $value;
-    }
-    else{
-        $output = $value;
-    }
+//     if(is_numeric($value))
+//     {
+//         for($x = 1; $x <= $places; $x++)
+//         {
+//             $ceiling = pow(10, $x);
+//             if($value < $ceiling)
+//             {
+//                 $zeros = $places - $x;
+//                 for($y = 1; $y <= $zeros; $y++)
+//                 {
+//                     $leading .= "0";
+//                 }
+//             $x = $places + 1;
+//             }
+//         }
+//         $output = $leading . $value;
+//     }
+//     else{
+//         $output = $value;
+//     }
     
-    return $output;
-}
+//     return $output;
+// }
 
 
 function get_details($module){
     $counter = 0;
-    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-    global $plant_code;    
-
+    global $link_new;
+    global $tms;
+    global $TaskTypeEnum;
+    $plant_code = $_SESSION['plantCode']; 
     $html_out = "<div class='panel panel-primary'>";
      $html_out.= "<div class='panel-heading'><h3>Module -$module</h3></div>";
        $html_out.= "<div class='panel-body'>";
@@ -70,73 +73,43 @@ function get_details($module){
                  <tbody>";
     $tasktype = TaskTypeEnum::SEWINGJOB;             
     //To check module
-    $check_module="SELECT task_header_id,resource_id FROM $tms.task_header where resource_id='$module' and task_type='$tasktype' and plan_code='$plant_code'";
-    $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($row1 = mysqli_fetch_array($result1))
-    {
-        $task_header_id[] = $row1['task_header_id'];
-        $module = $row1['resource_id'];
-    }
 
-    //To get IPS Routing Operation
-    $application='Input Planning System';
-    $to_get_map_id="SELECT operation_map_id FROM `pms`.`operation_routing` WHERE dashboard_name='$application'";
-    //echo $scanning_query;
-    $map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row1=mysqli_fetch_array($map_id_result))
+     /*
+        function to get planned jobs from workstation
+        @params:work_id,plantcode,type(sewing,cutjob,embjob)
+        @returns:job_number,task_header_id
+    */
+    // echo $module;
+    $result_planned_jobs=getPlannedJobs($module,$tasktype,$plant_code);
+    $job_number=$result_planned_jobs['job_number'];
+    $task_header_id=$result_planned_jobs['task_header_id'];
+ 
+    foreach($job_number as $sew_num=>$jm_sew_id)
     {
-        $operation_map_id=$sql_row1['operation_map_id'];
-    }
-    $to_get_ops_code="SELECT operation_code FROM `pms`.`operation_mapping` WHERE operation_map_id='$operation_map_id'";
-    $get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row2=mysqli_fetch_array($get_ops_result))
-    {
-        $operation_code=$sql_row2['operation_code'];
-    }
-
-    $job_detail_attributes=[];
-
-    //To get job,style,schedule details
-    $get_details="SELECT * FROM $tms.task_attributes where task_jobs_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'";
-    $get_details_result=mysqli_query($link_new, $get_details)or exit("details_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($row2=mysqli_fetch_array($get_details_result))
-    {
-       foreach($sewing_job_attributes as $key=> $val){
-        if($val == $row2['attribute_name'])
-        {
-           $job_detail_attributes[$val] = $row2['attribute_value'];
+        //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+        $job_detail_attributes = [];
+        $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$jm_sew_id' and plant_code='$plant_code'";
+        $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+    
+            $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+        
         }
-    }
-
-      
-     //Function to check whether sewing job is scanned or not
-     //$check_status= random_function($jobno,$operation_code,$plant_code); 
-
-     // To get Prefix
-     $get_prefix="select * from $mdm.tbl_sewing_job_prefix where type_of_sewing ='$type_name'";
-     //echo $get_prefix;
-     $get_result=mysqli_query($link_new, $get_prefix)or exit("prefix error".mysqli_error($GLOBALS["___mysqli_ston"]));
-     while($row3=mysqli_fetch_array($get_result))
-     {
-       $prefix=$row3['prefix'];
-     }
-     $jobno=$job_detail_attributes[$sewing_job_attributes['sewingjobno']];
-     $display=$prefix.''.leading_zeros($jobno,3);
-     $schedule=$job_detail_attributes[$sewing_job_attributes['schedule']];
-     $schedules = implode(",",$schedule);
-     // if ($check_status == 0)
-     // {
+        $style = $job_detail_attributes[$sewing_job_attributes['style']];
+        $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']]; 
+        $po_number = $job_detail_attributes[$sewing_job_attributes['ponumber']]; 
+        $schedule1=implode("," , $schedule); 
+        $jobno=$sew_num;
         $counter++;
         $html_out.= "<tr>";
         $html_out.= "<td>
         <input type='hidden' value='$jobno' id='job_$counter'>
         <input type='checkbox' class='custom-control-input boxes' id='$counter' onchange='checkedMe(this)'></td>
-        <td>$display</td>
-        <td>$job_detail_attributes[$sewing_job_attributes['style']]</td>
-        <td>$schedules</td>
-        <td>$job_detail_attributes[$sewing_job_attributes['ponumber']]</td>";
+        <td>$sew_num</td>
+        <td>$style</td>
+        <td>$schedule1</td>
+        <td>$po_number</td>";
         $html_out.= "</tr>";
-     // }
     }    
     if($counter == 0){
         $json['records'] = 0;
@@ -151,32 +124,36 @@ function get_details($module){
 }
 
 function save_details($data,$module,$module1){
-    include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-    $counter = 0;
-    global $plant_code;
-    global $username;
     global $link_new;
     global $tms;
     global $pps;
     global $pts;
+    global $TaskTypeEnum;
+    $counter = 0;
+    $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
+    $tasktype = TaskTypeEnum::SEWINGJOB; 
+    // var_dump($data);
     foreach($data['jobs'] as $job){
 
         //To get task_header_id
-        $get_task_header_id="SELECT job_header_id FROM $pps.job_group_header where jobno='$job' AND plant_code='$plant_code'";
-        $result1 = mysqli_query($link_new, $check_module)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $get_task_header_id="SELECT jm_job_header FROM $pps.jm_jg_header where job_number='$job' AND plant_code='$plant_code'";
+        // echo $get_task_header_id;
+        $result1 = mysqli_query($link_new, $get_task_header_id)or exit("Module missing".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row1 = mysqli_fetch_array($result1))
         {
-           $job_header_id = $row1['job_header_id'];
+           $job_header_id = $row1['jm_job_header'];
         }  
 
-        $task_header_update="UPDATE $tms.`task_header` SET resource_id='$module' WHERE task_ref='$job_header_id' AND resource_id='$module1' AND plant_code='$plant_code' AND task_type='SEWING'";
-        mysqli_query($link, $task_header_update)or exit("task_header_update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $task_header_update="UPDATE $tms.`task_header` SET resource_id='$module' WHERE task_ref='$job_header_id' AND resource_id='$module1' AND plant_code='$plant_code' AND task_type='$tasktype'";
+        mysqli_query($link_new, $task_header_update)or exit("task_header_update error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values (".$job.",".$module1.",".$module.",'".$username.",'".$plant_code.",'".$username."','".$username."')";
-        mysqli_query($link, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values ('".$job."','".$module1."','".$module."','".$username."','".$plant_code."','".$username."','".$username."')";
+        // echo  $insert_qry;
+        mysqli_query($link_new, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values (".$job.",".$module.",'P',".$plant_code.",".$username.",".$username.")";
-        mysqli_query($link, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values ('".$job."','".$module."','P','".$plant_code."','".$username."','".$username."')";
+        mysqli_query($link_new, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
     return 1;
