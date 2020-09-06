@@ -330,7 +330,7 @@ if($log_time==0 or $time_diff>1)
 						{
 							$module=$sql_row_new1['bac_no'];
 							//COM: Production Total
-							$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $table_name where bac_date=\"$date\" and bac_shift=\"$shift\" and bac_sec=$sec and bac_no='$module'";
+							$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $table_name where bac_date=\"$date\" and bac_shift=\"$shift\" and bac_sec=$sec and bac_no=\"$module\" ";
 							$note.=date("His").$sql2."<br/>";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error32$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -338,7 +338,7 @@ if($log_time==0 or $time_diff>1)
 								$act_output=$sql_row2['sum'];
 							}
 							
-							$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $table_name2 where bac_date=\"$date\" and bac_shift=\"$shift\" and bac_sec=$sec and bac_no='$module'";
+							$sql2="select COALESCE(sum(bac_qty),0) as \"sum\" from $table_name2 where bac_date=\"$date\" and bac_shift=\"$shift\" and bac_sec=$sec and bac_no=\"$module\" ";
 							$note.=date("His").$sql2."<br/>";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error33$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -348,14 +348,14 @@ if($log_time==0 or $time_diff>1)
 							//COM: Styles
 							$style_db=array();
 							$buyer_db=array();
-							$sql2="select distinct bac_style  from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_no='$module'";
+							$sql2="select distinct bac_style  from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_no=\"$module\" ";
 							$note.=date("His").$sql2."<br/>";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error34$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
 							{
 								$style_db[]=$sql_row2['bac_style'];
 							}
-							$sql2="select distinct buyer  from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_no='$module'";
+							$sql2="select distinct buyer  from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_no=\"$module\" ";
 							$note.=date("His").$sql2."<br/>";
 							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error35$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row2=mysqli_fetch_array($sql_result2))
