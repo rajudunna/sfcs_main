@@ -323,7 +323,7 @@ if($log_time==0 or $time_diff>1)
 					{
 						$shift=$teams[$k];
 						//$sql_new1="select distinct bac_no from $table_name where bac_date=\"$date\" and bac_sec=$sec and bac_shift=\"$shift\"";
-						$sql_new1="select module_name as bac_no from bai_pro3.module_master where section=$sec";
+						$sql_new1="select module_name as bac_no from bai_pro3.module_master where section='$sec' and status='Active'";
 						$note.=date("His").$sql_new1."<br/>";
 						$sql_result_new1=mysqli_query($link, $sql_new1) or exit("Sql Error31$sql_new1".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row_new1=mysqli_fetch_array($sql_result_new1))
@@ -459,8 +459,18 @@ if($log_time==0 or $time_diff>1)
 									$delivery=$sql_row2['delivery'];
 									$max=$sql_row2['qty'];
 									$smv=$sql_row2['smv'];
-									$nop=$sql_row2['nop'];
+									//$nop=$sql_row2['nop'];
 								}
+							}
+						
+							//New 2013-07-27 for actula clock hours calculation
+							$nop=0;
+							$sql2="select ((present+jumper)-absent) AS nop FROM $bai_pro.pro_attendance WHERE DATE='$date' AND module=$module and shift='".$shift."' ";
+							$note.=date("His").$sql2."<br/>";
+							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row2=mysqli_fetch_array($sql_result2))
+							{
+								$nop=$sql_row2['nop'];
 							}
 						
 							$days=0;
@@ -495,16 +505,8 @@ if($log_time==0 or $time_diff>1)
 							$pln_sth=($pln_clh*$pln_eff_a)/100;
 							$act_clh=$pln_clh;
 							
-							//New 2013-07-27 for actula clock hours calculation
-							$act_nop=0;
-							$sql2="select ((present+jumper)-absent) AS nop FROM $bai_pro.pro_attendance WHERE DATE='$date' AND module=$module and shift='".$shift."' ";
-							$note.=date("His").$sql2."<br/>";
-							$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error40$sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row2=mysqli_fetch_array($sql_result2))
-							{
-								$act_nop=$sql_row2['nop'];
-							}
-							$act_clh=$act_nop*$hoursa_shift;
+							
+							$act_clh=$nop*$hoursa_shift;
 										
 							$code=$date."-".$module."-".$shift;
 							// echo $code."<br>";
