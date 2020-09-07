@@ -1213,10 +1213,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }
         }
         
-        // if(shift == null || cut_table == null || team_leader == null){
-        //     swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
-        //     return false;
-        // }
+        if(shift == null || cut_table == null || team_leader == null){
+            swal('warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
+            return false;
+        }
        
         if(ret_to > 0){
             if(returned_to == null){
