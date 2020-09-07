@@ -544,9 +544,9 @@ if($log_time==0 or $time_diff>1)
 									$pln_clh=0;				
 								}
 							}
-                            if($smv=='' && $nop=='')
+                            if($smv=='')
 				            {
-							   $sql2="update $bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv='', nop='', buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
+							   $sql2="update $bai_pro.grand_rep set date=\"$date\", module=$module, shift=\"$shift\", section=$sec, plan_out=$pln_output, act_out=$act_output, plan_clh=$pln_clh, act_clh=$act_clh, plan_sth=$pln_sth, act_sth=$act_sth, styles=\"$style_db_new\", smv='', nop=$nop, buyer=\"$buyer_db_new\", days=$days, max_style=\"$delivery^$style_code_new\", max_out=$max,rework_qty=$rework_qty where tid=\"$code\"";
 							}
 							else
 							{
