@@ -71,7 +71,7 @@
 
         <?php
             $tasktype = TaskTypeEnum::SEWINGJOB;
-            $job_group_type=TaskTypeEnum::plannedsewingjob;
+            $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             if($_POST['submit']){
                 echo "<hr>"; 
                 $module= $_POST['module'];    

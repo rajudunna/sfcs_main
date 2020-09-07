@@ -263,37 +263,7 @@ $order_joins_in_1 ="order_joins='1'";
 
     // }
 //===================================================*/
-class TaskTypeEnum { 
-    const CUTJOB = 'CUTJOB';
-    const DOCKET = 'DOCKET';
-    const DOCKETBUNDLE = 'DOCKETBUNDLE';
-    const SEWINGJOB = 'SEWINGJOB';
-    const PACKINGJOB = 'PACKINGJOB';
-    const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBJOB';
-    const LOGICALBUNDLE = 'LOGICALBUNDLE';
-    const POLYBAG = 'POLYBAG';
-    const plannedsewingjob = 'PSJ';
-    const plannedsewingembellishmentjob = 'PSEJ';
-    const EMBJOB = 'EMBJOB';
-}
 
-class DepartmentTypeEnum
-{
-    const CUTTING = "CUTTING";
-    const SEWING= "SEWING";
-    const PACKING = "PACKING";
-    const INSPECTION= "INSPECTION";
-    const EMBELLISHMENT = "EMBELLISHMENT";
-    const MACHINE = "MACHINE";
-    const AQL="AQL";
-    const CIF="CIF";
-    const PLANNEDSEWINGJOB = 'PSJ';
-    const PLANNEDEMBELLISHMENTJOB = 'PCEJ';
-}
-
-//IP for backend services
-$BackendServ_ip="http://192.168.0.155:3341";
 
 
 ?>
