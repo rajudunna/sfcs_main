@@ -1,14 +1,12 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
-
 if(isset($_POST['Save']))
 {
-    
     $status = 0;
     $module1 = array_unique($_POST['module']);
     $module = implode(",",$module1);
@@ -96,30 +94,43 @@ if(isset($_POST['Save']))
     // die();
 }
 
-// if($_GET['schedule'] && $_GET['input_job_no']){
-//     // var_dump($_GET['schedule']);
-//     // var_dump($_GET['input_job_no']);
-//     $schedule = $_GET['schedule'];
-//     $input_job_no = $_GET['input_job_no'];
-//     $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
-//     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-//     $sql_num_check=mysqli_num_rows($job_deacive_result);
-//     if($sql_num_check>0){
-//         while($sql_row=mysqli_fetch_array($job_deacive_result))
-//         {
-//             $reverse_deactive_job_id = $sql_row['id'];
-//             $module = $sql_row['module_no'];
-//             $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
-//             $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
-//         }
-//         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-//         function Redirect() {
-//             sweetAlert('Sewing Job Deactivated Reversed','','success');
-//             location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_deactive.php", "0", "N")."&module=$module\";
-//             }
-//         </script>";
-//     }
-// }
+if($_GET['input_job_no'] && $_GET['jm_jg_header_id']){
+    // var_dump($_GET['schedule']);
+    // var_dump($_GET['input_job_no']);
+    $input_job_no = $_GET['input_job_no'];
+    $jm_jg_header_id = $_GET['jm_jg_header_id'];
+    $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
+    $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num_check=mysqli_num_rows($job_deacive_result);
+    if($sql_num_check>0){
+        while($sql_row=mysqli_fetch_array($job_deacive_result))
+        {
+            $reverse_deactive_job_id = $sql_row['id'];
+            $module = $sql_row['module_no'];
+            $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
+            $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $tasktype=TaskTypeEnum::SEWINGJOB;
+            
+            //get task_header from task_jobs
+            $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+            $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
+            {
+                $task_header_id=$qry_header_id_row['task_header_id'];
+            }
+            $update_qry_task_header = "UPDATE $tms.task_header set task_status='HOLD',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+            mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
+
+            
+        }
+        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
+        function Redirect() {
+            sweetAlert('Sewing Job Deactivated Reversed','','success');
+            location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_deactive.php", "0", "N")."&module=$module\";
+            }
+        </script>";
+    }
+}
 
 
 

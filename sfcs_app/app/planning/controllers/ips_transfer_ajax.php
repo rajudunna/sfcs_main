@@ -9,13 +9,16 @@ $username = $_SESSION['userName'];
 
 if(isset($_GET['get_data'])){
     $module = $_GET['module'];
-    get_details($module);
+    $plant_code = $_GET['plant_code'];
+    get_details($module,$plant_code);
     exit();
 }else if(isset($_GET['save_data'])){
     $module = $_GET['to_module'];
     $module1 = $_GET['module'];
     $data = $_POST;
-    $res = save_details($data,$module,$module1);
+    $plant_code = $_GET['plant_code'];
+    $username = $_GET['username'];
+    $res = save_details($data,$module,$module1,$plant_code,$username);
     $json['saved'] = $res;
     echo json_encode($json);
     exit();
@@ -50,14 +53,20 @@ if(isset($_GET['get_data'])){
 // }
 
 
-function get_details($module){
+function get_details($module,$plant_code){
     $counter = 0;
     global $link_new;
     global $tms;
-    global $TaskTypeEnum;
-    $plant_code = $_SESSION['plantCode']; 
+    global $TaskTypeEnum; 
+    //To get workstation description
+    $query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '$module'";
+    $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($des_row=mysqli_fetch_array($query_result))
+    {
+      $workstation_description = $des_row['workstation_description'];
+    }
     $html_out = "<div class='panel panel-primary'>";
-     $html_out.= "<div class='panel-heading'><h3>Module -$module</h3></div>";
+     $html_out.= "<div class='panel-heading'><h3>Module -$workstation_description</h3></div>";
        $html_out.= "<div class='panel-body'>";
        $html_out.= "";
          $html_out.= "<table class='table table-bordered'>
@@ -131,15 +140,13 @@ function get_details($module){
     exit();                      
 }
 
-function save_details($data,$module,$module1){
+function save_details($data,$module,$module1,$plant_code,$username){
     global $link_new;
     global $tms;
     global $pps;
     global $pts;
     global $TaskTypeEnum;
     $counter = 0;
-    $plant_code = $_SESSION['plantCode'];
-    $username = $_SESSION['userName'];
     $tasktype = TaskTypeEnum::SEWINGJOB; 
     // var_dump($data);
     foreach($data['jobs'] as $job){

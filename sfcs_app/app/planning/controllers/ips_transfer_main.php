@@ -46,10 +46,10 @@
       ijob_array = [];
       $('#loading-image').show();
       $('#submit_button').hide();
-     
+      var plant_code = <?= "'$plant_code'"?>;
       $.ajax({
             type: "GET",
-            url: '<?= $url ?>?get_data=1&module='+module,
+            url: '<?= $url ?>?get_data=1&module='+module+'&plant_code='+plant_code,
             success: function(response) 
             {
                 var data = $.parseJSON(response);
@@ -73,6 +73,8 @@
     function post_data(){
         to_module = $("#to_module").val();
         module = $("#module").val();
+        var plant_code = <?= "'$plant_code'"?>;
+        var username = <?= "'$username'"?>;
         if(module == to_module)
         return swal('Selecting Same Module To Transfer','','error');
         if(to_module == null)
@@ -82,7 +84,7 @@
             $.ajax({
                 type: "POST",
                 data:data,
-                url: '<?= $url ?>?save_data&to_module='+to_module+'&module='+module,
+                url: '<?= $url ?>?save_data&to_module='+to_module+'&module='+module+'&plant_code='+plant_code+'&username='+username,
                 success: function(response) 
                 {
                     var res = $.parseJSON(response);
