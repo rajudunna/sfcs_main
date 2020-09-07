@@ -11,11 +11,11 @@ $(document).ready(function()
 	var schedule="<?= $_GET['schedule'] ;?>";
 	var inputjob="<?= $_GET['inputjob'] ;?>";
 	var plant_code="<?= $_GET['plantcode'] ;?>";
-	var inputObj = {schedule:schedule, plantCode:plant_code, inputJob:inputjob};
-	var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+	var inputObj = {"jobNumber":inputjob, "plantCode":plant_code};
 	$.ajax({
 		type: "POST",
-		url: function_text+"?inputObj="+inputObj,
+		url: "<?php echo $BackendServ_ip?>​/jobs-generation​/getJobColorSizeDetails",
+		data: inputObj,
 		success: function(response) 
 		{
 			var bundet = JSON.parse(response);

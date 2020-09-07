@@ -205,11 +205,11 @@ $(document).ready(function()
 		var plant_code = $('#plant_code').val();
 		var username = $('#username').val();
 		var subpo = $('#sub_po').val();
-		var inputObj = {subPo:subpo, plantCode:plant_code, userName:username};
-		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+		var inputObj = {"poNumber":subpo, "plantCode":plant_code};
         $.ajax({
             type: "POST",
-            url: function_text+"?inputObj="+inputObj,
+            url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobNumbersByPo",
+			data: inputObj,
             success: function(response) 
             {
                 var bundet = JSON.parse(response);
@@ -264,11 +264,11 @@ $(document).ready(function()
 		var plant_code="<?= $_SESSION['plantCode'] ;?>";
 		var schedule="<?= $_GET['schedule'] ;?>";
 		var checkarr = $('#myval').val();
-		var inputObj = {checkbox:checkarr, plantCode:plant_code, scheudle:schedule};
-		var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
+		var inputObj = {"jobNumbers":checkarr, "plantCode":plant_code};
         $.ajax({
             type: "POST",
-            url: function_text+"?inputObj="+inputObj,
+            url: "<?php echo $BackendServ_ip?>/jobs-generation/JobClubbing",
+			data: inputObj,
             success: function(response) 
             {
                 var bundet = JSON.parse(response);

@@ -1,6 +1,7 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
 
@@ -48,12 +49,16 @@
                     <select class='form-control' name="module">
                         <option value='NIL'>Select Module</option>
                         <?php  
-                            $sql = "SELECT * FROM $pts.plan_modules where plant_code='$plant_code'";
-                            $sql_result = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-                            while($sql_row=mysqli_fetch_array($sql_result)){
-                                echo "<option value='".$sql_row['module_id']."'>".$sql_row['module_id']."</option>";
-
+                            $department='SEWING';
+                            /** Getting work stations based on department wise
+                            * @param:department,plantcode
+                            * @return:workstation
+                            **/
+                            $result_worksation_id=getWorkstations($department,$plant_code);
+                            $workstations=$result_worksation_id['workstation'];
+                            foreach($workstations as $work_id=>$work_des)
+                            {
+                                echo "<option value='".$work_id."'>".$work_des."</option>";
                             }
                         ?>
                     </select>

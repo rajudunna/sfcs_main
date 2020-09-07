@@ -21,17 +21,20 @@ if($_GET['module']){
     <form name="main" action="<?php echo getFullURLLevel($_GET['r'],'sewing_job_deactive.php','0','N'); ?>" method="post">
         <div class="row">
             <?php
-            //Function to get modules based on category
             $department='SEWING';
+            /** Getting work stations based on department wise
+            * @param:department,plantcode
+            * @return:workstation
+            **/
             $result_worksation_id=getWorkstations($department,$plant_code);
             $workstations=$result_worksation_id['workstation'];
 
 
             echo "<div class='col-sm-2'><label>Module<span style='color:red;'> *</span></label>
             <select class='form-control' name=\"module\" id=\"module\" onchange=\"secondbox();\" id='module' required>";
-            foreach($workstations as $module)
+            foreach($workstations as $work_id=>$work_des)
             {
-                echo "<option value='$module'>$module</option>";
+                echo "<option value='".$work_id."'>".$work_des."</option>";
             }
             echo "</select>
             </div>";

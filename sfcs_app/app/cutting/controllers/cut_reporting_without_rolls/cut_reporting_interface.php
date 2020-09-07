@@ -214,8 +214,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         <div class='row' id='hide_details_reporting'>
             <div class='col-sm-2'>
-                <label for='shift'>Shift</label>
-                <select class='form-control' name='shift' id='shift'>
+                <label for='shift'>Shift <span style="color:red;">*</span></label>
+                <select class='form-control' name='shift' id='shift' required>
                     <option value='' disabled selected>Select Shift</option>
                 <?php
                 $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1";
@@ -231,8 +231,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </select>
             </div>
             <div class='col-sm-2'>
-               <label for='cut_table'>Cutting Table</label>
-               <select class='form-control' id='cut_table'>
+               <label for='cut_table'>Cutting Table <span style="color:red;">*</span></label>
+               <select class='form-control' id='cut_table' required>
                     <option value='' disabled selected>Select Table</option>
                 <?php
                     foreach($workstations as $id => $cut_table){
@@ -242,8 +242,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                </select>
             </div>
             <div class='col-sm-2'>
-                <label for='cut_table'>Team Leader</label>
-                <select class='form-control' id='team_leader'>
+                <label for='cut_table'>Team Leader <span style="color:red;">*</span></label>
+                <select class='form-control' id='team_leader' required>
                     <option value='' disabled selected>Select Leader</option>
                 <?php
                     foreach($team_leaders as $id => $leader_name){
@@ -253,8 +253,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </select>
             </div>
             <div class='col-sm-2'>
-               <label for='bundle_location'>Bundle Location</label>
-               <select class='form-control' id='bundle_location'>
+               <label for='bundle_location'>Bundle Location <span style="color:red;">*</span></label>
+               <select class='form-control' id='bundle_location' required>
                     <option value='' disabled selected>Select Location</option>
                 <?php
                     foreach($locations as $location){
