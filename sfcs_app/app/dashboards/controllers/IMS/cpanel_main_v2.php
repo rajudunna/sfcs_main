@@ -480,7 +480,7 @@ $.ajax
               /**
              * get planned sewing jobs(JG) for the workstation
              */  
-              $jobsArray=getJobsForWorkstationIdTypeSewing($plantCode, $workstationId);
+              $jobsArray=getJobsForWorkstationIdTypeSewing($plantCode, $workstations['workstationId']);
               $total_qty="0";
               $total_out="0";
               //docket boxes Loop -start
@@ -489,56 +489,68 @@ $.ajax
                 //while($sql_rowred=mysqli_fetch_array($sql_resultred))
                 foreach($jobsArray as $jobs)     
                 {   
-                  $taskJOb=$jobs['jobRef'];
+                  $taskJobId=$jobs['taskJobId'];
+                  // Initializations
+                  $job_group=0;
+                  $minOperation='';
+                  $minOrgnalQty=0;
+                  $minGoodQty=0;
+                  $maxOperation='';
+                  $maxOrgnalQty=0;
+                  $maxGoodQty=0;
+                  $maxRejQty=0;
+
                     /**
                      * get MIN operation wrt jobs based on operation seq
                      */
-                    $qrytoGetMinOperation="SELECT job_group,operation,original_qunatity,good_qunatity,rejected_qunatity,MIN(operation_seq) FROM `task_job_transaction` WHERE task_job_id='$taskJOb' AND plant_code='$plantCode' AND is_active=1";
-                    $MinOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting jobs in workstation');
-                    if(mysqli_num_rows($MinOperationResult)>0){
-                      while($MinOperationResultRow = mysqli_fetch_array($MinOperationResult)){
-                          $job_group=MinOperationResultRow['job_group'];
-                          $MinOperation=MinOperationResultRow['operation'];
-                          $MinOrgnalQty=MinOperationResultRow['original_qunatity'];
-                          $MinGoodQty=MinOperationResultRow['good_qunatity'];
-                          $MinRejQty=MinOperationResultRow['rejected_qunatity'];
-
-                      }
+                    $qrytoGetMinOperation="SELECT job_group,operation_code,
+                    original_quantity,
+                    good_quantity,
+                    rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+                    $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
+                    if(mysqli_num_rows($minOperationResult)>0){
+                      while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+                          $job_group=$minOperationResultRow['job_group'];
+                          $minOperation=$minOperationResultRow['operation_code'];
+                          $minOrgnalQty=$minOperationResultRow['original_quantity'];
+                          $minGoodQty=$minOperationResultRow['good_quantity'];
+                        }
+                        $minRejQty=$minOperationResultRow['rejected_quantity'];
                     }
 
                     /**
                      * get MAX operation wrt jobs based on operation seq
                      */
-                    $qrytoGetMaxOperation="SELECT job_group,operation,original_qunatity,good_qunatity,rejected_qunatity,MIN(operation_seq) FROM `task_job_transaction` WHERE task_job_id='$taskJOb' AND plant_code='$plantCode' AND is_active=1";
-                    $MaxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting jobs in workstation');
-                    if(mysqli_num_rows($MaxOperationResult)>0){
-                      while($MaxOperationResultRow = mysqli_fetch_array($MaxOperationResult)){
-                          $job_group=MaxOperationResultRow['job_group'];
-                          $MaxOperation=MaxOperationResultRow['operation'];
-                          $MaxOrgnalQty=MaxOperationResultRow['original_qunatity'];
-                          $MaxGoodQty=MaxOperationResultRow['good_qunatity'];
-                          $MaxRejQty=MaxOperationResultRow['rejected_qunatity'];
-
+                    $qrytoGetMaxOperation="SELECT job_group,operation_code,
+                    original_quantity,
+                    good_quantity,
+                    rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+                    $maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+                    if(mysqli_num_rows($maxOperationResult)>0){
+                      while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+                          $job_group=$maxOperationResultRow['job_group'];
+                          $maxOperation=$maxOperationResultRow['operation_code'];
+                          $maxOrgnalQty=$maxOperationResultRow['original_quantity'];
+                          $maxGoodQty=$maxOperationResultRow['good_quantity'];
+                          $maxRejQty=$maxOperationResultRow['rejected_quantity'];
                       }
                     }  
 
 
                     $value='';
-                    $input_qty=$MinGoodQty;      // input qty
-                    $output_qty=$MaxGoodQty;
+                    $input_qty=$minGoodQty;      // input qty
+                    $output_qty=$maxGoodQty;
+                    $rejected_qty = $maxRejQty;
                     /**
                      * get eligible jobs to display in dashboards based on below condition
                      */
-                    if(($MinGoodQty>0) && (($MaxGoodQty+MaxRejQty)<$MinGoodQty)){
-
+                    if(($minGoodQty>0) && (($maxGoodQty+$maxRejQty)<$minGoodQty)){
                           //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
                           $job_detail_attributes = [];
-                          $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJOb' and plant_code='$plant_code'";
-                          $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-                          while ($row2 = mysqli_fetch_array($get_details_result)) {
-                        
+                          $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJobId' and plant_code='$plantCode'";
+                          $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+                          while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
                             $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
-                          
                           }
                           $style = $job_detail_attributes[$sewing_job_attributes['style']];
                           $color = $job_detail_attributes[$sewing_job_attributes['color']];
@@ -563,7 +575,7 @@ $.ajax
                           Color : <?php echo $color."<br/>"; ?>
                           Docket No : <?php echo $docketno."<br/>"; ?>
                           Job No : <?php echo $sewingjobno."<br/>"; ?>
-                          Cut No : <?php echo chr($color_code).leading_zeros($cutjobno,3)."<br/>"; ?>
+                          Cut No : <?php echo $cutjobno."<br/>"; //chr($color_code).leading_zeros(?>
                           Input Date : <?php echo $input_date."<br/>"; ?>
                           Total Input :<?php echo $input_qty."<br/>"; ?>
                           Total Output:<?php echo $output_qty."<br/>"; ?>
