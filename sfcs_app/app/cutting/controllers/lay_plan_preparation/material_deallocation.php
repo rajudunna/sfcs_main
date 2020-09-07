@@ -44,6 +44,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         <label>Docket Number</label>
                         <input type="text" class='integer form-control' id="docket_number" name="docket_number" size=8 required>
                     </div>
+					<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
+					<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
                     <br/>
                     <div class="col-md-3">
 					<?php 
@@ -75,8 +77,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 <th>Requested At</th>
 								<?php 
 										echo "<th>Status</th>
-										<th>Control</th>
 										<th>Control</th>";
+										// echo "<th>Control</th>";
 									
 								?>
                             </tr>
@@ -120,7 +122,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 										echo "<option value='Reject'>Reject</option>";
 										echo "</select></td>";
 										echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
-										echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+										// echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
 									
 									
 									echo "</tr>";
@@ -176,137 +178,14 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
    
    
 </div>
+
 <?php
-for($i=0;$i<sizeof($doc_nos);$i++)
-{
-?>
-<div class="modal fade" id="rejections_modal<?= $doc_nos[$i];?>" role="dialog">
-    <div class="modal-dialog" style="width: 80%;  height: 100%;">
-        <div class="modal-content">
-            <div class="modal-header">Change Marker Length
-                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
-            </div>
-            <div class="modal-body">
-                <div class='panel panel-primary'>
-                    <div class='panel-heading'>
-                        Marker Length Details
-                    </div>
-                    <div class='panel-body'>
-					<div class='col-sm-12'>
-                            <table class='table table-bordered rejections_table' id='mark_len_table<?=$doc_nos[$i]?>'>
-							<thead>
-								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks 1</th><th>Remarks 2</th><th>Remarks 3</th><th>Remarks 4</th><th>Control</th></tr>
-							</thead>
-                                <tbody id='rejections_table_body<?=$doc_nos[$i]?>'>
-								<?php 
-									
-									$doc_no = $doc_nos[$i];
-									
-									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
-									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$rows=0;
-									
-									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
-									{
-										$mk_ref_id=$row111x2['mk_ref_id'];
-										//echo $mk_ref_id."--".$row111x2['allocate_ref']."<br>";
-										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
-										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										$values_rows=mysqli_num_rows($sql_marker_details_result);
-										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
-										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
-										{   
-											// var_dump($sql_marker_details_res[id]);
-											// var_dump($mk_ref_id);
-											//echo $sql_marker_details_res[id]."<br>";
-											$rows++;
-											if($sql_marker_details_res[id] == $mk_ref_id)
-											{
-												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
-												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
-												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
-												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
-												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
-												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
-												<td style='display:none;'  id='doc_no'>$doc_no</td>
-												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
-												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td>	
-												</tr>";
-											}
-											else
-											{
-												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
-												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
-												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
-												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
-												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
-												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
-												<td style='display:none;'  id='doc_no'>$doc_no</td>
-												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
-												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
-												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td></tr>";
-											}												
-										}										
-									}
-									?>
-                                </tbody>
-
-                                </tbody>
-
-								<tbody id='rejections_table'>
-												
-									<tr>
-									<td></td>
-									<?php
-									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
-									?>
-									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
-									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
-									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks1" id= "rmks1<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks2" id= "rmks2<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks3" id= "rmks3<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
-									<td></td>
-									</tr>  
-								</tbody>
-                            </table>
-								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
-								<?php 
-									echo "<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen(".$doc_no.")' id='add_marker_length'>";
-								?>
-					<br>
-					<?php
-					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
-					?>
-
-                    </div>
-
-                </div>
-				</div>
-                    
-                
-            </div>
-
-        </div>
-    </div>
-</div>
-<?php
-}
 
 if(isset($_POST['formSubmit']))
 {
         $doc_no = $_POST['docket_number'];
+        $plant_code = $_POST['plant_code'];
+        $username = $_POST['username'];
    
         $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no";
         // echo $fabric_status_qry;
