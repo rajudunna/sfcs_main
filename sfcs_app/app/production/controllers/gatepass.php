@@ -3,7 +3,8 @@
 <?php  
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-   
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
 	//$username='sfcsprwojessct1';
 	
     ?>
@@ -72,15 +73,14 @@ function oper_display(){
                     </div> 
 					
 					<?php
-                    $plant_code = $_SESSION['plantCode'];
-                    $username = $_SESSION['userName'];
+                    
 					if(isset($_POST['submit']))
 					{        
 						$shift=$_POST['shift'];
 						$operation=$_POST['operation'];
 						$operation_name=$_POST['operation'];
 						$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
-						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result1)>0)
 						{			
 							
@@ -102,7 +102,7 @@ function oper_display(){
 							}
 							else
 							{
-								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$username."','".$plant_code."','".$username."','".$username."')";
+								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."')";
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							}
 							$gate_id=mysqli_insert_id($link);

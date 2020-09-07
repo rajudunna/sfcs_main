@@ -133,7 +133,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 					}
 					echo "<div class='pull-left' id='form'>";
 						echo'<div class="form-inline">';
-							echo'<div class="form-group">';
+							echo'<div class="form-group" id="dropdown" name="dropdown">';
 								echo '<b>Category : </b><select class="form-control" name="product" id="product" required>
 									<option>Please Select</option>
 									<option value="Fabric" '.$fabric.'>Fabric</option>
@@ -167,7 +167,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 					echo '<table id="table1" class="table table-bordered">';
 						echo "<thead>";
 							echo"<tr class='info'>";
-								echo"<th>Sl No</th>
+								echo"
 								<th>Category</th>
 								<th>Location Name</th>
 								<th>Status</th>
@@ -198,7 +198,7 @@ $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/locationlables.php',3,'R');
 							}
 							$product = $value['product'];
 							echo "<tr>";
-								echo"<td>".$s_no."</td>";
+								// echo"<td>".$s_no."</td>";
 								echo"<td>".$value['product']."</td>";
 								echo"<td>".$value['location_id']."</td>";
 								echo"<td style='background:".$color."'>".$loc_status."</td>";								
@@ -226,10 +226,15 @@ var action = "<?= $_GET['action'] ;?>";
 if(action == ""){
 	$("#form").hide();
 }
+if(action == "Update")
+{
+	$('#product').attr("disabled", true);
+}
 $("#add").click(function(){
 	$("#form").show();
 	$("#loc_name").val('');
 	$("#table").hide();
+	$('#product').attr("disabled", false); 
 });
 $(function() {
         $('#loc_name').on('keypress', function(e) {
@@ -238,6 +243,12 @@ $(function() {
                 return false;
             }
         });
+});
+
+$(function() {
+    $('form').submit(function() {
+        $("#product").removeAttr("disabled");
+    });
 });
 </script>
 

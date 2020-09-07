@@ -1,7 +1,14 @@
+<?php
+    include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
+    $plant_code = $_SESSION['plantCode'];
+?> 
 <div class="panel panel-primary">
     <div class="panel-heading">Sewing Jobs Split</div>
     <div class="panel-body">
         <?php
+            $username=$_SESSION['userName'];
             if(isset($_GET['sewing_job']))
             {
                 $sj_number = $_GET['sewing_job'];
@@ -27,22 +34,32 @@ $(document).ready(function() {
     var sj = $('#sj_number').val();
     var plant_code = $('#plant_code').val();
     if(sj != ''){
-        var sjObj = {sewingJobNumber:sj,plantCode:plant_code};
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+        var sjObj = {"sewingJobNumber":sj,"plantCode":plant_code};
         $.ajax({
-            type: "POST",
-            url: function_text+"?sjObj="+sjObj,
-            success: function(response)
-            {
-                var data = JSON.parse(response);
-                var table_data = "<table class='table table-bordered table-striped'><thead><tr><td>Action</td><td>Style</td><td>Schedule</td><td>Color</td><td>Size</td><td>Bundle No</td><td>Total Bundle Qty</td></tr></thead><tbody>";
-                for(var i=0; i< data.Outobj.bundle.length; i++){
-                    table_data +="<tr><td><input type='checkbox' name='split' id='split' value='"+data.Outobj.bundle[i].bundleNo+"' class='custom'></td><td>"+data.Outobj.style+"</td><td>"+data.Outobj.SCHEDULE+"</td><td>"+data.Outobj.color+"</td><td>"+data.Outobj.bundle[i].size+"</td><td>"+data.Outobj.bundle[i].bundleNo+"</td><td>"+data.Outobj.bundle[i].qty+"</td></tr>";
-                }
-                table_data += '</tbody></table><input type="button" class="btn btn-primary" onclick=sendResponse() value="Split">';
-                $('#dynamic_table').html(table_data);
-            }
-        });
+			type: "POST",
+			url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobBundleDetailsWithBundles",
+			data: sjObj,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					var data = JSON.parse(res);
+	                var table_data = "<table class='table table-bordered table-striped'><thead><tr><td>Action</td><td>Style</td><td>Schedule</td><td>Color</td><td>Size</td><td>Bundle No</td><td>Total Bundle Qty</td></tr></thead><tbody>";
+	                for(var i=0; i< data.Outobj.bundle.length; i++){
+	                    table_data +="<tr><td><input type='checkbox' name='split' id='split' value='"+data.Outobj.bundle[i].bundleNo+"' class='custom'></td><td>"+data.Outobj.style+"</td><td>"+data.Outobj.SCHEDULE+"</td><td>"+data.Outobj.color+"</td><td>"+data.Outobj.bundle[i].size+"</td><td>"+data.Outobj.bundle[i].bundleNo+"</td><td>"+data.Outobj.bundle[i].qty+"</td></tr>";
+	                }
+	                table_data += '</tbody></table><input type="button" class="btn btn-primary" onclick=sendResponse() value="Split">';
+	                $('#dynamic_table').html(table_data);
+				}
+				else
+				{
+					swal(res.internalMessage);
+				}                       
+			},
+			error: function(res){
+				swal('Error in getting data');
+			}
+		});
 
     }
 });
@@ -58,7 +75,32 @@ function sendResponse(){
     } else {
         sweetAlert('Please select atleast One Bundle');
     }
-    var outputObj = {sewingJobNumber:sj_number,bundleNo:SlectedList};
+    var outputObj = {"sewingJobNumber":sj_number,"bundleNo":SlectedList,"plantCode":<?= $plant_code ?>,"createdUser":<?= $username ?>};
     console.log(outputObj);
+    $.ajax({
+        type: "POST",
+        url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/spllitSewingJob",
+        data: outputObj,
+        success: function (res) {            
+            //console.log(res.data);
+            if(res.status)
+            {
+                var data = JSON.parse(res);
+                var table_data = "<table class='table table-bordered table-striped'><thead><tr><td>Action</td><td>Style</td><td>Schedule</td><td>Color</td><td>Size</td><td>Bundle No</td><td>Total Bundle Qty</td></tr></thead><tbody>";
+                for(var i=0; i< data.Outobj.bundle.length; i++){
+                    table_data +="<tr><td><input type='checkbox' name='split' id='split' value='"+data.Outobj.bundle[i].bundleNo+"' class='custom'></td><td>"+data.Outobj.style+"</td><td>"+data.Outobj.SCHEDULE+"</td><td>"+data.Outobj.color+"</td><td>"+data.Outobj.bundle[i].size+"</td><td>"+data.Outobj.bundle[i].bundleNo+"</td><td>"+data.Outobj.bundle[i].qty+"</td></tr>";
+                }
+                table_data += '</tbody></table><input type="button" class="btn btn-primary" onclick=sendResponse() value="Split">';
+                $('#dynamic_table').html(table_data);
+            }
+            else
+            {
+                swal(res.internalMessage);
+            }                       
+        },
+        error: function(res){
+            swal('Error in getting data');
+        }
+    });
 }
 </script>

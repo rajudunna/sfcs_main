@@ -16,9 +16,8 @@ $username=$_SESSION['userName'];
 
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/global_error_function.php');
 $conn=$link;
-
-
 
 
 
@@ -47,6 +46,7 @@ else
 		$sql = "update $mdm.tbl_sewing_job_prefix set prefix_name='$code',prefix='$department',type_of_sewing='$reason',bg_color='$type',updated_user='$username',updated_at='".date('Y-m-d')."' where id=$dr_id";
 		
 		if (mysqli_query($conn, $sql)) {
+			log_statement('debug',$sql,$main_url,__LINE__);
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			//echo $url;
 			//echo "Record updated successfully";
@@ -64,6 +64,7 @@ else
 				}); }, 100);</script>";
 		} else {
 			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			log_statement('error',mysqli_error($conn),$main_url,__LINE__);
 		}
 	}
 	else
@@ -75,6 +76,7 @@ else
 		$sql_result1=mysqli_query($conn, $query1);
 		
 		if(mysqli_num_rows($sql_result1)>0){
+			log_statement('debug',$sql,$main_url,__LINE__);
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			echo"<script>setTimeout(function () { 
 				swal({
@@ -100,6 +102,7 @@ else
 
 		if (mysqli_query($conn, $sql)) 
 		{
+			log_statement('debug',$sql,$main_url,__LINE__);
 			$url=getFullURL($_GET['r'],'sewing_jobs_prefix_add.php','N');
 			//echo "New record created successfully";
 			echo"<script>setTimeout(function () { 
@@ -117,7 +120,8 @@ else
 		} 
 		else 
 		{
-		    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+				log_statement('error',mysqli_error($conn),$main_url,__LINE__);
 		}
 
 

@@ -1,7 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));  ?>
 <?php
-
-$has_permission = haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
@@ -69,7 +67,7 @@ function validateQty(event)
 
 
 
-<form method="post" name="input2" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
+<form method="post" name="input2" action="<?php $_SERVER['PHP_SELF']; ?>">
 	<div class="row">
 		<div class='col-md-3'>
 		<label>Search Lot No: </label><input type="text" id="course" onkeypress="return validateQty(event);" class="form-control" name="lot_no" oninvalid="this.setCustomValidity('Please Enter Lot Number')" required />
@@ -81,7 +79,7 @@ function validateQty(event)
 
 <?php
 if(isset($_POST['submit']))
-{
+{	
 	$lot_no=$_POST['lot_no'];
 	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
 }
@@ -98,7 +96,7 @@ else
 if(strlen($lot_no)>0)
 {
 
-$sql="select * from $wms.sticker_report where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no from $wms.sticker_report where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -152,51 +150,31 @@ switch (trim($product_group))
 	case "Elastic":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Lace":
 	{
 		echo "<th>Return Qty ($fab_uom)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Fabric":
 	{
 		echo "<th>Return Qty (MTR)</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	case "Thread":
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 	default:
 	{
 		echo "<th>Return Qty</th><th>Remarks</th></tr>";
-		if(!in_array($view,$has_permission))
-		{
-			header("Location: restrict.php");
-		}
 		break;
 	}
 }
 
-$sql="select * from $wms.store_in where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret from $wms.store_in where lot_no=\"".trim($lot_no)."\"";
 // echo $sql."<br>";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -256,14 +234,13 @@ if(isset($_POST['put']))
 			$qty_returned_new=0;
 			
 			$sql1="select qty_issued from $wms.store_in where tid=".$tid[$i]." and plant_code='".$plant_code."'";
-			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check1=mysqli_num_rows($sql_result1);
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				$qty_issued=$sql_row1['qty_issued'];
+				$qty_issued=$sql_row1['qty_issued'];				
 			}
-				
+		
 			$sql="select qty_ret from $wms.store_in where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -274,7 +251,7 @@ if(isset($_POST['put']))
 				$qty_returned_new=$sql_row['qty_ret'];
 			}			
 			$qty_returned_new=$qty_returned_new+$qty_return[$i];
-			//echo "qty_issued : ".$qty_issued."- Qty Returned : ".$qty_returned_new."</br>";	
+			//echo "qty_issued : ".$qty_issued."- Qty Returned : ".$qty_returned_new."</br>";			
 			//echo $qty_issued>=$qty_returned_new;
 			if($qty_issued>=$qty_returned_new)
 			{
@@ -295,14 +272,16 @@ if(isset($_POST['put']))
 					//echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
+				echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
 				
 			}
 			
 			
 		}
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";	
 	}
-	echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
+	
 	
 }
 

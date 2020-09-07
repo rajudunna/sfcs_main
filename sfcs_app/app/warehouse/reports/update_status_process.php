@@ -1,12 +1,12 @@
 
 <?php
 // include("security1.php");
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+
 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 if(isset($_POST['submit2']))
 {
 	$status=$_POST['status'];

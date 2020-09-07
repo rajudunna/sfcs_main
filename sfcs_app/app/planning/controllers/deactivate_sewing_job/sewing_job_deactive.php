@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_v2.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
@@ -21,17 +22,20 @@ if($_GET['module']){
     <form name="main" action="<?php echo getFullURLLevel($_GET['r'],'sewing_job_deactive.php','0','N'); ?>" method="post">
         <div class="row">
             <?php
-            //Function to get modules based on category
             $department='SEWING';
-            $result_worksation_id=getWorkstations($department,$plantcode);
+            /** Getting work stations based on department wise
+            * @param:department,plantcode
+            * @return:workstation
+            **/
+            $result_worksation_id=getWorkstations($department,$plant_code);
             $workstations=$result_worksation_id['workstation'];
 
 
             echo "<div class='col-sm-2'><label>Module<span style='color:red;'> *</span></label>
             <select class='form-control' name=\"module\" id=\"module\" onchange=\"secondbox();\" id='module' required>";
-            foreach($workstations as $module)
+            foreach($workstations as $work_id=>$work_des)
             {
-                echo "<option value='$module'>$module</option>"
+                echo "<option value='".$work_id."'>".$work_des."</option>";
             }
             echo "</select>
             </div>";
@@ -78,7 +82,7 @@ if(isset($_POST['submit']) || $module)
               $task_job_reference[] = $refrence_no_row['task_job_reference'];
             }
             //Qry to get sewing jobs from jm_jobs_header
-            $job_group_type=TaskTypeEnum::plannedsewingjob;
+            $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             $job_number=array();
             $ponumber=array();
             $masterponumber=array();

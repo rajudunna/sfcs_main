@@ -9,8 +9,8 @@ $doc=$_GET['binding_id'];
 
 $doc_id=implode(',',$doc_id);
 $divide = 15;
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+$plant_code = $_GET['plant_code'];
+$username = $_GET['username'];
 
 
 	$order_tidss=array();

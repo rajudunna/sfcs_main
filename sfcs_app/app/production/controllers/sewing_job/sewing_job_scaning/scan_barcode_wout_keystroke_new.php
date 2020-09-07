@@ -3,12 +3,13 @@
 </head>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
+	$plantcode=$_POST['plant_code'];
+	$username=$_POST['username'];
 	
 	if($gate_id=='')
 	{
@@ -69,7 +70,7 @@ th,td{
 				<?php }?>
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
-					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'">
+					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -121,22 +122,40 @@ $(document).ready(function()
 			var res = barcode.split('-');
 			var operation_id = res[1];
 		}
+
 		var plant_code = $('#plant_code').val();
-        var inputObj = {barcode:barcode, plantCode:plant_code, operationCode:operation_id};
-        
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
-        $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var bundet = JSON.parse(response);
-                tableConstruction(bundet);
-            }
-        });
-	});
-		
-	
+		var bundet;
+		const data={
+						"barcode": barcode,
+						"plantCode": plant_code,
+						"operationCode": operation_id,
+						"createdUser": '<?= $username ?>',
+						"shift": '<?=shift ?>',
+						"reportAsFullGood": true
+				    }
+		$.ajax({
+			type: "POST",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+			data: data,
+			success: function (res) {            
+				if(res.status)
+				{
+					bundet=res.data
+					tableConstruction(bundet);
+					swal(res.internalMessage,'','success');
+				}
+				else
+				{
+					$('#loading-image').hide();
+					swal(res.internalMessage,'','error');
+				}                       
+			},
+			error: function(res){
+				$('#loading-image').hide();
+				swal('Error',' in getting data','error');
+			}
+		});
+	});			
 });
 
 function tableConstruction(bundet){

@@ -5,6 +5,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 
 
@@ -28,17 +29,30 @@
 		$schedule=$_GET['schedule'];
 		$module=$_GET['module'];
 		$plant_code=$_GET['plant_code'];
-		$operation_name = echo_title("$brandix_bts.tbl_orders_ops_ref","operation_name","operation_code",$operation_code,$link).- $operation_code;
-		$color = echo_title("$bai_pro3.packing_summary_input","order_col_des","input_job_no_random",$input_job_no_random_ref,$link);
+		$username=$_GET['username'];
+		$to_get_operation_name="SELECT operation_name FROM $pms.operation_mapping WHERE operation_code='$operation_code' AND plant_code='$plant_code'";
+		$operation_result=mysqli_query($link, $to_get_operation_name)or exit("operation_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($operation_result))
+		{
+			$operation_name=$sql_row['operation_name'].- $operation_code;
+		}
 		$shift=$_GET['shift'];
 		$barcode_generation=1;
 		$read_only_job_no = 'readonly';
-		$application='IPS';
-		$scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
-		$scanning_result=mysqli_query($link, $scanning_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($scanning_result))
+		//To get IPS Routing Operation
+		$application='Input Planning System';
+		$to_get_map_id="SELECT operation_map_id FROM `pms`.`operation_routing` WHERE dashboard_name='$application' AND plant_code='$plant_code'";
+		//echo $scanning_query;
+		$map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($map_id_result))
 		{
-			$operation_code_routing=$sql_row['operation_code'];
+			$operation_map_id=$sql_row1['operation_map_id'];
+		}
+		$to_get_ops_code="SELECT operation_code FROM `pms`.`operation_mapping` WHERE operation_map_id='$operation_map_id' AND plant_code='$plant_code'";
+		$get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row2=mysqli_fetch_array($get_ops_result))
+		{
+			$operation_code_routing=$sql_row2['operation_code'];
 		}
 
 		if($operation_code_routing == 'Auto'){
@@ -55,6 +69,7 @@
 		$operation_name=$_POST['operation_name'];
 		$operation_code=$_POST['operation_id'];
 		$plant_code=$_POST['plant_code'];
+		$username=$_POST['username'];
 		$barcode_generation=$_POST['barcode_generation'];
 		$read_only_job_no = '';
 		$operation_code_routing='';
@@ -99,28 +114,28 @@
 	echo '<input type="hidden" name="display_reporting_qty" id="display_reporting_qty" value="'.$display_reporting_qty.'">';
 	echo '<input type="hidden" name="line-in" id="line-in" value="'.$line_in.'">';
 
-	$category = 'sewing';
-	$get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
-	$operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row_out=mysqli_fetch_array($operations_result_out))
-	{
-		$sewing_operations[]=$sql_row_out['operation_code'];
-	}
+	// $category = 'sewing';
+	// $get_operations = "select operation_code from brandix_bts.tbl_orders_ops_ref where category='$category'";
+	// $operations_result_out=mysqli_query($link, $get_operations)or exit("get_operations_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($sql_row_out=mysqli_fetch_array($operations_result_out))
+	// {
+	// 	$sewing_operations[]=$sql_row_out['operation_code'];
+	// }
 
 
 
 	$url = getFullURL($_GET['r'],'pre_input_job_scanning.php','N');
-	if(in_array($operation_code,$sewing_operations))
-	{
-	$form = "'G','P'";
-	}else
-	{
-		$form = "'P'";
-	}
+// 	if(in_array($operation_code,$sewing_operations))
+// 	{
+// 	$form = "'G','P'";
+// 	}else
+// 	{
+// 		$form = "'P'";
+// 	}
 
 	
-$qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
-$result_rejections = $link->query($qery_rejection_resons);
+// $qery_rejection_resons = "select * from $bai_pro3.bai_qms_rejection_reason where form_type in ($form)";
+// $result_rejections = $link->query($qery_rejection_resons);
 if(isset($_POST['flag_validation']))
 {
 	echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
@@ -193,7 +208,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" onkeyup="validateQty1(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -237,6 +252,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="shift" id="shift" value="<?php echo $shift;?>">
 						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
                         <input type="hidden" name="plant_code" id='plant_code' value="<?php echo $plant_code;?>">
+                        <input type="hidden" name="username" id='username' value="<?php echo $username;?>">
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
 						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
@@ -251,9 +267,10 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 		
 		</div>
 	</div>
+	 <!--
 	<div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
 			<div class="modal-dialog">
-				  <!-- Modal content-->
+				 
 				    <div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close"  id = "cancel" data-dismiss="modal" onclick='neglecting_function()'>&times;</button>
@@ -305,7 +322,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						</div>
 					</div>
 			</div>
-	</div>
+	</div> -->
 	
 </body>
 <script>
@@ -324,22 +341,38 @@ $(document).ready(function()
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
 		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
 		var module_flag = null;	var restrict_msg = '';
         if(barcode_generation == 0){
-		    var inputObj = {barcode:job_number, plantCode:plant_code, operationCode:operation_id};
+		    var inputObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForBundleNumber";
         } else if(barcode_generation == 1){
-		    var inputObj = {sewingJobNo:job_number, plantCode:plant_code, operationCode:operation_id};
-        }
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
-        $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var data = JSON.parse(response);
-                tableConstruction(data);
-            }
-        });
+		    var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForSewingJob";
+        }		
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: inputObj,
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					var data=res.data
+					tableConstruction(data);
+				}
+				else
+				{
+					swal(res.internalMessage,'','error');
+				}                       
+			},
+			error: function(res){
+				$('#loading-image').hide(); 
+				// alert('failure');
+				// console.log(response);
+				swal('Error','in getting docket','error');
+			}
+		});
 	});
 		
 	
@@ -394,7 +427,7 @@ function tableConstruction(data){
             var remarks_check_flag = 0;
             if(i==0)
             {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Status</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Input Job Qty</th>"+op_codes_str+"<th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th class='"+hidden_class_sewing_in+"'>Rejected Qty.</th><th>Recut In</th><th>Replace In</th><th class='"+hidden_class_sewing_in+"'>Rejection quantity</th></tr></thead><tbody>";
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Style</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Input Job Qty</th>"+op_codes_str+"<th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th class='"+hidden_class_sewing_in+"'>Rejected Qty.</th><th>Recut In</th><th>Replace In</th><th class='"+hidden_class_sewing_in+"'>Rejection quantity</th></tr></thead><tbody>";
                 $("#dynamic_table1").append(markup);
                 $("#dynamic_table1").append(btn);
             }
@@ -405,7 +438,7 @@ function tableConstruction(data){
                     op_code_values = op_code_values + '<td>'+data.sizeQuantities[i].operationWiseQuantity[index].quantity+'</td>';
                 });
 				
-            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='Status'>"+data.sizeQuantities[i].status+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgcolor+"<input type='hidden' name='fgcolor["+i+"]' id='"+i+"fgcolor' value = '"+data.sizeQuantities[i].fgcolor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQuantity+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' "+$('#reject_report').val()+"></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='style'>"+data.sizeQuantities[i].style+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColors+"<input type='hidden' name='fgcolor["+i+"]' id='"+i+"fgcolor' value = '"+data.sizeQuantities[i].fgcolor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' "+$('#reject_report').val()+"></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
         }
@@ -691,24 +724,40 @@ function check_pack()
 		document.getElementById('pre_data').innerHTML ='';
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
+    
 		$.ajax({
 			type: "POST",
-			url: function_text+"?reportData="+reportData,
-			success: function(response) 
-			{
-				var data = JSON.parse(response);
-				$('#pre_pre_data').show();
-				var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
-				for(var z=0; z<data.transactionsData.length; z++){
-					table_data += "<tr><td>"+data.transactionsData[z].jobNo+"</td><td>"+data.transactionsData[z].bundleNo+"</td><td>"+data.transactionsData[z].fgColor+"</td><td>"+data.transactionsData[z].size+"</td><td>"+data.transactionsData[z].reportedQty+"<td>"+data.transactionsData[z].rejectedQty+"</td>";
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+			data:  JSON.stringify(reportData),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (res) {            
+				//console.log(res.data);
+				if(res.status)
+				{
+					var data = JSON.parse(response);
+					$('#pre_pre_data').show();
+					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
+					for(var z=0; z<data.transactionsData.length; z++){
+						table_data += "<tr><td>"+data.transactionsData[z].jobNo+"</td><td>"+data.transactionsData[z].bundleNo+"</td><td>"+data.transactionsData[z].fgColor+"</td><td>"+data.transactionsData[z].size+"</td><td>"+data.transactionsData[z].reportedQty+"<td>"+data.transactionsData[z].rejectedQty+"</td>";
+					}
+					table_data += "</tbody></table></div></div></div>";
+					document.getElementById('pre_data').innerHTML = table_data;
+					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
+					$('.progress').hide();
+					$('#smart_btn_arear').show();
+					swal(res.internalMessage,'','success');
 				}
-				table_data += "</tbody></table></div></div></div>";
-				document.getElementById('pre_data').innerHTML = table_data;
-				$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
-				$('.progress').hide();
-				$('#smart_btn_arear').show();
-			
+				else
+				{
+					swal(res.internalMessage,'','error');
+				}                       
+			},
+			error: function(res){
+				$('#loading-image').hide(); 
+				// alert('failure');
+				// console.log(response);
+				swal('Error','in getting docket','error');
 			}
 		});
 		

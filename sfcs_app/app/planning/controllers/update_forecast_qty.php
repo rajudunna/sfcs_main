@@ -123,8 +123,8 @@ if(isset($_POST['submit']))
 	$split_date=explode("-",$today);
 	$year=$split_date[0];
 	$month=$split_date[1];
-	$department_type="SEWING";
-	$reason_type="SEWING";
+	$department_type="Forecast";
+	$reason_type="Forecast";
 	$result_worksation_id=getWorkstations($department_type,$plantcode);
 	$workstations=$result_worksation_id['workstation'];
 
@@ -148,7 +148,7 @@ if(isset($_POST['submit']))
 				<tr> 
 				<th> Module </th> 
 				<th> FR Plan </th> 
-				<th> Quantity (Forcast) </th> 
+				<th> Quantity (Forecast) </th> 
 				<th> Reason </th> 
 				</tr> 
 		<?php  
