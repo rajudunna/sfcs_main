@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_v2.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
@@ -81,7 +82,7 @@ if(isset($_POST['submit']) || $module)
               $task_job_reference[] = $refrence_no_row['task_job_reference'];
             }
             //Qry to get sewing jobs from jm_jobs_header
-            $job_group_type=TaskTypeEnum::plannedsewingjob;
+            $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             $job_number=array();
             $ponumber=array();
             $masterponumber=array();
