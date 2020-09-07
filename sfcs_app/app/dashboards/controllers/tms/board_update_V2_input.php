@@ -46,7 +46,7 @@ $username=$_GET['uname'];
 </head>
 
 <body>
-	<form action="board_update_V2_input_excel.php" method="post">
+	<form action="board_update_v2_input_excel.php" method="post">
 		<input type="hidden" name="section" value="<?= $_GET['section_no']; ?>">
 		<input type="hidden" name="uname1" value="<?= $_GET['uname']; ?>">
 		<input type="submit" name="export_excel" value="Export to Excel">

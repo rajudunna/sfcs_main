@@ -27,7 +27,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	else
 	{	
 		// echo $_GET['r'];
-		header("Location:sfcs_app/app/dashboards/controllers/Cut_table_dashboard/restrict.php?group_docs=".$_GET['group_docs']);
+		header("Location:sfcs_app/app/dashboards/controllers/cut_table_dashboard/restrict.php?group_docs=".$_GET['group_docs']);
 		// header($_GET['r'],'restrict.php','N');
 	}
 

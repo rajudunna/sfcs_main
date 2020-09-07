@@ -61,8 +61,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		$v_r = explode('/',$_SERVER['REQUEST_URI']);
 		array_pop($v_r);
-		$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/board_update_V2_input.php";
-		//$popup_url ='board_update_V2_input.php';
+		$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/board_update_v2_input.php";
+		//$popup_url ='board_update_v2_input.php';
 		$ips_data='<div style="margin-left:15%">';
 		$ips_data.="<p>";
 		$ips_data.="<table>";

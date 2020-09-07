@@ -59,7 +59,7 @@ $sql12="SELECT * from $wms.fabric_cad_allocation where doc_no = '".$doc_no."'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 }
-$cut_table_url = getFullURLLevel($_GET['r'],'dashboards/controllers/Cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
+$cut_table_url = getFullURLLevel($_GET['r'],'dashboards/controllers/cut_table_dashboard/cut_table_dashboard_cutting.php',3,'N');
 $cut_tables   = array();
 $team_leaders = array();
 $locations = array();

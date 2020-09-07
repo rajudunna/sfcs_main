@@ -254,7 +254,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 			$id_new="red";
 		}
 	}
-	 echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/fab_pps_dashboard_v2_live.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
+	 echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/factory_view/fab_pps_dashboard_v2_live.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 	// echo "<td><div id=\"$id_new\" onclick='popup(".getFullURLLevel($_GET['r'],'beta/production_planning/fab_pps_dashboard_v2_live.php',2,'R').");'></div></td>";
 	
 	// $url_pps=getFullURLLevel($_GET['r'],'Beta/production_planning/tms_dashboard_input_v22.php',2,'N');

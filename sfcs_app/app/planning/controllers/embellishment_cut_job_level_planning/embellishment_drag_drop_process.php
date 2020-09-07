@@ -16,7 +16,7 @@
 	$planned_response=updatePlanDocketJobs($list,$tasktype);
 	if($planned_response==1){
 		echo "<script>swal(Job Planned Successfully','info');</script>";
-		 $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/EMS_Dashboard/embellishment_dashboard_send_operation.php',3,'N');
+		 $url1 = getFullURLLevel($_GET['r'],'dashboards/controllers/ems_dashboard/embellishment_dashboard_send_operation.php',3,'N');
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url1\"; }</script>";
 	}else{
 		echo "<script>swal(Error in planning','danger');</script>";
