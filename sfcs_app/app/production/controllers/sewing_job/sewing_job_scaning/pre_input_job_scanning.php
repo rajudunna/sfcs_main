@@ -2,9 +2,8 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 
-$plant_code = $_SESSION['plantCode'];
+$plant_code = $global_facility_code;
 $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'];
-	
 ?>
 <form method ='POST' action='<?php echo $url."$status" ?>'>
 	<div class="panel panel-primary">
