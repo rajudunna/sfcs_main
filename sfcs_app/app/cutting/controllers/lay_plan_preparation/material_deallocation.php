@@ -2,14 +2,11 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	$username = getrbac_user()['uname'];
 	$url_r = $_GET['r'];
-	$has_permission=haspermission($url_r);
     $get_url1 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'R');
     $get_url2 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'N');
 	$temp = 0;
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-	// var_dump($has_permission);
-
 ?>
 
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>">
@@ -50,12 +47,9 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                     <br/>
                     <div class="col-md-3">
 					<?php 
-						if(in_array($authorizeLevel_1,$has_permission))
-						{ 
-							echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
-						} else {
-							echo '<br/><span class="label label-warning label-lg" style="font-size:13px">Unauthorized to Request Material for Deallocate</span>';
-						}
+						 
+						echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
+						
 					?>
                     </div>
                     <img id="loading-image" class=""/>  
@@ -75,17 +69,15 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 <th>SNo.</th>
                                 <th>Docket Number</th>
                                 <th>Style</th>
-                                <th>Schedule</th>
+                                <th>Color</th>
                                 <th>Qty</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
-								<?php
-									if(in_array($authorizeLevel_2,$has_permission))
-									{ 
+								<?php 
 										echo "<th>Status</th>
 										<th>Control</th>
 										<th>Control</th>";
-									}
+									
 								?>
                             </tr>
                         </thead>
@@ -102,40 +94,39 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 $i = $sql_row['id'];
                                 $doc_no = $sql_row['doc_no'];
                                 $index+=1;
-                                $query1 = "select * from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";
-                                $sql_result1 = mysqli_query($link,$query1);
-                                while($sql_row1=mysqli_fetch_array($sql_result1)) 
-                                {
-                                   $order_tid = $sql_row1['order_tid'];
-                                   $query2 = "select * from bai_pro3.bai_orders_db WHERE order_tid='".$order_tid."'";
-                                    $sql_result2 = mysqli_query($link,$query2);
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    {
-                                        // var_dump($sql_row2['order_style_no']);
-                                        // var_dump($sql_row2['order_del_no']);
+								$query2 = "SELECT style,color FROM $pps.`jm_docket_lines` jdl 
+								LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id=jdl.`jm_docket_id`
+								LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.`jm_cut_job_id`=jd.`jm_cut_job_id`
+								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
+								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
+								WHERE jdl.`docket_line_number`=".$doc_no."";
+								$sql_result2 = mysqli_query($link,$query2);
+								while($sql_row2=mysqli_fetch_array($sql_result2)) 
+								{
+									// var_dump($sql_row2['order_style_no']);
+									// var_dump($sql_row2['order_del_no']);
 
-                                        echo "<tr><td>".$index."</td>";
-                                        echo "<td>".$sql_row['doc_no']."</td>";
-                                        echo "<td>".$sql_row2['order_style_no']."</td>";
-                                        echo "<td>".$sql_row2['order_del_no']."</td>";
-                                        echo "<td>".$sql_row['qty']."</td>";
-                                        echo "<td>".$sql_row['requested_by']."</td>";
-										echo "<td>".$sql_row['requested_at']."</td>";
-										if(in_array($authorizeLevel_2,$has_permission))
-										{ 
-											echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
-											echo "<option value=''>Please Select</option>";
-											echo "<option value='Deallocated'>Deallocated</option>";
-											echo "<option value='Reject'>Reject</option>";
-											echo "</select></td>";
-											echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
-											echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
-										}
-										
-                                        echo "</tr>";
-                                   
-                                    }
-                                }
+									echo "<tr><td>".$index."</td>";
+									echo "<td>".$sql_row['doc_no']."</td>";
+									echo "<td>".$sql_row2['style']."</td>";
+									echo "<td>".$sql_row2['color']."</td>";
+									echo "<td>".$sql_row['qty']."</td>";
+									echo "<td>".$sql_row['requested_by']."</td>";
+									echo "<td>".$sql_row['requested_at']."</td>";
+									 
+										echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
+										echo "<option value=''>Please Select</option>";
+										echo "<option value='Deallocated'>Deallocated</option>";
+										echo "<option value='Reject'>Reject</option>";
+										echo "</select></td>";
+										echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
+										echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+									
+									
+									echo "</tr>";
+							   
+								}
+                                
                             }
                         ?>
                     </table>
@@ -317,7 +308,7 @@ if(isset($_POST['formSubmit']))
 {
         $doc_no = $_POST['docket_number'];
    
-        $fabric_status_qry="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
+        $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no";
         // echo $fabric_status_qry;
     
         $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -326,7 +317,6 @@ if(isset($_POST['formSubmit']))
             while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
             {
                 $fabric_status = $sql_row0['fabric_status'];
-                $allocate_ref = $sql_row0['allocate_ref'];
             }
         
             $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
