@@ -1,3 +1,10 @@
+<?php
+include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+$url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new.php',0,'N');
+$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+?>
 <?php 
 if(isset($_GET['id'])){
  echo "<script>
@@ -6,17 +13,10 @@ if(isset($_GET['id'])){
          });
       </script>";
 	$gate_id= $_GET['id']; 
+	$plant_code= $_GET['plant_code']; 
+	$username= $_GET['username']; 
 	
 }
-?>
-<?php
-include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
-$url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new.php',0,'N');
-$plant_code=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
-
-
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
 <div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
