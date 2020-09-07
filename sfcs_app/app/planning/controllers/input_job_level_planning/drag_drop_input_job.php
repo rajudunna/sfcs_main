@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 $module_limit=14;
 $plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
@@ -690,7 +691,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
 	<?php
 		$tasktype = TaskTypeEnum::SEWINGJOB;
-		$department='SEWING';
+		$department= DepartmentTypeEnum::SEWING;
 		/** Getting work stations based on department wise
 		   * @param:department,plantcode
 		   * @return:workstation

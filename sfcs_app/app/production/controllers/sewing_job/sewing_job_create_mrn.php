@@ -277,8 +277,8 @@
 					    log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 						while($row1=mysqli_fetch_array($check_jobs_result))
 						{
-							$job_header_id=$check_jobs_result['jm_job_header_id'];
-							$job_header_type=$check_jobs_result['job_header_type'];
+							$job_header_id=$row1['jm_job_header_id'];
+							$job_header_type=$row1['job_header_type'];
 						}
 						//get jobs from jm_jg_header
 						$job_number=array();
