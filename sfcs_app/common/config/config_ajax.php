@@ -62,6 +62,7 @@ $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
 $tms="tms_prod";
+$pts="pts_prod";
 $wms="wms_prod";
 $fabric_categories_array = $conf1->get('category-display-dashboard');
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
