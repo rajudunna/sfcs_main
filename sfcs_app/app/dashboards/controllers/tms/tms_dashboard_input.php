@@ -433,7 +433,7 @@ window.onload = startBlink;
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-$has_permission=haspermission($_GET['r']);
+include('functions_tms.php');
 
 ?>
 <div class="panel panel-primary">
@@ -453,32 +453,31 @@ $has_permission=haspermission($_GET['r']);
 <div class="form-group">		
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-// Ticket #424781 Disply buyer division from the database level plan_module table
-echo '&nbsp;&nbsp;Buyer Division :
-<select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
-echo "<option value=\"ALL\" selected >ALL</option>";
-// $sqly="select distinct(buyer_div) from plan_modules";
-$sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
-//echo $sqly."<br>";
+// echo '&nbsp;&nbsp;Buyer Division :
+// <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
+// echo "<option value=\"ALL\" selected >ALL</option>";
+// // $sqly="select distinct(buyer_div) from plan_modules";
+// $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+// //echo $sqly."<br>";
 
-// mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowy=mysqli_fetch_array($sql_resulty))
-{
-	$buyer_div=$sql_rowy['buyer_div'];
-	$buyer_name=$sql_rowy['buyer_name'];
+// // mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_rowy=mysqli_fetch_array($sql_resulty))
+// {
+// 	$buyer_div=$sql_rowy['buyer_div'];
+// 	$buyer_name=$sql_rowy['buyer_name'];
 
-	if(urldecode($_GET["view_div"])=="$buyer_name") 
-	{
-		echo "<option value=\"".$buyer_name."\" selected>".$buyer_div."</option>";  
-	} 
-	else 
-	{
-		echo "<option value=\"".$buyer_name."\" >".$buyer_div."</option>"; 
-	}
-}
+// 	if(urldecode($_GET["view_div"])=="$buyer_name") 
+// 	{
+// 		echo "<option value=\"".$buyer_name."\" selected>".$buyer_div."</option>";  
+// 	} 
+// 	else 
+// 	{
+// 		echo "<option value=\"".$buyer_name."\" >".$buyer_div."</option>"; 
+// 	}
+// }
 
-echo '</select>';
+// echo '</select>';
 echo '&nbsp;&nbsp;&nbsp;Priorities:<select name="view_priority" class="form-control" id="view_priority" onchange="redirect_priority()">';
 if($_GET['view_priority']=="4") { echo '<option value="4" selected>4</option>'; } else { echo '<option value="4">4</option>'; }
 if($_GET['view_priority']=="6") { echo '<option value="6" selected>6</option>'; } else { echo '<option value="6">6</option>'; }
@@ -502,196 +501,64 @@ echo "</font>";
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
-
-$table_name="bai_pro3.plan_dashboard_input";
-$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name where module_master.status='active' GROUP BY section ORDER BY section + 0";
-$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowx=mysqli_fetch_array($sql_resultx))
-{
-	$section=$sql_rowx['sec_id'];
-	$section_head=$sql_rowx['sec_head'];
-	$section_mods=$sql_rowx['sec_mods'];
-	$section_display_name=$sql_rowx['section_display_name'];
-
-	if($_GET["view_div"]!='' && $_GET["view_div"]!='ALL')
-	{
-		$buyer_division=urldecode($_GET["view_div"]);
-		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
-		$order_div_ref="and order_div in (".$buyer_division_ref.")";
-	}
-	else {
-		 $order_div_ref='';
-		 $buyer_division_ref='';
-	}
-	$wip=array();
-	$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
-    if($_GET["view_div"]=="ALL" or $_GET["view_div"]=="")
-    {
-		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1";
-	}
-	else
-	{
-		$sql1d="SELECT module_id as modx from $bai_pro3.plan_modules where module_id in (".$section_mods.") order by module_id*1"; 
-	}
+ /**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+ $departments=getSectionByDeptTypeSewing($plantCode);
+ foreach($departments as $department)
+ {
+	$section=$department['sectionId'];
+	$section_display_name= $department['sectionName'];
+	$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
+	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
+	echo "<p>";
+	echo "<table>";
 	
-	$sql_num_checkd=0;
-	$sql_result1d=mysqli_query($link, $sql1d) or exit("Sql Errordd".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_checkd=mysqli_num_rows($sql_result1d);
-	if($sql_num_checkd > 0)
-	{		
-		$mods=array();
-		while($sql_row1d=mysqli_fetch_array($sql_result1d))
-		{
-			$mods[]=$sql_row1d["modx"];
+	echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section&uname=$username"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
+
+	// modules Loop -Start
+	/**
+	 * get workstations for plant code and section id
+	*/
+	//For Section level blinking
+	$blink_minimum=0;
+	$sectionId=$department['sectionId'];
+	$workstationsArray=getWorkstationsForSectionId($plantCode, $sectionId);            
+	// for($x=0;$x<sizeof($mods);$x++)
+	foreach($workstationsArray as $workstations)
+	{
+		$module=$workstations['workstationLabel'];
+		$work_id=$workstations['workstation_id'];
+
+		$blink_check=0;
+		echo "<tr class=\"bottom\">";
+		echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
+			if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
+		$y=0;   
+
+		$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
+		if($show_block > 0){
+			echo "<div style='float:left;'>		    
+								<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+					</div>";
 		}
-		$username=getrbac_user()['uname'];
-		$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
-		echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
-		echo "<p>";
-		echo "<table>";
-		
-		echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('$url_path?section_no=$section&uname=$username"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=880,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">$section_display_name</a></h2></th></th></tr>";
-		
-		//For Section level blinking
-		$blink_minimum=0;
-		// $sql11="select ims_mod_no, sum(ims_qty-ims_pro_qty) as \"wip\" from $bai_pro3.ims_log where ims_mod_no IN (".implode(',',$mods).") GROUP BY ims_mod_no";
-		// $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// while($sql_row11=mysqli_fetch_array($sql_result11))
-		// {
-			// $wip[$sql_row11['ims_mod_no']]=$sql_row11['wip'];
-		// } 
-
-		for($x=0;$x<sizeof($mods);$x++)
+		 /*
+			function to get planned jobs from workstation
+			@params:work_id,plantcode,type(sewing,cutjob,embjob)
+			@returns:job_number,task_header_id
+		*/
+		$result_planned_jobs=getPlannedJobsTms($work_id,$tasktype,$plant_code);
+		$job_number=$result_planned_jobs['job_number'];
+		$task_header_id=$result_planned_jobs['task_header_id'];
+		foreach($job_number as $sew_num=>$jm_sew_id)
 		{
-			$module=$mods[$x];
-			// if(strlen($module) > 0)
-			// {
-				// if(!array_key_exists($module, $wip)){
-					// $wip[$module] = '';
-				// }
-			// }
-			$blink_check=0;
-			echo "<tr class=\"bottom\">";
-			echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
-			 if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
-			$y=0;   
-
-			$show_block = calculateJobsCount($table_name,$module,$order_div_ref);
-			if($show_block > 0){
-				echo "<div style='float:left;'>		    
-										<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
-											
-							</div>";
-			}
-			if($order_div_ref == "")
-			{				
-				$sql="SELECT input_job_no_random_ref,input_trims_status FROM $table_name WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module GROUP BY input_job_no_random_ref order by input_priority asc ";				
-			}
-			else
-			{	
-				$sql="SELECT input_job_no_random_ref,input_trims_status FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_module=$module ".$order_div_ref." GROUP BY input_job_no_random_ref order by input_priority asc ";	
-			}
-				
-			$result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row=mysqli_fetch_array($result))
-			{
-				if($y==$priority_limit)
-				{
-					break;
-				}				
-				$input_job_no_random_ref=$row["input_job_no_random_ref"];
-				$input_trims_status=$row["input_trims_status"];
-				$sql2="SELECT order_style_no,order_del_no,input_job_no,order_col_des,type_of_sewing,group_concat(distinct order_col_des) as cols,sum(carton_act_qty) as qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$input_job_no_random_ref'";	
-				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row2=mysqli_fetch_array($result2))
-				{
-					$trims_status=$row2['st_status'];
-					$style=$row2['order_style_no'];
-					$schedule=$row2['order_del_no'];
-					$input_job_no=$row2['input_job_no'];
-					$get_color = $row2["order_col_des"];				
-					$order_col=$row2["cols"];
-					$qty=$row2["qty"];
-					$type_of_sewing=$row2['type_of_sewing'];
-				}
-				//echo "<script>alert('$qty');</script>";
-				//echo $input_job_no;
-				$co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedule,$link);				
-				$trims_status=echo_title("$bai_pro3.bai_orders_db_confirm","min(st_status)"," order_col_des in ('".implode("','",explode(",",$order_col))."') and order_del_no",$schedule,$link);
-				$sql="SELECT prefix as result FROM $brandix_bts.tbl_sewing_job_prefix WHERE type_of_sewing='$type_of_sewing'";
-				// echo $sql."<br>";
-				$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$prefix = $sql_row['result'];
-				}
-				$display_prefix1=$prefix.leading_zeros($input_job_no,3);
-
-				if($input_trims_status==4)
-				{
-					$id="pink"; 
-				}
-				else if($input_trims_status == 2)
-				{
-					$id="blue"; 
-				}else if($input_trims_status == 3)
-				{	//this option previously we odnt have for #2677 added by r@m
-					$id="orange";
-				}
-				else if($input_trims_status == 1)
-				{
-					$id="yellow";
-				}
-				else
-				{
-					if($trims_status=="NULL" || $trims_status=="" || $trims_status=="(NULL)")
-					{
-						$id="yash";
-					}			
-					else if($trims_status == 0 || $trims_status == 9)
-					{
-						$id="red";
-					}			
-					else if($trims_status == 1)
-					{
-						$id="lgreen";
-					}			
-					else
-					{
-						$id="red";
-					}
-				}
-				
-				//$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
-				$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$co_no,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$order_col,80)."\n".str_pad("Job_No:".$display_prefix1,80)."\n".str_pad("Job Qty:".$qty,80);
-				$order_col='';
-				if(in_array($authorized,$has_permission))
-				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
-				}
-				else
-				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ></div></div></div>";
-				}					
-				$y++;			
-			}
-			for($j=$y+1;$j<=$priority_limit;$j++)
-			{
-				echo "<div id=\"$schedule\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href='#'></a></div></div></div>";
-			}
-			
-			echo "</td>";
-			echo "</tr>";
+          
 		}
-		//Blinking at section level
-		$bindex++;
 
-		echo "</table>";
-		echo "</p>";
-		echo '</div>';
 	}
 
-}
+ }
+
 if((in_array($authorized,$has_permission)))
 	{
 		echo "<script>";
