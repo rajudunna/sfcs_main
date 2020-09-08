@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+    include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
     $username=$_SESSION['userName'];
 ?> 
@@ -88,7 +89,7 @@
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         $.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobNumbersByPo",
+			url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobNumbersByPo",
 			data: inputObj,
 			success: function (res) {            
 				console.log(res);

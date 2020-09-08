@@ -3,7 +3,8 @@
 </head>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
@@ -134,7 +135,7 @@ $(document).ready(function()
 				    }
 		$.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
 			data: data,
 			success: function (res) {            
 				if(res.status)

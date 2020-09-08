@@ -40,7 +40,7 @@ function cartonReversal(){
 	if (carton_id != '')
 			{
 				$.ajax({
-					url: "<?php echo $BackendServ_ip?>/fg-reporting/reportCartonReversal",
+					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
 					dataType: "json", 
 					type: "POST",
 					data: {barcode:carton_id,operation:operation_id,plantCode:plant_code,createdUser:username},    

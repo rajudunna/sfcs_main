@@ -159,7 +159,7 @@
 				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
-					url: "<?php echo $BackendServ_ip?>/fg-reporting/reportCarton",
+					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCarton",
 					dataType: "json", 
 					type: "POST",
 					data: {barcode:carton_id,operation:operation_id,shift:shift,plantCode:plant_code,createdUser:username},    

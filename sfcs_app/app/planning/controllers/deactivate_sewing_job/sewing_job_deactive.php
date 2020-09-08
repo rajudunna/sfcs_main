@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_v2.php");
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
@@ -29,9 +30,9 @@ if($_GET['module']){
             $result_worksation_id=getWorkstations($department,$plant_code);
             $workstations=$result_worksation_id['workstation'];
 
-
             echo "<div class='col-sm-2'><label>Module<span style='color:red;'> *</span></label>
             <select class='form-control' name=\"module\" id=\"module\" onchange=\"secondbox();\" id='module' required>";
+            // echo " <option value="" disabled selected>Select Module</option>";
             foreach($workstations as $work_id=>$work_des)
             {
                 echo "<option value='".$work_id."'>".$work_des."</option>";
@@ -52,9 +53,10 @@ if(isset($_POST['submit']) || $module)
 
 
     if($module){
-		$tasktype=TaskTypeEnum::SEWINGJOB;
+        $tasktype=TaskTypeEnum::SEWINGJOB;
+        $task_status=TaskStatusEnum::INPROGRESS;
         $task_header_id=array();
-        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plant_code'";
+        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND task_status='$task_status' AND task_type='$tasktype' AND plant_code='$plant_code'";
         $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
         {
@@ -81,31 +83,36 @@ if(isset($_POST['submit']) || $module)
               $task_job_reference[] = $refrence_no_row['task_job_reference'];
             }
             //Qry to get sewing jobs from jm_jobs_header
-            $job_group_type=TaskTypeEnum::plannedsewingjob;
+            $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             $job_number=array();
-            $ponumber=array();
-            $masterponumber=array();
-            $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id,po_number,master_po_number FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plant_code' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
-            $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $jm_job_header_id=array();
+            $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id,jm_job_header FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plant_code' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
+            $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at qry_toget_sewing_jobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
             if($toget_sewing_jobs_num>0){
                 while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
                 {
                   $job_number[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['job_number'];
-                  $ponumber[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['po_number'];
-                  $masterponumber[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['master_po_number'];
+                  $jm_job_header_id[$toget_sewing_jobs_row['jm_jg_header_id']]=$toget_sewing_jobs_row['jm_job_header'];
                 }
             }
                 foreach($job_number as $key=>$value)
                 {
-
+                  //get po and master po
+                  $qry_get_podetails="SELECT master_po_number,po_number FROM $pps.jm_job_header WHERE jm_job_header_id='".$jm_job_header_id[$key]."' and plant_code='$plant_code'";
+                  $get_podetails_result=mysqli_query($link_new, $qry_get_podetails) or exit("Sql Error at qry_get_podetails".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($po_details_row=mysqli_fetch_array($get_podetails_result))
+                  {
+                    $masterponumber=$po_details_row['master_po_number'];
+                    $po_number=$po_details_row['po_number'];
+                  }  
                   //get style,color
-                  $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plantcode' and master_po_number='$masterponumber[$value]'";
+                  $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plant_code' and master_po_number='$masterponumber'";
                   $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
                   {
                     $style=$mp_color_detail_row['style'];
-                    $color=$$mp_color_detail_row['color'];
+                    $color=$mp_color_detail_row['color'];
                   }
                   //To get schedules
                   $result_bulk_schedules=getBulkSchedules($style,$plant_code);
@@ -113,9 +120,9 @@ if(isset($_POST['submit']) || $module)
                   $schedules = implode(",",$bulk_schedule);
                   
                   //to get dockets
-                  $result_dockets=getDocketDetails($ponumber[$value],$plant_code,0);
-                  $docket_numbers=$result_dockets['docket_number'];
-                  $dockets=implode(",",$docket_numbers);
+                //   $result_dockets=getDocketDetails($po_number,$plant_code,0);
+                //   $docket_numbers=$result_dockets['docket_number'];
+                //   $dockets=implode(",",$docket_numbers);
                   //to get qty from jm job lines
                   $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
                   $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -127,26 +134,32 @@ if(isset($_POST['submit']) || $module)
                      }
                   }
                   //get_module
-                  $qry_get_module="SELECT resource_id,date(planned_date_time) as planned_date FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key'";
+                  $qry_get_module="SELECT resource_id,date(planned_date_time) as planned_date FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key' and task_header.plant_code='$plant_code'";
                   $get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($get_module_row=mysqli_fetch_array($get_module_result))
                   {
                     $module = $get_module_row['resource_id'];
                     $planned_date = $get_module_row['planned_date'];
                   }
-                  $jg_header_id=$job_number[$key];
-                  $job_number=$job_number[$value];
-                  $po_number=$ponumber[$value];
+                 
                   // $qry="select prefix from $pms.tbl_sewing_job_prefix where prefix_name='$ims_remarks' and plant_code='$plant_code'";
                   // $res=mysqli_query($link, $qry)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                   // while($sql_row123=mysqli_fetch_array($res))
                   // {
                   //   $sewing_prefi=$sql_row123['prefix'];
                   // }
-                  $input_job_no=$job_number[$value];
+                  $input_job_no=$value;
                   $jm_jg_header_id=$key;
-                   // $display = $sewing_prefi.leading_zeros($input_job_no,3);
-
+                   //To get PO Description
+                   $result_po_des=getPoDetaials($po_number,$plant_code);
+                   $po_des=$result_po_des['po_description'];
+                   //To get workstation description
+                   $query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '$module'";
+                   $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+                   while($des_row=mysqli_fetch_array($query_result))
+                   {
+                     $workstation_description = $des_row['workstation_description'];
+                   }
                     echo "<tr>";
                     echo "<input type='hidden' name='planned_date[]' value=$planned_date>";
                     echo "<input type='hidden' name='style[]' value=$style>";
@@ -162,9 +175,9 @@ if(isset($_POST['submit']) || $module)
                     // echo "<input type='hidden' name='ims_remarks[]' value=$ims_remarks>";
                     // echo "<input type='hidden' name='wip[]' value=$wip>";
                     // echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
-                    echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedules."</td><td>".$color."</td><td>".$po_number."</td><td>".$module."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
+                    echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedules."</td><td>".$color."</td><td>".$po_des."</td><td>".$workstation_description."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
 
-                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
+                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($row=mysqli_fetch_array($job_deacive_result))
                     {
@@ -182,6 +195,11 @@ if(isset($_POST['submit']) || $module)
                     unset($remove_type);
                     echo "</tr>";
                 }
+                echo "</tbody>";
+                echo "<thead><tr><td colspan='9' align='right'></td><td>
+                <input type='submit' class='btn btn-success btn-sm pull-right' name='Save' value='Save' ></td>
+                </tr></thead>";
+                echo "</table></form>";
             } else 
             {
               echo "<br/><div class='alert alert-danger'><span>No Data Found.</span></div>";
