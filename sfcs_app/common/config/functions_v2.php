@@ -975,6 +975,7 @@ function getCutNumber($jm_cut_job_id){
         'cut_number' => $cut_number
     );
 }
+
 function getDocketInformation($docket_no, $plant_code) {
     global $pps;
     global $link_new;
