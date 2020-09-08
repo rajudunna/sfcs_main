@@ -1,10 +1,6 @@
 <?php
-//include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
-error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 /**
  * Get shifts for a plant code
  */
@@ -97,13 +93,14 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
             while($row = mysqli_fetch_array($jobsQueryResult)){
                 $jobRecord = [];
                 $jobRecord["taskJobId"] = $row['task_jobs_id'];
+                $jobRecord["taskJobRef"] = $row['task_job_reference'];
                 array_push($jobs, $jobRecord);
             }
             return $jobs;
