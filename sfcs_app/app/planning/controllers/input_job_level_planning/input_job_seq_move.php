@@ -5,8 +5,6 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-
-
 ?>
 <link rel="stylesheet" href="<?=getFullURLLevel($_GET['r'],'common/css/jquery-ui.css',2,'R')?>">
 <script src="<?=getFullURLLevel($_GET['r'],'common/js/jquery-1.12.4.js',2,'R')?>"></script>
@@ -59,7 +57,7 @@
                             $workstations=$result_worksation_id['workstation'];
                             foreach($workstations as $work_id=>$work_des)
                             {
-                                echo "<option value='".$work_id."'>".$work_des."</option>";
+                                echo "<option value='".$work_id."&".$work_des."'>".$work_des."</option>";
                             }
                         ?>
                     </select>
@@ -74,9 +72,11 @@
             $tasktype = TaskTypeEnum::SEWINGJOB;
             $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             if($_POST['submit']){
-                echo "<hr>"; 
-                $module= $_POST['module'];    
-                echo "<h3><span class='label label-success'>Selected Module : ". $module."</span></h3>";
+                echo "<hr>";
+                $splittedValue=explode("&",$_POST['module']);
+                $module= $splittedValue[0];
+                $moduleDescr= $splittedValue[1];    
+                echo "<h3><span class='label label-success'>Selected Module : ". $moduleDescr."</span></h3>";
                 echo '<form action="'.getFullURLLevel($_GET['r'],'input_job_seq_update.php',0,'N').'" method="post" name="myForm">';
                 echo '<div class="row"><div class="col-md-4">';
                 echo '<ul id="sortable" module="'.$module.'" class="ui-sortable">';
@@ -101,7 +101,7 @@
                $result_planned_jobs=getPlannedJobs($module,$tasktype,$plant_code);
                $job_number=$result_planned_jobs['job_number'];
 
-               $no_of_jobs = $toget_sewing_jobs_num;
+               $no_of_jobs = sizeof($job_number);
                
                //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
                $job_detail_attributes=[];

@@ -229,32 +229,33 @@ $(document).ready(function()
 });
 
 function tableConstruction(jobsInfo){
-	s_no = 0;
+    s_no = 0;
     if(jobsInfo)
     {
-		$('#dynamic_table1').html('');
-		for(var i=0;i<jobsInfo.length;i++)
+        $('#dynamic_table1').html('');
+        for(var i=0;i<jobsInfo.length;i++)
         {
-			var hidden_class='';
-			if(i==0)
+            var hidden_class='';
+            if(i==0)
             {
                 var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Schedule</th><th>Cutting</th><th>Input Job#</th><th>Quantity</th><th>Clubbing Details</th></tr></thead><tbody>";
                 $("#dynamic_table1").append(markup);
             }
             s_no++;
-			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td><td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" onclick='showdet(this,"+jobsInfo[i].jobNumbers+,+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td>\
+            <td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" \
+            onclick='showdet(this,"+jobsInfo[i].jobNumbers+','+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 
-		}
-	}
-	var markup99 = "</tbody></table></div></div></div>";
+        }
+    }
+    var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
     $('#schedule').val('');
-	
-	
+    
+    
 }
 
 function showdet(btn,inpjob,schedule)
