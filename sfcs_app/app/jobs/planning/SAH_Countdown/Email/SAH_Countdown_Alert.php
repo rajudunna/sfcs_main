@@ -2,7 +2,7 @@
 <?php
 include("C:/xampp/htdocs/sfcs/jobs/db_hosts.php");
 
-$command ='webshotcmd /url "http://localhost/sfcs/jobs/planning/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+$command ='webshotcmd /url "http://localhost/sfcs/jobs/planning/plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
 
 shell_exec($command);
 

@@ -4,7 +4,7 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(90000000);
 
-// $command ='webshotcmd /url "http://localhost/sfcs_main/sfcs_app/app/jobs/planning/SAH_Countdown/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+// $command ='webshotcmd /url "http://localhost/sfcs_main/sfcs_app/app/jobs/planning/sah_countdown/plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
 
 shell_exec($command);
 

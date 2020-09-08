@@ -7,7 +7,7 @@
 <?php
 
 
-$command ='webshotcmd /url "http://bai3net:8080/Projects/Beta/bai_bcip/SAH_Countdown_qci/Plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
+$command ='webshotcmd /url "http://bai3net:8080/Projects/Beta/bai_bcip/SAH_Countdown_qci/plan_sah.php" /bwidth 1500 /bheight 700 /out echart.png /username baischtasksvc /password pass@123';
 
 shell_exec($command);
 
