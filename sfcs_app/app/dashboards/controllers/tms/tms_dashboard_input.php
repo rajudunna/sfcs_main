@@ -552,7 +552,38 @@ $blink_docs=array();
 		$task_header_id=$result_planned_jobs['task_header_id'];
 		foreach($job_number as $sew_num=>$jm_sew_id)
 		{
-          
+          //To get taskjobs_id
+		  $task_jobs_id = [];
+		  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+			  $task_jobs_id[] = $row21['task_jobs_id'];
+		  }
+
+		  //qry to get trim status
+		  $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id in ('".implode("','" , $task_jobs_id)."')";
+		  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
+               $trim_status=$row2['trim_status'];
+			}
+			if($trim_status == TrimStatusEnum::OPEN)
+			{
+				$id="yash";
+			}
+			else if($trim_status == TrimStatusEnum::PREPARINGMATERIAL)
+			{
+				$id="yellow";
+			}else if($trim_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
+			{
+                $id="blue"; 
+			}else if($trim_status == TrimStatusEnum::PARTIALISSUED)
+			{
+                $id="orange";
+			}else if($trim_status == TrimStatusEnum::ISSUED)
+			{
+                $id="pink"; 
+			}
+
 		}
 
 	}
