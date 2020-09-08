@@ -78,7 +78,7 @@ th,td{
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
-					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
+					<input type="hidden" id="plant_code" name="plant_code" value='<?= $username; ?>'>
 					
 					<?php
 					if($gate_id>0)
