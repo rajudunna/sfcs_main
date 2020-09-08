@@ -110,7 +110,7 @@ th{
                             <th></th>
                         </tr>
                         <?php   
-                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
+                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R'); 
                              
                                 $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
                                 $sql_result = mysqli_query($link_new,$query);

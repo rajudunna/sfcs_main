@@ -5,7 +5,7 @@
  
 <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
 <script language="javascript" type="text/javascript" src="../../../common/js/datetimepicker_css.js"></script> 
-<link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',5,'R')?>" type="text/css" media="all" /> 
 <style type="text/css">
 #div-1a {
  position:absolute;
@@ -38,7 +38,7 @@ function check_val()
 }
 
 </script>
-<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',5,'R')?>" rel="stylesheet" type="text/css" />
 
 
 

@@ -20,7 +20,7 @@ Movex Analytical - POPUP REPORT
 
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
-<link href="table_style.css" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/table_style.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <?php 

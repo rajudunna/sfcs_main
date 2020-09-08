@@ -260,7 +260,7 @@ if(!(in_array($authorized,$has_permission)))
 <link rel="stylesheet" type="text/css" href="../../../../common/css/page_style.css" />
 <link rel="stylesheet" href="../../../../common/css/bootstrap.min.css">
 <script src="../../../../common/js/jquery.min.js"></script>
-<script src="../../../../common/js/bootstrap.min.js"></script>
+<script src="../../../../common/css/styles/js/bootstrap.min.js"></script>
 
 
 <style>
@@ -523,7 +523,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}
 		else
 		{
-			$path="../../../cutting/controllers/lay_plan_preparation/Book3_print.php";
+			$path="../../../cutting/controllers/lay_plan_preparation/book3_print.php";
 		}
 
 		//$docno_lot=$sql_row1['doc_no'];

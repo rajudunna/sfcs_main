@@ -347,7 +347,7 @@ $color_code=$sql_row33['color_code']; //Color Code
 	echo "<td>".$a_s49."</td>";
 	echo "<td>".$a_s50."</td>";
 	*/
-	$path="Book3_print.php?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cut_no=$pcutno";
+	$path="book3_print.php?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cut_no=$pcutno";
 	if($clubbing>0)
 	{
 		$path="color_club_docket_print.php?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cat_title=$category&clubbing=$clubbing&cut_no=$pcutno";
@@ -367,11 +367,11 @@ $color_code=$sql_row33['color_code']; //Color Code
 
 if($rev_check=="T" && $count==0)
 	{
-		echo "<td style='display:none;'><a class=\"btn btn-primary\" href=\"Print_Doc_new2.php?order_tid=$tran_order_tid&doc_no=$pcutdocid&cut_no=$pcutno\" onclick=\"return popitup_new("."'"."Print_Doc_new2.php?order_tid=".$tran_order_tid."&doc_no=".$pcutdocid."&cut_no=".$pcutno."'".")\">VS Print</a></td>";
+		echo "<td style='display:none;'><a class=\"btn btn-primary\" href=\"print_doc_new2.php?order_tid=$tran_order_tid&doc_no=$pcutdocid&cut_no=$pcutno\" onclick=\"return popitup_new("."'"."print_doc_new2.php?order_tid=".$tran_order_tid."&doc_no=".$pcutdocid."&cut_no=".$pcutno."'".")\">VS Print</a></td>";
 	}
 	else
 	{
-		if($rev_check=="T") {echo "<td style='display:none;'><a class=\"btn btn-primary\" href=\"Print_Doc_new2_dim.php?order_tid=$tran_order_tid&doc_no=$pcutdocid&cut_no=$pcutno\" onclick=\"return popitup_new("."'"."Print_Doc_new2_dim.php?order_tid=".$tran_order_tid."&doc_no=".$pcutdocid."&cut_no=".$pcutno."'".")\">DIM Print</a></td>"; }
+		if($rev_check=="T") {echo "<td style='display:none;'><a class=\"btn btn-primary\" href=\"print_doc_new2_dim.php?order_tid=$tran_order_tid&doc_no=$pcutdocid&cut_no=$pcutno\" onclick=\"return popitup_new("."'"."print_doc_new2_dim.php?order_tid=".$tran_order_tid."&doc_no=".$pcutdocid."&cut_no=".$pcutno."'".")\">DIM Print</a></td>"; }
 	}
 	
 	echo "</tr>";

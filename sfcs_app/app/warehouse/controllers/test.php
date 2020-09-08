@@ -9,7 +9,7 @@ $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
 
-<link href="table_style.css" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/table_style.css',1,'R'); ?>"  rel="stylesheet" type="text/css" />
 
 <?php //include("header_scripts.php"); ?>
 <script type="text/javascript">
