@@ -51,7 +51,7 @@ if(isset($_POST['Save']))
             $tasktype=TaskTypeEnum::SEWINGJOB;
             if($deactive_job_id){
                 //get task_header from task_jobs
-                $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+                $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
                 $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
                 {
@@ -112,7 +112,7 @@ if($_GET['input_job_no'] && $_GET['jm_jg_header_id']){
             $tasktype=TaskTypeEnum::SEWINGJOB;
             
             //get task_header from task_jobs
-            $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+            $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
             $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
             {

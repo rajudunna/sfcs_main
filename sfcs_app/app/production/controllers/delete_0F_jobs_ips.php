@@ -1,6 +1,7 @@
 
 <?php  
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
     $application = 'IPS';    
     $status = 'F';
     $plant_code = $_SESSION['plantCode'];
@@ -56,23 +57,8 @@
             </thead>
             <tbody>
                 <?php
-                    //getting the operation code from the masters table
+
                     $counter = 0;
-                    //To get IPS Routing Operation
-                    $application='Input Planning System';
-                    $to_get_map_id="SELECT operation_map_id FROM $pms.`operation_routing` WHERE dashboard_name='$application' AND plant_code='$plant_code'";
-                    //echo $scanning_query;
-                    $map_id_result=mysqli_query($link_new, $to_get_map_id)or exit("error in operation_routing".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row1=mysqli_fetch_array($map_id_result))
-                    {
-                        $operation_map_id=$sql_row1['operation_map_id'];
-                    }
-                    $to_get_ops_code="SELECT operation_code FROM $pms.`operation_mapping` WHERE operation_map_id='$operation_map_id' AND plant_code='$plant_code'";
-                    $get_ops_result=mysqli_query($link_new, $to_get_ops_code)or exit("error in operation_mapping".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row2=mysqli_fetch_array($get_ops_result))
-                    {
-                        $operation_code=$sql_row2['operation_code'];
-                    }
 
                     $tasktype=TaskTypeEnum::SEWINGJOB;
                     $task_header_id=array();
@@ -94,7 +80,7 @@
                       $task_job_reference[] = $refrence_no_row['task_job_reference'];
                     }
                     //Qry to get sewing jobs from jm_jobs_header
-                    $job_group_type=TaskTypeEnum::plannedsewingjob;
+                    $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
                     $job_number=array();
                     $ponumber=array();
                     $masterponumber=array();
@@ -120,7 +106,7 @@
                     {
 
                       //get style,color
-                      $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plantcode' and master_po_number='$masterponumber[$value]'";
+                      $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plant_code' and master_po_number='$masterponumber[$value]'";
                       $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                       while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
                       {
