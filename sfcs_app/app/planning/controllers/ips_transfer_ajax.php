@@ -57,6 +57,7 @@ function get_details($module,$plant_code){
     $counter = 0;
     global $link_new;
     global $tms;
+    global $pms;
     global $TaskTypeEnum; 
     //To get workstation description
     $query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '$module'";
