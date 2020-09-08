@@ -101,7 +101,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.`jm_cut_job_id`=jd.`jm_cut_job_id`
 								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
 								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
-								WHERE jdl.`docket_line_number`=".$doc_no."";
+								WHERE jdl.`docket_line_number`=".$doc_no." and jdl.plant_code='".$plant_code."'";
 								$sql_result2 = mysqli_query($link,$query2);
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 
 								{
@@ -121,6 +121,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 										echo "<option value='Deallocated'>Deallocated</option>";
 										echo "<option value='Reject'>Reject</option>";
 										echo "</select></td>";
+										echo '<input type="hidden" name="plant_code" id="plant_code" value="'.$plant_code.'">
+											  <input type="hidden" name="username" id="username" value="'.$username.'">';
 										echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
 										// echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
 									
@@ -187,7 +189,7 @@ if(isset($_POST['formSubmit']))
         $plant_code = $_POST['plant_code'];
         $username = $_POST['username'];
    
-        $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no";
+        $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no and plant_code='".$plant_code."'";
         // echo $fabric_status_qry;
     
         $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -277,10 +279,11 @@ function Approve_deallocation(i) {
     if($('#submit-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
-
+		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
         if(status=='Deallocated') {
             url_path = "<?php echo getFullURL($_GET['r'],'update_deallocation_status.php','N'); ?>";
-            location.href=url_path+"&id="+row_id+"&status="+status;
+            location.href=url_path+"&id="+row_id+"&status="+status+"&plant_code="+plant_code+"&username="+username;
         }
     }
     
@@ -290,10 +293,11 @@ function Reject_deallocation(i) {
     if($('#reject-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
-
+		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
         if(status=='Reject') {
             url_path = "<?php echo getFullURL($_GET['r'],'delete_deallocation.php','N'); ?>";
-            location.href=url_path+"&id="+row_id+"&status="+status;
+            location.href=url_path+"&id="+row_id+"&status="+status+"&plant_code="+plant_code+"&username="+username;
         }
     }
     
