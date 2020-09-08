@@ -17,7 +17,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	//$mods=array();
 	$plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-	$query = "select * from $pms.tbl_fabric_request_time";
+	$query = "select * from $pms.tbl_fabric_request_time where plant_code='$plant_code'";
 	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($update_request_time)){
 		$rms_request_time = $row['request_time'];
@@ -30,7 +30,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_POST["group_docs"];
 		$section=$_POST["secs"];
 		$module=$_POST["mods"];
-		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
 	} 
@@ -40,7 +40,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_GET["group_docs"];
 		$section=$_GET["section"];
 		$module=$_GET["module"];
-		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\"";
+		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
@@ -143,7 +143,7 @@ function GetSelectedItem()
 <div class="panel-heading">Fabric Requisition Form</div>
 <div class="panel-body">
 <?php 
-$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers";
+$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code'";
 $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
    echo "<SELECT name='marker_version'  id='marker_version' style='height: 30px;'>";
 
@@ -373,7 +373,7 @@ if(isset($_POST["submit1"]))
 
 	for($i=0;$i < count($ref);$i++ )
 	{		
-		$insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."' where doc_no='".$dockets[$i]."'";
+		$insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));		
 	}
 	// var_dump($insert);
@@ -407,7 +407,7 @@ if(isset($_POST["submit1"]))
 	//for($i=0;$i<sizeof($doc_nos_split);$i++)
 	for($i=0;$i<1;$i++)
 	{
-		$sql1="select * from $pps.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\"";
+		$sql1="select * from $pps.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\" and plant_code='$plant_code'";
 		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
 		//Date: 2013-10-09
@@ -418,7 +418,7 @@ if(isset($_POST["submit1"]))
 		{
 			if($rows==0)
 			{
-				$sql="insert into $pps.fabric_priorities(doc_ref,doc_ref_club,req_time,log_time,log_user,section,module) values(\"".$doc_nos_split[$i]."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\")";
+				$sql="insert into $pps.fabric_priorities(doc_ref,doc_ref_club,req_time,log_time,log_user,section,module,created_user,updated_user,updated_at) values(\"".$doc_nos_split[$i]."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",\"".$username."\",\"".$username."\",'NOW()')";
 				//echo "<br>".$sql."<br>";
 				$note.=$sql."<br>";
 				if(!mysqli_query($link, $sql))
@@ -449,7 +449,7 @@ if(isset($_POST["submit1"]))
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Section</th><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or section=$section) and issued_time=\"0000-00-00 00:00:00\" order by section,req_time,module";
+$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or section=$section) and issued_time=\"0000-00-00 00:00:00\" and plant_code='$plant_code' order by section,req_time,module";
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
