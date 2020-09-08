@@ -133,7 +133,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	$sql_total_1="SELECT SUM(bundle_qty) AS qty_bundle FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code=".$plant_code."";
-	$sql_grand_total_res_1 = mysqli_query($link,$sql_total_1) or exit('error in heading table view');
+	$sql_grand_total_res_1 = mysqli_query($link,$sql_total_1) or exit($sql_total_1."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($res_row12_1 = mysqli_fetch_array($sql_grand_total_res_1))
 	{
 		$qty_row12_1=$res_row12_1['qty_bundle'];
@@ -141,7 +141,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 	if($qty_row12_1<>0)
 	{
 		$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code=".$plant_code."  GROUP BY style,schedule,color";
-		$sql_grand_total_res = mysqli_query($link,$sql_total) or exit('error in heading table view');
+		$sql_grand_total_res = mysqli_query($link,$sql_total) or exit($sql_total."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($res_row12 = mysqli_fetch_array($sql_grand_total_res))
 		{
 			$array_res[]=$res_row12;
