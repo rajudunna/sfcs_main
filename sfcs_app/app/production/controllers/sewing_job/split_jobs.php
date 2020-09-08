@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
 ?> 
 <div class="panel panel-primary">
@@ -36,7 +37,7 @@ $(document).ready(function() {
         var sjObj = {"sewingJobNumber":sj,"plantCode":plant_code};
         $.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/jobs-generation/getJobBundleDetailsWithBundles",
+			url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobBundleDetailsWithBundles",
 			data: sjObj,
 			success: function (res) {            
 				//console.log(res.data);
@@ -78,7 +79,7 @@ function sendResponse(){
     console.log(outputObj);
     $.ajax({
         type: "POST",
-        url: "<?php echo $BackendServ_ip?>/jobs-generation/spllitSewingJob",
+        url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/spllitSewingJob",
         data: outputObj,
         success: function (res) {            
             //console.log(res.data);

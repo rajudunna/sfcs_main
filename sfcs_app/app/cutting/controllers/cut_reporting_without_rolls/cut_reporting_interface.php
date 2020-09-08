@@ -3,6 +3,7 @@ $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 
 
 $has_permission=haspermission($_GET['r']); 
@@ -1212,10 +1213,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }
         }
         
-        // if(shift == null || cut_table == null || team_leader == null){
-        //     swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
-        //     return false;
-        // }
+        if(shift == null || cut_table == null || team_leader == null){
+            swal('warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
+            return false;
+        }
        
         if(ret_to > 0){
             if(returned_to == null){
@@ -1331,7 +1332,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log(reportData);
         $.ajax({
                     type: "POST",
-                    url: "<?php echo $BackendServ_ip?>/cut-reporting/layReporting",
+                    url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
                     data:  JSON.stringify(reportData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1758,7 +1759,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     }
         $.ajax({
                 type: "POST",
-                url: "<?php echo $BackendServ_ip?>/cut-reporting/getLayReportingDetails",
+                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
                 data: data,
                 success: function (res) {            
                     //console.log(res.data);

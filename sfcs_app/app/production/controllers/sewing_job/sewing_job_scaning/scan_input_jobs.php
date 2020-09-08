@@ -5,6 +5,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 
 
@@ -343,11 +344,11 @@ $(document).ready(function()
 		var username = $('#username').val();
 		var module_flag = null;	var restrict_msg = '';
         if(barcode_generation == 0){
-		    var inputObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id, "createdUser":username};
-			var url = "<?php echo $BackendServ_ip?>/fg-retrieving/getJobDetailsForBundleNumber";
+		    var inputObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForBundleNumber";
         } else if(barcode_generation == 1){
-		    var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id, "createdUser":username};
-			var url = "<?php echo $BackendServ_ip?>/fg-retrieving/getJobDetailsForSewingJob";
+		    var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForSewingJob";
         }		
 		$.ajax({
 			type: "POST",
@@ -726,7 +727,7 @@ function check_pack()
     
 		$.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportSemiGmtOrGmtJob",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
 			data:  JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",

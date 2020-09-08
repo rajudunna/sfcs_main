@@ -2,6 +2,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
 
@@ -71,7 +72,7 @@
 
         <?php
             $tasktype = TaskTypeEnum::SEWINGJOB;
-            $job_group_type=TaskTypeEnum::plannedsewingjob;
+            $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
             if($_POST['submit']){
                 echo "<hr>"; 
                 $module= $_POST['module'];    
