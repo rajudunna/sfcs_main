@@ -244,10 +244,10 @@ $(document).ready(function()
 		var module_flag = null;	var restrict_msg = '';
         if(barcode_generation == 0){
 		    var embObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
-			var url = "<?php echo $BackendServ_ip?>/fg-retrieving/getJobDetailsForBundleNumber";
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForBundleNumber";
         } else if(barcode_generation == 1){
 		    var embObj = {"embJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
-			var url = "<?php echo $BackendServ_ip?>/fg-retrieving/getJobDetailsForEmbJob";
+			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForEmbJob";
         }
         var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
 		$.ajax({

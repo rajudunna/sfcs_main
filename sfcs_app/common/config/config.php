@@ -153,7 +153,7 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 $plant_name = $conf1->get('plantname');
 
 //TaskAttributeNamesEnum
-$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
@@ -224,16 +224,17 @@ $oms="oms_prod";
 $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
-$tms="tms";
+$tms="tms_prod";
+$pts="pts_prod";
 $wms="wms_prod";
 $module_limit = 32;
 
 $link= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_select_db($link, $wms) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //Link For 2.0
 $link_new= ($GLOBALS["___mysqli_ston"] = mysqli_connect($host, $user, $pass)) or die("Could not connect21: ".mysqli_error($GLOBALS["___mysqli_ston"]));
-mysqli_select_db($link, $bai_pro3) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_select_db($link, $wms) or die("Error in selecting the database:".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $operation=array("Please Select","Single Colour & Single Size","Multi Colour & Single Size","Multi Colour & Multi Size","Single Colour & Multi Size");
 
@@ -246,21 +247,7 @@ $order_joins_in_full="order_joins in ('0','1','2')";
 $order_joins_in_2 ="order_joins='2'";
 
 $order_joins_in_1 ="order_joins='1'";
-    
-$sql_query = "select * from $central_administration_sfcs.rbac_permission where status='active'";
-$res_query = mysqli_query($link, $sql_query);
-while($sql_row=mysqli_fetch_array($res_query))
-{
-	parse_str($sql_row['permission_name']."=".$sql_row['permission_id']);   
-}
 
-$pack_query="SELECT * FROM $bai_pro3.`pack_methods` WHERE STATUS='1'";
-// echo $pack_query;
-$pack_result=mysqli_query($link, $pack_query) or exit("Error getting pack details");
-while($methods=mysqli_fetch_array($pack_result))
-{
-    $pack_methods[]=$methods['pack_method_name'];
-}
 // var_dump($pack_methods);
 //***************************************************
 //======== for central warehouse connections ========
@@ -276,22 +263,7 @@ while($methods=mysqli_fetch_array($pack_result))
 
     // }
 //===================================================*/
-class TaskTypeEnum { 
-    const CUTJOB = 'CUTJOB';
-    const DOCKET = 'DOCKET';
-    const DOCKETBUNDLE = 'DOCKETBUNDLE';
-    const SEWINGJOB = 'SEWINGJOB';
-    const PACKINGJOB = 'PACKINGJOB';
-    const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBELLISHMENTJOB';
-    const LOGICALBUNDLE = 'LOGICALBUNDLE';
-    const POLYBAG = 'POLYBAG';
-    const plannedsewingjob = 'PSJ';
-    const plannedsewingembellishmentjob = 'PSEJ';
-}
 
-//IP for backend services
-$BackendServ_ip="http://192.168.0.34:3336";
 
 
 ?>

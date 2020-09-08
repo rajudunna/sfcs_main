@@ -2,7 +2,8 @@
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 $url = getFullURL($_GET['r'],'scan_input_jobs.php','N');
 
-$plant_code = $global_facility_code;
+$plant_code = $_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'];
 ?>
 <form method ='POST' action='<?php echo $url."$status" ?>'>
@@ -59,7 +60,8 @@ $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Sewing Job Level'
 				<input type='hidden' id='module1' name='module1' value='<?php echo $module ?>'>
                 <input type='hidden' id='operation_name' name='operation_name' required>
 				<input type='hidden' id='operation_id' name='operation_id' required>		
-				<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>' required>		
+				<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>		
+				<input type='hidden' id='username' name='username' value='<?php echo $username ?>'>		
                 <div class="col-md-1">
                     <br>
                     <input type='submit' value='Continue' name='SUBMIT' class='btn btn-primary' style="margin-top: 4px;">

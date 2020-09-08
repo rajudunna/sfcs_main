@@ -1739,12 +1739,12 @@ table
 
 
 <?php
-    $plant_code = $_SESSION['plantCode'];
-	$username = $_SESSION['userName'];
 	if(isset($_POST['submit']) || isset($_POST['put']) || isset($_POST['confirm']))
 	{
 		$lot_no=$_POST['lot_no'];
 		$parent_id=$_POST['parent_id'];
+		$plant_code=$_POST['plant_code'];
+		$username=$_POST['username'];
 		$get_ids="select store_in_id from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."' and supplier_batch in ("."'".str_replace(",","','",$lot_no)."'".")";
 		//echo $get_ids;
 		$ids_result=mysqli_query($link, $get_ids) or exit("Sql Error41111".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1757,6 +1757,8 @@ table
 	else
 	{
 		$parent_id=$_GET['parent_id'];
+		$plant_code=$_GET['plant_code'];
+		$username=$_GET['username'];
 
 		$lot = array();
 		$get_details = "select distinct(lot_no),supplier_batch from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
@@ -1784,6 +1786,8 @@ if(strlen($lot_no)>0 and strlen($lot_ref)>0)
 echo "<input type='hidden' id='head_check' name='head_check' value=''>";
 echo "<input type='hidden' id='lot_ref' name='lot_ref' value='".$lot_ref."'>";
 echo '<input type="hidden" id="parent_id"  name="parent_id" value="'.$parent_id.'">';
+echo '<input type="hidden" id="plant_code"  name="plant_code" value="'.$plant_code.'">';
+echo '<input type="hidden" id="username"  name="username" value="'.$username.'">';
 $sql="select *, SUBSTRING_INDEX(buyer,\"/\",1) as \"buyer_code\", group_concat(distinct item) as \"item_batch\", group_concat(distinct pkg_no) as \"pkg_no_batch\", group_concat(distinct po_no) as \"po_no_batch\",group_concat(distinct inv_no) as \"inv_no_batch\", group_concat(distinct lot_no) as \"lot_ref_batch\", group_concat(distinct batch_no) as \"batch_no\", count(distinct lot_no) as \"lot_count\", sum(rec_qty) as \"rec_qty1\",group_concat(distinct supplier) as \"supplier\" from $wms.sticker_report where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and batch_no in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1=".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2176,7 +2180,7 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'&parent_id='.$parent_id.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'&parent_id='.$parent_id.'&plant_code='.$plant_code.'&username='.$username.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2853,6 +2857,8 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$lot_no_new=trim($_POST['lot_no']); //Batch Number
 	$lot_ref=$_POST['lot_ref'];	
 	$main_id=$_POST['parent_id'];
+	$plant_code = $_POST['plant_code'];
+	$username = $_POST['username'];
 	$consumption_ref=$_POST['consumption'];
 	
 	if($head_check>0)
@@ -2977,7 +2983,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
-	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."';";
+	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."&plant_code=".$plant_code."&username=".$username."';";
 	echo "function Redirect(){location.href=url;}</script>";	
 }
 ?>

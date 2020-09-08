@@ -3,6 +3,7 @@ $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 
 
 $has_permission=haspermission($_GET['r']); 
@@ -78,6 +79,12 @@ while($row = mysqli_fetch_array($location_result))
     $locations[] = $row['loc_name'];
 }
 
+$team_leaders_query = "SELECT * from $pms.tbl_leader_name";
+$team_leaders_result = mysqli_query($link,$team_leaders_query);
+while($row = mysqli_fetch_array($team_leaders_result)){
+    $team_leaders[$row['id']] = $row['emp_name'];
+}
+
 $rejection_reason_query = "SELECT reason_code,reason_desc,m3_reason_code from $mdm.reasons where form_type = 'P' ";
 $rejection_reason_result = mysqli_query($link,$rejection_reason_query); 
 while($row = mysqli_fetch_array($rejection_reason_result)){
@@ -113,7 +120,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <tr><td>Style</td>   <td id='d_style'></td>    </tr>
                     <tr><td>Schedule</td><td id='d_schedule'></td> </tr>
                     <tr><td>Color</td>   <td id='d_color'></td>    </tr>
-                    <tr><td>Docket Type</td><td id='d_doc_type'></td></tr>
+                    <!-- <tr><td>Docket Type</td><td id='d_doc_type'></td></tr> -->
                 </table>
             </div>
         </div>
@@ -208,8 +215,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         <div class='row' id='hide_details_reporting'>
             <div class='col-sm-2'>
-                <label for='shift'>Shift</label>
-                <select class='form-control' name='shift' id='shift'>
+                <label for='shift'>Shift <span style="color:red;">*</span></label>
+                <select class='form-control' name='shift' id='shift' required>
                     <option value='' disabled selected>Select Shift</option>
                 <?php
                 $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1";
@@ -225,8 +232,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </select>
             </div>
             <div class='col-sm-2'>
-               <label for='cut_table'>Cutting Table</label>
-               <select class='form-control' id='cut_table'>
+               <label for='cut_table'>Cutting Table <span style="color:red;">*</span></label>
+               <select class='form-control' id='cut_table' required>
                     <option value='' disabled selected>Select Table</option>
                 <?php
                     foreach($workstations as $id => $cut_table){
@@ -236,8 +243,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                </select>
             </div>
             <div class='col-sm-2'>
-                <label for='cut_table'>Team Leader</label>
-                <select class='form-control' id='team_leader'>
+                <label for='cut_table'>Team Leader <span style="color:red;">*</span></label>
+                <select class='form-control' id='team_leader' required>
                     <option value='' disabled selected>Select Leader</option>
                 <?php
                     foreach($team_leaders as $id => $leader_name){
@@ -247,8 +254,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 </select>
             </div>
             <div class='col-sm-2'>
-               <label for='bundle_location'>Bundle Location</label>
-               <select class='form-control' id='bundle_location'>
+               <label for='bundle_location'>Bundle Location <span style="color:red;">*</span></label>
+               <select class='form-control' id='bundle_location' required>
                     <option value='' disabled selected>Select Location</option>
                 <?php
                     foreach($locations as $location){
@@ -1206,10 +1213,10 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             }
         }
         
-        // if(shift == null || cut_table == null || team_leader == null){
-        //     swal('Warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
-        //     return false;
-        // }
+        if(shift == null || cut_table == null || team_leader == null){
+            swal('warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
+            return false;
+        }
        
         if(ret_to > 0){
             if(returned_to == null){
@@ -1325,7 +1332,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         console.log(reportData);
         $.ajax({
                     type: "POST",
-                    url: "<?php echo $BackendServ_ip?>/cut-reporting/layReporting",
+                    url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
                     data:  JSON.stringify(reportData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1752,7 +1759,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     }
         $.ajax({
                 type: "POST",
-                url: "<?php echo $BackendServ_ip?>/cut-reporting/getLayReportingDetails",
+                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
                 data: data,
                 success: function (res) {            
                     //console.log(res.data);
@@ -1893,7 +1900,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         $('#r_reported_plies').html(getData.plannedPlies);
                         //setting value to style,schedule,color
                         $('#d_style').html(getData.style);
-                        $('#d_schedule').html(getData.docketNumber);
+                        $('#d_schedule').html(getData.schedules.toString());
                         $('#d_color').html(getData.fgColor);
                         if($('#good_report').val() == 'readonly'){
                             $('#c_plies').attr('readonly', true);

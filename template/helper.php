@@ -216,7 +216,7 @@ function haspermission($r){
 */
 function getrbac_user(){
     $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-    $user['uname']=strtolower($username_list[1]);
+    // $user['uname']=strtolower($username_list[1]);
     //$user['uname'] = 'sfcsproject1';
     GLOBAL $link_ui;
     if($link_ui){
