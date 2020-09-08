@@ -1235,4 +1235,33 @@ function getWorkstationsForSection($plant_code, $section){
     );
 }
 
+/**
+ * get planned sewing jobs(JG) for the workstation
+ */
+function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
+    global $tms;
+    global $link_new;
+    global $taskType;
+    global $taskStatus;
+    try{
+        $taskType = TaskTypeEnum::SEWINGJOB;
+        $taskStatus = TaskStatusEnum::INPROGRESS;
+        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
+        if(mysqli_num_rows($jobsQueryResult)>0){
+            $jobs= [];
+            while($row = mysqli_fetch_array($jobsQueryResult)){
+                $jobRecord = [];
+                $jobRecord["taskJobId"] = $row['task_jobs_id'];
+                array_push($jobs, $jobRecord);
+            }
+            
+            return $jobs;
+        } else {
+            return "Jobs not found for the workstation";
+        }
+    } catch(Exception $e) {
+        throw $error;
+    }
+}
 ?>
