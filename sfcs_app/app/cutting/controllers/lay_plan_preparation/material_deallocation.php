@@ -2,14 +2,11 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 	$username = getrbac_user()['uname'];
 	$url_r = $_GET['r'];
-	$has_permission=haspermission($url_r);
     $get_url1 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'R');
     $get_url2 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'N');
 	$temp = 0;
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-	// var_dump($has_permission);
-
 ?>
 
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>">
@@ -47,15 +44,14 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         <label>Docket Number</label>
                         <input type="text" class='integer form-control' id="docket_number" name="docket_number" size=8 required>
                     </div>
+					<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
+					<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
                     <br/>
                     <div class="col-md-3">
 					<?php 
-						if(in_array($authorizeLevel_1,$has_permission))
-						{ 
-							echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
-						} else {
-							echo '<br/><span class="label label-warning label-lg" style="font-size:13px">Unauthorized to Request Material for Deallocate</span>';
-						}
+						 
+						echo '<input type="submit" id="material_deallocation" class="btn btn-primary" name="formSubmit" value="Request to Deallocate">';
+						
 					?>
                     </div>
                     <img id="loading-image" class=""/>  
@@ -75,17 +71,15 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 <th>SNo.</th>
                                 <th>Docket Number</th>
                                 <th>Style</th>
-                                <th>Schedule</th>
+                                <th>Color</th>
                                 <th>Qty</th>
                                 <th>Requested By</th>
                                 <th>Requested At</th>
-								<?php
-									if(in_array($authorizeLevel_2,$has_permission))
-									{ 
+								<?php 
 										echo "<th>Status</th>
-										<th>Control</th>
 										<th>Control</th>";
-									}
+										// echo "<th>Control</th>";
+									
 								?>
                             </tr>
                         </thead>
@@ -102,40 +96,41 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                                 $i = $sql_row['id'];
                                 $doc_no = $sql_row['doc_no'];
                                 $index+=1;
-                                $query1 = "select * from $bai_pro3.plandoc_stat_log where doc_no='".$doc_no."'";
-                                $sql_result1 = mysqli_query($link,$query1);
-                                while($sql_row1=mysqli_fetch_array($sql_result1)) 
-                                {
-                                   $order_tid = $sql_row1['order_tid'];
-                                   $query2 = "select * from bai_pro3.bai_orders_db WHERE order_tid='".$order_tid."'";
-                                    $sql_result2 = mysqli_query($link,$query2);
-                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                    {
-                                        // var_dump($sql_row2['order_style_no']);
-                                        // var_dump($sql_row2['order_del_no']);
+								$query2 = "SELECT style,color FROM $pps.`jm_docket_lines` jdl 
+								LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id=jdl.`jm_docket_id`
+								LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.`jm_cut_job_id`=jd.`jm_cut_job_id`
+								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
+								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
+								WHERE jdl.`docket_line_number`=".$doc_no." and jdl.plant_code='".$plant_code."'";
+								$sql_result2 = mysqli_query($link,$query2);
+								while($sql_row2=mysqli_fetch_array($sql_result2)) 
+								{
+									// var_dump($sql_row2['order_style_no']);
+									// var_dump($sql_row2['order_del_no']);
 
-                                        echo "<tr><td>".$index."</td>";
-                                        echo "<td>".$sql_row['doc_no']."</td>";
-                                        echo "<td>".$sql_row2['order_style_no']."</td>";
-                                        echo "<td>".$sql_row2['order_del_no']."</td>";
-                                        echo "<td>".$sql_row['qty']."</td>";
-                                        echo "<td>".$sql_row['requested_by']."</td>";
-										echo "<td>".$sql_row['requested_at']."</td>";
-										if(in_array($authorizeLevel_2,$has_permission))
-										{ 
-											echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
-											echo "<option value=''>Please Select</option>";
-											echo "<option value='Deallocated'>Deallocated</option>";
-											echo "<option value='Reject'>Reject</option>";
-											echo "</select></td>";
-											echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
-											echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
-										}
-										
-                                        echo "</tr>";
-                                   
-                                    }
-                                }
+									echo "<tr><td>".$index."</td>";
+									echo "<td>".$sql_row['doc_no']."</td>";
+									echo "<td>".$sql_row2['style']."</td>";
+									echo "<td>".$sql_row2['color']."</td>";
+									echo "<td>".$sql_row['qty']."</td>";
+									echo "<td>".$sql_row['requested_by']."</td>";
+									echo "<td>".$sql_row['requested_at']."</td>";
+									 
+										echo "<td><select name='issue_status$i' id='issue_status-$i' class='select2_single form-control' onchange='IssueAction($i);'>";
+										echo "<option value=''>Please Select</option>";
+										echo "<option value='Deallocated'>Deallocated</option>";
+										echo "<option value='Reject'>Reject</option>";
+										echo "</select></td>";
+										echo '<input type="hidden" name="plant_code" id="plant_code" value="'.$plant_code.'">
+											  <input type="hidden" name="username" id="username" value="'.$username.'">';
+										echo "<td><input type='submit' name='submit$i' id='submit-$i' class='btn btn-primary' value='Deallocate' disabled='disabled' onclick='Approve_deallocation($i);'><input type='reject' name='reject$i' id='reject-$i' class='btn btn-danger' value='Reject' disabled='disabled' onclick='Reject_deallocation($i);'></td>";
+										// echo "<td><input type='button' style='display : block' class='btn btn-sm btn-warning' id='rejections_panel_btn'".$doc_no." onclick=test(".$doc_no.") value='Edit'></td>"; 
+									
+									
+									echo "</tr>";
+							   
+								}
+                                
                             }
                         ?>
                     </table>
@@ -185,139 +180,16 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
    
    
 </div>
+
 <?php
-for($i=0;$i<sizeof($doc_nos);$i++)
-{
-?>
-<div class="modal fade" id="rejections_modal<?= $doc_nos[$i];?>" role="dialog">
-    <div class="modal-dialog" style="width: 80%;  height: 100%;">
-        <div class="modal-content">
-            <div class="modal-header">Change Marker Length
-                <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
-            </div>
-            <div class="modal-body">
-                <div class='panel panel-primary'>
-                    <div class='panel-heading'>
-                        Marker Length Details
-                    </div>
-                    <div class='panel-body'>
-					<div class='col-sm-12'>
-                            <table class='table table-bordered rejections_table' id='mark_len_table<?=$doc_nos[$i]?>'>
-							<thead>
-								<tr class='.bg-dark'><th></th><th>Marker Type</th><th>Marker Version</th><th>Shrinkage Group</th><th>Width</th><th>Marker Length</th><th>Marker Name</th><th>Pattern Name</th><th>Marker Eff.</th><th>Perimeters</th><th>Remarks 1</th><th>Remarks 2</th><th>Remarks 3</th><th>Remarks 4</th><th>Control</th></tr>
-							</thead>
-                                <tbody id='rejections_table_body<?=$doc_nos[$i]?>'>
-								<?php 
-									
-									$doc_no = $doc_nos[$i];
-									
-									$sql11x132="select allocate_ref,mk_ref_id,mk_ref from $bai_pro3.plandoc_stat_log where doc_no=".$doc_no.";";
-									$sql_result11x112=mysqli_query($link, $sql11x132) or die("Error16 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-									$rows=0;
-									
-									while($row111x2=mysqli_fetch_array($sql_result11x112)) 
-									{
-										$mk_ref_id=$row111x2['mk_ref_id'];
-										//echo $mk_ref_id."--".$row111x2['allocate_ref']."<br>";
-										$sql_marker_details = "select * from $bai_pro3.maker_details where parent_id='".$row111x2['allocate_ref']."'";
-										$sql_marker_details_result=mysqli_query($link, $sql_marker_details) or die("Error17 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-										$values_rows=mysqli_num_rows($sql_marker_details_result);
-										echo "<input type='hidden' name='rows_val' id='rows_val' value='$values_rows' >";
-										while($sql_marker_details_res=mysqli_fetch_array($sql_marker_details_result))
-										{   
-											// var_dump($sql_marker_details_res[id]);
-											// var_dump($mk_ref_id);
-											//echo $sql_marker_details_res[id]."<br>";
-											$rows++;
-											if($sql_marker_details_res[id] == $mk_ref_id)
-											{
-												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
-												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
-												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
-												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
-												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[0]'>yes</td>
-												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
-												<td style='display:none;'  id='doc_no'>$doc_no</td>
-												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
-												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[0]) id='check$sql_marker_details_res[0]' CHECKED></td>												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td>	
-												</tr>";
-											}
-											else
-											{
-												echo "<input type='hidden' name='first_val' id='first_val".$doc_no."' value='$mk_ref_id' >";
-												echo "<input type='hidden' name='all_ref' id='all_ref".$doc_no."' value=".$row111x2['allocate_ref']." >";
-												echo "<input type='hidden' name='mk_ref' id='mk_ref".$doc_no."' value=".$row111x2['mk_ref']." >";
-												echo "<input type='hidden' name='doc_no' id='doc_no' value='$doc_no' >";
-												echo "<tr><td style='display:none;' class='checked_value' id='checked$sql_marker_details_res[id]'>no</td>
-												<td style='display:none;'  id='id'>$sql_marker_details_res[id]</td>
-												<td style='display:none;'  id='doc_no'>$doc_no</td>
-												<td style='display:none;'  id='all_ref".$doc_no."'>".$row111x2['allocate_ref']."</td>
-												<td style='display:none;'  id='mk_ref".$doc_no."'>".$row111x2['mk_ref']."</td>
-												<td><input type='radio' name='selected_len$doc_no' value='".$sql_marker_details_res[0]."' onchange = valid_button($sql_marker_details_res[id]) id='check$sql_marker_details_res[0]'></td>
-												
-												<td>$sql_marker_details_res[marker_type]</td><td>$sql_marker_details_res[marker_version]</td><td>$sql_marker_details_res[shrinkage_group]</td><td>$sql_marker_details_res[width]</td><td>$sql_marker_details_res[marker_length]</td><td>$sql_marker_details_res[marker_name]</td><td>$sql_marker_details_res[pattern_name]</td><td>$sql_marker_details_res[marker_eff]</td><td>$sql_marker_details_res[perimeters]</td><td>$sql_marker_details_res[remarks1]</td><td>$sql_marker_details_res[remarks2]</td><td>$sql_marker_details_res[remarks3]</td><td>$sql_marker_details_res[remarks4]</td><td style='display:none;'>1</td><td>Can't Delete</td></tr>";
-											}												
-										}										
-									}
-									?>
-                                </tbody>
-
-                                </tbody>
-
-								<tbody id='rejections_table'>
-												
-									<tr>
-									<td></td>
-									<?php
-									echo "<input type='hidden' name='doc_no_new' id='doc_no_new' value='$id' >";
-									?>
-									<td><input class="form-control alpha"  type="text" name="in_mktype" id="mk_type<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkver" id= "mk_ver<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_skgrp" id= "sk_grp<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_width" id= "width<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control float"  type="text" name= "in_mklen" id= "mk_len<?=$doc_no ?>" onchange="validate_data(<?=$doc_no ?>, this)"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_mkname" id="mk_name<?=$doc_no ?>" onchange="marker_validation(<?=$doc_no ?>, this)"    ></td>
-									<td><input class="form-control alpha"  type="text" name= "in_ptrname" id="ptr_name<?=$doc_no ?>"></td>
-									<td><input class="form-control float"  type="text" name= "in_mkeff" id= "mk_eff<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_permts" id= "permts<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks1" id= "rmks1<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks2" id= "rmks2<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks3" id= "rmks3<?=$doc_no ?>"></td>
-									<td><input class="form-control alpha"  type="text" name= "in_rmks4" id= "rmks4<?=$doc_no ?>"></td>
-									<td></td>
-									</tr>  
-								</tbody>
-                            </table>
-								<input type='button' class='btn btn-danger pull-right' value='clear' name='clear_rejection' id='clear_rejection' onclick='clear_row(<?=$doc_no ?>)'>
-								<?php 
-									echo "<input type='button' class='btn btn-warning pull-right' value='Add' name='add_mklen' onclick = 'add_Newmklen(".$doc_no.")' id='add_marker_length'>";
-								?>
-					<br>
-					<?php
-					echo "<input type='button' class='btn btn-success pull-left' value='Submit' name='submit' onclick=submit_mklen(".$doc_no.")  id='submit_length'>";
-					?>
-
-                    </div>
-
-                </div>
-				</div>
-                    
-                
-            </div>
-
-        </div>
-    </div>
-</div>
-<?php
-}
 
 if(isset($_POST['formSubmit']))
 {
         $doc_no = $_POST['docket_number'];
+        $plant_code = $_POST['plant_code'];
+        $username = $_POST['username'];
    
-        $fabric_status_qry="SELECT * FROM $bai_pro3.plandoc_stat_log WHERE doc_no=$doc_no";
+        $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no and plant_code='".$plant_code."'";
         // echo $fabric_status_qry;
     
         $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -326,7 +198,6 @@ if(isset($_POST['formSubmit']))
             while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
             {
                 $fabric_status = $sql_row0['fabric_status'];
-                $allocate_ref = $sql_row0['allocate_ref'];
             }
         
             $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
@@ -408,10 +279,11 @@ function Approve_deallocation(i) {
     if($('#submit-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
-
+		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
         if(status=='Deallocated') {
             url_path = "<?php echo getFullURL($_GET['r'],'update_deallocation_status.php','N'); ?>";
-            location.href=url_path+"&id="+row_id+"&status="+status;
+            location.href=url_path+"&id="+row_id+"&status="+status+"&plant_code="+plant_code+"&username="+username;
         }
     }
     
@@ -421,10 +293,11 @@ function Reject_deallocation(i) {
     if($('#reject-'+i).val()) {
         var status = $('#issue_status-'+i).val();
         var row_id = i;
-
+		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
         if(status=='Reject') {
             url_path = "<?php echo getFullURL($_GET['r'],'delete_deallocation.php','N'); ?>";
-            location.href=url_path+"&id="+row_id+"&status="+status;
+            location.href=url_path+"&id="+row_id+"&status="+status+"&plant_code="+plant_code+"&username="+username;
         }
     }
     
