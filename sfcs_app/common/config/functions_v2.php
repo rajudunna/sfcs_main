@@ -976,6 +976,171 @@ function getCutNumber($jm_cut_job_id){
     );
 }
 
+function getDocketInformation($docket_no, $plant_code) {
+    global $pps;
+    global $link_new;
+    
+    $style = ''; // done
+    $fg_color = ''; // done
+    $sub_po = ''; // done
+    $sub_po_desc = ''; // done
+    $master_po = ''; // done
+    $master_po_desc = ''; // done
+    $plies = 0; // done
+    $docket_quantity = 0; // done
+    $category = ''; // done
+    $components = []; // done
+    $cut_no = ''; // done
+    $comp_group = ''; // done
+    $rm_sku = ''; // done
+    $requirement = ''; // done
+
+    $length = '';
+    $width = '';
+    $efficiency = '';
+    $marker_version = '';
+    $marker_type_name = '';
+    $pattern_version = '';
+    $perimeter = '';
+    $remark1 = '';
+    $remark2 = '';
+    $remark3 = '';
+    $remark4 = '';
+    $ratio_cg_id = '';
+
+    $schedules = [];
+    // get the docket info
+    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color, doc_line.component_group_name as cg_name,
+        doc.marker_version_id, doc.ratio_comp_group_id,
+        cut.cut_number, cut.po_number,doc_line.docket_line_number,
+        ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
+        FROM $pps.jm_docket_lines doc_line 
+        LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
+        LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id
+        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+    $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+ 
+    while($row = mysqli_fetch_array($docket_info_result))
+    {
+        $fg_color = $row['fg_color'];
+        $plies =  $row['plies'];
+        $comp_group =  $row['cg_name'];
+        $cut_no = $row['cut_number'];
+        $ratio_comp_group_id = $row['ratio_comp_group_id'];
+
+        $po_number = $row['po_number'];
+        $marker_version_id = $row['marker_version_id'];
+        $ratio_id = $row['ratio_id'];
+        $cg_id = $row['cg_id'];
+        $mp_detail_id = $row['master_po_details_id'];
+    }
+
+    // get the style and master po info
+    $style_info_query = "SELECT mpc.style, mp.master_po_number, mp.master_po_description 
+    FROM $pps.mp_color_detail mpc 
+    LEFT JOIN $pps.mp_order mp ON mpc.master_po_number = mp.master_po_number
+    WHERE mpc.master_po_details_id = '$mp_detail_id' ";
+    $style_info_result=mysqli_query($link_new, $style_info_query) or exit("Sql style_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+  
+    while($row = mysqli_fetch_array($style_info_result))
+    {
+        $style = $row['style'];
+        $master_po = $row['master_po_number'];
+        $master_po_desc = $row['master_po_description'];
+    }
+
+    
+    $sub_po_info_query = "SELECT po_number, po_description FROM $pps.mp_sub_order where po_number = '$po_number' ";
+    $sub_po_info_result=mysqli_query($link_new, $sub_po_info_query) or exit("Sql sub_po_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($sub_po_info_result))
+    {
+        $sub_po = $row['po_number'];
+        $sub_po_desc = $row['po_description'];
+    }
+
+    // get the rm sku, fabric catrgory
+    $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where master_po_component_group_id = '$cg_id' ";
+    $fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($fabric_info_result))
+    {
+        $category = $row['fabric_category'];
+        $rm_sku = $row['material_item_code'];
+    }
+
+    // get the components for the docket
+    $components_query = "SELECT component_name FROM $pps.lp_product_component where component_group_id = '$cg_id' ";
+    $components_result=mysqli_query($link_new, $components_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($components_result))
+    {
+        $components[] = $row['component_name'];
+    }
+
+    // get the docket qty
+    $size_ratio_sum = 0;
+    $size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
+    $size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row = mysqli_fetch_array($size_ratios_result))
+    {
+        $size_ratio_sum += $row['size_ratio'];
+    }
+
+    $docket_quantity = $size_ratio_sum * $plies;
+
+    // get the marker requierement
+    $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
+    FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
+   
+    $markers_result = mysqli_query($link_new, $markers_query) or exit("Sql markers_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($sql_row11 = mysqli_fetch_array($markers_result))
+    {
+        $length = $sql_row11['length'];
+        $width=$sql_row11['width'];
+        $efficiency=$sql_row11['efficiency'];
+        $marker_version=$sql_row11['marker_version'];
+        $marker_type_name=$sql_row11['marker_type_name'];
+        $pattern_version=$sql_row11['pattern_version'];
+        $perimeter=$sql_row11['perimeter'];
+        $remark1=$sql_row11['remark1'];
+        $remark2=$sql_row11['remark2'];
+        $remark3=$sql_row11['remark3'];
+        $remark4=$sql_row11['remark4'];
+        $shrinkage=$sql_row11['shrinkage'];
+    }
+    $requirement = $length * $width * $docket_quantity;
+
+    return [
+        'style' => $style,
+        'fg_color' => $fg_color,
+        'sub_po' => $sub_po,
+        'sub_po_desc' =>$sub_po_desc,
+        'master_po'=> $master_po,
+        'master_po_desc'=>$master_po_desc,
+        'master_po_desc'=>$plies,
+        'docket_quantity'=>$docket_quantity,
+        'category'=>$category,
+        'components'=>$components,
+        'cut_no'=>$cut_no,
+        'comp_group'=>$comp_group,
+        'rm_sku'=>$rm_sku,
+        'requirement'=>$requirement,
+        'length'=>$length,
+        'width'=>$width,
+        'efficiency'=>$efficiency,
+        'marker_version'=>$marker_version,
+        'marker_type_name'=>$marker_type_name,
+        'pattern_version'=>$pattern_version,
+        'perimeter'=>$perimeter,
+        'remark1'=>$remark1,
+        'remark2'=>$remark2,
+        'remark3'=>$remark3,
+        'remark4'=>$remark4,
+        'shrinkage'=>$shrinkage,
+        'ratio_comp_group_id' => $ratio_comp_group_id
+    ];
+
+}
+
 /**
  * to get sections for the plant code
  */
