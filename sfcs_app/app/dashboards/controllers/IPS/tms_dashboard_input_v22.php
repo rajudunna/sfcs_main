@@ -14,6 +14,18 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $dashboard_name="IPS";
+    $has_permission=haspermission($_GET['r']);
+
+	if (in_array($update,$has_permission))
+	{
+		$permission = "true";
+	}
+	else
+	{
+		$permission = "false";
+    }
+
+
     $sec_result = mysqli_query($link, "SELECT DISTINCT sec_name FROM $bai_pro3.sections_master WHERE sec_name>0 order by sec_name") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
     echo "<script>var sec_ids = '".implode(',',array_column($sections, 'sec_name'))."';</script>";
@@ -26,8 +38,9 @@
                 echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10">';
               echo "</div><div class='col-sm-3'>";
                 echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control integer" onkeyup="blink_new3(this.value)" size="10"> &nbsp;&nbsp;';
-              echo "</div>
-              <div class='col-sm-3'>
+              echo "</div>";
+              echo "<input type='hidden' name='user_permission' id='user_permission' value='$permission'>";
+              echo "<div class='col-sm-3'>
                 Shift :<select class='form-control' id='shift' name='shift' required>
                     <option value=''>Select</option>";
                     foreach($shifts_array as $shift){
@@ -193,10 +206,14 @@ function viewPopupCenter(style, schedule, module, input_job_no_random_ref, opera
 function PopupCenter(pageURL, title, w, h) {
 
     var shift = $('#shift').val();
+    var user_permission = $('#user_permission').val();
     if (shift == '') {
         swal('Please Select Shift First', '', 'error');
         return false;
-    } else {
+    } else if(user_permission=='false'){
+        swal('No access for Sewing job Scanning', '', 'error');
+        return false;
+    }else {
         pageURL += shift;
     }
 
