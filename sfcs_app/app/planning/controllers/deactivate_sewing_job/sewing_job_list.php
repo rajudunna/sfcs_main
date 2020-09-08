@@ -99,7 +99,7 @@ if($_GET['input_job_no'] && $_GET['jm_jg_header_id']){
     // var_dump($_GET['input_job_no']);
     $input_job_no = $_GET['input_job_no'];
     $jm_jg_header_id = $_GET['jm_jg_header_id'];
-    $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
+    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num_check=mysqli_num_rows($job_deacive_result);
     if($sql_num_check>0){
@@ -107,7 +107,7 @@ if($_GET['input_job_no'] && $_GET['jm_jg_header_id']){
         {
             $reverse_deactive_job_id = $sql_row['id'];
             $module = $sql_row['module_no'];
-            $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
+            $update_revers_qry = "update $pts.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
             $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $tasktype=TaskTypeEnum::SEWINGJOB;
             
