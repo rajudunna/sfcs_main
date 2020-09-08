@@ -676,6 +676,7 @@ function check_pack()
 				}                       
 			},
 			error: function(res){
+				$('#loading-image').hide(); 
 				swal('Error in getting data');
 			}
 		});
