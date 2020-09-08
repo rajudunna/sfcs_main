@@ -56,13 +56,13 @@ if($dash==1){
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 $ctd =array_slice($php_self, 0, -2);
 $url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
 }
 else{
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 }
 
 ?>
@@ -81,8 +81,7 @@ else{
 	array_pop($php_self);
 	$url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
 	$has_permission=haspermission($url_r);
-	$plant_code = $_SESSION['plantCode'];
-    $username = $_SESSION['userName'];
+	
 ?>
 	<!-- <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -643,8 +642,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_splitting_func
 if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
-	$dash=$_POST['dashboard']; //array
-
+	$dash=$_POST['dashboard'];
+	$plant_code=$_POST['plant_codename']; //array
+	$username=$_POST['username'];
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
@@ -701,49 +701,49 @@ if(isset($_POST['allocate_new']))
 			unset($allo_c);
 			$allo_c=array();
 		
-			$sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
-			// echo $sql."<br/>";
-			// die();
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$extra=0;
-				//if(substr($style_ref,0,1)=="M")
-				{
-					$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
-				}
-				$material_req1=$sql_row['material_req']+$extra;
-				$mk_ref=$sql_row['mk_ref'];
-				$cat_ref=$sql_row['cat_ref'];
-				$allocate_ref=$sql_row['allocate_ref'];
-				$style_code=$sql_row['style_id'];
-				$buyer_code=substr($style_ref,0,1);
-				$mk_ver=$sql_row['mk_ver'];
-				$category=$sql_row['category'];
-				$strip_match=$sql_row['strip_match'];
-				$gmtway=$sql_row['gmtway'];
+			// $sql="select cat_patt_ver,doc_no,material_req,mk_ref,cat_ref,allocate_ref,style_id,mk_ver,category,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,strip_match,gmtway,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix where doc_no=\"".$doc_ref[$i]."\"";
+			// // echo $sql."<br/>";
+			// // die();
+			// $sql_result=mysqli_query($link, $sql) or exit("Sql Error1 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row=mysqli_fetch_array($sql_result))
+			// {
+			// 	$extra=0;
+			// 	//if(substr($style_ref,0,1)=="M")
+			// 	{
+			// 		$extra=round(($sql_row['material_req']*$sql_row['savings']),2);
+			// 	}
+			// 	$material_req1=$sql_row['material_req']+$extra;
+			// 	$mk_ref=$sql_row['mk_ref'];
+			// 	$cat_ref=$sql_row['cat_ref'];
+			// 	$allocate_ref=$sql_row['allocate_ref'];
+			// 	$style_code=$sql_row['style_id'];
+			// 	$buyer_code=substr($style_ref,0,1);
+			// 	$mk_ver=$sql_row['mk_ver'];
+			// 	$category=$sql_row['category'];
+			// 	$strip_match=$sql_row['strip_match'];
+			// 	$gmtway=$sql_row['gmtway'];
 				
-				$allo_c[]="xs='".$sql_row['p_xs']."'";
-				$allo_c[]="s='".$sql_row['p_s']."'";
-				$allo_c[]="m='".$sql_row['p_m']."'";
-				$allo_c[]="l='".$sql_row['p_l']."'";
-				$allo_c[]="xl='".$sql_row['p_xl']."'";
-				$allo_c[]="xxl='".$sql_row['p_xxl']."'";
-				$allo_c[]="xxxl='".$sql_row['p_xxxl']."'";
-				$allo_c[]="s06='".$sql_row['p_s06']."'";
-				$allo_c[]="s08='".$sql_row['p_s08']."'";
-				$allo_c[]="s10='".$sql_row['p_s10']."'";
-				$allo_c[]="s12='".$sql_row['p_s12']."'";
-				$allo_c[]="s14='".$sql_row['p_s14']."'";
-				$allo_c[]="s16='".$sql_row['p_s16']."'";
-				$allo_c[]="s18='".$sql_row['p_s18']."'";
-				$allo_c[]="s20='".$sql_row['p_s20']."'";
-				$allo_c[]="s22='".$sql_row['p_s22']."'";
-				$allo_c[]="s24='".$sql_row['p_s24']."'";
-				$allo_c[]="s26='".$sql_row['p_s26']."'";
-				$allo_c[]="s28='".$sql_row['p_s28']."'";
-				$allo_c[]="s30='".$sql_row['p_s30']."'";
-			}
+			// 	$allo_c[]="xs='".$sql_row['p_xs']."'";
+			// 	$allo_c[]="s='".$sql_row['p_s']."'";
+			// 	$allo_c[]="m='".$sql_row['p_m']."'";
+			// 	$allo_c[]="l='".$sql_row['p_l']."'";
+			// 	$allo_c[]="xl='".$sql_row['p_xl']."'";
+			// 	$allo_c[]="xxl='".$sql_row['p_xxl']."'";
+			// 	$allo_c[]="xxxl='".$sql_row['p_xxxl']."'";
+			// 	$allo_c[]="s06='".$sql_row['p_s06']."'";
+			// 	$allo_c[]="s08='".$sql_row['p_s08']."'";
+			// 	$allo_c[]="s10='".$sql_row['p_s10']."'";
+			// 	$allo_c[]="s12='".$sql_row['p_s12']."'";
+			// 	$allo_c[]="s14='".$sql_row['p_s14']."'";
+			// 	$allo_c[]="s16='".$sql_row['p_s16']."'";
+			// 	$allo_c[]="s18='".$sql_row['p_s18']."'";
+			// 	$allo_c[]="s20='".$sql_row['p_s20']."'";
+			// 	$allo_c[]="s22='".$sql_row['p_s22']."'";
+			// 	$allo_c[]="s24='".$sql_row['p_s24']."'";
+			// 	$allo_c[]="s26='".$sql_row['p_s26']."'";
+			// 	$allo_c[]="s28='".$sql_row['p_s28']."'";
+			// 	$allo_c[]="s30='".$sql_row['p_s30']."'";
+			// }
 			//for #1305 ticket in git edite by Srinivas Y .
 			for($j=0;$j<sizeof($tid_ref);$j++)
 			{
@@ -753,7 +753,7 @@ if(isset($_POST['allocate_new']))
 					$total_qty=0;
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL))
 					{
-						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid='$tid_ref[$j]'";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$tid_ref[$j]' and plant_code='$plant_code'";
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -766,7 +766,7 @@ if(isset($_POST['allocate_new']))
 					}
 					else
 					{
-						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $bai_rm_pj1.store_in WHERE tid=$tid_ref[$j]";
+						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='$plant_code'";
 						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -778,11 +778,11 @@ if(isset($_POST['allocate_new']))
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1','$username','$username',NOW())";
 					}
 					else
 					{
-						$sql="insert into $bai_rm_pj1.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1','$username','$username',NOW())";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -792,7 +792,7 @@ if(isset($_POST['allocate_new']))
 					} 
 					else 
 					{
-						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $bai_rm_pj1.store_in where roll_status in (0,2) and tid=\"$tid_ref[$j]\"";
+						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $wms.store_in where roll_status in (0,2) and tid=\"$tid_ref[$j]\" and plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -810,7 +810,7 @@ if(isset($_POST['allocate_new']))
 						{
 							$status=1;
 						}
-						$sql121="update bai_rm_pj1.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status where tid=".$tid_ref[$j];
+						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where tid=".$tid_ref[$j];
 						mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
@@ -818,11 +818,11 @@ if(isset($_POST['allocate_new']))
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
-				$sql1="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
 			}
 			else
 			{
-				$sql2="update plandoc_stat_log set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
+				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
 				mysqli_query($link, $sql2) or exit("Sql Errordd5: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
@@ -832,28 +832,28 @@ if(isset($_POST['allocate_new']))
 			//TO update Marker Matrix
 			if($process_cat==1)
 			{
-				$sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
-				//echo $sql."<br/>";
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$mk_length=$sql_row['marker_length'];
-				}
+				// $sql="select marker_length from $bai_pro3.marker_ref_matrix_view where strip_match='$strip_match' and gmtway='$gmtway' and style_code='$style_code' and buyer_code='$buyer_code' and lower(pat_ver)='".strtolower($mk_ver)."' and SUBSTRING_INDEX(marker_width,'.',1)='".$min_width[$i]."' and category='$category' and ".implode(" and ",$allo_c);
+				// //echo $sql."<br/>";
+				// $sql_result=mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row=mysqli_fetch_array($sql_result))
+				// {
+				// 	$mk_length=$sql_row['marker_length'];
+				// }
 				
 				if(mysqli_num_rows($sql_result)!=0)
 				{
-					$sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
-					//echo $sql."<br/>";
+					// $sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
+					// //echo $sql."<br/>";
 					
-					mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql) or exit("Sql Error1x: $sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
+					// $ilast_id=((is_null($___mysqli_res = mysqli_insert_id($link))) ? false : $___mysqli_res);
 					
-					$sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
+					// $sql="update bai_pro3.maker_stat_log set mklength=$mk_length where tid='$ilast_id'";
 					
-					mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql="update bai_pro3.plandoc_stat_log set lastup=\"".date("Y-m-d")."\", mk_ref=$ilast_id where doc_no=".$doc[$i];
+					$sql="update $pps.requested_dockets set lastup=\"".date("Y-m-d")."\",updated_user='$username',updated_at=NOW(),created_user='$username' where doc_no=".$doc_ref[$i];
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -868,13 +868,13 @@ if(isset($_POST['allocate_new']))
  	$php_self = explode('/',$_SERVER['PHP_SELF']);
 	$ctd =array_slice($php_self, 0, -2);
 	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_rr;
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
 	}
 	else{
 		$php_self = explode('/',$_SERVER['PHP_SELF']);
 		array_pop($php_self);
 		$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 	}
 	echo"<script>swal('Successfully Updated.','','success')</script>";
 	echo"<script>location.href =  '".$url1."';</script>"; 
@@ -889,12 +889,14 @@ if(isset($_POST['allocate']))
 {
 	echo "<form name='input' method='post' action='fab_pop_allocate_v5.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
+	$doc_no=$_POST['doc'];
 	$dash=$_POST['dashboard'];
 	$doc_cat=$_POST['doc_cat'];
 	$doc_com=$_POST['doc_com'];
 	$doc_mer=$_POST['doc_mer'];
 	$cat_ref=$_POST['cat_ref'];
-	
+	$username=$_POST['username'];
+	$plant_code=$_POST['plantcode1'];
 	$process_cat=$_POST['process_cat'];
 	$style_ref=$_POST['style_ref'];
 	$size_doc=sizeof($doc);
@@ -981,37 +983,46 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference,mk_ref_id,allocate_ref from $bai_pro3.plandoc_stat_log where doc_no=\"".$doc_ref."\"";
+		$sql007="select reference from $pps.requested_dockets where doc_no=\"".$doc_no."\" and plant_code='$plant_code'";
 		// echo $sql007;
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
 		{
 			$reference=$row007["reference"];
-			if($row007['mk_ref_id']>0)
-			{	
-				$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
-				$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
-				{
-					$shrinkaage=$row111x2112['shrinkage_group'];
-					$pur_width=$row111x2112['width'];
-				}
-			}
-			else
-			{
-				$shrinkaage='N/A';
-				$pur_width='N/A';
+			// if($row007['mk_ref_id']>0)
+			// {	
+			// 	$sql11x1321="select shrinkage_group,width,marker_length from $bai_pro3.maker_details where parent_id=".$row007['allocate_ref']." and id=".$row007['mk_ref_id']."";
+			// 	$sql_result11x11211=mysqli_query($link, $sql11x1321) or die("Error15 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// 	while($row111x2112=mysqli_fetch_array($sql_result11x11211)) 
+			// 	{
+			// 		$shrinkaage=$row111x2112['shrinkage_group'];
+			// 		$pur_width=$row111x2112['width'];
+			// 	}
+			// }
+			// else
+			// {
+			// 	$shrinkaage='N/A';
+			// 	$pur_width='N/A';
+			// }
+			if($doc_ref!='' && $plant_code!=''){
+				$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+				$style =$result_docketinfo['style'];
+				$colorx =$result_docketinfo['fg_color'];
+				$length =$result_docketinfo['length'];
+				$shrinkaage =$result_docketinfo['shrinkage'];
+				$pur_width =$result_docketinfo['width'];
+				
 			}
 		}
-		$sql = "SELECT SUM(purwidth) AS pur_width FROM bai_pro3.cat_stat_log WHERE compo_no='".$doc_com[$i]."'";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$purwidth=round($sql_row['pur_width'],2);
-			if($pur_width=='N/A'){
-				$pur_width= $purwidth;
-			}
-		}
+		// $sql = "SELECT SUM(purwidth) AS pur_width FROM bai_pro3.cat_stat_log WHERE compo_no='".$doc_com[$i]."'";
+		// $sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row=mysqli_fetch_array($sql_result))
+		// {
+		// 	$purwidth=round($sql_row['pur_width'],2);
+		// 	if($pur_width=='N/A'){
+		// 		$pur_width= $purwidth;
+		// 	}
+		// }
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
@@ -1019,7 +1030,9 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
 		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
-		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
+		echo "<input type=\"hidden\" name=\"username\" value=\"".$username."\">";
+		echo "<input type=\"hidden\" name=\"plant_codename\" value=\"".$plant_code."\">";
+		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(",",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
@@ -1059,15 +1072,24 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql="select * from $bai_rm_pj1.fabric_status_v3 where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) order by shade";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
+		$sql_result=mysqli_query($link, $sql123) or exit("Sql Error1245: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
 		
 		$inv_no=0;
 		$bg_color="#99CCFF";
+		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
+			$lot_no=$sql_row['lot_no'];
+			$sql1235="select * from $wms.sticker_report where lot_no  ='$lot_no' and plant_code='$plant_code'";
+		$sql_result2=mysqli_query($link, $sql1235) or exit("Sql Error125678: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row7=mysqli_fetch_array($sql_result2)){
+		   $grn_date=$sql_row7['grn_date'];
+		   $batch_no=$sql_row7['batch_no'];
+		   $item=$sql_row7['item'];
+		}
 			if(strcmp($inv_no,trim($sql_row['inv_no'])))
 			{
 				if($bg_color=="#99CCFF")
@@ -1085,10 +1107,10 @@ if(isset($_POST['allocate']))
 			
 			$temp_var='';
 			//if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
-			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade'])>0))
+			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade_grp'])>0))
 			{
 				$temp_var.="<td>";
-					if(strlen($sql_row['shade'])==0)
+					if(strlen($sql_row['shade_grp'])==0)
 					{
 						$tag="Insp. <br/>Pending";
 						$valid_check="display:none";
@@ -1112,7 +1134,7 @@ if(isset($_POST['allocate']))
 			{
 				$temp_var.="<td>";
 				
-				$sql1="select max(log_time),doc_type,doc_no from $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid'];
+				$sql1="select max(log_time),doc_type,doc_no from $wms.fabric_cad_allocation where plant_code='$plant_code' and roll_id=".$sql_row['tid'];
 				// $temp_var.="</br>Qry : ".$sql1."</br>";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -1157,7 +1179,7 @@ if(isset($_POST['allocate']))
 			{
 			echo "<input type='hidden' id='srgp$doc_ref$j' value='".$sql_row['shrinkage_group']."'>";
 			echo "<tr bgcolor=\"$bg_color\" id=\"trchk$doc_ref$j\">";
-			$sql3="select tid,split_roll from $bai_rm_pj1.store_in where tid=".$sql_row['tid'];
+			$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid=".$sql_row['tid'];
 			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result3)>0)
 			{
@@ -1174,7 +1196,7 @@ if(isset($_POST['allocate']))
 			
 			/* Added new code to track allocated quantities 20140621*/
 			
-			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $bai_rm_pj1.fabric_cad_allocation WHERE roll_id=".$sql_row['tid']." AND bai_rm_pj1.fn_roll_id_fab_scan_status(doc_no,doc_type,roll_id)=0";
+			$sql1="SELECT GROUP_CONCAT(CONCAT(IF(doc_type='normal','D','R'),doc_no)) AS doc_nos,ROUND(SUM(allocated_qty),2) AS allocated_qty FROM $wms.fabric_cad_allocation WHERE roll_id=".$sql_row['tid']." and plant_code='$plant_code'";
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
@@ -1184,16 +1206,16 @@ if(isset($_POST['allocate']))
 			}
 
 
-			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $bai_rm_pj1.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1'";
+			$sql5="SELECT coalesce(sum(allocated_qty),0) as allocated_qty,roll_id,status FROM $wms.fabric_cad_allocation where roll_id=".$sql_row['tid']." and status='1' and plant_code='$plant_code'";
 		
-			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error131: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row5=mysqli_fetch_array($sql_result5))
 			{
 				$fab_cad_allocated_qty= round($sql_row5['allocated_qty'],2);
 			}
-			echo "<td>".$sql_row['grn_date']."</td>";
-			echo "<td>".$sql_row['batch_no']."</td>";
-			echo "<td id='col1'>".$sql_row['item']."</td>";
+			echo "<td>".$grn_date."</td>";
+			echo "<td>".$batch_no."</td>";
+			echo "<td id='col1'>".$item."</td>";
 			echo "<td id='col1'>".$sql_row['lot_no']."</td>";
 			echo "<td>".$sql_row['shade']."</td>";
 			if($shrinkage_inspection == 'yes') 
@@ -1260,7 +1282,7 @@ if(isset($_POST['allocate']))
 					<th style='color:black;'>Issued<br/>Qty</th>
 					</tr>";
 			for($m=0; $m < $n; $m++) {
-				$sql3="select tid,split_roll from $bai_rm_pj1.store_in where tid=".$tid;
+				$sql3="select tid,split_roll from $wms.store_in where  plant_code='$plant_code' and tid=".$tid ;
 				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if(mysqli_num_rows($sql_result3)>0)
 				{
@@ -1268,7 +1290,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT * FROM bai_rm_pj1.fabric_status_v3 WHERE lot_no IN (SELECT lot_no FROM bai_rm_pj1.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].")";
+							$sql_query ="SELECT * FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{
@@ -1318,6 +1340,9 @@ if(isset($_POST['allocate']))
 		//Table to show all list of available items
 		echo "<input type='hidden' value='$doc_ref' id='doc_chk'><br/>";
 		echo "<input type='hidden' value='$dash' id='dashboard' name='dashboard'><br/>";
+		echo "<input type='hidden' value='$plant_code' id='plant_codename' name='plant_codename'><br/>";
+		echo "<input type='hidden' value='$username' id='username' name='username'><br/>";
+		
 
 	}
 	//OK echo "Validate: <input type=\"checkbox\" name=\"validate\" onclick=\"check_qty(".sizeof($doc).")\">";
