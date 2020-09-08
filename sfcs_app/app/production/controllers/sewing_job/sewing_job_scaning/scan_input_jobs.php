@@ -374,8 +374,6 @@ $(document).ready(function()
 			}
 		});
 	});
-		
-	
 });
 
 function tableConstruction(data){
@@ -667,6 +665,7 @@ function check_pack()
 	reportData.plantCode = $('#plant_code').val();
 	reportData.shift = $('#shift').val();
 	reportData.operationCode = $('#operation_id').val();
+	reportData.createdUser = '<?= $username ?>';
 	var sizeQuantities = new Array();
 	for(var i=0; i<count; i++)
 	{
@@ -715,6 +714,7 @@ function check_pack()
 		$('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
+		/*
 		document.getElementById('dynamic_table1').innerHTML = '';
 		document.getElementById('style_show').innerHTML = '';
 		document.getElementById('schedule_show').innerHTML = '';
@@ -724,6 +724,7 @@ function check_pack()
 		document.getElementById('pre_data').innerHTML ='';
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
+		*/
     
 		$.ajax({
 			type: "POST",
@@ -735,6 +736,9 @@ function check_pack()
 				//console.log(res.data);
 				if(res.status)
 				{
+					swal('',res.internalMessage,'success');
+					return;
+					/*
 					var data = JSON.parse(response);
 					$('#pre_pre_data').show();
 					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
@@ -746,18 +750,20 @@ function check_pack()
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
-					swal(res.internalMessage,'','success');
+					*/
 				}
 				else
 				{
-					swal(res.internalMessage,'','error');
+					$('.submission').show();
+					swal('',res.internalMessage,'error');
 				}                       
 			},
 			error: function(res){
+				$('.submission').show();
 				$('#loading-image').hide(); 
 				// alert('failure');
 				// console.log(response);
-				swal('Error','in getting docket','error');
+				swal('','Network error','error');
 			}
 		});
 		

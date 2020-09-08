@@ -5,6 +5,7 @@
 
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 	$url = getFullURL($_GET['r'],'pre_emb_job_scanning.php','N');
@@ -253,7 +254,7 @@ $(document).ready(function()
 		$.ajax({
 			type: "POST",
 			url: url,
-			data: inembObjputObj,
+			data: embObj,
 			success: function (res) {            
 				//console.log(res.data);
 				if(res.status)
@@ -265,12 +266,13 @@ $(document).ready(function()
 				{
 					swal(res.internalMessage);
 				}                       
+				$('#loading-image').hide(); 
 			},
 			error: function(res){
 				$('#loading-image').hide(); 
 				// alert('failure');
 				// console.log(response);
-				swal('Error in getting docket');
+				swal('Network error in getting Job info');
 			}
 		});
 	});
@@ -364,7 +366,7 @@ function tableConstruction(data){
                     op_code_values = op_code_values + '<td>'+data.sizeQuantities[i].operationWiseQuantity[index].quantity+'</td>';
                 });
 				
-            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.fgColor.toString()+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' ></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.fgColors.toString()+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' ></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
         }
@@ -593,6 +595,7 @@ function check_pack()
 	reportData.plantCode = $('#plant_code').val();
 	reportData.shift = $('#shift').val();
 	reportData.operationCode = $('#operation_id').val();
+	reportData.createdUser = '<?= $username ?>';
 	var sizeQuantities = new Array();
 	for(var i=0; i<count; i++)
 	{
@@ -636,28 +639,34 @@ function check_pack()
 		return false;
 	}
 	else {
-		console.log(reportData);
+		$('#loading-image').show(); 
 		$('.submission').hide();
 		$('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-		document.getElementById('dynamic_table1').innerHTML = '';
-		document.getElementById('style_show').innerHTML = '';
-		document.getElementById('schedule_show').innerHTML = '';
-		document.getElementById('color_show').innerHTML = '';
-		document.getElementById('job_number').value = '';
-		document.getElementById('module_show').innerHTML = '';
-		document.getElementById('pre_data').innerHTML ='';
+		// document.getElementById('dynamic_table1').innerHTML = '';
+		// document.getElementById('style_show').innerHTML = '';
+		// document.getElementById('schedule_show').innerHTML = '';
+		// document.getElementById('color_show').innerHTML = '';
+		// document.getElementById('job_number').value = '';
+		// document.getElementById('module_show').innerHTML = '';
+		// document.getElementById('pre_data').innerHTML ='';
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
+		var url = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormJob";
         $.ajax({
 			type: "POST",
-			url: "http://localhost:3341/fg-reporting/reportPanelFormJob",
-			data: reportData,
+			url: url,
+			data: JSON.stringify(reportData),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
 			success: function (res) {            
 				//console.log(res.data);
 				if(res.status)
 				{
+					swal('',res.internalMessage, 'success');
+					return;
+					/*
 					var data = JSON.parse(res);
 					$('#pre_pre_data').show();
 					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
@@ -669,15 +678,19 @@ function check_pack()
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
+					*/
 				}
 				else
 				{
-					swal(res.internalMessage);
-				}                       
+					$('.submission').show();
+					swal('',res.internalMessage, 'error');
+				}               
+				$('#loading-image').hide();         
 			},
 			error: function(res){
 				$('#loading-image').hide(); 
-				swal('Error in getting data');
+				$('.submission').show();
+				swal('','Network error', 'error');
 			}
 		});
 		
