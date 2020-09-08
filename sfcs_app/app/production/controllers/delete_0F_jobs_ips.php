@@ -2,6 +2,7 @@
 <?php  
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
     $application = 'IPS';    
     $status = 'F';
     $plant_code = $_SESSION['plantCode'];
@@ -17,13 +18,14 @@
         mysqli_query($link,$insert_log);
         
         //get task_header from task_jobs
-        $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$job_r' AND plant_code='$plant_code' AND task_type='$tasktype'";
+        $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$job_r' AND plant_code='$plant_code' AND task_type='$tasktype'";
         $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
         {
             $task_header_id=$qry_header_id_row['task_header_id'];
         }
-        $update_qry_task_header = "UPDATE $tms.task_header set task_status='HOLD',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+        $status_hold=TaskStatusEnum::HOLD;
+        $update_qry_task_header = "UPDATE $tms.task_header set task_status='$status_hold',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
         mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
        
         echo "<script>$(document).ready(function(){
@@ -61,9 +63,10 @@
                     $counter = 0;
 
                     $tasktype=TaskTypeEnum::SEWINGJOB;
+                    $task_status=TaskStatusEnum::INPROGRESS;
                     $task_header_id=array();
                     $resource_id=array();
-                    $get_task_header_id="SELECT task_header_id,resource_id,task_ref FROM $tms.task_header WHERE task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plant_code'";
+                    $get_task_header_id="SELECT task_header_id,resource_id,task_ref FROM $tms.task_header WHERE task_status='$task_status' AND task_type='$tasktype' AND plant_code='$plant_code'";
                     $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
                     {
@@ -104,69 +107,79 @@
                     
                     foreach($job_number as $key=>$value)
                     {
-
-                      //get style,color
-                      $qry_mp_color_detail="SELECT style,color FROM $pps.mp_color_detail WHERE plant_code='$plant_code' and master_po_number='$masterponumber[$value]'";
-                      $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
-                      while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
-                      {
-                        $style=$mp_color_detail_row['style'];
-                        $color=$$mp_color_detail_row['color'];
-                      }
-                      //To get schedules
-                      $result_bulk_schedules=getBulkSchedules($style,$plant_code);
-                      $bulk_schedule=$result_bulk_schedules['bulk_schedule'];
-                      $schedules = implode(",",$bulk_schedule);
-                      
-                      //to get dockets
-                      $result_dockets=getDocketDetails($ponumber[$value],$plant_code,0);
-                      $docket_numbers=$result_dockets['docket_number'];
-                      $dockets=implode(",",$docket_numbers);
-                      //to get qty from jm job lines
-                      $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
-                      $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
-                      $toget_qty=mysqli_num_rows($toget_qty_qry_result);
-                      if($toget_qty>0){
-                         while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
-                         {
-                          $sew_qty = $toget_qty_det['qty'];
-                         }
-                      }
-                      //get_module
-                      $qry_get_module="SELECT resource_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key'";
-                      $get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
-                      while($get_module_row=mysqli_fetch_array($get_module_result))
-                      {
-                        $resource_id = $get_module_row['resource_id'];
-                      }
-                      $jg_header_id=$job_number[$key];
-                      $job_number=$job_number[$value];
-                      if($check_status == 0){
-                        $url = 'index.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
-                        $counter++;
-                        echo "<tr>";
-                            echo "<td>$counter</td>"; 
-                            echo "<td>$style</td>"; 
-                            echo "<td>$schedules</td>";
-                            echo "<td>$color</td>";
-                            echo "<td>$ponumber[$value]</td>"; 
-                            echo "<td>$job_number</td>";                   
-                            echo "<td>$sew_qty</td>";
-                            echo "<td>$resource_id</td>";
-                            echo "<td>$dockets</td>";
-                            // echo "<td>$rem_qty</td>";
-                            echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
-                                    class='btn btn-danger btn-sm'>Remove From IPS</a></td>";
-                        echo "</tr>";
+                        //To get taskjobs_id
+                        $task_jobs_id = [];
+                        $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$key' AND plant_code='$plant_code' AND task_type='$tasktype'";
+                        //echo $qry_get_task_job;
+                        $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+                            $task_jobs_id[] = $row21['task_jobs_id'];
                         }
-                        else
+                        //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+                        $job_detail_attributes = [];
+                        $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+                        $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while ($row2 = mysqli_fetch_array($get_details_result)) {
+                    
+                            $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+                        
+                        }
+                        $style = $job_detail_attributes[$sewing_job_attributes['style']];
+                        $color = $job_detail_attributes[$sewing_job_attributes['color']];
+                        $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
+                        $docketno = $job_detail_attributes[$sewing_job_attributes['docketno']];
+                        $ponumber = $job_detail_attributes[$sewing_job_attributes['ponumber']];
+
+                        //to get qty from jm job lines
+                        $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
+                        $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $toget_qty=mysqli_num_rows($toget_qty_qry_result);
+                        if($toget_qty>0){
+                            while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
+                            {
+                              $sew_qty = $toget_qty_det['qty'];
+                            }
+                        }
+                        //get_module
+                        $qry_get_module="SELECT resource_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE task_job_reference='$key'";
+                        $get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($get_module_row=mysqli_fetch_array($get_module_result))
                         {
-                           if($counter == 0){
-                            echo "<tr><td colspan=9><div class='alert alert-danger'>No Data Found</div></td></tr>";
-                           }
+                            $resource_id = $get_module_row['resource_id'];
                         }
-
-
+                       //To get workstation description
+                        $query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '$resource_id'";
+                        $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($des_row=mysqli_fetch_array($query_result))
+                        {
+                            $workstation_description = $des_row['workstation_description'];
+                        }
+                        $jg_header_id=$key;
+                        $job_number=$value;
+                        if($check_status == 0){
+                            $url = 'index.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
+                            $counter++;
+                            echo "<tr>";
+                                echo "<td>$counter</td>"; 
+                                echo "<td>$style</td>"; 
+                                echo "<td>$schedules</td>";
+                                echo "<td>$color</td>";
+                                echo "<td>$ponumber</td>"; 
+                                echo "<td>$job_number</td>";                   
+                                echo "<td>$sew_qty</td>";
+                                echo "<td>$workstation_description</td>";
+                                echo "<td>$docketno</td>";
+                                // echo "<td>$rem_qty</td>";
+                                echo "<td><a href='$url' onclick='return confirm_delete(event,this)' 
+                                        class='btn btn-danger btn-sm'>Remove From IPS</a></td>";
+                            echo "</tr>";
+                            }
+                            else
+                            {
+                            if($counter == 0){
+                                echo "<tr><td colspan=9><div class='alert alert-danger'>No Data Found</div></td></tr>";
+                            }
+                            }
                     }    
                 ?>
             </tbody>
