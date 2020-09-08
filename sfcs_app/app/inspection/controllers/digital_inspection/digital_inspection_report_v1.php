@@ -488,7 +488,7 @@ $username = $_SESSION['userName'];
 		  // 	$batch = $sql_row['supplier_batch'];
 		  // }
 	      echo "<script>swal('Proceed to Color Contunity Report','Successfully','success')</script>";
-	      $url = getFullURLLevel($_GET['r'], 'C_Tex_Interface_V6.php', 0, 'N') ;
+	      $url = getFullURLLevel($_GET['r'], 'c_tex_interface_v6.php', 0, 'N') ;
 	       echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 	     // echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
       }
