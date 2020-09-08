@@ -2,8 +2,16 @@
 	include('../../../common/config/functions.php');  
 $gate_id=$_GET['pass_id'];
 $print_type=$_GET['type'];
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+if(isset($_GET['plant_code']))
+{
+	$plant_code= $_GET['plant_code']; 
+	$username= $_GET['username']; 
+}
+else
+{
+	$plant_code = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
+}
 $sql12="select * from $pps.gatepass_table where id=".$gate_id." AND plant_code=".$plant_code."";
 $sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row12=mysqli_fetch_array($sql_result123))
@@ -13,7 +21,7 @@ while($sql_row12=mysqli_fetch_array($sql_result123))
 	$vehicle_no=$sql_row12['vehicle_no'];	
 	$operation=$sql_row12['operation'];	
 }
-$sql1122="select operation_name from $brandix_bts.tbl_orders_ops_ref where operation_code=".$operation."";
+$sql1122="SELECT operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and operation_code=".$operation."";
 $sql_result1w23=mysqli_query($link, $sql1122) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row1212=mysqli_fetch_array($sql_result1w23))
 {

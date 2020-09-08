@@ -61,7 +61,8 @@ $oms="oms_prod";
 $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
-$tms="tms";
+$tms="tms_prod";
+$pts="pts_prod";
 $wms="wms_prod";
 $fabric_categories_array = $conf1->get('category-display-dashboard');
 $in_categories = '"'.strtoupper( implode('","',$conf1->get('category-display-dashboard')) ).'"';
@@ -83,19 +84,4 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
 
 
-class TaskTypeEnum { 
-    const CUTJOB = 'CUTJOB';
-    const DOCKET = 'DOCKET';
-    const DOCKETBUNDLE = 'DOCKETBUNDLE';
-    const SEWINGJOB = 'SEWINGJOB';
-    const PACKINGJOB = 'PACKINGJOB';
-    const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'EMBJOB';
-    const LOGICALBUNDLE = 'LOGICALBUNDLE';
-    const POLYBAG = 'POLYBAG';
-    const PLANNEDSEWINGJOB = 'PSJ';
-    const PLANNEDEMBELLISHMENTJOB = 'PCEJ';
-}
-//IP for backend services
-$BackendServ_ip="http://192.168.0.155:3336";
 ?>

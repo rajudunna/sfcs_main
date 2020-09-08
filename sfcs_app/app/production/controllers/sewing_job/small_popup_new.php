@@ -14,7 +14,7 @@ $(document).ready(function()
 	var inputObj = {"jobNumber":inputjob, "plantCode":plant_code};
 	$.ajax({
 		type: "POST",
-		url: "<?php echo $BackendServ_ip?>​/jobs-generation​/getJobColorSizeDetails",
+		url: "<?php echo $PPS_SERVER_IP?>​/jobs-generation​/getJobColorSizeDetails",
 		data: inputObj,
 		success: function(response) 
 		{

@@ -312,8 +312,8 @@ if(isset($_GET['status'])>0){
 
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+$plant_code = $_GET['plant_code'];
+$username = $_GET['username'];
 ?>
 
 <div class="panel panel-primary" id="navbar">
@@ -360,6 +360,8 @@ $username = $_SESSION['userName'];
 			<form action="<?php getFullURLLevel($_GET["r"], "digital_inspection_report_v1.php", "0", "N") ?>" method="POST" name="form1" id="form1">
 					<?php
 						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
+						echo "<input type='hidden' value=".$plant_code." name='plant_code' id='plant_code'>";
+						echo "<input type='hidden' value=".$username." name='username' id='username'>";
 						$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
 						$k=0;
 						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -455,6 +457,8 @@ $username = $_SESSION['userName'];
 		{
 			$binddetails = $_POST['bindingdata'];
 			$parent_id = $_POST['parent_id'];
+			$plant_code = $_POST['plant_code'];
+			$username = $_POST['username'];
 			$count1 = count($binddetails);
 			if ($count1 > 0) 
 			{
@@ -471,7 +475,7 @@ $username = $_SESSION['userName'];
 			}
 			 echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
 	         $url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	         echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	         echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code&username=$username'</script>";
 	    }
     }
     else 

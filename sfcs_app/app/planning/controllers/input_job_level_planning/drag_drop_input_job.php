@@ -3,6 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 $module_limit=14;
 $plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
@@ -690,7 +691,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 	<div id="dhtmlgoodies_mainContainer" style="padding-left: 200px;">
 	<?php
 		$tasktype = TaskTypeEnum::SEWINGJOB;
-		$department='SEWING';
+		$department= DepartmentTypeEnum::SEWING;
 		/** Getting work stations based on department wise
 		   * @param:department,plantcode
 		   * @return:workstation
@@ -718,9 +719,16 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 		        $schedule1=implode("," , $schedule_details); 
 		        foreach($job_number as $sew_num=>$jm_sew_id)
 		        {
+					//To get taskjobs_id
+					$task_jobs_id = [];
+					$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+					$qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+						$task_jobs_id[] = $row21['task_jobs_id'];
+					}
                     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 					$job_detail_attributes = [];
-					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$jm_sew_id' and plant_code='$plant_code'";
+					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
 					$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row2 = mysqli_fetch_array($get_details_result)) {
 				
