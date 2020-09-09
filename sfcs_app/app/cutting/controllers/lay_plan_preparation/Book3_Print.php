@@ -2095,9 +2095,6 @@ body{
 	size: potrait;
 	margin: 0cm;
 }
-</style>
-
-<style>
 
 @media print {
     @page { margin: 0; }
