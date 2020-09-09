@@ -74,7 +74,7 @@ function getjobreversaldetails($job_number,$plant_code)
     foreach ($smsData as $key=>$operation) {
         $op_code = $operation['operationCode'];
         $op_desc = $operation['operationName'].' - '.$op_code;
-        if ($operation['operationForm'] == '$form_type' && ($operation['operationCategory'] == '$category_sewing' || $operation['operationCategory'] == '$category_emb') ) {
+        if ($operation['operationCategory'] == $category_sewing || ( $operation['operationForm'] == $form_type && $operation['operationCategory'] == $category_emb) ) {
             $operations[$op_code] = $op_desc;
         }
     }

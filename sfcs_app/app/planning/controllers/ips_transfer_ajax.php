@@ -119,8 +119,13 @@ function get_details($module,$plant_code){
         $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
         $style = $job_detail_attributes[$sewing_job_attributes['style']];
         $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']]; 
-        $po_number = $job_detail_attributes[$sewing_job_attributes['ponumber']]; 
-        $schedule1=implode("," , $schedule); 
+        //To get po number
+        $qry_get_podetails="SELECT po_number FROM $pps.jm_job_header LEFT JOIN $pps.jm_jg_header on jm_job_header.jm_job_header_id=jm_jg_header.jm_job_header WHERE jm_jg_header_id='".$jm_sew_id."' and jm_job_header.plant_code='$plant_code'";
+        $get_podetails_result=mysqli_query($link_new, $qry_get_podetails) or exit("Sql Error at qry_get_podetails".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($po_details_row=mysqli_fetch_array($get_podetails_result))
+        {
+         $po_number=$po_details_row['po_number'];
+        } 
         $jobno=$sew_num;
         $counter++;
         $html_out.= "<tr>";
