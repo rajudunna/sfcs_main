@@ -127,6 +127,8 @@ $rm_dashboard_api = $conf->get('rm_dashboard_api');
 //Enable API
 $enable_api_call = $conf->get('enable-api-call');
 
+// Break Hours
+$breakhours=$conf->get('breakhours');
 //Central Administraion Group ID's
 $group_id_sfcs=8;
 $group_id_Main=5;

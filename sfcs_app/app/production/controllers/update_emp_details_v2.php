@@ -297,7 +297,20 @@ if(isset($_POST['submit']))
 				if($sql_num_check>0)
 				{
 					echo"</tr>";
-					while($sql_row1=mysqli_fetch_array($sql_result1))
+					$get_modules2 = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1";
+					$modules_result2=mysqli_query($link, $get_modules2) or exit ("Error while fetching modules: $get_modules");
+					
+						while($module_row2=mysqli_fetch_array($modules_result2))
+						{
+							$modules1=$module_row2['module_name'];
+							$sql4="SELECT * FROM $bai_pro.pro_attendance where  date='$date' AND shift='$shift' AND module = '$modules1'  order by pro_attendance.module*1 ";
+						
+						$sql_result2=mysqli_query($link, $sql4) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+						$sql_num_check3=mysqli_num_rows($sql_result2);
+						if($sql_num_check3>0)
+						{
+					while($sql_row1=mysqli_fetch_array($sql_result2))
 					{
 						$atten_id=$sql_row1['atten_id'];
 						$date=$sql_row1['date'];
@@ -307,6 +320,15 @@ if(isset($_POST['submit']))
 						$jumper=$sql_row1['jumper'];
 						$break_hours=$sql_row1['break_hours'];
 						$module=$sql_row1['module'];
+
+					}
+				}else{
+					$avail_av='0';
+						$absent_ab='0';
+						$jumper='0';
+				}
+					
+					
 
 							$sql3="SELECT * FROM $bai_pro.pro_attendance_adjustment where id in(SELECT MIN(id) FROM $bai_pro.pro_attendance_adjustment WHERE module='$module' AND shift='$shift' AND DATE='$date' ) order by module*1 ";
 							//echo $sql3;
@@ -322,11 +344,11 @@ if(isset($_POST['submit']))
 							 }
 							
 
-	
+							
 						
-						$k=$modules_id_array[$module];
+						$k=$modules_id_array[$modules1];
 						echo "<tr id='dynamic$k' class='dynamic-$k'>
-								<td>".$module."</td>"; 
+								<td>".$modules1."</td>"; 
 								if(in_array($authorized,$has_permission))
 								{
 									$readonly = ''; ?>
@@ -342,9 +364,9 @@ if(isset($_POST['submit']))
 								{
 									$readonly = 'readonly';
 								}
-							?>
+							?>						
 								<input type="hidden"  name="count" id="count"  value=<?php echo $max_id ?>>
-								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" readonly style="width: 100px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" class="form-control" onkeyup="validateQty1(event,this);" <?php echo $readonly; ?> style="width: 100px;" value="<?php echo $jumper; ?>" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select  id="adjustment_type<?php echo $k; ?>" class="form-control" name="adjustment_type<?php echo $k; ?>" >
 								<option value="Positive" <?php if($adjustment_type == "Positive") { echo "SELECTED"; } ?>>Positive</option>
@@ -358,7 +380,7 @@ if(isset($_POST['submit']))
 								<?php
 							echo"</tr>";
 							
-					}
+						}
 					echo "</table>";
 		        if(in_array($authorized,$has_permission))
 					{ ?>
@@ -399,7 +421,7 @@ if(isset($_POST['submit']))
 						?>
 
 						         <input type="hidden"  name="count" id="count"  value=<?php echo $max_id; ?>>
-								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
+								<td><input type="text" onkeyup="validateQty1(event,this);" class="form-control" style="width: 100px;" readonly value="0" name="pra<?php echo $k; ?>"  id="pra<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><input type="text" onkeyup="validateQty1(event,this);"  class="form-control" style="width: 100px;"value="0" name="jumper<?php echo $k; ?>" id="jumper<?php echo $k; ?>" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" /></td>
 								<td><select class="form-control"name="adjustment_type<?php echo $k; ?>" id="adjustment_type<?php echo $k; ?>">
 								<option value="Positive">Positive</option>

@@ -10,8 +10,8 @@ $cut_no = '';
 
 
 foreach($sizes_array as $size){
-    $a_sizes_sum .= 'a_'.$size.'+';
-    $a_sizes_str .= 'a_'.$size.',';
+    $a_sizes_sum .= 'p_'.$size.'+';
+    $a_sizes_str .= 'p_'.$size.',';
 }
 $a_sizes_sum = rtrim($a_sizes_sum,'+');
 $a_sizes_str = rtrim($a_sizes_str,',');
@@ -367,7 +367,7 @@ while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
     
     $dockets_for_cut[$doc_for_cut]['category'] = $other_docket_category;
     $dockets_for_cut[$doc_for_cut]['doc_no'] = $doc_for_cut;
-    $dockets_for_cut[$doc_for_cut]['fab_required'] = round($material_req);
+    $dockets_for_cut[$doc_for_cut]['fab_required'] = round($material_req,2);
     $dockets_for_cut[$doc_for_cut]['a_plies'] = $docket_row['a_plies'];
     $dockets_for_cut[$doc_for_cut]['doc_qty'] = $docket_row['p_plies'] * $docket_row['ratio'];
     $dockets_for_cut[$doc_for_cut]['p_plies'] =  $docket_row['p_plies'];
@@ -377,7 +377,7 @@ while($docket_row = mysqli_fetch_array($dockets_for_cut_result)) {
 $response_data['dockets_for_cut'] = $dockets_for_cut;
 $response_data['category'] = $category;
 $response_data['doc_no'] = $doc_no;
-$response_data['fab_required'] = round($fab_required); 
+$response_data['fab_required'] = round($fab_required,2); 
 $response_data['doc_qty']    = $doc_qty;
 $response_data['ratio']      = $ratio;
 $response_data['size_ratio'] = $size_ratio;
@@ -435,8 +435,8 @@ function getRejectionDetails($doc_no,$all_docs){
     $ratio_result = mysqli_query($link,$ratio_query) or exit('Problem in getting rejections');
     while($row = mysqli_fetch_array($ratio_result)){
         foreach($sizes_array as $size){
-            if($row["a_$size"] > 0)
-                $old_sizes_ratio[$size] = $row["a_$size"];
+            if($row["p_$size"] > 0)
+                $old_sizes_ratio[$size] = $row["p_$size"];
         }
     }
 
@@ -466,8 +466,8 @@ function getSizesRatio($doc_no,$all_docs){
     $ratio_result = mysqli_query($link,$ratio_query) or exit('Problem in getting rejections');
     while($row = mysqli_fetch_array($ratio_result)){
         foreach($sizes_array as $size){
-            if($row["a_$size"] > 0)
-                $old_sizes_ratio[$size] = $row["a_$size"];
+            if($row["p_$size"] > 0)
+                $old_sizes_ratio[$size] = $row["p_$size"];
         }
     }
 

@@ -1,14 +1,8 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
-	// include("../../../../common/config/functions.php");
 
-	//API related data
-	$plant_code = $global_facility_code;
-	$company_num = $company_no;
-	$host= $api_hostname;
-	$port= $api_port_no;
-	$current_date = date('Y-m-d h:i:s');
+	$plant_code = $plant_wh_code;
 	// $b_op_id='200';
 	// $b_op_id_query = "SELECT operation_code FROM brandix_bts.`tbl_orders_ops_ref` WHERE category='packing' AND default_operation='Yes';";
 	// $sql_result=mysqli_query($link, $b_op_id_query) or exit("Error while fetching operation code");
@@ -217,6 +211,47 @@
 						{
 							// carton scanned successfully
 							$result_array['status'] = 2;
+							if($b_op_id == 200)
+							{
+								//To get vpo and co number
+								$get_co_vpo="SELECT order_date,co_no,vpo FROM $bai_pro3.bai_orders_db_confirm WHERE order_del_no='$schedule'";
+								$get_co_vpo_result = mysqli_query($link,$get_co_vpo);
+								while($row_main=mysqli_fetch_array($get_co_vpo_result))
+								{
+									$co_no=$row_main['co_no'];
+									$vpo=$row_main['vpo'];
+									$order_date=$row_main['order_date'];
+								}
+								
+								$carton_info = '[
+								{
+									"serialNumber" : "'.$carton_id.'",
+									"m3StyleNumber" : "'.$style.'",
+									"remarks" : "",
+									"m3ScheduleNumber" : "'.$schedule.'",
+									"m3ColorCode" : "",	
+									"cartonQuantity" : '.$carton_qty.',
+									"customerOrder" : "'.$co_no.'",
+									"vendorPurchaseOrder" : "'.$vpo.'",
+									"m3ReferenceNumber" : "",
+									"confirmedDeliveryDate" : "'.$order_date.'"
+								}
+								]';	
+								
+								$post_carton_response = $obj->postCartonInfo($carton_info, $plant_code, $carton_id);
+								$decoded = json_decode($post_carton_response,true);
+								//var_dump($decoded);
+								if($decoded['api_status'] == 'fail') {
+									// the API is unsuccessfull
+									$update_fg_id="update $bai_pro3.pac_stat set fg_status='fail'  where id = ".$carton_id."";
+									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
+								} else {
+									// the API is successfull
+									$inventory_id = $decoded[0]['id'];
+									$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id." and fg_status<>'pass'";
+									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
+								}								
+							}							
 						}
 					}
 					else
@@ -245,4 +280,6 @@
 		}
 		echo json_encode($result_array);
 	}
+	
+	
 ?>

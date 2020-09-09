@@ -15,13 +15,13 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
 <script>
 $(document).ready(function() {
 //Select all anchor tag with rel set to tooltip
-$('div[rel=tooltip]').hover(function(e) {
+$('div[rel=tooltip]').mouseover(function(e) {
   
   //Grab the title attribute's value and assign it to a variable
-  var tip = $(this).attr('title');  
+  var tip = $(this).attr('data-title');  
   
   //Remove the title attribute's to avoid the native tooltip from the browser
-  $(this).attr('title','');
+  $(this).attr('data-title','');
   
   //Append the tooltip template and its value
   $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
@@ -35,15 +35,16 @@ $('div[rel=tooltip]').hover(function(e) {
   //e.pageY + 0.5 * e.view.parent.pageYOffset
   $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','10px' );
+   $('#tooltip').css('margin-left','-38px' );
    $('#tooltip').css('text-align','left' );
    $('#tooltip').css('margin-top','10px' );
    $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('display', 'inline-block' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
 
   //Put back the title attribute's value
-  $(this).attr('title',$('.tipBody').html());
+  $(this).attr('data-title',$('.tipBody').html());
 
   //Remove the appended tooltip template
   $(this).children('div#tooltip').remove();
@@ -108,7 +109,7 @@ position:absolute;
 z-index:9999;
 color:#fff;
 font-size:12px;
-width:250px;
+width:220px;
 pointer-events: none; 
 
 }
@@ -738,22 +739,22 @@ padding:5px 5px 5px 15px;
                         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
                       if($rep_status!=''){
                         if($final_cols=="yellow" || $final_cols=="orange"){
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;' ><div title='$title' rel='tooltip'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</div></a></div></div><br/>";
+                            echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;' >$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div></div><br/>";
                         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='#'
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='#'
                             onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
-                            ><div title='$title' rel='tooltip'>$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</div></a></div></div><br/>";
+                            >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div></div><br/>";
                         }
                         else if($final_cols=="pink"){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><div title='$title' rel='tooltip'>RT:".$req_time1."</div></div></div><br/>";
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' >RT:".$req_time1."</div></div></div><br/>";
                         }
                         else{
                           if($fabric_req_date<date("Y-M-d h:i:sa")){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white'>
-                          <div title='$title' rel='tooltip'><div class='blink'>RT:".$req_time1."</div></div></div></div><br/>";
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white'>
+                          <div class='blink'>RT:".$req_time1."</div></div></div></div><br/>";
                           }
                           else{
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' ><div title='$title' rel='tooltip'>RT:".$req_time1."</div></div></div><br/>";
+                            echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' >RT:".$req_time1."</div></div></div><br/>";
                           }
                         }
                       }

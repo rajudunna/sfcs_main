@@ -2,6 +2,7 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+error_reporting(0);
 
 if($attendance_integration=='HRMS')
 {
@@ -104,14 +105,35 @@ if($attendance_integration=='HRMS')
 else
 {
 	//today
-	$date=date("Y-m-d"); 
-	//$date='2020-07-23'; 
+	if($_GET['date'])
+	{
+		$date=$_GET['date'];
+	}
+	else
+	{
+		$date=date("Y-m-d");
+	} 
 	$conn = odbc_connect("$hcm_sql_driver_name;Server=$hcm_sql_server;Database=$hcm_db;",$hcm_sql_user,$hcm_sql_pass);
-
+	
 	$hcm_module=array();
 	$hcm_modules=array();
 	$hcm_shift=array();
 	$hcm_shifts=array();
+	$teams=array();
+	//HCM Module Mapping
+	for($k=0; $k < sizeof($shifts_array); $k++)
+	{
+		$sql_shift="select sum(present) as nop from $bai_pro.pro_attendance where date='".$date."' and shift='".$shifts_array[$k]."'";
+		$result_shift=mysqli_query($link, $sql_shift) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_shift_rows=mysqli_fetch_array($result_shift))
+		{			
+			if($sql_shift_rows['nop']>0)
+			{
+				$teams[]=$shifts_array[$k];	
+			}	
+		}		
+	}
+	
 	//HCM Module Mapping
 	$hcm_query_module = "select * from $bai_pro.hcm_module_mapping";
 	$hcm_result=mysqli_query($link, $hcm_query_module) or die ("Error1.1=".$get_details.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -128,8 +150,6 @@ else
 		$hcm_shifts[]=$hcm_shift_row['hcm_code'];	
 		$hcm_shift[$hcm_shift_row['hcm_code']]=$hcm_shift_row['sfcs_shift'];	
 	}
-	$sql11="update $bai_pro.pro_attendance set present='',absent='' where date='".$date."'";
-	mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$locations=explode(",",$hcm_location_id);
 	
 	if(sizeof($hcm_modules)>0 && sizeof($hcm_shifts) && sizeof($locations)>0)
@@ -147,7 +167,16 @@ else
 					$sql_result = odbc_exec($conn, $get_details);
 					if(odbc_num_rows($sql_result) == 0)
 					{
-						echo "No result<br>";
+						//echo "No result<br>";
+						$module=$hcm_module[$hcm_modules[$iii]];
+						$team=$hcm_shift[$hcm_shifts[$ii]];
+						$sqla1="select * from $bai_pro.pro_attendance where date='".$date."' and module='".$module."' and shift='".$team."'";
+						$sqlresa1=mysqli_query($link, $sqla1) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($sqlresa1)==0)
+						{
+							$sql1="insert into $bai_pro.pro_attendance (date,module,shift,present,absent,break_hours) VALUES ('".$date."','$module','".$team."',0,0,".$breakhours.")";						
+							mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
+						}
 					}
 					else
 					{
@@ -156,22 +185,25 @@ else
 							$active=odbc_result($sql_result,'present'); 
 							$absent=odbc_result($sql_result,'absence');												
 							$module=$hcm_module[$hcm_modules[$iii]];
-							$team=$hcm_shift[$hcm_shifts[$ii]];						
-							$sqla="select * from $bai_pro.pro_attendance where date='".$date."' and module='".$module."' and shift='".$team."'";
-							$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-							if(mysqli_num_rows($sqlresa)==0)
-							{
-								$sql1="insert into $bai_pro.pro_attendance (date,module,shift) VALUES ('".$date."','$module','".$team."')";								
-								mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$sql23="update $bai_pro.pro_attendance set present=".$active.",absent=".$absent." where date='".$date."' and module='$module' and shift='".$team."'";
-								//echo $sql23."<br>";
-								mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$team=$hcm_shift[$hcm_shifts[$ii]];	
+							if(!in_array($team,$teams))
+							{							
+								$sqla="select * from $bai_pro.pro_attendance where date='".$date."' and module='".$module."' and shift='".$team."'";
+								$sqlresa=mysqli_query($link, $sqla) or exit("Sql Errord $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($sqlresa)==0)
+								{
+									$sql1="insert into $bai_pro.pro_attendance (date,module,shift,break_hours) VALUES ('".$date."','$module','".$team."',".$breakhours.")";								
+									mysqli_query($link, $sql1) or exit("Sql Errore".mysqli_error($GLOBALS["___mysqli_ston"]));
+									$sql23="update $bai_pro.pro_attendance set present=".$active." where date='".$date."' and module='$module' and shift='".$team."'";
+									//echo $sql23."<br>";
+									mysqli_query($link, $sql23) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}
+								else{
+									$sql22="update $bai_pro.pro_attendance set present=present+".$active." where date='".$date."' and module='$module' and shift='".$team."'";
+									//echo $sql23."<br>";
+									mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
+								}									
 							}
-							else{
-								$sql22="update $bai_pro.pro_attendance set present=present+".$active.",absent=absent+".$absent." where date='".$date."' and module='$module' and shift='".$team."'";
-								//echo $sql23."<br>";
-								mysqli_query($link, $sql22) or exit("Sql Errorf".mysqli_error($GLOBALS["___mysqli_ston"]));
-							}									
 						}
 					}
 				}
