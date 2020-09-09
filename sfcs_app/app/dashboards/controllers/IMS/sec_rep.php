@@ -168,8 +168,7 @@ if(isset($_GET['val']))
 
 ?>
 
-<?php   
-        $plantCode="Q01";
+<?php 
         include('imsCalls.php');
         if(isset($_POST['submit']))
         {
@@ -228,12 +227,7 @@ if(isset($_GET['val']))
              * getting Operations plant wise
              */
             $SwingOperationsArray=getOperationsTypeSewing($plantCode);
-            //var_dump($SwingOperationsArray);
-            // foreach($SwingOperationsArray as $key=>$name)
-            // {
-            //   $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
-            // }
-
+            
             $col_span = count($SwingOperationsArray);
 			$modules=array();
 			$modules=explode(",",$sec_mods);
@@ -317,9 +311,26 @@ if(isset($_GET['val']))
                             $color = $job_detail_attributes[$sewing_job_attributes['color']];
                             $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
                             $cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+                            $remarks = $job_detail_attributes[$sewing_job_attributes['remarks']];
 
                         $bundlesQry = "select jm_job_bundle_id,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id ='".$job['taskJobRef']."'";
                         $bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                        if(isset($_POST['submit']))
+                        {
+                            $input_selection=$_POST['input_selection'];
+                            if($input_selection=='input_wise'){
+                            $bundlesQry.=" GROUP BY jm_jg_header_id";
+                            }
+                            if($input_selection=='bundle_wise'){
+                                $bundlesQry.=" GROUP BY jm_job_bundle_id";
+                            }
+                        }
+                        else
+                        {
+                            $bundlesQry.=" GROUP BY jm_job_bundle_id";
+                        }
+
                         while($bundleRow=mysqli_fetch_array($bundlesResult))
                         {
                             // echo $bundleRow['bundle_number']."</br>";
@@ -331,7 +342,7 @@ if(isset($_GET['val']))
                             $barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                             while($barcodeRow=mysqli_fetch_array($barcodeResult))
                             {
-                                $transactionsQry = "select good_quantity,rejected_quantity,operation from $pts.transaction_log where barcode_id ='".$barcodeRow['barcode_id']."'";
+                                $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation from $pts.transaction_log where barcode_id ='".$barcodeRow['barcode_id']."'";
                                 $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                                 $rejQtyOps=array();
                                 while($transactionRow=mysqli_fetch_array($transactionsResult)) {
@@ -348,16 +359,12 @@ if(isset($_GET['val']))
                                         /**rejected qty for output */
                                         $outputRejQty=$transactionRow['rejected_quantity'];
                                     }
-                                    
-
-                                    $rejQtyOps[$transactionRow['operation']] = $transactionRow['rejected_quantity'];
-
-                                    
+                                    $rejQtyOps[$transactionRow['operation']] = $transactionRow['rejected_quantity'];   
                                 }
                             }
 
-                        $quality_log_row="";
-						$quality_log_row="<td>bundle creation data remarks</td><td>Exfactory from shipment</td>";
+                            $quality_log_row="";
+                            $quality_log_row="<td>Exfactorydate</td>";
                             if($rowcount_check==1)
                             {
                                 if($row_counter == 0)
@@ -394,21 +401,22 @@ if(isset($_GET['val']))
                                             }
                                         }
                                         echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
+                                        echo "<td>".$remarks."</td>";
                                         echo $quality_log_row;
-                                        if(in_array($edit,$has_permission))
+                                        // if(in_array($edit,$has_permission))
+                                        // {
+                                        //     if(strlen($team_comm)>0)
+                                        //     {
+                                        //         echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                        //     }
+                                        //     else
+                                        //     {
+                                        //         echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                        //     }
+                                        // }
+                                        // else
                                         {
-                                            if(strlen($team_comm)>0)
-                                            {
-                                                echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-                                            }
-                                            else
-                                            {
-                                                echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-                                            }
-                                        }
-                                        else
-                                        {
-                                            echo "<td>".$team_comm."</td><td>Age for bundle</td>";
+                                            echo "<td>".$remarks."</td><td>Age for bundle</td>";
                                         }
                                         if($rowcount_check==1)
                                         {
@@ -452,21 +460,22 @@ if(isset($_GET['val']))
                                         }
                                     }
                                     echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
+                                    echo "<td>".$remarks."</td>";
                                     echo $quality_log_row;
-                                    if(in_array($edit,$has_permission))
+                                    // if(in_array($edit,$has_permission))
+                                    // {
+                                    //     if(strlen($team_comm)>0)
+                                    //     {
+                                    //         echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                    //     }
+                                    //     else
+                                    //     {
+                                    //         echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                    //     }						
+                                    // }
+                                    // else
                                     {
-                                        if(strlen($team_comm)>0)
-                                        {
-                                            echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-                                        }
-                                        else
-                                        {
-                                            echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
-                                        }						
-                                    }
-                                    else
-                                    {
-                                        echo "<td>".$team_comm."</td><td>Age for bundle</td>";
+                                        echo "<td>".$remarks."</td><td>Age for bundle</td>";
                                     }
                                     //if($row_counter > 0)
                                     echo "<td bgcolor='$tr_color' style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
