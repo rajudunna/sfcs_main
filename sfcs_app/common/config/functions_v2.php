@@ -41,6 +41,28 @@ function getJmDockets($doc_num,$plant_code){
         if($ratio_comp_group_id!=''){
             /**By using ratio component group we can get marker details */
             /**NOte :we can take only default_marker_version=1 details only */
+            $getting_style="SELECT `master_po_details_id` FROM $pps.`lp_ratio_component_group` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND `plant_code`='$plant_code'";
+            $getting_style_result=mysqli_query($link_new, $getting_style) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $getting_style_result_num=mysqli_num_rows($getting_style_result);
+            if($getting_style_result_num>0){
+                while($sql_row1123=mysqli_fetch_array($getting_style_result))
+                {
+                    $master_po_details_id=$sql_row1123['master_po_details_id'];
+                }
+            }
+
+            $style_info_query = "SELECT mpc.style, mp.master_po_number, mp.master_po_description 
+            FROM $pps.mp_color_detail mpc 
+            LEFT JOIN $pps.mp_order mp ON mpc.master_po_number = mp.master_po_number
+            WHERE mpc.master_po_details_id = '$master_po_details_id' ";
+            //echo $style_info_query ;
+            $style_info_result=mysqli_query($link_new, $style_info_query) or exit("Sql style_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row = mysqli_fetch_array($style_info_result))
+            {
+                $style = $row['style'];
+                $master_po = $row['master_po_number'];
+                $master_po_desc = $row['master_po_description'];
+            }
             $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);
