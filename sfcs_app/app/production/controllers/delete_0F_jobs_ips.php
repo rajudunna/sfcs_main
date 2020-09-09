@@ -156,13 +156,14 @@
                         }
                         $jg_header_id=$key;
                         $job_number=$value;
+                        $ponumber=$jm_job_header_id[$key];
                         if($check_status == 0){
                             $url = 'index.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
                             $counter++;
                             echo "<tr>";
                                 echo "<td>$counter</td>"; 
                                 echo "<td>$style</td>"; 
-                                echo "<td>$schedules</td>";
+                                echo "<td>$schedule</td>";
                                 echo "<td>$color</td>";
                                 echo "<td>$ponumber</td>"; 
                                 echo "<td>$job_number</td>";                   
