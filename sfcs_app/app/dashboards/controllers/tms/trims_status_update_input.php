@@ -135,6 +135,7 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$module_no=$_POST["moduleno"];
 	$prefix=$_POST['prefix'];
 	$jm_jg_header_id=$_POST['jm_jg_header_id'];
+	$color=$_POST['color'];
 
 	//echo $doc."<br>";
 }
@@ -147,14 +148,14 @@ else
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
 	$prefix=$_GET['prefix'];
-    $jm_jg_header_id=$_POST['jm_jg_header_id'];
-	//echo $doc."<br>";
+    $jm_jg_header_id=$_GET['jm_jg_header_id'];
+	$color=$_GET['color'];
 }
 
 
 echo "<h2>Trims Status View Form</h2>";
     $textbox_disable="disabled=\"disabled\"";
-	$dropdown_disable="disabled=\"disabled\"";
+	// $dropdown_disable="disabled=\"disabled\"";
 
 
 echo "<h3>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h3>";
@@ -170,8 +171,9 @@ echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/se
 
 echo "<br><br>";
 
-$url5 = getFullURLLevel($_GET['r'],'sfcs_app/app/production/controllers/sewing_job/barcode_new.php',5,'R');
-        echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
+
+// $url5 = getFullURLLevel($_GET['r'],'sfcs_app/app/production/controllers/sewing_job/barcode_new.php',5,'R');
+//         echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
 
 	
 $balance_tot=0;
@@ -191,6 +193,7 @@ $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_refere
 $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 	$task_jobs_id[] = $row21['task_jobs_id'];
+	$task_job_id = $row21['task_jobs_id'];
 }
 //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 $job_detail_attributes = [];
@@ -201,7 +204,7 @@ while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 }
 $cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 $docket_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
-$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' group by size";
+$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND  jm_job_bundles.plant_code='$plant_code' group by size";
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
@@ -225,7 +228,7 @@ while($row=mysqli_fetch_array($sql_result))
 }
 echo "</table>";
 //get trim status
-$get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id in ('".implode("','" , $task_jobs_id)."')";
+$get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id= '$task_job_id'";
 $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
   while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
 	 $trim_status=$row2['trim_status'];
@@ -239,30 +242,7 @@ $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("S
 <div class="form-inline">
 <div class="form-group">
 <?php
-$status=array();
-switch ($trim_status)
-{
-	case "0":
-	{
-		$status=TrimStatusEnum::OPEN;
-	}
-    case "1":
-	{
-		$status=TrimStatusEnum::PREPARINGMATERIAL;
-	}
-	case "2":
-	{
-		$status=TrimStatusEnum::MATERIALREADYFORPRODUCTION;
-	}
-	case "3":
-	{
-		$status=TrimStatusEnum::PARTIALISSUED;
-	}
-	case "4":
-	{
-		$status=TrimStatusEnum::ISSUED;
-	}
-}   
+$status=array("OPEN"=>TrimStatusEnum::OPEN,"PREPARINGMATERIAL"=>TrimStatusEnum::PREPARINGMATERIAL,"MATERIALREADYFORPRODUCTION"=>TrimStatusEnum::MATERIALREADYFORPRODUCTION,"PARTIALISSUED"=>TrimStatusEnum::PARTIALISSUED,"ISSUED"=>TrimStatusEnum::ISSUED);
 echo "<input type=\"hidden\" name=\"doc\" value=\"$doc\" />";
 echo "<input type=\"hidden\" name=\"docket_no\" value=\"$docket_no\" />";
 echo "<input type=\"hidden\" name=\"section\" value=\"$section\" />";
@@ -270,23 +250,23 @@ echo "<input type=\"hidden\" name=\"style\" value=\"$style\" />";
 echo "<input type=\"hidden\" name=\"schedule\" value=\"$schedule\" />";
 echo "<input type=\"hidden\" name=\"jobno\" value=\"$jobno\" />";
 echo "<input type=\"hidden\" name=\"moduleno\" value=\"$module_no\" />";
-echo "<input type=\"hidden\" name=\"task_jobs_id\" value=\"$task_jobs_id\" />";
+echo "<input type=\"hidden\" name=\"task_job_id\" value=\"$task_job_id\" />";
 echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
 
-	for($i=0;$i<sizeof($status);$i++)
-	{	
-		if($trims_status == $i)
-		{
-			echo "<option value=\"$i\" selected>".$status[$i]."</option>";
-		}
-		else
-		{
-			echo "<option value=\"$i\">".$status[$i]."</option>";
-		}
-		//echo "sa =" .$sta."<br>";
-	}
-	echo "</select>";
-	$pvalue=$_POST['status'];
+  foreach($status as $key => $value)
+  { 
+    if($trims_status == $value)
+    {
+      echo "<option value='".$value."' selected>".$value."</option>";
+    }
+    else
+    {
+      echo "<option value='".$value."'>".$value."</option>";
+    }
+    //echo "sa =" .$sta."<br>";
+  }
+  echo "</select>";
+  $pvalue=$_POST['status'];
 	//echo "pres value=".$pvalue;
 
 echo "</td>";
@@ -309,33 +289,10 @@ if(isset($_POST["submit"]))
 	$style_code=$_POST["style"];
 	$schedule_code=$_POST["schedule"];
 	$color_code=$_POST["input_color"];
-    $task_jobs_id=$_POST['task_jobs_id'];
-	$status=array();
-	switch ($up_status)
-	{
-		case "0":
-		{
-			$status=TrimStatusEnum::OPEN;
-		}
-		case "1":
-		{
-			$status=TrimStatusEnum::PREPARINGMATERIAL;
-		}
-		case "2":
-		{
-			$status=TrimStatusEnum::MATERIALREADYFORPRODUCTION;
-		}
-		case "3":
-		{
-			$status=TrimStatusEnum::PARTIALISSUED;
-		}
-		case "4":
-		{
-			$status=TrimStatusEnum::ISSUED;
-		}
-	}	
+    $task_job_id=$_POST['task_job_id'];
 	
-	$sql4="UPDATE $pps.job_trims SET trim_status='".$status."' WHERE task_job_id='$task_jobs_id'";
+
+	$sql4="UPDATE $pps.job_trims SET trim_status='".$up_status."' WHERE task_job_id='$task_job_id'";
 	//echo $sql4;
 	mysqli_query($link, $sql4);
 			

@@ -99,7 +99,6 @@ function getPlannedJobsTms($work_id,$tasktype,$plant_code){
     //Qry to fetch task_header_id from task_header
     $task_header_id=array();
     $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".TaskStatusEnum::INPROGRESS."' AND task_type='$tasktype' AND plant_code='$plant_code'";
-    echo $get_task_header_id;
     $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
     {
@@ -129,5 +128,35 @@ function getPlannedJobsTms($work_id,$tasktype,$plant_code){
         'task_header_id' => $task_header_id
     );
 } 
+
+/**
+ * get count for trim allocated jobs
+ */
+function calculateJobsCount($module){ 
+	global $link_new;
+	global $tms;
+	global $pms;
+	global $TaskTypeEnum;
+	global $TrimStatusEnum;
+ 
+	$tasktype=TaskTypeEnum::SEWINGJOB;
+	$task_jobs_id=array();
+	$qry_get_task_id="SELECT task_jobs_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE resource_id='$module' and task_header.plant_code='$plant_code' and task_header.task_type='$tasktype'";
+	$get_module_result=mysqli_query($link_new, $qry_get_task_id) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($get_module_row=mysqli_fetch_array($get_module_result))
+	{
+	  $task_jobs_id[] = $get_module_row['task_jobs_id'];
+	}
+	$trim_status=TrimStatusEnum::ISSUED;
+	$get_count="SELECT count(task_job_id) as task_job_id_count  FROM $pms.job_trims WHERE trim_status='$trim_status' AND plant_code='$plant_code' AND task_job_id IN ('".implode("','" , $task_jobs_id)."')";
+	$get_count_result = mysqli_query($link_new,$get_count);
+	while($row = mysqli_fetch_array($get_count_result)){
+		  $jobs_count = $row['task_job_id_count'];
+		}
+	if($jobs_count == 0 || $jobs_count == '')
+		return 0;
+	else	
+		return $jobs_count;
+}
 
 ?>

@@ -433,6 +433,7 @@ window.onload = startBlink;
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 include('functions_tms.php');
 $plant_code=$_SESSION['plantCode'];
@@ -549,7 +550,7 @@ $blink_docs=array();
 			@returns:job_number,task_header_id
 		*/
 		$tasktype=TaskTypeEnum::SEWINGJOB;
-		$result_planned_jobs=getPlannedJobsTms($work_id,$tasktype,$plant_code);
+		$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 		$job_number=$result_planned_jobs['job_number'];
 		$task_header_id=$result_planned_jobs['task_header_id'];
 		foreach($job_number as $sew_num=>$jm_sew_id)
@@ -561,6 +562,7 @@ $blink_docs=array();
 		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 			  $task_jobs_id[] = $row21['task_jobs_id'];
+			  $task_job_id = $row21['task_jobs_id'];
 		  }
           //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 		  $job_detail_attributes = [];
@@ -588,7 +590,7 @@ $blink_docs=array();
 			  }
 		  }
 		  //qry to get trim status
-		  $get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id in ('".implode("','" , $task_jobs_id)."')";
+		  $get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id ='$task_job_id'";
 		  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
                $trim_status=$row2['trim_status'];
@@ -612,7 +614,7 @@ $blink_docs=array();
 			}
 			$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$cono,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$color,80)."\n".str_pad("Job_No:".$sewingjobno,80)."\n".str_pad("Job Qty:".$sew_qty,80);
 			
-			echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
+			echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
 		}
 
 	}
@@ -633,33 +635,3 @@ include('include_legends_tms.php');
 </body>
 </html> 
 
-
-
-<?php
-function calculateJobsCount($module){ 
-	global $link_new;
-	global $tms;
-	global $pms;
-	global $TaskTypeEnum;
-	global $TrimStatusEnum;
- 
-	$tasktype=TaskTypeEnum::SEWINGJOB;
-	$task_jobs_id=array();
-	$qry_get_task_id="SELECT task_jobs_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE resource_id='$module' and task_header.plant_code='$plant_code' and task_header.task_type='$tasktype'";
-	$get_module_result=mysqli_query($link_new, $qry_get_task_id) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($get_module_row=mysqli_fetch_array($get_module_result))
-	{
-	  $task_jobs_id[] = $get_module_row['task_jobs_id'];
-	}
-	$trim_status=TrimStatusEnum::ISSUED;
-	$get_count="SELECT count(task_job_id) as task_job_id_count  FROM $pms.job_trims WHERE trim_status='$trim_status' AND plant_code='$plant_code'";
-	$get_count_result = mysqli_query($link_new,$get_count);
-	while($row = mysqli_fetch_array($get_count_result)){
-		  $jobs_count = $row['task_job_id_count'];
-		}
-	if($jobs_count == 0 || $jobs_count == '')
-		return 0;
-	else	
-		return $jobs_count;
-}
-?>
