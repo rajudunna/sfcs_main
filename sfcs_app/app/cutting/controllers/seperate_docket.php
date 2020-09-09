@@ -4,11 +4,9 @@
     $per = 'No';
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
-
     $close_url = getFullURLLevel($_GET['r'],'closed_docket.php',0,'R');
-    
     $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
-    $sql_result = mysqli_query($link,$query);
+    $sql_result = mysqli_query($link_new,$query);
     if(mysqli_num_rows($sql_result)>0){
         $count = mysqli_num_rows($sql_result);
     } else {
@@ -69,7 +67,7 @@ th{
                         <tbody>
                         <?php
                             $query = "select * from $pps.binding_consumption where status='Open' and plant_code='".$plant_code."'";
-                            $sql_result = mysqli_query($link,$query);
+                            $sql_result = mysqli_query($link_new,$query);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 $table1_rows++;
@@ -115,7 +113,7 @@ th{
                                 $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/Book3_print_binding.php',0,'R'); 
                              
                                 $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
-                                $sql_result = mysqli_query($link,$query);
+                                $sql_result = mysqli_query($link_new,$query);
                                 $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
                                 {
@@ -130,7 +128,7 @@ th{
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
-                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
                                 if($index==0) {
@@ -174,7 +172,7 @@ th{
 
   <?php
     $query = "select * from $pps.binding_consumption where plant_code='".$plant_code."'";
-    $sql_result = mysqli_query($link,$query) or exit('Cant  run');
+    $sql_result = mysqli_query($link_new,$query) or exit('Cant  run');
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $i = $sql_row['id'];
@@ -185,8 +183,8 @@ th{
                     <button type='button' class='close'  id = 'cancel' data-dismiss='modal'>&times;</button>
                 </div>";
         echo "<div class='modal-body'>";
-                    $child_query = "select * from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where parent_id='".$i."' and plant_code='".$plant_code."'";
-                    $child_result = mysqli_query($link,$child_query);
+                    $child_query = "select * from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$i."' and c.plant_code='".$plant_code."'";
+                    $child_result = mysqli_query($link_new,$child_query);
                     // var_dump(mysqli_num_rows($child_result));
                     if(mysqli_num_rows($child_result) > 0){
                         $index = 0;
@@ -258,7 +256,7 @@ th{
             //  console.log($_GET['r']);
             if(status=='Allocate') {
                 url_path = "<?php echo getFullURLLevel($_GET['r'],'dashboards/controllers/cps/binding_consumption_allocation.php',2,'R'); ?>";
-                window.open(url_path+"?doc_no=B"+row_id+"&status="+status);
+                window.open(url_path+"?doc_no="+row_id+"&status="+status);
             } else {
                 url_path = "<?php echo getFullURLLevel($_GET['r'],'cutting/controllers/binding_consumption.php',2,'R'); ?>";
                 window.open(url_path+"?row_id="+row_id+"&status="+status);

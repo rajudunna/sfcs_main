@@ -3,7 +3,8 @@
 </head>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
@@ -122,18 +123,36 @@ $(document).ready(function()
 			var operation_id = res[1];
 		}
 		var plant_code = $('#plant_code').val();
-        var inputObj = {barcode:barcode, plantCode:plant_code, operationCode:operation_id};
-        
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax_new.php','R'); ?>";
-        $.ajax({
-            type: "POST",
-            url: function_text+"?inputObj="+inputObj,
-            success: function(response) 
-            {
-                var bundet = JSON.parse(response);
-                tableConstruction(bundet);
-            }
-        });
+        var bundet;
+		const data={
+						"barcode": barcode,
+						"plantCode": plant_code,
+						"operationCode": operation_id,
+						"createdUser": <?= $username ?>,
+						"shift": <?=shift ?>,
+						"reportAsFullGood": true
+				    }
+			$.ajax({
+				type: "POST",
+				url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+				data: data,
+				success: function (res) {            
+					//console.log(res.data);
+					if(res.status)
+					{
+						bundet=res.data
+						tableConstruction(bundet);
+						swal(res.internalMessage);
+					}
+					else
+					{
+						swal(res.internalMessage);
+					}                       
+				},
+				error: function(res){
+					swal('Error in getting data');
+				}
+			});
 	});
 		
 	

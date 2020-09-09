@@ -3,12 +3,15 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
+$plant_code =  $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Embellishment Plan Dashboard</title>
-<META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php">
+<!-- <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> -->
 <style>
 body
 {
@@ -58,15 +61,15 @@ $get_sub_po=$_GET['sub_po'];
 <div class="panel panel-primary"> 
 <div class="panel-heading">Embellishment Production Planning Panel</div> 
 <div class="panel-body"> 
-<form name="test" action="index.php?r=<?php echo $_GET['r'];  ?>" method="post"> 
+<form name="test" action="index-no-navi.php?r=<?php echo $_GET['r'];  ?>" method="post"> 
 <?php
 	//function to get style from mp_color_details
-	if($plantcode!=''){
-		$result_mp_color_details=getMpColorDetail($plantcode);
+	if($plant_code!=''){
+		$result_mp_color_details=getMpColorDetail($plant_code);
 		$style=$result_mp_color_details['style'];
 	}
     echo "<div class='row'>"; 
-	echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
+	echo "<div class='col-sm-3'><label>Select Style: </label><select style='min-width:100%' name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
 	echo "<option value=\"\" selected>NIL</option>";
 	foreach ($style as $style_value) {
 		if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
@@ -80,11 +83,11 @@ $get_sub_po=$_GET['sub_po'];
 	} 
 	echo "</select></div>";
 	//qry to get schedules form mp_mo_qty based on master_po_details_id 
-	if($get_style!=''&& $plantcode!=''){
-		$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+	if($get_style!=''&& $plant_code!=''){
+		$result_bulk_schedules=getBulkSchedules($get_style,$plant_code);
 		$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
 	}  
-	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+	echo "<div class='col-sm-3'><label>Select Schedule: </label><select style='min-width:100%' name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
 	echo "<option value=\"\" selected>NIL</option>";
 	foreach ($bulk_schedule as $bulk_schedule_value) {
 		if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
@@ -99,12 +102,12 @@ $get_sub_po=$_GET['sub_po'];
 	echo "</select></div>";
 	
 	//function to get color form mp_mo_qty based on schedules and plant code from mp_mo_qty
-	if($get_schedule!='' && $plantcode!=''){
-		$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+	if($get_schedule!='' && $plant_code!=''){
+		$result_bulk_colors=getBulkColors($get_schedule,$plant_code);
 		$bulk_color=$result_bulk_colors['color_bulk'];
 	}
 	echo "<div class='col-sm-3'><label>Select Color: </label>";  
-	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"color\" onchange=\"thirdbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($bulk_color as $bulk_color_value) {
 					if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
@@ -119,12 +122,12 @@ $get_sub_po=$_GET['sub_po'];
 	echo "</select></div>";
 	
 	//function to get master po's from mp_mo_qty based on schedule and color
-	if($get_schedule!='' && $get_color!='' && $plantcode!=''){
-		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+	if($get_schedule!='' && $get_color!='' && $plant_code!=''){
+		$result_bulk_MPO=getMpos($get_schedule,$get_color,$plant_code);
 		$master_po_description=$result_bulk_MPO['master_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
-	echo "<select name=\"mpo\" onchange=\"forthbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"mpo\" onchange=\"forthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($master_po_description as $key=>$master_po_description_val) {
 					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
@@ -139,12 +142,12 @@ $get_sub_po=$_GET['sub_po'];
 	echo "</select></div>";
 	
 	//function to get sub po's from mp_mo_qty based on master PO's
-	if($get_mpo!='' && $plantcode!=''){
-		$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+	if($get_mpo!='' && $plant_code!=''){
+		$result_bulk_subPO=getBulkSubPo($get_mpo,$plant_code);
 		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
-	echo "<select name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($sub_po_description as $key=>$sub_po_description_val) {
 					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
@@ -160,7 +163,7 @@ $get_sub_po=$_GET['sub_po'];
 echo "</br><div class='col-sm-3'>";
  $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
  //Qry to fetch jm_job_header_id from jm_jobs_header
- $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
+ $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
  $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
  $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
  if($jm_job_header_id_result_num>0){
@@ -191,27 +194,13 @@ echo "</div></div></form>";
 <?php
 if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
 {
+	echo "<br><br><center><h2><font color=\"green\">Please Wait...</font></h2></center>";
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
 	$mpo=$_POST['mpo'];
 	$sub_po=$_POST['sub_po'];
 	
-	$data_sym="$";
-	
-
-	$my_file = getFullURLLevel($_GET['r'],'embellishment_drag_drop_data.php',0,'R');
-
-	$handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file);
-
-	$stringData = "<?php ".$data_sym."style_ref=\"".$style."\"; ".$data_sym."schedule_ref=\"".$schedule."\"; ".$data_sym."color_ref=\"".$color."\"; ".$data_sym."mpo=\"".$mpo."\"; ".$data_sym."sub_po=\"".$sub_po."\"; ?>";
-
-	fwrite($handle, $stringData);
-	fclose(handle);
-
-	
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"drag_drop.php?color=$color&style=$style&schedule=$schedule&code=$code&cat_ref=$cat_ref\"; }</script>";
-	$url = getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"$url\"; }</script>";
+	echo "<script>window.location = '".getFullURLLevel($_GET['r'],'embellishment_drag_drop.php',0,'N')."&style=$style&schedule=$schedule&cutno=$cutno&color=$color&mpo=$mpo&sub_po=$sub_po';</script>";
 }
 ?>  

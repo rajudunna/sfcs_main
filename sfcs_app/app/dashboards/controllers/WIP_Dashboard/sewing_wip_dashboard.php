@@ -1,15 +1,19 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php'); 
     $url = getFullURLLevel($_GET['r'],'wip_dashboard_data.php',0,'R');
     // $RELOAD_TIME = (int)$wip_refresh_time;
     $RELOAD_TIME = (int)$wpt_refresh_time;
     $dashboard_name="WIP";
+    // $session_plant_code = 'Q01';
+    $session_plant_code = $_SESSION['plantCode'];
+    $username =  $_SESSION['userName'];
+    $result_sections = getSections($session_plant_code);
+    $sections_data = $result_sections['sections_data'];
     // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
-    $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
-    $sections_result = mysqli_query($link,$sections_query);
-    while($row = mysqli_fetch_array($sections_result)){
-        $sections[] = $row['sec_id'];
-    }
+    // $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
+    // $sections_result = mysqli_query($link,$sections_query);
+    $sections[] =array_column($sections_data,'section_id');
     $sections_str = implode(',',$sections);
 ?>
 
@@ -25,31 +29,19 @@
                 <div class='col-sm-2'>
                     <label for='operations'>Sewing Operations</label>
                     <select class='form-control'  name='operations' id='operations' onchange="load_data()">
-                        <!-- <option value='0' selected disabled>Please Select</option> -->
                        <?php
-                        $get_count = "select count(*) as cnt from $brandix_bts.tbl_orders_ops_ref where category ='sewing'";
-                       
-                        $sql_count_result=mysqli_query($link, $get_count) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_count=mysqli_fetch_array($sql_count_result)) 
-                        {
-                          $cnt=$sql_count['cnt'];
-                        }
-                        $get_operations ="select operation_code,operation_name from $brandix_bts.tbl_orders_ops_ref where category ='sewing' limit 1,$cnt"; 
-                        $result=mysqli_query($link,$get_operations);
-                        while ($test = mysqli_fetch_array($result))
-                        {
-                            $ops_array[$test['operation_code']] = $test['operation_name'];
-                        }
-                            foreach($ops_array as $key=>$value)
+                        $operations_data = getOperationsForCategory($session_plant_code, DepartmentTypeEnum::SEWING)['operations_data'];
+                            foreach($operations_data as $key=>$value)
                             {
-                            if($_GET['opertion']==$key){
-                                echo "<option value='$key' name='".$ops_array[$key] - $key."' selected>$ops_array[$key] - $key </option>"; 
+                                $key= $value['operation_code'];
+                                $name=$value['operation_name'];
+                            if($_GET['operations']== $key){
+                                echo "<option value='$key' name='". $name - $key."' selected>$name - $key </option>"; 
 
                             }else{
-                                echo "<option value='$key' name='$ops_array[$key] - $key'>$ops_array[$key] - $key </option>"; 
+                                echo "<option value='$key' name='$name - $key'>$name - $key </option>"; 
                             }
                             }
-                        //  echo '<option value="'.$test['operation_code'].'">'.$test['operation_code'].' - '.$test['operation_name'].'</option>';
                         
                        ?>
                     </select>
@@ -63,17 +55,17 @@
         </div>
    
         <?php
-            foreach($sections as $section)
+            foreach($sections_data as $section)
             {
-                $id1 = "sec-load-$section";
-                $id2 = "sec-$section";
+                $id1 = "sec-load-".$section['section_id'];
+                $id2 = "sec-".$section['section_id'];
 
-                $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-                $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-                {
-                    $section_display_name=$sql_rowx1['section_display_name'];
-                }
+                // $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+                // $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                // while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+                // {
+                // }
+                $section_display_name= $section['section_name'];
         ?>    
 
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>

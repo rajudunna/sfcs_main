@@ -24,8 +24,7 @@ function getJmDockets($doc_num,$plant_code){
     $remark3='';
     $remark4='';
     $created_at='';
-    $qry_jm_dockets="SELECT `fg_color`,`plies`,`jm_cut_job_id`,`ratio_comp_group_id`,DATE(created_at) as created_at FROM $pps.jm_dockets WHERE plant_code='$plant_code' AND docket_number=$doc_num";
-    //echo "</br>jm_dockets".$qry_jm_dockets;
+    $qry_jm_dockets="SELECT jdl.`fg_color`,jdl.`plies`,jd.`jm_cut_job_id`,jd.`ratio_comp_group_id`,DATE(jdl.created_at) as created_at FROM $pps.jm_dockets jd JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id=jd.jm_docket_id WHERE jd.plant_code='$plant_code' AND jdl.docket_line_number='$doc_num'";
     $jm_dockets_result=mysqli_query($link_new, $qry_jm_dockets) or exit("Sql Error_at_jmdockets".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_dockets_num=mysqli_num_rows($jm_dockets_result);
     /**From this above query we can get ratio compo group id */
@@ -238,10 +237,10 @@ function getSizeRatios($ratio_id,$plant_code){
 */
 function getStickerData($material_item_code,$style,$plantcode){
     global $link_new;
-    global $bai_rm_pj1;
+    global $wms;
     $lotnos=array();
-    $qry_sticker_report="SELECT lot_no FROM $bai_rm_pj1.`sticker_report` WHERE item='$material_item_code' AND plant_code='$plantcode' AND style_no='$style'";
-    $sql_lotresult=mysqli_query($link_new, $qry_sticker_report) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $qry_sticker_report="SELECT lot_no FROM $wms.`sticker_report` WHERE item='$material_item_code' AND plant_code='$plantcode' AND style_no='$style'";
+    $sql_lotresult=mysqli_query($link_new, $qry_sticker_report) or exit("$qry_sticker_report".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sticker_report_num=mysqli_num_rows($sql_lotresult);
         if($sticker_report_num>0){
             while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
@@ -558,7 +557,7 @@ function getJobsStatus($sub_po,$tasktype,$plantcode){
         }
     }
     //Qry to check sewing job planned or not
-    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plantcode' AND task_type='$tasktype' AND resource_id=''";
+    $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plantcode' AND task_type='$tasktype' AND (resource_id IS NULL OR  resource_id='')";
     $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
     $job_status_num=mysqli_num_rows($job_status_result);
     if($job_status_num>0){
@@ -643,13 +642,14 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
     global $pps;
     global $tms;
     global $TaskTypeEnum;
+    global $TaskStatusEnum;
     
     $check_type=TaskTypeEnum::SEWINGJOB;
+    $taskStatus=TaskStatusEnum::INPROGRESS;
     try
     {
         $list_db=array();
         $list_db=explode(";",$list);
-        $taskStatus="PLANNED";
     
         $j=1;
         for($i=0;$i<sizeof($list_db);$i++)
@@ -670,7 +670,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
             if($items[0]=="allItems")
             {
                 /**updtae resource id tasks header with work sation id's*/
-                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id='',task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             else
@@ -701,18 +701,17 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     }
                 }
 
-                if($resource_id==''){
+                if(is_null($resource_id)){
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     /**update priority tasks jobs with task_header*/
-                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority='$j' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode' ORDER BY task_jobs_id";
-                    $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    // $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority='$j' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode' ORDER BY task_jobs_id";
+                    // $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 }elseif($resource_id!=$items[0]){
                     /**Insert new record in header for if new reource id alloacted with in cut job */
-                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES (
-                        '".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
+                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES (UUID(),'".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $last_id = $Qry_taskheader_result->insert_id;
                     
@@ -803,15 +802,15 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     $check_type=TaskTypeEnum::SEWINGJOB;
     if($check_type == $tasktype)
     {
-      $job_group_type=TaskTypeEnum::plannedsewingjob;
+      $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
     }
     else
     {
-      $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+      $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
     }    
     $jm_job_header_id=array();
     $task_header_id=array();
-    $job_number='';
+    $job_number=array();
    
      //Qry to fetch jm_job_header_id from jm_jobs_header
     $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$sub_po' AND plant_code='$plantcode'";
@@ -824,7 +823,7 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
         }
     }
     //Qry to check sewing job planned or not
-    $check_job_status="SELECT task_header_id FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plantcode' AND task_type='$tasktype' AND resource_id=''";
+    $check_job_status="SELECT task_header_id FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plantcode' AND task_type='$tasktype' AND (resource_id IS NULL OR  resource_id='')";
     $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
     $job_status_num=mysqli_num_rows($job_status_result);
     if($job_status_num>0){
@@ -835,6 +834,7 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     }    
     //Qry to fetch taskrefrence from task_job  
     $qry_toget_taskrefrence="SELECT task_job_reference FROM $tms.task_jobs WHERE task_type='$tasktype' AND plant_code='$plantcode' AND task_header_id IN ('".implode("','" , $task_header_id)."')";
+   // echo $qry_toget_taskrefrence;
     $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
     if($toget_taskrefrence_num>0){
@@ -845,7 +845,8 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
     }  
     //Qry to get sewing jobs from jm_jobs_header
     $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id  IN('".implode("','" , $task_refrence)."')";
-    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+    //echo $qry_toget_sewing_jobs;
+    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
     if($toget_sewing_jobs_num>0){
         while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
@@ -853,7 +854,7 @@ function getUnplannedJobs($sub_po,$tasktype,$plantcode){
            $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id']; 
         }
     }
-
+    
     return array(
         'job_number' => $job_number
     );
@@ -869,36 +870,39 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       global $pps;
       global $tms;
       global $TaskTypeEnum;
+      global $TaskStatusEnum;
         
       $check_type=TaskTypeEnum::SEWINGJOB;
       if($check_type == $tasktype)
       {
-        $job_group_type=TaskTypeEnum::plannedsewingjob;
+        $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
       }
       else
       {
-        $job_group_type=TaskTypeEnum::plannedsewingembellishmentjob;
+        $job_group_type=TaskTypeEnum::PLANNEDEMBELLISHMENTJOB;
       }    
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
-      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='PLANNED' AND task_type='$tasktype' AND plant_code='$plantcode'";
+      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".TaskStatusEnum::INPROGRESS."' AND task_type='$tasktype' AND plant_code='$plantcode'";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
       {
-         $task_header_id[] = $task_header_id_row['task_header_id'];
+        $task_header_id[] = $task_header_id_row['task_header_id'];
+        $task_header_log_time[$task_header_id_row['task_header_id']] = $task_header_id_row['updated_at'];
       }
       //To get taskrefrence from task_jobs based on resourceid 
       $task_job_reference=array(); 
-      $get_refrence_no="SELECT task_job_reference FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode'";
+      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode'";
       $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
       {
         $task_job_reference[] = $refrence_no_row['task_job_reference'];
+        $task_job_ids[$refrence_no_row['task_job_id']] = $refrence_no_row['task_header_id'];
       }
       //Qry to get sewing jobs from jm_jobs_header
-      $job_number='';
-      $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id IN('".implode("','" , $task_job_reference)."')";
-      $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+      $job_number=array();
+      $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id IN ('".implode("','" , $task_job_reference)."')";
+      $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
       $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
       if($toget_sewing_jobs_num>0){
         while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
@@ -908,7 +912,10 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       return array(
           'job_number' => $job_number,
-          'task_header_id' => $task_header_id
+          'task_header_id' => $task_header_id,
+           'task_job_reference' => $task_job_reference,
+           'task_job_ids' => $task_job_ids,
+        'task_header_log_time'=> $task_header_log_time
       );
 } 
 
@@ -1147,5 +1154,68 @@ function getDocketInformation($docket_no, $plant_code) {
 
 }
 
+/**
+ * to get sections for the plant code
+ */
+function getSections($plant_code){
+    global $link_new;
+    global $pms;
+    $section_data=[];
+    $query="select * from $pms.sections where plant_code='$plant_code'";
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sections_rows_num = mysqli_num_rows($sql_res);
+    if ($sections_rows_num > 0) {
+        while ($sections_row = mysqli_fetch_array($sql_res)) {
+            $section_data[] = $sections_row;
+        }
+    }
+    return array(
+        'section_data' => $section_data
+    );
+}
+
+/**
+ * to get operations for plant code and operation category
+ */
+function getOperationsForCategory($plant_code, $category)
+{
+    global $link_new;
+    global $pms;
+    $operations_data = [];
+    $query = "select * from $pms.operation_mapping where plant_code='$plant_code' and operation_category = $category and sequence = 1 and is_active = 1 order by priority";
+
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $operations_rows_num = mysqli_num_rows($sql_res);
+    if ($operations_rows_num > 0) {
+        while ($operations_row = mysqli_fetch_array($sql_res)) {
+            $operations_data[] = $operations_row;
+        }
+    }
+    return array(
+        'operations_data' => $operations_data
+    );
+}
+
+/**
+ * get workstations based on section and plant
+ * 
+ */
+function getWorkstationsForSection($plant_code, $section){
+    global $link_new;
+    global $pms;
+    $operations_data = [];
+    $query = "select * from $pms.workstation where plant_code='$plant_code' and section_id = $section";
+
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstation_rows_num = mysqli_num_rows($sql_res);
+    if ($workstation_rows_num > 0) {
+        while ($workstation_row = mysqli_fetch_array($sql_res)) {
+            $workstation_data[] = $workstation_row;
+        }
+    }
+    return array(
+        'workstation_data' => $workstation_data
+    );
+}
 
 ?>

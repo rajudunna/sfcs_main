@@ -489,7 +489,7 @@ if(isset($_POST['allocate_new']))
 {
 	$doc_ref=$_POST['doc_ref']; //array
 	$dash=$_POST['dashboard']; //array
-    $row_id_new = $_POST['row_id1'];
+	$row_id_new = $_POST['row_id1'];
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
@@ -553,7 +553,7 @@ if(isset($_POST['allocate_new']))
 					if(($width_ref[$j]=='') or ($width_ref[$j]==NULL)){
 						//getting recieved qty from store_in
 						$query3="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
-						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result3=mysqli_query($link, $query3) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));						
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$width_ref[$j]=$sql_row3['qty_rec'];
@@ -573,15 +573,15 @@ if(isset($_POST['allocate_new']))
 						}
 					}	
                     $row_id_new1 = 'B'.$row_id_new;
-					$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_by,updated_at) values('".$row_id_new1."',".$tid_ref[$j].",".$width_ref[$j].",'binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."','".$username."',NOW())";
+					$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$row_id_new1."',".$tid_ref[$j].",".$width_ref[$j].",'binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
 					
-					//Uncheck this
+					//Uncheck this					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(strtolower($roll_splitting) == 'yes' && $total_qty == 0)
-					{
-						$splitting_roll = binding_roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j],$plant_code,$username);
+					{						
+						$splitting_roll = binding_roll_splitting_function($tid_ref[$j],$width_ref[$j],$issued_ref[$j],$plant_code,$username);						
                     }else {
-						$sql121="update wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid=".$tid_ref[$j];
+						$sql121="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and  tid=".$tid_ref[$j];
 						// echo $sql121."<br>";
 						mysqli_query($link, $sql121) or exit("Sql Error344: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}                 
@@ -622,7 +622,7 @@ if(isset($_POST['allocate_new']))
 									$status=0;
 								}
 							}
-							$sql121="update $wms.store_in set status=$status,allotment_status=$status,updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and 'tid=".$tid_ref[$j];
+							$sql121="update $wms.store_in set status=$status,allotment_status=$status,updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid=".$tid_ref[$j];
 							mysqli_query($link, $sql121) or exit("Sql Error355: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 							// echo $sql121."<br>";							
                             $sql23="insert into $wms.store_out (tran_tid,qty_issued,Style,Schedule,date,updated_by,log_stamp,cutno,remarks,plant_code,created_user,updated_user,updated_at) values ('".$code."', '".$qty_iss."','".$style."','".$schedule."','".date("Y-m-d")."','".$username."','".date("Y-m-d H:i:s")."','".$row_id_new1."','Binding','".$plant_code."','".$username."','".$username."',NOW())";
@@ -633,7 +633,7 @@ if(isset($_POST['allocate_new']))
 				}
 			}
 		}			
-	}
+	}	
 	$update_parent="update $pps.binding_consumption set status='Allocated',status_at='".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id=$row_id_new and plant_code='".$plant_code."'";
 	mysqli_query($link, $update_parent) or exit("Sql Error: $update_parent".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -647,15 +647,14 @@ if(isset($_POST['allocate_new']))
 
 
 <?php
-
 if(isset($_POST['allocate']))
 {
     // var_dump($_POST);
-    // die();
+	// die();
 	echo "<form name='input' method='post' action='allocation.php' onkeypress='return event.keyCode != 13'>";
 	$doc=$_POST['doc'];
 	$dash=$_POST['dashboard'];
-    $row_id = $_POST['row_id'];
+	$row_id = $_POST['row_id'];
 	//$lot_db_2 = $_POST["pms$doc[0]"];
 	//var_dump($doc);
 	// echo "DOC : ".sizeof($doc);exit;
@@ -759,7 +758,7 @@ if(isset($_POST['allocate']))
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
-		
+
         echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";
 		echo "<input type=\"hidden\" name=\"schedule1\" value=\"".$schedule."\">";
@@ -806,7 +805,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-        $sql="select * from $wms.fabric_status_v3 where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) order by shade";
+        $sql="select * from $wms.store_in where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)";
         // var_dump($sql);
         // // die();
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error12: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -989,7 +988,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT * FROM wms.fabric_status_v3 WHERE lot_no IN (SELECT lot_no FROM wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
+							$sql_query ="SELECT * FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{

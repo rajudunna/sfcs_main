@@ -1,11 +1,10 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
-$plant_code = $_session['plantCode'];
-$username =  $_session['userName'];
-// $test=enum::sewing_type;
-// echo $test;
-// die();
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
+$plant_code = $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];
+
 ?>
 
 <!-- <META HTTP-EQUIV="refresh" content="900; URL=pps_dashboard.php"> -->
@@ -139,7 +138,7 @@ $cutno=$_GET['cutno'];
 <div class="form-inline">
 <div class="form-group">
 <!--<div id="page_heading"><span style="float: left"><h3>Input Planning Panel</h3></span><span style="float: right"><b>?</b>&nbsp;</span></div>-->
-<form name="test" action="index.php?r=<?=  $_GET['r']; ?>" method="post">
+<form name="test" action="index-no-navi.php?r=<?=  $_GET['r']; ?>" method="post">
 <?php
 
 	/*function to get style from getdata_mp_color_detail
@@ -152,7 +151,7 @@ $cutno=$_GET['cutno'];
 		$style=$result_mp_color_details['style'];
 	}
 	echo "<div class='row'>"; 
-	echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
+	echo "<div class='col-sm-3'><label>Select Style: </label><select style='min-width:100%' name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
 	echo "<option value=\"\" selected>NIL</option>";
 	foreach ($style as $style_value) {
 		if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
@@ -177,7 +176,7 @@ $cutno=$_GET['cutno'];
 		$result_bulk_schedules=getBulkSchedules($get_style,$plant_code);
 		$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
 	}  
-	echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+	echo "<div class='col-sm-3'><label>Select Schedule: </label><select style='min-width:100%' name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
 	echo "<option value=\"\" selected>NIL</option>";
 	foreach ($bulk_schedule as $bulk_schedule_value) {
 		if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
@@ -204,7 +203,7 @@ if($get_schedule!='' && $plant_code!=''){
 		$bulk_color=$result_bulk_colors['color_bulk'];
 	}
 	echo "<div class='col-sm-3'><label>Select Color: </label>";  
-	echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"color\" onchange=\"thirdbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($bulk_color as $bulk_color_value) {
 					if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
@@ -230,7 +229,7 @@ if($get_schedule!='' && $plant_code!=''){
 		$master_po_description=$result_bulk_MPO['master_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
-	echo "<select name=\"mpo\" onchange=\"fourthbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"mpo\" onchange=\"fourthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($master_po_description as $key=>$master_po_description_val) {
 					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
@@ -255,7 +254,7 @@ if($get_schedule!='' && $plant_code!=''){
 		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
-	echo "<select name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($sub_po_description as $key=>$sub_po_description_val) {
 					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
@@ -281,7 +280,7 @@ if($get_schedule!='' && $plant_code!=''){
 		$cut_number=$result_cutno['cut_number'];
 	}
 	echo "<div class='col-sm-3'><label>Select Cut: </label>";  
-	echo "<select name=\"cutno\" onchange=\"sixthbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"cutno\" onchange=\"sixthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($cut_number as $key=>$cut_no_val) {
 					if(str_replace(" ","",$cut_no_val)==str_replace(" ","",$cutno)) 
@@ -299,7 +298,7 @@ if($get_schedule!='' && $plant_code!=''){
 <?php
     $tasktype = TaskTypeEnum::SEWINGJOB;
     //Qry to fetch jm_job_header_id from jm_jobs_header
-    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_jobs_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
+    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
     $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
     if($jm_job_header_id_result_num>0){

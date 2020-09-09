@@ -3,10 +3,11 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 	$has_perm=haspermission($_GET['r']);
 	$module_limit=14;
-	$plant_code = $_session['plantCode'];
-    $username =  $_session['userName'];	
+	$plant_code = $_SESSION['plantCode'];
+    $username =  $_SESSION['userName'];	
 
 ?>
 
@@ -309,6 +310,8 @@
 						contentToBeDragged = newItem;
 					}
 					dragContentObj.style.display='block';
+					dragContentObj.style.marginLeft='200px';
+			        dragContentObj.style.marginTop='68px';
 					dragContentObj.appendChild(contentToBeDragged);
 				}
 			}
@@ -561,11 +564,12 @@
 			include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',0,'R')); 
 			include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'embellishment_drag_drop_data.php',0,'R'));
 
-			$style=$style_ref;
-			$schedule=$schedule_ref;
-			$color=$color_ref;
-			$mpo=$mpo;
-			$sub_po=$sub_po;
+			$style=$_GET['style'];
+			$schedule=$_GET['schedule'];
+			$color=$_GET['color'];
+			$cutno=$_GET['cutno'];
+			$mpo=$_GET['mpo'];
+			$sub_po=$_GET['sub_po'];
             $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
             //Function to get status from getJobsStatus based on subpo,tasktype,plantcode 
             if($plant_code!='')
@@ -654,7 +658,7 @@
 
 							<?php
 								$tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
-								$department='Embellishment';
+								$department= DepartmentTypeEnum::EMBELLISHMENT;
 								/** Getting work stations based on department wise
 								   * @param:department,plantcode
 								   * @return:workstation
@@ -675,53 +679,56 @@
 									$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 									$job_number=$result_planned_jobs['job_number'];
 									$task_header_id=$result_planned_jobs['task_header_id'];
-									    		        
-							        //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
-							        $job_detail_attributes=[];
-							        $qry_toget_style_sch="SELECT * FROM $tms.task_attributes where task_header_id in ('" . implode ( "', '", $task_header_id ) . "') and plant_code='$plant_code'"; 
-							        $qry_toget_style_sch_result=mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
-							        while($row2=mysqli_fetch_array($get_details_result))
-							        {
-								         foreach($sewing_job_attributes as $key=> $val){
-								          if($val == $row2['attribute_name'])
-								          {
-								             $job_detail_attributes[$val] = $row2['attribute_value'];
-								          }
-								        }
-								    }    
-							        $style1=$job_detail_attributes[$sewing_job_attributes['style']];
-							        $color1=$job_detail_attributes[$sewing_job_attributes['color']];
-							            
+									    		        							            
 							        //Function to get schedules from getBulkSchedules based on style,plantcode
 							        $result_schedules=getBulkSchedules($style,$plant_code);
 							        $schedule_details=$result_schedules['bulk_schedule'];
 							        $schedule1=implode("," , $schedule_details); 
 							        foreach($job_number as $sew_num=>$jm_sew_id)
 							        {
-							          //to get qty from jm job lines
-									  $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
-									  $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
-									  $toget_qty=mysqli_num_rows($toget_qty_qry_result);
-									  if($toget_qty>0){
-										 while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
-										 {
-										  $sew_qty = $toget_qty_det['qty'];
-										 }
-								      }
-					           
-							          $id="#33AADD"; //default existing color
-							                                    
-							          if($style==$style1 and $color==$color1)
-							          {
-							            $id="red";
-							          }
-							          else
-							          {
-							            $id="#008080";
-							          }
-							          $title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$sew_qty,50);
+										//To get taskjobs_id
+										$task_jobs_id = [];
+										$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+										$qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+										while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+											$task_jobs_id[] = $row21['task_jobs_id'];
+										}
+										//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+										$job_detail_attributes = [];
+										$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+										$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+										while ($row2 = mysqli_fetch_array($get_details_result)) {
+									
+										   $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+										
+										}
+										$style1 = $job_detail_attributes[$sewing_job_attributes['style']];
+										$color1 = $job_detail_attributes[$sewing_job_attributes['color']]; 
 
-							         echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>';  
+										//to get qty from jm job lines
+										$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
+										$toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$toget_qty=mysqli_num_rows($toget_qty_qry_result);
+										if($toget_qty>0){
+											while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
+											{
+											   $sew_qty = $toget_qty_det['qty'];
+											}
+										}
+								
+										$id="#33AADD"; //default existing color
+																	
+										if($style==$style1 and $color==$color1)
+										{
+											$id="red";
+										}
+										else
+										{
+											$id="#008080";
+										}
+										$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$sew_qty,50);
+
+										echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>';  
 							        } 
 								   echo "</ul>";
 								  echo "</div>";
