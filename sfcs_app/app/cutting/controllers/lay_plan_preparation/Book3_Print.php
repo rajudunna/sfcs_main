@@ -2101,7 +2101,7 @@ body{
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
 DIV {page: narrow}
-TABLE {page: rotated}
+/*TABLE {page: rotated}*/
 #non-printable { display: none; }
 #printable { display: block; }
 #logo { display: block; }
