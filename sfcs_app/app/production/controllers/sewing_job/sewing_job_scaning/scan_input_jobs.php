@@ -441,7 +441,7 @@ function tableConstruction(data){
             $("#dynamic_table").hide();
         }
     }
-    var markup99 = "</tbody></table></br></div></div></div>";
+    var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
     $('#hid_job').val(job_number);
