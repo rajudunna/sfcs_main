@@ -29,16 +29,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
             
 
         }
-        $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE schedule=$scheule and remove_type='3'";
-        $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-        if(mysqli_num_rows($job_deactivated_result) == 0){
-            $job_deactivated1 = 1;
-        } else {
-            $job_deactivated1 = 0;
-        }
-        // var_dump($job_deactivated1);
-        // die();
-        if($job_deactivated1==1){
+       
         //getting order tid
         $qry_order_tid = "SELECT order_tid FROM `$bai_pro3`.`bai_orders_db` WHERE order_style_no = '$style' AND order_del_no ='$scheule' AND order_col_des = '$color'";
         $res_qry_order_tid = $link->query($qry_order_tid);
@@ -162,12 +153,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
             }
         }
         $url = '?r='.$_GET['r'];
-       echo "<script>sweetAlert('recut raised successfully','','success');window.location = '".$url."'</script>";
-       } else {
-            $url = '?r='.$_GET['r'];
-        //    echo "<script>sweetAlert('Recut Successfully Raised','','success');window.location = '".$url."'</script>";   
-           echo "<script>sweetAlert('Sewing Job is Deactivated! ','Recut Process is unsuccessfull','Error');window.location = '".$url."'</script>";  
-        }   
+        echo "<script>sweetAlert('recut raised successfully','','success');window.location = '".$url."'</script>";
     }
     if(isset($_POST['formSubmit1']))
     {
