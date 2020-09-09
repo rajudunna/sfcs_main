@@ -453,7 +453,6 @@ include('functions_tms.php');
 		</div>
 <div class="form-group">		
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 // echo '&nbsp;&nbsp;Buyer Division :
 // <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
 // echo "<option value=\"ALL\" selected >ALL</option>";
@@ -505,7 +504,7 @@ $blink_docs=array();
  /**
  * Get Setions for department type 'SEWING' and plant code
  */
- $departments=getSectionByDeptTypeSewing($plantCode);
+ $departments=getSectionByDeptTypeSewing($plant_code);
  foreach($departments as $department)
  {
 	$section=$department['sectionId'];
@@ -524,28 +523,29 @@ $blink_docs=array();
 	//For Section level blinking
 	$blink_minimum=0;
 	$sectionId=$department['sectionId'];
-	$workstationsArray=getWorkstationsForSectionId($plantCode, $sectionId);            
+	$workstationsArray=getWorkstationsForSectionId($plant_code, $sectionId);            
 	// for($x=0;$x<sizeof($mods);$x++)
 	foreach($workstationsArray as $workstations)
-	{
+	{ 
+		var_dump($workstationsArray);
 		$module=$workstations['workstationLabel'];
 		$work_id=$workstations['workstation_id'];
-
+        echo $work_id;
 		$blink_check=0;
 		echo "<tr class=\"bottom\">";
 		echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
 		$y=0;   
 
-		$show_block = calculateJobsCount($module);
-		if($show_block > 0){
-			echo "<div style='float:left;'>		    
-								<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
-					</div>";
-		}
+		// $show_block = calculateJobsCount($module);
+		// if($show_block > 0){
+		// 	echo "<div style='float:left;'>		    
+		// 						<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+		// 			</div>";
+		// }
 		 /*
 			function to get planned jobs from workstation
-			@params:work_id,plantcode,type(sewing,cutjob,embjob)
+			@params:work_id,plant_code,type(sewing,cutjob,embjob)
 			@returns:job_number,task_header_id
 		*/
 		$result_planned_jobs=getPlannedJobsTms($work_id,$tasktype,$plant_code);
@@ -556,6 +556,7 @@ $blink_docs=array();
           //To get taskjobs_id
 		  $task_jobs_id = [];
 		  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+		  echo $qry_get_task_job;
 		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 			  $task_jobs_id[] = $row21['task_jobs_id'];
@@ -643,14 +644,14 @@ function calculateJobsCount($module){
 	$tasktype=TaskTypeEnum::SEWINGJOB;
 	$task_jobs_id=array();
 	$qry_get_task_id="SELECT task_jobs_id FROM $tms.task_header LEFT JOIN $tms.task_jobs ON task_header.task_header_id=task_jobs.task_header_id WHERE resource_id='$module' and task_header.plant_code='$plant_code' and task_header.task_type='$tasktype'";
-	$get_module_result=mysqli_query($link_new, $qry_get_module) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$get_module_result=mysqli_query($link_new, $qry_get_task_id) or exit("Sql Error at qry_get_module".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($get_module_row=mysqli_fetch_array($get_module_result))
 	{
 	  $task_jobs_id[] = $get_module_row['task_jobs_id'];
 	}
 	$trim_status=TrimStatusEnum::ISSUED;
 	$get_count="SELECT count(task_job_id) as task_job_id_count  FROM $pms.job_trims WHERE trim_status='$trim_status' AND plant_code='$plant_code'";
-	$get_count_result = mysqli_query($link,$get_count);
+	$get_count_result = mysqli_query($link_new,$get_count);
 	while($row = mysqli_fetch_array($get_count_result)){
 		  $jobs_count = $row['task_job_id_count'];
 		}
