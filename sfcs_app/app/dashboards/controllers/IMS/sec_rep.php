@@ -27,15 +27,15 @@ return round($diff / 86400);
 
 }
 
-function dateDiffsql($link,$start,$end)
-{
-    $plantcode=$_SESSION['plantCode'];
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-    $sql="select distinct bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date<='$start' and bac_date>='$end'";
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+// function dateDiffsql($link,$start,$end)
+// {
+//     $plantcode=$_SESSION['plantCode'];
+//     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+//     $sql="select distinct bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date<='$start' and bac_date>='$end'";
+//     $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
     
-    return mysqli_num_rows($sql_result);
-}
+//     return mysqli_num_rows($sql_result);
+// }
 
 ?>
 
@@ -224,17 +224,17 @@ if(isset($_GET['val']))
         echo "</form>";
 
         echo "<div class='panel-body'>";
-			// $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions)  ";
-			// //echo $get_ops_query;
-			// $ops_query_result=$link->query($get_ops_query);
-			// while ($row2 = $ops_query_result->fetch_assoc())
-			// {
-			//   $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
-			// }
+            /**
+             * getting Operations plant wise
+             */
+            $SwingOperationsArray=getOperationsTypeSewing($plantCode);
+            //var_dump($SwingOperationsArray);
+            // foreach($SwingOperationsArray as $key=>$name)
+            // {
+            //   $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
+            // }
 
-			// $col_span = count($ops_get_code);
-			$col_span = 3;
-
+            $col_span = count($SwingOperationsArray);
 			$modules=array();
 			$modules=explode(",",$sec_mods);
 			echo "<div class='table-responsive'>
@@ -259,51 +259,222 @@ if(isset($_GET['val']))
 						<th rowspan=2>WIP</th>
 					</tr>
 					<tr>";             
-						foreach ($operation_code as $op_code) 
+						foreach ($SwingOperationsArray as $op_code) 
 						{
-							if(strlen($ops_get_code[$op_code]) > 0)
+							if(strlen($op_code['operation_name']) > 0)
 							{
-								echo "<th>$ops_get_code[$op_code]</th>";
+								echo "<th>".$op_code['operation_name']."</th>";
 							}
 						}
 			echo "</tr>";
 			/**
 			 * get workstations for plant code and section id
 			*/
-			$workstationsArray=getWorkstationsForSectionId($plantCode, $section);
+            $workstationsArray=getWorkstationsForSectionId($plantCode, $section);
 			foreach($workstationsArray as $workStation)
 			{   
+                $module_ref=$workStation['workstationCode'];
 				$jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$workStation['workstationId']);
 				if(sizeof($jobsArray)>0)
 				{
 					$taskRefArray = [];
 					foreach($jobsArray as $job)     
 					{ 
-						array_push($taskRefArray, $job['taskJobRef']);
+                        //array_push($taskRefArray, $job['taskJobRef']);
+                        //$taskRefArray = implode("','", $taskRefArray);
+                        /**
+                         * getting min and max operations
+                         */
+                        $qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+                        $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
+                        if(mysqli_num_rows($minOperationResult)>0){
+                            while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+                                $minOperation=$minOperationResultRow['operation_code'];
+                            }
+                        }
+                        
+                        /**
+                         * getting min and max operations
+                         */
+                        $qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+                        $maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+                        if(mysqli_num_rows($maxOperationResult)>0){
+                            while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+                                $maxOperation=$maxOperationResultRow['operation_code'];
+                            }
+                        }
+
+                        
+                        /**getting style,colr attributes using taskjob id */
+                        $job_detail_attributes = [];
+                        $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantCode'";
+                        $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+                            $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+                        }
+                            $style = $job_detail_attributes[$sewing_job_attributes['style']];
+                            $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
+                            $color = $job_detail_attributes[$sewing_job_attributes['color']];
+                            $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
+                            $cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+
+                        $bundlesQry = "select jm_job_bundle_id,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id ='".$job['taskJobRef']."'";
+                        $bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($bundleRow=mysqli_fetch_array($bundlesResult))
+                        {
+                            // echo $bundleRow['bundle_number']."</br>";
+                            // echo $bundleRow['size']."</br>";
+                            // echo $bundleRow['fg_color']."</br>";
+                            // echo $bundleRow['quantity']."</br>";
+                            // Call pts barcode table
+                            $barcodesQry = "select barcode_id from $pts.barcode where external_ref_id = '".$bundleRow['jm_job_bundle_id']."' and barcode_type='APLB'";
+                            $barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($barcodeRow=mysqli_fetch_array($barcodeResult))
+                            {
+                                $transactionsQry = "select good_quantity,rejected_quantity,operation from $pts.transaction_log where barcode_id ='".$barcodeRow['barcode_id']."'";
+                                $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                $rejQtyOps=array();
+                                while($transactionRow=mysqli_fetch_array($transactionsResult)) {
+                                    // echo $transactionRow['good_quantity']."</br>";
+                                    // echo $transactionRow['rejected_quantity']."</br>";
+                                    // echo "Bundle Ops : ".$transactionRow['operation']."</br>";
+                                    
+                                    /** getting input and out put based on operations*/
+                                    if($minOperation==$transactionRow['operation']){
+                                        $inputQty=$transactionRow['good_quantity'];
+                                    }
+                                    if($maxOperation==$transactionRow['operation']){
+                                        $outputQty=$transactionRow['good_quantity'];
+                                        /**rejected qty for output */
+                                        $outputRejQty=$transactionRow['rejected_quantity'];
+                                    }
+                                    
+
+                                    $rejQtyOps[$transactionRow['operation']] = $transactionRow['rejected_quantity'];
+
+                                    
+                                }
+                            }
+
+                        $quality_log_row="";
+						$quality_log_row="<td>bundle creation data remarks</td><td>Exfactory from shipment</td>";
+                            if($rowcount_check==1)
+                            {
+                                if($row_counter == 0)
+                                        echo "<tr bgcolor=\"$tr_color\" class=\"new\">
+                                        <td style='border-top:1.5pt solid #fff;'>$module_ref</td>";
+                                    else 
+                                        echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:0px'></td>";
+
+                                        if(isset($_POST['submit']))
+                                        {
+                                            $input_selection=$_POST['input_selection'];
+                                            if($input_selection=='bundle_wise'){
+                                                echo "<td>".$bundleRow['bundle_number']."</td>";
+                                            }
+                                        }else{
+                                            echo "<td>".$bundleRow['bundle_number']."</td>";
+                                        }
+                                        echo "<td>$style</td>
+                                        <td>$schedule</td>
+                                        <td>$color</td>
+                                        <td>".$sewingjobno."</td>
+                                        <td>".$cutjobno."</td>
+                                        <td>".$bundleRow['size']."</td>
+                                        <td>".$inputQty."</td>
+                                        <td>".$outputQty."</td>";
+                                        echo "<td>ops1</td><td>ops2</td><td>ops3</td><td>ops4</td>";
+                                        foreach ($SwingOperationsArray as $operations) 
+						                {
+                                            if(strlen($operations) > 0){
+                                                if($rejQtyOps[$operations['operation_code']] == '')
+                                                    echo "<td>0</td>";
+                                                else    
+                                                    echo"<td>".$rejQtyOps[$operations['operation_code']]."</td>";
+                                            }
+                                        }
+                                        echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
+                                        echo $quality_log_row;
+                                        if(in_array($edit,$has_permission))
+                                        {
+                                            if(strlen($team_comm)>0)
+                                            {
+                                                echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                            }
+                                            else
+                                            {
+                                                echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                            }
+                                        }
+                                        else
+                                        {
+                                            echo "<td>".$team_comm."</td><td>Age for bundle</td>";
+                                        }
+                                        if($rowcount_check==1)
+                                        {
+                                            echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
+                                        }
+                                        $rowcount_check=0;
+                                        $row_counter++;
+                                        echo "</tr>";
+                                        
+                            }else{
+                                if($row_counter == 0)
+                                    echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td>$module_ref</td>";
+                                else 
+                                    echo "<tr bgcolor=\"$tr_color\" class=\"new\"><td style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
+                                    
+                                    if(isset($_POST['submit']))
+                                    {
+                                        $input_selection=$_POST['input_selection'];
+                                        if($input_selection=='bundle_wise'){
+                                            echo "<td>".$bundleRow['bundle_number']."</td>";
+                                        }
+                                    }else{
+                                        echo "<td>".$bundleRow['bundle_number']."</td>";
+                                    }
+                                    echo "<td>$style</td>
+                                    <td>$schedule</td>
+                                    <td>$color</td>
+                                    <td>".$sewingjobno."</td>
+                                    <td>".chr($color_code).leading_zeros($cut_number,3)."</td>
+                                    <td>".$bundleRow['size']."</td>
+                                    <td>".$inputQty."</td>
+                                    <td>".$outputQty."</td>";
+                                    echo "<td>ops1</td><td>ops2</td><td>ops3</td><td>ops4</td>";
+                                    foreach ($SwingOperationsArray as $operations) 
+                                    {
+                                        if(strlen($operations) > 0){
+                                            if($rejQtyOps[$operations['operation_code']] == '')
+                                                echo "<td>0</td>";
+                                            else    
+                                                echo"<td>".$rejQtyOps[$operations['operation_code']]."</td>";
+                                        }
+                                    }
+                                    echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
+                                    echo $quality_log_row;
+                                    if(in_array($edit,$has_permission))
+                                    {
+                                        if(strlen($team_comm)>0)
+                                        {
+                                            echo '<td><span id="I'.$tid.'"></span><span id="M'.$tid.'" onclick="update_comm('.$tid.')">'.$team_comm.'</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                        }
+                                        else
+                                        {
+                                            echo '<td><span id="I'.$tid.'"></span><span style="color:'.$tr_color.'" id="M'.$tid.'" onclick="update_comm('.$tid.')">Update Comments</span></td><td>'.dateDiffsql($link,date("Y-m-d"),$ims_date).'</td>';
+                                        }						
+                                    }
+                                    else
+                                    {
+                                        echo "<td>".$team_comm."</td><td>Age for bundle</td>";
+                                    }
+                                    //if($row_counter > 0)
+                                    echo "<td bgcolor='$tr_color' style='border-top:1px solid $tr_color;border-bottom:1px solid $tr_color;'></td>";
+                                    echo "</tr>";
+                            }
+                        }
 					}
-					$taskRefArray = implode("','", $taskRefArray);
-					$bundlesQry = "select jm_job_bundle_id,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id IN ('".$taskRefArray."')";
-					$bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($bundleRow=mysqli_fetch_array($bundlesResult))
-					{
-						echo $bundleRow['bundle_number']."</br>";
-						echo $bundleRow['size']."</br>";
-						echo $bundleRow['fg_color']."</br>";
-						echo $bundleRow['quantity']."</br>";
-						// Call pts barcode table
-						$barcodesQry = "select barcode_id from $pts.barcode where external_ref_id = '".$bundleRow['jm_job_bundle_id']."'";
-						$barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($barcodeRow=mysqli_fetch_array($barcodeResult))
-						{
-							$transactionsQry = "select good_quantity,rejected_quantity,operation from $pts.transaction_log where barcode_id ='".$barcodeRow['barcode_id']."'";
-							$transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($transactionRow=mysqli_fetch_array($transactionsResult)) {
-								echo $transactionRow['good_quantity']."</br>";
-								echo $transactionRow['rejected_quantity']."</br>";
-								echo $transactionRow['operation'];
-							}
-						}
-					}
+					
 				}  
 			}
 			echo "</table></div></div>";

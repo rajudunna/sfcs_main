@@ -111,4 +111,40 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
         throw $error;
     }
 }
+
+/**
+ * get plant wise sewing operations
+ */
+
+function getOperationsTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+        $qryOperations="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE operation_category='$departmentType' AND plant_code='$plantCode' order by priority ASC";
+        $qryOperationsResult = mysqli_query($link_new,$qryOperations) or exit('Problem in getting jobs in workstation');
+        if(mysqli_num_rows($qryOperationsResult)>0){
+            $operations= [];
+            while($row = mysqli_fetch_array($qryOperationsResult)){
+                $operation = [];
+                $operation["operation_code"] = $row['operation_code'];
+                $operation["operation_name"] = $row['operation_name'];
+                array_push($operations, $operation);
+            }
+            return $operations;
+        } else {
+            return "Operations are not found";
+        }
+
+
+    }catch(Exception $e){
+        throw $error;
+    }
+
+}
+
+
+
+
+
 ?>
