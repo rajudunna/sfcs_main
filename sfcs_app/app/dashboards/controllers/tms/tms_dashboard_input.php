@@ -528,27 +528,27 @@ $blink_docs=array();
 	// for($x=0;$x<sizeof($mods);$x++)
 	foreach($workstationsArray as $workstations)
 	{ 
-		var_dump($workstationsArray);
-		$module=$workstations['workstationLabel'];
-		$work_id=$workstations['workstation_id'];
-        echo $work_id;
+		//var_dump($workstationsArray);
+		$module=$workstations['workstationCode'];
+		$work_id=$workstations['workstationId'];
+		$module1=$workstations['workstationLabel'];
 		$blink_check=0;
 		echo "<tr class=\"bottom\">";
 		echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
 			if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
-		$y=0;   
-
-		// $show_block = calculateJobsCount($module);
-		// if($show_block > 0){
-		// 	echo "<div style='float:left;'>		    
-		// 						<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
-		// 			</div>";
-		// }
+		$y=0; 
+		$show_block = calculateJobsCount($work_id);
+		if($show_block > 0){
+			echo "<div style='float:left;'>		    
+								<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
+					</div>";
+		}
 		 /*
 			function to get planned jobs from workstation
 			@params:work_id,plant_code,type(sewing,cutjob,embjob)
 			@returns:job_number,task_header_id
 		*/
+		$tasktype=TaskTypeEnum::SEWINGJOB;
 		$result_planned_jobs=getPlannedJobsTms($work_id,$tasktype,$plant_code);
 		$job_number=$result_planned_jobs['job_number'];
 		$task_header_id=$result_planned_jobs['task_header_id'];
@@ -557,7 +557,7 @@ $blink_docs=array();
           //To get taskjobs_id
 		  $task_jobs_id = [];
 		  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
-		  echo $qry_get_task_job;
+		 // echo $qry_get_task_job;
 		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 			  $task_jobs_id[] = $row21['task_jobs_id'];
@@ -566,9 +566,11 @@ $blink_docs=array();
 		  $job_detail_attributes = [];
 		  $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
 		  $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-		  while ($row2 = mysqli_fetch_array($get_details_result)) {
+		  while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 	        $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
 		  }
+		  //TaskAttributeNamesEnum
+		//    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
 		  $style = $job_detail_attributes[$sewing_job_attributes['style']];
 		  $color = $job_detail_attributes[$sewing_job_attributes['color']];
 		  $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
@@ -586,7 +588,7 @@ $blink_docs=array();
 			  }
 		  }
 		  //qry to get trim status
-		  $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id in ('".implode("','" , $task_jobs_id)."')";
+		  $get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id in ('".implode("','" , $task_jobs_id)."')";
 		  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
                $trim_status=$row2['trim_status'];
@@ -634,7 +636,6 @@ include('include_legends_tms.php');
 
 
 <?php
-
 function calculateJobsCount($module){ 
 	global $link_new;
 	global $tms;
@@ -661,6 +662,4 @@ function calculateJobsCount($module){
 	else	
 		return $jobs_count;
 }
-
-
 ?>
