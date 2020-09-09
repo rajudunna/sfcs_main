@@ -9,9 +9,12 @@
     $plantcode = $_session['plantCode'];
     $username =  $_session['userName'];
 
-    //Function to get modules based on category
-    $department='Sewing';
-    $result_worksation_id=getWorkstations($department,$plantcode);
+    $department='SEWING';
+    /** Getting work stations based on department wise
+    * @param:department,plantcode
+    * @return:workstation
+    **/
+    $result_worksation_id=getWorkstations($department,$plant_code);
     $workstations=$result_worksation_id['workstation'];
 ?>
 
@@ -121,8 +124,10 @@
                             <select  name="module" class="form-control" id="module">
                                 <option value="" disabled selected>Select Module</option>
                                 <?php
-                                    foreach($workstations as $module)
-                                        echo "<option value='$module'>$module</option>"
+                                    foreach($workstations as $work_id=>$work_des)
+                                    {
+                                        echo "<option value='".$work_id."'>".$work_des."</option>";
+                                    }
                                 ?>
                             </select>
                        
@@ -146,8 +151,10 @@
                             <select  name="to_module" class="form-control" id="to_module">
                             <option value="" disabled selected>Select Module</option>
                             <?php
-                                foreach($workstations as $module)
-                                    echo "<option value='$module'>$module</option>"
+                                foreach($workstations as $work_id=>$work_des)
+                                {
+                                    echo "<option value='".$work_id."'>".$work_des."</option>";
+                                }
                             ?>
                         </select>
                         </div>
