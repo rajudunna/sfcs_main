@@ -25,60 +25,53 @@ $isinput=$_GET['isinput'];
 
 //function to extract input informat
  
-function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
-{
-	//$result_type : CUTQTY, INPUTQTY (as per input job reference), IMSINPUTQTY (as per docket)
-	//$doc_no: Docket #
-	//$input_refere: Input job reference random
-	
-	$ret=0;
-	if($size='2xl') {$size='s08';}
-	if($size='3xl') {$size='s10';}
-	if($size='4xl') {$size='s12';}
-	switch($result_type)
-	{
-		case 'CUTQTY':
-		{
-			$sql="select (a_$size*a_plies) as cutqty from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-			//echo "Qry :".$sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error87 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['cutqty'];
-			}
+// function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
+// {
+	// $ret=0;
+	// if($size='2xl') {$size='s08';}
+	// if($size='3xl') {$size='s10';}
+	// if($size='4xl') {$size='s12';}
+	// switch($result_type)
+	// {
+		// case 'CUTQTY':
+		// {
+			// $sql="select (a_$size*a_plies) as cutqty from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
+			// $sql_result=mysqli_query($link, $sql) or exit("Sql Error87 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row=mysqli_fetch_array($sql_result))
+			// {
+				// $ret=$sql_row['cutqty'];
+			// }
 
-			break;
-		}
+			// break;
+		// }
 		
-		case 'INPUTQTY':
-		{
-			$sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and input_job_rand_no_ref='$input_ref'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and input_job_rand_no_ref='$input_ref' and ims_size='a_$size')) AS tmp";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['input'];
-			}
-			break;
-		}
+		// case 'INPUTQTY':
+		// {
+			// $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and input_job_rand_no_ref='$input_ref'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and input_job_rand_no_ref='$input_ref' and ims_size='a_$size')) AS tmp";
+			// $sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row=mysqli_fetch_array($sql_result))
+			// {
+				// $ret=$sql_row['input'];
+			// }
+			// break;
+		// }
 		
-		case 'IMSINPUTQTY':
-		{
-			$sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and ims_size='a_$size')) AS tmp";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error89 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['input'];
-			}
-			break;
-		}
+		// case 'IMSINPUTQTY':
+		// {
+			// $sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and ims_size='a_$size')) AS tmp";
+			// $sql_result=mysqli_query($link, $sql) or exit("Sql Error89 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row=mysqli_fetch_array($sql_result))
+			// {
+				// $ret=$sql_row['input'];
+			// }
+			// break;
+		// }
 		
-	}
+	// }
 	
-	return $ret;
+	// return $ret;
 	
-}
+// }
 
 
 ?>
@@ -145,7 +138,8 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$jobno=$_POST["jobno"];
 	$module_no=$_POST["moduleno"];
 	$prefix=$_POST['prefix'];
-
+	$plant_code=$_POST['plant_code'];
+	$username=$_POST['username'];
 	//echo $doc."<br>";
 }
 else
@@ -157,132 +151,125 @@ else
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
 	$prefix=$_GET['prefix'];
-	//echo $doc."<br>";
-}
-//echo $doc;
-$sql131="select * FROM $bai_pro3.plan_dashboard_input where input_trims_status=4 and input_panel_status=2";
-$result131=mysqli_query($link, $sql131) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-$no_of_rows131=mysqli_num_rows($result131);
-if($no_of_rows131>0)
-{
-	$sql13="DELETE FROM $bai_pro3.plan_dashboard_input where input_trims_status=4 and input_panel_status=2";
-	//echo "<br/>".$sql13."<br/>";
-	mysqli_query($link, $sql13) OR die("Error=".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$plant_code=$_GET['plant_code'];
+	$username=$_GET['username'];	
 }
 
-$sql3="select input_trims_status as stat from $table_name where input_job_no_random_ref='$doc'";
-$result3=mysqli_query($link, $sql3) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($row3=mysqli_fetch_array($result3))
-{
-	$trims_statusx=$row3["stat"];
-}
+// $sql131="select * FROM $bai_pro3.plan_dashboard_input where input_trims_status=4 and input_panel_status=2";
+// $result131=mysqli_query($link, $sql131) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+// $no_of_rows131=mysqli_num_rows($result131);
+// if($no_of_rows131>0)
+// {
+	// $sql13="DELETE FROM $bai_pro3.plan_dashboard_input where input_trims_status=4 and input_panel_status=2";
+	// mysqli_query($link, $sql13) OR die("Error=".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+// }
+
+// $sql3="select input_trims_status as stat from $table_name where input_job_no_random_ref='$doc'";
+// $result3=mysqli_query($link, $sql3) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($row3=mysqli_fetch_array($result3))
+// {
+	// $trims_statusx=$row3["stat"];
+// }
 
 // Start - To take club schedule number and  list of original schedules  -  11-11-2014 - Added by ChathurangaD
-$ssql33="SELECT order_joins from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
-$result33=mysqli_query($link, $ssql33) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($row33=mysqli_fetch_array($result33))
-{
-	$join_sch=$row33["order_joins"];
-	$join_sch1=$row33["order_joins"];
-}
+// $ssql33="SELECT order_joins from $bai_pro3.bai_orders_db where order_del_no='$schedule'";
+// $result33=mysqli_query($link, $ssql33) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($row33=mysqli_fetch_array($result33))
+// {
+	// $join_sch=$row33["order_joins"];
+	// $join_sch1=$row33["order_joins"];
+// }
 
-if($join_sch1=="0")
-{
-	$join_sch=$schedule;
-	$org_schs=$schedule;
-}
-else if($join_sch1=="1")
-{
-	$ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'";
-	//echo $ssql333;
-	$result333=mysqli_query($link, $ssql333) or exit("Sql Error3332".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row333=mysqli_fetch_array($result333))
-	{
-		$org_schs=$row333["org_schs"];
-		//echo $org_schs;
-	}
+// if($join_sch1=="0")
+// {
+	// $join_sch=$schedule;
+	// $org_schs=$schedule;
+// }
+// else if($join_sch1=="1")
+// {
+	// $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'";
+	// $result333=mysqli_query($link, $ssql333) or exit("Sql Error3332".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row333=mysqli_fetch_array($result333))
+	// {
+		// $org_schs=$row333["org_schs"];
+	// }
 	
-	$join_sch=$schedule;
-}
-else if($join_sch1=="2")
-{
-	$ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'";
-	//echo $ssql333;
-	$result333=mysqli_query($link, $ssql333) or exit("Sql Error3334".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row333=mysqli_fetch_array($result333))
-	{
-		$org_schs=$row333["org_schs"];
-		//echo $org_schs;
-	}
+	// $join_sch=$schedule;
+// }
+// else if($join_sch1=="2")
+// {
+	// $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='j$schedule'";
+	// $result333=mysqli_query($link, $ssql333) or exit("Sql Error3334".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row333=mysqli_fetch_array($result333))
+	// {
+		// $org_schs=$row333["org_schs"];
+	// }
 	
-	$join_sch=$schedule;
+	// $join_sch=$schedule;
 	
-}
-else
-{
-	$ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='$join_sch'";
-	//echo $ssql333;
-	$result333=mysqli_query($link, $ssql333) or exit("Sql Error3335".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row333=mysqli_fetch_array($result333))
-	{
-		$org_schs=$row333["org_schs"];
-		//echo "A";
-	}
+// }
+// else
+// {
+	// $ssql333="SELECT GROUP_CONCAT(order_del_no) as org_schs FROM $bai_pro3.bai_orders_db_confirm WHERE order_joins='$join_sch'";
+	// $result333=mysqli_query($link, $ssql333) or exit("Sql Error3335".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row333=mysqli_fetch_array($result333))
+	// {
+		// $org_schs=$row333["org_schs"];
+	// }
 
-	/*This was changed due to #1334 ticket on 27-12-2018*/
-	//$join_sch=substr($join_sch, 1);
-	$join_sch=$schedule;
+	// /*This was changed due to #1334 ticket on 27-12-2018*/
+	// $join_sch=$schedule;
 	
-}
+// }
 
 // End - To take club schedule number and list of original schedules  -  11-11-2014 - Added by ChathurangaD
 
 // Start  ---------  03-Nov-2014 -  Added by Chathurangad
-if(in_array($authorized,$has_permission))
-{
-	echo "<h2>Trims Status Update Form</h2>";
-	$textbox_disable="disabled=\"disabled\"";
-}
-else if(in_array($view,$has_permission))
-{
-	echo "<h2>Trims Status View Form</h2>";
-	$textbox_disable="disabled=\"disabled\"";
-	$dropdown_disable="disabled=\"disabled\"";
-}
-else
-{
-	header("Location:restrict.php");
-}
+// if(in_array($authorized,$has_permission))
+// {
+	// echo "<h2>Trims Status Update Form</h2>";
+	// $textbox_disable="disabled=\"disabled\"";
+// }
+// else if(in_array($view,$has_permission))
+// {
+	// echo "<h2>Trims Status View Form</h2>";
+	// $textbox_disable="disabled=\"disabled\"";
+	// $dropdown_disable="disabled=\"disabled\"";
+// }
+// else
+// {
+	// header("Location:restrict.php");
+// }
 // End  ---------  03-Nov-2014 -  Added by Chathurangad
 
-echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: $prefix".leading_zeros($jobno,3)."</h3>";
+echo "<h3>Style:$style / Schedule:$schedule / Input Job#: $prefix".leading_zeros($jobno,3)."</h3>";
 
-$sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM (
-SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM (
-SELECT order_col_des,CONCAT(m3_size_code,'$',SUM(carton_act_qty)) AS sizeset FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,size_code
-) AS a GROUP BY order_col_des
-) AS b";
+// $sql="SELECT GROUP_CONCAT(CONCAT(\"'\",order_col_des,\"'\")) AS colorset,GROUP_CONCAT(sizegroup) AS size_group FROM (
+// SELECT DISTINCT order_col_des,GROUP_CONCAT(sizeset SEPARATOR '*') AS sizegroup FROM (
+// SELECT order_col_des,CONCAT(m3_size_code,'$',SUM(carton_act_qty)) AS sizeset FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,size_code
+// ) AS a GROUP BY order_col_des
+// ) AS b";
 	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error887 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
+// $sql_result=mysqli_query($link, $sql) or exit("Sql Error887 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result))
 
-{
-	$colorset=$sql_row['colorset'];
-	$size_group=$sql_row['size_group'];
-}
-$seq="select pac_seq_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
-$sql_result1=mysqli_query($link, $seq) or exit("Sql Error888 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result1))
+// {
+	// $colorset=$sql_row['colorset'];
+	// $size_group=$sql_row['size_group'];
+// }
+// $seq="select pac_seq_no FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
+// $sql_result1=mysqli_query($link, $seq) or exit("Sql Error888 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row=mysqli_fetch_array($sql_result1))
 
-{
-	$seq1=$sql_row['pac_seq_no'];
+// {
+	// $seq1=$sql_row['pac_seq_no'];
 	
-}
+// }
 // echo "<h4>Ratio Sheet</h4>";
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
 
 echo "<h4><u>Consumption Report</u> </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
+echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno&plant_code=$plant_code&username=$username\" onclick=\"return popitup_new('sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno&plant_code=$plant_code&username=$username')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
 $sql4="select input_trims_status as t_status from $table_name where input_job_no_random_ref='$doc'";
 //echo $sql4;
@@ -293,9 +280,9 @@ while($row4=mysqli_fetch_array($result4))
 }
 // if($t_status==1)
 // {
-echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc&plant_code=$plant_code&username=$username\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc&plant_code=$plant_code&username=$username')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&plant_code=$plant_code&username=$username\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&plant_code=$plant_code&username=$username')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
 // }
 echo "<br><br>";
 // if($schedule!=''){
@@ -320,7 +307,7 @@ echo "<br><br>";
 // }
 
 $url5 = getFullURLLevel($_GET['r'],'sfcs_app/app/production/controllers/sewing_job/barcode_new.php',5,'R');
-        echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
+        echo "<td><a class='btn btn-info btn-sm' href='$url5?input_job=".$jobno."&schedule=".$schedule."&plant_code=".$plant_code."&username=".$username."' onclick=\"return popitup2('$url5?input_job=".$jobno."&schedule=".$schedule."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Bundle Barcode</a></td>";
 
 	
 $balance_tot=0;
@@ -341,13 +328,12 @@ echo "<th>Allocated Quantity</th>";
 //echo "<th>TID</th>";
 //echo "<th>Doc# Ref</th>";
 echo "</tr>";
-$sql121="SELECT GROUP_CONCAT(DISTINCT(doc_no) ORDER BY doc_no) AS docket_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
-// echo '<br/>'.$sql121;
-$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error8832 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row121=mysqli_fetch_array($sql_result121))
-{
-	$docket_ref=$sql_row121['docket_ref'];
-}
+// $sql121="SELECT GROUP_CONCAT(DISTINCT(doc_no) ORDER BY doc_no) AS docket_ref FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc'";
+// $sql_result121=mysqli_query($link, $sql121) or exit("Sql Error8832 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row121=mysqli_fetch_array($sql_result121))
+// {
+	// $docket_ref=$sql_row121['docket_ref'];
+// }
 	
 $sql="SELECT destination,cat_ref,acutno,order_del_no,doc_no,input_job_no,GROUP_CONCAT(DISTINCT tid ORDER BY tid) AS tid,GROUP_CONCAT(DISTINCT doc_no_ref ORDER BY doc_no) AS doc_no_ref,GROUP_CONCAT(DISTINCT size_code) AS size_code,GROUP_CONCAT(DISTINCT order_col_des) AS order_col_des,GROUP_CONCAT(DISTINCT CONCAT(acutno,'-',order_col_des,'-',size_code,'-',carton_act_qty) ORDER BY doc_no SEPARATOR '<br/>' ) AS a_cutno,SUM(carton_act_qty) AS carton_act_qty FROM (SELECT cat_ref,order_del_no,input_job_no,input_job_no_random,tid,doc_no,doc_no_ref,size_code,order_col_des,acutno,destination,SUM(carton_act_qty) AS carton_act_qty FROM $bai_pro3.packing_summary_input WHERE input_job_no_random='$doc' GROUP BY order_col_des,input_job_no_random,acutno,size_code,destination) AS t GROUP BY doc_no,size_code ORDER BY order_del_no,acutno,input_job_no";
 // echo "<br/>".$sql."<br>";	
@@ -357,9 +343,9 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		
-		$cutqty=doc_in_status($link,'CUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
-		$inputqty=doc_in_status($link,'INPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],$doc);
-		$imsinputqty=doc_in_status($link,'IMSINPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
+		// $cutqty=doc_in_status($link,'CUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
+		// $inputqty=doc_in_status($link,'INPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],$doc);
+		// $imsinputqty=doc_in_status($link,'IMSINPUTQTY',$sql_row['size_code'],$sql_row['doc_no'],'');
 		$balance=($sql_row['carton_act_qty']-$inputqty);
 		$allowedqty=0;
 		//echo $sql_row['size_code'];
@@ -420,13 +406,13 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error8832 $sql".mysqli_error(
 <?php
 $status=array("","Preparing material","Material ready for Production (in Pool)","Partial Issued","Issued To Module");
 echo "<input type=\"hidden\" name=\"doc\" value=\"$doc\" />";
-echo "<input type=\"hidden\" name=\"docket_no\" value=\"$docket_no\" />";
+// echo "<input type=\"hidden\" name=\"docket_no\" value=\"$docket_no\" />";
 echo "<input type=\"hidden\" name=\"section\" value=\"$section\" />";
 echo "<input type=\"hidden\" name=\"style\" value=\"$style\" />";
 echo "<input type=\"hidden\" name=\"schedule\" value=\"$schedule\" />";
 echo "<input type=\"hidden\" name=\"jobno\" value=\"$jobno\" />";
 echo "<input type=\"hidden\" name=\"moduleno\" value=\"$module_no\" />";
-echo "<input type=\"hidden\" name=\"docket_ref\" value=\"$docket_ref\" />";
+// echo "<input type=\"hidden\" name=\"docket_ref\" value=\"$docket_ref\" />";
 echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
 if(in_array($authorized,$has_permission))
 {
@@ -494,7 +480,7 @@ if(isset($_POST["submit"]))
 	$input_qty_tot="";
 	$input_job_no_ref=$_POST['input_job_no_ref'];
 	$cut_no_ref=$_POST['input_cut_no_ref'];
-	$docket_ref=$_POST['docket_ref'];
+	// $docket_ref=$_POST['docket_ref'];
 		
 	$sql4="update $table_name set input_trims_status=\"".$up_status."\" where input_job_no_random_ref=\"".$doc."\"";
 	//echo $sql4;

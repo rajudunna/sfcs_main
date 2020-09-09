@@ -11,7 +11,8 @@ set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
 $section_no=$_GET['section_no'];
-$username=$_GET['uname'];
+$plant_code=$_GET['plant_code'];
+$username=$_GET['username'];
 ?>
 
 
@@ -59,7 +60,7 @@ $username=$_GET['uname'];
 		ob_end_flush();
 		flush();
 		usleep(1);
-		$sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section_no";
+		$sqlx1="SELECT section_name as section_display_name FROM $pms.`sections` WHERE plant_code='$plant_code' AND is_active=1 AND section_id='$section_no'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -75,12 +76,12 @@ $username=$_GET['uname'];
 			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>
 
 <?php
-$sqlx="SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section=$section_no GROUP BY section ORDER BY section + 0";
+$sqlx="SELECT GROUP_CONCAT(`workstation_code` ORDER BY workstation_code+0 ASC) AS sec_mods FROM $pms.`sections` s
+LEFT JOIN $pms.`workstation` w ON w.section_id=s.section_id
+WHERE s.section_id='$section_no' and AND s.plant_code='$plant_code'";
 $sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
-	$section=$sql_rowx['sec_id'];
-	$section_head=$sql_rowx['sec_head'];
 	$section_mods=$sql_rowx['sec_mods'];
 	
 	$mods=array();
@@ -145,7 +146,6 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			if($input_temp==1) { $input_temp="T";	} else { $input_temp="F"; }
 			if($cut_input_new=="DONE") { $cut_input_new="T";	} else { $cut_input_new="F"; }
 			
-			$check_string=$cut_new.$rm_update_new.$rm_new.$input_temp.$cut_input_new;
 			$rem="Nil";
 			
 			if($fabric_status!=5)
@@ -208,7 +208,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$rem="Available";
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
+						$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 						//echo $sql1x1."<br>";
 						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error7".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -251,7 +251,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
+						$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 						//echo $sql1x1."<br>";
 						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -274,7 +274,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 			}
 			
-			$sql11x="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input')";
+			$sql11x="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and plant_code='$plant_code'";
 			//echo $sql11x."<br>";
 			$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9".mysqli_error());
 			if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
@@ -283,7 +283,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				$id="D-Green";	
 			} 
 			
-			$sql1x1="select * from $bai_pro3.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0";
+			$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 			//echo $sql1x1."<br>";
 			$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error10".mysqli_error());
 			if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -354,26 +354,23 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			
 			//For Color Clubbing
-			unset($club_c_code);
-			$club_c_code=array();
-			if($sql_row1['clubbing']>0)
-			{
-				//$total_qty=0;
-				$sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
-				//echo $sql11."<br/>";
-				$sql_result11=mysqli_query($link,$sql11) or exit("Sql Error12".mysqli_error());
-				while($sql_row11=mysqli_fetch_array($sql_result11))
-				{
-					$club_c_code[]=chr($sql_row11['color_code']).leading_zeros($sql_row1['acutno'],3);
-					//$total_qty+=$sql_row11['total'];
-				}
-			}
-			else
-			{
-				$club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
-			}
+			// unset($club_c_code);
+			// $club_c_code=array();
+			// if($sql_row1['clubbing']>0)
+			// {
+				// $sql11="select color_code,acutno from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no=$schedule and clubbing=".$sql_row1['clubbing']." and acutno=".$sql_row1['acutno'];
+				// $sql_result11=mysqli_query($link,$sql11) or exit("Sql Error12".mysqli_error());
+				// while($sql_row11=mysqli_fetch_array($sql_result11))
+				// {
+					// $club_c_code[]=chr($sql_row11['color_code']).leading_zeros($sql_row1['acutno'],3);
+				// }
+			// }
+			// else
+			// {
+				// $club_c_code[]=chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);
+			// }
 			
-			$club_c_code=array_unique($club_c_code);
+			// $club_c_code=array_unique($club_c_code);
 			
 			//echo "<td>"."Style:".$style."<br/>"."Schedule:".$schedule."<br/>"."Job:".chr($color_code).leading_zeros($cut_no,3)."<br/>"."Total Qty:".$total_qty."</td><td></td>";
 			//echo "<td>".$style."<br/><strong>".$schedule."<br/>J".leading_zeros($jobno,3)."</strong><br/>".$total_qty."</td><td>F.L.: $fabric_location<Br/>B.L.: $bundle_location</br>Col:".strtoupper($id)."</br></td>";
