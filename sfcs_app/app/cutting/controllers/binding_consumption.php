@@ -22,10 +22,10 @@ $username = $_GET['username'];
         $status_new = 'Close';
     }
     
-	$deletedata="delete from $pps.binding_consumption_items where parent_id='$row_id'";
+	$deletedata="delete from $pps.binding_consumption_items where parent_id='$row_id' and plant_code='$plant_code'";
 	$deletedata_query = mysqli_query($link,$deletedata);
 	
-	$deletemain="delete from $pps.binding_consumption where id = '$row_id'";
+	$deletemain="delete from $pps.binding_consumption where id = '$row_id'and plant_code='$plant_code'";
 	$deletemain_query = mysqli_query($link,$deletemain);
     $query = "UPDATE $pps.binding_consumption set status = '".$status_new."',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id = $row_id and plant_code='$plant_code'";
     $update_query = mysqli_query($link,$query);
