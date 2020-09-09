@@ -339,8 +339,8 @@ $(document).ready(function(){
 			       $pageurl = getFullURLLevel($_GET['r'],'mrn_request_form_update_V2.php','0','R');
 				   
                     echo "<div class='col-md-2'>Select Style: <select name=\"style\"  onchange=\"firstbox();\" class='form-control'>";                  
-                    if($plantcode!=''){
-                        $result_mp_color_details=getMpColorDetail($plantcode);
+                    if($plant_code!=''){
+                        $result_mp_color_details=getMpColorDetail($plant_code);
                         $style=$result_mp_color_details['style'];
                     }
                     echo "<option value=\"NIL\" selected>NIL</option>";
@@ -358,9 +358,9 @@ $(document).ready(function(){
 
                     echo "<div class='col-md-2'>Select Schedule: <select name=\"schedule\" onchange=\"secondbox();\" class='form-control'>";
 
-                    if($get_style!=''&& $plantcode!=''){
+                    if($get_style!=''&& $plant_code!=''){
                        
-                        $result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
+                        $result_bulk_schedules=getBulkSchedules($get_style,$plant_code);
                         $bulk_schedule=$result_bulk_schedules['bulk_schedule'];
                     }  
                     echo "<option value=\"NIL\" selected>NIL</option>";
@@ -376,8 +376,8 @@ $(document).ready(function(){
                     } 
                     echo "</select></div>";
 
-                    if($get_schedule!='' && $plantcode!=''){
-                        $result_bulk_colors=getBulkColors($get_schedule,$plantcode);
+                    if($get_schedule!='' && $plant_code!=''){
+                        $result_bulk_colors=getBulkColors($get_schedule,$plant_code);
                         $bulk_color=$result_bulk_colors['color_bulk'];
                     }
                     echo "<div class='col-md-2'>Select Color: <select name=\"color\" onchange=\"thirdbox();\" class='form-control'>";
@@ -394,8 +394,8 @@ $(document).ready(function(){
                         }
                     } 
                     echo "</select></div>";
-                    if($get_schedule!='' && $get_color!='' && $plantcode!=''){
-                        $result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
+                    if($get_schedule!='' && $get_color!='' && $plant_code!=''){
+                        $result_bulk_MPO=getMpos($get_schedule,$get_color,$plant_code);
                         $master_po_description=$result_bulk_MPO['master_po_description'];
                     }
                     echo "<div class='col-md-2'>Select MPO: <select name=\"mpo\" onchange=\"sixthbox();\" class='form-control'>";
@@ -411,8 +411,8 @@ $(document).ready(function(){
                         }
                     } 
                     echo "</select></div>";
-                    if($get_mpo!='' && $plantcode!=''){
-                        $result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
+                    if($get_mpo!='' && $plant_code!=''){
+                        $result_bulk_subPO=getBulkSubPo($get_mpo,$plant_code);
                         $sub_po_description=$result_bulk_subPO['sub_po_description'];
                     }
                     echo "<div class='col-md-2'>Select Sub PO: <select name=\"sub_po\" onchange=\"seveenthbox();\" class='form-control'>";
@@ -428,8 +428,8 @@ $(document).ready(function(){
                         }
                     } 
                     echo "</select></div>";
-                    if($sub_po!='' && $plantcode!=''){
-                        $result_cuts=getCutDetails($sub_po,$plantcode);
+                    if($sub_po!='' && $plant_code!=''){
+                        $result_cuts=getCutDetails($sub_po,$plant_code);
                         $cut_number=$result_cuts['cut_number'];
                     }
 
