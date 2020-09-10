@@ -86,7 +86,13 @@ select{
 $section=$_GET['section'];
 $section_name=$_GET['section_name'];
 $operation=$_GET['operations'];
-
+function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+{
+	$datetime1 = date_create($date_1);
+	$datetime2 = date_create($date_2);
+	$interval = date_diff($datetime1, $datetime2);
+	return $interval->format($differenceFormat);
+}
 ?>
 
 <?php
@@ -162,6 +168,7 @@ $operation=$_GET['operations'];
 								<th>Rejected Qty</th>
 								<th>Balance</th>
 								<th>Remarks</th>
+								<th>Age</th>
 								<th>WIP</th>
 							</tr>";
 		$toggle=0;
@@ -241,7 +248,7 @@ $operation=$_GET['operations'];
 					
 					$rowcount_check=1;
 			        $row_counter = 0;
-	                $get_details="select docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' ";	
+	                $get_details="select DATE(MIN(date_time)) AS input_date,docket_number,size_title,bundle_number,input_job_no,cut_number,remarks,sum(if(operation_id = $pre_ops_code,recevied_qty,0)) as input,sum(if(operation_id = $operation,recevied_qty,0)) as output,SUM(if(operation_id = $operation,rejected_qty,0)) as rej_qty From $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and assigned_module='$module' ";	
 
 					if(isset($_POST['submit']))
 					{
@@ -277,6 +284,7 @@ $operation=$_GET['operations'];
 					while($row12=mysqli_fetch_array($sql_result12))
 				    {
 	                    $docket = $row12['docket_number'];
+	                    $input_date = $row12['input_date'];
 	                    $bundle_number=$row12['bundle_number'];
 	                    $previous_ops_qty=$row12['input'];
 	                    $current_ops_qty=$row12['output'];
@@ -326,7 +334,7 @@ $operation=$_GET['operations'];
 						{
 							$rejected = $sql_row33['rejected'];
 						}
-						
+						$aging=dateDifference(date("Y-m-d"), $input_date);
 						if($rowcount_check==1)
 						{	
 							if($row_counter == 0)
@@ -354,10 +362,11 @@ $operation=$_GET['operations'];
 							<td>$previous_ops_qty</td>
 							<td>$current_ops_qty</td>";
 							echo "<td>$rejected</td>";
+							
 		                          			
 							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
 							<td>$remarks</td>";
-							
+							echo "<td>$aging</td>";
 							if($rowcount_check==1)
 							{
 								echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
@@ -396,9 +405,10 @@ $operation=$_GET['operations'];
 							<td>$previous_ops_qty</td>
 							<td>$current_ops_qty</td>";
 							echo "<td>$rejected</td>";
-		                          			
+								                          			
 							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
 							<td>$remarks</td>";
+							echo "<td>$aging</td>";	
 							echo "<td class=\"$tr_color\" ></td>";
 							echo "</tr>";
 						}
