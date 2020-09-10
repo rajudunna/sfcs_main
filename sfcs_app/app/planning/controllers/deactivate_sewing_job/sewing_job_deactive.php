@@ -55,8 +55,9 @@ if(isset($_POST['submit']) || $module)
     if($module){
         $tasktype=TaskTypeEnum::SEWINGJOB;
         $task_status=TaskStatusEnum::INPROGRESS;
+        $task_status1=TaskStatusEnum::HOLD;
         $task_header_id=array();
-        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND task_status='$task_status' AND task_type='$tasktype' AND plant_code='$plant_code'";
+        $get_task_header_id="SELECT task_header_id,task_ref FROM $tms.task_header WHERE resource_id='$module' AND task_status='$task_status' or task_status='$task_status1'  AND task_type='$tasktype' AND plant_code='$plant_code'";
         $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
         {
@@ -114,10 +115,13 @@ if(isset($_POST['submit']) || $module)
                     $style=$mp_color_detail_row['style'];
                     $color=$mp_color_detail_row['color'];
                   }
-                  //To get schedules
-                  $result_bulk_schedules=getBulkSchedules($style,$plant_code);
-                  $bulk_schedule=$result_bulk_schedules['bulk_schedule'];
-                  $schedules = implode(",",$bulk_schedule);
+                
+                  $get_schedule="SELECT feature_value FROM pps_prod.`jm_product_logical_bundle` LEFT JOIN pps_prod.`jm_job_bundles` ON jm_job_bundles.`jm_product_logical_bundle_id` = jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
+                  $get_schedule_result=mysqli_query($link_new, $get_schedule) or exit("Sql Error at get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($schedule_row=mysqli_fetch_array($get_schedule_result))
+                  {
+                     $schedule=$schedule_row['feature_value'];
+                  } 
                   
                   //to get dockets
                 //   $result_dockets=getDocketDetails($po_number,$plant_code,0);
@@ -163,7 +167,7 @@ if(isset($_POST['submit']) || $module)
                     echo "<tr>";
                     echo "<input type='hidden' name='planned_date[]' value=$planned_date>";
                     echo "<input type='hidden' name='style[]' value=$style>";
-                    echo "<input type='hidden' name='schedule[]' value=$schedules>";
+                    echo "<input type='hidden' name='schedule[]' value=$schedule>";
                     echo "<input type='hidden' name='color[]' value=$color>";
                     echo "<input type='hidden' name='po_number[]' value=$po_number>";
                     echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";

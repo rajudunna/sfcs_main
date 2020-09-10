@@ -46,6 +46,7 @@ class TaskStatusEnum {
     const OPEN = 'OPEN';
     const INPROGRESS = 'INPROGRESS';
     const COMPLETED = 'COMPLETED';
+    const HOLD = 'HOLD';
 }
 
 class TrimStatusEnum {

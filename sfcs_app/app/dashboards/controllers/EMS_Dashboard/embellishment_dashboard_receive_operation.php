@@ -25,6 +25,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions_v2.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/functions.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/group_def.php', 4, 'R'));
+include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/enums.php', 4, 'R'));
 set_time_limit(200000);
 $session_plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
@@ -374,7 +375,7 @@ foreach ($workstations as $emb_key => $emb_value) {
   echo "<tr class='bottom'><td>";
 
   // to get all planned jobs
-  $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBJOB, $session_plant_code);
+  $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
   $job_number = $result_planned_jobs['job_number'];
   $task_header_id = $result_planned_jobs['task_header_id'];
