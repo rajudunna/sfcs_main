@@ -41,6 +41,28 @@ function getJmDockets($doc_num,$plant_code){
         if($ratio_comp_group_id!=''){
             /**By using ratio component group we can get marker details */
             /**NOte :we can take only default_marker_version=1 details only */
+            $getting_style="SELECT `master_po_details_id` FROM $pps.`lp_ratio_component_group` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND `plant_code`='$plant_code'";
+            $getting_style_result=mysqli_query($link_new, $getting_style) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $getting_style_result_num=mysqli_num_rows($getting_style_result);
+            if($getting_style_result_num>0){
+                while($sql_row1123=mysqli_fetch_array($getting_style_result))
+                {
+                    $master_po_details_id=$sql_row1123['master_po_details_id'];
+                }
+            }
+
+            $style_info_query = "SELECT mpc.style, mp.master_po_number, mp.master_po_description 
+            FROM $pps.mp_color_detail mpc 
+            LEFT JOIN $pps.mp_order mp ON mpc.master_po_number = mp.master_po_number
+            WHERE mpc.master_po_details_id = '$master_po_details_id' ";
+            //echo $style_info_query ;
+            $style_info_result=mysqli_query($link_new, $style_info_query) or exit("Sql style_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row = mysqli_fetch_array($style_info_result))
+            {
+                $style = $row['style'];
+                $master_po = $row['master_po_number'];
+                $master_po_desc = $row['master_po_description'];
+            }
             $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);
@@ -260,26 +282,38 @@ function getStickerData($material_item_code,$style,$plantcode){
     @params:doc_num,doc_type,plant_code
     @returns:docket wise allocated rolls info
 */
-function getDocketInfo($doc_num,$doc_type){
+function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
-    global $bai_rm_pj1;
-    $sql="SELECT `fabric_cad_allocation`.`tran_pin` AS `tran_pin`,`fabric_cad_allocation`.`doc_no` AS `doc_no`,`fabric_cad_allocation`.`roll_id` AS `roll_id`,`fabric_cad_allocation`.`roll_width` AS `roll_width`,`fabric_cad_allocation`.`plies` AS `plies`,`fabric_cad_allocation`.`mk_len` AS `mk_len`,`fabric_cad_allocation`.`doc_type` AS `doc_type`,`fabric_cad_allocation`.`log_time` AS `log_time`,`fabric_cad_allocation`.`allocated_qty` AS `allocated_qty`,`store_in`.`ref1` AS `ref1`,`store_in`.`lot_no` AS `lot_no`,`sticker_report`.`batch_no`  AS `batch_no`,`sticker_report`.`item_desc` AS `item_desc`,`sticker_report`.`item_name` AS `item_name`,`sticker_report`.`item` AS `item`,`sticker_report`.`inv_no` AS `inv_no`,`store_in`.`ref2` AS `ref2`,`store_in`.`ref3` AS `ref3`,`store_in`.`ref4` AS `ref4`,`store_in`.`ref5` AS `ref5`,`store_in`.`ref6` AS `ref6`,`sticker_report`.`pkg_no` AS `pkg_no`,`store_in`.`status` AS `status`,`sticker_report`.`grn_date` AS `grn_date`,`store_in`.`remarks` AS `remarks`,`store_in`.`tid` AS `tid`,`store_in`.`qty_rec` AS `qty_rec`,`store_in`.`qty_issued` AS `qty_issued`,`store_in`.`qty_ret` AS `qty_ret`,`store_in`.`barcode_number` AS `barcode_number` FROM ($bai_rm_pj1.`fabric_cad_allocation` LEFT JOIN $bai_rm_pj1.`store_in` ON  (`fabric_cad_allocation`.`roll_id` = `store_in`.`tid`) LEFT JOIN $bai_rm_pj1.`sticker_report` ON (`store_in`.`lot_no`=`sticker_report`.`lot_no`)) where doc_no='$doc_num' and doc_type='$doc_type'  group by roll_id order by batch_no,ref4 asc";
-    /**Prevously we have vew called docket_ref and instead of that we will use above query to get allocted rolls data wrt dokets */
-    $sql_result=mysqli_query($link_new, $sql) or exit("Sql Error at Doscket roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_num=mysqli_num_rows($sql_result);
+    global $wms;
+    global $pps;
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where doc_no='$doc_num' and plant_code='$plant_code'";
+    $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sql_num1=mysqli_num_rows($sql_result1);
+        if($sql_num1>0){
+            while($sql_row1=mysqli_fetch_array($sql_result1))
+            {
+                $lot_ref[]=$sql_row1['plan_lot_ref'];
+            }
+        }
+       
+        $lot_no=implode("','" , $lot_ref);
+      
+       $sql="SELECT store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,sticker_report.batch_no,store_in.ref1,store_in.lot_no,sticker_report.inv_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item from $wms.store_in left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where store_in.lot_no in ($lot_no) and store_in.plant_code='$plant_code'";
+       $sql_result=mysqli_query($link_new, $sql) or exit("$sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+       $sql_num=mysqli_num_rows($sql_result);    
         if($sql_num>0){
             while($sql_row=mysqli_fetch_array($sql_result))
             {
                 $roll_det[]=$sql_row['ref2'];
-                $width_det[]=round($sql_row['roll_width'],2);
-                $leng_det[]=$sql_row['allocated_qty'];
+                $width_det[]=round($sql_row['shrinkage_width'],2);
+                $leng_det[]=$sql_row['qty_allocated'];
                 $batch_det[]=trim($sql_row['batch_no']);
                 $shade_det[]=$sql_row['ref4'];
                 $location_det[]=$sql_row['ref1'];
                 $invoice_no[]=$sql_row['inv_no'];
                 $locan_det[]=$sql_row['ref1'];
                 $lot_det[]=$sql_row['lot_no'];
-                $roll_id[]=$sql_row['roll_id'];
+                $roll_id[]=$sql_row['tid'];
                 $ctex_len[]=$sql_row['ref5'];
                 $tkt_len[]=$sql_row['qty_rec'];
                 $ctex_width[]=$sql_row['ref3'];
@@ -909,25 +943,26 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       //To get taskrefrence from task_jobs based on resourceid 
       $task_job_reference=array(); 
-      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode'";
+      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' ORDER BY priority ASC";
       $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
       {
-        $task_job_reference[] = $refrence_no_row['task_job_reference'];
+        $task_job_reference[$refrence_no_row['priority']] = $refrence_no_row['task_job_reference'];
         $task_job_ids[$refrence_no_row['task_job_id']] = $refrence_no_row['task_header_id'];
       }
       //Qry to get sewing jobs from jm_jobs_header
       $job_number=array();
-      $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id IN ('".implode("','" , $task_job_reference)."')";
-      $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-      $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
-      if($toget_sewing_jobs_num>0){
-        while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
-        {
-          $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id'];
+      foreach($task_job_reference as $key=>$value){
+        $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id='$value'";
+        $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+        if($toget_sewing_jobs_num>0){
+            while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+            {
+                $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id'];
+            }
         }
       }
-    //   var_dump($job_number);
       return array(
           'job_number' => $job_number,
           'task_header_id' => $task_header_id,
@@ -965,10 +1000,10 @@ function fn_savings_per_cal($doc_no,$plant_code){
 @param:sub_po,plantcode
 @return:cut numbers 
 */
-function getPoDetaials($po_number){
+function getPoDetaials($po_number,$plant_code){
     global $link_new;
     global $pps;
-    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number'";
+    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number' AND plant_code='$plant_code'";
     $ResultPoDetails=mysqli_query($link_new, $QryPODetails) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $PoDetails_num=mysqli_num_rows($ResultPoDetails);
     if($PoDetails_num>0){
@@ -1005,7 +1040,6 @@ function getCutNumber($jm_cut_job_id){
         'cut_number' => $cut_number
     );
 }
-
 function getDocketInformation($docket_no, $plant_code) {
     global $pps;
     global $link_new;
@@ -1118,7 +1152,7 @@ function getDocketInformation($docket_no, $plant_code) {
     $docket_quantity = $size_ratio_sum * $plies;
 
     // get the marker requierement
-    $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
+    $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
     FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
    
     $markers_result = mysqli_query($link_new, $markers_query) or exit("Sql markers_query".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1136,6 +1170,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $remark3=$sql_row11['remark3'];
         $remark4=$sql_row11['remark4'];
         $shrinkage=$sql_row11['shrinkage'];
+        $marker_version_id=$sql_row11['marker_version_id'];
     }
     $requirement = $length * $width * $docket_quantity;
 
@@ -1166,10 +1201,12 @@ function getDocketInformation($docket_no, $plant_code) {
         'remark3'=>$remark3,
         'remark4'=>$remark4,
         'shrinkage'=>$shrinkage,
-        'ratio_comp_group_id' => $ratio_comp_group_id
+        'ratio_comp_group_id' => $ratio_comp_group_id,
+        'marker_version_id' => $marker_version_id  
     ];
 
 }
+
 
 /**
  * to get sections for the plant code

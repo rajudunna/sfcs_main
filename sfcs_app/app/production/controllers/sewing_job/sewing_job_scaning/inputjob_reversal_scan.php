@@ -151,6 +151,7 @@
 		$('#operation').change(function()
 		{
 			$('#loading-image').show();
+			$('#dynamic_table1').html('');
 			var operation = $('#operation').val();
 			var job_no = $('#job_number').val();
 			var remarks = $('#sampling option:selected').text();
@@ -178,15 +179,33 @@
 							$('#loading-image').hide();
 							var data = response['data'];
 							var s_no=0;
-							var btn = '<div class="pull-right"><input type="submit" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="check_pack();"><input type="hidden" id="count_of_data" value='+data['sizeQuantities'].length+'></div>';
+							var btn = '<div class="pull-right"><input type="button" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="check_pack();"><input type="hidden" id="count_of_data" value='+data['sizeQuantities'].length+'></div>';
 							$("#dynamic_table1").append(btn);
-							var markup = "<table class = 'table table-bordered' id='dynamic_table'><tbody><thead><tr class='info'><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
+							var markup = "<table class = 'table table-bordered' id='dynamic_table'>\
+							<tbody><thead><tr class='info'><th>S.No</th><th>Style</th><th>Color</th><th>Module</th><th>Size</th>\
+							<th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
 							$("#dynamic_table1").append(markup);
 							$("#dynamic_table1").append(btn);
 							for(var i=0;i<data['sizeQuantities'].length;i++)
 							{
 								s_no++;
-								var markup1 = "<tr><input type='hidden' name='doc_no[]' value='"+data['sizeQuantities'][i]['docketNo']+"'><input type='hidden' name='operation_id' value='"+data['sizeQuantities'][i]['operationCode']+"'><input type='hidden' name='remarks' value='"+data['sizeQuantities'][i]['status']+"'><input type='hidden' name='mapped_color' value='"+data['fgColors']+"'><input type='hidden' name='size[]' value='"+data['sizeQuantities'][i]['size']+"'><input type='hidden' name='size_id[]' value='"+data['sizeQuantities'][i]['size']+"'><input type='hidden' name='input_job_no_random' value='"+job_no+"'><input type='hidden' name='style' value='"+data['style']+"'><input type='hidden' name='color[]' value='"+data['fgColors']+"'><input type='hidden' name='module[]' value='"+data['sizeQuantities'][i]['resourceId']+"'><input type='hidden' name='rep_qty[]' value='"+data['sizeQuantities'][i]['cumilativeReportedQty']+"'><td>"+s_no+"</td><td class='none'>"+data['sizeQuantities'][i]['docketNo']+"</td><td>"+data['sizeQuantities'][i]['fgcolor']+"</td><td>"+data['sizeQuantities'][i]['resourceId']+"</td><td>"+data['sizeQuantities'][i]['size']+"</td><td>"+data['sizeQuantities'][i]['inputJobQty']+"</td><td>"+data['sizeQuantities'][i]['cumilativeReportedQty']+"</td><td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQuantity']+"</td><td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+								var markup1 = "<tr>\
+								<input type='hidden' name='operation_id' value='"+data['sizeQuantities'][i]['operationCode']+"'>\
+								<input type='hidden' name='remarks' value='"+data['sizeQuantities'][i]['status']+"'>\
+								<input type='hidden' id='"+i+"fgColor' name='color[]' value='"+data['sizeQuantities'][i]['fgColor']+"'>\
+								<input type='hidden' id='"+i+"size' name='size[]' value='"+data['sizeQuantities'][i]['size']+"'>\
+								<input type='hidden' name='size_id[]' value='"+data['sizeQuantities'][i]['size']+"'>\
+								<input type='hidden' name='input_job_no_random' value='"+job_no+"'>\
+								<input type='hidden' name='style' value='"+data['style']+"'>\
+								<input type='hidden' name='color[]' value='"+data['fgColors']+"'>\
+								<input type='hidden' name='module[]' value='"+data['sizeQuantities'][i]['resourceId']+"'>\
+								<input type='hidden' name='rep_qty[]' value='"+data['sizeQuantities'][i]['cumilativeReportedQty']+"'>\
+								<td>"+s_no+"</td><td>"+data.style+"</td>\
+								<td>"+data['sizeQuantities'][i]['fgColor']+"</td><td>"+data['sizeQuantities'][i]['resourceId']+"</td>\
+								<td>"+data['sizeQuantities'][i]['size']+"</td><td>"+data['sizeQuantities'][i]['inputJobQty']+"</td>\
+								<td>"+data['sizeQuantities'][i]['cumilativeReportedQty']+"</td>\
+								<td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQty']+"</td>\
+								<td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 								$("#dynamic_table").append(markup1);
 							}
 						} else {
@@ -251,13 +270,15 @@
 		rejectReportData.plantCode = $('#plant_code').val();
 		rejectReportData.shift = $('#shift_val').val();
 		rejectReportData.operationCode = $('#operation').val();
+		rejectReportData.createdUser = 'Rajesh N';
 		var sizeQuantities = new Array();
 		for(var i=0; i<count; i++)
 		{
 			var sizeQuantitiesObject = new Object();
 			sizeQuantitiesObject.size = $('#'+i+'size').val();
 			sizeQuantitiesObject.module = $('#'+i+'module').val();
-			sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+			// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
 			sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
 			sizeQuantities.push(sizeQuantitiesObject);
 		}
@@ -267,13 +288,20 @@
 			type: "POST",
 			url: seveSewJobReversalUrl,
 			data: rejectReportData,
-			success: function(response) 
+			success: function(res) 
 			{
-				var data = JSON.parse(response);
-				sweetAlert('',data['internalMessage'],'success');
+				console.log('response came');
+				if (res.status) {
+					swal('',res.internalMessage,'success');
+				} else {
+					swal('',res.internalMessage,'error');
+				}
+			},
+			error: function(response){
+				swal('','Network Error','error');
 			}
 		});
-		$('.submission').hide();
+		$('.submissiaon').hide();
 	}
 
 </script>

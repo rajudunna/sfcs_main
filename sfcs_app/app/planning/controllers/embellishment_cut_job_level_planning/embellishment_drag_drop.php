@@ -679,11 +679,7 @@
 									$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 									$job_number=$result_planned_jobs['job_number'];
 									$task_header_id=$result_planned_jobs['task_header_id'];
-									    		        							            
-							        //Function to get schedules from getBulkSchedules based on style,plantcode
-							        $result_schedules=getBulkSchedules($style,$plant_code);
-							        $schedule_details=$result_schedules['bulk_schedule'];
-							        $schedule1=implode("," , $schedule_details); 
+ 
 							        foreach($job_number as $sew_num=>$jm_sew_id)
 							        {
 										//To get taskjobs_id
@@ -697,13 +693,14 @@
 										$job_detail_attributes = [];
 										$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
 										$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-										while ($row2 = mysqli_fetch_array($get_details_result)) {
+										while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 									
 										   $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
 										
 										}
 										$style1 = $job_detail_attributes[$sewing_job_attributes['style']];
 										$color1 = $job_detail_attributes[$sewing_job_attributes['color']]; 
+										$schedule1 = $job_detail_attributes[$sewing_job_attributes['schedule']];
 
 										//to get qty from jm job lines
 										$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
