@@ -14,65 +14,8 @@ array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/trims_status_update_input.php");
 $has_permission=haspermission($url_r); 
 $isinput=$_GET['isinput'];
-
-//function to extract input informat
- 
-function doc_in_status($link,$result_type,$size,$doc_no,$input_ref)
-{
-	//$result_type : CUTQTY, INPUTQTY (as per input job reference), IMSINPUTQTY (as per docket)
-	//$doc_no: Docket #
-	//$input_refere: Input job reference random
-	
-	$ret=0;
-	if($size='2xl') {$size='s08';}
-	if($size='3xl') {$size='s10';}
-	if($size='4xl') {$size='s12';}
-	switch($result_type)
-	{
-		case 'CUTQTY':
-		{
-			$sql="select (a_$size*a_plies) as cutqty from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-			//echo "Qry :".$sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error87 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['cutqty'];
-			}
-
-			break;
-		}
-		
-		case 'INPUTQTY':
-		{
-			$sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and input_job_rand_no_ref='$input_ref'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and input_job_rand_no_ref='$input_ref' and ims_size='a_$size')) AS tmp";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error88 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['input'];
-			}
-			break;
-		}
-		
-		case 'IMSINPUTQTY':
-		{
-			$sql="SELECT COALESCE(SUM(in_qty),0) as input FROM ((SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log_backup WHERE ims_doc_no='$doc_no'  and ims_size='a_$size') UNION (SELECT SUM(ims_qty) AS in_qty FROM $bai_pro3.ims_log WHERE ims_doc_no='$doc_no' and ims_size='a_$size')) AS tmp";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error89 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$ret=$sql_row['input'];
-			}
-			break;
-		}
-		
-	}
-	
-	return $ret;
-	
-}
-
-
+$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <div class='panel panel-primary'>
 	<div class='panel-heading'>Trims Status Update Form</div>
@@ -136,6 +79,8 @@ if(isset($_POST["doc"]) or isset($_POST["section"]))
 	$prefix=$_POST['prefix'];
 	$jm_jg_header_id=$_POST['jm_jg_header_id'];
 	$color=$_POST['color'];
+	$plant_code=$_POST['plant_code'];
+	$username=$_POST['username'];
 
 	//echo $doc."<br>";
 }
@@ -150,6 +95,8 @@ else
 	$prefix=$_GET['prefix'];
     $jm_jg_header_id=$_GET['jm_jg_header_id'];
 	$color=$_GET['color'];
+	$plant_code=$_GET['plant_code'];
+	$username=$_GET['username'];
 }
 
 
@@ -162,12 +109,12 @@ echo "<h3>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h3>
 
 $seq1=-1;
 echo "<h4><u>Consumption Report</u> </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
+echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
 
-echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+// echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
-echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&jm_jg_header_id=$jm_jg_header_id&plant_code=$plant_code')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
 
 echo "<br><br>";
 
@@ -228,7 +175,7 @@ while($row=mysqli_fetch_array($sql_result))
 }
 echo "</table>";
 //get trim status
-$get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id= '$task_job_id'";
+$get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id= '$task_job_id'";
 $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
   while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
 	 $trim_status=$row2['trim_status'];
@@ -251,6 +198,8 @@ echo "<input type=\"hidden\" name=\"schedule\" value=\"$schedule\" />";
 echo "<input type=\"hidden\" name=\"jobno\" value=\"$jobno\" />";
 echo "<input type=\"hidden\" name=\"moduleno\" value=\"$module_no\" />";
 echo "<input type=\"hidden\" name=\"task_job_id\" value=\"$task_job_id\" />";
+echo "<input type=\"hidden\" name=\"plant_code\" value=\"$plant_code\" />";
+echo "<input type=\"hidden\" name=\"username\" value=\"$username\" />";
 echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
 
   foreach($status as $key => $value)
@@ -289,16 +238,18 @@ if(isset($_POST["submit"]))
 	$style_code=$_POST["style"];
 	$schedule_code=$_POST["schedule"];
 	$color_code=$_POST["input_color"];
-    $task_job_id=$_POST['task_job_id'];
+	$task_job_id=$_POST['task_job_id'];
+	$plant_code=$_POST['plant_code'];
+	$username=$_POST['username'];
 	
 
-	$sql4="UPDATE $pps.job_trims SET trim_status='".$up_status."' WHERE task_job_id='$task_job_id'";
+	$sql4="UPDATE $tms.job_trims SET trim_status='".$up_status."',updated_at='".date("Y-m-d H:i:s")."',updated_user='' WHERE task_job_id='$task_job_id' AND plant_code='$plant_code'";
 	//echo $sql4;
 	mysqli_query($link, $sql4);
 			
-	$sql123="INSERT INTO `$bai_pro3`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES
-	('".$schedule_code."','".$style_code."','".$doc_ref_job."','".$username."','".date("Y-m-d H:i:s")."','Trim Issue$up_status')";
-	mysqli_query($link, $sql123) OR die("Error=".$sql123."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql123="INSERT INTO `$pps`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES
+	// ('".$schedule_code."','".$style_code."','".$doc_ref_job."','".$username."','".date("Y-m-d H:i:s")."','Trim Issue$up_status')";
+	// mysqli_query($link, $sql123) OR die("Error=".$sql123."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script type=\"text/javascript\"> window.close(); </script>";	
 }

@@ -1263,4 +1263,40 @@ function getWorkstationsForSection($plant_code, $section){
     );
 }
 
+/**
+ * Function to get style,color,schedule wrt ponumber
+ * @param:ponumber,plancode
+ * @return:style,color,schedule
+*/
+function getStyleColorSchedule($ponumber,$plantcode){
+    global $link_new;
+    global $pps;
+    $style=array();
+    $color=array();
+    $schedule=array();
+    //To get schedule,color
+    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+    WHERE po_number='$ponumber' AND mp_sub_mo_qty.plant_code='$plantcode'";
+    $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row=mysqli_fetch_array($qry_get_sch_col_result))
+    {
+      $schedule[]=$row['schedule'];
+      $color[]=$row['color'];
+    }
+    $color_bulk=array_unique($color);
+    //To get style
+    $qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $color_bulk)."') and mp_color_detail.plant_code='$plantcode'";
+    $qry_get_style_result=mysqli_query($link_new, $qry_get_style) or exit("Sql Error at qry_get_style".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row1=mysqli_fetch_array($qry_get_style_result))
+    {
+      $style[]=$row1['style'];
+    }    
+    $style_bulk=array_unique($style);
+    $schedule_bulk=array_unique($schedule);
+    return array(
+        'style_bulk' => $style_bulk,
+        'schedule_bulk' => $schedule_bulk,
+        'color_bulk' => $color_bulk
+    );
+}
 ?>

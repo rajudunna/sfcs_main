@@ -45,10 +45,12 @@ $port= $api_port_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
+$plant_code=$_GET['plant_code'];
 
 echo "<input type='hidden' id='style' value='".$_GET['style']."'>
 <input type='hidden' id='schedule' value='".$_GET['schedule']."'>
-<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>";
+<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>
+<input type='hidden' id='plant_code' value='".$_GET['plant_code']."'>";
 
 $colors=[];
 $sql="select fg_color from $pps.jm_product_logical_bundle where feature_value='".$schedule."' group by fg_color";

@@ -143,7 +143,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			  }
 		  }
 		  //qry to get trim status
-		  $get_trims_status="SELECT trim_status FROM $pps.job_trims WHERE task_job_id ='$task_job_id'";
+		  $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id'";
 		  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row2 = mysqli_fetch_array($get_trims_status_result)) 
 			{
