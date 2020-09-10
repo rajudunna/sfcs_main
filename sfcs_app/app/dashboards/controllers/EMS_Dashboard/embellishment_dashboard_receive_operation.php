@@ -413,7 +413,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $operation_seq = $row_res['operation_seq'];
     }
 
-    $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
+    $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
     $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
     while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
       $send_qty = $row_res['good_quantity'];
