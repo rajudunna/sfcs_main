@@ -960,10 +960,10 @@ function fn_savings_per_cal($doc_no,$plant_code){
 @param:sub_po,plantcode
 @return:cut numbers 
 */
-function getPoDetaials($po_number){
+function getPoDetaials($po_number,$plant_code){
     global $link_new;
     global $pps;
-    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number'";
+    $QryPODetails="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$po_number' AND plant_code='$plant_code'";
     $ResultPoDetails=mysqli_query($link_new, $QryPODetails) or exit("Sql Error at PO details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $PoDetails_num=mysqli_num_rows($ResultPoDetails);
     if($PoDetails_num>0){
