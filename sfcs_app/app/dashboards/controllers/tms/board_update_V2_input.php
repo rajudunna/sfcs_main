@@ -78,7 +78,7 @@ $username=$_GET['username'];
 <?php
 $sqlx="SELECT GROUP_CONCAT(`workstation_id` ORDER BY workstation_id+0 ASC) AS sec_mods FROM $pms.`sections` s
 LEFT JOIN $pms.`workstation` w ON w.section_id=s.section_id
-WHERE s.section_id='$section_no' and AND s.plant_code='$plant_code' and s.is_active=1";
+WHERE s.section_id='$section_no' AND s.plant_code='$plant_code' and s.is_active=1";
 $sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
@@ -130,6 +130,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		  $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
 		  $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']]; 
 		  $cono = $job_detail_attributes[$sewing_job_attributes['cono']];  
+		  $doc_no_ref = $job_detail_attributes[$sewing_job_attributes['docketno']];  
           
 		  //to get qty from jm job lines
 		  $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
@@ -149,20 +150,14 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			   $input_trims_status=$row2['trim_status'];
 			}
 			
+			//qry to get fabric status
+		  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE doc_no ='$doc_no_ref' and plant_code='".$plant_code."'";
+		  $get_fabric_status_result = mysqli_query($link_new, $get_fabric_status) or exit("Sql Error at get_fabric_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
+			while ($row_stat = mysqli_fetch_array($get_fabric_status_result)) 
+			{
+			   $fabric_status=$row_stat['fabric_status'];
+			}
 			$rem="Nil";
-
-			// $sql2="SELECT min(st_status) as st_status,order_style_no,group_concat(distinct order_del_no) as order_del_no,group_concat(distinct input_job_no) as input_job_no,group_concat(distinct doc_no) as doc_no,input_trims_status FROM $bai_pro3.plan_dash_doc_summ_input WHERE (input_trims_status!=4 or input_trims_status IS NULL) and input_job_no_random='$input_job_no_random_ref'";
-			// $result2=mysqli_query($link,$sql2) or exit("Sql Error6".mysqli_error());
-			// while($row2=mysqli_fetch_array($result2))
-			// {
-				
-				// $trims_status=$row2['st_status'];
-				// $style=$row2['order_style_no'];
-				// $schedule=$row2['order_del_no'];
-				// $input_job_no=$row2['input_job_no'];
-				// $doc_no_ref=$row2['doc_no'];
-				// $input_trims_status=$row2['input_trims_status'];
-			// }
 
 			$doc_no_ref_input = implode("','",$doc_no_ref);
 			$doc_no_ref_explode=explode(",",$doc_no_ref);
