@@ -1238,7 +1238,7 @@ function getWorkstationsForSection($plant_code, $section){
 /**
  * get planned sewing jobs(JG) for the workstation
  */
-function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
+function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
     global $tms;
     global $link_new;
     global $taskType;
@@ -1246,7 +1246,10 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
+        if ($limit) {
+            $jobsQuery .= " limit 0,$limit";
+        }
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
