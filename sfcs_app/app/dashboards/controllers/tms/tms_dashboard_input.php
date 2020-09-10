@@ -618,7 +618,7 @@ $blink_docs=array();
 		}
 
 	}
-
+	echo "</div>";
  }
 
 
