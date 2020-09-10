@@ -150,8 +150,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$html.= '<tr><td>ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				 if(strlen($item_desc)>25){
-					$item_color=substr($item_desc, 0, 25)."..";
+				  if(strlen($item_desc)>30){
+					$item_color=substr($item_desc, 0, 30)."..";
 				}else{
 					$item_color=$item_desc;
 				}
@@ -169,8 +169,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				 if(strlen($item_desc)>25){
-					$item_color=substr($item_desc, 0, 25)."..";
+				  if(strlen($item_desc)>30){
+					$item_color=substr($item_desc, 0, 30)."..";
 				}else{
 					$item_color=$item_desc;
 				}
@@ -190,8 +190,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 				
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT).$item_name2."</strong></td></tr>"; 
-				if(strlen($item_desc)>25){
-					$item_color=substr($item_desc, 0, 25)."..";
+				 if(strlen($item_desc)>30){
+					$item_color=substr($item_desc, 0, 30)."..";
 				}else{
 					$item_color=$item_desc;
 				}
@@ -212,8 +212,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				 $html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				 if(strlen($item_desc)>25){
-					$item_color=substr($item_desc, 0, 25)."..";
+				  if(strlen($item_desc)>30){
+					$item_color=substr($item_desc, 0, 30)."..";
 				}else{
 					$item_color=$item_desc;
 				}
@@ -229,8 +229,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 			{	
 				$html.= '<tr><td >ITEM CODE :<b> '.str_pad($item, 15, " ", STR_PAD_RIGHT).'</b> / Buy. : '.str_pad(substr($buyer,0,7), 6, " ", STR_PAD_RIGHT).''.'</td></tr>';
 				$html.= "<tr><td>ITEM  NAME : <strong>".str_pad($item_name1, 41, " ", STR_PAD_RIGHT)."</strong></td></tr>";  
-				if(strlen($item_desc)>25){
-					$item_color=substr($item_desc, 0, 25)."..";
+				 if(strlen($item_desc)>30){
+					$item_color=substr($item_desc, 0, 30)."..";
 				}else{
 					$item_color=$item_desc;
 				}
