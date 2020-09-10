@@ -25,6 +25,13 @@ error_reporting(0);
 	{
        $operation_code=$_POST['operation_code'];
 	}	
+	function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+	{
+		$datetime1 = date_create($date_1);
+		$datetime2 = date_create($date_2);
+		$interval = date_diff($datetime1, $datetime2);
+		return $interval->format($differenceFormat);
+	}
 ?>
 
 <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
@@ -204,6 +211,7 @@ if(isset($_POST['submit']))
 	                            <th>Rejected</th>
 	                            <th>Balance</th>
 	                            <th>Input<br>Remarks</th>
+	                            <th>Age</th>
 	                            <th>WIP</th>
                         </container>
                         </tr>
@@ -312,7 +320,7 @@ if(isset($_POST['submit']))
 	                                                { 
 	                                                    echo "N/A"; 
 	                                                }
-	                                                
+	                                            $aging=dateDifference(date("Y-m-d"), $input_date);    
 	                                            echo "</td>
 	                                                <td>".$bundle."</td>
 	                                                <td>".$input_date."</td>";
@@ -327,6 +335,7 @@ if(isset($_POST['submit']))
 	                                                <td>".$rejected."</td>
 	                                                <td>".($input_qty-($output_qty+$rejected))."</td>
 	                                                <td>".$remarks."</td>
+	                                                <td>".$aging."</td>
 	                                                <td>".($input_qty-$output_qty)."</td>
 	                                            </tr>"; 
 	                                    }
