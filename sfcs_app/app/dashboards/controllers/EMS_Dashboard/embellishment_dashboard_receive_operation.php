@@ -375,7 +375,7 @@ foreach ($workstations as $emb_key => $emb_value) {
   echo "<tr class='bottom'><td>";
 
   // to get all planned jobs
-  $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBJOB, $session_plant_code);
+  $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
   $job_number = $result_planned_jobs['job_number'];
   $task_header_id = $result_planned_jobs['task_header_id'];
