@@ -393,10 +393,10 @@ if(isset($_POST['submit']))
 					   while($sql_row11=mysqli_fetch_array($result_get_working_day))
 								 {
 								 $final_date=$sql_row11['last_up'];
-  
+								 $prev_date=date('Y-m-d', strtotime($last_date . ' -1 day'));
 								 }
 								
-								if($date==$final_date || $now_date==$date){
+								if($date==$final_date || $now_date==$date || $date==$prev_date){
 									echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
 								}
 					}
@@ -449,10 +449,10 @@ if(isset($_POST['submit']))
 					 while($sql_row11=mysqli_fetch_array($result_get_working_day))
 							   {
 							   $final_date=$sql_row11['last_up'];
-
+							   $prev_date=date('Y-m-d', strtotime($last_date . ' -1 day'));
 							   }
 							 
-							   if($date==$final_date ||$now_date==$date){
+							   if($date==$final_date ||$now_date==$date || $date==$prev_date){
 								echo'<input type="submit" id="submit" class="btn btn-primary" value="Submit" >';
 							   }
 			
