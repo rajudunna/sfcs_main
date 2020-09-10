@@ -208,7 +208,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?> maxlength="25"/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -349,7 +349,7 @@ $(document).ready(function()
         } else if(barcode_generation == 1){
 		    var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
 			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForSewingJob";
-        }		
+        }	
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -374,8 +374,6 @@ $(document).ready(function()
 			}
 		});
 	});
-		
-	
 });
 
 function tableConstruction(data){
@@ -388,8 +386,8 @@ function tableConstruction(data){
         document.getElementById('style').value = data.style;
         document.getElementById('schedule_show').innerHTML = data.schedules;
         document.getElementById('schedule').value = data.schedules;
-        document.getElementById('color_show').innerHTML = data.fgColors;
-        document.getElementById('mapped_color').value = data.fgColors;
+        document.getElementById('color_show').innerHTML = data.fgColors.toString();
+        document.getElementById('mapped_color').value = data.fgColors.toString();
         var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.sizeQuantities.length+'></div>';
         $("#dynamic_table1").append(markup);
         $("#dynamic_table1").append(btn);
@@ -427,7 +425,7 @@ function tableConstruction(data){
             var remarks_check_flag = 0;
             if(i==0)
             {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Style</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Input Job Qty</th>"+op_codes_str+"<th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th class='"+hidden_class_sewing_in+"'>Rejected Qty.</th><th>Recut In</th><th>Replace In</th><th class='"+hidden_class_sewing_in+"'>Rejection quantity</th></tr></thead><tbody>";
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th class='none'>Doc.No</th><th>Color</th><th>Module</th><th>Size</th><th>Input Job Qty</th>"+op_codes_str+"<th>Cumulative Reported Quantity</th><th>Eligibility To Report</th><th>Reporting Quantity</th><th class='"+hidden_class_sewing_in+"'>Rejected Qty.</th><th>Recut In</th><th>Replace In</th><th class='"+hidden_class_sewing_in+"'>Rejection quantity</th></tr></thead><tbody>";
                 $("#dynamic_table1").append(markup);
                 $("#dynamic_table1").append(btn);
             }
@@ -438,12 +436,12 @@ function tableConstruction(data){
                     op_code_values = op_code_values + '<td>'+data.sizeQuantities[i].operationWiseQuantity[index].quantity+'</td>';
                 });
 				
-            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='style'>"+data.sizeQuantities[i].style+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColors+"<input type='hidden' name='fgcolor["+i+"]' id='"+i+"fgcolor' value = '"+data.sizeQuantities[i].fgcolor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' "+$('#reject_report').val()+"></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColor+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.sizeQuantities[i].fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' "+$('#reject_report').val()+"></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
         }
     }
-    var markup99 = "</tbody></table></br></div></div></div>";
+    var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
     $('#hid_job').val(job_number);
@@ -659,6 +657,7 @@ $('input[type=submit]').click(function() {
 <script>
 function check_pack()
 {
+	$('#smartbtn').attr('disabled', 'disabled');
 	var count = document.getElementById('count_of_data').value;
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
@@ -667,6 +666,7 @@ function check_pack()
 	reportData.plantCode = $('#plant_code').val();
 	reportData.shift = $('#shift').val();
 	reportData.operationCode = $('#operation_id').val();
+	reportData.createdUser = '<?= $username ?>';
 	var sizeQuantities = new Array();
 	for(var i=0; i<count; i++)
 	{
@@ -676,7 +676,7 @@ function check_pack()
 		var sizeQuantitiesObject = new Object();
 		sizeQuantitiesObject.size = $('#'+i+'size').val();
 		sizeQuantitiesObject.module = $('#'+i+'module').val();
-		sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+		sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
 		sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
 		sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
 		if(sizeQuantitiesObject.rejectedQty > 0){
@@ -706,25 +706,19 @@ function check_pack()
 	}
 	if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
 	{
+		$('#smartbtn').attr('disabled', false);
 		sweetAlert("Please enter atleast one size quantity","","warning");
 		return false;
 	}
 	else {
 		console.log(reportData);
 		$('.submission').hide();
-		$('#progressbar').show();
+		// $('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-		document.getElementById('dynamic_table1').innerHTML = '';
-		document.getElementById('style_show').innerHTML = '';
-		document.getElementById('schedule_show').innerHTML = '';
-		document.getElementById('color_show').innerHTML = '';
-		document.getElementById('job_number').value = '';
-		document.getElementById('module_show').innerHTML = '';
-		document.getElementById('pre_data').innerHTML ='';
+		
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
-    
 		$.ajax({
 			type: "POST",
 			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
@@ -735,6 +729,19 @@ function check_pack()
 				//console.log(res.data);
 				if(res.status)
 				{
+					$('#dynamic_table1').html('');
+					$('#loading-image').hide();
+					document.getElementById('dynamic_table1').innerHTML = '';
+					document.getElementById('style_show').innerHTML = '';
+					document.getElementById('schedule_show').innerHTML = '';
+					document.getElementById('color_show').innerHTML = '';
+					document.getElementById('job_number').value = '';
+					document.getElementById('module_show').innerHTML = '';
+					document.getElementById('pre_data').innerHTML ='';
+					
+					swal('',res.internalMessage,'success');
+					return;
+					/*
 					var data = JSON.parse(response);
 					$('#pre_pre_data').show();
 					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
@@ -746,18 +753,21 @@ function check_pack()
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
-					swal(res.internalMessage,'','success');
+					*/
 				}
 				else
 				{
-					swal(res.internalMessage,'','error');
+					$('#smartbtn').attr('disabled', false);
+					$('.submission').show();
+					swal('',res.internalMessage,'error');
 				}                       
 			},
 			error: function(res){
+				$('.submission').show();
 				$('#loading-image').hide(); 
 				// alert('failure');
 				// console.log(response);
-				swal('Error','in getting docket','error');
+				swal('','Network error','error');
 			}
 		});
 		
