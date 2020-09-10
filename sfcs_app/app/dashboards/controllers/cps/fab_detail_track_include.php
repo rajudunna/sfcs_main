@@ -2,14 +2,16 @@
 //Date 2012-06-01
 //For getting recut and normal docket fabric issue track details
 //Created function In this page with detDetails name and call this function in index_temp.php
-	function getDetails($cat,$docket)
+	function getDetails($docket,$plant_code)
 	{
-		include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-		$total_issue_qty=0;		
+		
+		//include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+		$total_issue_qty=0;				
 		echo "<table class='table tabel-bordered'>";
 		echo "<tr><th>Inv No</th><th>Batch No</th><th>Lotno</th><th>Shade</th><th>Roll No</th><th>Qty Allocated</th></tr>";
-			if($doc!='' && $doc_ype!=''){
-				$result_docketinfo=getDocketInfo($doc,$doc_ype);
+		$doc_ype='normal';
+			if($docket!='' && $doc_ype!=''){
+				$result_docketinfo=getDocketInfo($docket,$doc_ype,$plant_code);
 				$roll_det =$result_docketinfo['roll_det'];
 				$leng_det =$result_docketinfo['leng_det'];
 				$batch_det =$result_docketinfo['batch_det'];
