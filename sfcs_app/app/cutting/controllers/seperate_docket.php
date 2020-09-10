@@ -73,6 +73,8 @@ th{
                                 $table1_rows++;
                                 $i = $sql_row['id'];
                                 $index+=1;
+                                echo "<input id='plant_code' type='hidden'  value='$plant_code'>";
+                                echo "<input id='usernsame' type='hidden'  value='$username'>";
                                 echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                 echo "<td>".$sql_row['style']."</td>";
                                 echo "<td>".$sql_row['schedule']."</td>";
@@ -128,7 +130,7 @@ th{
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
-                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
                                 if($index==0) {
@@ -252,14 +254,16 @@ th{
     function UpdateDamageStatus(i) {
         if($('#submit-'+i).val()) {
             var status = $('#issue_status-'+i).val();
-            var row_id = i
+            var row_id = i;
+            var plant_code = $('#plant_code').val();
+            var username= $('#username').val();
             //  console.log($_GET['r']);
             if(status=='Allocate') {
                 url_path = "<?php echo getFullURLLevel($_GET['r'],'dashboards/controllers/cps/binding_consumption_allocation.php',2,'R'); ?>";
-                window.open(url_path+"?doc_no="+row_id+"&status="+status);
+                window.open(url_path+"?doc_no="+row_id+"&status="+status+"&plantcodename="+plant_code+"&username="+username);
             } else {
                 url_path = "<?php echo getFullURLLevel($_GET['r'],'cutting/controllers/binding_consumption.php',2,'R'); ?>";
-                window.open(url_path+"?row_id="+row_id+"&status="+status);
+                window.open(url_path+"?row_id="+row_id+"&status="+status+"&plantcodename="+plant_code+"&username="+username);
             }
         }
         

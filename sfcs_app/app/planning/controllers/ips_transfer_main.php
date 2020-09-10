@@ -9,9 +9,12 @@
     $plantcode = $_session['plantCode'];
     $username =  $_session['userName'];
 
-    //Function to get modules based on category
-    $department='Sewing';
-    $result_worksation_id=getWorkstations($department,$plantcode);
+    $department='SEWING';
+    /** Getting work stations based on department wise
+    * @param:department,plantcode
+    * @return:workstation
+    **/
+    $result_worksation_id=getWorkstations($department,$plant_code);
     $workstations=$result_worksation_id['workstation'];
 ?>
 
@@ -43,10 +46,10 @@
       ijob_array = [];
       $('#loading-image').show();
       $('#submit_button').hide();
-     
+      var plant_code = <?= "'$plant_code'"?>;
       $.ajax({
             type: "GET",
-            url: '<?= $url ?>?get_data=1&module='+module,
+            url: '<?= $url ?>?get_data=1&module='+module+'&plant_code='+plant_code,
             success: function(response) 
             {
                 var data = $.parseJSON(response);
@@ -70,6 +73,8 @@
     function post_data(){
         to_module = $("#to_module").val();
         module = $("#module").val();
+        var plant_code = <?= "'$plant_code'"?>;
+        var username = <?= "'$username'"?>;
         if(module == to_module)
         return swal('Selecting Same Module To Transfer','','error');
         if(to_module == null)
@@ -79,7 +84,7 @@
             $.ajax({
                 type: "POST",
                 data:data,
-                url: '<?= $url ?>?save_data&to_module='+to_module+'&module='+module,
+                url: '<?= $url ?>?save_data&to_module='+to_module+'&module='+module+'&plant_code='+plant_code+'&username='+username,
                 success: function(response) 
                 {
                     var res = $.parseJSON(response);
@@ -121,8 +126,10 @@
                             <select  name="module" class="form-control" id="module">
                                 <option value="" disabled selected>Select Module</option>
                                 <?php
-                                    foreach($workstations as $module)
-                                        echo "<option value='$module'>$module</option>"
+                                    foreach($workstations as $work_id=>$work_des)
+                                    {
+                                        echo "<option value='".$work_id."'>".$work_des."</option>";
+                                    }
                                 ?>
                             </select>
                        
@@ -146,8 +153,10 @@
                             <select  name="to_module" class="form-control" id="to_module">
                             <option value="" disabled selected>Select Module</option>
                             <?php
-                                foreach($workstations as $module)
-                                    echo "<option value='$module'>$module</option>"
+                                foreach($workstations as $work_id=>$work_des)
+                                {
+                                    echo "<option value='".$work_id."'>".$work_des."</option>";
+                                }
                             ?>
                         </select>
                         </div>

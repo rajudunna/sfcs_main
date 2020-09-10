@@ -1,17 +1,19 @@
-<?php
-$include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_ajax.php');
-include($include_path.'\sfcs_app\common\config\api_call.php');
-
-function getJobGroups($style, $color, $plant, $variant) {
-    $url="$BackendServ_ip/job-group-sequencing/getJobGroupSequence";
+<?php  
+/*
+    function to get operations from SMS
+    @params:style,color,plantcode,operations_version_id
+    @returns:operationCode,operationName
+*/
+function getJobOpertions($style, $color, $plant, $variant) {
+    include("api_calls.php");
+    include("server_urls.php");
+    $url="$SMS_SERVER_IP/job-group-sequencing/getJobGroupSequence";
     $req['style'] = $style;
     $req['color'] = $color;
     $req['variant'] = $variant;
-    $req['defaultOperation'] = true;
     $req['plantCode'] = $plant;
 	$styleColorOps = getInfoFromApi($url,$req);
 	return $styleColorOps['data'][0]['jobOperations'];
-
 }
+
 ?>

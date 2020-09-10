@@ -1,17 +1,16 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
-
 if(isset($_POST['Save']))
 {
-    
     $status = 0;
     $module1 = array_unique($_POST['module']);
     $module = implode(",",$module1);
-   
+
     foreach($_POST['style'] as $key => $value){
         if($_POST['remove_type'][$key] == '3'){
             $planned_date = $_POST['planned_date'][$key];
@@ -22,6 +21,7 @@ if(isset($_POST['Save']))
             $po_number = $_POST['po_number'][$key];
             $input_qty = $_POST['input_qty'][$key];
             $jm_jg_header_id = $_POST['jm_jg_header_id'][$key];
+            
             // $wip = $_POST['wip'][$key];
             // $rejected_qty = $_POST['rejected_qty'][$key];
             // $ims_remarks = $_POST['ims_remarks'][$key];
@@ -52,17 +52,49 @@ if(isset($_POST['Save']))
             $tasktype=TaskTypeEnum::SEWINGJOB;
             if($deactive_job_id){
                 //get task_header from task_jobs
-                $qry_header_id="SELECT task_header_id $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+                $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
                 $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                 while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
                 {
                     $task_header_id=$qry_header_id_row['task_header_id'];
                 }
-                $update_qry_task_header = "UPDATE $tms.task_header set task_status='HOLD',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+                $task_status1=TaskStatusEnum::HOLD;
+                $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status1',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
                 mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
 
             }
            
+        }else{
+
+            $input_job_no = $_POST['input_job_no'][$key];
+            $jm_jg_header_id = $_GET['jm_jg_header_id'];
+            $jm_jg_header_id = $_POST['jm_jg_header_id'][$key];
+            $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
+            $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $sql_num_check=mysqli_num_rows($job_deacive_result);
+            if($sql_num_check>0){
+                while($sql_row=mysqli_fetch_array($job_deacive_result))
+                {
+                    $reverse_deactive_job_id = $sql_row['id'];
+                    $module = $sql_row['module_no'];
+                    $update_revers_qry = "update $pts.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
+                    $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $tasktype=TaskTypeEnum::SEWINGJOB;
+                    
+                    //get task_header from task_jobs
+                    $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+                    $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
+                    {
+                        $task_header_id=$qry_header_id_row['task_header_id'];
+                    }
+                    $task_status=TaskStatusEnum::INPROGRESS;
+                    $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+                    mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
+        
+                    
+                }
+            }
         }
     }
     // echo $module;
@@ -73,34 +105,15 @@ if(isset($_POST['Save']))
             location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_deactive.php", "0", "N")."&module=$module\";
             }
         </script>";
-    // if($status == 1){
-    //     $short_shipment = array_unique($short_shipment_schedules);
-    //     $ss_list = implode(",",$short_shipment);
-    //     // var_dump($ss_list);
-    //     $non_short_shipment = array_unique($non_short_shipment_schedules);
-    //     $nss_list = implode(",",$non_short_shipment);
-    //     // var_dump($nss_list);
-    //     if($nss_list=='' || $nss_list==NULL){
-    //         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
-    //         function Redirect() {
-    //             sweetAlert('Short Shipment Already performed for this schedule','','warning');
-    //             location.href = \"".getFullURLLevel($_GET['r'], "sewing_job_deactive.php", "0", "N")."&module=$module\";
-    //             }
-    //         </script>";
-    //         // exit();
-    //     }
-    // } else {
-    //     var_dump('else');
-    // }
-    // die();
+ 
 }
 
-// if($_GET['schedule'] && $_GET['input_job_no']){
+// if($_GET['input_job_no'] && $_GET['jm_jg_header_id']){
 //     // var_dump($_GET['schedule']);
 //     // var_dump($_GET['input_job_no']);
-//     $schedule = $_GET['schedule'];
 //     $input_job_no = $_GET['input_job_no'];
-//     $job_deacive = "SELECT * FROM $bai_pro3.`job_deactive_log` where schedule = '$schedule' and input_job_no='$input_job_no' and remove_type = '3'";
+//     $jm_jg_header_id = $_GET['jm_jg_header_id'];
+//     $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
 //     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //     $sql_num_check=mysqli_num_rows($job_deacive_result);
 //     if($sql_num_check>0){
@@ -108,8 +121,22 @@ if(isset($_POST['Save']))
 //         {
 //             $reverse_deactive_job_id = $sql_row['id'];
 //             $module = $sql_row['module_no'];
-//             $update_revers_qry = "update $bai_pro3.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
+//             $update_revers_qry = "update $pts.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
 //             $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//             $tasktype=TaskTypeEnum::SEWINGJOB;
+            
+//             //get task_header from task_jobs
+//             $qry_header_id="SELECT task_header_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+//             $result_qry_header_id=mysqli_query($link_new, $qry_header_id) or exit("Sql Error at qry_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+//             while($qry_header_id_row=mysqli_fetch_array($result_qry_header_id))
+//             {
+//                 $task_header_id=$qry_header_id_row['task_header_id'];
+//             }
+//             $task_status=TaskStatusEnum::INPROGRESS;
+//             $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+//             mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
+
+            
 //         }
 //         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 //         function Redirect() {

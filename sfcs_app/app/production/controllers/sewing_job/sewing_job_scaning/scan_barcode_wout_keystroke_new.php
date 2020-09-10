@@ -3,13 +3,21 @@
 </head>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
-	
+	if(isset($_POST['plant_code']))
+	{
+		$plantcode=$_POST['plant_code'];
+		$username=$_POST['username'];
+	}
+	else
+	{
+		$plantcode=$_GET['plant_code'];
+		$username=$_GET['username'];	
+	}
 	if($gate_id=='')
 	{
 		$gate_id=0;
@@ -70,6 +78,7 @@ th,td{
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
+					<input type="hidden" id="plant_code" name="plant_code" value='<?= $username; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -78,7 +87,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
+							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plantcode=".$plantcode."&username=".$username."' >Finish</a>";
 						?>
 						</form>
 						</div> 
@@ -121,35 +130,37 @@ $(document).ready(function()
 			var res = barcode.split('-');
 			var operation_id = res[1];
 		}
+
 		var plant_code = $('#plant_code').val();
 		var bundet;
 		const data={
 						"barcode": barcode,
 						"plantCode": plant_code,
 						"operationCode": operation_id,
-						"createdUser": <?= $username ?>,
-						"shift": <?=shift ?>,
+						"createdUser": '<?= $username ?>',
+						"shift": '<?=shift ?>',
 						"reportAsFullGood": true
 				    }
 		$.ajax({
 			type: "POST",
-			url: "<?php echo $BackendServ_ip?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
 			data: data,
 			success: function (res) {            
-				//console.log(res.data);
 				if(res.status)
 				{
 					bundet=res.data
 					tableConstruction(bundet);
-					swal(res.internalMessage);
+					swal(res.internalMessage,'','success');
 				}
 				else
 				{
-					swal(res.internalMessage);
+					$('#loading-image').hide();
+					swal(res.internalMessage,'','error');
 				}                       
 			},
 			error: function(res){
-				swal('Error in getting data');
+				$('#loading-image').hide();
+				swal('Error',' in getting data','error');
 			}
 		});
 	});			

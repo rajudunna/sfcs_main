@@ -5,11 +5,13 @@
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/server_urls.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
-
 		$operation_id = $_GET['operation_id'];
 		$shift = $_GET['shift'];
+		$plant_code = $_GET['plant_code'];
+		$username = $_GET['username'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
 	<script src="../../common/js/jquery.min.js"></script>
@@ -55,6 +57,8 @@
 				<input type="hidden" name="team_id" id="team_id" value="<?php echo $team_id; ?>">
 				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
 				<input type="hidden" name="shift" id="shift" value="<?php echo $shift; ?>">
+				<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
+				<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
 				<div class="form-inline col-sm-5">
 					<label><font size="5">Carton ID: </font></label>
 					<input type="text" name="carton_id" class="form-control" id="carton_id" onkeypress="return AcceptOnlyNumbers(event);" placeholder="Enter Carton ID here">
@@ -147,6 +151,8 @@
 			var team_id = $("#team_id").val();
 			var operation_id = $("#operation_id").val();
 			var shift = $("#shift").val();
+			var plant_code = $("#plantcode").val();
+			var username = $("#username").val();
 			if (carton_id != '')
 			{
 				$("#error_msg").hide();
@@ -154,91 +160,103 @@
 				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				$.ajax({
-					url: function_text,
+					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCarton",
 					dataType: "json", 
-					type: "GET",
-					data: {carton_id:carton_id,emp_id:emp_id,team_id:team_id,operation_id:operation_id,shift:shift},    
+					type: "POST",
+					data: {barcode:carton_id,operationCode:operation_id,shift:shift,plantCode:plant_code,createdUser:username},    
 					cache: false,
 					success: function (response) 
 					{
-						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
-						console.log(response);
-						if(response['status']==1)
-						{ 
-							$("#loading_img").hide();
-							$("#display_result").show();
-							$("#error_msg").hide();
-							document.getElementById('carton_no').innerHTML = response['carton_no'];
-							document.getElementById('style').innerHTML = response['style'];
-							document.getElementById('schedule').innerHTML = response['schedule'];
-							document.getElementById('color').innerHTML = response['color'];
-							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
-							document.getElementById('original_size').innerHTML = response['original_size'];
-							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
-							$('#status').css("background-color", "red");
-							$('#'+id).val('');
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
-						{
-							$("#loading_img").hide();
-							if (response['status']==0)
-							{
-								var msg = "Enter a Valid Carton Number";
+						$("#carton_id").attr("disabled", false);
+						$("#manual_carton_id").attr("disabled", false);
+						$("#loading_img").hide();
+						$("#scan_carton_id").html('');
+						if(response.status)
+                        {
+							swal('',response.internalMessage,'success');
+							return;
+							// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
+							console.log(response);
+							if(response['status']==1)
+							{ 
+								$("#loading_img").hide();
+								$("#display_result").show();
+								$("#error_msg").hide();
+								document.getElementById('carton_no').innerHTML = response['carton_no'];
+								document.getElementById('style').innerHTML = response['style'];
+								document.getElementById('schedule').innerHTML = response['schedule'];
+								document.getElementById('color').innerHTML = response['color'];
+								document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
+								document.getElementById('original_size').innerHTML = response['original_size'];
+								document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
+								$('#status').css("background-color", "red");
+								$('#'+id).val('');
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==3)
+							else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
 							{
-								var msg = "Scanning Failed";
+								$("#loading_img").hide();
+								if (response['status']==0)
+								{
+									var msg = "Enter a Valid Carton Number";
+								}
+								else if (response['status']==3)
+								{
+									var msg = "Scanning Failed";
+								}
+								else if (response['status']==4)
+								{
+									var msg = "Carton Not Eligible Due to Quantity not Available";
+								}
+								else if (response['status']==5)
+								{
+									var msg = "previous operation not done";
+								}
+								else if (response['status']==6)
+								{
+									var msg = "Short shipment done Permanently" ;
+								}
+								else if (response['status']==7)
+								{
+									var msg = "Short shipment done Temporarily" ;
+								}
+								
+								$("#error_msg").show();
+								document.getElementById('error').innerHTML = msg;
+								$('#'+id).val('');
+								$("#display_result").hide();
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==4)
+							else if(response['status']==2)
 							{
-								var msg = "Carton Not Eligible Due to Quantity not Available";
+								$("#loading_img").hide();
+								$("#error_msg").hide();
+								$("#display_result").show();
+								document.getElementById('carton_no').innerHTML = response['carton_no'];
+								document.getElementById('style').innerHTML = response['style'];
+								document.getElementById('schedule').innerHTML = response['schedule'];
+								document.getElementById('color').innerHTML = response['color'];
+								document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
+								document.getElementById('original_size').innerHTML = response['original_size'];
+								document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
+								$('#status').css("background-color", "limegreen");						
+								$('#'+id).val('');
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==5)
-							{
-								var msg = "previous operation not done";
-							}
-							else if (response['status']==6)
-							{
-								var msg = "Short shipment done Permanently" ;
-							}
-							else if (response['status']==7)
-							{
-								var msg = "Short shipment done Temporarily" ;
-							}
-							
-							$("#error_msg").show();
-							document.getElementById('error').innerHTML = msg;
-							$('#'+id).val('');
-							$("#display_result").hide();
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
-						else if(response['status']==2)
-						{
-							$("#loading_img").hide();
-							$("#error_msg").hide();
-							$("#display_result").show();
-							document.getElementById('carton_no').innerHTML = response['carton_no'];
-							document.getElementById('style').innerHTML = response['style'];
-							document.getElementById('schedule').innerHTML = response['schedule'];
-							document.getElementById('color').innerHTML = response['color'];
-							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
-							document.getElementById('original_size').innerHTML = response['original_size'];
-							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
-							$('#status').css("background-color", "limegreen");						
-							$('#'+id).val('');
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
+						} else {
+							swal('', response.internalMessage, 'error');
+						}  
 					}
+
 				});
 			}
 		}
