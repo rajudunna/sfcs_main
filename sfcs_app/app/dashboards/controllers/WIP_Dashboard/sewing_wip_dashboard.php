@@ -1,6 +1,7 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php'); 
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+    include($_SERVER['DOCUMENT_ROOT'] .'/sfcs_app/common/config/enums.php'); 
     $url = getFullURLLevel($_GET['r'],'wip_dashboard_data.php',0,'R');
     // $RELOAD_TIME = (int)$wip_refresh_time;
     $RELOAD_TIME = (int)$wpt_refresh_time;

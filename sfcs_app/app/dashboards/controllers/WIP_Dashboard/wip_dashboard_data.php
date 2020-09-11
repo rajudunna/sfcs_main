@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
+include($_SERVER['DOCUMENT_ROOT'] .'/sfcs_app/common/config/enums.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
 $session_plant_code = $_GET['plant_code'];
