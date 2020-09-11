@@ -1,6 +1,4 @@
 <?php 
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
 
@@ -9,6 +7,15 @@ if(isset($_GET['gatepassid']))
 	$plant_code= $_GET['plant_code']; 
 	$username= $_GET['username']; 
 	$gatepassid=$_GET['gatepassid'];
+}
+else
+{
+	$plant_code= $_POST['plant_code']; 
+	$username= $_POST['username']; 
+	$gatepassid=$_POST['gatepassid'];	
+}
+if($gatepassid!='')
+{	
 	$sql12="select vehicle_no from $pps.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
