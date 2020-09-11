@@ -673,7 +673,6 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
         $list_db=array();
         $list_db=explode(";",$list);
     
-        $j=1;
         for($i=0;$i<sizeof($list_db);$i++)
         {
             $items=array();
@@ -694,9 +693,44 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                 /**updtae resource id tasks header with work sation id's*/
                 $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                /**Update qry for priority */
+                $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=NULL,updated_at=NOW() WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $UpdateJobsPriority_result=mysqli_query($link_new, $qryUpdateJobsPriority) or exit("Sql Error at TaskjObs priority Update".mysqli_error($GLOBALS["___mysqli_ston"]));
+
             }
             else
-            {   
+            {  
+                /**getting max priority based on work station*/
+                $qryAllHeadersModuleWise="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$items[0]' AND plant_code='$plantcode'";
+                $AllHeadersModuleWise_result=mysqli_query($link_new, $qryAllHeadersModuleWise) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $headerIds=array();
+                $allHeaders_num=mysqli_num_rows($AllHeadersModuleWise_result);
+                if($allHeaders_num>0){
+                    while($headersRrow=mysqli_fetch_array($AllHeadersModuleWise_result))
+                    {
+                        $headerIds[]=$headersRrow['task_header_id'];
+                    }
+                }
+                $headers = implode("','", $headerIds);
+
+                /**getting max priority based on header ids*/
+                $qryMaxprorityJob="SELECT MAX(priority) as lastPriority FROM $tms.task_jobs WHERE task_header_id IN ('$headers') AND plant_code='$plantcode'";
+                $maxProrityJob_result=mysqli_query($link_new, $qryMaxprorityJob) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                $headerIds=array();
+                $maxPriority_num=mysqli_num_rows($maxProrityJob_result);
+                if($maxPriority_num>0){
+                    while($maxPriorityRrow=mysqli_fetch_array($maxProrityJob_result))
+                    {
+                        $j=$maxPriorityRrow['lastPriority'];
+                    }
+                }
+                if(is_null($j) or ($j=' ')){
+                    $j=1;
+                }else{
+                    $j=$j+1;
+                }
+                
                 /**validate with work station mapping in task header*/
                 $Qry_taskheader="SELECT resource_id,task_type,task_ref,task_progress,short_desc,priority,planned_date_time,delivery_date_time,sla,is_active,plant_code,created_at,created_user,updated_at,updated_user,version_flag FROM $tms.task_header WHERE task_header_id='$header_id' AND plant_code='$plantcode' AND task_type='$tasktype'";
                 $Qry_taskheader_result=mysqli_query($link_new, $Qry_taskheader) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -724,9 +758,15 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                 }
 
                 if(is_null($resource_id)){
+                    /** */
                     /**resource id update */
                     $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    
+                    /**Update qry for priority */
+                    $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=$j,updated_at=NOW() WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $UpdateJobsPriority_result=mysqli_query($link_new, $qryUpdateJobsPriority) or exit("Sql Error at TaskjObs priority Update".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    
                     /**For Trims*/
                     if($tasktype == $check_type)
                     {
@@ -748,7 +788,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     $last_id = $Qry_taskheader_result->insert_id;
                     
                     /**update resource id tasks jobs with task_header*/
-                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=$j,task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     if($tasktype == $check_type)
