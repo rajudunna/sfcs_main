@@ -770,7 +770,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     /**For Trims*/
                     if($tasktype == $check_type)
                     {
-                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                        $get_task_job_id="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                         $get_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at get_task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
@@ -803,7 +803,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     
                     if($tasktype == $check_type)
                     {
-                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$uuid' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                        $get_task_job_id="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_header_id='$uuid' AND task_type='$tasktype' AND plant_code='$plantcode'";
                         $get_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at get_task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
