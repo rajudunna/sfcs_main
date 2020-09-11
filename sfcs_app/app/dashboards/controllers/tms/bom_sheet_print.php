@@ -148,7 +148,7 @@ if(count($colors)>0){
                     $size_name = $row['size'];
                     $size_qty = $row['quantity'];
                     
-                    $mo_sql="SELECT oms_mo_details.mo_number as mo_no FROM oms_prod.`oms_mo_details` LEFT JOIN oms_prod.`oms_products_info` ON oms_mo_details.mo_number=oms_products_info.`mo_number` WHERE style='".$style."' AND SCHEDULE='".$schedule."' AND color_desc='".$color."' AND size_name='".$size_name."' AND plant_code='$plant_code'";
+                    $mo_sql="SELECT oms_mo_details.mo_number as mo_no FROM $oms.`oms_mo_details` LEFT JOIN $oms.`oms_products_info` ON oms_mo_details.mo_number=oms_products_info.`mo_number` WHERE style='".$style."' AND SCHEDULE='".$schedule."' AND color_desc='".$color."' AND size_name='".$size_name."' AND plant_code='$plant_code'";
                     $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                     $mo_numrows=mysqli_num_rows($mo_sql_result);
                     
@@ -193,7 +193,7 @@ if(count($colors)>0){
                     $checkingitemcode_strim = [];
                     $checkingitemcode_ptrim = [];
                     foreach ($final_data as $key1 => $value1) {
-                        $op_query = "SELECT * FROM $oms_prod.oms_mo_operations LEFT JOIN $oms_prod.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=".$value1['OPNO']." AND SMV > 0 AND plant_code='$plant_code'";
+                        $op_query = "SELECT * FROM $oms.oms_mo_operations LEFT JOIN $oms.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=".$value1['OPNO']." AND SMV > 0 AND plant_code='$plant_code'";
                         $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($op_sql_result) > 0){
                             $value1['trim_type'] = 'STRIM';
@@ -222,7 +222,7 @@ if(count($colors)>0){
                             }
                         }
                        
-                        $op_ptrim_query = "SELECT * FROM $oms_prod.oms_mo_operations LEFT JOIN $oms_prod.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=200 AND plant_code='$plant_code'";
+                        $op_ptrim_query = "SELECT * FROM $oms.oms_mo_operations LEFT JOIN $oms.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=200 AND plant_code='$plant_code'";
                         $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                         if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                             $value1['trim_type'] = 'PTRIM';                                
