@@ -782,18 +782,28 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     }    
 
                 }elseif($resource_id!=$items[0]){
+
                     /**Insert new record in header for if new reource id alloacted with in cut job */
-                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES (UUID(),'".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
+                    $select_uuid="SELECT UUID() as uuid";
+                    //echo $select_uuid;
+                    $uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($uuid_row=mysqli_fetch_array($uuid_result))
+                    {
+                        $uuid=$uuid_row['uuid'];
+                    
+                    }
+
+                    /**Insert new record in header for if new reource id alloacted with in cut job */
+                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    $last_id = $Qry_taskheader_result->insert_id;
                     
                     /**update resource id tasks jobs with task_header*/
-                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=$j,task_header_id='$last_id' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=$j,task_header_id='$uuid' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     if($tasktype == $check_type)
                     {
-                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$last_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$uuid' AND task_type='$tasktype' AND plant_code='$plantcode'";
                         $get_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at get_task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
@@ -806,14 +816,13 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                         $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
                         {
-                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$last_id')";
+                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$uuid')";
                             $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     } 
                 }
 
             }
-           $j++;
         }
      return true;
     } catch (Exception $e) {
