@@ -117,6 +117,9 @@ function getjobdetails($job_number)
     $result_array['schedule'] = $job_number[2];
     $result_array['color_dis'] = $job_number[3];
     $ops_dep_flag = 0;
+    $ajax_query='';
+    $actual_input_job_number_new='';
+    $size_title_new='';
 
     $application='IPS';
     $scanning_query=" select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application'";
@@ -404,6 +407,7 @@ function getjobdetails($job_number)
                 }else{
                      $retreving_remaining_qty_qry = "SELECT sum(remaining_qty) as balance_to_report,doc_no FROM $bai_pro3.cps_log WHERE doc_no in ($doc_no) AND size_code='$size' AND operation_code = $pre_ops_code group by doc_no";
                 }
+                //$ajax_query=$retreving_remaining_qty_qry;
                 $result_retreving_remaining_qty_qry = $link->query($retreving_remaining_qty_qry);
                 if($result_retreving_remaining_qty_qry->num_rows > 0)
                 {
@@ -493,26 +497,33 @@ function getjobdetails($job_number)
                                     $doc_wise_bundle_qty = "SELECT (SUM(original_qty)+SUM(recut_in)+SUM(replace_in))-(SUM(recevied_qty)+SUM(rejected_qty)) AS carton_act_qty FROM `brandix_bts`.`bundle_creation_data` WHERE docket_number = $doc_no AND size_id ='$size' AND $column_in_where_condition ='$column_to_search' AND operation_id = $job_number[4] AND assigned_module = '$assign'";
                                 }
                                 // echo $doc_wise_bundle_qty.'</br>';
+                                
                                 $result_doc_wise_bundle_qty = $link->query($doc_wise_bundle_qty);
+
                                 while($row_bundle = $result_doc_wise_bundle_qty->fetch_assoc()) 
                                 {
                                     $replaced_qty = 0;
-                                    if($job_number_reference == 2)
-                                    {
-                                        $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
-                                        $result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
-                                        if($result_qry_for_replacment_allocation_log->num_rows > 0)
+                                    if($actual_input_job_number_new!=$actual_input_job_number && $size_title_new!=$size_title){
+                                        if($job_number_reference == 2)
                                         {
-                                            while($row_replace = $result_qry_for_replacment_allocation_log->fetch_assoc()) 
+                                            $qry_for_replacment_allocation_log = "select sum(replaced_qty)as replaced_qty from $bai_pro3.replacment_allocation_log where input_job_no_random_ref ='$actual_input_job_number' and size_title ='$size_title'";
+                                            $result_qry_for_replacment_allocation_log = $link->query($qry_for_replacment_allocation_log);
+                                            $ajax_query.=$qry_for_replacment_allocation_log."</br>";
+                                            if($result_qry_for_replacment_allocation_log->num_rows > 0)
                                             {
-                                                $replaced_qty = $row_replace['replaced_qty'];
+                                                while($row_replace = $result_qry_for_replacment_allocation_log->fetch_assoc()) 
+                                                {
+                                                    $replaced_qty = $row_replace['replaced_qty'];
+                                                }
                                             }
                                         }
                                     }
+                                    
                                     $row_bundle_wise_qty = $row_bundle['carton_act_qty'] - $replaced_qty;
                                     $bundle_tot_qty += $row_bundle_wise_qty;
                                 }
-
+                                $actual_input_job_number_new=$actual_input_job_number;
+                                $size_title_new=$size_title;
                                 $sum_balance = $row_remaining['balance_to_report'];
                                 $min_val_doc_wise[] = min($row_remaining['balance_to_report'],$row_bundle_wise_qty);
 
@@ -547,7 +558,7 @@ function getjobdetails($job_number)
         $result_array['flag'] = $flag;
     }
     $result_array['no_of_rows'] = $s_no;
-
+    $result_array['ajax_query']=$ajax_query;
     
     echo json_encode($result_array);    
 }
