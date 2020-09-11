@@ -156,8 +156,16 @@ $(document).ready(function()
 				if(res.status)
 				{
 					bundet=res.data
-					tableConstruction(bundet);
-					swal(res.internalMessage,'','success');
+					if(bundet)
+					{
+						tableConstruction(bundet);
+						swal(res.internalMessage,'','success');
+					}
+					else
+					{
+						$('#loading-image').hide();
+						swal('Error',' in getting data','error');
+					}
 				}
 				else
 				{
