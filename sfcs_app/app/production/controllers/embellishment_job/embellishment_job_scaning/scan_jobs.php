@@ -654,11 +654,11 @@ function check_pack()
 		
 		// $('#loading-image').show();
 		// console.log(reportData)
-        var function_text = "<?php echo getFullURL($_GET['r'],'data.json','R'); ?>";
+        // var function_text = "<?php echo getFullURL($_GET['r'],'data.json','R'); ?>";
 
         $.ajax({
 			type: "POST",
-			url: function_text,
+			url: url,
 			data: JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",

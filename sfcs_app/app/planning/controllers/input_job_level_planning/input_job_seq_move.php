@@ -48,11 +48,12 @@
                     <select class='form-control' name="module">
                         <option value='NIL'>Select Module</option>
                         <?php  
-                            $department='SEWING';
+                            //$department='SEWING';
                             /** Getting work stations based on department wise
                             * @param:department,plantcode
                             * @return:workstation
                             **/
+                            $department = DepartmentTypeEnum::SEWING;
                             $result_worksation_id=getWorkstations($department,$plant_code);
                             $workstations=$result_worksation_id['workstation'];
                             foreach($workstations as $work_id=>$work_des)

@@ -117,7 +117,6 @@ if(isset($_POST['submit']) || $module)
                   }
                 
                   $get_schedule="SELECT feature_value FROM pps_prod.`jm_product_logical_bundle` LEFT JOIN pps_prod.`jm_job_bundles` ON jm_job_bundles.`jm_product_logical_bundle_id` = jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
-                  echo $get_schedule;
                   $get_schedule_result=mysqli_query($link_new, $get_schedule) or exit("Sql Error at get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($schedule_row=mysqli_fetch_array($get_schedule_result))
                   {
