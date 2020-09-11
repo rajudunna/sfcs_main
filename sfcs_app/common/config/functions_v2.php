@@ -725,12 +725,11 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                         $j=$maxPriorityRrow['lastPriority'];
                     }
                 }
-                if(is_null($j) or ($j=' ')){
+                if(is_null($j)){
                     $j=1;
                 }else{
                     $j=$j+1;
                 }
-                
                 /**validate with work station mapping in task header*/
                 $Qry_taskheader="SELECT resource_id,task_type,task_ref,task_progress,short_desc,priority,planned_date_time,delivery_date_time,sla,is_active,plant_code,created_at,created_user,updated_at,updated_user,version_flag FROM $tms.task_header WHERE task_header_id='$header_id' AND plant_code='$plantcode' AND task_type='$tasktype'";
                 $Qry_taskheader_result=mysqli_query($link_new, $Qry_taskheader) or exit("Sql Error at task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
