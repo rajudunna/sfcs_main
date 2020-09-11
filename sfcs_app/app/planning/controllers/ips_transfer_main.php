@@ -89,7 +89,7 @@
                 {
                     var res = $.parseJSON(response);
                     if(res.saved == '1')
-                        swal('Module Transferred Successfully','','success');
+                        swal('Job Transferred Successfully','','success');
                     else
                         swal('Error In Module Transfer','','error');
 
