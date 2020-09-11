@@ -434,7 +434,7 @@ foreach ($workstations as $emb_key => $emb_value) {
     $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
 
 
-    $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
+    $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
     $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
     while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
       $orginal_qty = $row_res['original_qunatity'];

@@ -7,7 +7,14 @@
 	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
-	$gate_id=$_POST['gate_id'];	
+	if(isset($_POST['gate_id']))
+	{
+		$gate_id=$_POST['gate_id'];	
+	}
+	else
+	{
+		$gate_id=$_GET['gate_id'];
+	}
 	if(isset($_POST['plant_code']))
 	{
 		$plantcode=$_POST['plant_code'];
@@ -149,8 +156,16 @@ $(document).ready(function()
 				if(res.status)
 				{
 					bundet=res.data
-					tableConstruction(bundet);
-					swal(res.internalMessage,'','success');
+					if(bundet)
+					{
+						tableConstruction(bundet);
+						swal(res.internalMessage,'','success');
+					}
+					else
+					{
+						$('#loading-image').hide();
+						swal('Error',' in getting data','error');
+					}
 				}
 				else
 				{

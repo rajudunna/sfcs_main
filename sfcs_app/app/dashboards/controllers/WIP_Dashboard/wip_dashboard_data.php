@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
 $session_plant_code = $_GET['plant_code'];
@@ -99,6 +100,7 @@ function getsewingJobsData($section,$wkstation,$get_operation, $session_plant_co
 {
   include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/functions_v2.php');
+    include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
 
 
     $result_planned_jobs = getPlannedJobs($wkstation, TaskTypeEnum::SEWINGJOB, $session_plant_code);
@@ -128,7 +130,7 @@ function getsewingJobsData($section,$wkstation,$get_operation, $session_plant_co
         $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
 
 
-        $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id' and operation='$get_operation'";
+        $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation='$get_operation'";
         $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
             $orginal_qty = $row_res['original_qunatity'];
@@ -138,7 +140,7 @@ function getsewingJobsData($section,$wkstation,$get_operation, $session_plant_co
             $operation_seq = $row_res['operation_seq'];
         }
 
-        $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
+        $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
         $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
             $send_qty = $row_res['good_quantity'];
