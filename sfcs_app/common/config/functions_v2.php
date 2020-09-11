@@ -727,9 +727,19 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     /**resource id update */
                     $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    /**update priority tasks jobs with task_header*/
-                    // $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority='$j' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode' ORDER BY task_jobs_id";
-                    // $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskjobs) or exit("Sql Error at update task_jobs1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    /**For Trims*/
+                    if($tasktype == $check_type)
+                    {
+                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                        $get_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at get_task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
+                        {
+                            $task_id= $job_id_row['task_jobs_id'];
+                            $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                            $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        }
+
+                    }    
 
                 }elseif($resource_id!=$items[0]){
                     /**Insert new record in header for if new reource id alloacted with in cut job */
@@ -743,6 +753,15 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                     
                     if($tasktype == $check_type)
                     {
+                        $get_task_job_id="SELECT task_jobs_id $tms.task_jobs WHERE task_header_id='$last_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                        $get_task_job_id_result=mysqli_query($link_new, $get_task_job_id) or exit("Sql Error at get_task_job_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
+                        {
+                           $task_id= $job_id_row['task_jobs_id'];
+                           $jobs_trims_insert="INSERT INTO $pps.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                           $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        } 
+                        
                         $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode'";
                         $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
@@ -1244,4 +1263,40 @@ function getWorkstationsForSection($plant_code, $section){
     );
 }
 
+/**
+ * Function to get style,color,schedule wrt ponumber
+ * @param:ponumber,plancode
+ * @return:style,color,schedule
+*/
+function getStyleColorSchedule($ponumber,$plantcode){
+    global $link_new;
+    global $pps;
+    $style=array();
+    $color=array();
+    $schedule=array();
+    //To get schedule,color
+    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+    WHERE po_number='$ponumber' AND mp_sub_mo_qty.plant_code='$plantcode'";
+    $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row=mysqli_fetch_array($qry_get_sch_col_result))
+    {
+      $schedule[]=$row['schedule'];
+      $color[]=$row['color'];
+    }
+    $color_bulk=array_unique($color);
+    //To get style
+    $qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $color_bulk)."') and mp_color_detail.plant_code='$plantcode'";
+    $qry_get_style_result=mysqli_query($link_new, $qry_get_style) or exit("Sql Error at qry_get_style".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row1=mysqli_fetch_array($qry_get_style_result))
+    {
+      $style[]=$row1['style'];
+    }    
+    $style_bulk=array_unique($style);
+    $schedule_bulk=array_unique($schedule);
+    return array(
+        'style_bulk' => $style_bulk,
+        'schedule_bulk' => $schedule_bulk,
+        'color_bulk' => $color_bulk
+    );
+}
 ?>
