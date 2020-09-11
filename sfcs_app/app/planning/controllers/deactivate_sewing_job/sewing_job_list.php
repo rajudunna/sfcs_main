@@ -76,7 +76,7 @@ if(isset($_POST['Save']))
                 while($sql_row=mysqli_fetch_array($job_deacive_result))
                 {
                     $reverse_deactive_job_id = $sql_row['id'];
-                    $module = $sql_row['module_no'];
+                   // $module = $sql_row['module_no'];
                     $update_revers_qry = "update $pts.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
                     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $tasktype=TaskTypeEnum::SEWINGJOB;
