@@ -816,7 +816,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
                         $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
                         {
-                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$uuid')";
+                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$task_id')";
                             $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     } 
