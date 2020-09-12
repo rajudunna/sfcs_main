@@ -32,10 +32,17 @@ if($_GET['module']){
 
             echo "<div class='col-sm-2'><label>Module<span style='color:red;'> *</span></label>
             <select class='form-control' name=\"module\" id=\"module\" onchange=\"secondbox();\" id='module' required>";
-            // echo " <option value="" disabled selected>Select Module</option>";
+             echo "<option value='' disabled selected>Select Module</option>";
             foreach($workstations as $work_id=>$work_des)
             {
-                echo "<option value='".$work_id."'>".$work_des."</option>";
+                if($work_id == $module)
+                {
+                  echo "<option value='".$work_id."' selected>".$work_des."</option>";
+                }else
+                {
+                  echo "<option value='".$work_id."'>".$work_des."</option>";
+                }
+                
             }
             echo "</select>
             </div>";
@@ -50,8 +57,7 @@ if($_GET['module']){
 <?php
 if(isset($_POST['submit']) || $module)
 {
-
-
+    $selected_modle=$_POST['module'];
     if($module){
         $tasktype=TaskTypeEnum::SEWINGJOB;
         $task_status=TaskStatusEnum::INPROGRESS;
@@ -116,8 +122,7 @@ if(isset($_POST['submit']) || $module)
                     $color=$mp_color_detail_row['color'];
                   }
                 
-                  $get_schedule="SELECT feature_value FROM pps_prod.`jm_product_logical_bundle` LEFT JOIN pps_prod.`jm_job_bundles` ON jm_job_bundles.`jm_product_logical_bundle_id` = jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
-                  echo $get_schedule;
+                  $get_schedule="SELECT feature_value FROM $pps.`jm_product_logical_bundle` LEFT JOIN $pps.`jm_job_bundles` ON jm_job_bundles.`jm_product_logical_bundle_id` = jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='$key' AND jm_job_bundles.plant_code='$plant_code'";
                   $get_schedule_result=mysqli_query($link_new, $get_schedule) or exit("Sql Error at get_schedule".mysqli_error($GLOBALS["___mysqli_ston"]));
                   while($schedule_row=mysqli_fetch_array($get_schedule_result))
                   {
@@ -173,14 +178,14 @@ if(isset($_POST['submit']) || $module)
                     echo "<input type='hidden' name='po_number[]' value=$po_number>";
                     echo "<input type='hidden' name='input_job_no[]' value=$input_job_no>";
                     echo "<input type='hidden' name='jm_jg_header_id[]' value=$jm_jg_header_id>";
-                    echo "<input type='hidden' name='module[]' value=$module>";
+                    echo "<input type='hidden' name='module[]' value=$selected_modle>";
                     echo "<input type='hidden' name='input_qty[]' value=$sew_qty>";
                     // echo "<input type='hidden' name='output_qty[]' value=$output_qty>";
                     // echo "<input type='hidden' name='rejected_qty[]' value=$rejected_qty>";
                     // echo "<input type='hidden' name='ims_remarks[]' value=$ims_remarks>";
                     // echo "<input type='hidden' name='wip[]' value=$wip>";
                     // echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
-                    echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedules."</td><td>".$color."</td><td>".$po_des."</td><td>".$workstation_description."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
+                    echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$po_des."</td><td>".$workstation_description."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
 
                     $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

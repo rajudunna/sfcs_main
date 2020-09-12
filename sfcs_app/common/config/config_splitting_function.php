@@ -3,7 +3,7 @@ $new_tid=array();
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 function roll_splitting_function($roll_id,$total_roll_qty,$issued_qty,$plant_code,$username)
 {
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    //include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     $roll_id = $roll_id;
     $total_roll_qty = $total_roll_qty;
     $issued_qty = $issued_qty; 

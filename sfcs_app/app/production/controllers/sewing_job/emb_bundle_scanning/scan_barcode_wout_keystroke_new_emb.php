@@ -7,8 +7,16 @@
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
-	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
+	if(isset($_POST['plant_code']))
+	{
+		$plantcode=$_POST['plant_code'];
+		$username=$_POST['username'];
+	}
+	else
+	{
+		$plantcode=$_GET['plant_code'];
+		$username=$_GET['username'];	
+	}
 	
 	if($gate_id=='')
 	{
@@ -179,7 +187,7 @@ function tableConstruction(bundet){
 	var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
-    $('#barcode').val();
+    $('#barcode').val('');
     $('#loading-image').hide();
 	
 	

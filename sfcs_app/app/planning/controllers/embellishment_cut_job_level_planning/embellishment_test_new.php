@@ -160,7 +160,7 @@ $get_sub_po=$_GET['sub_po'];
 					}
 				} 
 	echo "</select></div>";
-echo "</br><div class='col-sm-3'>";
+echo "</br><div class='col-sm-6' style='margin-top: 21px;margin-bottom: 24px;'>";
  $tasktype = TaskTypeEnum::EMBELLISHMENTJOB;
  //Qry to fetch jm_job_header_id from jm_jobs_header
  $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$get_sub_po' AND plant_code='$plant_code'";
@@ -180,7 +180,7 @@ echo "</br><div class='col-sm-3'>";
 if($job_status_num > 0)
 {
   echo "Cut Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
-  echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
+  echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" style='margin-left: 14px;'>";
 }
 else
 {
