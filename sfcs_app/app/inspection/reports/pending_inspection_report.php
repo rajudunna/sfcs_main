@@ -34,10 +34,10 @@
 ?> 
 
 <div class="panel panel-primary">
-    <div class="panel-heading">Digital Inspection Transaction Report</div>
+    <div class="panel-heading">Digital Inspection Transaction Report - raj</div>
         <div class="panel-body">
             <div class="form-group">
-                <form name="test" id="test" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+                <form name="test" id="test" method="post">
                     <div class="row">
                                     <div class='col-lg-2'>
                                         <label >Select Date: </label>
@@ -74,17 +74,17 @@
 			if($_POST['date'])
 			{
 				$date=$_POST['date'];
-				$sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plantcode' and DATE(date_time)= '".$date."'";
+				$sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and DATE(date_time)= '".$date."'";
 			}
 			if($_POST['batch'])
 			{
 				$batch=$_POST['batch'];
-	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plantcode' and batch= '".$batch."'";
+	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and batch= '".$batch."'";
 			}
 			if($_POST['lot_no'])
 			{
 				$lot_no=$_POST['lot_no'];
-	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plantcode' and lot_no = '".$lot_no."'";
+	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and lot_no = '".$lot_no."'";
 			}
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$no_of_rows = mysqli_num_rows($sql_result);
@@ -117,7 +117,7 @@
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$id=$sql_row['id'];                 	
-					$sql121="SELECT * FROM $wms.`roll_inspection_child` WHERE plant_code='$plantcode' and parent_id=$id";
+					$sql121="SELECT * FROM $wms.`roll_inspection_child` WHERE plant_code='$plant_code' and parent_id=$id";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$rows=mysqli_num_rows($sql_result121);
 					
@@ -127,7 +127,7 @@
 					$batchs=explode(",",$sql_row['batch']);
 					$invoice_nos=explode(",",$sql_row['invoice_no']);
 					
-					$get_details_points = "select sum(rec_qty) as qty from $wms.`inspection_population` where plant_code='$plantcode' and parent_id=$id and status=3";
+					$get_details_points = "select sum(rec_qty) as qty from $wms.`inspection_population` where plant_code='$plant_code' and parent_id=$id and status=3";
 					$details_result_points = mysqli_query($link, $get_details_points) or exit("get_details--1Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row522=mysqli_fetch_array($details_result_points))
 					{ 					
@@ -140,7 +140,7 @@
 							{
 								$invoice_qty;
 							}
-							$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where plant_code='$plantcode' and store_in_tid in (select store_in_id from $wms.`inspection_population` where plant_code='$plantcode' and parent_id=$id)";
+							$get_min_value = "select width_s,width_m,width_e from $wms.roll_inspection_child where plant_code='$plant_code' and store_in_tid in (select store_in_id from $wms.`inspection_population` where plant_code='$plant_code' and parent_id=$id)";
 							$min_value_result=mysqli_query($link,$get_min_value) or exit("get_min_value Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($row_min=mysqli_fetch_array($min_value_result))
 							{
@@ -258,14 +258,14 @@
 					$pop_up_path1="../sfcs_app/app/inspection/controllers/digital_inspection/C_Tex_Report_Print.php";
 					
 					// second Process
-					$sql1="SELECT * FROM $wms.`inspection_population` WHERE plant_code='$plantcode' and parent_id='$id' AND status<>0";
+					$sql1="SELECT * FROM $wms.`inspection_population` WHERE plant_code='$plant_code' and parent_id='$id' AND status<>0";
 					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					// echo $sql1;
 					$check=mysqli_num_rows($sql_result1);
 					if(mysqli_num_rows($sql_result1)==0)
 					{					
 						echo "<td><div class='col-sm-12' id='populate_div'>
-						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id\">Set Inspection Population</a></center>
+						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&plant_code=$plant_code\">Set Inspection Population</a></center>
 						</div></td>";
 										
 					}	
@@ -276,12 +276,12 @@
 						</div><br><br>';
 						
 						echo "<div class='col-sm-4' id='populate_div'>
-						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&status=1\">Click to Inspection Population</a></center>
+						<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/digital_inspection_report_v1.php", "1", "N") . "&parent_id=$id&status=1&plant_code=$plant_code\">Click to Inspection Population</a></center>
 						</div>";
 
 						echo "<br><br>
 						     <div class='col-sm-4' id='populate_div'>
-	                         <center><a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id\">Click to Color Contunity Report</a></center>
+	                         <center><a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id&plant_code=$plant_code\">Click to Color Contunity Report</a></center>
 						</div></td>";
 					}
 	
@@ -294,12 +294,12 @@
 					}
 					else
 					{
-						$sql12="SELECT * FROM $wms.`inspection_population` WHERE plant_code='$plantcode' and parent_id=$id AND (status<>3 && status<>0)";
+						$sql12="SELECT * FROM $wms.`inspection_population` WHERE plant_code='$plant_code' and parent_id=$id AND (status<>3 && status<>0)";
 						$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($sql_result12)>0)
 						{					
 							echo "<td><div class='col-sm-12' id='populate_div'>
-								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id\">Click to Proceed </a></center>
+								<center><a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/4_point_roll_inspection.php", "1", "N") . "&parent_id=$id&plant_code=$plant_code\">Click to Proceed </a></center>
 								</div></td>";
 						}
 						else
@@ -312,7 +312,7 @@
 
 					
 					$get_status=0;
-					$sql121="SELECT min(status) as status FROM $wms.`inspection_population` WHERE plant_code='$plantcode' and parent_id='$id' AND status<>0";
+					$sql121="SELECT min(status) as status FROM $wms.`inspection_population` WHERE plant_code='$plant_code' and parent_id='$id' AND status<>0";
 					$sql_result121=mysqli_query($link, $sql121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($sql_result121)>0)
 					{
@@ -335,14 +335,14 @@
 					}
 					
 					//To get color contunity report
-					$get_store_in_id= "select store_in_id FROM $wms.`inspection_population` WHERE plant_code='$plantcode' and parent_id='$id'";
+					$get_store_in_id= "select store_in_id FROM $wms.`inspection_population` WHERE plant_code='$plant_code' and parent_id='$id'";
 					$sql_result1212=mysqli_query($link, $get_store_in_id) or exit("Sql Error2.111".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row5212=mysqli_fetch_array($sql_result1212))
 					{
                        $store_in_id[] = $row5212['store_in_id'];
 					}
 					$store_id = implode(",",$store_in_id);
-					$get_color_report = "select * from $wms.store_in where plant_code='$plantcode' and ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
+					$get_color_report = "select * from $wms.store_in where plant_code='$plant_code' and ref4='' and  lot_no in ($lotsString) AND tid in ($store_id)";
 					$result_color_report=mysqli_query($link, $get_color_report) or exit("Sql Error2.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 					if(mysqli_num_rows($result_color_report)>0)
 					{
