@@ -59,7 +59,7 @@ $tasktype = TaskTypeEnum::SEWINGJOB;
 
         //update seq sewing jobs
 
-        if($items[1]>0){
+        if(strlen($items[1])>0){
             $update_taskjobs="update $tms.task_jobs SET priority=$x,updated_at=NOW(),updated_user='$username' WHERE task_job_reference='$items[1]' AND plant_code='$plant_code' AND task_type='$tasktype'";
             mysqli_query($link_new, $update_taskjobs) or die("Error while saving the track details3 == ".$update_taskjobs);
         }

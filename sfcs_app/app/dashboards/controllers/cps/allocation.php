@@ -20,7 +20,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['HTTP_HOST']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/sfcs_app/app/cutting/controllers/seperate_docket.php");
-$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
+$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
 ?>
 <br/>
 <div class='row'>
@@ -423,7 +423,10 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 			// console.log("issued"+doc+"["+act_count+"]");
 			// console.log("balal"+doc);
 			var issued_qty=parseFloat(document.input["val"+doc+"["+act_count+"]"].value);
-			var balance = parseFloat(document.getElementById("balal"+doc).innerHTML);
+			var balance = parseFloat(document.getElementById("balal"+doc).innerHTML); 
+			if(issued_qty=''){
+				issued_qty=0;
+			}
 			var allocate = parseFloat(document.getElementById("alloc"+doc).innerHTML);
 			var eligibile = Math.min(issued_qty,balance);
 			document.getElementById("issued"+doc+"["+act_count+"]").readOnly = false;
