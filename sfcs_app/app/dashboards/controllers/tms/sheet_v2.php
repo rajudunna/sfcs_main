@@ -28,7 +28,8 @@ function printPreview(){
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php'); 
 ?>
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="return printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
@@ -36,7 +37,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 <?php
 //error_reporting(0);
 //include("header.php");
-$plant_code = $global_facility_code;
+// $plant_code = $global_facility_code;
 $company_num = $company_no;
 $host= $api_hostname;
 $port= $api_port_no;
@@ -44,17 +45,19 @@ $port= $api_port_no;
 $schedule=$_GET['schedule'];
 $style=$_GET['style'];
 $input_job_no=$_GET['input_job'];
+$plant_code=$_GET['plant_code'];
 
 echo "<input type='hidden' id='style' value='".$_GET['style']."'>
 <input type='hidden' id='schedule' value='".$_GET['schedule']."'>
-<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>";
+<input type='hidden' id='input_job_no' value='".$_GET['input_job']."'>
+<input type='hidden' id='plant_code' value='".$_GET['plant_code']."'>";
 
 $colors=[];
-$sql="select order_col_des from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' group by order_col_des";
+$sql="select fg_color from $pps.jm_product_logical_bundle where feature_value='".$schedule."' group by fg_color";
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {
-    $colors[]=$row['order_col_des'];
+    $colors[]=$row['fg_color'];
 }
 if(count($colors)>0){
     foreach($colors as $key=>$color){ 
@@ -64,13 +67,20 @@ if(count($colors)>0){
         $size_code_qty=array();
         unset($size_code);
         unset($size_code_qty);
-        $sql="select size_code,sum(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and order_col_des='".$color."' and input_job_no='".$input_job_no."' group by size_code";
+        $tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
+        $get_jm_jg_header="SELECT jm_jg_header_id FROM $pps.jm_jg_header WHERE job_number='$input_job_no' AND job_group_type='$tasktype' AND plant_code='$plant_code'";
+        $header_result=mysqli_query($link, $get_jm_jg_header) or die("Error".$get_jm_jg_header.mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($header_row=mysqli_fetch_array($header_result))
+        {
+           $jm_jg_header_id=$header_row['jm_jg_header_id'];
+        }    
+        $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
         {
-            $size_code[]=strtoupper($row['size_code']);
-            $size_code_qty[]=$row['carton_act_qty'];
+            $size_code[]=strtoupper($row['size']);
+            $size_code_qty[]=$row['quantity'];
         }
         
         $limit=40; 
@@ -124,18 +134,25 @@ if(count($colors)>0){
             </div>
             <br>
             <?php
-                $sql="select order_col_des,size_code,SUM(carton_act_qty) as carton_act_qty from $bai_pro3.packing_summary_input where order_del_no='".$schedule."' and input_job_no='".$input_job_no."' and order_col_des='".$color."' group by size_code";
+                $tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
+                $get_jm_jg_header="SELECT jm_jg_header_id FROM $pps.jm_jg_header WHERE job_number='$input_job_no' AND job_group_type='$tasktype' AND plant_code='$plant_code'";
+                $header_result=mysqli_query($link, $get_jm_jg_header) or die("Error".$get_jm_jg_header.mysqli_error($GLOBALS["___mysqli_ston"]));
+                while($header_row=mysqli_fetch_array($header_result))
+                {
+                    $jm_jg_header_id=$header_row['jm_jg_header_id'];
+                }    
+                $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size,jm_job_bundles.fg_color as fg_color FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
                 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                 //echo mysqli_num_rows($sql_result)."<br>";
                 if(mysqli_num_rows($sql_result) > 0){
                     $final_data = [];
                     while($row=mysqli_fetch_array($sql_result))
                     {
-                        $color = $row['order_col_des'];
-                        $size_name = $row['size_code'];
-                        $size_qty = $row['carton_act_qty'];
-                
-                        $mo_sql="select * from $bai_pro3.mo_details where style='".$style."' and schedule='".$schedule."' and color='".$color."' and size='".$size_name."' LIMIT 1";
+                        $color = $row['fg_color'];
+                        $size_name = $row['size'];
+                        $size_qty = $row['quantity'];
+                        
+                        $mo_sql="SELECT oms_mo_details.mo_number as mo_no FROM $oms.`oms_mo_details` LEFT JOIN $oms.`oms_products_info` ON oms_mo_details.mo_number=oms_products_info.`mo_number` WHERE style='".$style."' AND SCHEDULE='".$schedule."' AND color_desc='".$color."' AND size_name='".$size_name."' AND plant_code='$plant_code'";
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                         $mo_numrows=mysqli_num_rows($mo_sql_result);
                         
@@ -182,7 +199,7 @@ if(count($colors)>0){
                         $checkingitemcode_ptrim = [];
                         foreach ($final_data as $key1 => $value1) {
                             if($value1['OPNO'] != 200){
-                                $op_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = ".$value1['OPNO']." and SMV > 0";
+                                $op_query = "SELECT * FROM $oms.oms_mo_operations LEFT JOIN $oms.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=".$value1['OPNO']." AND SMV > 0 AND plant_code='$plant_code'";
                                 $op_sql_result = mysqli_query($link, $op_query) or die("Error".$op_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if(mysqli_num_rows($op_sql_result) > 0){
                                     $value1['trim_type'] = 'STRIM';
@@ -212,7 +229,7 @@ if(count($colors)>0){
                                 }
                             }
                             if($value1['OPNO'] == 200){
-                                $op_ptrim_query = "select * from $bai_pro3.schedule_oprations_master where Style= '".$style."' and description = '".$value1['color']."' and Main_OperationNumber = 200";
+                                $op_ptrim_query = "SELECT * FROM $oms.oms_mo_operations LEFT JOIN $oms.oms_products_info ON  oms_products_info.mo_number=oms_mo_operations.mo_number WHERE style='".$style."' AND color_desc='".$value1['color']."' AND operation_code=200 AND plant_code='$plant_code'";
                                 $op_ptrim_sql_result = mysqli_query($link, $op_ptrim_query) or die("Error".$op_ptrim_query.mysqli_error($GLOBALS["___mysqli_ston"]));
                                 if(mysqli_num_rows($op_ptrim_sql_result) > 0){
                                     $value1['trim_type'] = 'PTRIM';                                

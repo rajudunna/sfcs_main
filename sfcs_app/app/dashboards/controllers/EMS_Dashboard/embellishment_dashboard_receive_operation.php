@@ -66,35 +66,77 @@ $hour = date("H.i");
   function
   redirect_view()
   {
-  y = document.getElementById('view_div').value;
+  y
+  =
+  document.getElementById('view_div').value;
   window.location
   =
-  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>" + "&view=2&view_div=" + y;
+  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>"
+  +
+  "&view=2&view_div="
+  +
+  y;
   }
   function
   redirect_dash()
   {
-  x = document.getElementById('view_cat').value;
-  y = document.getElementById('view_div').value;
-  z = document.getElementById('view_dash').value;
+  x
+  =
+  document.getElementById('view_cat').value;
+  y
+  =
+  document.getElementById('view_div').value;
+  z
+  =
+  document.getElementById('view_dash').value;
   window.location
   =
-  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>" + "&view=" + z + "&view_cat=" + x + "&view_div=" + y;
+  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>"
+  +
+  "&view="
+  +
+  z
+  +
+  "&view_cat="
+  +
+  x
+  +
+  "&view_div="
+  +
+  y;
   }
   function
   blink_new3(x)
   {
-  $("div[id='S" + x + "']").each(function()
+  $("div[id='S"
+  +
+  x
+  +
+  "']").each(function()
   {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
   });
   }
   function
   blink_new(x)
   {
-  $("div[id='D" + x + "']").each(function()
+  $("div[id='D"
+  +
+  x
+  +
+  "']").each(function()
   {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
   });
   }
 </script>
@@ -387,65 +429,61 @@ foreach ($workstations as $emb_key => $emb_value) {
 
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
-    $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id =' $task_job_id' and plant_code='$session_plant_code'";
+    $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
     $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-    while ($row2 = mysqli_fetch_array($get_details_result)) {
-   
-      $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
-      
+    if (mysqli_num_rows($qry_toget_style_sch_result) > 0) {
+
+      while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+
+        $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+      }
+      $style1 = $job_detail_attributes[$sewing_job_attributes['style']];
+      $colors_db = $job_detail_attributes[$sewing_job_attributes['color']];
+      $co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
+      $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
+      $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+      $club_docs = $job_detail_attributes[$sewing_job_attributes['docketno']];
+      $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+
+
+      $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
+      $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
+      if (mysqli_num_rows($task_job_trans_result) > 0) {
+
+        while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
+          $orginal_qty = $row_res['original_quantity'];
+          $good_qty = $row_res['good_quantity'];
+          $rej_qty = $row_res['rejected_quantity'];
+          $operation_code = $row_res['operation_code'];
+          $operation_seq = $row_res['operation_seq'];
+        }
+        $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
+        $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
+          $send_qty = $row_res['good_quantity'];
+        }
+        $id = "yash";
+        if ($good_qty == 0) {
+          $id = "yash";
+        }
+
+        if ($orginal_qty != $good_qty && $good_qty > 0) {
+          $id = "orange";
+        }
+
+        if ($good_qty > $send_qty) {
+          $id = "red";
+        }
+        // $operation_code = '41';
+        // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N') . "&embJobNo=$job_num&plantCode=$session_plant_code&operationCode=$operation_code&barcode_generation=1";
+
+
+        $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
+
+        echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
+      }
     }
-    $style1 = $job_detail_attributes[$sewing_job_attributes['style']];
-    $colors_db = $job_detail_attributes[$sewing_job_attributes['color']];
-    $co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
-    $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
-    $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
-    $club_docs = $job_detail_attributes[$sewing_job_attributes['docketno']];
-    $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
-
-
-    $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
-    $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
-    while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
-      $orginal_qty = $row_res['original_qunatity'];
-      $good_qty = $row_res['good_quantity'];
-      $rej_qty = $row_res['rejected_quantity'];
-      $operation_code = $row_res['operation'];
-      $operation_seq = $row_res['operation_seq'];
-    }
-
-    $task_job_trans = "SELECT * FROM $tms.task_job_transactions where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
-    $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
-    while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
-      $send_qty = $row_res['good_quantity'];
-    }
-
-    $id = "yash";
-    if ($good_qty == 0) {
-      $id = "yash";
-    }
-
-    if ($orginal_qty != $good_qty && $good_qty > 0) {
-      $id = "orange";
-    }
-
-    if ($good_qty > $send_qty) {
-      $id = "red";
-    }
-
-    // $operation_code = '41';
-    // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-    $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N') . "&embJobNo=$job_num&plantCode=$session_plant_code&operationCode=$operation_code&barcode_generation=1";
-
-    // $id = "#33AADD"; //default existing color
-
-    // if ($style == $style1 and $color == $color1) {
-    //   $id = "red";
-    // } else {
-    //   $id = "#008080";
-    // }
-    $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
-
-    echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
   }
   echo "</td>";
   echo "</tr>";
@@ -478,7 +516,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'cps.htm',
     var shift = document.getElementById('shift').value;
     if (shift) {
       url = url + '&shift=' + shift;
-      window.open(url, 'Popup', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23');
+      window.open(url, 'Popup',
+        'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'
+      );
       if (window.focus) {
         Popup.focus()
       }
