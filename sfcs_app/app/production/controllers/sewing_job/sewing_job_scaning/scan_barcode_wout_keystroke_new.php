@@ -94,7 +94,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plantcode=".$plantcode."&username=".$username."' >Finish</a>";
+							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plant_code=".$plantcode."&username=".$username."' >Finish</a>";
 						?>
 						</form>
 						</div> 
