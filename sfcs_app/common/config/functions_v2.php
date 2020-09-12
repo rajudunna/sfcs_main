@@ -880,6 +880,35 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
 
   }
 
+
+/**
+ * get workstations for plant code and section id
+ */
+function getWorkstationsForSectionId($plantCode, $sectionId) {
+    global $link_new;
+    global $pms;
+    try{
+        $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
+        // echo $workstationsQuery;
+        $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
+        if(mysqli_num_rows($workstationsQueryResult)>0){
+            $workstations= [];
+            while($row = mysqli_fetch_array($workstationsQueryResult)){
+                $workstationRecord = [];
+                $workstationRecord["workstationId"] = $row['workstation_id'];
+                $workstationRecord["workstationCode"] = $row["workstation_code"];
+                $workstationRecord["workstationDesc"] = $row["workstation_description"];
+                $workstationRecord["workstationLabel"] = $row["workstation_label"];
+                array_push($workstations, $workstationRecord);
+            }
+            return $workstations;
+        } else {
+            return "Workstations not found";
+        }
+    } catch(Exception $e) {
+        throw $error;
+    }
+}
   //function to get jobs
   /** function to get jobs which are unplanned
    * @param:po,task_type,plant_code
@@ -1008,7 +1037,6 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
             }
         }
       }
-      
       return array(
           'job_number' => $job_number,
           'task_header_id' => $task_header_id,
@@ -1317,7 +1345,38 @@ function getWorkstationsForSection($plant_code, $section){
     );
 }
 /**
- * Function to get style,color,schedule wrt ponumber
+ * get planned sewing jobs(JG) for the workstation
+ */
+function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
+    global $tms;
+    global $link_new;
+    global $taskType;
+    global $taskStatus;
+    try{
+        $taskType = TaskTypeEnum::SEWINGJOB;
+        $taskStatus = TaskStatusEnum::INPROGRESS;
+        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
+        if ($limit) {
+            $jobsQuery .= " limit 0,$limit";
+        }
+        $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
+        if(mysqli_num_rows($jobsQueryResult)>0){
+            $jobs= [];
+            while($row = mysqli_fetch_array($jobsQueryResult)){
+                $jobRecord = [];
+                $jobRecord["taskJobId"] = $row['task_jobs_id'];
+                array_push($jobs, $jobRecord);
+            }
+            
+            return $jobs;
+        } else {
+            return "Jobs not found for the workstation";
+        }
+    } catch(Exception $e) {
+        throw $error;
+    }
+}
+/* Function to get style,color,schedule wrt ponumber
  * @param:ponumber,plancode
  * @return:style,color,schedule
 */
