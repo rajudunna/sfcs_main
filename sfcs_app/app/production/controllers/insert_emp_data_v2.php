@@ -1,8 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
+$plantcode=$_POST['plant_code_name'];
+$username=$_POST['userName'];
 $date=$_POST['date'];
 $shift=$_POST['shift'];
 $shift_start_time=$_POST['shift_start_time'];
@@ -18,12 +18,12 @@ if($count == 0){
 	mysqli_query($link, $sql2) or exit("Sql Errorc $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 $modules_array = array();	$modules_id_array=array();
-$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+$get_modules = "SELECT DISTINCT workstation_label, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_label*1";
 $modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 while($module_row=mysqli_fetch_array($modules_result))
 {
-	$modules_array[]=$module_row['module_name'];
-	$modules_id_array[$module_row['module_name']]=$module_row['id'];
+	$modules_array[]=$module_row['workstation_label'];
+	$modules_id_array[$module_row['workstation_label']]=$module_row['workstation_id'];
 }
 
 for($i=0;$i<sizeof($modules_array);$i++)
