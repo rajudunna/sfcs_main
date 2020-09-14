@@ -7,10 +7,24 @@
 	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
-	$gate_id=$_POST['gate_id'];	
-	$plantcode=$_POST['plant_code'];
-	$username=$_POST['username'];
-	
+	if(isset($_POST['gate_id']))
+	{
+		$gate_id=$_POST['gate_id'];	
+	}
+	else
+	{
+		$gate_id=$_GET['gate_id'];
+	}
+	if(isset($_POST['plant_code']))
+	{
+		$plantcode=$_POST['plant_code'];
+		$username=$_POST['username'];
+	}
+	else
+	{
+		$plantcode=$_GET['plant_code'];
+		$username=$_GET['username'];	
+	}
 	if($gate_id=='')
 	{
 		$gate_id=0;
@@ -71,6 +85,7 @@ th,td{
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
+					<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -79,7 +94,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2' >Finish</a>";
+							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plant_code=".$plantcode."&username=".$username."' >Finish</a>";
 						?>
 						</form>
 						</div> 
@@ -141,8 +156,16 @@ $(document).ready(function()
 				if(res.status)
 				{
 					bundet=res.data
-					tableConstruction(bundet);
-					swal(res.internalMessage,'','success');
+					if(bundet)
+					{
+						tableConstruction(bundet);
+						swal(res.internalMessage,'','success');
+					}
+					else
+					{
+						$('#loading-image').hide();
+						swal('Error',' in getting data','error');
+					}
 				}
 				else
 				{

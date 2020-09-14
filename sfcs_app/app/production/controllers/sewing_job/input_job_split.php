@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+    include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
     $username=$_SESSION['userName'];
 ?> 

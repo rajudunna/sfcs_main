@@ -66,26 +66,26 @@ $username = $_SESSION['userName'];
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+	window.location.href ="index-no-navi.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="index-no-navi.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="index-no-navi.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function forthbox() 
 { 
 	
-    window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value 
+    window.location.href ="index-no-navi.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value 
 }
 function fifthbox() 
 { 
-    window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
+    window.location.href ="index-no-navi.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
 }
 
 </script>

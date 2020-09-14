@@ -311,11 +311,11 @@ if($get_schedule!='' && $plant_code!=''){
     $check_job_status="SELECT task_status FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plant_code' AND task_type='$tasktype'";
     $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
     $job_status_num=mysqli_num_rows($job_status_result);
-    echo "</br><div class='col-sm-3'>"; 
+    echo "</br><div class='col-sm-6' style='margin-top: 21px;margin-bottom: 24px;'>"; 
     if($job_status_num > 0)
     {
       echo "Sewing Jobs Available:"."<font color=GREEN class='label label-success'>YES</font>"; 
-      echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" >";
+      echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"submit\" name=\"submit\" style='margin-left: 14px;'>";
     }
     else
     {

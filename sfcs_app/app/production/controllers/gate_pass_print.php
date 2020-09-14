@@ -1,5 +1,7 @@
-<?php include('../../../common/config/config.php'); 
-	include('../../../common/config/functions.php');  
+<?php 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
+include('../../../common/config/functions.php');  
 $gate_id=$_GET['pass_id'];
 $print_type=$_GET['type'];
 if(isset($_GET['plant_code']))
@@ -12,8 +14,8 @@ else
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
 }
-$sql12="select * from $pps.gatepass_table where id=".$gate_id." AND plant_code=".$plant_code."";
-$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+$sql12="select * from $pps.gatepass_table where id=".$gate_id." AND plant_code='".$plant_code."'";
+$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row12=mysqli_fetch_array($sql_result123))
 {
 	$date=$sql_row12['date'];
@@ -21,7 +23,7 @@ while($sql_row12=mysqli_fetch_array($sql_result123))
 	$vehicle_no=$sql_row12['vehicle_no'];	
 	$operation=$sql_row12['operation'];	
 }
-$sql1122="SELECT operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and operation_code=".$operation."";
+$sql1122="SELECT operation_name FROM $pms.operation_mapping where plant_code = '".$plant_code."' and operation_code=".$operation."";
 $sql_result1w23=mysqli_query($link, $sql1122) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row1212=mysqli_fetch_array($sql_result1w23))
 {
@@ -612,7 +614,7 @@ tags will be replaced.-->
   <td class=xl1532160></td>
   <td class=xl1532160></td>
   <td class=xl1532160>Gate Pass:</td>
-  <td colspan=2 class=xl7932160><?php echo leading_zeros($gate_id,10);?></td>
+  <td colspan=2 class=xl7932160><?php echo $gate_id;?></td>
   <td class=xl6732160>&nbsp;</td>
   <td class=xl1532160></td>
  </tr>
@@ -689,7 +691,7 @@ tags will be replaced.-->
   <td class=xl1532160></td>
  </tr>
  <?php
-	$sql="select style,schedule,color,size from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by style,schedule,color,size";
+	$sql="select style,schedule,color,size from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -705,7 +707,7 @@ tags will be replaced.-->
 	$size=array_values(array_unique($size));
 	$tot_qty=0;
 	$tot_bds=0;
-	$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by style,schedule,color,size";
+	$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
@@ -714,7 +716,7 @@ tags will be replaced.-->
 		$tot_qty=$tot_qty+$sql_row1['qty'];
 		$tot_bds=$tot_bds+$sql_row1['cnts'];
 	}
-	$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code=".$plant_code." group by schedule,color";
+	$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by schedule,color";
 	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
 	while($sql_row12=mysqli_fetch_array($sql_result12))
 	{

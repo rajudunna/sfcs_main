@@ -206,13 +206,13 @@ echo '<div style="padding-left:10px;"><input type="hidden" name="lot_no" value="
 
 echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable <input type="submit" class="btn btn-success" value="Submit" name="put" id="put" onclick="javascript:button_disable();"/></div></form>';
 
-echo "<script>sweetAlert('Note','RM Return will happen only when Return Material Less than or Equal to the Issued Material..','success')</script>";
+echo "<script>sweetAlert('Note','RM Return will happen only when Return Material Less than or Equal to the Issued Material..','info')</script>";
 // echo " Note: RM Return will happen only when Return Material Lessthan or Equal to the Issued Material.. </h2>";
 }else{
 	echo "<script>sweetAlert('Please select valid lot no','','warning');</script>";
 }
 
-}
+} 
 
 
 
@@ -272,16 +272,24 @@ if(isset($_POST['put']))
 					//echo "<br/>".$sql."<br/>";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
-				echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
+	// 			echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
+	// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
 				
 			}
 			
 			
 		}
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";	
+		$sum+=$qty_return[$i];
 	}
 	
+	if($sum>0){
+		echo "<script>sweetAlert('Returns updated scuccessfully',' ','success')</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
+	}else{
+		echo "<script>sweetAlert('Please Enter Return Qty',' ','warning')</script>";
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"index-no-navi.php?r=". $_GET['r'] ."&lot_no=$lot_no_new\"; }</script>";
+	}
 	
 }
 

@@ -15,7 +15,7 @@ if (isset($_GET['dash'])) {
 $php_self = explode('/',$_SERVER['HTTP_HOST']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/sfcs_app/app/cutting/controllers/seperate_docket.php");
-$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 $has_permission=haspermission($url_r); 
 ?>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
@@ -161,8 +161,8 @@ function validate_but()
 <?php
 error_reporting(0);
 set_time_limit(20000);
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+$plant_code = $_GET['plantcodename'];
+$username = $_GET['username'];
 $doc_no=$_GET['doc_no'];
 //getting docket number to get 
 $binding_query = "select p.tot_bindreq_qty,c.doc_no from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$doc_no."' and c.plant_code='".$plant_code."'";
@@ -342,6 +342,8 @@ echo "<input type=\"hidden\" value=\"1\" name=\"process_cat\">"; //this is to id
 echo "<input type=\"hidden\" value=\"$style\" name=\"style_ref\">";  
 echo "<input type=\"hidden\" value=\"$schedule\" name=\"schedule\">";  
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
+echo "<input type=\"hidden\" value=\"$plant_code\" name=\"plant_codename\">"; 
+echo "<input type=\"hidden\" value=\"$username\" name=\"username\">"; 
 echo "<input type=\"hidden\" name=\"row_id\" value=\"".$doc_num."\">";
 
 

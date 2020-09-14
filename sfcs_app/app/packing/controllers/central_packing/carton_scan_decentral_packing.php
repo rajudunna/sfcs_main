@@ -5,6 +5,7 @@
 	<?php
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
+		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/server_urls.php");
 		$emp_id = $_GET['emp_id'];
 		$team_id = $_GET['team_id'];
 		$operation_id = $_GET['operation_id'];
@@ -162,95 +163,98 @@
 					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCarton",
 					dataType: "json", 
 					type: "POST",
-					data: {barcode:carton_id,operation:operation_id,shift:shift,plantCode:plant_code,createdUser:username},    
+					data: {barcode:carton_id,operationCode:operation_id,shift:shift,plantCode:plant_code,createdUser:username},    
 					cache: false,
 					success: function (response) 
 					{
+						$("#carton_id").attr("disabled", false);
+						$("#manual_carton_id").attr("disabled", false);
+						$("#loading_img").hide();
+						$("#scan_carton_id").html('');
 						if(response.status)
-                       {
-						// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
-						console.log(response);
-						if(response['status']==1)
-						{ 
-							$("#loading_img").hide();
-							$("#display_result").show();
-							$("#error_msg").hide();
-							document.getElementById('carton_no').innerHTML = response['carton_no'];
-							document.getElementById('style').innerHTML = response['style'];
-							document.getElementById('schedule').innerHTML = response['schedule'];
-							document.getElementById('color').innerHTML = response['color'];
-							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
-							document.getElementById('original_size').innerHTML = response['original_size'];
-							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
-							$('#status').css("background-color", "red");
-							$('#'+id).val('');
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
-						else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
-						{
-							$("#loading_img").hide();
-							if (response['status']==0)
-							{
-								var msg = "Enter a Valid Carton Number";
+                        {
+							swal('',response.internalMessage,'success');
+							return;
+							// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
+							console.log(response);
+							if(response['status']==1)
+							{ 
+								$("#loading_img").hide();
+								$("#display_result").show();
+								$("#error_msg").hide();
+								document.getElementById('carton_no').innerHTML = response['cartonNumber'];
+								document.getElementById('style').innerHTML = response['style'];
+								document.getElementById('schedule').innerHTML = response['schedules'];
+								document.getElementById('color').innerHTML = response['colors'];
+								document.getElementById('carton_act_qty').innerHTML = response['actualQuantity'];
+								document.getElementById('original_size').innerHTML = response['sizes'];
+								document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
+								$('#status').css("background-color", "red");
+								$('#'+id).val('');
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==3)
+							else if(response['status']==0 || response['status']==3 || response['status']==4 || response['status']==5 || response['status']==6 || response['status']==7)
 							{
-								var msg = "Scanning Failed";
+								$("#loading_img").hide();
+								if (response['status']==0)
+								{
+									var msg = "Enter a Valid Carton Number";
+								}
+								else if (response['status']==3)
+								{
+									var msg = "Scanning Failed";
+								}
+								else if (response['status']==4)
+								{
+									var msg = "Carton Not Eligible Due to Quantity not Available";
+								}
+								else if (response['status']==5)
+								{
+									var msg = "previous operation not done";
+								}
+								else if (response['status']==6)
+								{
+									var msg = "Short shipment done Permanently" ;
+								}
+								else if (response['status']==7)
+								{
+									var msg = "Short shipment done Temporarily" ;
+								}
+								
+								$("#error_msg").show();
+								document.getElementById('error').innerHTML = msg;
+								$('#'+id).val('');
+								$("#display_result").hide();
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==4)
+							else if(response['status']==2)
 							{
-								var msg = "Carton Not Eligible Due to Quantity not Available";
+								$("#loading_img").hide();
+								$("#error_msg").hide();
+								$("#display_result").show();
+								document.getElementById('carton_no').innerHTML = response['cartonNumber'];
+								document.getElementById('style').innerHTML = response['style'];
+								document.getElementById('schedule').innerHTML = response['schedules'];
+								document.getElementById('color').innerHTML = response['colors'];
+								document.getElementById('carton_act_qty').innerHTML = response['actualQuantity'];
+								document.getElementById('original_size').innerHTML = response['sizes'];
+								document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
+								$('#status').css("background-color", "limegreen");						
+								$('#'+id).val('');
+								$("#carton_id").attr("disabled", false);
+								$("#manual_carton_id").attr("disabled", false);
+								$("#submit_btn").attr("disabled", true);
+								$('#carton_id').focus();
 							}
-							else if (response['status']==5)
-							{
-								var msg = "previous operation not done";
-							}
-							else if (response['status']==6)
-							{
-								var msg = "Short shipment done Permanently" ;
-							}
-							else if (response['status']==7)
-							{
-								var msg = "Short shipment done Temporarily" ;
-							}
-							
-							$("#error_msg").show();
-							document.getElementById('error').innerHTML = msg;
-							$('#'+id).val('');
-							$("#display_result").hide();
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
-						else if(response['status']==2)
-						{
-							$("#loading_img").hide();
-							$("#error_msg").hide();
-							$("#display_result").show();
-							document.getElementById('carton_no').innerHTML = response['carton_no'];
-							document.getElementById('style').innerHTML = response['style'];
-							document.getElementById('schedule').innerHTML = response['schedule'];
-							document.getElementById('color').innerHTML = response['color'];
-							document.getElementById('carton_act_qty').innerHTML = response['carton_act_qty'];
-							document.getElementById('original_size').innerHTML = response['original_size'];
-							document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'>Carton Scanned Succesfully</center>";
-							$('#status').css("background-color", "limegreen");						
-							$('#'+id).val('');
-							$("#carton_id").attr("disabled", false);
-							$("#manual_carton_id").attr("disabled", false);
-							$("#submit_btn").attr("disabled", true);
-							$('#carton_id').focus();
-						}
-					}
-					
-					else
-                    {
-                        swal(response.internalMessage);
-                    }  
+						} else {
+							swal('', response.internalMessage, 'error');
+						}  
 					}
 
 				});

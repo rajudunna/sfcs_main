@@ -46,5 +46,14 @@ class TaskStatusEnum {
     const OPEN = 'OPEN';
     const INPROGRESS = 'INPROGRESS';
     const COMPLETED = 'COMPLETED';
+    const HOLD = 'HOLD';
+}
+
+class TrimStatusEnum {
+    const OPEN = '';
+    const PREPARINGMATERIAL = 'Preparing material';
+    const MATERIALREADYFORPRODUCTION = 'Material ready for Production (in Pool)';
+    const PARTIALISSUED = 'Partial Issued';
+    const ISSUED = 'Issued To Module';
 }
 ?>
