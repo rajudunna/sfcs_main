@@ -78,14 +78,15 @@ function checkAll()
 	$get_sub_po=$_GET['sub_po'];
 
 ?>
-
+<div class="ajax-loader" id="loading-image" style="display: none">
+    <center><img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 <div class = "panel panel-primary">
 <div class = "panel-heading">Sewing Job Clubbing</div>
 <div class = "panel-body">
 <form name="test" action="<?php echo getFullURLLevel($_GET['r'],'sewing_club_new.php','0','N'); ?>" method="post">
 <?php
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
+
 //function to get style from mp_color_details
 if($plantcode!=''){
 	$result_mp_color_details=getMpColorDetail($plantcode);
@@ -191,6 +192,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 	</form>
 </br>
 <div id ="dynamic_table1">
+
 </div>
 	<div id='alert-box' class='deliveryChargeDetail'></div>
 		<form method='post'>
@@ -202,8 +204,12 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 <script>
 $(document).ready(function() 
 {
+	$('#loading-image').hide();
+	$('#submit').hide();
 	$('#sub_po').on('change', function(){
 		$('#dynamic_table1').html('');
+		$('#loading-image').show();
+		
 		var plant_code = $('#plant_code').val();
 		var username = $('#username').val();
 		var subpo = $('#sub_po').val();
@@ -214,14 +220,17 @@ $(document).ready(function()
 			data: inputObj,
             success: function(response) 
             {
+				$('#loading-image').hide();
 				if (response.status) {
 					var jobsInfo = response;
 					tableConstruction(jobsInfo.data);
+					$('#submit').show();
 				} else {
 					swal('',response.internalMessage, 'error');
 					return;
 				}
             }, error: function() {
+				$('#loading-image').hide();
 				swal('','Unable to get jobs for the production order',error);
 			}
         });
@@ -291,6 +300,9 @@ $(document).ready(function()
 				} else {
 					swal('',response.internalMessage,'error');
 				}
+				setTimeout(function(){
+					location.reload();
+				}, 1000); 
             }
         });	
 	});
@@ -366,7 +378,20 @@ div#example_filter {
 .lastActive {
     background-color: red;
 } 
-
+#loading-image{
+  position:fixed;
+  top:0px;
+  right:0px;
+  width:100%;
+  height:100%;
+  background-color:#666;
+  /* background-image:url('ajax-loader.gif'); */
+  background-repeat:no-repeat;
+  background-position:center;
+  z-index:10000000;
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* For IE8 and earlier */
+}
 </style>
 </body>
 

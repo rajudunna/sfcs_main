@@ -110,7 +110,7 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<center>
 						<div class="form-group col-lg-6 col-sm-12">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" onkeyup="validateQty1(event,this);" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?> maxlength="25"/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -250,7 +250,6 @@ $(document).ready(function()
 		    var embObj = {"embJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
 			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForEmbJob";
         }
-        var function_text = "<?php echo getFullURL($_GET['r'],'scanning_ajax.php','R'); ?>";
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -316,8 +315,8 @@ function tableConstruction(data){
         document.getElementById('style').value = data.style;
         document.getElementById('schedule_show').innerHTML = data.schedules;
         document.getElementById('schedule').value = data.schedules;
-        document.getElementById('color_show').innerHTML = data.fgColors;
-        document.getElementById('mapped_color').value = data.fgColors;
+        document.getElementById('color_show').innerHTML = data.fgColors.toString();
+        document.getElementById('mapped_color').value = data.fgColors.toString();
         var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return check_pack();"><input type="hidden" id="count_of_data" value='+data.sizeQuantities.length+'></div>';
         $("#dynamic_table1").append(markup);
         $("#dynamic_table1").append(btn);
@@ -366,12 +365,12 @@ function tableConstruction(data){
                     op_code_values = op_code_values + '<td>'+data.sizeQuantities[i].operationWiseQuantity[index].quantity+'</td>';
                 });
 				
-            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.fgColors.toString()+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' ></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColor+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.sizeQuantities[i].fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' ></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
         }
     }
-    var markup99 = "</tbody></table></br></div></div></div>";
+    var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
     $('#hid_job').val(job_number);
@@ -587,6 +586,8 @@ $('input[type=submit]').click(function() {
 <script>
 function check_pack()
 {
+	$('#smartbtn').attr('disabled', 'disabled');
+	
 	var count = document.getElementById('count_of_data').value;
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
@@ -605,7 +606,7 @@ function check_pack()
 		var sizeQuantitiesObject = new Object();
 		sizeQuantitiesObject.size = $('#'+i+'size').val();
 		sizeQuantitiesObject.module = $('#'+i+'module').val();
-		sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+		sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
 		sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
 		sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
 		if(sizeQuantitiesObject.rejectedQty > 0){
@@ -635,35 +636,45 @@ function check_pack()
 	}
 	if(Number(tot_qty) <= 0 && Number(tot_rej_qty) <= 0)
 	{
+		$('#smartbtn').attr('disabled', false);
 		sweetAlert("Please enter atleast one size quantity","","warning");
 		return false;
 	}
 	else {
 		$('#loading-image').show(); 
 		$('.submission').hide();
-		$('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-		// document.getElementById('dynamic_table1').innerHTML = '';
-		// document.getElementById('style_show').innerHTML = '';
-		// document.getElementById('schedule_show').innerHTML = '';
-		// document.getElementById('color_show').innerHTML = '';
-		// document.getElementById('job_number').value = '';
-		// document.getElementById('module_show').innerHTML = '';
-		// document.getElementById('pre_data').innerHTML ='';
+		
+		$('#progressbar').hide();
+
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
 		var url = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormJob";
+		
+		// $('#loading-image').show();
+		// console.log(reportData)
+        // var function_text = "<?php echo getFullURL($_GET['r'],'data.json','R'); ?>";
+
         $.ajax({
 			type: "POST",
 			url: url,
 			data: JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
-			success: function (res) {            
-				//console.log(res.data);
+			success: function (res) {  
+
 				if(res.status)
 				{
+					$('#dynamic_table1').html('');
+					$('#loading-image').hide();
+					document.getElementById('dynamic_table1').innerHTML = '';
+					document.getElementById('style_show').innerHTML = '';
+					document.getElementById('schedule_show').innerHTML = '';
+					document.getElementById('color_show').innerHTML = '';
+					document.getElementById('job_number').value = '';
+					document.getElementById('module_show').innerHTML = '';
+					document.getElementById('pre_data').innerHTML ='';
 					swal('',res.internalMessage, 'success');
 					return;
 					/*
@@ -682,6 +693,7 @@ function check_pack()
 				}
 				else
 				{
+					$('#smartbtn').attr('disabled', false);
 					$('.submission').show();
 					swal('',res.internalMessage, 'error');
 				}               

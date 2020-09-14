@@ -151,7 +151,7 @@ th{
                         <input class="form-control" type="text" data-toggle='datepicker' name="sdat" id="sdate" size=8 placeholder='Select Date' value='<?php echo date('Y-m-d') ?>' />
                     </div>
                     <div class="col-md-1">
-                        <input type='buttom' name='submit1' id='submit1' class='btn btn-success' value='Filter' onclick='FilterFunction();'>
+                        <input type='buttom' name='submit1' id='submit1' class='btn btn-success' value='Filter' onclick='FilterFunction();' readonly>
                     </div>
                 </div>
              

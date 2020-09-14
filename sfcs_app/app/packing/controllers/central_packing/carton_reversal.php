@@ -6,9 +6,11 @@
 		include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 		// include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R'));
 		include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-		include(getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R'));
+		// include(getFullURLLevel($_GET['r'],'common/config/m3Updations.php',4,'R'));
+		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/server_urls.php");
 		$plant_code = $_SESSION['plantCode'];
-        $username = $_SESSION['userName'];
+		$username = $_SESSION['userName'];
+		$operation_id = '200';
 	?>
 </head>
 <body>
@@ -22,7 +24,7 @@
 				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
 				<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
 				<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
-				<input type="submit" name="submit" id="submit" class="btn btn-success confirm-submit" onclick="return cartonReversal()">
+				<input type="button" name="submit" id="submit" class="btn btn-success confirm-submit" onclick="return cartonReversal()" value="Submit">
 			</form>
 			
 		</div>
@@ -43,18 +45,14 @@ function cartonReversal(){
 					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
 					dataType: "json", 
 					type: "POST",
-					data: {barcode:carton_id,operation:operation_id,plantCode:plant_code,createdUser:username},    
+					data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username},    
 					cache: false,
 					success: function (response) 
 					{
-						if(response.status)
-                       {
-						swal(response.internalMessage);
-						   
-					   }
-					   else
-						{
-							swal(response.internalMessage);
+						if(response.status){
+							swal('', response.internalMessage, 'success'); 
+						} else {
+							swal('', response.internalMessage, 'error');
 						} 
 					}
 				})

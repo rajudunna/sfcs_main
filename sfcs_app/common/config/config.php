@@ -153,7 +153,8 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 $plant_name = $conf1->get('plantname');
 
 //TaskAttributeNamesEnum
-$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+$sewing_job_attributes = ['style' => 'STYLE', 'schedule' => 'SCHEDULE', 'color' => 'COLOR', 'ponumber' => 'PONUMBER', 'masterponumber' => 'MASTERPONUMBER', 'cutjobno' => 'CUTJOBNO', 'embjobno' => 'EMBJOBNO', 'docketno' => 'DOCKETNO', 'sewingjobno' => 'SEWINGJOBNO', 'bundleno' => 'BUNDLENO', 'packingjobno' => 'PACKINGJOBNO', 'cartonno' => 'CARTONNO', 'componentgroup' => 'COMPONENTGROUP', 'cono' => 'CONUMBER', 'remarks' => 'REMARKS'];
+
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
@@ -262,22 +263,3 @@ $order_joins_in_1 ="order_joins='1'";
 
     // }
 //===================================================*/
-class TaskTypeEnum { 
-    const CUTJOB = 'CUTJOB';
-    const DOCKET = 'DOCKET';
-    const DOCKETBUNDLE = 'DOCKETBUNDLE';
-    const SEWINGJOB = 'SEWINGJOB';
-    const PACKINGJOB = 'PACKINGJOB';
-    const CARTON = 'CARTON';
-    const EMBELLISHMENTJOB = 'CUTEMBJOB';
-    const LOGICALBUNDLE = 'LOGICALBUNDLE';
-    const POLYBAG = 'POLYBAG';
-    const PLANNEDSEWINGJOB = 'PSJ';
-    const PLANNEDSEWINGEMBELLISHMENTJOB = 'PSEJ';
-}
-
-//IP for backend services
-$BackendServ_ip="http://192.168.0.34:3336";
-
-
-?>
