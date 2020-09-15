@@ -100,10 +100,11 @@ $username=$_SESSION['userName'];
 			/**
 			 * getting dockets wrt taskjobs
 			 */
-			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving 
+			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time 
 			FROM $pps.jm_docket_lines docLine 
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id
+			LEFT JOIN $bai_pro3.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.doc_no
 			WHERE docLine.plant_code='$plantcode' AND docLine.jm_docket_id IN ('$taskJobs')";
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $docketLinesNum=mysqli_num_rows($docketLinesResult);
@@ -131,7 +132,9 @@ $username=$_SESSION['userName'];
 					$cg_id = $taskJobsRow['cg_id'];
 					$plies =  $taskJobsRow['plies'];
 					$ratio_id = $taskJobsRow['ratio_id'];
-					$fabric_saving = $sql_row1['fabric_saving'];
+					$fabric_saving = $taskJobsRow['fabric_saving'];
+					$act_cut_status = $taskJobsRow['lay_status'];
+					$fab_ready_time = $taskJobsRow['fab_ready_time'];
 					
 					/**getting style,colr attributes using taskjob id */
 					$job_detail_attributes = [];
@@ -192,8 +195,6 @@ $username=$_SESSION['userName'];
 						$category = $row['fabric_category'];
 						$rm_sku = $row['material_item_code'];
 					}
-
-					$act_cut_status = $sql_row['act_cut_status'];
 					
 					// get the docket qty
 					$size_ratio_sum = 0;
@@ -210,7 +211,6 @@ $username=$_SESSION['userName'];
 						$extra = round(($material_requirement_orig * $fabric_saving), 2);
 					}
 					
-					$fab_ready_time = $sql_row['fab_ready_time'];
 					if ($fab_ready_time == "") {
 						$fab_ready_time = "NULL";
 					}
