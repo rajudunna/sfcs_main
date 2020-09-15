@@ -132,7 +132,7 @@ function getPlannedJobsTms($work_id,$tasktype,$plant_code){
 /**
  * get count for trim allocated jobs
  */
-function calculateJobsCount($module){ 
+function calculateJobsCount($module,$plant_code){ 
 	global $link_new;
 	global $tms;
 	global $pms;
