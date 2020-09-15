@@ -1400,8 +1400,8 @@ WebBrowser1.outerHTML = "";
 }
 </script>
 
-<script src="jquery-1.3.2.js"></script>
-<script src="jquery-barcode-2.0.1.js"></script>
+<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-1.3.2.js',1,'R'); ?>></script>
+<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',1,'R'); ?>></script>
 
 </head>
 

@@ -1,5 +1,5 @@
 <?php
-$url = getFullURL($_GET['r'],'mrn_request_form_V2.php','N');
+$url = getFullURL($_GET['r'],'mrn_request_form_v2.php','N');
 header("Location: ".$url);
 
 ?>
