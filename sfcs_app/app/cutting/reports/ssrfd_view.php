@@ -3,9 +3,8 @@ $url1 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config
 include("$url1");  
 $url2 =  $_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'); 
 include("$url2");
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0013",$username,1,$group_id_sfcs); 
-$plantcode=$_SESSION['plantCode'];
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 
@@ -25,19 +24,27 @@ td{ color : black;}
 <script type='text/javascript'>
 function firstbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value;
 }
 function secondbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
 }
 function thirdbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value
+}
+function fifthbox()
+{
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value
+}
+function sixthbox()
+{
+	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value+"&category="+document.test.category.value
 }
 
 $(document).ready(function() {
@@ -100,22 +107,32 @@ include("$url3");
 ?>
 
 <?php
-$style=$_GET['style'];
-$schedule=$_GET['schedule']; 
-$color=$_GET['color'];
+$get_style=$_GET['style'];
+$get_schedule=$_GET['schedule']; 
+$get_color=$_GET['color'];
+$get_mpo=$_GET['mpo']; 
+$get_sub_po=$_GET['sub_po'];
 $category=$_GET['category'];
 
 if(isset($_POST['style']))
 {
-	$style=$_POST['style'];
+	$get_style=$_POST['style'];
 }
 if(isset($_POST['schedule']))
 {
-	$schedule=$_POST['schedule'];
+	$get_schedule=$_POST['schedule'];
 }
 if(isset($_POST['color']))
 {
-	$color=$_POST['color'];
+	$get_color=$_POST['color'];
+}
+if(isset($_POST['mpo']))
+{
+	$get_mpo=$_POST['mpo'];
+}
+if(isset($_POST['sub_po']))
+{
+	$get_sub_po=$_POST['sub_po'];
 }
 if(isset($_POST['category']))
 {
@@ -134,20 +151,18 @@ if(isset($_POST['category']))
 				<select required class='form-control' name='style' onchange='firstbox()' id='style'>
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";
-					$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" order by bai_orders_db.order_style_no";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result);
-
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-						{
-							echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+					if($plant_code!=''){
+						$result_mp_color_details=getMpColorDetail($plant_code);
+						$style=$result_mp_color_details['style'];
+					}
+					foreach ($style as $style_value) {
+						if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
+						{ 
+							echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
 						}
 					}
 				echo "</select>";
@@ -158,19 +173,22 @@ if(isset($_POST['category']))
 				<select required class='form-control' name='schedule' onchange='secondbox();' id='schedule'>
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";	
-					$sql="SELECT DISTINCT order_del_no FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\"";
-					mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$sql_num_check=mysqli_num_rows($sql_result);
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule))
-						{
-							echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-						}
-						else
-						{
-							echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+					/*function to get schedule from getdata_bulk_schedules
+					@params : plantcode,style
+					@returns: schedule
+					*/
+					if($get_style!=''&& $plant_code!=''){
+						$result_bulk_schedules=getBulkSchedules($get_style,$plant_code);
+						$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+					} 
+					foreach ($bulk_schedule as $bulk_schedule_value) {
+						if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
+						{ 
+							echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
 						}
 					}
 					echo "</select>";
@@ -181,74 +199,106 @@ if(isset($_POST['category']))
 				<select required class='form-control' name='color' onchange='thirdbox();' id='color'>
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";
-					//$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-					$sql="SELECT DISTINCT order_col_des FROM $bai_pro3.bai_orders_db JOIN $bai_pro3.cat_stat_log ON bai_orders_db.order_tid=cat_stat_log.order_tid and cat_stat_log.category<>\"\" and bai_orders_db.order_style_no=\"$style\" and bai_orders_db.order_del_no=\"$schedule\"";
-					mysqli_query($link, $sql) or exit();
-					$sql_result=mysqli_query($link, $sql) or exit();
-					$sql_num_check=mysqli_num_rows($sql_result);	
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)){
-							echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-						}
-						else{
-							echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-						}
-					}
-				echo "</select>";
-				?>
-			</div>
-
-			<?php		
-				$sql="select order_tid from $bai_pro3.bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-
-				mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_num_check=mysqli_num_rows($sql_result);
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$order_tid=$sql_row['order_tid'];
-				}
-			?>
-			<div class="col-sm-2">
-				<label for='category'>Select Category:</label>
-				<select required class='form-control' name='category' id='category'>
-				<?php				
-					$sql="select distinct category from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category<>\"\"";
-					//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-					mysqli_query($link, $sql) or exit();
-					//$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-					$sql_result=mysqli_query($link, $sql) or exit();
-					$sql_num_check=mysqli_num_rows($sql_result);
-
-					echo "<option value=\"NIL\" selected>NIL</option>";
-						
-					while($sql_row=mysqli_fetch_array($sql_result))
-					{
-						if(str_replace(" ","",$sql_row['category'])==str_replace(" ","",$category)){
-							echo "<option value=\"".$sql_row['category']."\" selected>".$sql_row['category']."</option>";
-						}else{
-							echo "<option value=\"".$sql_row['category']."\">".$sql_row['category']."</option>";
+					/*function to get color from get_bulk_colors
+					@params : plantcode,schedule
+					@returns: color
+					*/
+					if($get_schedule!='' && $plant_code!=''){
+						$result_bulk_colors=getBulkColors($get_schedule,$plant_code);
+						$bulk_color=$result_bulk_colors['color_bulk'];
+					}	
+					foreach ($bulk_color as $bulk_color_value) {
+						if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$get_color)) 
+						{ 
+							echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
 						}
 					}
 					echo "</select>";
 				?>
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<label for='mpo'>Select PoNumber:</label>
+				<select required class='form-control' name='mpo' onchange='fourthbox();' id='mpo'>
+				<?php
+					echo "<option value=\"NIL\" selected>NIL</option>";
+					/*function to get mpo from getdata_MPOs
+					@params : plantcode,schedule,color
+					@returns: mpo
+					*/
+					if($get_schedule!='' && $get_color!='' && $plant_code!=''){
+						$result_bulk_MPO=getMpos($get_schedule,$get_color,$plant_code);
+						$master_po_description=$result_bulk_MPO['master_po_description'];
+					}	
+					foreach ($master_po_description as $key=>$master_po_description_val) {
+						if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+						{ 
+							echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+						}
+					} 
+					echo "</select>";
+				?>
+			</div>
+			<div class="col-sm-2 form-group">
+				<label for='subpo'>Select PoNumber:</label>
+				<select required class='form-control' name='sub_po' onchange='fifthbox();' id='sub_po'>
+				<?php
+					echo "<option value=\"NIL\" selected>NIL</option>";
+					/*function to get subpo from getdata_bulk_subPO
+						@params : plantcode,mpo
+						@returns: subpo
+						*/
+					if($get_mpo!='' && $plant_code!=''){
+						$result_bulk_subPO=getBulkSubPo($get_mpo,$plant_code);
+						$sub_po_description=$result_bulk_subPO['sub_po_description'];
+					}	
+					foreach ($sub_po_description as $key=>$sub_po_description_val) {
+						if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
+						{ 
+							echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+						} 
+						else 
+						{ 
+							echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+						}
+					}
+					echo "</select>";
+				?>
+			</div>
+			<div class="col-sm-2 form-group">
+				<label for='category'>Select Category:</label>
+				<select required class='form-control' name='category' onchange='sixthbox();'  id='category'>
+				<?php				
+					 $sql="SELECT fabric_category FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$get_style' AND color='$get_color' AND mp_fabric.master_po_number='$get_mpo' AND mp_fabric.plant_code='$plant_code'";		
+					 $sql_result=mysqli_query($link, $sql) or exit();
+					 $sql_num_check=mysqli_num_rows($sql_result);
+ 
+					 echo "<option value=\"NIL\" selected>NIL</option>";
+						 
+					 while($sql_row=mysqli_fetch_array($sql_result))
+					 {
+						 if(str_replace(" ","",$sql_row['fabric_category'])==str_replace(" ","",$category)){
+							 echo "<option value=\"".$sql_row['fabric_category']."\" selected>".$sql_row['fabric_category']."</option>";
+						 }else{
+							 echo "<option value=\"".$sql_row['fabric_category']."\">".$sql_row['fabric_category']."</option>";
+						 }
+					 }
+					echo "</select>";
+				?>
 			</div>	
+			<div class="col-sm-2 form-group">
 			<?php
-				$sql="select mo_status from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category<>\"\"";
-				mysqli_query($link, $sql) or exit();
-				$sql_result=mysqli_query($link, $sql) or exit();
-				$sql_num_check=mysqli_num_rows($sql_result);
-				while($sql_row=mysqli_fetch_array($sql_result))
-				{
-					$mo_status=$sql_row['mo_status'];
-				}
-				if(($mo_status=="Y") && $category!="NIL")
-				{
-					echo "<br><b>MO Status:</b>"."<font color=GREEN size=5>".$mo_status."es</font>";
-					echo "<input class='btn btn-success' type='submit' value='submit' name='submit' id='submit'>";	
-				}
+				echo "<input class='btn btn-success' type='submit' value='submit' name='submit' id='submit'>";	
 			?>
+			</div>
 		</form>
 
 
@@ -260,268 +310,102 @@ if(isset($_POST['submit']))
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
 	$category=$_POST['category'];
+	$sub_po=$_POST['sub_po'];
 	
 	if($style!="NIL" && $color!="NIL" && $schedule!="NIL" && $category!="NIL"){
-		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-	mysqli_query($link, $sql);
-	//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	$sql_result=mysqli_query($link, $sql);
-	//$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-			
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
-		}
-
-
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$n_s[$sizes_code[$s]]=$sql_row["old_order_s_s".$sizes_code[$s].""];
-		}
-
-
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-			{
-				$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-			}	
-		}
-
-		$o_total=array_sum($o_s);
-		$order_tid=$sql_row['order_tid'];
-		$color_code=$sql_row['color_code'];
-		
-		
-	}	
 	}else{
 	echo"Please Select All Filters</br>";
 	}
 	
-	$sql="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category=\"$category\"";
-	//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	mysqli_query($link, $sql) or exit();
-	$sql_result=mysqli_query($link, $sql) or exit();
-	//$sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
+	$size_code=array();
+	$excess_size_code=array();
+	//To get sizes and qty
+	
+	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND master_po_order_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
+	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($sql_result))
 	{
-		$cat_id=$sql_row['tid'];
+		$size_code[$row['size']]=$row['quantity'];
+		$order_qty=$row['quantity'];
 	}
-	
-	$sql="select sum(allocate_xs*plies) as \"a_s_xs\", sum(allocate_s*plies) as \"a_s_s\", sum(allocate_m*plies) as \"a_s_m\", sum(allocate_l*plies) as \"a_s_l\", sum(allocate_xl*plies) as \"a_s_xl\", sum(allocate_xxl*plies) as \"a_s_xxl\", sum(allocate_xxxl*plies) as \"a_s_xxxl\", sum(allocate_s01*plies) as \"a_s_s01\",sum(allocate_s02*plies) as \"a_s_s02\",sum(allocate_s03*plies) as \"a_s_s03\",sum(allocate_s04*plies) as \"a_s_s04\",sum(allocate_s05*plies) as \"a_s_s05\",sum(allocate_s06*plies) as \"a_s_s06\",sum(allocate_s07*plies) as \"a_s_s07\",sum(allocate_s08*plies) as \"a_s_s08\",sum(allocate_s09*plies) as \"a_s_s09\",sum(allocate_s10*plies) as \"a_s_s10\",sum(allocate_s11*plies) as \"a_s_s11\",sum(allocate_s12*plies) as \"a_s_s12\",sum(allocate_s13*plies) as \"a_s_s13\",sum(allocate_s14*plies) as \"a_s_s14\",sum(allocate_s15*plies) as \"a_s_s15\",sum(allocate_s16*plies) as \"a_s_s16\",sum(allocate_s17*plies) as \"a_s_s17\",sum(allocate_s18*plies) as \"a_s_s18\",sum(allocate_s19*plies) as \"a_s_s19\",sum(allocate_s20*plies) as \"a_s_s20\",sum(allocate_s21*plies) as \"a_s_s21\",sum(allocate_s22*plies) as \"a_s_s22\",sum(allocate_s23*plies) as \"a_s_s23\",sum(allocate_s24*plies) as \"a_s_s24\",sum(allocate_s25*plies) as \"a_s_s25\",sum(allocate_s26*plies) as \"a_s_s26\",sum(allocate_s27*plies) as \"a_s_s27\",sum(allocate_s28*plies) as \"a_s_s28\",sum(allocate_s29*plies) as \"a_s_s29\",sum(allocate_s30*plies) as \"a_s_s30\",sum(allocate_s31*plies) as \"a_s_s31\",sum(allocate_s32*plies) as \"a_s_s32\",sum(allocate_s33*plies) as \"a_s_s33\",sum(allocate_s34*plies) as \"a_s_s34\",sum(allocate_s35*plies) as \"a_s_s35\",sum(allocate_s36*plies) as \"a_s_s36\",sum(allocate_s37*plies) as \"a_s_s37\",sum(allocate_s38*plies) as \"a_s_s38\",sum(allocate_s39*plies) as \"a_s_s39\",sum(allocate_s40*plies) as \"a_s_s40\",sum(allocate_s41*plies) as \"a_s_s41\",sum(allocate_s42*plies) as \"a_s_s42\",sum(allocate_s43*plies) as \"a_s_s43\",sum(allocate_s44*plies) as \"a_s_s44\",sum(allocate_s45*plies) as \"a_s_s45\",sum(allocate_s46*plies) as \"a_s_s46\",sum(allocate_s47*plies) as \"a_s_s47\",sum(allocate_s48*plies) as \"a_s_s48\",sum(allocate_s49*plies) as \"a_s_s49\",sum(allocate_s50*plies) as \"a_s_s50\"
- 		  from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref='$cat_id'";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
+	//To get excess qty
+	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND master_po_order_qty_type='EXTRA_SHIPMENT' GROUP BY size";
+	$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($sql_result1))
 	{
-	
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$a_s[$sizes_code[$s]]=$sql_row["a_s_s".$sizes_code[$s].""];
-		}
-		$a_total=array_sum($a_s);
-		
-	}	
-		
-	
-	
-	$fab_rec_total=0;
-	$fab_ret_total=0;
-	$damages_total=0;
-	$shortages_total=0;
-	$act_total_sum=0;
-	
-
-
-	$sql1="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
-	mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row1=mysqli_fetch_array($sql_result1))
+		$excess_size_code[$row1['size']]=$row1['quantity'];
+		$excess_order_qty=$row1['quantity'];
+	}
+	//To get Total order qty
+	$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
+	$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row2=mysqli_fetch_array($sql_result2))
 	{
+		$total_order_qty=$row2['quantity'];
+	}
 	
-	
-		$act_doc_no=$sql_row1['doc_no'];
-		$act_cut_no=$sql_row1['acutno'];
-		
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
-		}
-		
-		$act_total=array_sum($act_s);
-		$cut_status=$sql_row1['act_cut_status'];
-		$input_status=$sql_row1['act_cut_issue_status'];
-		$doc_date=$sql_row1['date'];
-		$mk_ref=$sql_row1['mk_ref'];
-		$a_plies=$sql_row['p_plies']; //20110911
-		
-			$cut_date="";
-			$cut_section="";
-			$cut_shift="";
-		
-		$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check=mysqli_num_rows($sql_result);
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$cut_date=$sql_row['date'];
-			$cut_section=$sql_row['section'];
-			$cut_shift=$sql_row['shift'];
-		}
-		
-
-			$input_date="";
-			$input_module="";
-			$input_shift="";
-		
-		$sql="select * from $pps.act_cut_issue_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check=mysqli_num_rows($sql_result);
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$input_date=$sql_row['date'];
-			$input_module=$sql_row['mod_no'];
-			$input_shift=$sql_row['shift'];
-		}
-		
-		/* NEW */
-		
-		$fab_rec=0;
-		$fab_ret=0;
-		$damages=0;
-		$shortages=0;
-			
-	$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-
-	while($sql_row=mysqli_fetch_array($sql_result))
+	//OrderConsumption
+	//To get wastage and consumption
+	$Qry_get_order_consumption="SELECT SUM(consumption) AS consumption,SUM(wastage_perc) AS wastage FROM $oms.`oms_mo_items` LEFT JOIN $oms.`oms_products_info` ON oms_mo_items.`mo_number`=oms_products_info.`mo_number` WHERE style='$style' AND color_desc='$color' AND operation_code=15";
+	$sql_result3=mysqli_query($link, $Qry_get_order_consumption) or die("Error".$Qry_get_order_consumption.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row3=mysqli_fetch_array($sql_result3))
 	{
-		
-		$fab_rec=$sql_row['fab_received'];
-		$fab_ret=$sql_row['fab_returned'];
-		$damages=round($sql_row['damages'],2);
-		$shortages=round($sql_row['shortages'],2);
-
-		$joints_endbits=$sql_row["joints_endbits"];
-		$jo_int_check=explode('$',$joints_endbits);
-		 $joints=0;$endbits=0;	
-		for($ii=0;$ii<sizeof($jo_int_check);$ii++)
-		{
-			$values_joint=explode('^',$joints_endbits);
-			$joints=$joints+$values_joint[0];
-			$endbits=$endbits+$values_joint[1];			
-		}				 
-
-	
+		$consumption=$row3['consumption'];
+		$cut_wastage=$row3['wastage'];
 	}
-	
-	$fab_rec_total=$fab_rec_total+$fab_rec;
-	$fab_ret_total=$fab_ret_total+$fab_ret;
-	$damages_total=$damages_total+$damages;
-	$shortages_total=$shortages_total+$shortages;
-	$act_total_sum=$act_total_sum+$act_total;
-	
-		
-		$sql2="select mklength from $bai_pro3.maker_stat_log where tid=$mk_ref";
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			$mk_length=$sql_row2['mklength'];
-		}
-		
-		$doc_req=$mk_length*$a_plies;
-
-
-		
-		$order_tid=$sql_row1['order_tid'];
-		//Binding Consumption / YY Calculation
-		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_id";
-		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row11=mysqli_fetch_array($sql_result11))
-		{
-			$cat_yy=$sql_row11['catyy'];
-			$binding_consumption=$sql_row11['binding_consumption'];
-		}	
-		$doc_req+=$act_total*$binding_consumption;
-		
-		$net_util=$fab_rec-$fab_ret-$damages-$shortages;
-		$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
-		$net_con=round($net_util/$act_total,4);
-		$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
-		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,1);
-		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
-		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,1);
-		
-		
-		unset($act_s);
-	
-	}
-
-
-	
-	/* NEW */
-	
-	/* NEW 2010-05-22 */
-	
-	$newyy=0;
-	$new_order_qty=0;
-	$sql2="select * from $bai_pro3.maker_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
-
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
+	//To get mo qty aganist style,schedule,color
+	$Qry_get_quantity="SELECT SUM(mo_quantity) as mo_qty FROM $oms.`oms_mo_details` LEFT JOIN $oms.`oms_products_info` ON oms_mo_details.`mo_number`=oms_products_info.`mo_number` WHERE style='$style' AND SCHEDULE='$schedule' AND color_desc='$color' AND oms_mo_details.plant_code='$plant_code'";
+	$sql_result4=mysqli_query($link, $Qry_get_quantity) or die("Error".$Qry_get_quantity.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row4=mysqli_fetch_array($sql_result4))
 	{
-		$mk_new_length=$sql_row2['mklength'];
-		$new_allocate_ref=$sql_row2['allocate_ref'];
-		
-		$sql22="select * from $bai_pro3.allocate_stat_log where tid=$new_allocate_ref";
-		mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row22=mysqli_fetch_array($sql_result22))
-		{
-			$new_plies=$sql_row22['plies'];
-		}
-		$newyy=$newyy+($mk_new_length*$new_plies);
+		$mo_qty=$row4['mo_qty'];
 	}
-	
-	$sql2="select (order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50) as \"sum\" from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row2=mysqli_fetch_array($sql_result2))
+	if($cut_wastage > 0)
 	{
-		$new_order_qty=$sql_row2['sum'];
+		$wastage=$cut_wastage;
+	}else
+	{
+		$wastage=1;
 	}
 
-		
-	$newyy+=($new_order_qty*$binding_consumption);
-	
-	//Binding Consumption / YY Calculation
-	$newyy2=0;
-	if($new_order_qty > 0)
+	$order_consumption=(($mo_qty*$consumption*$wastage)/100);
+	$lay_id=array();
+	$tot_cutable_qty=0;
+	//Actual Consumption
+	$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+	$sql_result5=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row5=mysqli_fetch_array($sql_result5))
 	{
-		$newyy2=$newyy/$new_order_qty;
+		$docket_no=$row5['docket_line_number'];
+		$lay_id[]=$row5['lp_lay_id'];
+		
+		$result_docket_qty=getDocketInformation($docket_no,$plant_code);
+		$get_docket_qty=$result_docket_qty['$docket_quantity'];
+
+		$tot_cutable_qty +=$get_docket_qty;
 	}
-	if($cat_yy>0){
-		$savings_new=round((($cat_yy-$newyy2)/$cat_yy)*100,0);
+	//To get fabric attributes
+	$fabric_attributes=array();
+	$qrt_get_attributes="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
+	$sql_result6=mysqli_query($link, $qrt_get_attributes) or die("Error".$qrt_get_attributes.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row6=mysqli_fetch_array($sql_result6))
+	{
+		$fabric_attributes[$row6['attribute_name']] = $row6['attribute_value'];
 	}
-	if($act_total_sum>0){
-		$act_con_summ=($fab_rec_total-$fab_ret_total)/$act_total_sum;
-		$net_con_summ=($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total)/$act_total_sum;
-	}
-	if($cat_yy>0){
-		$act_con_summ_sav=round((($cat_yy-$act_con_summ)/$cat_yy)*100,0);
-		$net_con_summ_sav=round((($cat_yy-$net_con_summ)/$cat_yy)*100,0);
-	}	
+	$fabric_recevied=  $fabric_attributes[$fabric_lay_attributes['fabricrecevied']];
+	$fabric_returned=  $fabric_attributes[$fabric_lay_attributes['fabricreturned']];
+	$shortages=  $fabric_attributes[$fabric_lay_attributes['shortages']];
+	$damages=  $fabric_attributes[$fabric_lay_attributes['damages']];
+	$endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
+	$joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
+	
+	//Actual Consumption Caliculation
+	$actual_consumption=(($fabric_recevied - $fabric_returned)/$tot_cutable_qty);
+	$actual_consumption_saving=((($order_consumption - $actual_consumption) * 100)/$order_consumption);
+	//Net Consumption Caliculation
+	$net_consumption=(($fabric_recevied - $fabric_returned - $damages - $shortages)/$tot_cutable_qty);
+	$net_consumption_saving=((($order_consumption - $net_consumption) * 100)/$order_consumption);
+
 ?>
 <hr>
 <div class="col-sm-12 ">
@@ -553,27 +437,25 @@ if(isset($_POST['submit']))
 		<tr>
 			<th class='danger'>Size</th>
 			<?php
-				for($s=0;$s<sizeof($s_tit);$s++){
-						echo "<td class='danger'>".$s_tit[$sizes_code[$s]]."</td>";
-					}
+				foreach($size_code as $key => $value){
+                  echo "<td class='danger'>".$key."</td>";
+			    } 
 			?>
 		</tr>
 		<tr>
 			<th class='danger'>Order Qty</th>
 			<?php
-				for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td>".$o_s[$sizes_code[$s]]."</td>";
-					}
+				foreach($size_code as $key => $value){
+					echo "<td class='danger'>".$value."</td>";
+				}
 			?>
 		</tr>
 		<tr>
 			<th class='danger'>Extra Cut</th>
 			<?php
-				for($s=0;$s<sizeof($s_tit);$s++)
-					{
-						echo "<td>".($a_s[$sizes_code[$s]]-$o_s[$sizes_code[$s]])."</td>";
-					}
+				foreach($excess_size_code as $key => $value){
+					echo "<td class='danger'>".$value."</td>";
+				}
 			?>
 		</tr>		
 	</table>
@@ -584,7 +466,7 @@ if(isset($_POST['submit']))
 	<table class="table table-bordered table-responsive">
 			<tr>
 				<th class='success'>Ordering Consumption:</th>
-				<td><?php echo $cat_yy; ?></td>
+				<td><?php echo $order_consumption; ?></td>
 				<td>Saving</td>
 			</tr>
 			<tr>
@@ -594,13 +476,13 @@ if(isset($_POST['submit']))
 			</tr>
 			<tr>
 				<th class='success'>Actual Consumption:</th>
-				<td><?php echo round($act_con_summ,4);  ?></td>
-				<td><?php echo $act_con_summ_sav; ?>% </td>
+				<td><?php echo round($actual_consumption,4);  ?></td>
+				<td><?php echo $actual_consumption_saving; ?>% </td>
 			</tr>	
 			<tr>
 				<th class='success'>Net Consumption:</th>
-				<td><?php echo round($net_con_summ,4);  ?></td>
-				<td><?php echo $net_con_summ_sav; ?>%</td>
+				<td><?php echo round($net_consumption,4);  ?></td>
+				<td><?php echo $net_consumption_saving; ?>%</td>
 			</tr>	
 	</table>
 </div>
@@ -616,300 +498,110 @@ if(isset($_POST['submit']))
 			</tr>
 			<tr>
 				<th class='success'>Actual Utilization:</th>
-				<td><?php echo round(($fab_rec_total-$fab_ret_total),0); ?></td>
+				<td><?php echo round(($fabric_recevied - $fabric_returned),0); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Net Utilization:</th>
-				<td><?php echo round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),0); ?></td>
+				<td><?php echo round(($fabric_recevied - $fabric_returned - $damages - $shortages),0); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Fabric Shortage:</th>
-				<td><?php echo ($shortages_total); ?></td>
+				<td><?php echo ($shortages); ?></td>
 			</tr>
 			<tr>
 				<th class='success'>Fabric Damage:</th>
-				<td><?php echo ($damages_total); ?></td>
+				<td><?php echo ($damages); ?></td>
 			</tr>
 	</table>
 </div>
 
 
 <?php 
- if(isset($_POST['submit']))
-{
-	$style=$_POST['style'];
-	$color=$_POST['color'];
-	$schedule=$_POST['schedule'];
-	$category=$_POST['category'];
-	
-	if($style!="NIL" && $color!="NIL" && $schedule!="NIL" && $category!="NIL"){
- 	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		$o_s[$sizes_code[$s]]=$sql_row["order_s_s".$sizes_code[$s].""];
-	}
-
-
-	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		$n_s[$sizes_code[$s]]=$sql_row["old_order_s_s".$sizes_code[$s].""];
-	}
-
-
-	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-		{
-			$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-		}	
-	}
-		
-
-		$o_total=array_sum($o_s);
-		$order_tid=$sql_row['order_tid'];
-		$color_code=$sql_row['color_code'];
-		
-		
-	}	
-	
-	
-	$sql="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category=\"$category\"";
-	// mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	mysqli_query($link, $sql) or exit();
-	// $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
-	$sql_result=mysqli_query($link, $sql) or exit();
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$cat_id=$sql_row['tid'];
-	}
-	
-	$sql="select sum(allocate_xs*plies) as \"a_s_xs\", sum(allocate_s*plies) as \"a_s_s\", sum(allocate_m*plies) as \"a_s_m\", sum(allocate_l*plies) as \"a_s_l\", sum(allocate_xl*plies) as \"a_s_xl\", sum(allocate_xxl*plies) as \"a_s_xxl\", sum(allocate_xxxl*plies) as \"a_s_xxxl\", sum(allocate_s01*plies) as \"a_s_s01\",sum(allocate_s02*plies) as \"a_s_s02\",sum(allocate_s03*plies) as \"a_s_s03\",sum(allocate_s04*plies) as \"a_s_s04\",sum(allocate_s05*plies) as \"a_s_s05\",sum(allocate_s06*plies) as \"a_s_s06\",sum(allocate_s07*plies) as \"a_s_s07\",sum(allocate_s08*plies) as \"a_s_s08\",sum(allocate_s09*plies) as \"a_s_s09\",sum(allocate_s10*plies) as \"a_s_s10\",sum(allocate_s11*plies) as \"a_s_s11\",sum(allocate_s12*plies) as \"a_s_s12\",sum(allocate_s13*plies) as \"a_s_s13\",sum(allocate_s14*plies) as \"a_s_s14\",sum(allocate_s15*plies) as \"a_s_s15\",sum(allocate_s16*plies) as \"a_s_s16\",sum(allocate_s17*plies) as \"a_s_s17\",sum(allocate_s18*plies) as \"a_s_s18\",sum(allocate_s19*plies) as \"a_s_s19\",sum(allocate_s20*plies) as \"a_s_s20\",sum(allocate_s21*plies) as \"a_s_s21\",sum(allocate_s22*plies) as \"a_s_s22\",sum(allocate_s23*plies) as \"a_s_s23\",sum(allocate_s24*plies) as \"a_s_s24\",sum(allocate_s25*plies) as \"a_s_s25\",sum(allocate_s26*plies) as \"a_s_s26\",sum(allocate_s27*plies) as \"a_s_s27\",sum(allocate_s28*plies) as \"a_s_s28\",sum(allocate_s29*plies) as \"a_s_s29\",sum(allocate_s30*plies) as \"a_s_s30\",sum(allocate_s31*plies) as \"a_s_s31\",sum(allocate_s32*plies) as \"a_s_s32\",sum(allocate_s33*plies) as \"a_s_s33\",sum(allocate_s34*plies) as \"a_s_s34\",sum(allocate_s35*plies) as \"a_s_s35\",sum(allocate_s36*plies) as \"a_s_s36\",sum(allocate_s37*plies) as \"a_s_s37\",sum(allocate_s38*plies) as \"a_s_s38\",sum(allocate_s39*plies) as \"a_s_s39\",sum(allocate_s40*plies) as \"a_s_s40\",sum(allocate_s41*plies) as \"a_s_s41\",sum(allocate_s42*plies) as \"a_s_s42\",sum(allocate_s43*plies) as \"a_s_s43\",sum(allocate_s44*plies) as \"a_s_s44\",sum(allocate_s45*plies) as \"a_s_s45\",sum(allocate_s46*plies) as \"a_s_s46\",sum(allocate_s47*plies) as \"a_s_s47\",sum(allocate_s48*plies) as \"a_s_s48\",sum(allocate_s49*plies) as \"a_s_s49\",sum(allocate_s50*plies) as \"a_s_s50\" from $bai_pro3.allocate_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-	
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$a_s[$sizes_code[$s]]=$sql_row["a_s_s".$sizes_code[$s].""];
-		}
-
-		$a_total=array_sum($a_s);
-		
-	}	
-		
-	
-	
-	
-	$fab_rec_total=0;
-	$fab_ret_total=0;
-	$damages_total=0;
-	$shortages_total=0;
-	$act_total_sum=0;
-	
-	
-
-	$sql1="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_id";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result1)>0)
-	{
-				echo "<div class='col-sm-12' style='overflow-x:scroll'>
+	echo "<div class='col-sm-12' style='overflow-x:scroll'>
 	<table class='table table-sm table-bordered table-responsive'>
-		<tr class='info'>
-			<th>DocketNo</th>
-			<th>Cut No</th>
-			<th>Total</th>
-			<th>Cut Status</th>
-			<th>Input Status</th>
-			<th>Docket Requested</th>
-			<th>Fabric Received</th>
-			<th>Fabric Returned</th>
-			<th>Damages</th>
-			<th>Shortages</th>
-			<th>Joints</th>
-			<th>Endbits</th>
-			<th>Net Utlization</th>
-			<th>Ordering Consumption</th>
-			<th>Actual Consumption</th>
-			<th>Net Consumption</th>
-			<th>Actual Saving</th>
-			<th>Pct</th>
-			<th>Net Saving</th>
-			<th>Pct</th>
-		</tr>";
-	while($sql_row1=mysqli_fetch_array($sql_result1))
+	<tr class='info'>
+	<th>DocketNo</th>
+	<th>Cut No</th>
+	<th>Total</th>
+	<th>Cut Status</th>
+	<th>Input Status</th>
+	<th>Docket Requested</th>
+	<th>Fabric Received</th>
+	<th>Fabric Returned</th>
+	<th>Damages</th>
+	<th>Shortages</th>
+	<th>Joints</th>
+	<th>Endbits</th>
+	<th>Net Utlization</th>
+	<th>Ordering Consumption</th>
+	<th>Actual Consumption</th>
+	<th>Net Consumption</th>
+	<th>Actual Saving</th>
+	<th>Pct</th>
+	<th>Net Saving</th>
+	<th>Pct</th>
+	</tr>";
+	$tot_qty=0;
+	$Qry_get_cut_details="SELECT docket_line_number,lp_lay_id,lay_status FROM $pps.`lp_lay` LEFT JOIN $pps.`jm_docket_lines` ON jm_docket_lines.`jm_docket_line_id` = lp_lay.jm_docket_line_id WHERE po_number='$sub_po' AND jm_docket_lines.plant_code='$plant_code'";
+	$sql_result6=mysqli_query($link, $Qry_get_cut_details) or die("Error".$Qry_get_cut_details.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row6=mysqli_fetch_array($sql_result6))
 	{
+		$docket_no=$row6['docket_line_number'];
+		$lay_id=$row6['lp_lay_id'];
+		$cut_status=$row6['lay_status'];
 
-		
-		for($s=0;$s<sizeof($sizes_code);$s++)
-		{
-			$act_s[$sizes_code[$s]]=$sql_row1["a_s".$sizes_code[$s].""]*$sql_row1['a_plies'];
-		}	
-		$act_doc_no=$sql_row1['doc_no'];
-		$act_cut_no=$sql_row1['acutno'];
-		
-
-
-		$act_total=array_sum($act_s);
-		$cut_status=$sql_row1['act_cut_status'];
-		$input_status=$sql_row1['act_cut_issue_status'];
-		$doc_date=$sql_row1['date'];
-		$mk_ref=$sql_row1['mk_ref'];
-		$a_plies=$sql_row1['p_plies']; //20110911
-		
-			$cut_date="";
-			$cut_section="";
-			$cut_shift="";
-		$joints=0;$endbits=0;	
-		$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check=mysqli_num_rows($sql_result);
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$cut_date=$sql_row['date'];
-			$cut_section=$sql_row['section'];
-			$cut_shift=$sql_row['shift'];
-			$joints_endbits=$sql_row["joints_endbits"];
-			$jo_int_check=explode('$',$joints_endbits);	
-			for($ii=0;$ii<sizeof($jo_int_check);$ii++)
+			//To get docket_details
+			$result_docket_qty=getDocketInformation($docket_no,$plant_code);
+			$get_docket_qty=$result_docket_qty['$docket_quantity'];
+			$get_cut_no=$result_docket_qty['$cut_no'];
+			$doc_req=$total_order_qty*$consumption;
+			
+			//To get fabric attributes
+			$fabricattributes=array();
+			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plant_code'";
+			$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row7=mysqli_fetch_array($sql_result7))
 			{
-				$values_joint=explode('^',$jo_int_check[$ii]);
-				$joints=$joints+$values_joint[0];
-				$endbits=$endbits+$values_joint[1];			
+				$fabricattributes[$row7['attribute_name']] = $row7['attribute_value'];
 			}
-		}
-		
-
-			$input_date="";
-			$input_module="";
-			$input_shift="";
-		
-		$sql="select * from $pps.act_cut_issue_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_num_check=mysqli_num_rows($sql_result);
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$input_date=$sql_row['date'];
-			$input_module=$sql_row['mod_no'];
-			$input_shift=$sql_row['shift'];
-		}
-		
-
-		
-		
-		
-		/* NEW */
-		
-		$fab_rec=0;
-		$fab_ret=0;
-		$damages=0;
-		$shortages=0;
-		
-		
-	$sql="select * from $pps.act_cut_status where plant_code='$plantcode' and doc_no=$act_doc_no";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check=mysqli_num_rows($sql_result);
-
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		
-		$fab_rec=$sql_row['fab_received'];
-		$fab_ret=$sql_row['fab_returned'];
-		$damages=round($sql_row['damages'],2);
-		$shortages=round($sql_row['shortages'],2);
-	
-	}
-	
-	$fab_rec_total=$fab_rec_total+$fab_rec;
-	$fab_ret_total=$fab_ret_total+$fab_ret;
-	$damages_total=$damages_total+$damages;
-	$shortages_total=$shortages_total+$shortages;
-	$act_total_sum=$act_total_sum+$act_total;
-	
-		
-		$sql2="select mklength from $bai_pro3.maker_stat_log where tid=$mk_ref";
-		mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row2=mysqli_fetch_array($sql_result2))
-		{
-			$mk_length=$sql_row2['mklength'];
-		}
-
-		$doc_req=$mk_length*$a_plies;
-		
-		$order_tid=$sql_row1['order_tid'];
-		//Binding Consumption / YY Calculation
-	
-		$sql11="select  COALESCE(binding_consumption,0) as \"binding_consumption\" ,catyy from $bai_pro3.cat_stat_log where tid=$cat_id";
-		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row11=mysqli_fetch_array($sql_result11))
-		{
-			$cat_yy=$sql_row11['catyy'];
-			$binding_consumption=$sql_row11['binding_consumption'];
-		}	
-		$doc_req+=$act_total*$binding_consumption;
-		//Binding Consumption / YY Calculation
-		
-		
-		$sql11="select * from $bai_pro3.cat_stat_log where tid=$cat_id";
-		mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row11=mysqli_fetch_array($sql_result11))
-		{
-			$cat_yy=$sql_row11['catyy'];
-		}	
-	
-		$net_util=$fab_rec-$fab_ret-$damages-$shortages;
-		$act_con=round(($fab_rec-$fab_ret)/$act_total,4);
-		$net_con=round($net_util/$act_total,4);
-		$act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
-		$act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
-		$net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
-		$net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
-
-		echo "<tr>";
-		echo "<td>".leading_zeros($act_doc_no,9)."</td>";
-		echo "<td>".chr($color_code).leading_zeros($act_cut_no,3)."</td>";
-		echo "<td>$act_total</td>";
-		echo "<td>$cut_status</td>";
-		echo "<td>$input_status</td>";
-		echo "<td>".($doc_req+round($doc_req*0.01,2))."</td>";
-		echo "<td>$fab_rec</td>";
-		echo "<td>$fab_ret</td>";
-		echo "<td>$damages</td>";
-		echo "<td>$shortages</td>";
-		echo "<td>$joints</td>";
-		echo "<td>".round($endbits,4)."</td>";
-		echo "<td>$net_util</td>";
-		echo "<td>$cat_yy</td>";
-		echo "<td>$act_con</td>";
-		echo "<td>$net_con</td>";
-		echo "<td>$act_saving</td>";
-		echo "<td>$act_saving_pct%</td>";
-		echo "<td>$net_saving</td>";
-		echo "<td>$net_saving_pct%</td>";
-		echo "</tr>";
-	}
-		echo "	</table></div>";
-}
-
-	}
-	else
-	{
-		echo "<h4>No Data Found</h4>";
-	}
-  
- }
+			$fabric_recevied1=  $fabricattributes[$fabric_lay_attributes['fabricrecevied']];
+			$fabric_returned1=  $fabricattributes[$fabric_lay_attributes['fabricreturned']];
+			$shortages1=  $fabricattributes[$fabric_lay_attributes['shortages']];
+			$damages1=  $fabricattributes[$fabric_lay_attributes['damages']];
+			$endbits1=  $fabricattributes[$fabric_lay_attributes['endbits']];
+			$joints1=  $fabricattributes[$fabric_lay_attributes['joints']];
+			$net_util= $fabric_recevied1 - $fabric_returned1 - $damages1 - $shortages1;
+			$act_con=round((($fabric_recevied1 - $fabric_returned1)/$get_docket_qty));
+			$net_con=round($net_util/$get_docket_qty,4);
+            $act_saving=round(($order_consumption*$get_docket_qty)-($act_con*$order_consumption),1);
+			$act_saving_pct=round((($order_consumption-$act_con)/$order_consumption)*100,0);
+			$net_saving=round(($order_consumption*$get_docket_qty)-($net_con*$get_docket_qty),1);
+			$net_saving_pct=round((($order_consumption-$net_con)/$order_consumption)*100,0);
+			
+			echo "<tr>";
+			echo "<td>$docket_no</td>";
+			echo "<td>$get_cut_no</td>";
+			echo "<td>$get_docket_qty</td>";
+			echo "<td>$cut_status</td>";
+			echo "<td>$cut_status</td>";
+			echo "<td>".($doc_req+round($doc_req*0.01,2))."</td>";
+			echo "<td>$fabric_recevied1</td>";
+			echo "<td>$fabric_returned1</td>";
+			echo "<td>$damages1</td>";
+			echo "<td>$shortages1</td>";
+			echo "<td>$joints1</td>";
+			echo "<td>".round($endbits1,4)."</td>";
+			echo "<td>$net_util</td>";
+			echo "<td>$order_consumption</td>";
+			echo "<td>$act_con</td>";
+			echo "<td>$net_con</td>";
+			echo "<td>$act_saving</td>";
+			echo "<td>$act_saving_pct%</td>";
+			echo "<td>$net_saving</td>";
+			echo "<td>$net_saving_pct%</td>";
+			echo "</tr>";
+	}		
+	echo "	</table></div>";
 }//closing isset(POST) 
 ?>
 
