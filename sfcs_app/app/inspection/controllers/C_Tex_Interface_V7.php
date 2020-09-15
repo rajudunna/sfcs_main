@@ -2130,7 +2130,7 @@ tags will be replaced.-->
   <td colspan=12 rowspan=3 height=84 class=xl8424082 style='border-right:1.0pt solid black;
   border-bottom:1.0pt solid black;height:63.0pt'><textarea onchange="change_head(1,this.name)" class="textspace" id="sp_rem" name="sp_rem"><?php echo $sp_rem; ?></textarea></td>
   <td class=xl11024082></td>
-   <td class=xl11024082 colspan=2 rowspan=2><?php if($num_rows>0 and $print_check==0 and $inspection_check==1)   { echo '<h3><center><a class="btn btn-warning btn-xs" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   <td class=xl11024082 colspan=2 rowspan=2><?php if($num_rows>0 and $print_check==0 and $inspection_check==1)   { echo '<h3><center><a class="btn btn-warning btn-xs" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>

@@ -402,16 +402,16 @@ th
 		{
 			$type=2; // For normal recut
 		}
-		$path=getFullURL($_GET['r'],'Book3_print_recut.php','R');
+		$path=getFullURL($_GET['r'],'book3_print_recut.php','R');
 		if(substr($style_ref,0,1)!="P" or substr($style_ref,0,1)!="K" or substr($style_ref,0,1)!="L" or substr($style_ref,0,1)!="O" )
 		{
 			if($mns_status>0)
 			{
-				$path=getFullURL($_GET['r'],'Book3_print_recut.php','R');// For M&S Men Briefs
+				$path=getFullURL($_GET['r'],'book3_print_recut.php','R');// For M&S Men Briefs
 			}
 			else
 			{
-				$path=getFullURL($_GET['r'],'Book3_print_recut.php','R');// FOR M&S Ladies Briefs
+				$path=getFullURL($_GET['r'],'book3_print_recut.php','R');// FOR M&S Ladies Briefs
 			}
 			
 		}
@@ -422,11 +422,11 @@ th
 			{
 				if($mns_status>0)
 				{
-					$path=getFullURL($_GET['r'],'Book3_print_recut.php','R');  // For M&S Men Briefs
+					$path=getFullURL($_GET['r'],'book3_print_recut.php','R');  // For M&S Men Briefs
 				}
 				else
 				{
-					$path=getFullURL($_GET['r'],'Book3_print_recut.php','R'); // FOR M&S Ladies Briefs
+					$path=getFullURL($_GET['r'],'book3_print_recut.php','R'); // FOR M&S Ladies Briefs
 				}
 			}
 			
