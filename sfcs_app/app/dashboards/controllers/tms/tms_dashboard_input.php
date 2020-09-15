@@ -512,7 +512,7 @@ $blink_docs=array();
 	$section=$department['sectionId'];
 	$section_display_name= $department['sectionName'];
 	$url_path = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
-	echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
+	echo '<div style="background-color:#ffffff;width:200px;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;height:100%;" class="hide_table">';
 	echo "<p>";
 	echo "<table>";
 	
@@ -536,13 +536,15 @@ $blink_docs=array();
 		$blink_check=0;
 		echo "<tr class=\"bottom\">";
 		echo "<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" 
-			if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td><td>";
+			if (window.focus) {Popup.focus()} return false;\"><font class=\"fontnn\" color=black >$module</font></a></strong></td>";
 		$y=0; 
 		$show_block = calculateJobsCount($work_id);
 		if($show_block > 0){
-			echo "<div style='float:left;'>		    
+			echo "<td>
+			      <div style='float:left;'>		    
 								<a href=\"../".getFullURL($_GET['r'],'issued_to_module_summary_report.php','R')."?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/issued_to_module_summary_report.php?jobno=$input_job_no&module=$work_id&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><div  class='gloss-pink' style='float:left;'><b>$show_block</b></div></a>
-					</div>";
+					</div>
+					</td>";
 		}
 		 /*
 			function to get planned jobs from workstation
@@ -556,69 +558,70 @@ $blink_docs=array();
 		foreach($job_number as $sew_num=>$jm_sew_id)
 		{
           //To get taskjobs_id
-		  $task_jobs_id = [];
-		  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
-		 // echo $qry_get_task_job;
-		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
-		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
-			  $task_jobs_id[] = $row21['task_jobs_id'];
-			  $task_job_id = $row21['task_jobs_id'];
-		  }
-          //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
-		  $job_detail_attributes = [];
-		  $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
-		  $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-		  while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
-	        $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
-		  }
-		  //TaskAttributeNamesEnum
-		//    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
-		  $style = $job_detail_attributes[$sewing_job_attributes['style']];
-		  $color = $job_detail_attributes[$sewing_job_attributes['color']];
-		  $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
-		  $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']]; 
-		  $cono = $job_detail_attributes[$sewing_job_attributes['cono']];  
-          
-		  //to get qty from jm job lines
-		  $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
-		  $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
-		  $toget_qty=mysqli_num_rows($toget_qty_qry_result);
-		  if($toget_qty>0){
-			  while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
-			  {
-				 $sew_qty = $toget_qty_det['qty'];
-			  }
-		  }
-		  //qry to get trim status
-		  $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id'";
-		  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
-			while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
-               $trim_status=$row2['trim_status'];
-			}
-			if($trim_status == TrimStatusEnum::OPEN)
-			{
-				$id="yash";
-			}
-			else if($trim_status == TrimStatusEnum::PREPARINGMATERIAL)
-			{
-				$id="yellow";
-			}else if($trim_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
-			{
-                $id="blue"; 
-			}else if($trim_status == TrimStatusEnum::PARTIALISSUED)
-			{
-                $id="orange";
-			}else if($trim_status == TrimStatusEnum::ISSUED)
-			{
-                $id="pink"; 
-			}
-			$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$cono,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$color,80)."\n".str_pad("Job_No:".$sewingjobno,80)."\n".str_pad("Job Qty:".$sew_qty,80);
+				$task_jobs_id = [];
+				$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+			// echo $qry_get_task_job;
+				$qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+					$task_jobs_id[] = $row21['task_jobs_id'];
+					$task_job_id = $row21['task_jobs_id'];
+				}
+						//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+				$job_detail_attributes = [];
+				$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+				$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+						$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+				}
+				//TaskAttributeNamesEnum
+			//    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
+				$style = $job_detail_attributes[$sewing_job_attributes['style']];
+				$color = $job_detail_attributes[$sewing_job_attributes['color']];
+				$schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
+				$sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']]; 
+				$cono = $job_detail_attributes[$sewing_job_attributes['cono']];  
+						
+				//to get qty from jm job lines
+				$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
+				$toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$toget_qty=mysqli_num_rows($toget_qty_qry_result);
+				if($toget_qty>0){
+					while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
+					{
+					$sew_qty = $toget_qty_det['qty'];
+					}
+				}
+				//qry to get trim status
+				$get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id'";
+				$get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
+								$trim_status=$row2['trim_status'];
+				}
+				if($trim_status == TrimStatusEnum::OPEN)
+				{
+					$id="yash";
+				}
+				else if($trim_status == TrimStatusEnum::PREPARINGMATERIAL)
+				{
+					$id="yellow";
+				}else if($trim_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
+				{
+									$id="blue"; 
+				}else if($trim_status == TrimStatusEnum::PARTIALISSUED)
+				{
+									$id="orange";
+				}else if($trim_status == TrimStatusEnum::ISSUED)
+				{
+									$id="pink"; 
+				}
+				$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$cono,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$color,80)."\n".str_pad("Job_No:".$sewingjobno,80)."\n".str_pad("Job Qty:".$sew_qty,80);
+				
+				echo "<td><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div></td>";
 			
-			echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&isinput=0&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
 		}
-
+   echo "</tr>";
 	}
-	echo "</div>";
+	echo "</table></div>";
  }
 
 

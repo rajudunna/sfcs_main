@@ -41,7 +41,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 	}
 	// $url_rls = getFullURLLevel($_GET['r'],'Beta/Reports/rework_dashboard/index.php',2,'N');
 	// echo "<td><div id=\"$id_new\"><a href=\"$url_rls&sec_x=$section_id&rand=".rand()."\"></a></div></td>";
-	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/section_rls_live.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
+	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/factory_view/section_rls_live.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 
 }
 			

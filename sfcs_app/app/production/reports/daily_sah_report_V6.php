@@ -16,8 +16,8 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="SAH%20-JUN_files/filelist.xml">
 <script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R');?>"></script>
-<script language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionCharts.js','R');?>"></script>
-<script type="text/javascript" language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionChartsExportComponent.js','R');?>"></script>
+<script language="JavaScript" src="<?= getFullURL($_GET['r'],'common/js/FusionCharts.js',3,'R');?>"></script>
+<script type="text/javascript" language="JavaScript" src="<?= getFullURL($_GET['r'],3,'common/js/FusionChartsExportComponent.js','R');?>"></script>
 <script type="text/javascript">
 function verify_date(){
 		var val1 = $('#sdat').val();
@@ -1172,7 +1172,7 @@ function verify_date(){
 
 <div class="panel-body">
 
-<form action="<?= getFullURL($_GET['r'],'daily_sah_report_V6.php','N'); ?>" method="post">
+<form action="<?= getFullURL($_GET['r'],'daily_sah_report_v6.php','N'); ?>" method="post">
 
 <div class="col-md-3">
 <label>Start Date</label>
@@ -1182,7 +1182,7 @@ function verify_date(){
 <label>End Date</label><input type="text" data-toggle="datepicker" class="form-control" name="edat" id="edat"  size=8 value="<?php  if(isset($_POST['edat'])) { echo $_POST['edat']; } else { echo date("Y-m-d"); } ?>"/>
 </div>			 
 <input type="submit" value="submit" name="submit" class="btn btn-success" onchange="return verify_date();" style="margin-top:22px;">
-<a href="<?= getFullURL($_GET['r'],'daily_sah_report_V5.php','N'); ?>" style="margin-top:22px;" class="btn btn-warning">Section Wise SAH Report</a>
+<a href="<?= getFullURL($_GET['r'],'','N'); ?>" style="margin-top:22px;" class="btn btn-warning">Section Wise SAH Report</a>
 
 
 </form>
@@ -2172,7 +2172,7 @@ $(function () {
 		</script>
 	
 <script src=".getFullURL($_GET['r'],'highcharts.js','R')."></script>
-<script src=".getFullURL($_GET['r'],'exporting.js','R')."></script>
+<script src=".getFullURL($_GET['r'],'common/js/exporting.js',3,'R')."></script>
 
 <div id=\"container\" style=\"width: 900px; height: 400px; margin: 0 auto\"></div>
 

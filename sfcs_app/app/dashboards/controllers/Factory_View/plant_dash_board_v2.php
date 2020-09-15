@@ -70,8 +70,8 @@ td
 
 <td><iframe style="width: 250px;" src="packing_dashboard_live_dashboard.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td>
 <!-- <td><iframe style="width: 200px;" src="<?php echo $dns_adr3; ?>/projects/Beta/Reports/Production_Live_Chart/Control_Room_Charts/Dash_Board_new.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td> -->
-<td><iframe style="width: 250px;" src="Attendance_live_dashboard.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td>
-<td ><iframe style="width: 1200px; " src="sah_live_dashboard_V2.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td>
+<td><iframe style="width: 250px;" src="attendance_live_dashboard.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td>
+<td ><iframe style="width: 1200px; " src="sah_live_dashboard_v2.php?sec_x=<?php echo $sec_x."&rand=".rand(); ?>" frameborder="no"> </iframe></td>
 </tr>
 </table>
 

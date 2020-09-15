@@ -605,7 +605,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
 			$mods[]=$sql_row1d["modx"];
 		}
-		$popup_url = getFullURLLevel($_GET['r'],'board_update_V2_input.php',0,'R');
+		$popup_url = getFullURLLevel($_GET['r'],'board_update_v2_input.php',0,'R');
 		$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
 		$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12=mysqli_fetch_array($result12))
