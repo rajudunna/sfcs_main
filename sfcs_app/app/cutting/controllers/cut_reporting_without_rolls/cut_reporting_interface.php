@@ -56,7 +56,7 @@ if(isset($_GET['doc_no'])){
     </script>";
     
 
-$sql12="SELECT * from $wms.fabric_cad_allocation where doc_no = '".$doc_no."'";
+$sql12="SELECT * from $wms.fabric_cad_allocation where doc_no = '".$doc_no."' and plant_code='$plantcode'";
 $sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check12=mysqli_num_rows($sql_result12);
 }
@@ -67,7 +67,7 @@ $locations = array();
 $rejection_reasons = array();
 
 $department="Cutting";
-$department_type="Sewing";
+$department_type="Cutting";
 $result_worksation_id=getWorkstations($department_type,$plantcode);
 $workstations=$result_worksation_id['workstation'];
 
@@ -79,7 +79,7 @@ while($row = mysqli_fetch_array($location_result))
     $locations[] = $row['loc_name'];
 }
 
-$team_leaders_query = "SELECT * from $pms.tbl_leader_name";
+$team_leaders_query = "SELECT * from $pms.tbl_leader_name where plant_code='$plantcode'";
 $team_leaders_result = mysqli_query($link,$team_leaders_query);
 while($row = mysqli_fetch_array($team_leaders_result)){
     $team_leaders[$row['id']] = $row['emp_name'];
@@ -1183,7 +1183,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
         var error_message = '';
-        var user = <?= $username; ?>;
+        var user = '<?php echo $username;?>';
         
         //Screen Validations
         if(c_plies == 0 && full_reporting_flag == '1'){
@@ -1336,26 +1336,34 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     success: function (res) {            
                         //console.log(res.data);
                         console.log(res.status);
-                        $('#wait_loader').css({'display':'block'});
+                        $('#wait_loader').css({'display':'none'});
                         if(res.status)
                         {
                             swal(res.internalMessage);
+                            clearAll();
+                            clearFormData();
+                            loadDetails(post_doc_no);
                         }
                         else
                         {   
                             swal(res.internalMessage);
+                            clearAll();
+                            clearFormData();
+                            loadDetails(post_doc_no);
                         }                       
                     },
                     error: function(res){
-                        $('#wait_loader').css({'display':'block'});
+                        $('#wait_loader').css({'display':'none'});
                         swal('Error in getting docket');
+                        clearAll();
+                        clearFormData();
+                        loadDetails(post_doc_no);
                     }
+                    
                 });
-        clearAll();
-        clearFormData();
         //clearRejections();
-        loadDetails(post_doc_no);
-        $('#wait_loader').css({'display':'none'});
+        
+        //$('#wait_loader').css({'display':'none'});
         $('#enablecutreportdetails').css({'display':'none'});
         if($("#cut_report").is(':checked'))
         {
@@ -1366,7 +1374,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#submit').css({'display':'none'});
         //$('#wait_loader').css({'display':'block'});
         // $.ajax({
-        //     url  : '<?= $post_url ?>?target='+doc_target_type,
+        //     url  : '?target='+doc_target_type,
         //     type : 'POST',
         //     data : form_data
         // }).done(function(res){
@@ -1761,11 +1769,16 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     console.log(res.status);
                     if(res.status)
                     {
-                        $('#wait_loader').css({'display':'block'});
+                        $('#wait_loader').css({'display':'none'});
                         getData=res.data;
                         console.log(getData);            
                         avl_plies = Number((getData.plannedPlies)-(getData.reportedPlies));
                         fab_req = Number(getData.fabricRequired);
+                        if(getData.cutStatus){
+                            var actCutstatus="Done";
+                        }else{
+                            var actCutstatus="Open";
+                        }
                         if(getData.cutStatus == 'IN-PROGRESS'){
                             $('#hide_details_reported').css({'display':'block'});
                             $('#hide_details_reporting').css({'display':'block'});
@@ -1863,7 +1876,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                         //setting values for display table    
                         $('#d_doc_no').html(getData.docketNumber);
                         $('#d_cut_no').html(getData.docketNumber);
-                        $('#d_cut_status').html(getData.cutStatus);
+                        $('#d_cut_status').html(actCutstatus);
                         //$('#d_cut_issue_status').html(data.fab_status);
                         //$('#d_good_pieces').html(data.good_pieces);
                         /*
@@ -1890,7 +1903,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
                         //setting values for reporting table
                         $('#r_doc_no').html(getData.docketNumber);
-                        $('#r_cut_status').html(getData.cutStatus);
+                        $('#r_cut_status').html(actCutstatus);
                         $('#r_plan_plies').html(getData.plannedPlies);
                         $('#r_reported_plies').html(getData.reportedPlies);
                         //setting value to style,schedule,color
