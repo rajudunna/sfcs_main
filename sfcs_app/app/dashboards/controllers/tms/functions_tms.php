@@ -30,58 +30,58 @@ function getSectionByDeptTypeSewing($plant_code){
 /**
  * get workstations for plant code and section id
  */
-function getWorkstationsForSectionId($plant_code, $sectionId) {
-    global $pms;
-    global $link_new;
-    try{
-        $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plant_code."' and section_id= '".$sectionId."' and is_active=1";
-        $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
-        if(mysqli_num_rows($workstationsQueryResult)>0){
-            $workstations= [];
-            while($row = mysqli_fetch_array($workstationsQueryResult)){
-                $workstationRecord = [];
-                $workstationRecord["workstationId"] = $row['workstation_id'];
-                $workstationRecord["workstationCode"] = $row["workstation_code"];
-                $workstationRecord["workstationDesc"] = $row["workstation_description"];
-                $workstationRecord["workstationLabel"] = $row["workstation_label"];
-                array_push($workstations, $workstationRecord);
-            }
-            return $workstations;
-        } else {
-            return "Workstations not found";
-        }
-    } catch(Exception $e) {
-        throw $error;
-    }
-}
+// function getWorkstationsForSectionId($plant_code, $sectionId) {
+//     global $pms;
+//     global $link_new;
+//     try{
+//         $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plant_code."' and section_id= '".$sectionId."' and is_active=1";
+//         $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
+//         if(mysqli_num_rows($workstationsQueryResult)>0){
+//             $workstations= [];
+//             while($row = mysqli_fetch_array($workstationsQueryResult)){
+//                 $workstationRecord = [];
+//                 $workstationRecord["workstationId"] = $row['workstation_id'];
+//                 $workstationRecord["workstationCode"] = $row["workstation_code"];
+//                 $workstationRecord["workstationDesc"] = $row["workstation_description"];
+//                 $workstationRecord["workstationLabel"] = $row["workstation_label"];
+//                 array_push($workstations, $workstationRecord);
+//             }
+//             return $workstations;
+//         } else {
+//             return "Workstations not found";
+//         }
+//     } catch(Exception $e) {
+//         throw $error;
+//     }
+// }
 
 /**
  * get planned sewing jobs(JG) for the workstation
  */
-function getJobsForWorkstationIdTypeSewing($plant_code, $workstationId) {
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
+// function getJobsForWorkstationIdTypeSewing($plant_code, $workstationId) {
+// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
 
-    global $tms;
-    global $link_new;
-    try{
-        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plant_code."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
-        $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
-        if(mysqli_num_rows($jobsQueryResult)>0){
-            $jobs= [];
-            while($row = mysqli_fetch_array($jobsQueryResult)){
-                $jobRecord = [];
-                $jobRecord["taskJobId"] = $row['task_jobs_id'];
-                $jobRecord["taskJobId"] = $row['task_jobs_id'];
-                array_push($jobs, $jobRecord);
-            }
-            return $jobs;
-        } else {
-            return "Jobs not found for the workstation";
-        }
-    } catch(Exception $e) {
-        throw $error;
-    }
-}
+//     global $tms;
+//     global $link_new;
+//     try{
+//         $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plant_code."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+//         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
+//         if(mysqli_num_rows($jobsQueryResult)>0){
+//             $jobs= [];
+//             while($row = mysqli_fetch_array($jobsQueryResult)){
+//                 $jobRecord = [];
+//                 $jobRecord["taskJobId"] = $row['task_jobs_id'];
+//                 $jobRecord["taskJobId"] = $row['task_jobs_id'];
+//                 array_push($jobs, $jobRecord);
+//             }
+//             return $jobs;
+//         } else {
+//             return "Jobs not found for the workstation";
+//         }
+//     } catch(Exception $e) {
+//         throw $error;
+//     }
+// }
 
 /**
  * get planned jobs(JG) for the workstation
