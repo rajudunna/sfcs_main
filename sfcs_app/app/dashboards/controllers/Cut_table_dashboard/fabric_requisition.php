@@ -22,6 +22,16 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	while($row=mysqli_fetch_array($update_request_time)){
 		$rms_request_time = $row['request_time'];
 	}
+	if((in_array($authorized,$has_permission)))
+	{
+		//echo "Names Exit";
+	}
+	else
+	{	
+		// echo $_GET['r'];
+		header("Location:sfcs_app/app/dashboards/controllers/cut_table_dashboard/restrict.php?group_docs=".$_GET['group_docs']);
+		// header($_GET['r'],'restrict.php','N');
+	}
 
 	if(isset($_POST['sdat'])) 
 	{ 

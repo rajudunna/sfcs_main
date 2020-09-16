@@ -12,9 +12,9 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 14">
 <link rel=File-List href="SAH%20-JUN_files/filelist.xml">
-<script type="text/javascript" src="<?= getFullURL($_GET['r'],'datetimepicker_css.js','R');?>"></script>
-<script language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionCharts.js','R');?>"></script>
-<script type="text/javascript" language="JavaScript" src="<?= getFullURL($_GET['r'],'FusionChartsExportComponent.js','R');?>"></script>
+<script type="text/javascript" src="<?= getFullURL($_GET['r'],'commom/js/datetimepicker_css.js',1,'R');?>"></script>
+<script language="JavaScript" src="<?= getFullURL($_GET['r'],'common/js/FusionCharts.js',3,'R');?>"></script>
+<script type="text/javascript" language="JavaScript" src="<?= getFullURL($_GET['r'],'common/js/FusionChartsExportComponent.js',3,'R');?>"></script>
 <script type="text/javascript">
 function verify_date(){
 		var val1 = $('#sdat').val();
@@ -529,7 +529,7 @@ function verify_date(){
 
 <div class="panel-body">
 
-<form action="<?php echo getFullURL($_GET['r'],'daily_sah_report_V5_Excel.php','N'); ?>" method="post">
+<form action="<?php echo getFullURL($_GET['r'],'daily_sah_report_v5_excel.php','N'); ?>" method="post">
 
 <div class="row">
 	<div class="col-md-3">

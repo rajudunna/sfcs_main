@@ -94,12 +94,23 @@ Ticket #: #684040-RameshK/2014-05-26 : To raise compalint for rejected RM materi
 		}
 		</style>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css">
+
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script> -->
+
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> -->
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css"> -->
+
+
+<script src="../../../../common/js/jquery-1.12.4.js"></script>
+<script src="./sfcs_app/common/js/jquery.dataTables.min.js"></script>
+<script src="./sfcs_app/common/js/dataTables.fixedColumns.min.js"></script>
+
+<link rel="stylesheet" href="./sfcs_app/common/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="./sfcs_app/common/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="../../../../common/css/bootstrap.css">
+
 <!-- <script type="text/javascript" src="../../../../common/js/sweetalert.min.js"></script> -->
 <script type="text/javascript" src="<?php getFullURLLevel($_GET['r'],'common/js/sweetalert.min.js',4,'R'); ?>"></script> 
 <script>

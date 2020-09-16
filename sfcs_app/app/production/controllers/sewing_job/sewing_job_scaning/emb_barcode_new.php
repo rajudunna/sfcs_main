@@ -44,8 +44,8 @@
 						}
 						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 					</style>
-					<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
-					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
+					<script type="text/javascript" src="../../../../../common/js/jquery.min.js" ></script>
+					<script type="text/javascript" src="../../../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
 

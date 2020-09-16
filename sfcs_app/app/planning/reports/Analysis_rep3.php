@@ -523,7 +523,7 @@ echo "</tr>";
 
 $sql="select distinct style_id as style_id from $bai_pro2.shipment_plan where exfact_date between \"".$start_date."\" and \"".$end_date."\" and buyer_div ='".str_replace(",","','",$buyer_div)."' $add_style_id ORDER BY style_id";
  //echo $sql."<br>";
-$url=getFullURL($_GET['r'],'Tabular_rep_pop.php','N');
+$url=getFullURL($_GET['r'],'tabular_rep_pop.php','N');
 $sql_result=mysqli_query($link, $sql) or exit("Error Message: No styles to process...".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	

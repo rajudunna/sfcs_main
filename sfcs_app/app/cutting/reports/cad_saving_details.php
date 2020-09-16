@@ -53,7 +53,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 </style>
 <link href="style_new.css" rel="stylesheet" type="text/css" />
 <SCRIPT LANGUAGE="Javascript" SRC="../../fusion_charts/FusionCharts/FusionCharts.js"></SCRIPT>
-<script type="text/javascript" src="datetimepicker_css.js"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',3,'R') ?>"></script>
 </head>
 <body>
 <h2 align="left">CAD Saving Details</h2>

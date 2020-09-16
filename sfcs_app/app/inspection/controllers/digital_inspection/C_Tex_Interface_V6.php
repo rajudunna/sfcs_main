@@ -2180,7 +2180,7 @@ tags will be replaced.-->
    <td class=xl11024082 colspan=2 rowspan=2><?php
    echo '<input type="hidden" id="print_report"  name="print_report" value="'.$print_report.'">';
     if($print_report>0) 
-   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'C_Tex_Report_Print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'&parent_id='.$parent_id.'&plant_code='.$plant_code.'&username='.$username.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
+   	{ echo '<h3><center><a class="btn btn-warning" href="'.getFullURLLevel($_GET['r'],'c_tex_report_print.php',0,'R').'?lot_no='.$lot_no.'&lot_ref='.$lot_ref.'&parent_id='.$parent_id.'" target="_new" style="text-decoration:none;">Print Report</a></center></h3>'; } else { echo '<h3>Please update values to Print.</h3>'; }?></td>
   
  <td class=xl11024082></td> 
  </tr>
@@ -2980,7 +2980,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	}
 	//die();
 	echo "<h2>Please Wait While Updating Data.</h2>";
-	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+	$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v6.php')['url'];
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
 	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."&plant_code=".$plant_code."&username=".$username."';";

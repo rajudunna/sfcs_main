@@ -7,15 +7,14 @@ $username=$_SESSION['userName'];
 ?>
 <?php 
 if(isset($_GET['id'])){
+	$gate_id= $_GET['id']; 
+	$plant_code= $_GET['plant_code']; 
+	$username= $_GET['username']; 
  echo "<script>
          $(document).ready(function(){
          $('#frm1').submit();
          });
       </script>";
-	$gate_id= $_GET['id']; 
-	$plant_code= $_GET['plant_code']; 
-	$username= $_GET['username']; 
-	
 }
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
@@ -57,6 +56,7 @@ if(isset($_GET['id'])){
 </div><br>
 <input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>		
 <input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
+<input type='hidden' id='gate_id' name='gate_id' value='<?php echo $gate_id ?>'>	
 <input type="submit" id="continue" class="btn btn-success" value="CONTINUE">
 </div>
 </form>

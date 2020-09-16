@@ -1,5 +1,7 @@
-<?php include('../../../common/config/config.php'); 
-	include('../../../common/config/functions.php');  
+<?php 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
+include('../../../common/config/functions.php');  
 $gate_id=$_GET['pass_id'];
 $print_type=$_GET['type'];
 if(isset($_GET['plant_code']))
@@ -13,7 +15,7 @@ else
 	$username = $_SESSION['userName'];
 }
 $sql12="select * from $pps.gatepass_table where id=".$gate_id." AND plant_code='".$plant_code."'";
-$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row12=mysqli_fetch_array($sql_result123))
 {
 	$date=$sql_row12['date'];
@@ -612,7 +614,7 @@ tags will be replaced.-->
   <td class=xl1532160></td>
   <td class=xl1532160></td>
   <td class=xl1532160>Gate Pass:</td>
-  <td colspan=2 class=xl7932160><?php echo leading_zeros($gate_id,10);?></td>
+  <td colspan=2 class=xl7932160><?php echo $gate_id;?></td>
   <td class=xl6732160>&nbsp;</td>
   <td class=xl1532160></td>
  </tr>
