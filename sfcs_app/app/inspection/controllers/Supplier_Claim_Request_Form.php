@@ -738,7 +738,7 @@ if(isset($_POST['submitx']))
 
 	
 	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
-	$url = getFullURLLevel($_GET['r'],'Supplier_Claim_Request_Form.php',0,'N');
+	$url = getFullURLLevel($_GET['r'],'supplier_claim_request_form.php',0,'N');
 	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",180); function Redirect() {  location.href = \"$url&batch=$batch_no_ref&sellotnosrefnew=$lot_no_ref_final&selcompro=$comcat_type_ref&plant_code=$plant_code\"; }</script>";
 }
 ?>

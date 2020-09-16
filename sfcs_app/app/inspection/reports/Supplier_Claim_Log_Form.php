@@ -52,7 +52,7 @@ $Page_Id='SFCS_0057';
 	<?php
 if(in_array($authorized,$has_permission))
 {
-	echo '<a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"controllers/Supplier_Claim_Request_Form.php",1,"N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Log_Form.php","N").'">Log</a> <hr>';
+	echo '<a class="btn btn-info btn-xs" href="'.getFullURLLevel($_GET["r"],"controllers/supplier_claim_request_form.php",1,"N").'">Request Form</a> | <a class="btn btn-info btn-xs" href="'.getFullURL($_GET["r"],"Supplier_Claim_Log_Form.php","N").'">Log</a> <hr>';
 }
 ?>
 <form  action="index-no-navi.php?r=<?php echo $_GET['r']; ?>" method="POST" name="test">
@@ -247,27 +247,27 @@ if(isset($_POST['show']) || isset($_GET['show']))
 				{
 					if($complaint_status == 0)
 					{   
-						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Waiting</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/supplier_claim_update_form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Waiting</a></td>";
 					}
 					else if($complaint_status == 1)
 					{
-						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed</a></td>";
+						echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/supplier_claim_update_form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed</a></td>";
 
 						
 					}
 					else if($complaint_status == 2)
 					{
-					echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Hold</a></td>";
+					echo "<td><a class='btn btn-xs btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/supplier_claim_update_form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Hold</a></td>";
 
 					}
 					else if($complaint_status == 3)
 					{
-					echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Agreed</a></td>";
+					echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/supplier_claim_update_form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Agreed</a></td>";
 
 					}
 					else
 					{
-					echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/Supplier_Claim_Update_Form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed<</a></td>";
+					echo "<td><a class='btn btn-sm btn-primary' href='".getFullURLLevel($_GET['r'],'controllers/supplier_claim_update_form.php',1,'N')."&stat=$complaint_status&sno=$complaint_no'>Not Agreed<</a></td>";
 					}
 					$url=getFullURL($_GET['r'],'Supplier_Print_PDF.php','N');
 					
