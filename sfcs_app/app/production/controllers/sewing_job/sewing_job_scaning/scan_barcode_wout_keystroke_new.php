@@ -135,9 +135,9 @@ $(document).ready(function()
 		}
 		else
 		{
+			var barcode = $('#barcode').val();
 			var res = barcode.split('-');
 			var operation_id = res[1];
-			var barcode = $('#barcode').val();
 		}
 
 		var plant_code = $('#plant_code').val();
