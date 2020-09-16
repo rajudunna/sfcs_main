@@ -1,33 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
 <?php
   
-error_reporting(0);
+// error_reporting(0);
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');
+$plantcode = $_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+// $plantcode = 'AIP';
 ?>
 
 <title>RMS Requisition status</title>
-<script language="javascript" type="text/javascript" src="<?= $table_filter?>"></script>
-<script language="javascript" type="text/javascript">
-	var MyTableFilter = {  
-		exact_match: false,
-		col_0: "select",
-		col_1: "select", 
-		col_2: "select" 
-	}
-	setFilterGrid( "table1", MyTableFilter );
-</script>
-
-<script>
-	document.getElementById("msg").style.display="none";		
-</script>
 <script type="text/javascript">
-	
-
 	function verify_date(){
 		var from_date = $('#sdate').val();
 		var to_date =  $('#edate').val();
@@ -99,219 +83,185 @@ th,td{
 <?php
 if(isset($_POST['show']))
 {
-	$row_count = 0;
 	$s_date=$_POST['sdate'];
 	$e_date=$_POST['edate'];
-	$order_tid=array();
-	$jobs=array();
-	$docket=array();
-	$tot_doc=array();
-	//echo $host."<br>";
-	$sql1="select distinct order_tid,count(doc_no) as cuts,group_concat(doc_no order by doc_no) as docket,group_concat(pcutno order by pcutno) as cut_doc from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and date between '".$s_date."' and '".$e_date."' group by order_tid";
-	//echo $sql1."<br>";
-	$result1=mysqli_query($link, $sql1) or exit("Sql Error--1x==".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
-	// echo $sql1."<br>";
-	if(mysqli_num_rows($result1)>0)
+	//get cut 
+	$get_cut_jobs="select ratio_id,jm_cut_job_id,cut_number,po_number from $pps.jm_cut_job where date(created_at) between '".$s_date."' and '".$e_date."' and plant_code='$plantcode' and is_active=true";
+	// echo $get_cut_jobs;
+	$get_cut_jobs_result=mysqli_query($link, $get_cut_jobs) or exit("Sql Error--1x==".$get_cut_jobs.mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($get_cut_jobs_result)>0)
 	{
 	echo "<div class='col-sm-12' style='max-height : 600px;overflow-y : scroll;overflow-x:scroll;'>
-			<table id='table1' class='table table-bordered table-responsive'>
+			<table id='table1' class='table table-bordered table-responsive' style='width: 100%''>
 			<tr class='danger'>
 				<th>Style </th>
-				<th>Schedule No</th>
+				<th>PO </th>
+				<th>SUB PO </th>
+				<th>Schedule</th>
 				<th>Color</th>
-				<th>Total Jobs</th>
-				<th>Jobs Requested</th>
+				<th>Cut Job</th>
+				<th>Pending Dockets</th>
 				<th>Jobs Request Pending</th>
 				<th>Jobs Cut Completed</th>
 			</tr>";
 		
-	while($row1=mysqli_fetch_array($result1))
+	while($get_cut_jobs_row=mysqli_fetch_array($get_cut_jobs_result))
 	{
-		$row_count++;
-		$order_tid[]=$row1['order_tid'];
-		$tot_doc[]	=$row1['cuts'];
-		$docket[]	=$row1['docket'];
-		$jobs[]		=$row1['cut_doc'];
-	}
-	for($ii=0;$ii<sizeof($order_tid);$ii++)
-	{	
-		//echo $order_tid[$ii]."<br>";
-		$rms_req=array();$cut_com=array();$in_rms=array();$pcutno_c=array();$rms_pen_cut=array();$pcutno_r=array();
-		$rms_pen=array();
-		$cut_com1='';$rms_req1='';
-		$rms_pen1='';$val1='';$val2='';$val3='';
-		$sql11="select * from $bai_pro3.bai_orders_db where order_tid='$order_tid[$ii]'";
-		$result11=mysqli_query($link, $sql11) or exit("Sql Error--11".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row11=mysqli_fetch_array($result11))
+		$ratio_id=$get_cut_jobs_row['ratio_id'];
+		$jm_cut_job_id=$get_cut_jobs_row['jm_cut_job_id'];
+		$cut_number=$get_cut_jobs_row['cut_number'];
+		$po_number=$get_cut_jobs_row['po_number'];
+
+
+		//get po_description,master_po_number from po_number
+		$get_sub_po="select po_description,master_po_number from $pps.mp_sub_order where po_number='$po_number' and plant_code='$plantcode' and is_active=true";
+		// echo $get_sub_po;
+		$get_sub_po_result=mysqli_query($link, $get_sub_po) or exit("Sql Error--1x==".$get_sub_po.mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($get_sub_po_result)>0)
 		{
-			$color_code=$row11['color_code'];
-			$style=$row11['order_style_no'];
-			$schedule=$row11['order_del_no'];
-			$color=$row11['order_col_des'];
-		}
-		
-		echo "<tr><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$tot_doc[$ii]."</td>";
-		$sql="select group_concat(pcutno order by pcutno) as pcutno,group_concat(doc_no order by doc_no) as doc_no,act_cut_status from $bai_pro3.order_cat_doc_mk_mix where doc_no in(".$docket[$ii].") group by act_cut_status";
-		//echo $sql."<br>";
-		$result=mysqli_query($link, $sql) or exit("Sql Error1--2".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(1<mysqli_num_rows($result))
-		{
-			while($row=mysqli_fetch_array($result))
+			while($get_sub_po_row=mysqli_fetch_array($get_sub_po_result))
 			{
-				if($row["act_cut_status"]=='DONE')
+
+				$po_description=$get_sub_po_row['po_description'];
+				$master_po_number=$get_sub_po_row['master_po_number'];
+
+				//get style,color from master_po_number
+				$get_mpo="select style,group_concat(distinct(color)) as color from $pps.mp_color_detail where master_po_number='$master_po_number' and plant_code='$plantcode' and is_active=true limit 1";
+				$get_mpo_result=mysqli_query($link, $get_mpo) or exit("Sql Error--1x==".$get_mpo.mysqli_error($GLOBALS["___mysqli_ston"]));
+				// echo $get_mpo;
+				if(mysqli_num_rows($get_mpo_result)>0)
 				{
-					$cut_com=explode(",",$row["doc_no"]);
-					$pcutno_c=explode(",",$row["pcutno"]);
-				}
-				else
-				{
-					$rms_req=explode(",",$row["doc_no"]);
-					$pcutno_r=explode(",",$row["pcutno"]);
-				}
-			}
-		}
-		else
-		{
-			while($row=mysqli_fetch_array($result))
-			{
-				if($row["act_cut_status"]=='DONE')
-				{
-					$cut_com=explode(",",$row["doc_no"]);
-					$pcutno_c=explode(",",$row["pcutno"]);
-					$val2='Not Available';
-				}
-				else
-				{
-					$rms_req=explode(",",$row["doc_no"]);
-					$pcutno_r=explode(",",$row["pcutno"]);
-					$val3='Not Available';
-				}				
-				
-			}
-		}
-		if(0<sizeof($rms_req))
-		{
-			$sql2="select doc_ref from $bai_pro3.fabric_priorities where doc_ref in (".implode(",",$rms_req).")";
-			$result2=mysqli_query($link, $sql2) or exit("Sql Error2--2".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(0<mysqli_num_rows($result2))
-			{
-				while($row2=mysqli_fetch_array($result2))
-				{
-					$in_rms[]=$row2["doc_ref"];
-				}
-				
-			}
-			else
-			{
-				$val1='Not Available';
-				$sql222="select group_concat(pcutno order by pcutno) as pcutno,group_concat(doc_no order by doc_no) as doc_no from $bai_pro3.order_cat_doc_mk_mix where doc_no in (".implode(",",$rms_req).")";
-				$result222=mysqli_query($link, $sql222) or exit("Sql Error3--2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row222=mysqli_fetch_array($result222))
-				{
-					$rms_pen=explode(",",$row222["pcutno"]);
-					$rms_pen_cut=explode(",",$row222["pcutno"]);
-				}
-			}			
-		}
-		else
-		{
-			$val2='Not Available';
-		}
-		$check=0;
-		$check1=0;
-		if($val2=='')
-		{
-			if($val1=='')
-			{
-				for($i=0;$i<sizeof($rms_req);$i++)
-				{
-					if(in_array($rms_req[$i],$in_rms))
+					while($get_mpo_row=mysqli_fetch_array($get_mpo_result))
 					{
-						$check++;
-						if($check==10)
-						{
-							$rms_req1.=chr($color_code).leading_zeros($pcutno_r[$i],3).",<br>";
-							$check=0;
-						}
-						else
-						{
-							$rms_req1.=chr($color_code).leading_zeros($pcutno_r[$i],3).",";
+						$style=$get_mpo_row['style'];
+						$color=$get_mpo_row['color'];
+
+						$master_po_details_id=array();
+						$qry_mp_color_detail="SELECT master_po_details_id FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND style='$style'";
+						$mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+						if($mp_color_detail_num>0){
+							while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+							{
+								$master_po_details_id[]=$mp_color_detail_row["master_po_details_id"];
+							}
+
+							$schedule=array();
+							$qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
+							$mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
+							if($mp_mo_qty_num>0){
+								while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
+									{
+										
+										$schedule[]=$mp_mo_qty_row["schedule"];
+									}
+									$bulk_schedule=array_unique($schedule);
+									$schedules = implode(",",$bulk_schedule);
+
+							}
 						}
 					}
-					else
+				}
+
+				//get component_group_id from ratio_id
+				$get_component_id="select component_group_id from $pps.lp_ratio_component_group where ratio_id='$ratio_id' and plant_code='$plantcode' and is_active=true";
+				// echo $get_component_id;
+				$get_component_id_result=mysqli_query($link, $get_component_id) or exit("Sql Error--1x==".$get_component_id.mysqli_error($GLOBALS["___mysqli_ston"]));
+				if(mysqli_num_rows($get_component_id_result)>0)
+				{
+					while($get_component_id_row=mysqli_fetch_array($get_component_id_result))
 					{
-						$check1++;
-						if($check1==10)
+						$component_group_id=$get_component_id_row['component_group_id'];
+
+						//get main component from master_po_component_group_id
+						$get_component_name="select component_group_name from $pps.lp_component_group where master_po_component_group_id='$component_group_id' and is_main_component_group =true and is_active=true";
+						// echo $get_component_name;
+						$get_component_name_result=mysqli_query($link, $get_component_name) or exit("Sql Error--1x==".$get_component_name.mysqli_error($GLOBALS["___mysqli_ston"]));
+						if(mysqli_num_rows($get_component_name_result)>0)
 						{
-							$rms_pen1.=chr($color_code).leading_zeros($pcutno_r[$i],3).",<br>";
-							$check1=0;
-						}
-						else
-						{
-							$rms_pen1.=chr($color_code).leading_zeros($pcutno_r[$i],3).",";
+							while($get_component_name_row=mysqli_fetch_array($get_component_name_result))
+							{
+								$component_group_name=$get_component_name_row['component_group_name'];
+								
+								//get docket numbers from cut number
+								$open_dockets_list = array();
+								$pending_dockets_list = array();
+								$completed_list = array();
+								$open_dockets = '';
+								$pending_dockets = '';
+								$completed_dockets = '';
+								$completed = '';
+								$get_docket="SELECT jdl.jm_docket_line_id,jdl.docket_line_number,jdl.jm_docket_id FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id = jd.jm_docket_id WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.component_group_name = '$component_group_name' AND jd.plant_code='$plantcode' AND jd.is_active=true";
+								// echo $get_docket;
+								$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($get_docket_result)>0)
+								{
+									while($get_docket_row=mysqli_fetch_array($get_docket_result))
+									{
+										$jm_docket_line_id = $get_docket_row['jm_docket_line_id'];
+										$jm_docket_id = $get_docket_row['jm_docket_id'];
+										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_line_number'];
+										$get_pending_dockets="select cut_report_status from $pps.lp_lay where jm_docket_line_id='$jm_docket_line_id' and plant_code='$plantcode' and is_active=true limit 1";
+										$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
+										if(mysqli_num_rows($get_pending_dockets_result) > 0)
+										{
+											while($get_pending_docket_row=mysqli_fetch_array($get_pending_dockets_result))
+											{
+												if($get_pending_docket_row['cut_report_status']=='OPEN'){
+													$pending_dockets_list[] = $component_group_name.':'.$get_docket_row['docket_line_number'];
+													$completed = 1;
+												} 
+												else if($get_pending_docket_row['cut_report_status']=='DONE'){
+													$completed_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+													$completed = 1;
+												} 
+											}
+										}else {
+											$open_dockets_list[] =$component_group_name.':'.$get_docket_row['docket_line_number'];
+										}
+									}
+									
+									$open_dockets = implode(",",$open_dockets_list);
+									$pending_dockets = implode(",",$pending_dockets_list);
+									$completed_dockets = implode(",",$completed_dockets_list);
+									
+									echo "<tr>";
+									echo "<td>".$style."</td>";
+									echo "<td>".$master_po_number."</td>";
+									echo "<td>".$po_description."</td>";
+									echo "<td style='word-break:break-all;'>".$schedules."</td>";
+									echo "<td>".$color."</td>";
+									echo "<td>".$cut_number."</td>";
+									echo "<td>".$open_dockets."</td>";
+									echo "<td>".$pending_dockets."</td>";
+									echo "<td>".$completed_dockets."</td>";
+									echo "</tr>";
+								}
+
+								Unset($ratio_id);
+								unset($jm_cut_job_id);
+								unset($cut_number);
+								unset($po_number);
+								unset($po_description);
+								unset($master_po_number);
+								unset($style);	
+								unset($color);	
+								unset($schedules);	
+								unset($component_group_id);	
+								unset($component_group_name);	
+								unset($open_dockets);	
+								unset($pending_dockets);	
+								unset($completed_dockets);	
+							}
 						}
 					}
-				
 				}
-				echo "<td>".substr($rms_req1,0,-1)."</td><td>".substr($rms_pen1,0,-1)."</td>";
+
 			}
-			else
-			{
-				for($i=0;$i<sizeof($rms_pen);$i++)
-				{
-					//$rms_pen1.=chr($color_code).leading_zeros($rms_pen_cut[$i],3).",";
-						$check1++;
-						if($check1==10)
-						{
-							$rms_pen1.=chr($color_code).leading_zeros($rms_pen_cut[$i],3).",<br>";
-							$check1=0;
-						}
-						else
-						{
-							$rms_pen1.=chr($color_code).leading_zeros($rms_pen_cut[$i],3).",";
-						}
-				}
-				echo "<td></td><td>".substr($rms_pen1,0,-1)."</td>";
-			
-			}	
-		}
-		else	
-		{
-			echo "<td></td><td></td>";
-		}
-		$check2=0;
-		if($val3=='')
-		{
-			for($i=0;$i<sizeof($cut_com);$i++)
-			{
-				$check2++;
-				if($check2==10)
-				{
-					$cut_com1.=chr($color_code).leading_zeros($pcutno_c[$i],3).",<br>";
-					$check2=0;
-				}
-				else
-				{
-					$cut_com1.=chr($color_code).leading_zeros($pcutno_c[$i],3).",";
-				}
-			}
-			echo "<td>".substr($cut_com1,0,-1)."</td></tr>";
-		}
-		else
-		{
-			echo "<td></td></tr>";
 		}
 		
-		Unset($rms_req);
-		unset($cut_com);
-		unset($in_rms);
-		unset($pcutno_c);
-		unset($rms_pen_cut);
-		unset($pcutno_r);
-		unset($rms_pen);	
-	
 	}
-	
 		echo "</table>
 	</div>";	
 	}
