@@ -222,7 +222,7 @@ if(isset($_POST['category']))
 			</div>
 
 			<div class="col-sm-2 form-group">
-				<label for='mpo'>Select PoNumber:</label>
+				<label for='mpo'>Select Master PO:</label>
 				<select required class='form-control' name='mpo' onchange='fourthbox();' id='mpo'>
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";
@@ -248,7 +248,7 @@ if(isset($_POST['category']))
 				?>
 			</div>
 			<div class="col-sm-2 form-group">
-				<label for='subpo'>Select PoNumber:</label>
+				<label for='subpo'>Select Sub PO:</label>
 				<select required class='form-control' name='sub_po' onchange='fifthbox();' id='sub_po'>
 				<?php
 					echo "<option value=\"NIL\" selected>NIL</option>";
