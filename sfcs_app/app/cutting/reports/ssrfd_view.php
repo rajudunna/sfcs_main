@@ -399,6 +399,9 @@ if(isset($_POST['submit']))
 	$endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
 	$joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
 	
+	//CAD Consumption Caliculation
+	$cad_consumption=(($tot_cutable_qty*$consumption*$wastage)/100);
+	$cad_consumption_saving=((($order_consumption - $cad_consumption) * 100)/$order_consumption);
 	//Actual Consumption Caliculation
 	$actual_consumption=(($fabric_recevied - $fabric_returned)/$tot_cutable_qty);
 	$actual_consumption_saving=((($order_consumption - $actual_consumption) * 100)/$order_consumption);
@@ -471,8 +474,8 @@ if(isset($_POST['submit']))
 			</tr>
 			<tr>
 				<th class='success'>CAD Consumption:</th>
-				<td><?php  echo round($newyy2,4);  ?></td>
-				<td><?php  echo $savings_new; ?>%</td>
+				<td><?php  echo round($cad_consumption,4);  ?></td>
+				<td><?php  echo $cad_consumption_saving; ?>%</td>
 			</tr>
 			<tr>
 				<th class='success'>Actual Consumption:</th>
