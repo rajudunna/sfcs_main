@@ -100,7 +100,7 @@ $(document).ready(function()
                 {
                     bundet=res.data;
                     swal('',res.internalMessage, 'success');
-                    // tableConstruction(bundet);
+                    tableConstruction(bundet);
                 }
                 else
                 {
@@ -154,7 +154,7 @@ function tableConstruction(bundet){
     var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
     $("#dynamic_table").show();
-    $('#barcode').val();
+    $('#barcode').val('');
     $('#loading-image').hide();
     
     
