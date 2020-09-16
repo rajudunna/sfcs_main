@@ -23,7 +23,7 @@ $username=$_SESSION['userName'];
 <div class="panel-body">
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
-<!-- <div class="col-md-4">
+<div class="col-md-4">
 <label for="title">Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class='form-control' name = 'operation_code'  id = 'operation' required>
         <option value="">Select Operation</option>
@@ -38,7 +38,7 @@ $username=$_SESSION['userName'];
         }
         ?>
     </select>
-</div> -->
+</div>
 <div class="col-md-4">
 <label for="title">To Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class="form-control select2" name="Module" id="Module" required onchange="changeWorkstationCode(this)">
@@ -56,6 +56,8 @@ $username=$_SESSION['userName'];
         ?>
 </select>
 </div><br>
+<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>		
+<input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
 <input type='hidden' name='workstation_code' value='' id='workstation_code'/>
 <input type="submit" id="Start Scanning" class="btn btn-success" value="Start Scanning">
 </div>
