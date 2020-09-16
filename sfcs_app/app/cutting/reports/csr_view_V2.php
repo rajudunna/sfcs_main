@@ -163,14 +163,9 @@ function verify_date(){
 							  <b>Detailed Report </b>
 						</div>
 					    <div class='panel-body'><div style='max-height:700px;overflow-y:scroll'>";	  
-            //echo $sql;
-			//mysql_query($sql,$link) or exit("Sql Error1".mysql_error());
-			// $sql="select task_header.task_header_id,task_jobs.task_jobs_id from $tms.task_header left join task_jobs on task_header.task_header_id=task_jobs.task_header_id where task_header.plant_code='$plantcode' and task_header.resource_id in ($section) and 
-			// task_header.planned_date_time between \"$from_date\" and \"$to_date\" and task_header.task_type='CUTJOB' and task_jobs  .task_type='DOCKET'";
-			$sql1="select task_header.task_header_id,task_jobs.task_jobs_id,task_header.planned_date_time,workstation.workstation_description,task_attributes.
-			attribute_value  from $tms.task_header left join $tms.task_jobs on task_header.task_header_id=task_jobs.task_header_id  LEFT JOIN $pms.workstation ON workstation.workstation_id=task_header.resource_id LEFT JOIN $tms.task_attributes ON task_attributes.task_jobs_id=
-			task_jobs.task_jobs_id where task_header.plant_code='$plantcode' and task_header.resource_id in ($section) and 
-			task_header.planned_date_time between \"$from_date\" and \"$to_date\" and task_header.task_type='CUTJOB' and task_jobs.task_type='DOCKET' AND attribute_name='DOCKETNO'group by task_attributes.task_jobs_id,task_attributes.task_header_id";
+           
+			$sql1="select task_header.task_header_id,task_jobs.task_jobs_id,task_header.planned_date_time,task_header.resource_id from $tms.task_header left join $tms.task_jobs on task_header.task_header_id=task_jobs.task_header_id  where task_header.plant_code='$plantcode' and task_header.resource_id in ($section) and 
+			task_header.planned_date_time between \"$from_date\" and \"$to_date\" and task_header.task_type='CUTJOB' and task_jobs.task_type='DOCKET'";
 			$result_sql_query1=mysqli_query($link, $sql1) or exit("$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($result_sql_query1);
 			$row_count = 0;
@@ -188,24 +183,28 @@ function verify_date(){
 			{
 				
 				$task_jobs_id=$sql_row['task_jobs_id'];
+				$task_header_id=$sql_row['task_header_id'];
 				$planned_date_time=$sql_row['planned_date_time'];
-				$workstation_description=$sql_row['workstation_description'];
-				$attribute_value=$sql_row['attribute_value'];
-				$attribute_value_explode=explode(",",$attribute_value);
-				//  for($ii=0;$ii<sizeof($attribute_value_explode);$ii++)
-				// {
-					
-                   
-				// 	$sql3="select * from $pps.jm_docket_lines where docket_line_number='$attribute_value_explode[$ii]'";	
-				// 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// }
+				$resource_id=$sql_row['resource_id'];
+				$sql4="select workstation_description from $pms.workstation where workstation_id='$resource_id' and plant_code='$plantcode'";
+				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row4=mysqli_fetch_array($sql_result4))
+				{
+					$workstation_description=$sql_row4['workstation_description'];
+				}
+				$sql9="select attribute_value from $tms.task_attributes where task_header_id='$task_header_id' and task_jobs_id='$task_jobs_id' and plant_code='$plantcode' and attribute_name='DOCKETNO'";
+				$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row9=mysqli_fetch_array($sql_result9))
+				{
+					$attribute_value=$sql_row9['attribute_value'];
+				
 				$sql2="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_cut_job.cut_number,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,jm_cut_job.po_number
 				FROM $pps.jm_docket_lines 
 				LEFT JOIN $pps.jm_dockets ON jm_dockets.jm_docket_id=jm_docket_lines.jm_docket_id LEFT JOIN $pps.jm_cut_job ON  jm_cut_job.
 			   jm_cut_job_id=jm_dockets.jm_cut_job_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.ratio_wise_component_group_id
 			   =jm_dockets.ratio_comp_group_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  
 			   WHERE jm_docket_lines.plant_code='$plantcode'  AND jm_docket_lines.docket_line_number IN  ($attribute_value) ";
-			   
+			  
                 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
@@ -273,6 +272,7 @@ function verify_date(){
 			   
 				
 			}
+		}
 			// echo "<tr>";
 			// 	echo "<td colspan=7></td>
 			// 		  <td class='info'>Total Plies:</td>
@@ -569,25 +569,19 @@ function verify_date(){
 		  <table class='table table-bordered' >
 		  <tr class='warning'>
 		  <th class='tblheading'>Section</th>
+		  <th class='tblheading'>Docket No</th>
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Cut Qty</th>
-		  </tr>";
-			 $sql="select workstation_description,workstation_id from $pms.workstation   where plant_code='$plantcode' and workstation_id in ($section)";
-			mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error5676".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_check=mysqli_num_rows($sql_result);
+		  </tr>";		 
 
 			// while($sql_row=mysqli_fetch_array($sql_result))
 			// {
 			// 	$row_count++;
 			// 	$section=$sql_row['workstation_id'];
 			// 	$workstation_description=$sql_row['workstation_description'];
-				$sql1="select task_header.task_header_id,task_jobs.task_jobs_id,task_header.planned_date_time,workstation.workstation_description,task_attributes.
-			attribute_value  from $tms.task_header left join $tms.task_jobs on task_header.task_header_id=task_jobs.task_header_id  LEFT JOIN $pms.workstation ON workstation.workstation_id=task_header.resource_id LEFT JOIN $tms.task_attributes ON task_attributes.task_jobs_id=
-			task_jobs.task_jobs_id where task_header.plant_code='$plantcode' and task_header.resource_id in ($section) and 
-			task_header.planned_date_time between \"$from_date\" and \"$to_date\" and task_header.task_type='CUTJOB' and task_jobs.task_type='DOCKET' AND attribute_name='DOCKETNO' ";
+			$sql1="select task_header.task_header_id,task_jobs.task_jobs_id,task_header.planned_date_time,task_header.resource_id from $tms.task_header left join $tms.task_jobs on task_header.task_header_id=task_jobs.task_header_id  where task_header.plant_code='$plantcode' and task_header.resource_id in ($section) and 
+			task_header.planned_date_time between \"$from_date\" and \"$to_date\" and task_header.task_type='CUTJOB' and task_jobs.task_type='DOCKET'";
 			
-				
 				mysqli_query($link, $sql1) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -595,22 +589,37 @@ function verify_date(){
 
 					$row_count++;
 				
-					$workstation_description=$sql_row1['workstation_description'];
-					$attribute_value=$sql_row1['attribute_value'];
-				$sql8="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_dockets.ratio_comp_group_id,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,SUM(lp_ratio_size.size_ratio) AS
+					$task_jobs_id=$sql_row1['task_jobs_id'];
+					$task_header_id=$sql_row1['task_header_id'];
+					$planned_date_time=$sql_row1['planned_date_time'];
+					$resource_id=$sql_row1['resource_id'];
+					$sql4="select workstation_description from $pms.workstation where workstation_id='$resource_id' and plant_code='$plantcode'";
+					$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row4=mysqli_fetch_array($sql_result4))
+					{
+						$workstation_description=$sql_row4['workstation_description'];
+					}
+					$sql9="select attribute_value from $tms.task_attributes where task_header_id='$task_header_id' and task_jobs_id='$task_jobs_id' and plant_code='$plantcode' and attribute_name='DOCKETNO'";
+					$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row9=mysqli_fetch_array($sql_result9))
+					{
+						$attribute_value=$sql_row9['attribute_value'];
+					
+				$sql11="SELECT jm_docket_lines.jm_docket_id,jm_docket_lines.jm_docket_line_id,jm_docket_lines.docket_line_number,jm_dockets.ratio_comp_group_id,lp_ratio_component_group.ratio_id,lp_ratio_size.size,lp_ratio_size.size_ratio,SUM(lp_ratio_size.size_ratio) AS
 				size_ratio,jm_docket_bundle.component_name
 				FROM $pps.jm_docket_lines 
 				LEFT JOIN $pps.jm_dockets ON jm_dockets.jm_docket_id=jm_docket_lines.jm_docket_id LEFT JOIN $pps.lp_ratio_component_group ON lp_ratio_component_group.ratio_wise_component_group_id
 			   =jm_dockets.ratio_comp_group_id LEFT JOIN $pps.lp_ratio_size ON lp_ratio_size.ratio_id=lp_ratio_component_group.ratio_id  left join $pps.jm_docket_bundle on jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id
-			   WHERE jm_docket_lines.plant_code='$plantcode' and jm_docket_lines.docket_line_number in ($attribute_value) group by jm_docket_bundle.component_name";
+			   WHERE jm_docket_lines.plant_code='$plantcode' and jm_docket_lines.docket_line_number in ($attribute_value) GROUP BY jm_docket_bundle.component_name,jm_docket_lines.docket_line_number";
 			   //mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
-			   $sql_result8=mysqli_query($link, $sql8) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
-			    while($sql_row8=mysqli_fetch_array($sql_result8))
+			   $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
+			    while($sql_row8=mysqli_fetch_array($sql_result11))
 				{
 
 					$component_name=$sql_row8['component_name'];
 					$jm_docket_line_id=$sql_row8['jm_docket_line_id'];
 					$size_ratio=$sql_row8['size_ratio'];
+					$docket_number=$sql_row8['docket_line_number'];
 				
 				
 				
@@ -620,9 +629,17 @@ function verify_date(){
 				{
 					$plies=$sql_row3['plies'];
 				}
-
-			}
 				$total=$size_ratio+$plies;
+				echo "<tr >";
+				echo "<td >$workstation_description</td>";
+			 
+				echo "<td >$docket_number</td>";
+				  echo "<td >$component_name</td>";
+				  echo "<td >$total</td>";
+				 echo "</tr>";
+			   }
+			
+					}				
 		       
 					// $shift_new=$sql_row1['shift'];
 					// $doc_list="";
@@ -671,13 +688,7 @@ function verify_date(){
 						// 	$cut_qty=$sql_row3['cut_qty'];
 						// }
 				
-	 					echo "<tr >";
-					    echo "<td >$workstation_description</td>";
-					 
-						
-					  	echo "<td >$component_name</td>";
-					  	echo "<td >$total</td>";
-	 					echo "</tr>";
+	 					
  
 						}
 				//}

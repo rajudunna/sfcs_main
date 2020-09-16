@@ -14,32 +14,17 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	// $username="sfcsproject1";	
-	//$mods=array();
-	$plant_code = $_SESSION['plantCode'];
-    $username = $_SESSION['userName'];
-	$query = "select * from $pms.tbl_fabric_request_time where plant_code='$plant_code'";
-	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($update_request_time)){
-		$rms_request_time = $row['request_time'];
-	}
-	if((in_array($authorized,$has_permission)))
-	{
-		//echo "Names Exit";
-	}
-	else
-	{	
-		// echo $_GET['r'];
-		header("Location:sfcs_app/app/dashboards/controllers/cut_table_dashboard/restrict.php?group_docs=".$_GET['group_docs']);
-		// header($_GET['r'],'restrict.php','N');
-	}
+	//$mods=array();	
 
 	if(isset($_POST['sdat'])) 
 	{ 
 		//echo $_POST['doc'];
-		$doc_no=$_POST['doc'];
+		$doc_no=$_POST['doc_no'];
 		$group_docs=$_POST["group_docs"];
 		$section=$_POST["secs"];
-		$module=$_POST["mods"];
+		$module=$_POST["module"];
+		$plant_code = $_POST['plantCode'];
+		$username = $_POST['userName'];
 		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
@@ -50,6 +35,8 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$group_docs=$_GET["group_docs"];
 		$section=$_GET["section"];
 		$module=$_GET["module"];
+		$plant_code = $_GET['plantCode'];
+		$username = $_GET['userName'];
 		$sql2x="select * from $pps.fabric_priorities where doc_ref=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
@@ -57,7 +44,12 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
-   
+
+	$query = "select * from $pms.tbl_fabric_request_time where plant_code='$plant_code'";
+	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($update_request_time)){
+		$rms_request_time = $row['request_time'];
+	}
 //echo $doc_no;
 ?>
 
