@@ -126,16 +126,18 @@ $(document).ready(function()
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
-		var barcode = $('#barcode').val();
 		var operation_id = $('#operation_id').val();
 		if(operation_id!=undefined)
 		{
 			var operation_id = $('#operation_id').val();
+			var barcodemain = $('#barcode').val();
+			var barcode=barcodemain+'-'+operation_id;
 		}
 		else
 		{
 			var res = barcode.split('-');
 			var operation_id = res[1];
+			var barcode = $('#barcode').val();
 		}
 
 		var plant_code = $('#plant_code').val();
