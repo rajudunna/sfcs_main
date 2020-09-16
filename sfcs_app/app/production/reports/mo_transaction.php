@@ -11,9 +11,9 @@
         $url1 = getFullURLLevel($_GET['r'],'mo_transaction_main.php',0,'R');
 		
 	?>
-	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
-	<script src="../../common/js/jquery.min.js"></script>
-	<script src="../../common/js/sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/css/boot_css/bootstrap.css">
+	<script src="../../../common/js/jquery.min.js"></script>
+	<script src="../../../common/js/sweetalert.min.js"></script>
 	<script>
 		function focus_box()
 		{

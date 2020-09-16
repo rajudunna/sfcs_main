@@ -153,7 +153,8 @@ $mod_names = array("1","2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
 $plant_name = $conf1->get('plantname');
 
 //TaskAttributeNamesEnum
-$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
+$sewing_job_attributes = ['style' => 'STYLE', 'schedule' => 'SCHEDULE', 'color' => 'COLOR', 'ponumber' => 'PONUMBER', 'masterponumber' => 'MASTERPONUMBER', 'cutjobno' => 'CUTJOBNO', 'embjobno' => 'EMBJOBNO', 'docketno' => 'DOCKETNO', 'sewingjobno' => 'SEWINGJOBNO', 'bundleno' => 'BUNDLENO', 'packingjobno' => 'PACKINGJOBNO', 'cartonno' => 'CARTONNO', 'componentgroup' => 'COMPONENTGROUP', 'cono' => 'CONUMBER', 'remarks' => 'REMARKS'];
+
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
@@ -225,7 +226,6 @@ $pps="pps_prod";
 $pms="pms_prod";
 $sms="sms_prod";
 $tms="tms_prod";
-$pts="pts_prod";
 $wms="wms_prod";
 $module_limit = 32;
 
@@ -263,7 +263,3 @@ $order_joins_in_1 ="order_joins='1'";
 
     // }
 //===================================================*/
-
-
-
-?>

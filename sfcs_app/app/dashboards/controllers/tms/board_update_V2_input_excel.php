@@ -139,7 +139,7 @@
             header("Content-Disposition: attachment; filename= Job Loading plan.xls ");
             echo $output;
         }else{
-            $url = "board_update_V2_input.php?section_no=".$section;
+            $url = "board_update_v2_input.php?section_no=".$section;
             echo"<script>
                 alert('No Data to Download for selected Section:".$section_display_name."');
                 window.location = '".$url."';

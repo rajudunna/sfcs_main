@@ -1,8 +1,9 @@
 	
 <!-- then dataTables -->
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />   
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/jquery.dataTables.min.css',3,'R'); ?>" rel="stylesheet" type="text/css" />   
 
-<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.dataTables.min.js',3,'R'); ?>
+"></script>
 	<?php
 
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');

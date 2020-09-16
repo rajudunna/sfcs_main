@@ -3,7 +3,7 @@
         <title>Hourly Efficiency Rework</title> 
         <meta http-equiv="X-UA-Compatible" content="IE=8" /> 
         <script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
-        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+        <link rel="stylesheet" href="../../../common/css/style.css" type="text/css" media="all" />
         <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
 
         <style> 
