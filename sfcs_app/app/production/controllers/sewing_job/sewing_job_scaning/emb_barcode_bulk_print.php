@@ -53,7 +53,7 @@ $(document).ready(function() {
 });
 
 </script>
-<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="<?= getFullURLLevel($_GET['r'],'common/js/style.css',5,'R')?>" rel="stylesheet" type="text/css" />
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <?php

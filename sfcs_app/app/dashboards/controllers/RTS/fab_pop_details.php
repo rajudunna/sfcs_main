@@ -197,10 +197,13 @@ if(!(in_array(strtolower($username),$authorized)))
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="page_style.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+  
+  <link rel="stylesheet" href="./sfcs_app/app/dashboards/common/css/bootstrap.min.css">
+  <script src="./sfcs_app/common/js/jquery.min.js"></script>
+  <script src="./sfcs_app/app/dashboards/common/js/bootstrap.min.js"></script>
 
 <style>
 body

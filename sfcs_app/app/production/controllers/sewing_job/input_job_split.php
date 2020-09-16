@@ -3,6 +3,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
     include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
+    // $plant_code = 'AIP';
     $username=$_SESSION['userName'];
 ?> 
 
@@ -66,8 +67,9 @@
 
                     echo '<h4><b>Schedule : <a class="btn btn-success">'.$schedule.'</a><input type="hidden" name="schedule1" id="schedule1" value='.$schedule.'></b></h4>';
                     $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
+                    echo "<h5><b><u>Select Sub PO :</u></b></h5>";
                     foreach($PoDescription as $key=>$poDesc){
-                        echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs('".$poDesc."') value='".$key."'>";
+                        echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs('".$poDesc."','".$key."') value='".$key."'>";
                     }
             }else{
                 echo "</br></br><center><h4 style='color:red;'>No PO's Found on this <b>' ".$schedule." '</b> Schedule,Please Check Once</h4></center>";
@@ -82,8 +84,9 @@
 </div>
 
 <script>
-    function getSewingJobs(po_number){
+    function getSewingJobs(po_number,po_name){
         var po = po_number;
+        var po_desc = po_name;
         var plant_code = $('#plant_code').val();
         var inputObj = {"poNumber":po,"plantCode":plant_code};
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
@@ -97,9 +100,9 @@
 				{
 					var data = res.data;
                     console.log(data);
-					var sewing_job_list ='';
+					var sewing_job_list ='<h5><b><u>Select Sewing Job :</u></b></h5>';
 	                $.each(data.job_number, function( index, sewing_job ) {
-	                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po+'") value='+sewing_job+'>';
+	                    sewing_job_list = sewing_job_list + '<input type="button" class="btn btn-info" onclick=sendData(this.value,"'+po_desc+'") value='+sewing_job+'>';
 	                });
                     console.log(sewing_job_list);
                     $('#dynamic_table').html(sewing_job_list);

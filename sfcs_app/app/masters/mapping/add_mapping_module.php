@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/bootstrap-datetimepicker.css',3,'R'); ?>" rel="stylesheet"/>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery-2.1.3.js',3,'R'); ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/moment.min.js',3,'R'); ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/bootstrap.js',3,'R'); ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/bootstrap-datetimepicker.js',3,'R'); ?>"></script>
 
 
     <meta charset="utf-8">

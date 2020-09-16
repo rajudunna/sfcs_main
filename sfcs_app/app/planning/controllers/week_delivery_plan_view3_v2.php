@@ -221,8 +221,8 @@ table{
 
 }
 </style>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/tablefilter.js',3,'R')?>"></script>
-<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',3,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R')?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',3,'R')?>"></script>
 <script>
 function dodisablenew()
 {

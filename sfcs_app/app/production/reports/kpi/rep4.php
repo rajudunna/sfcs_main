@@ -8,7 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 <?php 
 // include("../dbconf.php"); 
 ?>
-<LINK href="<?= getFullURLLevel($_GET['r'],'style.css',1,'R'); ?>" rel="stylesheet" type="text/css">
+<LINK href="<?= getFullURLLevel($_GET['r'],'common/css/style.css',4,'R'); ?>" rel="stylesheet" type="text/css">
 <!-- <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',2,'R');?>"></script> -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/actb.js',4,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/tablefilter.js',4,'R'); ?>"></script>
