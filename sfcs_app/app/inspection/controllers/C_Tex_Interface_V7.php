@@ -2657,7 +2657,7 @@ if($_POST['put'] || $_POST['confirm'])
 			mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 	}
-	$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V7.php')['url'];
+	$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v7.php')['url'];
 	echo "<h2>Please Wait While Updating Data.</h2>";
 			echo "<script type='text/javascript'>";
 			 echo "setTimeout('Redirect()',0);";

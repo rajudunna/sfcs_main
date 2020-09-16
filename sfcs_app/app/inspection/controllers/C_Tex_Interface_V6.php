@@ -1712,7 +1712,7 @@ table
 </div>
 <!-- <div style="float:right;">
 	<?php
-	$url = getURL(getBASE($_GET['r'])['base'].'/c_Tex_index.php')['url'];
+	$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_index.php')['url'];
 	?>
 	<a href="<?php echo $url; ?>" class="btn btn-primary">Back</a>
 </div> -->

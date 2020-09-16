@@ -125,7 +125,7 @@
 
 <Link rel='alternate' media='print' href=null>
 <script>
-    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>';
+    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
     function firstbox()
     {
         window.location.href = pgurl+"&style="+document.test.style.value
@@ -316,7 +316,7 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">

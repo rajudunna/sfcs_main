@@ -5,6 +5,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
 ?> 
+
 <div class="panel panel-primary">
     <div class="panel-heading">Sewing Jobs Split</div>
     <div class="panel-body">
@@ -25,6 +26,9 @@
                 echo "<a href='".$link."' class='btn btn-primary pull-right' id='goBack'> << Back</a>";
             }
         ?>
+        <div class="ajax-loader" id="loading-image" style="margin-left: 45%;margin-top: 35px;border-radius: -80px;width: 88px;">
+            <img src='<?= getFullURLLevel($_GET['r'],'ajax-loader.gif',0,'R'); ?>' class="img-responsive" />
+        </div>
         <div id ="dynamic_table">
         </div>
     </div>
@@ -32,6 +36,7 @@
 
 <script>
 $(document).ready(function() {
+	$('#loading-image').show();
     var sj = $('#sj_number').val();
     var plant_code = $('#plant_code').val();
     if(sj != ''){
@@ -44,6 +49,7 @@ $(document).ready(function() {
                 console.log(res.data);
                 if(res.status)
                 {
+                	$('#loading-image').hide();
                     var data = res.data
                     var table_data = "<table class='table table-bordered table-striped'><thead><tr><td>Action</td><td>Style</td><td>Schedule</td><td>Color</td><td>Size</td><td>Bundle No</td><td>Total Bundle Qty</td></tr></thead><tbody>";
                     for(var i=0; i< data.bundleInfo.length; i++){
@@ -51,7 +57,7 @@ $(document).ready(function() {
                         <td>"+data.style+"</td><td>"+data.bundleInfo[i].schedule+"</td><td>"+data.bundleInfo[i].color+"</td>\
                         <td>"+data.bundleInfo[i].size+"</td><td>"+data.bundleInfo[i].bundleNo+"</td><td>"+data.bundleInfo[i].qty+"</td></tr>";
                     }
-                    table_data += '</tbody></table><input type="button" class="btn btn-primary" onclick="sendResponse()" value="Split">';
+                    table_data += '</tbody></table><input type="button" class="btn btn-primary" onclick="sendResponse()" id="split" value="Split">';
                     $('#dynamic_table').html(table_data);
                 }
                 else
@@ -71,6 +77,7 @@ function sendResponse(){
     var sj_number = $('#sj_number').val();
     var slectedList = new Array();
     if($('input:checkbox[name=split]:checked').length > 0){
+		document.getElementById("split").disabled = true;
         $('input:checkbox[name=split]:checked').each(function() 
         {
             slectedList.push($(this).val());
@@ -85,11 +92,15 @@ function sendResponse(){
         url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/spllitSewingJob",
         data: outputObj,
         success: function (res) {            
-            //console.log(res.data);
+            $('input:checkbox[name=split]:checked').each(function() 
+            {
+                $(this).prop("checked",false);
+            });
             if(res.status)
             {
                 swal('',res.internalMessage, 'success');
-                $('#goBack').trigger("click");
+        		document.getElementById("split").disabled = true;
+                // $('#goBack').trigger("click");
                 /*
                 var data = JSON.parse(res);
 

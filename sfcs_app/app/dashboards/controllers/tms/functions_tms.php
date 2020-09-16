@@ -132,7 +132,7 @@ function getPlannedJobsTms($work_id,$tasktype,$plant_code){
 /**
  * get count for trim allocated jobs
  */
-function calculateJobsCount($module){ 
+function calculateJobsCount($module,$plant_code){ 
 	global $link_new;
 	global $tms;
 	global $pms;
@@ -148,7 +148,7 @@ function calculateJobsCount($module){
 	  $task_jobs_id[] = $get_module_row['task_jobs_id'];
 	}
 	$trim_status=TrimStatusEnum::ISSUED;
-	$get_count="SELECT count(task_job_id) as task_job_id_count  FROM $pms.job_trims WHERE trim_status='$trim_status' AND plant_code='$plant_code' AND task_job_id IN ('".implode("','" , $task_jobs_id)."')";
+	$get_count="SELECT count(task_job_id) as task_job_id_count  FROM $tms.job_trims WHERE trim_status='$trim_status' AND plant_code='$plant_code' AND task_job_id IN ('".implode("','" , $task_jobs_id)."')";
 	$get_count_result = mysqli_query($link_new,$get_count);
 	while($row = mysqli_fetch_array($get_count_result)){
 		  $jobs_count = $row['task_job_id_count'];
