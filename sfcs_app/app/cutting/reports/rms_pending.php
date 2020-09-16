@@ -101,8 +101,8 @@ if(isset($_POST['show']))
 				<th>Color</th>
 				<th>Cut Job</th>
 				<th>Pending Dockets</th>
-				<th>Jobs Request Pending</th>
-				<th>Jobs Cut Completed</th>
+				<th>Planned Dockets</th>
+				<th>Cut Completed Dockets</th>
 			</tr>";
 		
 	while($get_cut_jobs_row=mysqli_fetch_array($get_cut_jobs_result))
