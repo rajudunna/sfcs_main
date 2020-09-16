@@ -126,14 +126,16 @@ $(document).ready(function()
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
-		var barcode = $('#barcode').val();
 		var operation_id = $('#operation_id').val();
 		if(operation_id!=undefined)
 		{
 			var operation_id = $('#operation_id').val();
+			var barcodemain = $('#barcode').val();
+			var barcode=barcodemain+'-'+operation_id;
 		}
 		else
 		{
+			var barcode = $('#barcode').val();
 			var res = barcode.split('-');
 			var operation_id = res[1];
 		}
@@ -189,22 +191,32 @@ function tableConstruction(bundet){
 		$('#dynamic_table1').html('');
 		for(var i=0;i<bundet.data.length;i++)
         {
-			var hidden_class='';
-			if(i==0)
-            {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
-                $("#dynamic_table1").append(markup);
-            }
-            s_no++;
-			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='fgColor'>"+bundet.data[i].fgColor+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='goodQty'>"+bundet.data[i].goodQty+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
-            $("#dynamic_table").append(markup1);
-            $("#dynamic_table").hide();
-			
-			$('#dynamic_table2').html('');
-			var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
-			$("#dynamic_table2").append(dynamic2);
-			$("#dynamic_table2").show();
+			if(bundet.data[i].style!='' || bundet.data[i].style!=null)
+			{
+				var hidden_class='';
+				if(i==0)
+				{
+					var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
+					$("#dynamic_table1").append(markup);
+				}
+				s_no++;
+				
+				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='fgColor'>"+bundet.data[i].fgColor+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='goodQty'>"+bundet.data[i].goodQty+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
+				$("#dynamic_table").append(markup1);
+				$("#dynamic_table").hide();
+				
+				$('#dynamic_table2').html('');
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				$("#dynamic_table2").append(dynamic2);
+				$("#dynamic_table2").show();
+			}
+			else
+			{
+				$('#dynamic_table2').html('');
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				$("#dynamic_table2").append(dynamic2);
+				$("#dynamic_table2").show();
+			}
 		}
 	}
 	var markup99 = "</tbody></table></div></div></div>";

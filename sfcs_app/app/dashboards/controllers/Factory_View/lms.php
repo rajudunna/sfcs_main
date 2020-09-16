@@ -77,7 +77,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 		}
 			
 	}
-	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/packing_dashboard_live_dashboard.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
+	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/factory_view/packing_dashboard_live_dashboard.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 }
 			
 	

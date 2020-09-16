@@ -84,7 +84,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 		echo "<td><div id=\"$id_new\"><a href=\"$dns_adr3/projects/Beta/Reports/Production_Live_Chart/Control_Room_Charts/Dash_Board_new.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 	}
 }
-//projects/dashboards/production_kpi/Attendance_live_dashboard.php	
+//projects/dashboards/production_kpi/attendance_live_dashboard.php	
 			
 
 ?>

@@ -163,7 +163,7 @@ if(isset($_POST['submit1']))
 	$to_date=$_GET['to_date'];
 }
 ?>
-<form name="test" action="<?php echo getFullURLLevel($_GET['r'],'Tabular_rep_new5.php','0','N'); ?>" method="post">
+<form name="test" action="<?php echo getFullURLLevel($_GET['r'],'tabular_rep_new5.php','0','N'); ?>" method="post">
 <?php
 	$sql="select distinct CPO from $pps.order_status_buffer where plant_code='$plantcode' order by CPO";	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

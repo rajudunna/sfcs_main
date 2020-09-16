@@ -38,8 +38,8 @@
 						}
 						#barcode {font-weight: normal; font-style: normal; line-height:normal; sans-serif; font-size: 8pt}
 					</style>
-					<script type="text/javascript" src="../../../common/js/jquery.min.js" ></script>
-					<script type="text/javascript" src="../../../common/js/table2CSV.js" ></script>
+					<script type="text/javascript" src="../../../../../common/js/jquery.min.js" ></script>
+					<script type="text/javascript" src="../../../../../common/js/table2CSV.js" ></script>
 				</head>
 				<body>';
 				$get_bundles="select bcd_id,issued_qty from $bai_pro3.recut_v2_child_issue_track where recut_id='".$id."' and status=".$sequence."";

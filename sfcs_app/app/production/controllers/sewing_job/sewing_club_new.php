@@ -4,7 +4,7 @@ include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
-$plantcode=$global_facility_code;;
+$plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 <script>
