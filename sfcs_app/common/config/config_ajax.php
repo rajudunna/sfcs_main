@@ -28,7 +28,7 @@ $global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
 
-$plant_wh_code=$conf1->get('fg_wh_code');
+$plant_wh_code=$conf1->get('fg-wh-code');
 
 $barcode_gen_emb=$conf1->get('barcode_gen_emb');
 //SFCS Db Configurations
