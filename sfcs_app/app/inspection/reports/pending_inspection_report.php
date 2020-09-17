@@ -255,7 +255,7 @@
 					echo "<td>".$sql_row['qty']."</td>";
 					
 					$pop_up_path="../sfcs_app/app/inspection/reports/4_point_inspection_report.php";
-					$pop_up_path1="../sfcs_app/app/inspection/controllers/digital_inspection/C_Tex_Report_Print.php";
+					$pop_up_path1="../sfcs_app/app/inspection/controllers/digital_inspection/c_tex_report_print.php";
 					
 					// second Process
 					$sql1="SELECT * FROM $wms.`inspection_population` WHERE plant_code='$plant_code' and parent_id='$id' AND status<>0";
@@ -281,7 +281,7 @@
 
 						echo "<br><br>
 						     <div class='col-sm-4' id='populate_div'>
-	                         <center><a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/C_Tex_Interface_V6.php", "1", "N") . "&parent_id=$id&plant_code=$plant_code\">Click to Color Contunity Report</a></center>
+	                         <center><a class='btn btn-xs btn-warning pull-left' href=\"" . getFullURLLevel($_GET['r'], "controllers/digital_inspection/c_tex_interface_v6.php", "1", "N") . "&parent_id=$id\">Click to Color Contunity Report</a></center>
 						</div></td>";
 					}
 	

@@ -19,7 +19,8 @@ body { zoom:72%;}
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
-
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
  ?>
 
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -1766,8 +1767,6 @@ function printpr()
 	else
 	{
 		$parent_id=$_GET['parent_id'];
-		$plantcode = $_GET['plant_code'];
-		$username = $_GET['username'];
 
 		$lot = array();
 		$get_details = "select distinct(lot_no),supplier_batch from $wms.inspection_population where plant_code='$plantcode' and parent_id='$parent_id'";

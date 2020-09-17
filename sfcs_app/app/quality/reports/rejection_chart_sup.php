@@ -9,9 +9,12 @@ $view_access=user_acl("SFCS_0055",$username,1,$group_id_sfcs);
 $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
 ?>
-<script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
+<!-- <script src="https://cdn.ovo.ua/pub/fusioncharts/fusioncharts.js"></script> 
 <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script> -->
+<script src="/sfcs_app/common/js/fusioncharts.js"></script> 
+<script src="/sfcs_app/common/js/highcharts.js"></script>
+<script src="/sfcs_app/common/js/exporting.js"></script>
 
 <script>
 function verify_date(e){

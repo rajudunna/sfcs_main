@@ -19,7 +19,7 @@ pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1
 th{ background-color:#003366; color:#000000; padding:2px; border:1px solid #ccc; }
 td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space:nowrap;}
 </style>
-<script type="text/javascript" src="datetimepicker_css.js"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',1,'R'); ?> datetimepicker_css.js"></script>
 </head>
 <body>
 

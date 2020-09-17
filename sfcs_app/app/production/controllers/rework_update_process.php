@@ -15,7 +15,7 @@ $username=$_SESSION['userName'];
 	<title>Rework Update</title>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',1,'R'); ?>"></script>
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
-<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/js/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',1,'R'); ?>" type="text/css" media="all" />
 
 <script type="text/javascript" language="javascript">
     window.onload = function () {

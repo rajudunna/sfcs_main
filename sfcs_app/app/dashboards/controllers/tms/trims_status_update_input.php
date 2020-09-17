@@ -98,8 +98,6 @@ else
 	$plant_code=$_GET['plant_code'];
 	$username=$_GET['username'];
 }
-
-
 echo "<h2>Trims Status View Form</h2>";
     $textbox_disable="disabled=\"disabled\"";
 	// $dropdown_disable="disabled=\"disabled\"";
@@ -134,17 +132,15 @@ echo "<th>Allocated Quantity</th>";
 echo "</tr>";
 
 //To get cut job id
-$task_jobs_id = [];
+$tasktype=TaskTypeEnum::SEWINGJOB;
 $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
-// echo $qry_get_task_job;
 $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
-	$task_jobs_id[] = $row21['task_jobs_id'];
 	$task_job_id = $row21['task_jobs_id'];
 }
 //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 $job_detail_attributes = [];
-$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_job_id' and plant_code='$plant_code'";
 $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
   $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
@@ -204,7 +200,7 @@ echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
 
   foreach($status as $key => $value)
   { 
-    if($trims_status == $value)
+    if($trim_status == $value)
     {
       echo "<option value='".$value."' selected>".$value."</option>";
     }
@@ -243,8 +239,7 @@ if(isset($_POST["submit"]))
 	$username=$_POST['username'];
 	
 
-	$sql4="UPDATE $tms.job_trims SET trim_status='".$up_status."',updated_at='".date("Y-m-d H:i:s")."',updated_user='' WHERE task_job_id='$task_job_id' AND plant_code='$plant_code'";
-	//echo $sql4;
+	$sql4="UPDATE $tms.job_trims SET trim_status='".$up_status."',updated_at='".date("Y-m-d H:i:s")."',updated_user='$username' WHERE task_job_id='$task_job_id' AND plant_code='$plant_code'";
 	mysqli_query($link, $sql4);
 			
 	// $sql123="INSERT INTO `$pps`.`temp_line_input_log` (`schedule_no`, `style`, `input_job_no`, `username`, `date_n_time`, `page_name`	) VALUES

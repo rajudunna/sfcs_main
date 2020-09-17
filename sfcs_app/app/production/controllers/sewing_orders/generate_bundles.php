@@ -1,11 +1,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=11; IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
-<link rel="stylesheet" href="cssjs/bootstrap.min.css">
-<link rel="stylesheet" href="cssjs/select2.min.css">
-<script type="text/javascript" src="cssjs/jquery.min.js"></script>
-<script type="text/javascript" src="cssjs/select2.min.js"></script>
-<script src="cssjs/bootstrap.min.js"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/bootstrap.min.css',4,'R'); ?>">
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/styles/select2.min.css',4,'R'); ?>">
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.min.js',4,'R'); ?>"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/css/styles/js/select2.min.js',4,'R'); ?> "></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/css/styles/js/bootstrap.min.js',4,'R'); ?>"></script>
 
 <?php
 

@@ -50,7 +50,7 @@ class TaskStatusEnum {
 }
 
 class TrimStatusEnum {
-    const OPEN = '';
+    const OPEN = 'OPEN';
     const PREPARINGMATERIAL = 'Preparing material';
     const MATERIALREADYFORPRODUCTION = 'Material ready for Production (in Pool)';
     const PARTIALISSUED = 'Partial Issued';
