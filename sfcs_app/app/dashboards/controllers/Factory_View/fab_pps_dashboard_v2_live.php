@@ -567,7 +567,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	echo '<div style="width:170px;background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
 	echo "<p>";
 	echo "<table>";
-	echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('board_update_V2.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">Fabric</a></h2></th></th></tr>";
+	echo "<tr><th colspan=2><h2><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('board_update_v2.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">Fabric</a></h2></th></th></tr>";
 
 	$mods=array();
 	$mods=explode(",",$section_mods);
@@ -1071,7 +1071,7 @@ $title=str_pad("Style:".trim($style),80)."\n".str_pad("Schedule:".$schedule,80).
 	echo "<tr>
 			<th colspan=2>
 				<h2>
-					<a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update_V2.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">ReCut</a>
+					<a href=\"board_update.php?section_no=$section\" onclick=\"Popup=window.open('board_update_v2.php?section_no=$section"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">ReCut</a>
 				</h2>
 			</th>
 		</tr>";

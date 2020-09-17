@@ -1,12 +1,18 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
+include(getFullURLLevel($_GET['r'],'docket_allocation_functions.php',0,'R'));
+
 $path="".getFullURLLevel($_GET['r'], "bundle_guide_print.php", "0", "r")."";
+
+$plant_code=$_SESSION['plantCode'];
+// $plant_code='Q01';
+$username=$_SESSION['userName'];
 ?>
-<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); ?>
 
 <script>
-
-//<form name="test" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" method="post">
 
 function firstbox()
 {
@@ -24,6 +30,18 @@ function thirdbox()
 	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
 	window.location.href = uriVal;
 }
+
+function forthbox() 
+{ 
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
+	window.location.href = uriVal;
+}
+function fifthbox() 
+{ 
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+	window.location.href = uriVal;
+}
+
 $(document).ready(function() {
 	$('#schedule').on('click',function(e){
 		var style = $('#style').val();
@@ -48,20 +66,14 @@ $(document).ready(function() {
 });
 
 </script>
-<link href="style.css" rel="stylesheet" type="text/css" />
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+
 
 <?php
-	//include("menu_content.php");
 	$style=$_GET['style'];
 	$schedule=$_GET['schedule']; 
     $color=$_GET['color'];
-    if(isset($_POST['submit']))
-    {
-        $style=$_POST['style'];
-        $color=$_POST['color'];
-        $schedule=$_POST['schedule'];
-    }
+    $mpo=$_GET['mpo'];
+    $sub_po=$_GET['sub_po'];
 ?>
 
 <div class = "panel panel-primary">
@@ -69,22 +81,23 @@ $(document).ready(function() {
 <div class = "panel-body">
 <form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
 <?php
-$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where $order_joins_not_in group by order_style_no ";	
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//function to get style from mp_color_details
+if($plant_code!=''){
+	$result_mp_color_details=getMpColorDetail($plant_code);
+	$get_style=$result_mp_color_details['style'];
+}
 echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"firstbox();\" id='style' required>";
 echo "<option value='' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['order_style_no'])==str_replace(" ","",$style))
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+foreach ($get_style as $style_value) {
+	if(str_replace(" ","",$style_value)==str_replace(" ","",$style)) 
+	{ 
+		echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
 	}
-	else
-	{
-		echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
-	}
-
-}
+} 
 echo "  </select>
 	</div>";
 ?>
@@ -92,44 +105,91 @@ echo "  </select>
 <?php
 echo "<div class='col-sm-2'><label>Select Schedule:</label> 
 	  <select class='form-control' name=\"schedule\" id=\"schedule\" onchange=\"secondbox();\" id='schedule' required>";
-	$sql="select distinct order_del_no from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and $order_joins_not_in";	
-
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+//qry to get schedules form mp_mo_qty based on master_po_details_id 
+if($style!=''&& $plant_code!=''){
+	$result_bulk_schedules=getBulkSchedules($style,$plant_code);
+	$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+}  
 echo "<option value='' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['order_del_no'])==str_replace(" ","",$schedule)){
-			echo "<option value=\"".$sql_row['order_del_no']."\" selected>".$sql_row['order_del_no']."</option>";
-		}
-	else{
-		echo "<option value=\"".$sql_row['order_del_no']."\">".$sql_row['order_del_no']."</option>";
+foreach ($bulk_schedule as $bulk_schedule_value) {
+	if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$schedule)) 
+	{ 
+		echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
 	}
-}
+} 
 
 echo "	</select>
 	 </div>";
 ?>
 
 <?php
-
-echo "<div class='col-sm-2'><label>Select Color:</label><select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color' required>";
-$sql="select distinct order_col_des from $bai_pro3.bai_orders_db_confirm where order_style_no='".$style."' and order_del_no='".$schedule."' and $order_joins_not_in ";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-echo "<option value='' disabled selected>Please Select</option>";
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color)){
-		echo "<option value=\"".$sql_row['order_col_des']."\" selected>".$sql_row['order_col_des']."</option>";
-	}else{
-		echo "<option value=\"".$sql_row['order_col_des']."\">".$sql_row['order_col_des']."</option>";
-	}
+//function to get color form mp_mo_qty based on schedules and plant code from mp_mo_qty
+if($schedule!='' && $plant_code!=''){
+	$result_bulk_colors=getBulkColors($schedule,$plant_code);
+	$bulk_color=$result_bulk_colors['color_bulk'];
 }
 
+echo "<div class='col-sm-2'><label>Select Color:</label><select class='form-control' name=\"color\" onchange=\"thirdbox();\" id='color' required>";
+echo "<option value='' disabled selected>Please Select</option>";
+foreach ($bulk_color as $bulk_color_value) {
+	if(str_replace(" ","",$bulk_color_value)==str_replace(" ","",$color)) 
+	{ 
+		echo '<option value=\''.$bulk_color_value.'\' selected>'.$bulk_color_value.'</option>'; 
+	} 
+	else 
+	{ 
+		echo '<option value=\''.$bulk_color_value.'\'>'.$bulk_color_value.'</option>'; 
+	}
+} 
 echo "</select>
 	</div>";
 
-	echo "<div class='col-sm-3' style='padding-top:23px;'>"; 
-	echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id='submit'>
+	//function to get master po's from mp_mo_qty based on schedule and color
+if($schedule!='' && $color!='' && $plant_code!=''){
+	$result_bulk_MPO=getMpos($schedule,$color,$plant_code);
+	$master_po_description=$result_bulk_MPO['master_po_description'];
+}
+	echo "<div class='col-sm-2'><label>Select Master PO: </label>";  
+	echo "<select name=\"mpo\" onchange=\"forthbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($master_po_description as $key=>$master_po_description_val) {
+					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$mpo)) 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+
+	//function to get sub po's from mp_mo_qty based on master PO's
+	if($mpo!='' && $plant_code!=''){
+		$result_bulk_subPO=getBulkSubPo($mpo,$plant_code);
+		$sub_po_description=$result_bulk_subPO['sub_po_description'];
+	}
+	echo "<div class='col-sm-2'><label>Select Sub PO: </label>";  
+	echo "<select name=\"sub_po\" id=\"sub_po\"  class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($sub_po_description as $key=>$sub_po_description_val) {
+					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$sub_po)) 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
+
+echo "<div class='col-sm-3' style='padding-top:23px;'>"; 
+echo "<input class='btn btn-success' type=\"submit\" value=\"Submit\" name=\"submit\" id='submit'>
 	 </div>";	
 echo "</div>";
 ?>
@@ -145,96 +205,41 @@ if(isset($_POST['submit']))
 	$style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$mpo=$_POST['mpo'];
+    $sub_po=$_POST['sub_po'];
 	$sno=1;	
-	$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_del_no='".$schedule."' and order_col_des='".$color."'";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    $sql_num_check=mysqli_num_rows($sql_result);
-    while($sql_row=mysqli_fetch_array($sql_result))
+	if($sub_po!='' && $plant_code!='')
 	{
-        $orde_tid=$sql_row['order_tid'];
-        $vpo=$sql_row['vpo'];
-        for($s=0;$s<sizeof($sizes_code);$s++)
-        {
-            if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
-            {
-                $s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-                $s_code[]=$sizes_code[$s];
-            }	
-        }
-    }
-	
-	$doc_no=array();
-	$cut_no=array();
-	$doc_no_yards=array();
-	$doc_no_ratio=array();
-	$doc_full=array();
-	$sewing_jobs=array();
-	$sql12="select * from $bai_pro3.order_cat_doc_mk_mix  where order_del_no='".$schedule."' and order_col_des='".$color."' and category in ($in_categories)";
-	$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-    while($sql_row12=mysqli_fetch_array($sql_result12))
+		$result_get_doc_details=getJobsDetails($sub_po,$plant_code);
+		$data=$result_get_doc_details['data'];
+	}
+	// var_dump($result_get_doc_details);
+	if(sizeof($data)>0)
 	{
-	   $doc_no[]=$sql_row12['doc_no']; 
-	   $tot_val=0;
-	   $cut_no[$sql_row12['doc_no']]=chr($sql_row12['color_code']).leading_zeros($sql_row12['acutno'],3); 
-	   for($s=0;$s<sizeof($s_tit);$s++)
-       {
-            $doc_no_ratio[$sql_row12['doc_no']][$sizes_code[$s]]=$sql_row12["p_s".$sizes_code[$s].""];
-			$tot_val=$tot_val+$sql_row12["p_s".$sizes_code[$s].""];
-			$doc_no_plies[$sql_row12['doc_no']]=$sql_row12['p_plies'];            	
-        }
-		$doc_full[$sql_row12['doc_no']]=array_sum($doc_no_qty)+($tot_val*$sql_row12['p_plies']);
-		$doc_no_qty[$sql_row12['doc_no']]=$tot_val*$sql_row12['p_plies'];
-		$doc_no_yards[$sql_row12['doc_no']]=$sql_row12['material_req'];
-		$temp='';
-		$sql32="select input_job_no,type_of_sewing from $bai_pro3.pac_Stat_log_input_job where doc_no=".$sql_row12['doc_no']." group by input_job_no";
-		$sql_result1232=mysqli_query($link, $sql32) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1223=mysqli_fetch_array($sql_result1232))
-		{
-			$sql322="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$sql_row1223['type_of_sewing']."";
-			$sql_result12321=mysqli_query($link, $sql322) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row12213=mysqli_fetch_array($sql_result12321))
-			{				
-				$temp .= $sql_row12213['prefix'].leading_zeros($sql_row1223['input_job_no'],3)."<br>";				
-			}			
-		}	
-		$sewing_jobs[$sql_row12['doc_no']] = substr($temp,0,-1);
-		$temp='';
-    }
-	
-	if(sizeof($doc_no)>0)
-	{
-		echo "<div class='alert alert-info' style='text-align:center; font-size: 20px;'><b>Style Code : ".$style."</b>Schedule : <b>".$schedule."</b> VPO No : <b>".$vpo."</b></div>";
+		echo "<div class='alert alert-info' style='text-align:center; font-size: 20px;'><b>Style Code : ".$data['cut']['style'][0]."</b>Schedule : <b>".$data['cut']['schedule'][0]."</b> VPO No : <b>".$data['cut']['po_number']."</b></div>";
 		
 		echo "<div class='col-sm-12 table-responsive'>
 		<table width='100%' class='table table-bordered info'><thead>
 		<tr><th>S No</th><th>Color</th><th>Sewing Job No</th><th>Cut Job No</th><th>Cut Docket No</th>";
-		for($s=0;$s<sizeof($s_tit);$s++)
+		for($s=0;$s<sizeof($data['cut']['size']);$s++)
 		{
-			echo "<th>".$s_tit[$sizes_code[$s]]."</th>";
-			
+			echo "<th>".$data['cut']['size'][$s]."</th>";
 		}
-		echo "<th>Plies</th><th>Quantity</th><th>Cumulative Quantity</th><th>Yards</th></tr></thead>";
-		for($i=0;$i<sizeof($doc_no);$i++)
+		echo "<th>Plies</th><th>Quantity</th><th>Cumulative Quantity</th><th>".$fab_uom."</th></tr></thead>";
+		for($i=0;$i<sizeof($data);$i++)
 		{
-			echo "<tr><td>".$sno."</td><td>".$color."</td><td>".$sewing_jobs[$doc_no[$i]]."</td><td>".$cut_no[$doc_no[$i]]."</td><td>".$doc_no[$i]."</td>";
-			for($s=0;$s<sizeof($s_tit);$s++)
-			{
-				echo "<td>".$doc_no_ratio[$doc_no[$i]][$sizes_code[$s]]."</td>";
-				
+			echo "<tr><td>".$sno."</td><td>".$data['cut']['color'][0]."</td><td>".$data['cut']['sewing_job']."</td><td>".$data['cut']['cutjob']."</td><td>".$data['cut']['doc_no']."</td>";
+			foreach($data['cut']['size'] as $key =>$value){
+				echo "<td>".$data['cut'][$value]."</td>";
 			}
-			echo "<td>".$doc_no_plies[$doc_no[$i]]."</td>";
-			echo "<td>".$doc_no_qty[$doc_no[$i]]."</td>";
-			echo "<td>".$doc_full[$doc_no[$i]]."</td>";
-			echo "<td>".$doc_no_yards[$doc_no[$i]]."</td></tr>";
+			echo "<td>".$data['cut']['plies']."</td>";
+			echo "<td>".$data['cut']['qty']."</td>";
+			echo "<td>".$data['cut']['cum_qty']."</td>";
+			echo "<td>".$data['cut']['marker_length']."</td></tr>";
 			$sno++;
 		}
 		echo "</table></div>";
 	}
-	else
-	{
-		
-	}	
 }
 
 	

@@ -72,7 +72,7 @@ for($i=0;$i<sizeof($sections_db);$i++)
 	}
 	// $url_ims=getFullURLLevel($_GET['r'],'beta/cut_plan_new/ims/cpanel/cpanel_main_v2.php',2,'N');
 	// echo "<td><div id=\"$id_new\"><a href=\"$url_ims&sec_x=$section_id&rand=".rand()."\"></a></div></td>";
-	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/Factory_View/cpanel_main_live_dashboard.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
+	echo "<td><div id=\"$id_new\"><a href=\"http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/controllers/factory_view/cpanel_main_live_dashboard.php?sec_x=$section_id&rand=".rand()."\" target='_blank'></a></div></td>";
 
 }
 			

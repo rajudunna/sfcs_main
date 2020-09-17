@@ -67,8 +67,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 15">
 <link rel=File-List href="Book1_files/filelist.xml">
-<script src="jquery-1.3.2.js"></script>
-<script src="jquery-barcode-2.0.1.js"></script>
+<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-1.3.2.js',1,'R'); ?>></script>
+<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',1,'R'); ?>></script>
 <style id="Book1_14212_Styles"><!--table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}

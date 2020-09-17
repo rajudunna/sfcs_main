@@ -283,7 +283,7 @@ $(document).ready(function(){
 		//alert('hi');
 		
 		$.ajax({
-			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_V2.php',
+			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_v2.php',
 			type:'POST',
 			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},
 			success: function (data) 
@@ -336,7 +336,7 @@ $(document).ready(function(){
 
                 if(!isset($_POST['submit']))
                 {
-			       $pageurl = getFullURLLevel($_GET['r'],'mrn_request_form_update_V2.php','0','R');
+			       $pageurl = getFullURLLevel($_GET['r'],'mrn_request_form_update_v2.php','0','R');
 				   
                     echo "<div class='col-md-2'>Select Style: <select name=\"style\"  onchange=\"firstbox();\" class='form-control'>";                  
                     if($plant_code!=''){
@@ -762,7 +762,7 @@ $(document).ready(function(){
                             Reserved Qty=<span name=\"trowst12\" id=\"trowst12\">0</span>";
                     echo "<h3><center>Additional Material Request Form</center></h3>";
 
-                    $pageurl = getFullURL($_GET['r'],'mrn_request_form_update_V2.php','R');
+                    $pageurl = getFullURL($_GET['r'],'mrn_request_form_update_v2.php','R');
                     echo "<form name=\"test\" id=\"tst\" method=\"post\" action='".$pageurl."'>";
                     echo '<div style=\"overflow:scroll;\" class="table-responsive">
                     <table id="table1" class="table table-bordered">';

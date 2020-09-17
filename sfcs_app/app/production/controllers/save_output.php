@@ -1,9 +1,9 @@
 <html>
 <head>
-<script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script>
-<link rel="stylesheet" href="../styles/ddcolortabs.css" type="text/css" media="all" />
-<link rel="stylesheet" href="../table_style.css" type="text/css" media="all" />
-<link rel="stylesheet" href="css/bootstrap.min.css">
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="../common/css/ddcolortabs.css" type="text/css" media="all" />
+<link rel="stylesheet" href="../../../common/css/table_style.css" type="text/css" media="all" />
+<link rel="stylesheet" href="../common/css/boot_css/bootstrap.min.css">
 
 </head>
 <body onload="startTime()">
@@ -165,8 +165,8 @@
 
 </div>
 </body>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.js"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/css/styles/js/bootstrap.min.js',3,'R'); ?>"></script>
+<script src="<?= getFullURLLevel($_GET['r'],'common/js/jquery.js',3,'R'); ?>"></script>
 
 
 </html>

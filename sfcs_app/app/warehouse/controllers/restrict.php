@@ -32,10 +32,10 @@ $().ready(function() {
  -->
   <title>Stock In Form (NEW)</title>
 
-  <link rel="stylesheet" href="includes/page_style.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="includes/ddcolortabs.css" type="text/css" media="all" />
-  <script type="text/javascript" src="includes/dropdowntabs.js"></script>
-  <script type="text/javascript" src="includes/js/check.js"></script>
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/page_style.css',3,'R'); ?>" type="text/css" media="all" />
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
+  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R'); ?>"></script>
+  <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/check.js',1,'R'); ?>"></script>
 
 
 </head>

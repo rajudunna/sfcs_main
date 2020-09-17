@@ -39,7 +39,7 @@ $Page_Id='SFCS_0051';
 				}
 				else
 				{
-					$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V7.php')['url'];
+					$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v7.php')['url'];
 					echo "<script type='text/javascript'>";
 					echo "setTimeout('Redirect()',0);";
 					echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."';";

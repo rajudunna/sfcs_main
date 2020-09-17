@@ -9,7 +9,7 @@
     $username = $_SESSION['userName'];
 ?>
 
-<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'TableFilter_EN/filtergrid.css',0,'R'); ?>">
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',3,'R'); ?>">
 <style type="text/css" media="screen">
 
 /*====================================================

@@ -48,7 +48,7 @@ function verify_date(){
 </style>
 <link href="style_new.css" rel="stylesheet" type="text/css" />
 <SCRIPT LANGUAGE="Javascript" SRC="../../fusion_charts/FusionCharts/FusionCharts.js"></SCRIPT>
-<script type="text/javascript" src="datetimepicker_css.js"></script>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',3,'R') ?>"></script>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/master/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 
