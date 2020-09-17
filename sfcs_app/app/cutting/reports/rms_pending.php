@@ -5,7 +5,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');
-$plantcode = $_SESSION['plantCode'];
+// $plantcode = $_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 // $plantcode = 'AIP';
 ?>
@@ -124,6 +124,20 @@ if(isset($_POST['show']))
 
 				$po_description=$get_sub_po_row['po_description'];
 				$master_po_number=$get_sub_po_row['master_po_number'];
+				
+				 /**So we will show master description based on masetr po number */
+				 $master_po_description='';
+				 $qry_toget_podescri="SELECT master_po_description FROM $pps.mp_order WHERE master_po_number = '$master_po_number'";
+				//  echo $qry_toget_podescri;
+				 $toget_podescri_result=mysqli_query($link, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $toget_podescri_num=mysqli_num_rows($toget_podescri_result);
+				 if($toget_podescri_num>0){
+					 while($toget_podescri_row=mysqli_fetch_array($toget_podescri_result))
+					{
+						$master_po_description=$toget_podescri_row["master_po_description"];
+					}
+				 }
+
 
 				//get style,color from master_po_number
 				$get_mpo="select style,group_concat(distinct(color)) as color from $pps.mp_color_detail where master_po_number='$master_po_number' and plant_code='$plantcode' and is_active=true limit 1";
@@ -228,7 +242,7 @@ if(isset($_POST['show']))
 									
 									echo "<tr>";
 									echo "<td>".$style."</td>";
-									echo "<td>".$master_po_number."</td>";
+									echo "<td>".$master_po_description."</td>";
 									echo "<td>".$po_description."</td>";
 									echo "<td style='word-break:break-all;'>".$schedules."</td>";
 									echo "<td>".$color."</td>";
