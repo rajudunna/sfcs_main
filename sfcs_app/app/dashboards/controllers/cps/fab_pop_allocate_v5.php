@@ -806,11 +806,11 @@ if(isset($_POST['allocate_new']))
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."',".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
 					}
 					else
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."',".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -846,11 +846,11 @@ if(isset($_POST['allocate_new']))
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
-				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
+				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
 			}
 			else
 			{
-				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
+				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
 				mysqli_query($link, $sql2) or exit("Sql Errordd5: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
@@ -881,7 +881,7 @@ if(isset($_POST['allocate_new']))
 					
 					// mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql="update $pps.requested_dockets set lastup=\"".date("Y-m-d")."\",updated_user='$username',updated_at=NOW(),created_user='$username' where doc_no=".$doc_ref[$i];
+					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_line_id='.$doc_ref[$i].'";
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -1011,7 +1011,7 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where doc_no=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
 		// echo $sql007;
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
@@ -1064,7 +1064,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
-		
+
 		//To show stats
 		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
