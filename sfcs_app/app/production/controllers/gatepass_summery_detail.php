@@ -1,6 +1,4 @@
 <?php 
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
 
@@ -9,6 +7,22 @@ if(isset($_GET['gatepassid']))
 	$plant_code= $_GET['plant_code']; 
 	$username= $_GET['username']; 
 	$gatepassid=$_GET['gatepassid'];
+	$status=$_GET['status'];
+}
+elseif(isset($_POST['gatepassid']))
+{
+	$plant_code= $_POST['plant_code']; 
+	$username= $_POST['username']; 
+	$gatepassid=$_POST['gatepassid'];
+	$status=$_POST['status'];	
+}
+else
+{
+	$plant_code=$_SESSION['plantCode'];
+	$username=$_SESSION['userName'];		
+}
+if($gatepassid!='')
+{	
 	$sql12="select vehicle_no from $pps.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -64,16 +78,6 @@ if(!isset($_GET['gatepassid']) && !isset($_POST['submit']) && !isset($_GET['stat
 	{
 		$date=date('Y-m-d');
 	}
-	if(isset($_GET['plant_code']))
-	{
-		$plant_code= $_GET['plant_code']; 
-		$username= $_GET['username']; 
-	}
-	else
-	{
-		$plant_code= $_POST['plant_code']; 
-		$username= $_POST['username']; 
-	}
 	?>
    <div class="panel panel-primary">
 			<div class="panel-heading">Gate Pass</div>
@@ -109,14 +113,14 @@ th,td{
 <?php
 
 			
-if(isset($_POST['submit']) || ($_GET['status']==1)){
+if(isset($_POST['submit']) || ($status==1)){
 
 	?>
 	<div class="panel panel-primary">
 			<div class="panel-heading">Gate Pass</div>
 			<div class="panel-body">
 	<?php
-	if($_GET['status']==1)
+	if($status==1)
 	{
 		$vehicle_number=$_GET['vehicle_no'];
 		$gate_id=$_GET['gatepassno'];
@@ -255,12 +259,11 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 		$plant_code=$_POST['plant_code'];
 		$username=$_POST['username'];
 		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
-	// echo $sql_date;
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
 		echo  "<div class='panel-body'>";
 		echo "<div class='panel panel-primary'>";
 		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Date</th><th class="tblheading">Gate Pass Id</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Shift</th><th class="tblheading">Status</th></tr>';
-		$url = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
+		$url = getFullURLLEVEL($_GET['r'],'gate_pass_print.php',0,'N');
 		while($data_res = mysqli_fetch_array($date_gatepass))
 		{
 			$id=$data_res['id'];
@@ -283,7 +286,7 @@ if(isset($_POST['submit']) || ($_GET['status']==1)){
 			{
 				$remark='Completed';
 			}			
-			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url&gatepassid=".$id."&type=1&plant_code=".$plant_code."&username=".$username."' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
+			echo "<tr><td>$date_get</td><td><a class='btn btn-warning' href='$url&pass_id=".$id."&type=1&plant_code=".$plant_code."&username=".$username."' >Print Gate Pass - ".$id."</a></td><td>$ops_name</td><td>$vehicle_no</td><td>$shift</td><td>$remark</td></tr>";
 		 }
 		 echo '</table></div></div>';
 	 

@@ -221,7 +221,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	 * @returns:po_description
 	*/
 	if($sub_po!=''){
-		$resultPoDetails=getPoDetaials($sub_po);
+		$resultPoDetails=getPoDetaials($sub_po,$plantcode);
 		$po_description=$resultPoDetails['po_description'];
 	}else{
 		$po_description="No Description";

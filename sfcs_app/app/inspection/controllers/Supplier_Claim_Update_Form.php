@@ -73,7 +73,7 @@ else
 	$comaplint_no=$_POST["txtcomsno"];	
 }
 ?>
-<form action="<?php echo getFullURL($_GET['r'], "Supplier_Claim_Update_Form.php", "N")?>" method="POST">
+<form action="<?php echo getFullURL($_GET['r'], "supplier_claim_update_form.php", "N")?>" method="POST">
 <?php
 	
 	echo "<div class='table-responsive'><table cellspacing=\"0\" id=\"table2\" class=\"table table-striped jambo_table bulk_action\" border=1>";	
@@ -227,7 +227,7 @@ if(isset($_POST['submitx']))
 	mysqli_query($link, $sql2) or die("Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
 	echo "<script>sweetAlert('Data Updated Successfully','','success')</script>";
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURL($_GET['r'], "Supplier_Claim_Request_Form.php", "N")."\"; }</script>";	
+	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURL($_GET['r'], "supplier_claim_request_form.php", "N")."\"; }</script>";	
 }
 ?>
 	 

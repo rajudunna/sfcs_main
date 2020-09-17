@@ -12,7 +12,7 @@ if(isset($_GET['gatepass'])){
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
     $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new_emb.php',0,'N');
-	$plantcode=$_SESSION['plantCode'];
+	$plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
 ?>
 
@@ -37,7 +37,8 @@ if(isset($_GET['gatepass'])){
 					?>
 				</select>
             </div><br/>
-            
+            <input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>		
+			<input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
             <input type="submit" id="continue" class="btn btn-success" value="CONTINUE">
         </div>
     </form>

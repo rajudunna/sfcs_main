@@ -18,7 +18,7 @@ if(isset($_GET['date']))
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $i = $sql_row['id'];
-        $path = '../../../sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print_binding.php'; 
+        $path = '../../../sfcs_app/app/cutting/controllers/lay_plan_preparation/book3_print_binding.php'; 
         $index+=1;
         $response_table.= "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
         $response_table.= "<td>".$sql_row['style']."</td>";

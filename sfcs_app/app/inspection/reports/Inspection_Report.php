@@ -294,7 +294,7 @@ if(isset($_POST['submit']))
 						}
 					
 						echo "<tr>";      
-						echo "<td><a href=\"\" onclick=\"Popup=window.open('".getFullURL($_GET['r'],'C_Tex_Report_Print_v2.php','R')."?lot_no=$batch_no&lot_ref=$lot_ref_batch"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">".$code."</a></td>"; 
+						echo "<td><a href=\"\" onclick=\"Popup=window.open('".getFullURL($_GET['r'],'c_tex_report_print_v2.php','R')."?lot_no=$batch_no&lot_ref=$lot_ref_batch"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">".$code."</a></td>"; 
 						echo "<td>".$buyer."</td>"; 
 						echo "<td>".$item_name."</td>"; 
 						echo "<td>".$batch_no."</td>"; 
