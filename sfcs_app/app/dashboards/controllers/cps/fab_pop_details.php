@@ -1144,9 +1144,9 @@ if(isset($_POST['submit']))
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		// $sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
-		// // echo $sql1;
-		// mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username','NOW()','$username','$plant_code')";
+		// echo $sql1;
+		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
 	}
 
 	if($issue_status==1)

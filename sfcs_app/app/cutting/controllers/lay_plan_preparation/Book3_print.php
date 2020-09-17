@@ -112,14 +112,14 @@ if($ratio_id!=' ' && $plant_code!=''){
 
 	
 	$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
-	$sql="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
+	$sql="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\" and plant_code='".$plant_code."'";
 //echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{
 		$system_width=round($sql_row1x['width'],2);
 	}
-	$sql1="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\"";
+	$sql1="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\" and plant_code='".$plant_code."'";
 //echo $sql;
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x1=mysqli_fetch_array($sql_result1))
