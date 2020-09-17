@@ -1,5 +1,5 @@
 <?php 
-//error_reporting(0);
+//rror_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
 //M3 Rest API Calls Details
@@ -29,7 +29,7 @@ $global_facility_code=$conf1->get('plantcode');
 //get_config_values('getmysqldb');
 $mysql_details = $conf1->getDBConfig();
 
-$plant_wh_code=$conf1->get('fg_wh_code');
+$plant_wh_code=$conf1->get('fg-wh-code');
 
 $barcode_gen_emb=$conf1->get('barcode_gen_emb');
 //SFCS Db Configurations
