@@ -21,7 +21,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		//echo $_POST['doc'];
 		$doc_no=$_POST['doc_no'];
 		$group_docs=$_POST["group_docs"];
-		$section=$_POST["secs"];
+		$section=$_POST["section"];
 		$module=$_POST["module"];
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
@@ -375,8 +375,9 @@ if(isset($_POST["submit1"]))
 
 	for($i=0;$i < count($ref);$i++ )
 	{		
-		$insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
-		mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));		
+		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
+		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$insert="insert into $pps.requested_dockets(doc_no,reference,created_user,created_at,updated_user,updated_at,plant_code) values(\"".$dockets[$i]."\",\"".$ref[$i]."\",\"".$username."\",'NOW()',\"".$username."\",NOW(),'$plant_code')";		
 	}
 	// var_dump($insert);
 	// die();
@@ -410,7 +411,7 @@ if(isset($_POST["submit1"]))
 	for($i=0;$i<1;$i++)
 	{
 		$sql1="select * from $pps.fabric_priorities where doc_ref=\"".$doc_nos_split[$i]."\" and plant_code='$plant_code'";
-		$result=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result=mysqli_query($link, $sql1) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
 		//Date: 2013-10-09
 		//Time difference is grater than or equel to 3
@@ -420,12 +421,12 @@ if(isset($_POST["submit1"]))
 		{
 			if($rows==0)
 			{
-				$sql="insert into $pps.fabric_priorities(doc_ref,doc_ref_club,req_time,log_time,log_user,section,module,created_user,updated_user,updated_at) values(\"".$doc_nos_split[$i]."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",\"".$username."\",\"".$username."\",'NOW()')";
+				$sql="insert into $pps.fabric_priorities(doc_ref,doc_ref_club,req_time,log_time,log_user,section,module,created_user,updated_user,updated_at,plant_code) values(\"".$doc_nos_split[$i]."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",\"".$username."\",\"".$username."\",'NOW()','$plant_code')";
 				//echo "<br>".$sql."<br>";
 				$note.=$sql."<br>";
 				if(!mysqli_query($link, $sql))
 				{
-					die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+					die("Error =0000 ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				} 
 				else
 				{
@@ -450,8 +451,8 @@ if(isset($_POST["submit1"]))
 
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
-echo "<tr><th>Section</th><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or section=$section) and issued_time=\"0000-00-00 00:00:00\" and plant_code='$plant_code' order by section,req_time,module";
+echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
+$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or req_time!='') and issued_time=\"0000-00-00 00:00:00\" and plant_code='$plant_code' order by section,req_time,module";
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
@@ -472,8 +473,7 @@ while($row2=mysqli_fetch_array($result2))
 		
 	}
 	
-	echo "<tr>";
-	echo "<td>".$row2["section"]."</td>";
+	echo "<tr>";	
 	echo "<td>".$row2["module"]."</td>";	
 	echo "<td>".$log_split[0]."</td>";
 	echo "<td>".$log_split[1]."</td>";
