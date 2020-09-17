@@ -250,7 +250,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 																$bgColor = '#DD3636';
 															}
 															// Get reason count for hour
-															$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+															$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
 															// echo $sql6_2.'<br><br>';
 															$resReasonsCount = mysqli_query($link, $sqlReasonsCount);
 															$rowCount = mysqli_fetch_row($resReasonsCount);
@@ -285,7 +285,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 																$bgColor = '#DD3636';
 															}
 															// Get reason count for hour
-															$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $bai_pro2.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
+															$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
 															// echo $sql6_2.'<br><br>';
 															$resReasonsCount = mysqli_query($link, $sqlReasonsCount);
 															$rowCount = mysqli_fetch_row($resReasonsCount);
