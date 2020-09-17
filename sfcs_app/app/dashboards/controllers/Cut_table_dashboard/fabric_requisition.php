@@ -451,8 +451,8 @@ if(isset($_POST["submit1"]))
 
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
-echo "<tr><th>Section</th><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or section=$section) and issued_time=\"0000-00-00 00:00:00\" and plant_code='$plant_code' order by section,req_time,module";
+echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
+$sql2="select * from $pps.fabric_priorities where (log_user=\"".$username."\"  or req_time!='') and issued_time=\"0000-00-00 00:00:00\" and plant_code='$plant_code' order by section,req_time,module";
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
@@ -473,8 +473,7 @@ while($row2=mysqli_fetch_array($result2))
 		
 	}
 	
-	echo "<tr>";
-	echo "<td>".$row2["section"]."</td>";	
+	echo "<tr>";	
 	echo "<td>".$row2["module"]."</td>";	
 	echo "<td>".$log_split[0]."</td>";
 	echo "<td>".$log_split[1]."</td>";

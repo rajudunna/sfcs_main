@@ -6,21 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/hea
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/menu_content.php',1,'R'));
 $table_csv = getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = getFullURL($_GET['r'],'export_excel1.php','R');
-function get_size($table_name,$field,$compare,$key,$link)
-{
-	//GLOBAL $menu_table_name;
-	//GLOBAL $link;
-	$sql="select $field as result from $table_name where $compare='$key'";
-	$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error-echo_1<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		return $sql_row['result'];
-	}
-	((mysqli_free_result($sql_result) || (is_object($sql_result) && (get_class($sql_result) == "mysqli_result"))) ? true : false);
-}
 
-
-
+$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <!-- <script src="js/jquery-1.4.2.min.js"></script>
 <script src="js/jquery-ui-1.8.1.custom.min.js"></script>
@@ -68,26 +56,22 @@ $reptype=$_POST['reptype'];
 				<input type="text" class="form-control" data-toggle="datepicker" id="to_date" name="to_date" onchange="return verify_date();" value="<?php if($to_date=="") {echo  date("Y-m-d"); } else {echo $to_date;}?>">
 			</div>
 
-			     <div class="form-group">Shift: 
-			       <select class="form-control" id="shift" name="shift">
-			       <option value="ALL">ALL</option>
-			       <?php
-					$shifts = (isset($_GET['shift']))?$_GET['shift']:'';
-					foreach($shifts_array as $key)
+			<div class="form-group">Shift: 
+			     <select class='form-control' name = 'shift' id = 'shift' required>
+					<option value="ALL">ALL</option>
+					<?php 
+					$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+					echo $shift_sql;
+					$shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($shift_row = mysqli_fetch_array($shift_sql_res))
 					{
-						if($key == $shift)
-						{
-							echo "<option value='$key' selected>$key</option>";
-						}
-						else
-						{
-							echo "<option value='$key' >$key</option>";
-						}
+						$shift_code=$shift_row['shift_code'];
+						echo "<option value='".$shift_code."' >".$shift_code."</option>"; 
 					}
-				?>
-			  </select>   
+					?>
+				</select>   
 			</div>
-
+			<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>
 
 			<button type="submit" id="submit" class="btn btn-primary" name="submit" onclick='return verify_date()'>Show</button>
 		</form>
@@ -98,6 +82,7 @@ if(isset($_POST['submit']))
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
     $to_shift=$_POST['shift'];
+    $plant_code=$_POST['plant_code'];
 
 	echo '<span class="pull-right">
 			<form action="'.$excel_form_action.'" method ="post" > 
@@ -112,7 +97,6 @@ if(isset($_POST['submit']))
 	echo "<th>Style</th>";
 	echo "<th>Schedule</th>";
 	echo "<th>Color</th>";
-	echo "<th>Module</th>";
 	echo "<th>Docket</th>";
 	echo "<th>Shift</th>";
 	echo "<th>Cut Job</th>";
@@ -120,69 +104,92 @@ if(isset($_POST['submit']))
 	echo "<th>Size</th>";
 	echo "<th>Quantity</th>";
 	echo "</tr>";
-	
+	//getting barcode_id,shift,parent_ext_ref_id
 	If($to_shift == 'ALL')
 	{
-       $sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size,input_job_no_ref order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,input_job_no_ref,ims_size";
+       $sql="SELECT barcode_id,parent_ext_ref_id,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job'";
 	}
 	else
 	{
-		$sql="select ims_date,ims_doc_no,ims_mod_no,ims_shift,ims_size,sum(ims_qty) as ims_qty,ims_style,ims_schedule,ims_color,input_job_no_ref, input_job_rand_no_ref from $bai_pro3.ims_combine where ims_date between \"$from_date\" and \"$to_date\" and ims_mod_no>0 and ims_shift = '$to_shift' group by ims_style,ims_schedule,ims_color,ims_mod_no,ims_doc_no,ims_size,input_job_no_ref order by ims_date DESC,ims_style,ims_schedule,ims_color,ims_doc_no,ims_mod_no,ims_shift,input_job_no_ref,ims_size";
+		$sql="SELECT barcode_id,parent_ext_ref_id,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND shift='$to_shift' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job' ";
 	}	
-	
-
-	//echo $sql;
- 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		echo "<tr>";
-		echo "<td>".$sql_row['ims_date']."</td>";
-		echo "<td>".$sql_row['ims_style']."</td>";
-		echo "<td>".$sql_row['ims_schedule']."</td>";
-		echo "<td>".$sql_row['ims_color']."</td>";
-		echo "<td>".$sql_row['ims_mod_no']."</td>";
-		echo "<td>".$sql_row['ims_doc_no']."</td>";
-		echo "<td>".$sql_row['ims_shift']."</td>";
-		
-		$display_prefix1 = get_sewing_job_prefix_inp("prefix","$brandix_bts.tbl_sewing_job_prefix",$sql_row['input_job_no_ref'],$sql_row['input_job_rand_no_ref'],$link);
-		$sql111="select order_div from $bai_pro3.bai_orders_db where order_del_no=".$sql_row['ims_schedule'];
-		//echo $sql1;
-	 	$sql_result111=mysqli_query($link, $sql111) or exit("Sql Error Buyer Divisionsss".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row111=mysqli_fetch_array($sql_result111))
-		{						
-			$division=$sql_row111['order_div'];
-		}
-		
-		
-		$sql1="select color_code,acutno,order_div from $bai_pro3.plandoc_stat_log_cat_log_ref where doc_no=".$sql_row['ims_doc_no'];
-		//echo $sql1;
-	 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
+		$barcode_id=$sql_row['barcode_id'];
+		$parent_ext_ref_id=$sql_row['parent_ext_ref_id'];
+		$shift=$sql_row['shift'];
+		$date=$sql_row['date'];
+		//getting finished good id
+		$get_finshgood_qry="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id='$barcode_id' AND plant_code='$plant_code'";
+		$get_finshgood_qry_result=mysqli_query($link, $get_finshgood_qry) or exit("Sql Error finished_good_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($get_finshgood_qry_row=mysqli_fetch_array($get_finshgood_qry_result))
 		{
-			echo "<td>".chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3)."</td>";			
-			//$division=$sql_row1['order_div'];			
-		}
+			$finished_good_id=$get_finshgood_qry_row['finished_good_id'];
+			//getting style,schedule,color,size
+			$get_det_qry="SELECT style,schedule,color,size FROM $pts.`finished_good` WHERE finished_good_id='$finished_good_id' AND plant_code='$plant_code'";
+			$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($get_det_qry_row=mysqli_fetch_array($get_det_qry_result))
+			{
+				$style=$get_det_qry_row['style'];
+				$schedule=$get_det_qry_row['schedule'];
+				$color=$get_det_qry_row['color'];
+				$size=$get_det_qry_row['size'];
+				//getting task job id
+				$get_taskjobid_qry="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$parent_ext_ref_id' AND plant_code='$plant_code'";
+				$get_taskjobid_qry_result=mysqli_query($link, $get_taskjobid_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($get_taskjobid_qry_result_row=mysqli_fetch_array($get_taskjobid_qry_result))
+				{
+					$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
+				}
+				//getting min operation
+				$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+				$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
+				if(mysqli_num_rows($minOperationResult)>0)
+				{
+					while($minOperationResultRow = mysqli_fetch_array($minOperationResult))
+					{
+						$minOperation=$minOperationResultRow['operation_code'];
+					}
+				}
 				
-	
-		if(mysqli_num_rows($sql_result1)==0)
-		{
-			echo "<td></td>";
+				//getting quantity 
+				$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$minOperation";
+				$get_quant_qry_result = mysqli_query($link_new, $get_quant_qry) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($get_quant_qry_row = mysqli_fetch_array($get_quant_qry_result)) 
+				{
+					$quantity=$get_quant_qry_row['quantity'];
+				}
+				//getting cutjobno and inputjob no
+				$job_detail_attributes = [];
+				$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$task_jobs_id."' and plant_code='$plant_code'";
+				$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) 
+				{
+					$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+				}
+					$sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
+					$cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+					$docket = $job_detail_attributes[$sewing_job_attributes['docketno']];
+				
+				echo "<tr>";
+				echo "<td>".$date."</td>";
+				echo "<td>".$style."</td>";
+				echo "<td>".$schedule."</td>";
+				echo "<td>".$color."</td>";
+				echo "<td>".$docket."</td>";
+				echo "<td>".$shift."</td>";
+				echo "<td>".$cutjobno."</td>";
+				echo "<td>".$sewingjobno."</td>";
+				echo "<td>".$size."</td>";
+				echo "<td>".$quantity."</td>";
+				echo "</tr>";				
+					
+			}
 		}
-		//echo $sql_row['ims_size'];
-		//echo sizeof($size_db_base);
-		$scode= str_replace("a_","",$sql_row['ims_size']);
-		
-		
-		echo "<td>".$display_prefix1."</td>";
-		$act_size=get_size("$bai_pro3.bai_orders_db_confirm","title_size_".$scode."","order_del_no='".$sql_row['ims_schedule']."' and order_col_des",$sql_row['ims_color'],$link);
-	//	echo $act_size."<br>";
-		echo "<td>".strtoupper($act_size)."</td>";		
-		echo "<td>".$sql_row['ims_qty']."</td>";
-		echo "</tr>";
 	}
-	
-	
-	
+
+		
 	echo "</table>
 	</div>";
 }
