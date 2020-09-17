@@ -21,7 +21,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		//echo $_POST['doc'];
 		$doc_no=$_POST['doc_no'];
 		$group_docs=$_POST["group_docs"];
-		$section=$_POST["secs"];
+		$section=$_POST["section"];
 		$module=$_POST["module"];
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
