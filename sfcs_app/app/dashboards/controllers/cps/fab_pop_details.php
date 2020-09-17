@@ -455,6 +455,7 @@ echo "<input type=\"hidden\" value=\"$style_ref\" name=\"style_ref\">";
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 echo "<input type=\"hidden\" value=\"$username\" name=\"username\">"; 
 echo "<input type=\"hidden\" value=\"$plant_code\" name=\"plantcode1\">"; 
+echo "<input type=\"hidden\" name=\"doc_mer\" value=\"".$fabric_required."\">";
 
 echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Marker Update</th><th>Required<br/>Qty</th><th>Reference</th>
 <th>Shrinkage</th><th>Width</th><th>Control</th><th>Print Status</th><th>Roll Details</th></tr>";
@@ -549,7 +550,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		c.order_tid=p.order_tid LEFT JOIN bai_rm_pj1.sticker_report s ON s.item=c.compo_no WHERE p.doc_no='$docno_lot' and item='$componentno_lot'";*/
 		
 		
-		$qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code'";
+		// $qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code'";
+
+		$qry_lotnos="select* from $wms.sticker_report left join $pps.requested_dockets on requested_dockets.plan_lot_ref=sticker_report.lot_no where sticker_report.product_group='Fabric' and sticker_report.plant_code='$plant_code' and requested_dockets.doc_no='$doc_no'";
 		// echo "<br>LOt qry : ".$qry_lotnos;
 		$sql_lotresult=mysqli_query($link, $qry_lotnos) or exit("lot numbers Sql Error ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_lotrow=mysqli_fetch_array($sql_lotresult))
@@ -581,11 +584,12 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 // 	$shrinkaage='';
 // 	$mwidt='A';
  	$marker_id='';
-// 	$sql007="select reference from $pps.requested_dockets where doc_no=\"".$doc_no."\"";
-// 	$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-// 	while($row007=mysqli_fetch_array($sql_result007))
-// 	{
-// 		$reference=$row007["reference"];
+	$sql007="select reference from $pps.requested_dockets where doc_no=\"".$doc_no."\"";
+	$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row007=mysqli_fetch_array($sql_result007))
+	{
+		$reference=$row007["reference"];
+}
 // 		// if($row007['mk_ref_id']>0)
 // 		// {	 
     if($doc_no!='' && $plant_code!=''){
@@ -655,7 +659,10 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$maker_update="select * from $pps.requested_dockets where doc_no='".$doc_no."' and plant_code='$plant_code'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($maker_update_result)){
-        $allocation = $row['plan_lot_ref'];	
+		$plan_lot_ref = $row['plan_lot_ref'];
+		$print_status=$row['print_status'];
+		
+		
        
     }
   
@@ -718,36 +725,38 @@ echo"</br></br>";
 	//echo var_dump($docket_num);
 	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
 	//if(strlen($sql_row1['plan_lot_ref'])>0)
-	if($sql_row1['plan_lot_ref']!='')
+	//if(strlen($sql_row1['plan_lot_ref'])>0)
+
+	
+	if($plan_lot_ref!='')
 	{	
 
-        $plan_lot_ref=$sql_row1['plan_lot_ref'];
-        $print_status = $sql_row1['print_status'];	
+		$plan_lot_ref=$plan_lot_ref;
+		
 		$allc_doc++;
 		//echo $sql_row1['category']."</br>";
 		//echo var_dump($comp_printed)."</br>";
-		// if($clubbing>0)
-		// {
-		// 	if(!in_array($category))
-		// 	{
-		// 		echo "<td><a href=\"$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-		// 		$comp_printed[]=$sql_row1['category'];
-		// 	}
-		// 	else
-		// 	{
-		// 		echo "<td>Clubbed</td>";
-		// 	}
-		// }
-		// else
-		// {
-			echo "<td><a href=\"$path?print_status=$print_status&doc_id=$doc_no&cat_title=".$category."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_id=".$sql_row1['doc_no'].",'Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
-		//}	
+		if($clubbing>0)
+		{
+			if(!in_array($sql_row1['category'],$comp_printed))
+			{
+				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$doc_no."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				$comp_printed[]=$sql_row1['category'];
+			}
+			else
+			{
+				echo "<td>Clubbed</td>";
+			}
+		}
+		else
+		{
+			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$doc_no."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_no=$doc_no&username=".$username."&plant_code=".$plant_code."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
 	}
 	else
 	{
-        //echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_no."\">";
 		//This was with limitation that we cannt execute for reclassified schedules
 		/*echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
 		$sql1x="select ref1,lot_no from bai_rm_pj1.fabric_status where item in (select compo_no from cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
@@ -773,7 +782,7 @@ echo"</br></br>";
 		
 		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_no."\">";
 		//For New Implementation
-		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$cat_refnce."\">";
+		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$doc_cat."\">";
 		echo "<input type=\"hidden\" name=\"doc_com[]\" value=\"".$doc_com."\">";
 		echo "<input type=\"hidden\" name=\"doc_mer[]\" value=\"".$fabric_required."\">";
 		echo "<input type=\"hidden\" name=\"cat_ref[]\" value=\"".$cat_ref."\">";
@@ -790,14 +799,14 @@ echo"</br></br>";
 		}else{
 
 			echo "Please Provide Lot Numbers: <textarea class=\"form-control\" id='address' onkeyup='return verify_num(this,event)'
-			     onchange='return verify_num(this,event)' name=\"pms".$sql_row1['doc_no']."\" cols=12 rows=10 ></textarea><br/>";
+			     onchange='return verify_num(this,event)' name=\"pms".$doc_no."\" cols=12 rows=10 ></textarea><br/>";
 
 		}
 		
-        echo "<td><a href=\"$path?print_status=$print_status&doc_id=".$doc_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_id=".$doc_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+
 			
 		//if($clubbing==0) //Disabled auto finding of lots, if color is clubbed
-		//{
+		{
 			//Commented due to performance issue 20120319
 			// $sql1x="select ref1,lot_no from $bai_rm_pj1.fabric_status where item in (select compo_no from $bai_pro3.cat_stat_log where tid=\"".$sql_row1['cat_ref']."\")";
 			//$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -808,7 +817,7 @@ echo"</br></br>";
 				
 			//} 
 			//Commented due to performance issue 20120319
-		//}
+		}
 		
 		/* //Disabled because of taking values from PMS040
 		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
@@ -824,7 +833,7 @@ echo"</br></br>";
 		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
 		echo "<input type=\"text\" value=\"\" name=\"manual".$sql_row1['doc_no']."[]\" size=\"12\"><br/>";
 		*/
-		//echo "</td>";
+		echo "</td>";
 		
 		
 		/* echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$sql_row1['doc_no']."\">";
@@ -855,25 +864,29 @@ echo"</br></br>";
 	} 
 	
 //echo "Print Status==".$sql_row1['print_status']."</br>";	
-// if($print_status>0)
-// {
-// 	echo "<td><img src=\"correct.png\"></td>";
-// 	$print_validation=$print_validation+1;
+
+if($print_status>0)
+{
+	echo "<td><img src=\"correct.png\"></td>";
+	$print_validation=$print_validation+1;
 	
-// }
-// else
-// {
-// 	// echo "Club Status==".$clubbing."</br>";
-// 	// if($clubbing>0)
-// 	// {
-// 		// echo "<td><img src=\"correct.png\"></td>";
-// 		// $print_validation=$print_validation+1;
-// 	// }
-// 	// else
-// 	// {
-// 		echo "<td><img src=\"Wrong.png\"></td>";
-// 	//}
-// }
+}
+else
+{
+	// echo "Club Status==".$clubbing."</br>";
+	// if($clubbing>0)
+	// {
+		// echo "<td><img src=\"correct.png\"></td>";
+		// $print_validation=$print_validation+1;
+	// }
+	// else
+	// {
+		echo "<td><img src=\"Wrong.png\"></td>";
+	//}
+}
+
+	
+
 echo "<td>";	
 	getDetails($doc_no,$plant_code);
 	echo "</td>";
@@ -1023,7 +1036,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update $bai_pro3.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where doc_no='".$doc_no."'";
+		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at=NOW() where doc_no='".$doc_no."'";
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -1091,7 +1104,7 @@ if(isset($_POST['submit']))
 					
 					if($issue_status==5)
 					{	
-						$sql22="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).",qty_allocated=qty_allocated-".$qty_iss.", status=$status, allotment_status=$status,updated_user='$username';updated_at=NOW() where tid=\"$code\" and plant_code='$plant_code'";
+						$sql22="update $wms.store_in set qty_issued=".($qty_issued+$qty_iss).",qty_allocated=qty_allocated-".$qty_iss.", status=$status, allotment_status=$status,updated_user='$username', updated_at=NOW() where tid=\"$code\" and plant_code='$plant_code'";
 						mysqli_query($link, $sql22) or exit("Sql Error----3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 						$sql211="select * from $wms.store_out where tran_tid='".$code."' and qty_issued='".$qty_iss."' and Style='".$style."' and Schedule='".$schedule."' and cutno='".$doc_no_loc."' and date='".date("Y-m-d")."' and updated_by='".$username."' and remarks='".$reason."' and log_stamp='".date("Y-m-d H:i:s")."' and plant_code='$plant_code' ";
@@ -1131,14 +1144,14 @@ if(isset($_POST['submit']))
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		// $sql1="INSERT INTO `$bai_pro3`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`) VALUES ('$group_docs', '".date("Y-m-d H:i:s")."','$username')";
-		// // echo $sql1;
-		// mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`doc_no`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username','NOW()','$username','$plant_code')";
+		// echo $sql1;
+		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
 	}
 
 	if($issue_status==1)
 	{
-		$sql1="update $bai_pro3.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where doc_no in ($doc_no) and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where doc_no in ($doc_no) and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
