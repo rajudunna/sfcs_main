@@ -104,7 +104,7 @@ $username=$_SESSION['userName'];
 			FROM $pps.jm_docket_lines docLine 
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id
-			LEFT JOIN $bai_pro3.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.doc_no
+			LEFT JOIN $pps.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.doc_no
 			WHERE docLine.plant_code='$plantcode' AND docLine.jm_docket_id IN ('$taskJobs')";
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $docketLinesNum=mysqli_num_rows($docketLinesResult);
@@ -147,13 +147,6 @@ $username=$_SESSION['userName'];
 						$order_del_no = $job_detail_attributes[$sewing_job_attributes['schedule']];
 						$order_col_des = $job_detail_attributes[$sewing_job_attributes['color']];
 						$pcutno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
-					// $order_tid = $sql_row['order_tid'];
-					// $sql33 = "select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
-					// mysqli_query($link, $sql33) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					// $sql_result33 = mysqli_query($link, $sql33) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					// while ($sql_row33 = mysqli_fetch_array($sql_result33)) {
-					// 	$color_code = $sql_row33['color_code']; //Color Code
-					// }
 					
 					/**
 					 * getting print_status,fabric_status info 
@@ -245,68 +238,6 @@ $username=$_SESSION['userName'];
 					echo "<td>$docket_printed_person</td>";
 					echo "<td>$act_cut_status</td>";
 					echo "</tr>";
-					// $sql2 = "SELECT order_cat_doc_mk_mix.category,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.material_req,(p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as qty,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix WHERE doc_no<>" . $sql_row['doc_no'] . " and pcutno=" . $pcutno . " and order_col_des='" . $order_col_des . "' and order_del_no='" . $order_del_no . "'";
-					// $sql_result2 = mysqli_query($link, $sql2) or exit("Sql Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					// if (mysqli_num_rows($sql_result2) > 0) {
-					// 	while ($sql_row2 = mysqli_fetch_array($sql_result2)) {
-					// 		$category1 = $sql_row2['category'];
-					// 		$doc_no1 = $sql_row2['doc_no'];
-					// 		$p_qty1 = $sql_row2['qty'];
-					// 		$sql12 = "SELECT b.order_style_no,b.order_del_no,b.order_col_des,p.order_tid,p.doc_no,p.pcutno,p.act_cut_status,p.print_status,
-					// 		p.docket_printed_person,p.fabric_status,p.log_update,l.date_n_time AS fab_ready_time,p.order_tid,cat.category,cat.seperate_docket,cat.binding_consumption
-					// 		FROM $bai_pro3.plandoc_stat_log p 
-					// 		JOIN $bai_pro3.bai_orders_db b ON p.order_tid=b.order_tid
-					// 		LEFT JOIN $bai_pro3.log_rm_ready_in_pool l ON p.doc_no=l.doc_no
-					// 		left join $bai_pro3.cat_stat_log cat on cat.tid=p.cat_ref where p.doc_no=$doc_no1";
-					// 		$sql_result12 = mysqli_query($link, $sql12) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					// 		while ($sql_row12 = mysqli_fetch_array($sql_result12)) {
-					// 			$act_cut_status1 = $sql_row12['act_cut_status'];
-					// 			$print_status1 = $sql_row12['print_status'];
-					// 			$docket_printed_person1 = $sql_row12['docket_printed_person'];
-					// 			$fabric_status1 = $sql_row12['fabric_status'];
-					// 			$log_update1 = $sql_row12['log_update'];
-					// 			$req_user1 = $sql_row12['req_user'];
-					// 			$log_time1 = $sql_row12['log_time'];
-					// 			$seperate_docket1 = $sql_row12['seperate_docket'];
-					// 			$binding_consumption1 = $sql_row12['binding_consumption'];
-					// 		}
-					// 		$binding_consumption_qty1 = $binding_consumption1 * $p_qty1;
-					// 		if ($seperate_docket1 == 'No') {
-					// 			$material_requirement_orig1 = $sql_row2['material_req'];
-					// 		} else {
-					// 			$material_requirement_orig1 = $sql_row2['material_req'] - $binding_consumption_qty1;
-					// 		}
-					// 		$extra1 = 0; {
-					// 			$extra1 = round(($material_requirement_orig1 * $sql_row2['savings']), 2);
-					// 		}
-					// 		echo "<tr style=\"color: #000000\">";
-					// 		echo "<td>$order_style_no</td>";
-					// 		echo "<td>$order_del_no</td>";
-					// 		echo "<td>$order_col_des</td>";
-					// 		echo "<td>$category1</td>";
-					// 		echo "<td>$doc_no1</td>";
-					// 		echo "<td>" . ($material_requirement_orig1 + $extra1) . "</td>";
-					// 		echo "<td>" . $fab_uom . "</td>";
-					// 		echo "<td>" . chr($color_code) . leading_zeros($pcutno, 3) . "</td>";
-					// 		echo "<td>$req_user</td>";
-					// 		if ($fabric_status1 == "5") {
-					// 			echo "<td>Fab. Issued</td>";
-					// 		} else if ($fabric_status1 == "8") {
-					// 			echo "<td>Fab. Ready in Pool</td>";
-					// 		} else {
-					// 			echo "<td> - </td>";
-					// 		}
-					// 		echo "<td>$log_update</td>";
-					// 		echo "<td>$log_time</td>";
-					// 		echo "<td>$req_time</td>";
-					// 		echo "<td>" . $fab_ready_time1 . "</td>";
-					// 		echo "<td>$issued_time</td>";
-					// 		echo "<td>$print_status1</td>";
-					// 		echo "<td>$docket_printed_person1</td>";
-					// 		echo "<td>$act_cut_status1</td>";
-					// 		echo "</tr>";
-					// 	}
-					// }
 				}
 				echo "</table></div>";
 			
