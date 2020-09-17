@@ -1006,7 +1006,8 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
      $taskStatus=TaskStatusEnum::INPROGRESS;
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
-      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode'";
+      $task_header_log_time=array();
+      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode'";
     //   echo $get_task_header_id."<br/>";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
@@ -1016,26 +1017,32 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       //To get taskrefrence from task_jobs based on resourceid 
       $task_job_reference=array(); 
-      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' ORDER BY priority ASC";
-    //   echo $get_refrence_no."<br/>";
-      $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
-      while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
-      {
-        $task_job_reference[$refrence_no_row['priority']] = $refrence_no_row['task_job_reference'];
-        $task_job_ids[$refrence_no_row['task_jobs_id']] = $refrence_no_row['task_header_id'];
-      }
-      //Qry to get sewing jobs from jm_jobs_header
+      $task_job_ids=array(); 
       $job_number=array();
-      foreach($task_job_reference as $key=>$value){
-        $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id='$value'";
-        $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
-        if($toget_sewing_jobs_num>0){
-            while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
-            {
-                $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id'];
+      if(sizeof($task_header_id) > 0){
+
+          $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' ORDER BY priority ASC";
+         
+          $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+          while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+          {
+            $task_job_reference[$refrence_no_row['priority']] = $refrence_no_row['task_job_reference'];
+            $task_header_ids[$refrence_no_row['task_header_id']] = $refrence_no_row['task_job_reference'];
+            $task_job_ids[$refrence_no_row['task_jobs_id']] = $refrence_no_row['task_header_id'];
+          }
+          //Qry to get sewing jobs from jm_jobs_header
+          
+          foreach($task_header_ids as $key=>$value){
+            $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id='$value'";
+            $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+            if($toget_sewing_jobs_num>0){
+                while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+                {
+                    $job_number[$key]= $toget_sewing_jobs_row['job_number'];
+                }
             }
-        }
+          }
       }
       return array(
           'job_number' => $job_number,
