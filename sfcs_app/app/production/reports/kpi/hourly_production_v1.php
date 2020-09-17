@@ -9,8 +9,7 @@ include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/functions.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 
-// $plantCode = $_SESSION['plantCode'];
-$plantCode = 'AIP';
+$plantCode = $_SESSION['plantCode'];
 // Down time reasons
 $master_resons = array();
 $sql_mstr_resns = "SELECT id FROM $pps.downtime_reason WHERE plant_code='$plantCode' AND id NOT IN (20,21,22)";
