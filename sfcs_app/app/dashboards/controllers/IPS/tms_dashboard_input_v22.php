@@ -12,7 +12,7 @@
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-    $plant_code = $global_facility_code;
+    $plant_code = $_SESSION['plantCode'];
     $dashboard_name="IPS";
     $sec_result = mysqli_query($link, "SELECT section_id,section_name FROM $pms.sections WHERE plant_code='$plant_code' and is_active=1 order by section_id") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
