@@ -7,7 +7,14 @@
 	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
-	$gate_id=$_POST['gate_id'];	
+	if(isset($_POST['gate_id']))
+	{
+		$gate_id=$_POST['gate_id'];	
+	}
+	else
+	{
+		$gate_id=$_GET['gate_id'];
+	}
 	if(isset($_POST['plant_code']))
 	{
 		$plantcode=$_POST['plant_code'];
@@ -78,7 +85,7 @@ th,td{
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
-					<input type="hidden" id="plant_code" name="plant_code" value='<?= $username; ?>'>
+					<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 					
 					<?php
 					if($gate_id>0)
@@ -87,7 +94,7 @@ th,td{
 						<div class="col-sm-2 form-group" style="padding-top:20px;">
 						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
 						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plantcode=".$plantcode."&username=".$username."' >Finish</a>";
+							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plant_code=".$plantcode."&username=".$username."' >Finish</a>";
 						?>
 						</form>
 						</div> 
@@ -119,14 +126,16 @@ $(document).ready(function()
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
-		var barcode = $('#barcode').val();
 		var operation_id = $('#operation_id').val();
 		if(operation_id!=undefined)
 		{
 			var operation_id = $('#operation_id').val();
+			var barcodemain = $('#barcode').val();
+			var barcode=barcodemain+'-'+operation_id;
 		}
 		else
 		{
+			var barcode = $('#barcode').val();
 			var res = barcode.split('-');
 			var operation_id = res[1];
 		}
@@ -149,8 +158,16 @@ $(document).ready(function()
 				if(res.status)
 				{
 					bundet=res.data
-					tableConstruction(bundet);
-					swal(res.internalMessage,'','success');
+					if(bundet)
+					{
+						tableConstruction(bundet);
+						swal(res.internalMessage,'','success');
+					}
+					else
+					{
+						$('#loading-image').hide();
+						swal('Error',' in getting data','error');
+					}
 				}
 				else
 				{
@@ -174,22 +191,32 @@ function tableConstruction(bundet){
 		$('#dynamic_table1').html('');
 		for(var i=0;i<bundet.data.length;i++)
         {
-			var hidden_class='';
-			if(i==0)
-            {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
-                $("#dynamic_table1").append(markup);
-            }
-            s_no++;
-			
-			var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='fgColor'>"+bundet.data[i].fgColor+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='goodQty'>"+bundet.data[i].goodQty+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
-            $("#dynamic_table").append(markup1);
-            $("#dynamic_table").hide();
-			
-			$('#dynamic_table2').html('');
-			var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
-			$("#dynamic_table2").append(dynamic2);
-			$("#dynamic_table2").show();
+			if(bundet.data[i].style!='' || bundet.data[i].style!=null)
+			{
+				var hidden_class='';
+				if(i==0)
+				{
+					var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
+					$("#dynamic_table1").append(markup);
+				}
+				s_no++;
+				
+				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='fgColor'>"+bundet.data[i].fgColor+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='goodQty'>"+bundet.data[i].goodQty+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
+				$("#dynamic_table").append(markup1);
+				$("#dynamic_table").hide();
+				
+				$('#dynamic_table2').html('');
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				$("#dynamic_table2").append(dynamic2);
+				$("#dynamic_table2").show();
+			}
+			else
+			{
+				$('#dynamic_table2').html('');
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				$("#dynamic_table2").append(dynamic2);
+				$("#dynamic_table2").show();
+			}
 		}
 	}
 	var markup99 = "</tbody></table></div></div></div>";

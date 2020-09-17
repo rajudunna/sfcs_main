@@ -9,8 +9,9 @@ $api_password = $conf1->get('api-password');
 $api_hostname = $conf1->get('api-host-name');
 $api_port_no  = $conf1->get('api-port');
 
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
+// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
+// $username=strtolower($username_list[1]);
+$username='sfcsproject3';
 
 //$global_facility_code=$conf1->get('plantcode');
 $enable_api_call = $conf1->get('enable-api-call');
@@ -81,7 +82,7 @@ $sizes_code=array('01','02','03','04','05','06','07','08','09','10','11','12','1
 $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','S11','S12','S13','S14','S15','S16','S17','S18','S19','S20','S21','S22','S23','S24','S25','S26','S27','S28','S29','S30','S31','S32','S33','S34','S35','S36','S37','S38','S39','S40','S41','S42','S43','S44','S45','S46','S47','S48','S49','S50');
 
 //TaskAttributeNamesEnum
-$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP'];
+$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP','remarks'=>'REMARKS','conumber'=>'CONUMBER'];
 
 
 ?>

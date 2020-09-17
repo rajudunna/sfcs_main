@@ -12,17 +12,19 @@
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    $plant_code = $_SESSION['plantCode'];
     $dashboard_name="IPS";
-    $sec_result = mysqli_query($link, "SELECT DISTINCT sec_name FROM $bai_pro3.sections_master WHERE sec_name>0 order by sec_name") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $sec_result = mysqli_query($link, "SELECT section_id,section_name FROM $pms.sections WHERE plant_code='$plant_code' and is_active=1 order by section_id") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
-    echo "<script>var sec_ids = '".implode(',',array_column($sections, 'sec_name'))."';</script>";
+    echo "<script>var sec_ids = '".implode(',',array_column($sections, 'section_id'))."';</script>";
+    echo "<script>var sec_names = '".implode(',',array_column($sections, 'section_name'))."';</script>";
     echo "<div class='panel panel-primary'>
             <div class='panel-heading'><h3 class='panel-title'>IPS Dashboard</h3></div>
             <div class='panel-body'>
             <div class='col-sm-12' style='padding-bottom:20px'>
             <div class='form-group'>
               <div class='col-sm-3'>";
-                echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10">';
+                echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10"><input type="hidden" id="plant_code" name="plant_code" value='.$plant_code.' required>';
               echo "</div><div class='col-sm-3'>";
                 echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control integer" onkeyup="blink_new3(this.value)" size="10"> &nbsp;&nbsp;';
               echo "</div>
@@ -48,8 +50,8 @@
         echo "<div style='width:20%;float:left;padding:5px'>
             <div class='panel panel-success'>
                 <div class='panel-body sec-box'>
-                    <div class='loading-block' id='sec-load-".$sec['sec_name']."' style='display:block'></div>
-                    <div id='sec-".$sec['sec_name']."'>
+                    <div class='loading-block' id='sec-load-".$sec['section_id']."' style='display:block'></div>
+                    <div id='sec-".$sec['section_id']."'>
 
                     </div>
                 </div>
@@ -77,25 +79,27 @@ function redirect_priority()
 
 <script>
 var sec_id_ar = sec_ids.split(',');
+var sec_name_ar = sec_names.split(',');
 jQuery( document ).ready(function() {
     call_server();
 });
 
 function call_server(){
     for(var i=0;i<sec_id_ar.length;i++){
-      ajax_calls(sec_id_ar[i],false);
+      ajax_calls(sec_id_ar[i],sec_name_ar[i],false);
     }
 }
 setInterval(function() {
-  ajax_calls(sec_id_ar[0],true);
+  ajax_calls(sec_id_ar[0],sec_name_ar[0],true);
 }, 120000); 
 
 
-function ajax_calls(value,sync_type){
+function ajax_calls(value,sec_name,sync_type){
   $('#sec-load-'+value).css('display','block');
   $('#sec-'+value).html('');
+  var plant_code = $('#plant_code').val();
   $.ajax({
-      url: "<?= $url ?>?sec="+value+"&priority_limit="+$('#view_priority').val()
+      url: "<?= $url ?>?sec_id="+value+"&sec_name="+sec_name+"&plant_code="+plant_code+"&priority_limit="+$('#view_priority').val()
   }).done(function(data) {
       try{
         var r_data = JSON.parse(data) ;
@@ -141,11 +145,14 @@ function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation
 function PopupCenter(pageURL, title,w,h) {
     
     var shift= $('#shift').val();
+    var plant_code= $('#plant_code').val();
+    // alert(plant_code);
     if(shift==''){
       swal('Please Select Shift First','','error');
       return false;
     }else{
-      pageURL+=shift;
+      var append_params= shift+'&plant_code='+plant_code;
+      pageURL+=append_params;
     }
  
   var left = (screen.width/2)-(w/2);

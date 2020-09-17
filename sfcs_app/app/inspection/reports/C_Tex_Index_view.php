@@ -173,8 +173,8 @@ if(isset($_POST['put']))
 	}
 	
 	
-	if($num_rows>0 and $print_check==0 and $inspection_check==1)   {echo "<h3><center><a href='".getFullURL($_GET['r'],'C_Tex_Report_Print_v2.php','R')."?lot_no=".urlencode($lot_no)."
-	&lot_ref=".urlencode($lot_ref)."' onclick=\"Popup=window.open('".getFullURL($_GET['r'],'C_Tex_Report_Print_v2.php','R')."?lot_no=".urlencode($lot_no)."&lot_ref=".urlencode($lot_ref).""."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><button class='btn btn-success'>Print Report</button></a></center></h3>"; } else { echo '<h3>Please update values to Print.</h3>'; }
+	if($num_rows>0 and $print_check==0 and $inspection_check==1)   {echo "<h3><center><a href='".getFullURL($_GET['r'],'c_tex_report_print_v2.php','R')."?lot_no=".urlencode($lot_no)."
+	&lot_ref=".urlencode($lot_ref)."' onclick=\"Popup=window.open('".getFullURL($_GET['r'],'c_tex_report_print_v2.php','R')."?lot_no=".urlencode($lot_no)."&lot_ref=".urlencode($lot_ref).""."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><button class='btn btn-success'>Print Report</button></a></center></h3>"; } else { echo '<h3>Please update values to Print.</h3>'; }
 
 	
 }

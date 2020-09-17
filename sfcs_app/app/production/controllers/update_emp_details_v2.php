@@ -48,7 +48,7 @@ $username=strtolower($username_list[1]);
 <div class="panel panel-primary">
 	<div class="panel-heading">Employee Attendance Update</div>
 	<div class="panel-body">
-		<form method="POST" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>" >
+		<form method="POST" action="<?php $_SERVER['PHP_SELF']; ?>">
 			<div class='col-md-3 col-sm-3 col-xs-12'>
 				Select Date: <input id="demo1" type="text" class="form-control" data-toggle="datepicker" size="10" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>
 			</div>
@@ -68,40 +68,50 @@ $username=strtolower($username_list[1]);
 			</div>
 			<?php
 			$plant_timings_array=array();
-			$sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings";
-			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $sql1="select DISTINCT time_value as plant_time FROM $bai_pro3.tbl_plant_timings";
+			$sql1="select  plant_start_time,plant_end_time FROM $pms.plant where plant_code='$plantcode'";
+			$sql_result1=mysqli_query($link, $sql1) or exit ("Sql Error:12 $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row1=mysqli_fetch_array($sql_result1))
 			{
-				$plant_timings_array[]=$sql_row1['plant_time'];
+				// $plant_timings_array[]=$sql_row1['plant_time'];
+				$start_time=$sql_row1['plant_start_time'];
+				$end_time=$sql_row1['plant_end_time'];
+
 			}
 			?>	
 			<div class='col-md-3 col-sm-3 col-xs-12'>
 				Select Shift Start Time: 
-				<select name="shift_start" id="shift_start"  class="select2_single form-control" required>
+				<!-- <select name="shift_start" id="shift_start"  class="select2_single form-control" required>
 					<option value=''>Please Select</option>
 					<?php 
-						for ($i=0; $i < sizeof($plant_timings_array); $i++)
-						{
+						// for ($i=0; $i < sizeof($plant_timings_array); $i++)
+						// {
 					?>
-					<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_start==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+					<option  <?php 
+					// echo 'value="'.$plant_timings_array[$i].'"'; if($shift_start==$plant_timings_array[$i]){ echo "selected";}   ?>><?php 
+					// echo $plant_timings_array[$i] ?></option>
 					<?php 
-						}
+						// }
 					?>
-				</select>
+				</select> -->
+				<input name="shift_start" id="shift_start" class="select2_single form-control" value='<?php echo $start_time; ?>' readonly required>
 			</div>
 			<div class='col-md-3 col-sm-3 col-xs-12'>
 				Select Shift End Time:
-				<select name="shift_end" id="shift_end" class="select2_single form-control" onchange="return check_hrs();" required>
+					<input name="shift_end" id="shift_end" class="select2_single form-control" value='<?php echo $end_time; ?>' readonly required>
+				<!-- <select name="shift_end" id="shift_end" class="select2_single form-control" onchange="return check_hrs();" required>
 					<option value=''>Please Select</option>
 					<?php 
-						for ($i=0; $i < sizeof($plant_timings_array); $i++)
-						{
+						// for ($i=0; $i < sizeof($plant_timings_array); $i++)
+						// {
 							?>
-					<option  <?php echo 'value="'.$plant_timings_array[$i].'"'; if($shift_end==$plant_timings_array[$i]){ echo "selected";}   ?>><?php echo $plant_timings_array[$i] ?></option>
+					<option  <?php 
+					// echo 'value="'.$plant_timings_array[$i].'"'; if($shift_end==$plant_timings_array[$i]){ echo "selected";}   ?>><?php 
+					// echo $plant_timings_array[$i] ?></option>
 							<?php 
-						}
+						// }
 					?>
-				</select>
+				</select> -->
 			</div>
 			<br>
 			<br>
@@ -118,14 +128,14 @@ if(isset($_POST['submit']))
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
 	$modules_array = array();	$modules_id_array=array();
-	$get_modules = "SELECT DISTINCT module_name, id FROM $bai_pro3.`module_master` where status='Active' ORDER BY module_name*1;";
+	$get_modules = "SELECT DISTINCT workstation_label, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_label*1";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	if(mysqli_num_rows($modules_result) > 0)
 	{
 		while($module_row=mysqli_fetch_array($modules_result))
 		{
-			$modules_array[]=$module_row['module_name'];
-			$modules_id_array[$module_row['module_name']]=$module_row['id'];
+			$modules_array[]=$module_row['workstation_label'];
+			$modules_id_array[$module_row['workstation_label']]=$module_row['workstation_id'];
 		}
 		$modules = implode("','", $modules_array);
 		$sql1="SELECT * FROM $pts.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
@@ -159,7 +169,9 @@ if(isset($_POST['submit']))
 										echo "<input type=\"hidden\" name=\"shift\" value=\"$shift\">";
 										echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
 										echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
-										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";			
+										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";	
+										echo "<input type=\"hidden\" name=\"plant_code_name\" value=\"$plantcode\">";
+										echo "<input type=\"hidden\" name=\"username\" value=\"$username\">";			
 								}
 								else
 								{
@@ -174,7 +186,8 @@ if(isset($_POST['submit']))
 							</tr>";
 					}
 					if(in_array($authorized,$has_permission))
-					{ ?>
+					{
+						 ?>
 						<tr>
 							<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
 						</tr> <?php
@@ -199,6 +212,8 @@ if(isset($_POST['submit']))
 					echo "<input type=\"hidden\" name=\"date\" value=\"$date\">";
 					echo "<input type=\"hidden\" name=\"shift_start_time\" value=\"$shift_start_time\">";
 					echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";
+					echo "<input type=\"hidden\" name=\"plant_code_name\" value=\"$plantcode\">";
+					echo "<input type=\"hidden\" name=\"username\" value=\"$username\">";	
 					 ?>
 					
 					<tr>

@@ -18,7 +18,7 @@ $url_r = base64_encode(implode('/',$php_self)."/sfcs_app/app/cutting/controllers
 $url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 $has_permission=haspermission($url_r); 
 ?>
-<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
+<?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
 <?php 
 
@@ -165,7 +165,7 @@ $plant_code = $_GET['plantcodename'];
 $username = $_GET['username'];
 $doc_no=$_GET['doc_no'];
 //getting docket number to get 
-$binding_query = "select p.tot_bindreq_qty,c.doc_no from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$doc_no."' and c.plant_code='".$plant_code."'";
+$binding_query = "select p.id,p.tot_bindreq_qty,c.doc_no from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$doc_no."' and c.plant_code='".$plant_code."'";
 $binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Errorat_jm_cut_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$binding_num=mysqli_num_rows($binding_query_result);
 	if($binding_num>0){
@@ -173,6 +173,7 @@ $binding_query_result=mysqli_query($link_new, $binding_query) or exit("Sql Error
 		{
 			$tot_bindreq_qty = $binding_row['tot_bindreq_qty'];
 			$doc_num = $binding_row['doc_no'];
+			$id = $binding_row['id'];
 		}
 	}
 ?>
@@ -344,7 +345,7 @@ echo "<input type=\"hidden\" value=\"$schedule\" name=\"schedule\">";
 echo "<input type=\"hidden\" value=\"$dash\" name=\"dashboard\">";  
 echo "<input type=\"hidden\" value=\"$plant_code\" name=\"plant_codename\">"; 
 echo "<input type=\"hidden\" value=\"$username\" name=\"username\">"; 
-echo "<input type=\"hidden\" name=\"row_id\" value=\"".$doc_num."\">";
+echo "<input type=\"hidden\" name=\"row_id\" value=\"".$id."\">";
 
 
 echo "<table class='table table-bordered'><tr><th>Category</th><th>Item Code</th><th>Color Desc. - Docket No</th><th>Required<br/>Qty</th><th>Control</th></tr>";

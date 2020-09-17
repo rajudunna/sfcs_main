@@ -40,7 +40,7 @@
 		  "Cad Job Priority" :"/cad_job_priority/interact.php",
 		  "Cad Job Priority-2" :"/cad_job_priority/CAD_Plotting_Interact.php",
 		  "Plot Job Priority" :"/cad_plotting_interact2.php",
-		  "MRN Request Form" :"/mrn_request_form_V2.php",
+		  "MRN Request Form" :"/mrn_request_form_v2.php",
 		  "Panels Sequence Numbers" :"/panel_sequence_nos.php",
 		  "Create Location" :"/locationcreate.php",
 		  "Locations Dashboard" :"/locationsdashboard.php"

@@ -1,6 +1,6 @@
 <script src="/sfcs_app/common/js/jquery-2.1.3.min.js"></script>
   <script src="/sfcs_app/common/js/sweetalert-dev.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/sweetalert.css',3,'R'); ?>">
 <?php
 $tbl_id=$_GET['tid'];
 

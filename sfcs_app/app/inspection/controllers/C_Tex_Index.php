@@ -108,7 +108,7 @@ if(isset($_POST['put']))
 	if($lot_ref)
 	{
 		
-		$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+		$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v6.php')['url'];
 
 		echo "<script type='text/javascript'>";
 		echo "setTimeout('Redirect()',0);";
@@ -159,7 +159,7 @@ if(isset($_POST['submit1']))
 			
 		}else
 		{
-			$url = getURL(getBASE($_GET['r'])['base'].'/C_Tex_Interface_V6.php')['url'];
+			$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v6.php')['url'];
 			
 
 			echo "<script type='text/javascript'>";
