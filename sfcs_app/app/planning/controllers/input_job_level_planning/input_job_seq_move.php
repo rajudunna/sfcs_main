@@ -90,7 +90,7 @@
                
                    
                $doc_qty=0;  
-               foreach($job_number as $sew_num=>$jm_sew_id)
+               foreach($job_number as $jm_sew_id=>$sew_num)
                {    
                     //To get taskjobs_id
 					$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
