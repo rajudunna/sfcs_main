@@ -793,7 +793,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                     }
 
                     /**Insert new record in header for if new reource id alloacted with in cut job */
-                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
+                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','".$items[0]."','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_insert_taskheader) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     /**update resource id tasks jobs with task_header*/
