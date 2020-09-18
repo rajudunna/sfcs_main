@@ -332,8 +332,10 @@ $(document).ready(function()
 	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
+	<?php if ($_POST['operation_name']) {?>
 	$("#job_number").change(function()
 	{
+	<?php }?>
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
@@ -374,7 +376,9 @@ $(document).ready(function()
 				swal('Error','in getting docket','error');
 			}
 		});
-	});
+	<?php if ($_POST['operation_name']) {?>
+		});
+	<?php }?>
 });
 
 function tableConstruction(data){
