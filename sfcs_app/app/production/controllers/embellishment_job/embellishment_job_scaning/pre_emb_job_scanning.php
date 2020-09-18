@@ -63,6 +63,7 @@ $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Job Level'];
                 <input type='hidden' id='operation_name' name='operation_name' required>
 				<input type='hidden' id='operation_id' name='operation_id' required>		
 				<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>' required>		
+                <input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
                 <div class="col-md-1">
                     <br>
                     <button type='submit' value='Continue with Embellishment' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=embellishment';?>' style="margin-top: 4px;">Continue with Embellishment</button>
