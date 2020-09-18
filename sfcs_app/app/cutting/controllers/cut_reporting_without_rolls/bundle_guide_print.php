@@ -1,81 +1,50 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
 $doc_no=$_GET['doc_no'];
-$bundle_no=array();
-$getdetails2="SELECT size,bundle_no FROM $pps.docket_number_info where plant_code='$plantcode' and doc_no=".$doc_no." group by bundle_no order by id";
-$getdetailsresult = mysqli_query($link,$getdetails2);
-while($sql_row=mysqli_fetch_array($getdetailsresult))
+$style=$_GET['style'];
+$schedule=$_GET['schedule'];
+$color=$_GET['color'];
+$mpo=$_GET['mpo'];
+$ponum=$_GET['ponum'];
+$cut_number=$_GET['cut_number'];
+$plant_code=$_GET['plant_code'];
+
+//getting cut number based on po number
+$get_cut_number_qry="SELECT cut_number,jm_cut_job_id FROM $pps.`jm_cut_job` WHERE po_number='$ponum' AND plant_code='$plant_code'";
+$get_cut_number_qry_result=mysqli_query($link, $get_cut_number_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_cut=mysqli_fetch_array($get_cut_number_qry_result))
 {
-	//echo $sql_row['bundle_no'];
-	$size[] = $sql_row['size'];				
-	$bundle_no[] = $sql_row['bundle_no'];				
-	// $shade_bun[] = $sql_row['shade_bundle'];				
-	// $bundle_start[$sql_row['bundle_no']] = $sql_row['bundle_start'];				
-	// $bundle_end[$sql_row['bundle_no']] = $sql_row['bundle_end'];				
-	// $qty[$sql_row['bundle_no']] = $sql_row['qty'];				
-	// $shade[$sql_row['bundle_no']] = 'Shade';				
-}
-
-$getdetails1="SELECT compo_no,order_col_des,order_del_no,color_code,acutno FROM $bai_pro3.order_cat_doc_mk_mix  where doc_no=".$doc_no;
-$getdetailsresult1 = mysqli_query($link,$getdetails1);
-while($sql_row1=mysqli_fetch_array($getdetailsresult1))
-{
-	$compo_no = $sql_row1['compo_no'];
-	$schedule = $sql_row1['order_del_no'];
-	$color = $sql_row1['order_col_des'];
-	$cut_no= chr($sql_row1['color_code']).leading_zeros($sql_row1['acutno'],3);	
-}
-
-$sql="select order_style_no from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."'";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{	
-	$style_no= $sql_row['order_style_no'];	
-}
-
-$docketdetials="select * from $pps.docket_roll_info where plant_code='$plantcode' and docket=".$doc_no." order by shade";
-$docketdetials_result=mysqli_query($link, $docketdetials) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
-$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_style_no='".$style_no."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$orde_tid=$sql_row['order_tid'];
-	for($s=0;$s<sizeof($sizes_code);$s++)
+	$cut_number=$sql_row_cut['cut_number'];
+	$jm_cut_job_id=$sql_row_cut['jm_cut_job_id'];
+	
+	//getting docket id
+	$get_docid_qry="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plant_code' AND jm_cut_job_id='$jm_cut_job_id'";
+	$get_docid_qry_result=mysqli_query($link, $get_docid_qry) or exit("Sql Error while getting docket id".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_docid=mysqli_fetch_array($get_docid_qry_result))
 	{
-		if($sql_row["title_size_s".$sizes_code[$s].""]<>'')
+		$jm_docket_id=$sql_row_docid['jm_docket_id'];
+		
+		//getting jm docket line id
+		$get_docline_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE plant_code='$plant_code' AND jm_docket_id='$jm_docket_id'";
+		$get_docline_qry_result=mysqli_query($link, $get_docline_qry) or exit("Sql Error while getting doclineid".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row_doclineid=mysqli_fetch_array($get_docline_qry_result))
 		{
-			$s_tit[$sizes_code[$s]]=$sql_row["title_size_s".$sizes_code[$s].""];
-			$s_code[]=$sizes_code[$s];
-		}	
-	}
-}
-
-
-   
-$sql="select * from $bai_pro3.order_cat_doc_mk_mix where order_tid='".$orde_tid."' and category in ($in_categories) and doc_no=$doc_no";
-$sql_result1=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row1=mysqli_fetch_array($sql_result1))
-{
-	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		if($sql_row1["p_s".$sizes_code[$s].""]<>'')
-		{
-			$p_s_tit[$sizes_code[$s]]=$sql_row1["p_s".$sizes_code[$s].""];
-			$p_s_code[]=$sizes_code[$s];
+			$jm_docket_line_id=$sql_row_doclineid['jm_docket_line_id'];
+			
+			//getting details from jm_docket_bundle
+			$get_det_qry="SELECT size FROM $pps.`jm_docket_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id'";
+			$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error while getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row_det=mysqli_fetch_array($get_det_qry_result))
+			{
+				$sizesarr[]=$sql_row_det['size'];
+			}
 		}
 	}
 }
-$totalplies="select sum(reporting_plies) as totalplies from $pps.docket_roll_info plant_code='$plantcode' and where docket=$doc_no";
-mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$totalpliesresult=mysqli_query($link, $totalplies) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$totalpliesresult=mysqli_fetch_array($totalpliesresult);
+$docketdetials="select * from $pps.docket_roll_info where plant_code='$plantcode' and docket=".$doc_no." order by shade";
+$docketdetials_result=mysqli_query($link, $docketdetials) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 ?>
 
 
@@ -542,9 +511,9 @@ tags will be replaced.-->
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl15305 style='height:14.4pt'></td>
   <td colspan=2 class=xl70305>Style:</td>
-  <td colspan=3 class=xl68305><?php echo $style_no;?></td>
+  <td colspan=3 class=xl68305><?php echo $style;?></td>
   <td colspan=2 class=xl69305>Cut Number:</td>
-  <td colspan=2 class=xl68305><?php echo $cut_no;?></td>
+  <td colspan=2 class=xl68305><?php echo $cut_number;?></td>
   <td class=xl15305></td>
   <td class=xl15305></td>
   <td class=xl67305>&nbsp;</td>
@@ -582,46 +551,33 @@ tags will be replaced.-->
 <br><br>
 <div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
 
- <?php
- /* sizeof($s_tit) */
- $total_size = sizeof($s_tit);
- $temp = 0;
+<?php
+$temp = 0;
 $temp_len1 = 0;
 $temp_len = 0;
 $divide=10;
-for($s=0;$s<$total_size;$s++)
+for($j=0;$j<sizeof($sizesarr);$j++)
 {
-    if($temp == 0){
-echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:
- collapse;table-layout:fixed;'><tr style='margin-top:5pt;'>";
+	if($temp == 0){
+	echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:collapse;table-layout:fixed;'><tr style='margin-top:5pt;'>";
         echo "<td class=xl73305a style='background-color: gainsboro;'>Size</td>";
         $temp = 1;
     }
-    echo  "<td class=xl73305a style='background-color: gainsboro;'>".trim($s_tit[$sizes_code[$s]])."</td>";
-    if(($s+1) % $divide == 0){
-        $temp_len = $s+1;
+    echo  "<td class=xl73305a style='background-color: gainsboro;'>".$sizesarr[$j]."</td>";
+    if(($j+1) % $divide == 0){
+        $temp_len = $j+1;
         echo "</tr>";
         echo "<tr>
-            <td class=xl73305a>Ratio</td>";
+            <td class=xl73305a>Quantity</td>";
         	for($i=$temp_len1;$i<$temp_len;$i++) 
 			{
-                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
+                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$sizesarr[$j]."</td>";
 			}
         echo "</tr>";
         $temp = 0;
         $temp_len1=$temp_len;
     }
-    if($s+1==$total_size) {
-
-        echo "<td class=xl73305b>No Of Plies</td></tr><tr>";
-		if($temp_len1!=$total_size){
-			echo "<td class=xl73305a>Ratio</td>";
-		}
-		for($i=$temp_len1;$i<$total_size;$i++) {
-			echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$p_s_tit[$sizes_code[$i]]."</td>";
-		}
-		echo "<td class=xl73305b>".$totalpliesresult['totalplies']."</td></tr></table><br/>";
-	}
+	echo "</table><br/>";
 }
 ?>
 <tr>
