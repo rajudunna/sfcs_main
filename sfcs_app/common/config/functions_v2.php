@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where doc_no='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where jm_docket_line_id='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -1156,15 +1156,15 @@ function getDocketInformation($docket_no, $plant_code) {
 
     $schedules = [];
     // get the docket info
-    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color, doc_line.component_group_name as cg_name,
+    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
         doc.marker_version_id, doc.ratio_comp_group_id,
-        cut.cut_number, cut.po_number,doc_line.docket_line_number,
+        cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
         ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id
-        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
+        WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
@@ -1174,7 +1174,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $comp_group =  $row['cg_name'];
         $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
-
+        $docket_line_number = $row['docket_line_number'];
         $po_number = $row['po_number'];
         $marker_version_id = $row['marker_version_id'];
         $ratio_id = $row['ratio_id'];
@@ -1284,7 +1284,8 @@ function getDocketInformation($docket_no, $plant_code) {
         'remark4'=>$remark4,
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
-        'marker_version_id' => $marker_version_id  
+        'marker_version_id' => $marker_version_id,
+        'docket_line_number'=>$docket_line_number  
     ];
 
 }

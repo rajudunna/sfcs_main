@@ -741,7 +741,6 @@ window.onload = sivamtime;
 </script>
 
 <?php
-// $plant_code = $_SESSION['plantCode'];
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 echo "<div style='width=100%;'>";
@@ -786,8 +785,8 @@ echo "</div>";
 $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 //echo $sqly."<br>";
 
-mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_query($link, $sqly) or exit("Sql Error324".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error7658".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
 {
   $buyer_div=$sql_rowy['buyer_div'];
@@ -952,7 +951,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.fabric_priorities where module='$section_mods' and plant_code='$plant_code'";
+    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code'";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
@@ -966,7 +965,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   $rm_update_new=strtolower(chop($sql_row1['rm_date']));
     //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
     
-      $doc_no=$sql_row1['doc_ref'];
+      $doc_no=$sql_row1['jm_docket_line_id'];
       if($doc_no!=" " && $plant_code!=' '){
         //this is function to get style,color,and cutjob
         $result_jmdockets=getDocketInformation($doc_no,$plant_code);
@@ -977,8 +976,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $req_date_time=$sql_row1['req_time'];
           $log_time=$sql_row1['log_time'];
           $lay_time=$sql_row1['req_time'];
-          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where doc_no=\"$doc_no\" and plant_code='$plant_code'";
-          $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where jm_docket_line_id=\"$doc_no\" and plant_code='$plant_code'";
+          $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row1236=mysqli_fetch_array($sql_result))
         {
             $plan_lot_ref_v1 = $sql_row1236['plan_lot_ref'];
@@ -1003,7 +1002,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   }
       
      
-      $doc_no_ref[]=$sql_row1['doc_no'];
+      $doc_no_ref[]=$sql_row1['jm_docket_line_id'];
     //   $bundle_location="";
     //   if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
     //   {
