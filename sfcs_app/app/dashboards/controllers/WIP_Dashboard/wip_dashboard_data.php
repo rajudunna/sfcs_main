@@ -33,7 +33,7 @@ if ($section) {
 
         /* BLOCK -2 */
         $data .= "<td rowspan=2 class='wip-td'>";
-        $data .= "<span class=''><b>$totalwip</b></span>";
+        $data .= "<span class=''><b>".$totalwip."</b></span>";
         $data .= "</td>";
 
 
@@ -55,13 +55,15 @@ echo json_encode($section_data);
 function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_code)
 {
     // error_reporting(E_ALL);
-    // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include_once($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
     include_once($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/functions_v2.php');
-
-    include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/config.php');
-
+    // include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/config.php');
+    
     global $link_new;
+    global $sewing_job_attributes;
     global $tms;
+    $totalwip=0;
+ 
 
     $check_type = 'SEWINGJOB';
     $result_planned_jobs = getPlannedJobs($wkstation, $check_type, $session_plant_code);
@@ -83,7 +85,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
         }
         $style = $job_detail_attributes[$sewing_job_attributes['style']];
         $color = $job_detail_attributes[$sewing_job_attributes['color']];
-        $co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
+        $co_no = $job_detail_attributes[$sewing_job_attributes['conumber']];
         $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
         $cut_no = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
         $docket_number = $job_detail_attributes[$sewing_job_attributes['docketno']];
@@ -100,7 +102,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
             $operation_code = $row_res['operation_code'];
             $operation_seq = $row_res['operation_seq'];
         }
-
+        $send_qty=0;
         $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
         // echo $task_job_trans2."<br/>";
         $task_job_trans_result2 = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans_result2" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -111,33 +113,35 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
         $totalwip = $totalwip + $wip;
         $input_date = null;
         $remarks = null;
-
-        $tool_tip_text = "<p style=\"width : 500px \">
-            <v><c>Style </c> : $style </v>
-            <v><c>Schedule </c> : $schedule</v>
-            <v><c>Color </c> : $color</v>
-            <v><c>Co No </c> : $co_no</v>
-            <v><c>Input_date </c> : $input_date</v>
-            <v><c>Wip </c> : $wip</v>
-            <v><c>Job No </c> : $job_num</v>
-            <v><c>Cut No </c> :$cut_no</v>
-            <v><c>Doc_no </c> : $docket_number</v>
-            <v><c>Rejected </c> : $rej_qty</v>
-            <v><c>Remarks </c> : $remarks</v>
-          
-           </p>";
-        var_dump($tool_tip_text, "<br/>");
-        // $href = "$url&module=$module&section=$section&operations=$get_operation";
-        $docs_data .= "<span class='block'>
-            <span class='cut-block blue'>
-                <span class='mytooltip'>
-                    <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
-                    data-html='true'>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    </a>
+            $tool_tip_text = "<p style=\"width : 500px \">
+                <v><c>Style </c> : $style </v>
+                <v><c>Schedule </c> : $schedule</v>
+                <v><c>Color </c> : $color</v>
+                <v><c>Co No </c> : $co_no</v>
+                <v><c>Input_date </c> : $input_date</v>
+                <v><c>Wip </c> : $wip</v>
+                <v><c>Job No </c> : $job_num</v>
+                <v><c>Cut No </c> :$cut_no</v>
+                <v><c>Doc_no </c> : $docket_number</v>
+                <v><c>Rejected </c> : $rej_qty</v>
+                <v><c>Remarks </c> : $remarks</v>
+               </p>";
+            // var_dump($tool_tip_text, "<br/>");
+            
+            // $href = "$url&wkstation=$wkstation&section=$section&operations=$get_operation";
+            $docs_data .= "<span class='block'>
+                <span class='cut-block blue'>
+                    <span class='mytooltip'>
+                        <a rel='tooltip' data-toggle='tooltip' data-placement='top' data-title='$tool_tip_text'
+                         
+                        data-html='true'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </a>
+                    </span>
                 </span>
-            </span>
-          </span>";
+              </span>";
+
+
     }
     $docs_data .= "<span class='block'>
         <span class='red'>
