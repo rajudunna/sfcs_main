@@ -9,7 +9,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
 	$has_permission=haspermission($_GET['r']);
 	$url = getFullURL($_GET['r'],'pre_emb_job_scanning.php','N');
-	if ($_GET['type'] ='embellishment')
+	if ($_GET['type'] =='embellishment')
 	{
 		$form_type = 'Embellishment';
 	} else {
@@ -24,6 +24,7 @@
 		$schedule=$_GET['schedule'];
 		$module=$_GET['module'];
 		$plant_code=$_GET['plant_code'];
+		$username=$_GET['username'];
 		$to_get_operation_name="SELECT operation_name FROM $pms.operation_mapping WHERE operation_code='$operation_code' AND plant_code='$plant_code'";
 		$operation_result=mysqli_query($link, $to_get_operation_name)or exit("operation_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($operation_result))
@@ -43,6 +44,7 @@
 		$operation_name=$_POST['operation_name'];
 		$operation_code=$_POST['operation_id'];
 		$plant_code=$_POST['plant_code'];
+		$username=$_POST['username'];
 		$barcode_generation=$_POST['barcode_generation'];
 		$read_only_job_no = '';
 		$operation_code_routing='';
@@ -108,9 +110,9 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 							</tr>
 						</table>
 						<center>
-						<div class="form-group col-lg-6 col-sm-12">
+						<div class="form-group col-lg-6 col-sm-6">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?> maxlength="25"/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -154,6 +156,8 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 						<input type="hidden" name="shift" id="shift" value="<?php echo $shift;?>">
 						<input type="hidden" name="operation_id" id='operation_id' value="<?php echo $operation_code;?>">
                         <input type="hidden" name="plant_code" id='plant_code' value="<?php echo $plant_code;?>">
+						<input type="hidden" name="username" id='username' value="<?php echo $username;?>">
+						<input type="hidden" name="form_type" id='form_type' value="<?php echo $form_type;?>">
 						<input type="hidden" name="barcode_generation" id='barcode_generation' value="<?php echo $barcode_generation;?>">
 						<input type="hidden" name="response_flag" id='response_flag'>
 						<input type="hidden" name="emb_cut_check_flag" id='emb_cut_check_flag' value='0'>
@@ -239,23 +243,31 @@ $(document).ready(function()
 		$('#loading-image').show();
 		
 		var barcode_generation = "<?php echo $barcode_generation?>";
+		var form_type = "<?php echo $form_type ?>";
 		var job_number = $('#job_number').val();
 		var operation_id = $('#operation_id').val();
 		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
 		var module_flag = null;	var restrict_msg = '';
         if(barcode_generation == 0){
-		    var embObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
+		    var inputObj = {"barcode":job_number, "plantCode":plant_code, "operationCode":operation_id};
 			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForBundleNumber";
         } else if(barcode_generation == 1){
-		    var embObj = {"embJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
-			var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForEmbJob";
+			if(form_type=='Sewing'){
+				var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForSewingJob";
+				var inputObj = {"sewingJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			} else {
+				var url = "<?php echo $PTS_SERVER_IP?>/fg-retrieving/getJobDetailsForEmbJob";
+				var inputObj = {"embJobNo":job_number, "plantCode":plant_code, "operationCode":operation_id};
+			}
         }
 		$.ajax({
 			type: "POST",
 			url: url,
-			data: embObj,
+			data: inputObj,
 			success: function (res) {            
 				//console.log(res.data);
+				$('#loading-image').hide();
 				if(res.status)
 				{
 					var data=res.data
@@ -263,15 +275,14 @@ $(document).ready(function()
 				}
 				else
 				{
-					swal(res.internalMessage);
+					swal(res.internalMessage,'','error');
 				}                       
-				$('#loading-image').hide(); 
 			},
 			error: function(res){
 				$('#loading-image').hide(); 
 				// alert('failure');
 				// console.log(response);
-				swal('Network error in getting Job info');
+				swal('Error','in getting docket','error');
 			}
 		});
 	});
@@ -365,7 +376,7 @@ function tableConstruction(data){
                     op_code_values = op_code_values + '<td>'+data.sizeQuantities[i].operationWiseQuantity[index].quantity+'</td>';
                 });
 				
-            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColor+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.sizeQuantities[i].fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)'  class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' ></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
+            var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColor+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.sizeQuantities[i].fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td><td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' onchange = 'validate_reporting_report("+i+") '></td><td class='"+hidden_class_sewing_in+"'>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td><td class='"+hidden_class_sewing_in+"'><input type='text' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' onkeyup='validateQty(event,this)' required value='0' class='form-control input-md twotextboxes' id='"+i+"rejections' name='rejectedQty[]' onchange = 'rejections_capture("+i+")' "+$('#reject_report').val()+"></td><td class='hide'><input type='hidden' name='qty_data["+i+"]' id='"+i+"qty_data'></td><td class='hide'><input type='hidden' name='reason_data["+i+"]' id='"+i+"reason_data'></td><td class='hide'><input type='hidden' name='tot_reasons[]' id='"+i+"tot_reasons'></td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
         }
@@ -454,7 +465,7 @@ function validating_remarks_qty(val,remarks)
 {
 	var display_reporting_qty = document.getElementById('display_reporting_qty').value;
 	var line_in = document.getElementById('line-in').value;
-	// var operation_code_routing = document.getElementById('operation_code_routing').value;
+	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	var function_text = "<?php echo getFullURL($_GET['r'],'functions_scanning_ij.php','R'); ?>";
 	var bundle_number_var = val+"tid";
 	var module_var =val+"module";
@@ -483,21 +494,21 @@ function validating_remarks_qty(val,remarks)
 			var html_id = val+"remarks_validate_html";
 			var html_id_reporting =val+"reporting";
 			$('#'+html_id).html(array[0]);
-			// if (operation_id == operation_code_routing || operation_id == '900')
-			// {
-			// 	if (line_in == 'yes')
-			// 	{
-			// 		$('#'+html_id_reporting).val(array[0]);
-			// 	}
-			// 	if (display_reporting_qty == 'yes')
-			// 	{
-			// 		$('#'+html_id_reporting).val(array[0]);
-			// 	}
-			// }
-			// else
-			// {
-			// 	$('#'+html_id_reporting).val(array[0]);
-			// }	
+			if (operation_id == operation_code_routing || operation_id == '900')
+			{
+				if (line_in == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
+				if (display_reporting_qty == 'yes')
+				{
+					$('#'+html_id_reporting).val(array[0]);
+				}
+			}
+			else
+			{
+				$('#'+html_id_reporting).val(array[0]);
+			}	
 			$('#response_flag').val(1);
 			maximum_validate(max,val)
 			$('#loading-image').hide();
@@ -587,46 +598,56 @@ $('input[type=submit]').click(function() {
 function check_pack()
 {
 	$('#smartbtn').attr('disabled', 'disabled');
-	
 	var count = document.getElementById('count_of_data').value;
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
 	var reportData = new Object();
-	reportData.jobNo = $('#job_number').val();
 	reportData.plantCode = $('#plant_code').val();
 	reportData.shift = $('#shift').val();
 	reportData.operationCode = $('#operation_id').val();
 	reportData.createdUser = '<?= $username ?>';
-	var sizeQuantities = new Array();
-	for(var i=0; i<count; i++)
-	{
-		var variable = i+"reporting";
-		var qty_cnt = document.getElementById(variable).value;
-		tot_qty += Number(qty_cnt);
-		var sizeQuantitiesObject = new Object();
-		sizeQuantitiesObject.size = $('#'+i+'size').val();
-		sizeQuantitiesObject.module = $('#'+i+'module').val();
-		sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
-		sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
-		sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
-		if(sizeQuantitiesObject.rejectedQty > 0){
-			var rejectionDetails = new Array();
-			var reason_qty = $('#'+i+'qty_data').val();
-			var reason_data = $('#'+i+'reason_data').val();
-			var reason_qty_array = reason_qty.split(",")
-			var reason_data_array = reason_data.split(",")
-			
-			for(var j=0; j<reason_qty_array.length; j++){
-				var rejectionDetailsObject = new Object();
-					rejectionDetailsObject.reasonCode = reason_data_array[j];
-					rejectionDetailsObject.reasonQty = reason_qty_array[j];
-					rejectionDetails.push(rejectionDetailsObject);
+	var barcode_generation = "<?php echo $barcode_generation?>";
+	var url1 = '';
+	if(barcode_generation == 0) {
+		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+		reportData.barcode = $('#job_number').val();
+		reportData.quantity = $('#0reporting').val();
+		reportData.reportAsFullGood = false;
+		tot_qty += Number(reportData.quantity);
+	} else {
+		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+		reportData.jobNo = $('#job_number').val();
+		var sizeQuantities = new Array();
+		for(var i=0; i<count; i++)
+		{
+			var variable = i+"reporting";
+			var qty_cnt = document.getElementById(variable).value;
+			tot_qty += Number(qty_cnt);
+			var sizeQuantitiesObject = new Object();
+			sizeQuantitiesObject.size = $('#'+i+'size').val();
+			sizeQuantitiesObject.module = $('#'+i+'module').val();
+			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
+			sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
+			sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
+			if(sizeQuantitiesObject.rejectedQty > 0){
+				var rejectionDetails = new Array();
+				var reason_qty = $('#'+i+'qty_data').val();
+				var reason_data = $('#'+i+'reason_data').val();
+				var reason_qty_array = reason_qty.split(",");
+				var reason_data_array = reason_data.split(",");
+
+				for(var j=0; j<reason_qty_array.length; j++){
+					var rejectionDetailsObject = new Object();
+						rejectionDetailsObject.reasonCode = reason_data_array[j];
+						rejectionDetailsObject.reasonQty = reason_qty_array[j];
+						rejectionDetails.push(rejectionDetailsObject);
+				}
+				sizeQuantitiesObject.rejectionDetails = rejectionDetails;
 			}
-			sizeQuantitiesObject.rejectionDetails = rejectionDetails;
+			sizeQuantities.push(sizeQuantitiesObject);
 		}
-		sizeQuantities.push(sizeQuantitiesObject);
+		reportData.sizeQuantities = sizeQuantities;
 	}
-	reportData.sizeQuantities = sizeQuantities;
 
 	for(var i=0; i<count; i++)
 	{
@@ -641,29 +662,19 @@ function check_pack()
 		return false;
 	}
 	else {
-		$('#loading-image').show(); 
 		$('.submission').hide();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
-		
-		$('#progressbar').hide();
 
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
-		var url = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormJob";
-		
-		// $('#loading-image').show();
-		// console.log(reportData)
-        // var function_text = "<?php echo getFullURL($_GET['r'],'data.json','R'); ?>";
-
         $.ajax({
 			type: "POST",
-			url: url,
-			data: JSON.stringify(reportData),
+			url: url1,
+			data:  JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			success: function (res) {  
-
 				if(res.status)
 				{
 					$('#dynamic_table1').html('');
@@ -675,34 +686,38 @@ function check_pack()
 					document.getElementById('job_number').value = '';
 					document.getElementById('module_show').innerHTML = '';
 					document.getElementById('pre_data').innerHTML ='';
-					swal('',res.internalMessage, 'success');
-					return;
-					/*
-					var data = JSON.parse(res);
+					
+					swal('',res.internalMessage,'success');
+					
+					var data = res.data;
 					$('#pre_pre_data').show();
-					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
-					for(var z=0; z<data.transactionsData.length; z++){
-						table_data += "<tr><td>"+data.transactionsData[z].jobNo+"</td><td>"+data.transactionsData[z].bundleNo+"</td><td>"+data.transactionsData[z].fgColor+"</td><td>"+data.transactionsData[z].size+"</td><td>"+data.transactionsData[z].reportedQty+"<td>"+data.transactionsData[z].rejectedQty+"</td>";
+						var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+					if(barcode_generation == 0) {
+						table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+					} else{
+						for(var z=0; z<data.length; z++){
+							if(data[z].reportedQuantity > 0) {
+								table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+							}
+						}
 					}
 					table_data += "</tbody></table></div></div></div>";
 					document.getElementById('pre_data').innerHTML = table_data;
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
-					*/
 				}
 				else
 				{
 					$('#smartbtn').attr('disabled', false);
 					$('.submission').show();
-					swal('',res.internalMessage, 'error');
+					swal('',res.internalMessage,'error');
 				}               
-				$('#loading-image').hide();         
 			},
 			error: function(res){
-				$('#loading-image').hide(); 
 				$('.submission').show();
-				swal('','Network error', 'error');
+				$('#loading-image').hide(); 
+				swal('','Network error','error');
 			}
 		});
 		
