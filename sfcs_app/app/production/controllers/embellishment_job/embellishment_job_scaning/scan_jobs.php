@@ -22,6 +22,7 @@
 		$operation_code=$_GET['operation_id'];
 		$style=$_GET['style'];
 		$schedule=$_GET['schedule'];
+		$color=$_GET['color'];
 		$module=$_GET['module'];
 		$plant_code=$_GET['plant_code'];
 		$username=$_GET['username'];
