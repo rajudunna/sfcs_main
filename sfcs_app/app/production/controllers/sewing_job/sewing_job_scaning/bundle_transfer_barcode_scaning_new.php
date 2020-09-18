@@ -99,7 +99,6 @@ $(document).ready(function()
                 if(res.status)
                 {
                     bundet=res.data;
-                    swal('',res.internalMessage, 'success');
                     tableConstruction(bundet);
                 }
                 else
@@ -156,7 +155,8 @@ function tableConstruction(bundet){
     $("#dynamic_table").show();
     $('#barcode').val('');
     $('#loading-image').hide();
-    
+	
+    swal('Success','Successfully Transfered','success');
     
 }
 

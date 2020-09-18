@@ -27,8 +27,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/group_def.php', 4, 'R'));
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/enums.php', 4, 'R'));
 set_time_limit(200000);
-// $session_plant_code = 'AIP';
 $session_plant_code = $_SESSION['plantCode'];
+// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 ?>
 
@@ -370,14 +370,21 @@ echo "</div>";
 // echo '<br><br>';
 ?>
 <div>
-  <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
-    <div>Partially Received from Embellishment</div>
-  </div>&nbsp;&nbsp;&nbsp;
-  <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
-    <div>Not Yet Received From Embellishment</div>
-  </div>
-  <div style="clear: both;"> </div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
+        <div>Partially Send to Embellishment Jobs</div>
+    </div>&nbsp;&nbsp;&nbsp;
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #15a5f2;color: white;margin-left: 30px;">
+        <div>Cut Completed Jobs</div>
+    </div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
+        <div>Cut Not Completed Jobs</div>
+    </div>
+    <div style="clear: both;"> </div>
 </div>
+
 <?php
 //For blinking priorties as per the section module wips
 $bindex = 0;
@@ -419,7 +426,7 @@ foreach ($workstations as $emb_key => $emb_value) {
 
   foreach ($task_job_ids as $task_job_id => $task_header_id_j) {
     $log_time = $task_job_header_log[$task_header_id_j];
-
+    $emb_job_no = $job_number[$task_header_id_j];
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
     $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
@@ -470,10 +477,9 @@ foreach ($workstations as $emb_key => $emb_value) {
           $id = "red";
         }
 
-        // $operation_code = '41';
+        $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N') . "&embJobNo=$job_num&plantCode=$session_plant_code&operationCode=$operation_code&barcode_generation=1";
-
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N')."&input_job_no_random_ref=$emb_job_no&plant_code=$session_plant_code&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
 
         echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";

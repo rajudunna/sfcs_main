@@ -286,7 +286,7 @@ function getDocketInfo($doc_num,$doc_type,$plant_code){
     global $link_new;
     global $wms;
     global $pps;
-    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where doc_no='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
+    $sql1="SELECT plan_lot_ref from $pps.requested_dockets where jm_docket_line_id='$doc_num' and plant_code='$plant_code' and plan_lot_ref!=''";
     $sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error at Doscket123 roll details".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sql_num1=mysqli_num_rows($sql_result1);
         if($sql_num1>0){
@@ -1007,7 +1007,8 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
      $taskStatus=TaskStatusEnum::INPROGRESS;
       //Qry to fetch task_header_id from task_header
       $task_header_id=array();
-      $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode'";
+      $task_header_log_time=array();
+      $get_task_header_id="SELECT task_header_id,updated_at FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".$taskStatus."' AND task_type='$tasktype' AND plant_code='$plantcode'";
     //   echo $get_task_header_id."<br/>";
       $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
       while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
@@ -1017,26 +1018,32 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
       }
       //To get taskrefrence from task_jobs based on resourceid 
       $task_job_reference=array(); 
-      $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' ORDER BY priority ASC";
-    //   echo $get_refrence_no."<br/>";
-      $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
-      while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
-      {
-        $task_job_reference[$refrence_no_row['priority']] = $refrence_no_row['task_job_reference'];
-        $task_job_ids[$refrence_no_row['task_jobs_id']] = $refrence_no_row['task_header_id'];
-      }
-      //Qry to get sewing jobs from jm_jobs_header
+      $task_job_ids=array(); 
       $job_number=array();
-      foreach($task_job_reference as $key=>$value){
-        $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id='$value'";
-        $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
-        if($toget_sewing_jobs_num>0){
-            while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
-            {
-                $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id'];
+      if(sizeof($task_header_id) > 0){
+
+          $get_refrence_no="SELECT * FROM $tms.task_jobs WHERE task_header_id IN('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' ORDER BY priority ASC";
+         
+          $get_refrence_no_result=mysqli_query($link_new, $get_refrence_no) or exit("Sql Error at refrence_no".mysqli_error($GLOBALS["___mysqli_ston"]));
+          while($refrence_no_row=mysqli_fetch_array($get_refrence_no_result))
+          {
+            $task_job_reference[$refrence_no_row['priority']] = $refrence_no_row['task_job_reference'];
+            $task_header_ids[$refrence_no_row['task_header_id']] = $refrence_no_row['task_job_reference'];
+            $task_job_ids[$refrence_no_row['task_jobs_id']] = $refrence_no_row['task_header_id'];
+          }
+          //Qry to get sewing jobs from jm_jobs_header
+          
+          foreach($task_header_ids as $key=>$value){
+            $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id='$value'";
+            $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+            $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+            if($toget_sewing_jobs_num>0){
+                while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+                {
+                    $job_number[$key]= $toget_sewing_jobs_row['job_number'];
+                }
             }
-        }
+          }
       }
       return array(
           'job_number' => $job_number,
@@ -1149,15 +1156,15 @@ function getDocketInformation($docket_no, $plant_code) {
 
     $schedules = [];
     // get the docket info
-    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color, doc_line.component_group_name as cg_name,
+    $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
         doc.marker_version_id, doc.ratio_comp_group_id,
-        cut.cut_number, cut.po_number,doc_line.docket_line_number,
+        cut.cut_number, cut.po_number,doc_line.jm_docket_line_id,
         ratio_cg.component_group_id as cg_id, ratio_cg.ratio_id, ratio_cg.master_po_details_id
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id
-        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
+        WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
@@ -1167,7 +1174,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $comp_group =  $row['cg_name'];
         $cut_no = $row['cut_number'];
         $ratio_comp_group_id = $row['ratio_comp_group_id'];
-
+        $docket_line_number = $row['docket_line_number'];
         $po_number = $row['po_number'];
         $marker_version_id = $row['marker_version_id'];
         $ratio_id = $row['ratio_id'];
@@ -1277,7 +1284,8 @@ function getDocketInformation($docket_no, $plant_code) {
         'remark4'=>$remark4,
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
-        'marker_version_id' => $marker_version_id  
+        'marker_version_id' => $marker_version_id,
+        'docket_line_number'=>$docket_line_number  
     ];
 
 }
