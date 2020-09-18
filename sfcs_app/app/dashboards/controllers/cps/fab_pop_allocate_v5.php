@@ -224,6 +224,10 @@ function filling(doc_no,i,doc_count_no)
 	var issued_qty=parseFloat(document.input["val"+doc_no+"["+i+"]"].value);
 	var new_value = parseFloat(document.getElementById("issued"+doc_no+"["+i+"]").value);
 	var old_value = parseFloat(document.getElementById("issued_new"+doc_no+"["+i+"]").value);
+	if(old_value==''){
+		var old_value=0;
+	}
+	
 	if(isNaN(new_value))
 	{
 		new_value = parseFloat(0);
@@ -231,6 +235,12 @@ function filling(doc_no,i,doc_count_no)
 	}
 	var present_bal = parseFloat(document.getElementById("balal"+doc_no).innerHTML);
 	var allocate_bal = parseFloat(document.getElementById("alloc"+doc_no).innerHTML);
+	if(allocate_bal==''){
+		var allocate_bal=0;
+	}
+	if(present_bal==''){
+		var present_bal=0;
+	}
 	var actual_balance = parseFloat(present_bal)+parseFloat(old_value)-parseFloat(new_value);
 	if(old_value - new_value > actual_balance && new_value > old_value || new_value > issued_qty || actual_balance < 0)
 	{
@@ -570,6 +580,7 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 {	
 	var doc_ref=document.input["doc_ref["+doc_count_no+"]"].value;
 	var bal = parseFloat(document.getElementById("balal"+doc).innerHTML);
+	
 	if(document.getElementById(m).checked)
 	{
 		if(bal <= 0)
@@ -581,10 +592,27 @@ function check_qty2(x,m,n,doc,row_count,doc_count_no,act_count)
 		{
 			console.log("issued"+doc+"["+act_count+"]");
 			console.log("balal"+doc);
-			var issued_qty=parseFloat(document.input["val"+doc+"["+act_count+"]"].value);
+			var qty1=document.input["val"+doc+"["+act_count+"]"].value;
+			if(qty1==''){
+				var qty1=0;
+			}
+			var issued_qty=parseFloat(qty1);
+			
+			
 			var balance = parseFloat(document.getElementById("balal"+doc).innerHTML);
 			var allocate = parseFloat(document.getElementById("alloc"+doc).innerHTML);
+			if(balance==''){
+			var balance=0;
+			}else{
+				var balance=balance;
+			}
+			if(allocate==''){
+				var allocate=0;
+			}else{
+				var allocate=allocate;
+			}
 			var eligibile = Math.min(issued_qty,balance);
+			
 			document.getElementById("issued"+doc+"["+act_count+"]").readOnly = false;
 			document.getElementById("issued"+doc+"["+act_count+"]").value = parseFloat(eligibile.toFixed(2));
 			document.getElementById("issued_new"+doc+"["+act_count+"]").value = parseFloat(eligibile.toFixed(2));
@@ -778,11 +806,11 @@ if(isset($_POST['allocate_new']))
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1','$username','$username',NOW())";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."',".$tid_ref[$j].",".$width_ref[$j].",'normal',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
 					}
 					else
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values(".$doc_ref[$i].",".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1','$username','$username',NOW())";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."',".$tid_ref[$j].",".$width_ref[$j].",'recut',".$issued_ref[$j].",'1','$username','$username',NOW(),'$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -818,11 +846,11 @@ if(isset($_POST['allocate_new']))
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
-				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
+				$sql1="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\",updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
 			}
 			else
 			{
-				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where doc_no=\"".$doc_ref[$i]."\"";
+				$sql2="update $pps.requested_dockets set plan_lot_ref=\"".$lot_db[$i]."\" ,updated_user='$username',updated_at=NOW() where jm_docket_line_id=\"".$doc_ref[$i]."\"";
 				mysqli_query($link, $sql2) or exit("Sql Errordd5: $sql2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql1="update recut_v2 set plan_lot_ref=\"".$lot_db[$i]."\" where doc_no=\"".$doc_ref[$i]."\"";
 			}
@@ -853,7 +881,7 @@ if(isset($_POST['allocate_new']))
 					
 					// mysqli_query($link, $sql) or exit("Sql Error1x: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql="update $pps.requested_dockets set lastup=\"".date("Y-m-d")."\",updated_user='$username',updated_at=NOW(),created_user='$username' where doc_no=".$doc_ref[$i];
+					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_line_id='.$doc_ref[$i].'";
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -894,7 +922,7 @@ if(isset($_POST['allocate']))
 	$doc_cat=$_POST['doc_cat'];
 	$doc_com=$_POST['doc_com'];
 	$doc_mer=$_POST['doc_mer'];
-	$cat_ref=$_POST['cat_ref'];
+	$cat_ref=$_POST['cat_ref'];$fabric_requested=$_POST['fabric_requested'];
 	$username=$_POST['username'];
 	$plant_code=$_POST['plantcode1'];
 	$process_cat=$_POST['process_cat'];
@@ -983,7 +1011,7 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where doc_no=\"".$doc_no."\" and plant_code='$plant_code'";
+		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
 		// echo $sql007;
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
@@ -1036,7 +1064,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
-		
+
 		//To show stats
 		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
