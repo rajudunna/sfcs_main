@@ -1034,7 +1034,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
             if($toget_sewing_jobs_num>0){
                 while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
                 {
-                    $job_number[$key]= $toget_sewing_jobs_row['job_number'];
+                    $job_number[$value]= $toget_sewing_jobs_row['job_number'];
                 }
             }
           }
