@@ -3,6 +3,8 @@ include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 $url = getFullURL($_GET['r'],'scan_jobs.php','N');
 
 $plant_code = $_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Job Level'];
 // L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL2VtYmVsbGlzaG1lbnRfam9iL2VtYmVsbGlzaG1lbnRfam9iX3NjYW5pbmcvcHJlX2VtYl9qb2Jfc2Nhbm5pbmcucGhw
 ?>

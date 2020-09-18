@@ -36,7 +36,7 @@ $sections_str = implode(',', $sections[0]);
                     <select class='form-control' name='operations' id='operations' onchange="load_data()">
                         <?php
                         $operations_data = getOperationsForCategory($session_plant_code, DepartmentTypeEnum::SEWING)['operations_data'];
-                        var_dump($operations_data, "<br/>");
+                        // var_dump($operations_data, "<br/>");
                         foreach ($operations_data as $key => $value) {
                             $key = $value['operation_code'];
                             $name = $value['operation_name'];
