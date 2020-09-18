@@ -394,7 +394,9 @@ $.ajax
 <title>IMS</title>
 <?php
     include('imsCalls.php');
-    $start_timestamp = microtime(true); 
+    $start_timestamp = microtime(true);
+    $plant_code = $_SESSION['plantCode'];
+  $username = $_SESSION['userName']; 
 ?>
 
 <body>
@@ -409,7 +411,6 @@ $.ajax
         <select class="form-control" id="shift" name="shift">
           <option value="">Select</option>
           <?php
-              $plantCode = 'Q01';
               $shifts_array=getShifts($plantCode);
               $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
               foreach($shifts_array as $shift){
@@ -566,7 +567,7 @@ $.ajax
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
                           
                           $sidemenu=true;
-                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$inputjobnorand&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
+                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu&shift=$shift";
                           ?>
                           <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                           Style No : <?php echo $style."<br/>"; ?>

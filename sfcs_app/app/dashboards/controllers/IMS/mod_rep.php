@@ -19,7 +19,7 @@
     $has_permission=haspermission($url_r);
     $user_name = getrbac_user()['uname'];
     error_reporting(0);
-
+    $plantcode=$_SESSION['plantCode'];
     $ref_no=time();
     //echo $ref_no;
 
@@ -68,7 +68,7 @@
 
     function dateDiffsql($start,$end)
     {
-        $plantcode=$_SESSION['plantCode'];
+        
         include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
         $sql="select distinct bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date<='$start' and bac_date>='$end'";
         $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
