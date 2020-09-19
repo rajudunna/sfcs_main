@@ -396,6 +396,7 @@ function getBulkSchedules($get_style,$plantcode){
                     
                     $schedule[]=$mp_mo_qty_row["schedule"];
                 }
+                
                 $bulk_schedule=array_unique($schedule);
         }
     }
@@ -518,7 +519,7 @@ function getFnSavings($doc_no,$plant_code){
     /*By using doc number ratio component group id*/
     if($doc_no!='' && $plant_code!=''){
         $result_getdata_jm_dockets=getJmDockets($doc_no,$plant_code);
-        $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
+        $ratio_comp_group_id=$result_getdata_jm_dockets['ratio_comp_group_id'];
     }
     
     if($ratio_comp_group_id!='' && $plant_code!=''){
@@ -792,8 +793,8 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                     }
 
                     /**Insert new record in header for if new reource id alloacted with in cut job */
-                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
-                    $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','".$items[0]."','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
+                    $Qry_taskheader_result=mysqli_query($link_new, $Qry_insert_taskheader) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     /**update resource id tasks jobs with task_header*/
                     $Qry_update_taskjobs="UPDATE $tms.task_jobs SET priority=$j,task_header_id='$uuid' WHERE task_job_reference='$items[1]' AND task_type='$tasktype' AND plant_code='$plantcode'";
@@ -816,13 +817,6 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         {
                            $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$task_id')";
                             $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        }
-
-                        $qry_to_task_attributes = "SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode'";
-                        $Qry_task_attributes_result = mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes" . mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while ($task_attributes_row = mysqli_fetch_array($Qry_task_attributes_result)) {
-                            $insert_query = "INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('" . $task_attributes_row['attribute_name'] . "','" . $task_attributes_row['attribute_value'] . "','$plantcode',NOW(),'$last_id')";
-                            $insert_query_result = mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                     }
                 }
@@ -907,7 +901,7 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
             return "Workstations not found";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
   //function to get jobs
@@ -1040,7 +1034,7 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
             if($toget_sewing_jobs_num>0){
                 while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
                 {
-                    $job_number[$key]= $toget_sewing_jobs_row['job_number'];
+                    $job_number[$value]= $toget_sewing_jobs_row['job_number'];
                 }
             }
           }
@@ -1063,7 +1057,7 @@ function fn_savings_per_cal($doc_no,$plant_code){
         //using this function  we can get ratio component group id
         if($doc_no!='' && $$plant_code!=''){
             $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
-            $ratio_comp_group_id=result_getdata_jm_dockets['ratio_comp_group_id'];
+            $ratio_comp_group_id=$result_getdata_jm_dockets['ratio_comp_group_id'];
         }
         
         if($ratio_comp_group_id!='' && $plant_code!=''){
@@ -1382,7 +1376,7 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
             return "Jobs not found for the workstation";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
 /* Function to get style,color,schedule wrt ponumber

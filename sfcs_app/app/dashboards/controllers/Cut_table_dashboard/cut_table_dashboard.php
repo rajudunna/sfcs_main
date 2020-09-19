@@ -808,7 +808,7 @@ echo '<br><br>';
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
-$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plant_code' and workstation_type_description='Cutting'";
+$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plant_code' and workstation_type_code='Cutting'";
 $sql_resultx1=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
