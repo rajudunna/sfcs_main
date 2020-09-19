@@ -19,7 +19,7 @@
     $has_permission=haspermission($url_r);
     $user_name = getrbac_user()['uname'];
     error_reporting(0);
-    $plantcode=$_SESSION['plantCode'];
+    $plantCode=$_SESSION['plantCode'];
     $ref_no=time();
     //echo $ref_no;
 
@@ -94,108 +94,108 @@
 
 <body>
     <?php
-        if(isset($_POST['submit']))
-        {
-            $tid=array();   $selected_sewing_jobs = array();
-            $tid=$_POST['log_tid'];
+        // if(isset($_POST['submit']))
+        // {
+        //     $tid=array();   $selected_sewing_jobs = array();
+        //     $tid=$_POST['log_tid'];
 
-            if (sizeof($tid) > 0)
-            {
-                $implode_tids = implode(",",$tid);
-                $get_ip_jobs_selected_tids = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE tid in ($implode_tids)";
-                // echo $get_ip_jobs_selected_tids;
-                $slected_ij_result = $link->query($get_ip_jobs_selected_tids);
-                while($row1 = $slected_ij_result->fetch_assoc()) 
-                {
-                    $selected_sewing_jobs[] = $row1['input_job_rand_no_ref'];
-                }
+        //     if (sizeof($tid) > 0)
+        //     {
+        //         $implode_tids = implode(",",$tid);
+        //         $get_ip_jobs_selected_tids = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE tid in ($implode_tids)";
+        //         // echo $get_ip_jobs_selected_tids;
+        //         $slected_ij_result = $link->query($get_ip_jobs_selected_tids);
+        //         while($row1 = $slected_ij_result->fetch_assoc()) 
+        //         {
+        //             $selected_sewing_jobs[] = $row1['input_job_rand_no_ref'];
+        //         }
 
-                $module= $_POST['module'];
-                // $tid1=array();
-                // $tid1=$_POST['pac_tid'];
-                $to_module= $_POST['module_ref'];
+        //         $module= $_POST['module'];
+        //         // $tid1=array();
+        //         // $tid1=$_POST['pac_tid'];
+        //         $to_module= $_POST['module_ref'];
 
-                $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$to_module'";
-                // echo $validating_qry;
-                $result_validating_qry = $link->query($validating_qry);
-                while($row = $result_validating_qry->fetch_assoc()) 
-                {
-                    $input_job_array[] = $row['input_job_rand_no_ref'];
-                }
+        //         $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$to_module'";
+        //         // echo $validating_qry;
+        //         $result_validating_qry = $link->query($validating_qry);
+        //         while($row = $result_validating_qry->fetch_assoc()) 
+        //         {
+        //             $input_job_array[] = $row['input_job_rand_no_ref'];
+        //         }
 
                 
-                $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$to_module'";
-                $result_block_prio = $link->query($block_prio_qry);
-                while($sql_row = $result_block_prio->fetch_assoc()) 
-                {
-                    $block_priorities = $sql_row['block_priorities'];
-                }
+        //         $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$to_module'";
+        //         $result_block_prio = $link->query($block_prio_qry);
+        //         while($sql_row = $result_block_prio->fetch_assoc()) 
+        //         {
+        //             $block_priorities = $sql_row['block_priorities'];
+        //         }
 
-                $allowable_jobs = $block_priorities-sizeof($input_job_array);
-                // echo 'selected size = '.sizeof($selected_sewing_jobs).' allowable = '.$allowable_jobs.' block Priorities = '.$block_priorities.' already inputs in module = '.sizeof($input_job_array) ;
-                if(in_array($override_sewing_limitation,$has_permission))
-                { 
-                    $flag = 1;
-                }
-                else
-                {
-                    if (sizeof($selected_sewing_jobs) > $allowable_jobs)
-                    {
-                        echo "<script>sweetAlert('You are Not Authorized to report more than Block Priorities','','warning');</script>";
-                        echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-                    }
-                    else
-                    {
-                        $flag=1;
-                    }
-                }            
+        //         $allowable_jobs = $block_priorities-sizeof($input_job_array);
+        //         // echo 'selected size = '.sizeof($selected_sewing_jobs).' allowable = '.$allowable_jobs.' block Priorities = '.$block_priorities.' already inputs in module = '.sizeof($input_job_array) ;
+        //         if(in_array($override_sewing_limitation,$has_permission))
+        //         { 
+        //             $flag = 1;
+        //         }
+        //         else
+        //         {
+        //             if (sizeof($selected_sewing_jobs) > $allowable_jobs)
+        //             {
+        //                 echo "<script>sweetAlert('You are Not Authorized to report more than Block Priorities','','warning');</script>";
+        //                 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+        //             }
+        //             else
+        //             {
+        //                 $flag=1;
+        //             }
+        //         }            
 
-                if ($flag == 1)
-                {
-                    $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values ('$user_name',".$module.",".$to_module.",".sizeof($tid).")";
-                    $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    $insert_id=mysqli_insert_id($link);
-                    foreach($tid as $selected)
-                    {
-                        $sql33="update $bai_pro3.ims_log set ims_mod_no = '$to_module' where tid= '$selected'";
-                        //echo $sql33;
-                        $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
+        //         if ($flag == 1)
+        //         {
+        //             $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values ('$user_name',".$module.",".$to_module.",".sizeof($tid).")";
+        //             $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        //             $insert_id=mysqli_insert_id($link);
+        //             foreach($tid as $selected)
+        //             {
+        //                 $sql33="update $bai_pro3.ims_log set ims_mod_no = '$to_module' where tid= '$selected'";
+        //                 //echo $sql33;
+        //                 $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 
-                        $sql_ims="select pac_tid from bai_pro3.ims_log where tid='$selected'"; 
-                        $sql_result123=mysqli_query($link, $sql_ims) or exit("Sql Error_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_rowx=mysqli_fetch_array($sql_result123))  
-                        { 
-                            $pac_tid=$sql_rowx['pac_tid'];
-                        }
+        //                 $sql_ims="select pac_tid from bai_pro3.ims_log where tid='$selected'"; 
+        //                 $sql_result123=mysqli_query($link, $sql_ims) or exit("Sql Error_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
+        //                 while($sql_rowx=mysqli_fetch_array($sql_result123))  
+        //                 { 
+        //                     $pac_tid=$sql_rowx['pac_tid'];
+        //                 }
 
-                        $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number='$pac_tid'";
-                        $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        //                 $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number='$pac_tid'";
+        //                 $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
                         
-						//commented in #2391
-                        //$bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
-                        //$sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		// 				//commented in #2391
+        //                 //$bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
+        //                 //$sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-                        $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
-                        //echo $sql."<br>";
-                        $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        while($sql_row=mysqli_fetch_array($sql_result)) 
-                        { 
-                            $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $to_module.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
-                            //echo $sql331;
-                            mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        } 
-                    }
-                    echo "<script>sweetAlert('Sewing Job Transfered Successfully','','success');</script>";
-                    echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-                }
-            }
-            else
-            {
-                echo "<script>sweetAlert('Please Select Atleast One Sewing Job','','warning');</script>";
-                echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-            }   
-        }
+        //                 $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
+        //                 //echo $sql."<br>";
+        //                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        //                 while($sql_row=mysqli_fetch_array($sql_result)) 
+        //                 { 
+        //                     $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $to_module.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
+        //                     //echo $sql331;
+        //                     mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
+        //                 } 
+        //             }
+        //             echo "<script>sweetAlert('Sewing Job Transfered Successfully','','success');</script>";
+        //             echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+        //         }
+        //     }
+        //     else
+        //     {
+        //         echo "<script>sweetAlert('Please Select Atleast One Sewing Job','','warning');</script>";
+        //         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
+        //     }   
+        // }
     ?>    
     <br>
     <div class="container-fluid">

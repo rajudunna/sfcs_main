@@ -395,8 +395,8 @@ $.ajax
 <?php
     include('imsCalls.php');
     $start_timestamp = microtime(true);
-    $plant_code = $_SESSION['plantCode'];
-  $username = $_SESSION['userName']; 
+    $plantCode = $_SESSION['plantCode'];
+    $username = $_SESSION['userName']; 
 ?>
 
 <body>
