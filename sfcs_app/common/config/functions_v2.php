@@ -1035,12 +1035,14 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
                 while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
                 {
                     $job_number[$value]= $toget_sewing_jobs_row['job_number'];
+                    $job_number_data[$key]= $toget_sewing_jobs_row['job_number'];
                 }
             }
           }
       }
       return array(
           'job_number' => $job_number,
+          'job_number_data' => $job_number_data,
           'task_header_id' => $task_header_id,
            'task_job_reference' => $task_job_reference,
            'task_job_ids' => $task_job_ids,
