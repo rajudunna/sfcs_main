@@ -336,6 +336,7 @@ $(document).ready(function()
 	$("#job_number").change(function()
 	{
 	<?php }?>
+		$('#pre_pre_data').hide();
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
@@ -755,8 +756,10 @@ function check_pack()
 					swal('',res.internalMessage,'success');
 					
 					var data = res.data;
-					$('#pre_pre_data').show();
-						var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+					if(form_type == 'Sewing' ){
+						$('#pre_pre_data').show();
+					}
+					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
 					if(barcode_generation == 0) {
 						table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
 					} else{

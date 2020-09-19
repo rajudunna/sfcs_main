@@ -242,7 +242,7 @@ $(document).ready(function()
 	$("#job_number").change(function()
 	{
 	<?php }?>
-
+		$('#pre_pre_data').hide();
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
@@ -615,15 +615,24 @@ function check_pack()
 	reportData.operationCode = $('#operation_id').val();
 	reportData.createdUser = '<?= $username ?>';
 	var barcode_generation = "<?php echo $barcode_generation?>";
+	var form_type = "<?php echo $form_type ?>";
 	var url1 = '';
 	if(barcode_generation == 0) {
-		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+		if(form_type == 'Sewing' ){
+			url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+		} else {
+			url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcode",
+		}
 		reportData.barcode = $('#job_number').val();
 		reportData.quantity = $('#0reporting').val();
 		reportData.reportAsFullGood = false;
 		tot_qty += Number(reportData.quantity);
 	} else {
-		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+		if(form_type == 'Sewing' ){
+			url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+		} else {
+			url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormJob",
+		}
 		reportData.jobNo = $('#job_number').val();
 		var sizeQuantities = new Array();
 		for(var i=0; i<count; i++)
@@ -698,8 +707,10 @@ function check_pack()
 					swal('',res.internalMessage,'success');
 					
 					var data = res.data;
-					$('#pre_pre_data').show();
-						var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+					if(form_type == 'Sewing' ){
+						$('#pre_pre_data').show();
+					}
+					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
 					if(barcode_generation == 0) {
 						table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
 					} else{
