@@ -419,7 +419,7 @@ foreach ($workstations as $emb_key => $emb_value) {
   // to get all planned jobs
   $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
-  $job_number = $result_planned_jobs['job_number'];
+  $job_number = $result_planned_jobs['job_number_data'];
   $task_header_id = $result_planned_jobs['task_header_id'];
   $task_job_ids = $result_planned_jobs['task_job_ids'];
   $task_job_header_log = $result_planned_jobs['task_header_log_time'];
