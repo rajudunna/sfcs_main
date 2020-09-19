@@ -3,6 +3,8 @@ include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 $url = getFullURL($_GET['r'],'scan_jobs.php','N');
 
 $plant_code = $_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+
 $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Job Level'];
 // L3NmY3NfYXBwL2FwcC9wcm9kdWN0aW9uL2NvbnRyb2xsZXJzL2VtYmVsbGlzaG1lbnRfam9iL2VtYmVsbGlzaG1lbnRfam9iX3NjYW5pbmcvcHJlX2VtYl9qb2Jfc2Nhbm5pbmcucGhw
 ?>
@@ -61,6 +63,7 @@ $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Job Level'];
                 <input type='hidden' id='operation_name' name='operation_name' required>
 				<input type='hidden' id='operation_id' name='operation_id' required>		
 				<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>' required>		
+                <input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
                 <div class="col-md-1">
                     <br>
                     <button type='submit' value='Continue with Embellishment' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=embellishment';?>' style="margin-top: 4px;">Continue with Embellishment</button>

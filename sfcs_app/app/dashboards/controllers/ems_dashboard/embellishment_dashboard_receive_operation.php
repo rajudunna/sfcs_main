@@ -28,6 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/enums.php', 4, 'R'));
 set_time_limit(200000);
 $session_plant_code = $_SESSION['plantCode'];
+// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 ?>
 
@@ -420,12 +421,16 @@ foreach ($workstations as $emb_key => $emb_value) {
   $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
   $job_number = $result_planned_jobs['job_number'];
+  // var_dump($job_number);
+  // var_dump($task_job_ids);
   $task_header_id = $result_planned_jobs['task_header_id'];
   $task_job_ids = $result_planned_jobs['task_job_ids'];
   $task_job_header_log = $result_planned_jobs['task_header_log_time'];
 
   foreach ($task_job_ids as $task_job_id => $task_header_id_j) {
     $log_time = $task_job_header_log[$task_header_id_j];
+    $emb_job_no = $job_number[$task_header_id_j];
+    // var_dump($emb_job_no,$task_header_id_j);
 
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
@@ -474,9 +479,9 @@ foreach ($workstations as $emb_key => $emb_value) {
         if ($good_qty > $send_qty) {
           $id = "red";
         }
-        // $operation_code = '41';
+        $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N') . "&embJobNo=$job_num&plantCode=$session_plant_code&operationCode=$operation_code&barcode_generation=1";
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N')."&input_job_no_random_ref=$emb_job_no&plant_code=$session_plant_code&user_name=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
 
 
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";

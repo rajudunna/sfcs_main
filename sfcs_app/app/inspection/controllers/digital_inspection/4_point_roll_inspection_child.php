@@ -234,7 +234,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
             <div class="container">
                 <div style="float: right;">
                     <?php
-                    echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id\"><<<< Click here to Go Back</a>";
+                    echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"" . getFullURLLevel($_GET['r'], "4_point_roll_inspection.php", "0", "N") . "&parent_id=$parent_id&plant_code=$plant_code\"><<<< Click here to Go Back</a>";
                     ?>
                 </div>
                 <form id='myForm' method='post' name='input_main'>

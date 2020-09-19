@@ -5,6 +5,7 @@
 <?php
 //load the database configuration file
 //include("..".getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+// currently we are not capturing smv against to the style and color in sms..which will be future task.After that is complete again need to change this report
 include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/functions.php");
 $plantCode = $_SESSION['plantCode'];
