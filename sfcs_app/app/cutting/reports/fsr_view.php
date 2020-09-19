@@ -3,12 +3,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/menu_content.php',1,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/header_scripts.php',1,'R')); 
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
 $table_csv = '../'.getFullURLLevel($_GET['r'],'common/js/table2CSV.js',1,'R');
 $excel_form_action = '../'.getFullURLLevel($_GET['r'],'common/php/export_excel.php',1,'R');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+$plantcode = 'AIP';
+$username = 'AIP';
 ?>
 
 <html xmlns:v="urn:schemas-microsoft-com:vml"
@@ -82,61 +82,63 @@ $cat=$_POST['cat'];
 				<input class='form-control' type="text" data-toggle="datepicker" id="edate" onchange="return verify_date();" name="to_date" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
 			<?php
-				$table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'";
-				
-				$table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details");
-				while($tables=mysqli_fetch_array($table_result))
-				{
-					$table_name[]=$tables['tbl_name'];
-					$table_id[]=$tables['tbl_id'];
-				}
-				$all_sec_query = "SELECT GROUP_CONCAT('\"',tbl_id,'\"') as sec FROM $bai_pro3.tbl_cutting_table WHERE STATUS='active'";
+			$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plantcode' and workstation_type_description='Cutting'";
+			$sql_resultx1=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
+			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+			{
+				 $workstation_type_id=$sql_rowx1['workstation_type_id'];
+			}
+			
+			$sqlx="select workstation_id,workstation_description from $pms.workstation where plant_code='$plantcode' and workstation_type_id='$workstation_type_id'";
+			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+				$all_sec_query = "SELECT GROUP_CONCAT('\"',workstation_id,'\"') as sec FROM $pms.workstation where plant_code='$plantcode' and workstation_type_id='$workstation_type_id'";
 				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
 				while($res1 = mysqli_fetch_array($sec_result_all)){
 					$all_secs = $res1['sec'];
 				}
+
 			?>
-			<div class="col-sm-2">
-				<label for='section'>Section :</label>
-				<select class='form-control' name="section">
-					<option value='<?= $all_secs ?>'>All</option>
-				<?php
-					for($i = 0; $i < sizeof($table_name); $i++)
-					{
-						echo "<option value='".$table_id[$i]."'>".$table_name[$i]."</option>";
-					}
-				?>
-				</select>
-			</div>
-			<div class="col-sm-2">
-				<label for='shift'>Shift : </label>
-				<select class='form-control' name="shift">
-					<?php foreach($shifts_array as $key=>$shift){
-							echo "<option value=\"'$shift'\">$shift</option>";
-							$all_shifts = $all_shifts."'$shift',";
+			<div class="col-md-2">
+				<label>Section: </label>
+				<select name="section" class="form-control" required>
+					<!-- <option value=''>Please Select</option> -->
+					<?php if($all_secs){
+					echo "<option value='$all_secs'>All</option>";
 					}
 					?>
-					<option value="<?= rtrim($all_shifts,',') ?>" selected>All</option>
+					<?php
+						foreach($sql_resultx as $key=>$value){
+							echo "<option value='\"".$value['workstation_id']."\"'>".$value['workstation_description']."</option>";
+						}
+					?>
 				</select>
-				
 			</div>
+			<div class='col-sm-2'>
+                Shift :<select class='form-control' id='shift' name='shift' required>
+                    <option value=''>Select</option>
+					<?php
+                    foreach($shifts_array as $shift){
+                      echo "<option value='$shift'>$shift</option>";
+					  }
+					  ?>
+              </select></div>
 			<?php
-				$cat_query = "select * from $bai_pro3.tbl_category where status=1";
-				$cat_result = mysqli_query($link,$cat_query) or exit('Unable to load Categories');	
-				$all_cat_query = "SELECT GROUP_CONCAT('\"',cat_name,'\"') as cat FROM $bai_pro3.tbl_category where status=1";
+				$all_cats= array();
+				$all_cat_query = "select fabric_category_code from $mdm.fabric_category where is_active=true";
 				$cat_result_all = mysqli_query($link,$all_cat_query) or exit('Unable to load Categories all');
 				while($res = mysqli_fetch_array($cat_result_all)){
-					$all_cats = $res['cat'];
+					$all_cats[] = $res['fabric_category_code'];
 				}
-				
 			?>
 			<div class="col-sm-2">
 				<label for='cat'>Category : </label> 
 				<select class='form-control' name="cat">
-					<option value='<?= $all_cats ?>'>All</option>
+					<option value='<?= $cat_result_all ?>'>All</option>
 				<?php
-					foreach($cat_result as $key=>$value){
-						echo "<option value=\"'".$value['cat_name']."'\">".$value['cat_name']."</option>";
+					foreach($all_cats as $category){
+						echo "<option value=\"'".$category."'\">".$category."</option>";
 					}
 				?>
 				</select>
@@ -160,7 +162,7 @@ $cat=$_POST['cat'];
 if(isset($_POST['submit']))
 {
 	echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait while preparing report...</font></h1></center></div>";
-	
+	var_dump($_POST);
 	ob_end_flush();
 	flush();
 	usleep(10);
@@ -458,7 +460,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		}	
         $req_qty=0;
 		$issued_qty=0;
-        $sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
+        $sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plantcode' and style='$style' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
@@ -704,7 +706,7 @@ while($sql_row33=mysqli_fetch_array($sql_result33))
 		
 		$req_qty=0;
 		$issued_qty=0;
-		$sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plant_code' and schedule='$schedule' and color='$color^$act_cut_no'";
+		$sql112="SELECT req_qty,issued_qty FROM $wms.mrn_track WHERE product='FAB' and plant_code='$plantcode' and schedule='$schedule' and color='$color^$act_cut_no'";
 		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error h".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result112)>0)
 		{
