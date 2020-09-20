@@ -13,6 +13,7 @@
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
     $dashboard_name="IPS";
     $sec_result = mysqli_query($link, "SELECT section_id,section_name FROM $pms.sections WHERE plant_code='$plant_code' and is_active=1 order by section_id") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
@@ -24,7 +25,7 @@
             <div class='col-sm-12' style='padding-bottom:20px'>
             <div class='form-group'>
               <div class='col-sm-3'>";
-                echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10"><input type="hidden" id="plant_code" name="plant_code" value='.$plant_code.' required>';
+                echo 'Sewing Job Track: <input type="text" name="sewing" id="sewing" class="form-control alpha" onkeyup="blink_new(this.value)" size="10"><input type="hidden" id="plant_code" name="plant_code" value='.$plant_code.' required><input type="hidden" id="username" name="username" value='.$username.' required>';
               echo "</div><div class='col-sm-3'>";
                 echo 'Schedule Track: <input type="text" name="schedule" id="schedule"  class="form-control integer" onkeyup="blink_new3(this.value)" size="10"> &nbsp;&nbsp;';
               echo "</div>
@@ -98,8 +99,9 @@ function ajax_calls(value,sec_name,sync_type){
   $('#sec-load-'+value).css('display','block');
   $('#sec-'+value).html('');
   var plant_code = $('#plant_code').val();
+  var username = $('#username').val();
   $.ajax({
-      url: "<?= $url ?>?sec_id="+value+"&sec_name="+sec_name+"&plant_code="+plant_code+"&priority_limit="+$('#view_priority').val()
+      url: "<?= $url ?>?sec_id="+value+"&sec_name="+sec_name+"&plant_code="+plant_code+"&username="+username+"&priority_limit="+$('#view_priority').val()
   }).done(function(data) {
       try{
         var r_data = JSON.parse(data) ;
@@ -138,8 +140,8 @@ function ajax_calls(value,sec_name,sync_type){
 }
 
 
-function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation_code,sidemenu){
-  url = '<?= $ui_url1 ?>'+'&style='+style+'&schedule='+schedule+'&module='+module+'&input_job_no_random_ref='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift=';
+function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation_code,sidemenu,plantcode,username){
+  url = '<?= $ui_url1 ?>'+'&style='+style+'&schedule='+schedule+'&plant_code='+plantcode+'&username='+username+'&module='+module+'&input_job_no_random_ref='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift=';
   PopupCenter(url, 'myPop1',800,600);
 }
 function PopupCenter(pageURL, title,w,h) {
