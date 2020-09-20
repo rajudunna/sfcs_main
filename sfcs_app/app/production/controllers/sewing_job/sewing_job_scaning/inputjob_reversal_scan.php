@@ -296,6 +296,7 @@
 				} else {
 					swal('',res.internalMessage,'error');
 				}
+				location.reload();	
 			},
 			error: function(response){
 				swal('','Network Error','error');

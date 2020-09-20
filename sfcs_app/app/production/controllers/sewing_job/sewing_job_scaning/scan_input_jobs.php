@@ -206,9 +206,9 @@ $label_name_to_show = $configuration_bundle_print_array[$barcode_generation];
 							</tr>
 						</table>
 						<center>
-						<div class="form-group col-lg-6 col-sm-12">
+						<div class="form-group col-lg-6 col-sm-6">
 							<label><?php echo $label_name_to_show ?><span style="color:red"></span></label>
-							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?> maxlength="25"/>
+							<input type="text" id="job_number" value='<?= $input_job_no_random_ref ?>' class="form-control" required placeholder="Scan the Job..." <?php echo $read_only_job_no;?>/>
 						</div>
 						<div class = "form-group col-lg-6 col-sm-12" hidden='true'>
 							<label>Assigning To Module</label><br>
@@ -332,8 +332,11 @@ $(document).ready(function()
 	var operation_code_routing = document.getElementById('operation_code_routing').value;
 	$('#job_number').focus();
 	$('#loading-image').hide();
+	<?php if ($_POST['operation_name']) {?>
 	$("#job_number").change(function()
 	{
+	<?php }?>
+		$('#pre_pre_data').hide();
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
 		
@@ -356,6 +359,7 @@ $(document).ready(function()
 			data: inputObj,
 			success: function (res) {            
 				//console.log(res.data);
+				$('#loading-image').hide();
 				if(res.status)
 				{
 					var data=res.data
@@ -373,7 +377,9 @@ $(document).ready(function()
 				swal('Error','in getting docket','error');
 			}
 		});
-	});
+	<?php if ($_POST['operation_name']) {?>
+		});
+	<?php }?>
 });
 
 function tableConstruction(data){
@@ -662,41 +668,52 @@ function check_pack()
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
 	var reportData = new Object();
-	reportData.jobNo = $('#job_number').val();
 	reportData.plantCode = $('#plant_code').val();
 	reportData.shift = $('#shift').val();
 	reportData.operationCode = $('#operation_id').val();
 	reportData.createdUser = '<?= $username ?>';
-	var sizeQuantities = new Array();
-	for(var i=0; i<count; i++)
-	{
-		var variable = i+"reporting";
-		var qty_cnt = document.getElementById(variable).value;
-		tot_qty += Number(qty_cnt);
-		var sizeQuantitiesObject = new Object();
-		sizeQuantitiesObject.size = $('#'+i+'size').val();
-		sizeQuantitiesObject.module = $('#'+i+'module').val();
-		sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
-		sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
-		sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
-		if(sizeQuantitiesObject.rejectedQty > 0){
-			var rejectionDetails = new Array();
-			var reason_qty = $('#'+i+'qty_data').val();
-			var reason_data = $('#'+i+'reason_data').val();
-			var reason_qty_array = reason_qty.split(",")
-			var reason_data_array = reason_data.split(",")
-			
-			for(var j=0; j<reason_qty_array.length; j++){
-				var rejectionDetailsObject = new Object();
-					rejectionDetailsObject.reasonCode = reason_data_array[j];
-					rejectionDetailsObject.reasonQty = reason_qty_array[j];
-					rejectionDetails.push(rejectionDetailsObject);
+	var barcode_generation = "<?php echo $barcode_generation?>";
+	var url1 = '';
+	if(barcode_generation == 0) {
+		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+		reportData.barcode = $('#job_number').val();
+		reportData.quantity = $('#0reporting').val();
+		reportData.reportAsFullGood = false;
+		tot_qty += Number(reportData.quantity);
+	} else {
+		url1 = "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+		reportData.jobNo = $('#job_number').val();
+		var sizeQuantities = new Array();
+		for(var i=0; i<count; i++)
+		{
+			var variable = i+"reporting";
+			var qty_cnt = document.getElementById(variable).value;
+			tot_qty += Number(qty_cnt);
+			var sizeQuantitiesObject = new Object();
+			sizeQuantitiesObject.size = $('#'+i+'size').val();
+			sizeQuantitiesObject.module = $('#'+i+'module').val();
+			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
+			sizeQuantitiesObject.reportedQty = $('#'+i+'reporting').val();
+			sizeQuantitiesObject.rejectedQty = $('#'+i+'rejections').val();
+			if(sizeQuantitiesObject.rejectedQty > 0){
+				var rejectionDetails = new Array();
+				var reason_qty = $('#'+i+'qty_data').val();
+				var reason_data = $('#'+i+'reason_data').val();
+				var reason_qty_array = reason_qty.split(",");
+				var reason_data_array = reason_data.split(",");
+				
+				for(var j=0; j<reason_qty_array.length; j++){
+					var rejectionDetailsObject = new Object();
+						rejectionDetailsObject.reasonCode = reason_data_array[j];
+						rejectionDetailsObject.reasonQty = reason_qty_array[j];
+						rejectionDetails.push(rejectionDetailsObject);
+				}
+				sizeQuantitiesObject.rejectionDetails = rejectionDetails;
 			}
-			sizeQuantitiesObject.rejectionDetails = rejectionDetails;
+			sizeQuantities.push(sizeQuantitiesObject);
 		}
-		sizeQuantities.push(sizeQuantitiesObject);
+		reportData.sizeQuantities = sizeQuantities;
 	}
-	reportData.sizeQuantities = sizeQuantities;
 
 	for(var i=0; i<count; i++)
 	{
@@ -711,9 +728,7 @@ function check_pack()
 		return false;
 	}
 	else {
-		console.log(reportData);
 		$('.submission').hide();
-		// $('#progressbar').show();
 		$('.progress-bar').css('width', 30+'%').attr('aria-valuenow', 20); 
 		$('.progress-bar').css('width', 50+'%').attr('aria-valuenow', 30); 
 		
@@ -721,12 +736,11 @@ function check_pack()
 		$('#smart_btn_arear').hide();
 		$.ajax({
 			type: "POST",
-			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtJob",
+			url: url1,
 			data:  JSON.stringify(reportData),
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			success: function (res) {            
-				//console.log(res.data);
 				if(res.status)
 				{
 					$('#dynamic_table1').html('');
@@ -740,20 +754,26 @@ function check_pack()
 					document.getElementById('pre_data').innerHTML ='';
 					
 					swal('',res.internalMessage,'success');
-					return;
-					/*
-					var data = JSON.parse(response);
-					$('#pre_pre_data').show();
-					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Input Job</th><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejecting Qty</th></tr></thead><tbody>";
-					for(var z=0; z<data.transactionsData.length; z++){
-						table_data += "<tr><td>"+data.transactionsData[z].jobNo+"</td><td>"+data.transactionsData[z].bundleNo+"</td><td>"+data.transactionsData[z].fgColor+"</td><td>"+data.transactionsData[z].size+"</td><td>"+data.transactionsData[z].reportedQty+"<td>"+data.transactionsData[z].rejectedQty+"</td>";
+					
+					var data = res.data;
+					if(form_type == 'Sewing' ){
+						$('#pre_pre_data').show();
+					}
+					var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+					if(barcode_generation == 0) {
+						table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+					} else{
+						for(var z=0; z<data.length; z++){
+							if(data[z].reportedQuantity > 0) {
+								table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+							}
+						}
 					}
 					table_data += "</tbody></table></div></div></div>";
 					document.getElementById('pre_data').innerHTML = table_data;
 					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
 					$('.progress').hide();
 					$('#smart_btn_arear').show();
-					*/
 				}
 				else
 				{
@@ -765,8 +785,6 @@ function check_pack()
 			error: function(res){
 				$('.submission').show();
 				$('#loading-image').hide(); 
-				// alert('failure');
-				// console.log(response);
 				swal('','Network error','error');
 			}
 		});

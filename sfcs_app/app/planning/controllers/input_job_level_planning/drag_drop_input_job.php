@@ -712,8 +712,8 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 				$job_number=$result_planned_jobs['job_number'];
 				$task_header_id=$result_planned_jobs['task_header_id'];
-				    		        		            
-		        foreach($job_number as $sew_num=>$jm_sew_id)
+				   		            
+		        foreach($job_number as $jm_sew_id=>$sew_num)
 		        {
 					//To get taskjobs_id
 					$task_jobs_id = [];

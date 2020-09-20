@@ -145,6 +145,7 @@ padding:5px 5px 5px 15px;
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
@@ -741,7 +742,6 @@ window.onload = sivamtime;
 </script>
 
 <?php
-// $plant_code = $_SESSION['plantCode'];
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 echo "<div style='width=100%;'>";
@@ -786,8 +786,8 @@ echo "</div>";
 $sqly="SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $pps.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
 //echo $sqly."<br>";
 
-mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+mysqli_query($link, $sqly) or exit("Sql Error324".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error7658".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowy=mysqli_fetch_array($sql_resulty))
 {
   $buyer_div=$sql_rowy['buyer_div'];
@@ -809,15 +809,32 @@ echo '<br><br>';
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
-$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plant_code' and workstation_type_description='Cutting'";
-$sql_resultx1=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$department= DepartmentTypeEnum::CUTTING;
+    /**Qry to get departmen wise id's */
+    $Qry_department="SELECT `department_id` FROM $pms.`departments` WHERE department_type='$department' AND plant_code='$plant_code' AND is_active=1";
+    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at department ids".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $Qry_department_result_num=mysqli_num_rows($Qry_department_result);
+    if($Qry_department_result_num>0){
+        while($department_row=mysqli_fetch_array($Qry_department_result))
+        {
+            $department_id[]=$department_row['department_id'];
+        }
+    }
+    $departments = implode("','", $department_id);
+    /**Getting work station type against department*/
+    $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id IN ('$departments') AND plant_code='$plant_code' AND is_active=1";
+    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstationtype=array();
+    $workstation_typet_num=mysqli_num_rows($workstation_type_result);
+    if($workstation_typet_num>0){
+        while($workstaton_type_row=mysqli_fetch_array($workstation_type_result))
+        {
+            $workstationtype[]=$workstaton_type_row['workstation_type_id'];
+        }
+    }
+    $workstations = implode("','", $workstationtype);
 
-while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-{
-     $workstation_type_id=$sql_rowx1['workstation_type_id'];
-}
-
-$sqlx="select workstation_id,workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_type_id='$workstation_type_id'";
+$sqlx="select workstation_id,workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_type_id in ('$workstations')";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_resultx) > 0){
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -952,7 +969,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.fabric_priorities where module='$section_mods' and plant_code='$plant_code'";
+    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code'";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
@@ -966,7 +983,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   $rm_update_new=strtolower(chop($sql_row1['rm_date']));
     //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
     
-      $doc_no=$sql_row1['doc_ref'];
+      $doc_no=$sql_row1['jm_docket_line_id'];
       if($doc_no!=" " && $plant_code!=' '){
         //this is function to get style,color,and cutjob
         $result_jmdockets=getDocketInformation($doc_no,$plant_code);
@@ -977,8 +994,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $req_date_time=$sql_row1['req_time'];
           $log_time=$sql_row1['log_time'];
           $lay_time=$sql_row1['req_time'];
-          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where doc_no=\"$doc_no\" and plant_code='$plant_code'";
-          $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+          $get_order_joins="select plan_lot_ref,fabric_status,print_status from $pps.requested_dockets where jm_docket_line_id=\"$doc_no\" and plant_code='$plant_code'";
+          $sql_result=mysqli_query($link, $get_order_joins) or exit("Sql Error27".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_row1236=mysqli_fetch_array($sql_result))
         {
             $plan_lot_ref_v1 = $sql_row1236['plan_lot_ref'];
@@ -1003,7 +1020,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   }
       
      
-      $doc_no_ref[]=$sql_row1['doc_no'];
+      $doc_no_ref[]=$sql_row1['jm_docket_line_id'];
     //   $bundle_location="";
     //   if(sizeof(explode("$",$sql_row1['bundle_location']))>1)
     //   {

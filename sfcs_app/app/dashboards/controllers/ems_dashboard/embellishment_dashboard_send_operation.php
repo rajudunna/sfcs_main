@@ -28,6 +28,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/enums.php', 4, 'R'));
 set_time_limit(200000);
 $session_plant_code = $_SESSION['plantCode'];
+// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 ?>
 
@@ -71,7 +72,7 @@ $hour = date("H.i");
   document.getElementById('view_div').value;
   window.location
   =
-  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>"
+  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_send_operation.php', 'N') ?>"
   +
   "&view=2&view_div="
   +
@@ -91,7 +92,7 @@ $hour = date("H.i");
   document.getElementById('view_dash').value;
   window.location
   =
-  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_receive_operation.php', 'N') ?>"
+  "<?= getFullURL($_GET['r'], 'embellishment_dashboard_send_operation.php', 'N') ?>"
   +
   "&view="
   +
@@ -114,12 +115,7 @@ $hour = date("H.i");
   +
   "']").each(function()
   {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
   });
   }
   function
@@ -131,12 +127,7 @@ $hour = date("H.i");
   +
   "']").each(function()
   {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
   });
   }
 </script>
@@ -323,7 +314,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong>EMB Receive Dashboard</strong></a>
+echo "<div class='panel-heading'><span style='float'><strong>EMB Send Dashboard</strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm" . "','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -379,14 +370,21 @@ echo "</div>";
 // echo '<br><br>';
 ?>
 <div>
-  <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
-    <div>Partially Received from Embellishment</div>
-  </div>&nbsp;&nbsp;&nbsp;
-  <div style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
-    <div>Not Yet Received From Embellishment</div>
-  </div>
-  <div style="clear: both;"> </div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #FFA500;color: white;margin-left: 10px;">
+        <div>Partially Send to Embellishment Jobs</div>
+    </div>&nbsp;&nbsp;&nbsp;
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #15a5f2;color: white;margin-left: 30px;">
+        <div>Cut Completed Jobs</div>
+    </div>
+    <div
+        style="margin-top: 4px;border: 1px solid #000;float: left;background-color: #999999;color: white;margin-left: 30px;">
+        <div>Cut Not Completed Jobs</div>
+    </div>
+    <div style="clear: both;"> </div>
 </div>
+
 <?php
 //For blinking priorties as per the section module wips
 $bindex = 0;
@@ -397,12 +395,14 @@ $blink_docs = array();
  * @return:workstation
  **/
 $result_worksation_id = getWorkstations(DepartmentTypeEnum::EMBELLISHMENT, $session_plant_code);
+
 $workstations = $result_worksation_id['workstation'];
 // $sqlx="select * from $bai_pro3.tbl_emb_table where emb_table_id>0";
 // mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 // while($sql_rowx= $embelishment_tables)
 foreach ($workstations as $emb_key => $emb_value) {
+
 
   echo '<div style="background-color:#ffffff;color:#000000;border: 1px solid #000000; float: left; margin: 10px; padding: 10px;">';
   echo "<p>";
@@ -419,17 +419,19 @@ foreach ($workstations as $emb_key => $emb_value) {
   // to get all planned jobs
   $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
-  $job_number = $result_planned_jobs['job_number'];
+  $job_number = $result_planned_jobs['job_number_data'];
   $task_header_id = $result_planned_jobs['task_header_id'];
   $task_job_ids = $result_planned_jobs['task_job_ids'];
   $task_job_header_log = $result_planned_jobs['task_header_log_time'];
 
   foreach ($task_job_ids as $task_job_id => $task_header_id_j) {
     $log_time = $task_job_header_log[$task_header_id_j];
-
+    $emb_job_no = $job_number[$task_header_id_j];
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
     $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
+    // echo $qry_toget_style_sch."<br/>";
+
     $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
     if (mysqli_num_rows($qry_toget_style_sch_result) > 0) {
 
@@ -446,7 +448,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
 
 
-      $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
+      $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -457,11 +459,12 @@ foreach ($workstations as $emb_key => $emb_value) {
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
         }
-        $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
-        $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
-        while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
-          $send_qty = $row_res['good_quantity'];
+        $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
+        $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result123" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row_res2 = mysqli_fetch_array($task_job_trans2_result)) {
+          $send_qty = $row_res2['good_quantity'];
         }
+
         $id = "yash";
         if ($good_qty == 0) {
           $id = "yash";
@@ -470,15 +473,13 @@ foreach ($workstations as $emb_key => $emb_value) {
         if ($orginal_qty != $good_qty && $good_qty > 0) {
           $id = "orange";
         }
-
         if ($good_qty > $send_qty) {
           $id = "red";
         }
-        // $operation_code = '41';
+
+        $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N') . "&embJobNo=$job_num&plantCode=$session_plant_code&operationCode=$operation_code&barcode_generation=1";
-
-
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N')."&input_job_no_random_ref=$emb_job_no&plant_code=$session_plant_code&user_name=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
 
         echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
@@ -516,9 +517,7 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'cps.htm',
     var shift = document.getElementById('shift').value;
     if (shift) {
       url = url + '&shift=' + shift;
-      window.open(url, 'Popup',
-        'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'
-      );
+      window.open(url, 'Popup', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23');
       if (window.focus) {
         Popup.focus()
       }

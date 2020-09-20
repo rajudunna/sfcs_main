@@ -117,6 +117,7 @@ if(isset($_POST['formSubmit']))
                     <div class='panel-body'>
                         <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'>
                             <thead>
+                                <th>Docket No</th>
                                 <th>Lay No</th>
                                 <th>Shift</th>
                                 <th>Docket Plies</th>
@@ -128,11 +129,12 @@ if(isset($_POST['formSubmit']))
                             $s_no = 1;
                             while($row = mysqli_fetch_array($docketLineDetails)){
                                 $id = '"'.$row['lp_lay_id'].'"';
-                                echo "<tr><td>$s_no</td>";
+                                echo "<tr><td>$docket_number_post</td>";
+                                echo "<td>$s_no</td>";
                                 echo "<td>".$row['shift']."</td>";
                                 echo "<td>".$row['docket_plies']."</td>";
                                 echo "<td>".$row['lay_plies']."</td>";
-                                if ($row['cut_report_status'] == 'OPEN') {
+                                if ($row['cut_report_status'] == 'OPEN' && $row['lay_plies'] > 0) {
                                     echo "<td><button type='button'class='btn btn-danger'  onclick='reverseLay(".$id.")'>Reverse Lay</button></td>";
                                     echo "<td><button type='button'class='btn btn-primary' id='reportcut' onclick='reportCut(".$id.")'>Report Cut</button></td>";
                                 } else {
@@ -155,7 +157,6 @@ if(isset($_POST['formSubmit']))
         echo "<script>sweetAlert('UnAuthorized','You are not allowed to reverse.','warning');</script>";
     }
 }
-
 if(isset($_POST['reversesubmit']))
 {
    $reverseRollIds = $_POST['roll_ids'];
@@ -171,8 +172,22 @@ if(isset($_POST['reversesubmit']))
    }
    $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
-   $url = '?r='.$_GET['r'];
-   echo "<script>sweetAlert('Lay Reversed Successfully!!!','','success');window.location = '".$url."'</script>"; 
+   $url = '?r='.$_GET['r'].'&sidemenu=false';
+   echo "<script>sweetAlert('Lay Reversed Successfully!!!','','success');
+   window.location = '".$url."'</script>"; 
+}
+?>
+<?php
+if(isset($_GET['sidemenu'])){
+	echo "<style>
+          .left_col,.top_nav{
+          	display:none !important;
+          }
+          .right_col{
+          	width: 100% !important;
+    margin-left: 0 !important;
+          }
+	</style>";
 }
 ?>
 <script>
