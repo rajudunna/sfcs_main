@@ -1251,7 +1251,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $marker_version_id=$sql_row11['marker_version_id'];
     }
     $requirement = $length * $width * $docket_quantity;
-
+      $required_qty=$length *$plies;
     return [
         'style' => $style,
         'fg_color' => $fg_color,
@@ -1281,7 +1281,8 @@ function getDocketInformation($docket_no, $plant_code) {
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
         'marker_version_id' => $marker_version_id,
-        'docket_line_number'=>$docket_line_number  
+        'docket_line_number'=>$docket_line_number,
+        'required_qty'=>$required_qty
     ];
 
 }
