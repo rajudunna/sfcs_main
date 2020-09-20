@@ -1294,7 +1294,13 @@ function getSections($plant_code){
     global $link_new;
     global $pms;
     $section_data=[];
-    $query="select * from $pms.sections where plant_code='$plant_code'";
+    $dept_query="select department_id from $pms.departments where plant_code='$plant_code' and department_type='SEWING'";
+    $sql_dept_res = mysqli_query($link_new, $dept_query) or exit("Sql Error at department details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    while ($dept_row = mysqli_fetch_array($sql_dept_res)) {
+        $department_id= $dept_row['department_id'];
+    }
+    
+    $query="select * from $pms.sections where plant_code='$plant_code' and department_id='$department_id'";
     $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections_rows_num = mysqli_num_rows($sql_res);
     if ($sections_rows_num > 0) {
