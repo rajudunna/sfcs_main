@@ -1,3 +1,9 @@
+<?php
+    include('imsCalls.php');
+    $start_timestamp = microtime(true);
+    $plantCode = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
+?>
 <style>
 .green_back{
   background : #00ff00;
@@ -272,9 +278,11 @@ width:350px;
 function loadpopup(url)
 { 
     var shift = document.getElementById('shift').value;
+    //$("#selectId option:selected").html();
+    //alert(shift);
     if(shift)
     {
-        url = url+'&shift='+shift;
+        url = url+'&shift='+shift+'&plant_code='+'<?=$plantCode?>'+'&username='+'<?=$username?>';
         window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
     }
     else
@@ -392,13 +400,6 @@ $.ajax
 });
 </script>
 <title>IMS</title>
-<?php
-    include('imsCalls.php');
-    $start_timestamp = microtime(true);
-    $plantCode = $_SESSION['plantCode'];
-    $username = $_SESSION['userName']; 
-?>
-
 <body>
 <div class="panel panel-primary">
   <div class="panel-heading">    
@@ -465,6 +466,7 @@ $.ajax
             $wip=0;
             foreach($workstationsArray as $workstations)
               {
+                $module=$workstations['workstationId'];
           ?>
 
           <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
@@ -567,7 +569,7 @@ $.ajax
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
                           
                           $sidemenu=true;
-                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu&shift=$shift";
+                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
                           ?>
                           <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                           Style No : <?php echo $style."<br/>"; ?>
