@@ -351,6 +351,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$cut_number=$sql_row['cut_number'];
 		$act_total = $sql_row['quantity'];
 		$plies = $sql_row['plies'];
+		$lay_id = $sql_row['lp_lay_id'];
 		$getdetails = getStyleColorSchedule($po_number,$plantcode);
 		$style = $getdetails['style_bulk'][0];
 		$schedule = $getdetails['schedule_bulk'][0];
@@ -364,6 +365,68 @@ if(isset($_POST['submit']) && $reptype == 1)
 		// $jo_int_check=explode('$',$joints_endbits);
 		// $joints=0;
 		// $endbits=0;	
+
+		//To get fabric attributes
+		$fabricattributes=array();
+		$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plantcode'";
+		$sql_result7=mysqli_query($link, $qrt_get_attributes1) or die("Error".$qrt_get_attributes1.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row7=mysqli_fetch_array($sql_result7))
+		{
+			$fabricattributes[$row7['attribute_name']] = $row7['attribute_value'];
+		}
+		$fab_rec=  $fabricattributes[$fabric_lay_attributes['fabricrecevied']];
+		$fab_ret=  $fabricattributes[$fabric_lay_attributes['fabricreturned']];
+		$shortages=  $fabricattributes[$fabric_lay_attributes['shortages']];
+		$damages=  $fabricattributes[$fabric_lay_attributes['damages']];
+		$endbits=  $fabricattributes[$fabric_lay_attributes['endbits']];
+		$joints=  $fabricattributes[$fabric_lay_attributes['joints']];
+		$net_util= $fab_rec - $fab_ret - $damages - $shortages- $endbits;
+		$act_con=round((($fab_rec - $fab_ret)/$act_total));
+		$net_con=round($net_util/$act_total,4);
+
+		//OrderConsumption
+		//To get wastage and consumption
+		$Qry_get_order_consumption="SELECT SUM(consumption) AS consumption,SUM(wastage_perc) AS wastage FROM $oms.`oms_mo_items` LEFT JOIN $oms.`oms_products_info` ON oms_mo_items.`mo_number`=oms_products_info.`mo_number` WHERE style='$style' AND color_desc='$color' AND operation_code=15";
+		$sql_result3=mysqli_query($link, $Qry_get_order_consumption) or die("Error".$Qry_get_order_consumption.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row3=mysqli_fetch_array($sql_result3))
+		{
+			$consumption=$row3['consumption'];
+			$cut_wastage=$row3['wastage'];
+		}
+		//To get mo qty aganist style,schedule,color
+		$Qry_get_quantity="SELECT SUM(mo_quantity) as mo_qty FROM $oms.`oms_mo_details` LEFT JOIN $oms.`oms_products_info` ON oms_mo_details.`mo_number`=oms_products_info.`mo_number` WHERE style='$style' AND SCHEDULE='$schedule' AND color_desc='$color' AND oms_mo_details.plant_code='$plantcode'";
+		$sql_result4=mysqli_query($link, $Qry_get_quantity) or die("Error".$Qry_get_quantity.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row4=mysqli_fetch_array($sql_result4))
+		{
+			$mo_qty=$row4['mo_qty'];
+		}
+		if($cut_wastage > 0)
+		{
+			$wastage=$cut_wastage;
+		}else
+		{
+			$wastage=1;
+		}
+
+		$order_consumption=(($mo_qty*$consumption*$wastage)/100);
+
+
+		$act_saving=round(($order_consumption*$act_total)-($act_con*$order_consumption),1);
+		$act_saving_pct=round((($order_consumption-$act_con)/$order_consumption)*100,0);
+		$net_saving=round(($order_consumption*$act_total)-($net_con*$act_total),1);
+		$net_saving_pct=round((($order_consumption-$net_con)/$order_consumption)*100,0);
+
+
+		 // $net_util=$fab_rec-$fab_ret-$damages-$shortages-$endbits;
+        // $act_con=round(($fab_rec-$fab_ret)/$act_total,4);
+        // $net_con=round($net_util/$act_total,4);
+        // $act_saving=round(($cat_yy*$act_total)-($act_con*$act_total),1);
+        // $act_saving_pct=round((($cat_yy-$act_con)/$cat_yy)*100,0);
+        // $net_saving=round(($cat_yy*$act_total)-($net_con*$act_total),1);
+        // $net_saving_pct=round((($cat_yy-$net_con)/$cat_yy)*100,0);
+
+		// $doc_req=$doc_req+$req_qty;
+
 		// for($ii=0;$ii<sizeof($jo_int_check);$ii++)
 		// {
 		// 	$values_joint=explode('^',$jo_int_check[$ii]);
