@@ -145,6 +145,7 @@ padding:5px 5px 5px 15px;
 
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R'));
@@ -808,15 +809,32 @@ echo '<br><br>';
 //For blinking priorties as per the section module wips
 $bindex=0;
 $blink_docs=array();
-$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plant_code' and workstation_type_code='Cutting'";
-$sql_resultx1=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+$department= DepartmentTypeEnum::CUTTING;
+    /**Qry to get departmen wise id's */
+    $Qry_department="SELECT `department_id` FROM $pms.`departments` WHERE department_type='$department' AND plant_code='$plant_code' AND is_active=1";
+    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at department ids".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $Qry_department_result_num=mysqli_num_rows($Qry_department_result);
+    if($Qry_department_result_num>0){
+        while($department_row=mysqli_fetch_array($Qry_department_result))
+        {
+            $department_id[]=$department_row['department_id'];
+        }
+    }
+    $departments = implode("','", $department_id);
+    /**Getting work station type against department*/
+    $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id IN ('$departments') AND plant_code='$plant_code' AND is_active=1";
+    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstationtype=array();
+    $workstation_typet_num=mysqli_num_rows($workstation_type_result);
+    if($workstation_typet_num>0){
+        while($workstaton_type_row=mysqli_fetch_array($workstation_type_result))
+        {
+            $workstationtype[]=$workstaton_type_row['workstation_type_id'];
+        }
+    }
+    $workstations = implode("','", $workstationtype);
 
-while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-{
-     $workstation_type_id=$sql_rowx1['workstation_type_id'];
-}
-
-$sqlx="select workstation_id,workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_type_id='$workstation_type_id'";
+$sqlx="select workstation_id,workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_type_id in ('$workstations')";
 $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_resultx) > 0){
 while($sql_rowx=mysqli_fetch_array($sql_resultx))

@@ -109,7 +109,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
         while ($row_res2 = mysqli_fetch_array($task_job_trans_result2)) {
             $send_qty = $row_res2['good_quantity'];
         }
-        $wip = $send_qty - $good_qty;
+        $wip = abs($send_qty - $good_qty);
         $totalwip = $totalwip + $wip;
         $input_date = null;
         $remarks = null;
