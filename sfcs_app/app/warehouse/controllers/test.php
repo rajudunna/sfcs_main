@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+$main_url=getFullURL($_GET['r'],'test.php','R');
 //$view_access=user_acl("SFCS_0153",$username,1,$group_id_sfcs); 
 $plantcode = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
@@ -349,7 +351,8 @@ if(isset($_POST['submit']))
 			$sql="insert into $wms.manual_form(style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
 			//echo $sql;
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			log_statement('debug',$sql,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			$table.="<tr><td>".$item[$i]."</td><td>".$reason[$i]."</td><td>".$qty[$i]."</td></tr>";
 		}
 	}

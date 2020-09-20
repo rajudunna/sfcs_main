@@ -1,7 +1,8 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
-
+$main_url=getFullURL($_GET['r'],'gatepass_summery_detail.php','R');
 if(isset($_GET['gatepassid']))
 {
 	$plant_code= $_GET['plant_code']; 
@@ -26,6 +27,8 @@ if($gatepassid!='')
 	$sql12="select vehicle_no from $pps.gatepass_table where id=".$gatepassid." and plant_code='".$plant_code."'";
 	//echo $sql12."<br>"; 
 	$sql_result123=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	log_statement('debug',$sql12,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	while($sql_row12=mysqli_fetch_array($sql_result123))
 	{
 		$vehicle_no=$sql_row12['vehicle_no'];	
@@ -135,9 +138,13 @@ if(isset($_POST['submit']) || ($status==1)){
 		$username= $_POST['username']; 
 		$sql33="update $pps.gatepass_table set vehicle_no='$vehicle_number',updated_user='$username',updated_at=NOW(),gatepass_status=2 where id='".$gate_id."' and plant_code='".$plant_code."'";
 		mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql33,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	}
 	$sql_total_1="SELECT SUM(bundle_qty) AS qty_bundle FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code='".$plant_code."'";
 	$sql_grand_total_res_1 = mysqli_query($link,$sql_total_1) or exit($sql_total_1."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	log_statement('debug',$sql_total_1,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	while($res_row12_1 = mysqli_fetch_array($sql_grand_total_res_1))
 	{
 		$qty_row12_1=$res_row12_1['qty_bundle'];
@@ -146,12 +153,16 @@ if(isset($_POST['submit']) || ($status==1)){
 	{
 		$sql_total="SELECT style,schedule,color,SUM(bundle_qty) AS qty_bundle,COUNT(bundle_no) AS bundle_count FROM $pps.`gatepass_track` where gate_id=".$gate_id." AND plant_code='".$plant_code."'  GROUP BY style,schedule,color";
 		$sql_grand_total_res = mysqli_query($link,$sql_total) or exit($sql_total."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql_total,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		while($res_row12 = mysqli_fetch_array($sql_grand_total_res))
 		{
 			$array_res[]=$res_row12;
 		}
 		$sql="select style,schedule,color,size from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);		
 		$sql_num_check=mysqli_num_rows($sql_result);
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
@@ -167,7 +178,9 @@ if(isset($_POST['submit']) || ($status==1)){
 		$tot_qty=0;
 		$tot_bds=0;
 		$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql1,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);			
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$quantity[$sql_row1['schedule']][$sql_row1['color']][$sql_row1['size']]=$sql_row1['qty'];
@@ -176,7 +189,9 @@ if(isset($_POST['submit']) || ($status==1)){
 			$tot_bds=$tot_bds+$sql_row1['cnts'];
 		}
 		$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by schedule,color";
-		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql12,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);		
 		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{
 			$quantity_val[$sql_row12['schedule']][$sql_row12['color']]=$sql_row12['qty'];
@@ -260,6 +275,8 @@ if(isset($_POST['submit']) || ($status==1)){
 		$username=$_POST['username'];
 		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
+		log_statement('debug',$sql_date,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);	
 		echo  "<div class='panel-body'>";
 		echo "<div class='panel panel-primary'>";
 		echo '<table class="table table-bordered"><tr class="warning"><th class="tblheading">Date</th><th class="tblheading">Gate Pass Id</th><th class="tblheading">Operation</th><th class="tblheading">Vehicle No</th><th class="tblheading">Shift</th><th class="tblheading">Status</th></tr>';
@@ -273,7 +290,9 @@ if(isset($_POST['submit']) || ($status==1)){
 			$vehicle_no=$data_res['vehicle_no'];    
 			$date_get=$data_res['date'];   
 			$sql1122="SELECT operation_name FROM $pms.operation_mapping where plant_code = '".$plant_code."' and operation_code=".$operation."";
-			$sql_result1w23=mysqli_query($link, $sql1122) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+			$sql_result1w23=mysqli_query($link, $sql1122) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			log_statement('debug',$sql1122,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);		
 			while($sql_row1212=mysqli_fetch_array($sql_result1w23))
 			{
 				$ops_name=$sql_row1212['operation_name'];

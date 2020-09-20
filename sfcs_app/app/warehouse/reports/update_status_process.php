@@ -5,6 +5,8 @@
 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+$main_url=getFullURL($_GET['r'],'update_status_process.php','R');
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 if(isset($_POST['submit2']))
@@ -41,6 +43,8 @@ if(isset($_POST['submit1']))
 	$qty_db=array();
 	$sql="select * from $wms.manual_form where status=1 and plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	log_statement('debug',$sql,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$style=$sql_row['style'];
@@ -66,7 +70,8 @@ if(isset($_POST['submit1']))
 		{
 			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			log_statement('debug',$sql,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			if($status[$i]==2)
 			{
 				$count=1;

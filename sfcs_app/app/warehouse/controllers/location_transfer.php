@@ -1,5 +1,8 @@
 <?php $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
-	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); ?>
+	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'location_transfer.php','R');
+	?>
 <?php
 	// require_once('phplogin/auth.php');
 	if(date("Y-m-d") >= "2012-11-16")
@@ -145,6 +148,8 @@ if(strlen($lot_no)>0)
 $sql="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 // echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+log_statement('debug',$sql,$main_url,__LINE__);
+log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 $sql_num_check=mysqli_num_rows($sql_result);
 // echo $sql_num_check;
 if($sql_num_check>0)
@@ -168,6 +173,8 @@ if($sql_num_check>0)
 	$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	log_statement('debug',$sql,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -247,6 +254,8 @@ if($sql_num_check>0)
 	$sql="select * from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	log_statement('debug',$sql,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	$sql_num_check=mysqli_num_rows($sql_result);
 
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -292,6 +301,8 @@ if($sql_num_check>0)
 		$sql="select * from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
 		// echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$sql,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 			$date=$sql_row['date'];

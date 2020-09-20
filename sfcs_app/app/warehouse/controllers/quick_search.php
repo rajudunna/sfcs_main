@@ -11,6 +11,8 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'quick_search.php','R');
 	$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
@@ -100,6 +102,8 @@ table{
 			$sql1="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\" or product_group=\"$ref\"";
 			//echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			log_statement('debug',$sql1,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			$sql_num_rows=mysqli_num_rows($sql_result1);
 			if($sql_num_rows > 0)
 			{

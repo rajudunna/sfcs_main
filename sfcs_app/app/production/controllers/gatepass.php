@@ -3,6 +3,8 @@
 <?php  
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
+	$main_url=getFullURL($_GET['r'],'gatepass.php','R');
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
 	//$username='sfcsprwojessct1';
@@ -85,6 +87,8 @@ function oper_display(){
 						$username=$_POST['username'];
 						$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$sql1,$main_url,__LINE__);
+						log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 						if(mysqli_num_rows($sql_result1)>0)
 						{			
 							
@@ -103,11 +107,15 @@ function oper_display(){
 							{
 								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."')";
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$sql,$main_url,__LINE__);
+								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 							}
 							else
 							{
 								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."')";
 								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								log_statement('debug',$sql,$main_url,__LINE__);
+								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 							}
 							$gate_id=mysqli_insert_id($link);
 							$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops_new.php',0,'N');

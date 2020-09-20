@@ -8,6 +8,8 @@ Change Log:
 <?php
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'insert_v1.php','R');
 	ob_start();	
 ?>
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
@@ -37,6 +39,8 @@ if(isset($_POST['submit']))
 {	
 	$sql="select lot_no from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
+	log_statement('debug',$sql,$main_url,__LINE__);
+	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
 	if(mysqli_num_rows($sql_result)>0)
@@ -66,6 +70,8 @@ if(strlen($lot_no)>0)
 $sql="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+log_statement('debug',$sql,$main_url,__LINE__);
+log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -110,6 +116,8 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+log_statement('debug',$sql,$main_url,__LINE__);
+log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {

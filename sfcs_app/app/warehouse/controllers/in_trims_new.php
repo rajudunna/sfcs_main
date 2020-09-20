@@ -3,7 +3,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
-
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/global_error_function.php");
+$main_url=getFullURL($_GET['r'],'in_trims_new.php','R');
 $plantcode=$_GET['plantcode'];
 $username=$_GET['username'];
  ?>
@@ -103,6 +104,8 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 		$location=$code;
 		$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and sno>0";
 		$sql_result=mysqli_query($link, $sql);
+		log_statement('debug',$sql,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		if(mysqli_num_rows($sql_result)>0)
 		{
 			$status=4;
@@ -119,6 +122,8 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 	{	
 		$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
 		$sql_result12=mysqli_query($link, $sql12);
+		log_statement('debug',$sql12,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		if(mysqli_num_rows($sql_result12))
 		{
 			$status=4;
@@ -128,8 +133,12 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 		{	
 			$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\"  and status=1";
 			$sql_result=mysqli_query($link, $sql);
+			log_statement('debug',$sql,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));				
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			log_statement('debug',$sql2,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);			
 			if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
 			{ 
 				while($row=mysqli_fetch_array($sql_result2))
@@ -144,7 +153,9 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 				else
 				{
 					$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
-					$sql_result1=mysqli_query($link, $sql1);					
+					$sql_result1=mysqli_query($link, $sql1);
+					log_statement('debug',$sql1,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);					
 					if(mysqli_affected_rows($link)>0)
 					{
 						$status=1;
@@ -175,6 +186,8 @@ if(isset($_POST['check2']))
 		$location=$code;
 		$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
 		$sql_result=mysqli_query($link, $sql);
+		log_statement('debug',$sql,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		if(mysqli_num_rows($sql_result)>0)
 		{
 			$status=4;
@@ -191,6 +204,8 @@ if(isset($_POST['check2']))
 	{		
 		$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
 		$sql_result12=mysqli_query($link, $sql12);
+		log_statement('debug',$sql12,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 		if(mysqli_num_rows($sql_result12))
 		{
 			$status=4;
@@ -200,9 +215,12 @@ if(isset($_POST['check2']))
 		{		
 			$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
 			$sql_result=mysqli_query($link, $sql);
+			log_statement('debug',$sql,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+			log_statement('debug',$sql2,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
 			{ 
 				while($row=mysqli_fetch_array($sql_result2))
@@ -217,7 +235,9 @@ if(isset($_POST['check2']))
 				else
 				{
 					$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
-					$sql_result1=mysqli_query($link, $sql1);				
+					$sql_result1=mysqli_query($link, $sql1);
+					log_statement('debug',$sql1,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);					
 					if(mysqli_affected_rows($link)>0)
 					{
 						$status=1;

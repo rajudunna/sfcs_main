@@ -4,6 +4,8 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
     $flag=1;
@@ -635,6 +637,8 @@ $(document).ready(function(){
 					WHERE jc.cut_number=$inp_4";
                 
                     $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+					log_statement('debug',$sql,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                     $MIRecords = array();
                     $MIRecords_color = array();
                     while($sql_result_32=mysqli_fetch_array($sql_result))
@@ -711,6 +715,8 @@ $(document).ready(function(){
                     $sql14="select COALESCE(SUM(supplier_replace_approved_qty))+COALESCE(SUM(supplier_claim_approved_qty)) as qty from $wms.inspection_complaint_db where reject_batch_no in ('".$inp_5."') and plant_code='".$plant_code."'";
                     //echo "<br/>".$sql14."<br>";
                     $sql_result14=mysqli_query($link, $sql14) or die("Error".$sql14.mysqli_error($GLOBALS["___mysqli_ston"]));
+					log_statement('debug',$sql14,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                     while($sql_row14=mysqli_fetch_array($sql_result14))
                     {
                         $appr_qty=$sql_row14["qty"];
@@ -725,6 +731,8 @@ $(document).ready(function(){
                     $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
                     //echo "<br/>".$sql141."<br/>";
                     $sql_result141=mysqli_query($link, $sql141) or die("Error".$sql141.mysqli_error($GLOBALS["___mysqli_ston"]));
+					log_statement('debug',$sql141,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                     while($sql_row141=mysqli_fetch_array($sql_result141))
                     {
                         $issued_qty=$sql_row141["qty"];
@@ -735,6 +743,8 @@ $(document).ready(function(){
                     $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
                     //echo "<br/>".$sql_requested_qty."<br/>";
                     $sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
+					log_statement('debug',$sql_requested_qty,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                     while($sql_row_requested_qty=mysqli_fetch_array($sql_result_requested_qty))
                     {
                         $requested_qty=$sql_row_requested_qty["requested_qty"];
@@ -752,6 +762,8 @@ $(document).ready(function(){
                     $sql="select rand_track_id from $wms.mrn_track where style='$inp_1' and schedule='$inp_2' AND plant_code='".$plant_code."' group by rand_track_id";
                     //echo $sql;
                     $sql_res = mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($sql));
+					log_statement('debug',$sql,$main_url,__LINE__);
+					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                     $cnt = mysqli_num_rows($sql_res);
                     echo "Style: <b>$inp_1</b> | Schedule: <b>$inp_2</b> | Total requests from this schedule: <b>".$cnt."</b><br/>";
 
@@ -789,6 +801,8 @@ $(document).ready(function(){
                         $reason_code_db = array();
                         $sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
                         $sql_result=mysqli_query($link, $sql_reason) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$sql_reason,$main_url,__LINE__);
+						log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                         $count = mysqli_num_rows($sql_result);
                         
                         while($sql_row=mysqli_fetch_array($sql_result))

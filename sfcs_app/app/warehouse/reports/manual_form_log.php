@@ -9,6 +9,8 @@
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'manual_form_log.php','R');
 	$has_permission=haspermission($_GET['r']);
 	$plant_code = $_SESSION['plantCode'];
 	//echo var_dump($has_permission);
@@ -125,6 +127,8 @@ echo "<tr>
 $sql="select * from $wms.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") and plant_code='".$plant_code."' order by status";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+log_statement('debug',$sql,$main_url,__LINE__);
+log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$tid=$sql_row['rand_track'];

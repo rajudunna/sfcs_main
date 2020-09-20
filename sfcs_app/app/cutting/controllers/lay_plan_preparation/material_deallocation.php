@@ -1,9 +1,11 @@
 <?php
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));	
 	$username = getrbac_user()['uname'];
 	$url_r = $_GET['r'];
     $get_url1 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'R');
     $get_url2 = getFullURLLevel($_GET['r'],'pop_up_maker.php',0,'N');
+	$main_url=getFullURL($_GET['r'],'material_deallocation.php','R');
 	$temp = 0;
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
@@ -88,6 +90,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                             $query = "select * from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
+							log_statement('debug',$query,$main_url,__LINE__);
+							log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 // var_dump($sql_row);
@@ -103,6 +107,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
 								WHERE jdl.`docket_line_number`=".$doc_no." and jdl.plant_code='".$plant_code."'";
 								$sql_result2 = mysqli_query($link,$query2);
+								log_statement('debug',$query2,$main_url,__LINE__);
+								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 
 								{
 									// var_dump($sql_row2['order_style_no']);
@@ -155,6 +161,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                             $query = "select * from $wms.material_deallocation_track where status<>'Open' and plant_code='".$plant_code."'";
                             $sql_result = mysqli_query($link,$query);
                             // echo $query;
+							log_statement('debug',$query,$main_url,__LINE__);
+							log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                             $index=0;
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
@@ -193,6 +201,8 @@ if(isset($_POST['formSubmit']))
         // echo $fabric_status_qry;
     
         $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+		log_statement('debug',$fabric_status_qry,$main_url,__LINE__);
+		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
         if(mysqli_num_rows($fabric_status_qry_result)>0)
         {
             while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
@@ -202,6 +212,8 @@ if(isset($_POST['formSubmit']))
         
             $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
             $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
+			log_statement('debug',$fab_qry,$main_url,__LINE__);
+			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
             if(mysqli_num_rows($fab_qry_result)>0)
             {     
                 if($fabric_status != 5)
@@ -221,6 +233,8 @@ if(isset($_POST['formSubmit']))
                         $req_at = date("Y-m-d H:i:s");
                         $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ($doc_no,$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
                         $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
+						log_statement('debug',$insert_req_qry,$main_url,__LINE__);
+						log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
                         echo "<script>setTimeout(function(){
