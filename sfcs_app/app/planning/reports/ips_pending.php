@@ -69,176 +69,146 @@ $plantCode = $_SESSION['plantCode'];
 
 			<?php
 			if (isset($_POST['show'])) {
-				$row_count = 0;
 				$s_date = $_POST['sdate'];
 				$e_date = $_POST['edate'];
-				$order_tid = array();
-				$tot_doc = array();
-				$pending_ips = '';
-				$pending_com = '';
-				$cut_com = '';
-				$j = 0;
-				//$sql1="select DISTINCT LEFT(order_tid, 8) as style, MID(order_tid, 16,6) as schedule , Mid(order_tid,22) as color, group_concat(doc_no) as doc_no from plandoc_stat_log group by style,schedule,color order by style,schedule,color";;
-				echo "<div class='table table-responsive'>
-		    <table border='1px' id='table1' class='table table-bordered' >
-			<tr class='success'><th>Style</th><th>Schedule</th><th>Color</th><th>Total Jobs</th><th>Planned Jobs(Completed)</th><th>Planned Jobs(Pending)</th><th>Cuts Completed</th></tr>";
-				// ********************************* New Code *************************************** //
-				// Get Sewing job ids (jm_jg_header_id)
-				$sql_get_sewingJobs = "SELECT DISTINCT(jm_jg_header_id) from $pps.jm_cut_job AS cut_job 
+
+			?>
+				<div class='table table-responsive'>
+					<table border='1px' id='table1' class='table table-bordered'>
+						<tr class='success'>
+							<th>Style</th>
+							<th>Schedule</th>
+							<th>Color</th>
+							<th>Total Jobs</th>
+							<th>Planned Jobs(Completed)</th>
+							<th>Planned Jobs(Pending)</th>
+							<th>Cuts Completed</th>
+						</tr>
+
+						<?php
+
+						// Get Sewing job ids (jm_jg_header_id)
+						$sql_get_sewingJobs = "SELECT DISTINCT(jg_header.jm_jg_header_id) ,job_number from $pps.jm_cut_job AS cut_job 
 			LEFT JOIN $pps.jm_cut_bundle AS cut_bundle ON  cut_bundle.jm_cut_job_id = cut_job.jm_cut_job_id 
 			LEFT JOIN $pps.jm_cut_bundle_details AS cut_bundle_details ON cut_bundle_details.jm_cut_bundle_id = cut_bundle.jm_cut_bundle_id
 			LEFT JOIN $pps.jm_product_logical_bundle As pplb ON pplb.jm_cut_bundle_detail_id = cut_bundle_details.jm_cut_bundle_detail_id
 			LEFT JOIN $pps.jm_job_bundles AS job_bundles ON job_bundles.jm_product_logical_bundle_id = pplb.jm_product_logical_bundle_id
-			WHERE cut_job.plant_code='" . $plantCode . "' AND cut_job.created_at BETWEEN '" . $s_date . " 00:00:00' AND '" . $e_date . " 23:59:59'";
-				$result_get_sewingJobs = mysqli_query($link, $sql_get_sewingJobs) or exit("Sql Error1--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sewingJobIds = [];
-				$jobsArray = [];
-				while ($row_sewingJobs = mysqli_fetch_array($result_get_sewingJobs)) {
-					$sewingJobId = $row_sewingJobs['jm_jg_header_id'];
-					array_push($sewingJobIds, $row_sewingJobs['jm_jg_header_id']);
-					// ************************** Get completed jobs and pending jobs *************************************** //
-					$sql_get_jobs = "SELECT task_header.task_status as task_header_task_status, task_header.resource_id,task_jobs.task_jobs_id,attribute_name,attribute_value FROM $tms.task_jobs 
+			LEFT JOIN $pps.jm_jg_header AS jg_header ON jg_header.jm_jg_header_id = job_bundles.jm_jg_header_id
+			WHERE cut_job.plant_code='" . $plantCode . "' AND cut_job.created_at BETWEEN '" . $s_date . " 00:00:00' AND '" . $e_date . " 23:59:59' AND job_group_type='PSJ' ORDER BY job_number ASC";
+
+						$result_get_sewingJobs = mysqli_query($link, $sql_get_sewingJobs) or exit("Sql Error1--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
+
+						$jobsArray = [];
+						while ($row_sewingJobs = mysqli_fetch_array($result_get_sewingJobs)) {
+							$sewingJobId = $row_sewingJobs['jm_jg_header_id'];
+							$sewingJobNumber = $row_sewingJobs['job_number'];
+
+							// ************************** Get completed jobs and pending jobs *************************************** //
+							$sql_get_jobs = "SELECT task_header.task_status as task_header_task_status, task_header.resource_id,task_jobs.task_jobs_id,attribute_name,attribute_value FROM $tms.task_jobs 
 				LEFT JOIN $tms.task_header ON task_header.task_header_id = task_jobs.task_header_id
 				LEFT JOIN $tms.task_attributes ON task_attributes.task_jobs_id = task_jobs.task_jobs_id where task_jobs.task_job_reference = '" . $sewingJobId . "'";
-					$res_jobs = mysqli_query($link, $sql_get_jobs) or exit("Sql Error1--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($rowJobs = mysqli_fetch_array($res_jobs)) {						 
-						$attributeName = $rowJobs['attribute_name'];
-						$attributeValue = $rowJobs['attribute_value'];						
-						$style = '';
-						$schedules = '';
-						$completedJobsCount = 0;
-						$pendingJobsCount = 0;					 
-						if ($attributeName == 'STYLE') {
-							$style = $attributeValue;
-						}
-						if ($attributeName == 'SCHEDULE') {
-							$schdeulesArray = explode(',', $attributeValue);
-						}
-						if ($attributeName == 'COLOR') {
-							$colorsArray = explode(',', $attributeValue);
-						}
+							$res_jobs = mysqli_query($link, $sql_get_jobs) or exit("Sql Error1--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
+							$countOfAttributes = mysqli_num_rows($res_jobs);
+							$style = '';
+							$schedules = '';
+							$colors = '';
+							$completedJob = '';
+							$pendingJob = '';
+							$totalJobs = 0;
+							$docketNos = '';
+							$cutCompletedJob = '';
+							while ($rowJobs = mysqli_fetch_array($res_jobs)) {
+								$attributeName = $rowJobs['attribute_name'];
+								$attributeValue = $rowJobs['attribute_value'];
+								if ($attributeName == 'STYLE') { // Style
+									$style = $attributeValue;
+								}
+								if ($attributeName == 'SCHEDULE') { // Schedule
+									$schedules =  $attributeValue;
+								}
+								if ($attributeName == 'COLOR') { // Color
+									$colors = $attributeValue;
+								}
+								if ($attributeName == 'DOCKETNO') { // Docket No
+									$docketNos = $attributeValue;
+								}
+								if ($rowJobs['resource_id'] && $rowJobs['task_header_task_status'] == 'INPROGRESS') {
+									$completedJob = $sewingJobNumber;
+								} else {
+									$pendingJob = $sewingJobNumber;
+								}
+							}
+							if ($countOfAttributes) {
 
-					 	if($rowJobs['resource_id'] && $rowJobs['task_header_task_status'] == 'INPROGRESS'){
-							 $completedJobsCount = 1;
-						 }else{
-							$pendingJobsCount = 1;
-						 }
-						 echo "<tr><td>$style</td><td>$schedule</td><td>$color</td><td>$tot_doc[$i]</td><td>$pending_ips</td><td>$pending_com</td><td>$cut_com</td></tr>";
-						for ($i = 0; $i < sizeof($schdeulesArray); $i++) {
-							$schedule = $schdeulesArray[$i];  
-							for ($k = 0; $k < sizeof($colorsArray); $k++) { 
-								$color = $colorsArray[$k];								 
-								$completedJobsCount += $jobsArray[$style][$schedule][$color]["completedJobsCount"];				 
-								$pendingJobsCount += $jobsArray[$style][$schedule][$color]["pendingJobsCount"];				 
-								$jobsArray[$style][$schedule][$color] = array("style" => $style, "schedule" => $schedule, "color" => $color,"completedJobsCount"=>$completedJobsCount,"pendingJobsCount"=>$pendingJobsCount);
+								$totalJobs =   $jobsArray[$style][$schedules][$colors]["totalJobs"] + 1;
+
+								if ($jobsArray[$style][$schedules][$colors]["completedJob"]) {
+									$completedJob = $jobsArray[$style][$schedules][$colors]["completedJob"] . "," . $completedJob;
+								}
+
+								if ($jobsArray[$style][$schedules][$colors]["pendingJob"]) {
+									$pendingJob = $jobsArray[$style][$schedules][$colors]["pendingJob"] . "," . $pendingJob;
+								}
+								// Get count of lay status(open)
+								$sql_get_cut_report_status = "SELECT COUNT(lay_status) AS lay_status_count FROM $pps.jm_docket_lines  where lay_status ='OPEN' AND docket_line_number IN($docketNos) AND plant_code = '" . $plantCode . "'";
+								$res_get_cuts = mysqli_query($link, $sql_get_cut_report_status) or exit("Sql Error1--3" . mysqli_error($GLOBALS["___mysqli_ston"]));
+
+								$row_get_cuts_count = mysqli_fetch_row($res_get_cuts);
+								//  if lay staus(open) count equal to zero then cut status consider as completed
+								if (!($row_get_cuts_count[0])) {
+									$cutCompletedJob = $sewingJobNumber;
+									if ($jobsArray[$style][$schedules][$colors]["cutCompleted"]) {
+										$cutCompletedJob =  $jobsArray[$style][$schedules][$colors]["cutCompleted"] . "," . $cutCompletedJob;
+									}
+								}
+
+								$jobsArray[$style][$schedules][$colors] = array(
+									"style" => $style,
+									"schedules" => $schedules,
+									"colors" => $colors,
+									"completedJob" => $completedJob,
+									"pendingJob" => $pendingJob,
+									"cutCompleted" => $cutCompletedJob,
+									"totalJobs" => $totalJobs
+								);
 							}
 						}
-					}
-				}
-				print_r(json_encode($jobsArray));
-
-
-				//  ******************************** END ************************************ //
-				$sql1 = "select distinct order_tid,count(doc_no) as cuts from $bai_pro3.order_cat_doc_mk_mix where date between '" . $s_date . "' and '" . $e_date . "' group by order_tid";
-				// echo $sql1."<br>";
-				$result1 = mysqli_query($link, $sql1) or exit("Sql Error1--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				while ($row1 = mysqli_fetch_array($result1)) {
-					$order_tid[] = $row1['order_tid'];
-					$tot_doc[] = $row1['cuts'];
-				}
-				for ($i = 0; $i < sizeof($order_tid); $i++) {
-					$sql11 = "select * from $bai_pro3.bai_orders_db where order_tid='$order_tid[$i]'";
-					$result11 = mysqli_query($link, $sql11) or exit("Sql Error--11" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row11 = mysqli_fetch_array($result11)) {
-						$color_code = $row11['color_code'];
-						$style = $row11['order_style_no'];
-						$schedule = $row11['order_del_no'];
-						$color = $row11['order_col_des'];
-					}
-					$sql2 = "select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and plan_module is not null and act_cut_status='' order by doc_no";
-					$result2 = mysqli_query($link, $sql2) or exit("Sql Error--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					$count = mysqli_num_rows($result2);
-					$jj = 0;
-					while ($row2 = mysqli_fetch_array($result2)) {
-						//echo $j."<br>";
-						$jj++;
-						if ($count == $jj) {
-							$pending_ips .= chr($color_code) . leading_zeros($row2["pcutno"], 3) . "";
-						} else {
-							if ($j == 10) {
-								$pending_ips .= chr($color_code) . leading_zeros($row2["pcutno"], 3) . "<br>";
-								$j = 0;
-							} else {
-								$pending_ips .= chr($color_code) . leading_zeros($row2["pcutno"], 3) . ",";
-								$j++;
+						foreach ($jobsArray as $styleArray) {
+							foreach ($styleArray as $scheduleArray) {
+								foreach ($scheduleArray as $colorArray) {
+						?>
+									<tr>
+										<td> <?= $colorArray['style']; ?></td>
+										<td> <?= $colorArray['schedules']; ?></td>
+										<td> <?= $colorArray['colors']; ?></td>
+										<td> <?= $colorArray['totalJobs']; ?></td>
+										<td> <?= $colorArray['completedJob']; ?></td>
+										<td> <?= $colorArray['pendingJob']; ?></td>
+										<td> <?= $colorArray['cutCompleted']; ?></td>
+									</tr>
+					<?php
+								}
 							}
 						}
-					}
-					$j = 0;
-					$sql3 = "select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and (plan_module is null or plan_module='') order by doc_no";
-					$result3 = mysqli_query($link, $sql3) or exit("Sql Error--3" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					$count = mysqli_num_rows($result3);
-					$jj = 0;
-					while ($row3 = mysqli_fetch_array($result3)) {
-						$jj++;
-						if ($count == $jj) {
-							$pending_com .= chr($color_code) . leading_zeros($row3["pcutno"], 3) . "";
-						} else {
-							if ($j == 10) {
-								$pending_com .= chr($color_code) . leading_zeros($row3["pcutno"], 3) . ",<br>";
-								$j = 0;
-							} else {
-								$pending_com .= chr($color_code) . leading_zeros($row3["pcutno"], 3) . ",";
-								$j++;
-							}
-						}
-					}
-					$sql4 = "select doc_no,pcutno from $bai_pro3.order_cat_doc_mk_mix where order_tid='$order_tid[$i]' and act_cut_status='DONE' order by doc_no";
-					$j = 0;
-					$result4 = mysqli_query($link, $sql4) or exit("Sql Error--4" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					$count = mysqli_num_rows($result4);
-					$jj = 0;
-					while ($row4 = mysqli_fetch_array($result4)) {
-						$jj++;
-						if ($count == $jj) {
-							$cut_com .= chr($color_code) . leading_zeros($row4["pcutno"], 3) . "";
-						} else {
-							if ($j == 10) {
-								$cut_com .= chr($color_code) . leading_zeros($row4["pcutno"], 3) . ",<br>";
-								$j = 0;
-							} else {
-								$cut_com .= chr($color_code) . leading_zeros($row4["pcutno"], 3) . ",";
-								$j++;
-							}
+						echo "</table></div>";
+						if (sizeof($jobsArray) == 0) {
+							echo "<div class='alert alert-danger'><p>No Data Found</p></div>";
 						}
 					}
 
-					echo "<tr><td>$style</td><td>$schedule</td><td>$color</td><td>$tot_doc[$i]</td><td>$pending_ips</td><td>$pending_com</td><td>$cut_com</td></tr>";
-					//echo "<br>";
-					$pending_ips = '';
-					$pending_com = '';
-					$cut_com = '';
-					$row_count++;
-				}
-				echo "</table></div>";
-				if ($row_count == 0) {
-					echo "<div class='alert alert-danger'><p>No Data Found</p></div>";
-				}
-			}
-
-			?>
-		</div>
-		<script language="javascript" type="text/javascript">
-			//<![CDATA[
-			var MyTableFilter = {
-				exact_match: false,
-				display_all_text: "Show All",
-				col_0: "select",
-				col_1: "select"
-			}
-			setFilterGrid("table1", MyTableFilter);
-			//]]>
-		</script>
+					?>
+				</div>
+				<script language="javascript" type="text/javascript">
+					//<![CDATA[
+					var MyTableFilter = {
+						exact_match: false,
+						display_all_text: "Show All",
+						col_0: "select",
+						col_1: "select"
+					}
+					setFilterGrid("table1", MyTableFilter);
+					//]]>
+				</script>
 
 
 </body>
