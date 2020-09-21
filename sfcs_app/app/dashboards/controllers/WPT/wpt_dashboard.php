@@ -51,7 +51,7 @@
         ?>    
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
-                        <div class='panel-body sec-box'>
+                        <div class='panel-body sec-box' style="overflow: scroll;">
                             <center><span class='section-heading'><b><?= $section['sectionName']; ?></b></span></center>
                             <span style='height:50px'>&nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
