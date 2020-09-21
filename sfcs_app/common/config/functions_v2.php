@@ -484,6 +484,59 @@ function getMpos($get_schedule,$get_color,$plantcode){
     );
 }
 
+
+/*
+    function to get Master PO's based on schedule
+    @params:get_schedule,color and plantcode
+    @returns:master PO's
+*/ 
+function getMpSchedulewise($get_schedule,$plantcode){
+    global $link_new;
+    global $pps;
+    $master_po_details_id=array();
+    $qry_mmp_mo_qty="SELECT master_po_details_id FROM $pps.`mp_mo_qty` WHERE plant_code='$plantcode' AND schedule='$get_schedule'";
+    $mp_mo_qty_result=mysqli_query($link_new, $qry_mmp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
+    /**From above query we get master po details id */
+    if($mp_mo_qty_num>0){
+        while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
+            {
+                
+                $master_po_details_id[]=$mp_mo_qty_row["master_po_details_id"];
+            }
+        }
+        $master_po_details_id=array_unique($master_po_details_id);
+    /**Based master po details id we can get masetr po number */    
+    $master_po_number=array();
+    $qry_mp_color_details="SELECT master_po_number FROM $pps.mp_color_detail WHERE master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
+    $mp_color_details_result=mysqli_query($link_new, $qry_mp_color_details) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $mp_color_details_num=mysqli_num_rows($mp_color_details_result);
+    if($mp_color_details_num>0){
+        while($mp_color_details_row=mysqli_fetch_array($mp_color_details_result))
+            {
+                
+                $master_po_number[]=$mp_color_details_row["master_po_number"];
+            }
+    }
+    $master_po_number=array_unique($master_po_number);
+
+    /**So we will show master description based on masetr po number */
+    $master_po_desc_sched=array();
+    $qry_toget_podescri="SELECT master_po_description,master_po_number FROM $pps.mp_order WHERE master_po_number IN ('".implode("','" , $master_po_number)."')";
+    $toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_podescri_num=mysqli_num_rows($toget_podescri_result);
+    if($mp_color_details_num>0){
+        while($toget_podescri_row=mysqli_fetch_array($toget_podescri_result))
+            {
+                
+                $master_po_desc_sched[$toget_podescri_row["master_po_description"]]=$toget_podescri_row["master_po_number"];
+            }
+    }
+    return array(
+        'master_po_des_sched' => $master_po_desc_sched
+    );
+}
+
 /*
     function to get sub po's from master po's from sub orders
     @params:get_mpo and plantcode
@@ -1034,13 +1087,15 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
             if($toget_sewing_jobs_num>0){
                 while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
                 {
-                    $job_number[$key]= $toget_sewing_jobs_row['job_number'];
+                    $job_number[$value]= $toget_sewing_jobs_row['job_number'];
+                    $job_number_data[$key]= $toget_sewing_jobs_row['job_number'];
                 }
             }
           }
       }
       return array(
           'job_number' => $job_number,
+          'job_number_data' => $job_number_data,
           'task_header_id' => $task_header_id,
            'task_job_reference' => $task_job_reference,
            'task_job_ids' => $task_job_ids,
@@ -1249,7 +1304,7 @@ function getDocketInformation($docket_no, $plant_code) {
         $marker_version_id=$sql_row11['marker_version_id'];
     }
     $requirement = $length * $width * $docket_quantity;
-
+      $required_qty=$length *$plies;
     return [
         'style' => $style,
         'fg_color' => $fg_color,
@@ -1279,7 +1334,8 @@ function getDocketInformation($docket_no, $plant_code) {
         'shrinkage'=>$shrinkage,
         'ratio_comp_group_id' => $ratio_comp_group_id,
         'marker_version_id' => $marker_version_id,
-        'docket_line_number'=>$docket_line_number  
+        'docket_line_number'=>$docket_line_number,
+        'required_qty'=>$required_qty
     ];
 
 }
@@ -1292,7 +1348,13 @@ function getSections($plant_code){
     global $link_new;
     global $pms;
     $section_data=[];
-    $query="select * from $pms.sections where plant_code='$plant_code'";
+    $dept_query="select department_id from $pms.departments where plant_code='$plant_code' and department_type='SEWING'";
+    $sql_dept_res = mysqli_query($link_new, $dept_query) or exit("Sql Error at department details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    while ($dept_row = mysqli_fetch_array($sql_dept_res)) {
+        $department_id= $dept_row['department_id'];
+    }
+    
+    $query="select * from $pms.sections where plant_code='$plant_code' and department_id='$department_id'";
     $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections_rows_num = mysqli_num_rows($sql_res);
     if ($sections_rows_num > 0) {

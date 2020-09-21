@@ -130,7 +130,7 @@ if(isset($_POST['formSubmit']))
                             while($row = mysqli_fetch_array($docketLineDetails)){
                                 $id = '"'.$row['lp_lay_id'].'"';
                                 echo "<tr><td>$docket_number_post</td>";
-                                echo "<tr><td>$s_no</td>";
+                                echo "<td>$s_no</td>";
                                 echo "<td>".$row['shift']."</td>";
                                 echo "<td>".$row['docket_plies']."</td>";
                                 echo "<td>".$row['lay_plies']."</td>";

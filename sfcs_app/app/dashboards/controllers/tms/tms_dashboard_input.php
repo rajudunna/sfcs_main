@@ -557,7 +557,7 @@ foreach($departments as $department)
 			$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 			$job_number=$result_planned_jobs['job_number'];
 			$task_header_id=$result_planned_jobs['task_header_id'];
-			foreach($job_number as $sew_num=>$jm_sew_id)
+			foreach($job_number as $jm_sew_id=>$sew_num)
 			{
 				if($y==$priority_limit)
 				{

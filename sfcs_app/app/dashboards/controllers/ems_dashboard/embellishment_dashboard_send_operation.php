@@ -419,7 +419,7 @@ foreach ($workstations as $emb_key => $emb_value) {
   // to get all planned jobs
   $result_planned_jobs = getPlannedJobs($emb_key, TaskTypeEnum::EMBELLISHMENTJOB, $session_plant_code);
 
-  $job_number = $result_planned_jobs['job_number'];
+  $job_number = $result_planned_jobs['job_number_data'];
   $task_header_id = $result_planned_jobs['task_header_id'];
   $task_job_ids = $result_planned_jobs['task_job_ids'];
   $task_job_header_log = $result_planned_jobs['task_header_log_time'];
@@ -479,7 +479,7 @@ foreach ($workstations as $emb_key => $emb_value) {
 
         $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
-        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N')."&input_job_no_random_ref=$emb_job_no&plant_code=$session_plant_code&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
+        $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/embellishment_job/embellishment_job_scaning/scan_jobs.php', 3, 'N')."&input_job_no_random_ref=$emb_job_no&plant_code=$session_plant_code&user_name=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
         $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
 
         echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";

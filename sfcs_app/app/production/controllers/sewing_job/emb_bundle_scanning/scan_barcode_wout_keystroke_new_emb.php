@@ -3,7 +3,8 @@
 </head>
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
-    include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	$shift = $_POST['shift'];
 	$op_code=$_POST['operation_code'];
 	$gate_id=$_POST['gate_id'];	
@@ -130,7 +131,7 @@ $(document).ready(function()
 			var operation_id = res[1];
 		}
 		var plant_code = $('#plant_code').val();
-        var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": <?= $shift?>};
+        var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>'};
         
         $.ajax({
 			type: "POST",
@@ -139,18 +140,22 @@ $(document).ready(function()
 			success: function (res) {            
 				//console.log(res.data);
 				if(res.status)
-				{
+				{	
+					$('#loading-image').hide();
 					bundet=res.data
 					tableConstruction(bundet);
 					swal(res.internalMessage);
 				}
 				else
-				{
+				{																											
+					$('#loading-image').hide();
 					swal(res.internalMessage);
 				}                       
 			},
 			error: function(res){
+				$('#loading-image').hide();
 				swal('Error in getting data');
+				
 			}
 		});
 	});
