@@ -27,10 +27,10 @@ function forthbox()
 { 
     window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value 
 }
-function fifthbox() 
-{ 
-    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
-}
+// function fifthbox() 
+// { 
+//     window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
+// }
 
 $(document).ready(function() {
 	$('#schedule').on('click',function(e){
@@ -171,7 +171,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
-	echo "<select name=\"sub_po\" id=\"sub_po\"  class='form-control' >
+	echo "<select name=\"sub_po\" id=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($sub_po_description as $key=>$sub_po_description_val) {
 					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
@@ -209,6 +209,7 @@ $(document).ready(function()
 	$('#sub_po').on('change', function(){
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
+		$('#submit').hide();
 		
 		var plant_code = $('#plant_code').val();
 		var username = $('#username').val();
@@ -223,8 +224,10 @@ $(document).ready(function()
 				$('#loading-image').hide();
 				if (response.status) {
 					var jobsInfo = response;
-					tableConstruction(jobsInfo.data);
-					$('#submit').show();
+					if(jobsInfo.data.length > 0){
+						tableConstruction(jobsInfo.data);
+						$('#submit').show();
+					}
 				} else {
 					swal('',response.internalMessage, 'error');
 					return;
@@ -300,9 +303,9 @@ $(document).ready(function()
 				} else {
 					swal('',response.internalMessage,'error');
 				}
-				setTimeout(function(){
-					location.reload();
-				}, 1000); 
+				// setTimeout(function(){
+				// 	location.reload();
+				// }, 1000); 
             }
         });	
 	});
