@@ -71,7 +71,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
             $input = $row3['good_quantity'];
             $rejection = $row3['rejected_quantity'];
             $carton_qty=$row3["original_quantity"];
-            $balance = $carton_qty - $input;
+            $balance = $carton_qty - ($input+$rejection);
         }
         if($balance > 0){
             $scanning_query12="SELECT operation_name FROM `$pms`.`operation_mapping` WHERE operation_code = '$input_ops_code' AND plant_code = '$plantCode'";
