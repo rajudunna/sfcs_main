@@ -10,6 +10,7 @@
 
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
     include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
     include('imsCalls.php');
@@ -17,7 +18,7 @@
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
     $has_permission=haspermission($url_r);
-    $user_name = getrbac_user()['uname'];
+     $user_name = $_SESSION['userName'];;
     error_reporting(0);
     $plantCode=$_SESSION['plantCode'];
     $ref_no=time();
@@ -67,7 +68,7 @@
 </head> 
 
 <body>
-    <?php
+    <?php   
         // if(isset($_POST['submit']))
         // {
         //     $tid=array();   $selected_sewing_jobs = array();
@@ -312,7 +313,7 @@
                                                  
                                                     if($inputQty==0)
                                                     {    
-                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$bundleRow['bundle_number']."\">"; 
                                                     }
                                                     else 
                                                     { 
@@ -373,9 +374,11 @@
                            
                             // echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer";
 
-                            echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer"> 
+                            echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer" onclick="bundleTransfer()"> 
                                 <input type="hidden" value="'.$module.'" name="module"> 
-                                <input type="hidden" value="'.$section_id.'" name="section_id">'; 
+                                <input type="hidden" value="'.$section_id.'" name="section_id">
+                                <input type="hidden" value="'.$plant_code.'" name="plant_code">
+                                <input type="hidden" value="'.$user_name.'" name="plant_code">'; 
                     ?>
                 </form>
             </div>
@@ -385,7 +388,40 @@
     <br/>
 
 </body>
-
+<script>
+   function bundleTransfer(){
+    var module = <?= $module?>;
+        const data={
+                        "bundleNumber": [log_tid],
+                        "plantCode": '<?= $plant_code ?>',
+                        "resourceId": '<?= $module_ref ?>',
+                        "createdUser": '<?= $username ?>'
+                    }
+        $.ajax({
+            type: "POST",
+            url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+            data: data,
+            success: function (res) {            
+                //console.log(res.data);
+                if(res.status)
+                {
+                   swal('','Sewing Job Transfered Successfully','success')
+                   window.location("mod_rep.php?module="+module+"&plant_code=<?= $plant_code ?>");
+                }
+                else
+                {
+                    swal('',res.internalMessage,'error');
+                    window.location("mod_rep.php?module="+module+"&plant_code=<?= $plant_code ?>");
+                }                       
+                $('#loading-image').hide();
+            },
+            error: function(res){
+                swal('Error in getting data');
+                $('#loading-image').hide();
+            }
+        });
+   }
+</script>
 <script language="javascript" type="text/javascript">
     var table2_Props =  {            
         display_all_text: "All",
