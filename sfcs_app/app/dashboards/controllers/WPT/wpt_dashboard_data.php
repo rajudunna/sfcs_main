@@ -380,7 +380,7 @@ if($section){
                                 $row = mysqli_fetch_assoc($schedulesResult);
                                 $schedules = $row['schedules'];
                                 $tool_tip_text = "<p style=\"width : 500px\">
-                                        <v><c>Style</c> :$style</v><v><c>Schedule No</c> : ".$schedules."</v>
+                                        <v><c>Style</c> :".$attributeData[TaskAttributeNamesEnum::STYLE]."</v><v><c>Schedule No</c> : ".$schedules."</v>
                                         <v><c>Colors</c> : ".$attributeData[TaskAttributeNamesEnum::COLOR]."</v>
                                         <v><c>Dockets</c> : ".$attributeData[TaskAttributeNamesEnum::DOCKETNO]."</v>
                                         <v><c>Cut No : </c> ".$attributeData[TaskAttributeNamesEnum::CUTJOBNO]."</v>
