@@ -227,6 +227,9 @@ $(document).ready(function()
 					if(jobsInfo.data.length > 0){
 						tableConstruction(jobsInfo.data);
 						$('#submit').show();
+					} else {
+						swal('','No Jobs for this Sub Po', 'error');
+						return;
 					}
 				} else {
 					swal('',response.internalMessage, 'error');
