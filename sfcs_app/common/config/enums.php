@@ -11,6 +11,7 @@ class TaskTypeEnum {
     const POLYBAG = 'POLYBAG';
     const PLANNEDSEWINGJOB = 'PSJ';
     const PLANNEDEMBELLISHMENTJOB = 'PCEJ';
+    const PLANNEDSEWEMBELLISHMENTJOB = 'PSEJ';
 }
 
 class DepartmentTypeEnum
