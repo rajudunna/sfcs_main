@@ -11,6 +11,7 @@ class TaskTypeEnum {
     const POLYBAG = 'POLYBAG';
     const PLANNEDSEWINGJOB = 'PSJ';
     const PLANNEDEMBELLISHMENTJOB = 'PCEJ';
+    const PLANNEDSEWEMBELLISHMENTJOB = 'PSEJ';
 }
 
 class DepartmentTypeEnum
@@ -52,7 +53,7 @@ class TaskStatusEnum {
 class TrimStatusEnum {
     const OPEN = 'OPEN';
     const PREPARINGMATERIAL = 'Preparing material';
-    const MATERIALREADYFORPRODUCTION = 'Material ready for Production (in Pool)';
+    const MATERIALREADYFORPRODUCTION = 'Material ready for Production';
     const PARTIALISSUED = 'Partial Issued';
     const ISSUED = 'Issued To Module';
 }

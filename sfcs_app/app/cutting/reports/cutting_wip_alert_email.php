@@ -6,11 +6,100 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $cutting_mail = $conf1->get('cutting_mail');
-$plantcode=$_SESSION['plantCode'];
+$plantCode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 <?php
+
+/**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+function getSectionByDeptTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+        $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plantCode."' and dept.plant_code='".$plantCode."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+        if(mysqli_num_rows($sectionsQueryResult)>0){
+            $sections = [];
+            while($row = mysqli_fetch_array($sectionsQueryResult)){
+                $sectionRecord = [];
+                $sectionRecord["sectionId"] = $row['section_id'];
+                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionName"] = $row["section_name"];
+                array_push($sections, $sectionRecord);
+            }
+            return $sections;
+        } else {
+            return "Sections not found";
+        }
+    } catch(Exception $error) {
+        throw $error;
+    }
+}
+
+
+/**
+ * get workstations for plant code and section id
+ */
+function getWorkstationsForSectionId($plantCode, $sectionId) {
+    global $pms;
+    global $link_new;
+    try{
+		$workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
+        $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
+        if(mysqli_num_rows($workstationsQueryResult)>0){
+            $workstations= [];
+            while($row = mysqli_fetch_array($workstationsQueryResult)){
+                $workstationRecord = [];
+                $workstationRecord["workstationId"] = $row['workstation_id'];
+                $workstationRecord["workstationCode"] = $row["workstation_code"];
+                $workstationRecord["workstationDesc"] = $row["workstation_description"];
+                $workstationRecord["workstationLabel"] = $row["workstation_label"];
+                array_push($workstations, $workstationRecord);
+            }
+            return $workstations;
+        } else {
+            //return "Workstations not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
+/**
+ * get planned sewing jobs(JG) for the workstation
+ */
+function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
+    global $tms;
+    global $link_new;
+    try{
+        $taskType = TaskTypeEnum::SEWINGJOB;
+        $taskStatus = TaskStatusEnum::INPROGRESS;
+		$jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
+        if(mysqli_num_rows($jobsQueryResult)>0){
+            $jobRecord = [];
+            while($row = mysqli_fetch_array($jobsQueryResult)){
+                
+                $jobRecord[] = $row['task_jobs_id'];
+                // $jobRecord["taskJobRef"] = $row['task_job_reference'];
+                //array_push($jobs, $jobRecord);
+            }
+            return array(
+				'jobs' => $jobRecord);
+        } else {
+            return "Jobs not found for the workstation";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
+
 $message= '';
 function div_by_zero1($arg)
 {
@@ -53,27 +142,12 @@ $message.= "<tr class='danger'>
 				<th>Availble<br>Hrs WIP</th>
 			</tr>";
 
-//To use this interface for both alert mail and user view.
-$sqlx="select * from $bai_pro3.sections_db where sec_id > 0";
-
-
-if(!isset($_GET['alertfilter']))
+// //To use this interface for both alert mail and user view.
+$departments=getSectionByDeptTypeSewing($plantCode);
+foreach($departments as $department)    //section Loop -start
 {
-	$sqlx="select * from $bai_pro3.sections_db where sec_id>0 and sec_id in (2,6)";
-	echo "<script>alert();</script>";	
-}
-
-
-
-$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_rowx=mysqli_fetch_array($sql_resultx))
-{
-	$section=$sql_rowx['sec_id'];
-	$section_head=$sql_rowx['sec_head'];
-	$section_mods=$sql_rowx['sec_mods'];
-	
-	$mods=array();
-	$mods=explode(",",$section_mods);
+	$sectionId=$department['sectionId'];
+	$workstationsArray=getWorkstationsForSectionId($plantCode, $sectionId);
 	
 	$total=0;
 	$total1=0;
@@ -86,9 +160,36 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	$total14=0;
 	$total15=0;
 	$total16=0;
-	for($x=0;$x<sizeof($mods);$x++)
-	{
-		$module=$mods[$x];
+	foreach($workstationsArray as $workstations)
+    {
+		$jobsArray=getJobsForWorkstationIdTypeSewing($plantCode, $workstations['workstationId']);
+		$jobHeaders=implode("','" , $jobsArray['jobs']);
+		
+		/**
+		 * getting cut jobs and dockets based on taskJobId
+		 */
+		//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+		$job_detail_attributes = [];
+		// $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJobId' and plant_code='$plantCode' group by ";
+		$qry_toget_style_sch="SELECT GROUP_CONCAT(IF(attribute_name='STYLE', attribute_VALUE, NULL) SEPARATOR ',') AS STYLE,GROUP_CONCAT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL) SEPARATOR ',') AS SCHEDULE,GROUP_CONCAT(IF(attribute_name='COLOR', attribute_VALUE, NULL) SEPARATOR ',') AS COLOR,GROUP_CONCAT(IF(attribute_name='DOCKETNO', attribute_VALUE, NULL) SEPARATOR ',') AS DOCKETNO,GROUP_CONCAT(IF(attribute_name='CUTJOBNO', attribute_VALUE, NULL) SEPARATOR ',') AS CUTJOBNO FROM $tms.`task_attributes` WHERE  plant_code='$plantCode' AND task_jobs_id IN ($jobHeaders) GROUP BY attribute_name";
+		$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+		while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+			if($row2['STYLE'] != NULL){
+				$style = $row2['STYLE'];
+			}
+			if($row2['SCHEDULE'] != NULL){
+				$schedule = $row2['SCHEDULE'];
+			}
+			if($row2['COLOR'] != NULL){
+				$color = $row2['COLOR'];
+			}
+			if($row2['DOCKETNO'] != NULL){
+				$dokcetno = $row2['DOCKETNO'];
+			}
+			if($row2['CUTJOBNO'] != NULL){
+				$cutjobs = $row2['CUTJOBNO'];
+			}
+		}
 		$total=0;
 		$total1=0;
 		$plan_tgt=0;
@@ -101,158 +202,134 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$total15=0;
 		$total16=0;
 		$clubbing=0;
-		$sql1="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' group by module";
-		// echo $sql1."<br>";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1)>0)
-		{
-			while($sql_row1=mysqli_fetch_array($sql_result1))
+		/**here we have condition that cut status done*/
+		$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+		LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+		LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+		LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
+		WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status != 'OPEN' AND jdl.plant_code='$plantCode'";	
+		$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+		if($qrylpLayNum>0){
+			while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
 			{
-				$clubbing=$sql_row1['clubbing'];
-				$schedule=$sql_row1['schedule'];
-				$doc_no=$sql_row1['doc_no'];
-				$club_docs=array();
-				
-				//echo  $clubbing."<br/>";
-				$sql123="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing=0 group by module";
-				//echo $sql12."<br>";
-				$sql_result123=mysqli_query($link, $sql123) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row123=mysqli_fetch_array($sql_result123))
+				/**These plies are cut status done  */
+				$plies=$lpLayRow['plies'];
+				$ratio_id=$lpLayRow['ratio_id'];
+
+				//get the docket qty
+				$size_ratio_sum = 0;
+				$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+				$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($row = mysqli_fetch_array($size_ratios_result))
 				{
-					$total11=$sql_row123['total'];
-				}	
-				
-				
-				//echo "total11=". $total11."<br/>";
-				
-				$sql12="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs, sum(total) as total,clubbing,group_concat(doc_no SEPARATOR ',') as doc_no,acutno FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='DONE' and clubbing!=0 group by module";
-				//echo $sql12."<br>";
-				$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row12=mysqli_fetch_array($sql_result12))
-				{
-					$clubbing=$sql_row12['clubbing'];
-					$docc_no=$sql_row12['doc_no'];
-				}	
-				//echo $clubbing."<br/>";
-				if($clubbing>0 && $docc_no>0)
-				{
-					
-					$sql212="SELECT group_concat(doc_ref separator ',') as docref1 FROM $bai_pro3.fabric_priorities where doc_ref_club in (".$docc_no.")";
-					//echo $sql212;
-					$sql_result212=mysqli_query($link, $sql212) or exit("Sql Error3".$sql212);
-					while($sql_row212=mysqli_fetch_array($sql_result212))
+					$size_ratio_sum += $row['size_ratio'];
+				}
+
+				/**
+				 * Available fabric PCs based cut status done
+				 */
+				$total1=$plies*$size_ratio_sum;
+
+				/**getting plant timings wrt plant*/
+				$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
+				$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$hrsNum=mysqli_num_rows($PlantTimingsResult);
+				if($hrsNum>0){
+					while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
 					{
-						$club_doc_ref1=$sql_row212['docref1'];
+						$tot_hrs=$PlantTimingsRow['Hours'];
 					}
-					
-					if($club_doc_ref1==''){
-                       $club_doc_ref1 = '-1';
+				}
+
+				/**getting plan quantity from monthly and */
+				$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN monthly_production_plan p 
+				ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+				$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$plannedNum=mysqli_num_rows($plannedResult);
+				if($plannedNum>0){
+					while($plannedRow=mysqli_fetch_array($plannedResult))
+					{
+						$plannedQty=$plannedRow['planned_qty'];
 					}
-					$total12=0;
-					$sql11="select (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and order_del_no in ($schedule) and act_cut_status='DONE' and clubbing=$clubbing and doc_no in($club_doc_ref1)";
-					// echo $sql11;
-					$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error311".$sql11);
-					while($sql_row11=mysqli_fetch_array($sql_result11))
-					{
-						$total12+=$sql_row11['total'];
-					} 
-					
-					//echo "total12=".$total12."<br/>";
 				}
-				//echo "total13=". $total11."--".$total12."--".$total."<br/>";
-				$total=$total11+$total12;
+				$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
 				
-				$sql11="select (sum(plan_pro)/15) as plan_pro from $pts.pro_plan_today where plant_code='$plantcode' and mod_no=$module and date='$date2'";
-				//echo $sqll;
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row11=mysqli_fetch_array($sql_result11))
-				{
-					$plan_tgt=round(($sql_row11['plan_pro']*1.1),0);
-				}
-				
-				$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=$module";
-				//echo $sqll;
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row11=mysqli_fetch_array($sql_result11))
-				{
-					$wip=$sql_row11['wip'];
-				}
-				$c_doc_no=0;
-				$sql2="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no  FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing=0 group by module";
-				//echo $sql2."<br/>";
-					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row1=mysqli_fetch_array($sql_result2))
-					{
-						$total13=$row1['total'];
 						
-					}
 				
-				//echo $c_doc_no."-".sizeof($c_doc_no)."<br/>";
-				//echo $sql2."<br/>";
-				//echo $clubbing."<br/>";
-				$sql212="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no  FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
-					$sql_result212=mysqli_query($link, $sql212) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row212=mysqli_fetch_array($sql_result212))
-					{
-						$c_doc_no=$row212['doc_no'];
+				/**
+				 * get MIN operation wrt jobs based on operation seq
+				 */
+				$qrytoGetMinOperation="SELECT sum(good_quantity) AS  FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+				$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
+				if(mysqli_num_rows($minOperationResult)>0){
+					while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+						$minGoodQty=$minOperationResultRow['good_quantity'];
 					}
-				
-				if($clubbing>0 && $c_doc_no>0)
-				{
-					
-					$sql21="SELECT group_concat(doc_ref separator ',') as docref FROM $bai_pro3.fabric_priorities where doc_ref_club in ($c_doc_no)";
-					$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error3".$sql21);
-					//echo $sql21."<br/>";
-					while($sql_row21=mysqli_fetch_array($sql_result21))
-					{
-						$club_doc_ref=$sql_row21['docref'];
-					}
-						//echo $club_doc_ref."-".sizeof($club_doc_ref)."<br/>";
-					$total14=0;
-					$sql22="select (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and cut_inp_temp is null and act_cut_status='' and doc_no in ($club_doc_ref) group by doc_no";
-					$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4".$sql22);
-					//echo $sql22."<br/>";
-					while($sql_row22=mysqli_fetch_array($sql_result22))
-					{
-						$total14+=$sql_row22['total'];
-					}
-					
-					
 				}
-				$total1=$total13+$total14;
+
+				/**
+				 * get MAX operation wrt jobs based on operation seq
+				 */
+				$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
+				sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+				$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+				if(mysqli_num_rows($maxOperationResult)>0){
+					while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+						$maxGoodQty=$maxOperationResultRow['good_quantity'];
+						$maxRejQty=$maxOperationResultRow['rejected_quantity'];
+					}
+				}
+				$wip=$minGoodQty-($maxGoodQty+$maxRejQty);
+				
+				/**here we have condition that cut status not done*/
+				$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+				LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+				LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+				LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
+				WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
+				$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+				if($qrylpLayNum>0){
+					while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
+					{
+						/**These plies are cut status done  */
+						$plies=$lpLayRow['plies'];
+						$ratio_id=$lpLayRow['ratio_id'];
+
+						//get the docket qty
+						$size_ratio_sum = 0;
+						$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+						$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row = mysqli_fetch_array($size_ratios_result))
+						{
+							$size_ratio_sum += $row['size_ratio'];
+						}
+					}
+
+					/**
+						 * Available fabric PCs based cut status done
+						 */
+						$total=$plies*$size_ratio_sum;
+				}else{
+					$total=0;
+				}
+
+
+
 				$add=0;
 				if($plan_tgt>0)
 				{
 				
-				if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") )
-				{
-					$add=8*(((strtotime(date("Y-m-d",(strtotime($date)+(60*60*round(($total/$plan_tgt),0))+(60*60*8))))-strtotime(date("Y-m-d")))/ (60 * 60 * 24))+0);
-					//echo $module."$".((strtotime(date("Y-m-d",(strtotime($date)+(60*60*round(($total/$plan_tgt),0))+(60*60*8))))-strtotime(date("Y-m-d")))/ (60 * 60 * 24))."<br/>";
-				}
+					if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") )
+					{
+						$add=8*(((strtotime(date("Y-m-d",(strtotime($date)+(60*60*round(($total/$plan_tgt),0))+(60*60*8))))-strtotime(date("Y-m-d")))/ (60 * 60 * 24))+0);
+					}
 				}
 				else
 				{
 					$add=0;
 				}
-				/* if(date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))<=6 and date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>0 and date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d"))
-				{
-					$add=2+date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)));
-				}
-				else
-				{
-					if((date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>=22  or date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))==0) and date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))==date("Y-m-d"))
-					{
-						$add=6+(24-date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0))));
-					}
-					else
-					{
-						if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") and date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))>6)
-						{
-							$add=(date("H",strtotime($date)+(60*60*round(($total/$plan_tgt),0)-6)));
-						}
-					}
-				}
-				echo $module."-".$add."<br/>"; */
 				$res=$wip/div_by_zero1($plan_tgt);
 				$wip1=round(($res),0);
 				
@@ -268,66 +345,90 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		}
 		else
 		{
-			$clubbing=0;
-			$sql131="SELECT group_concat(distinct order_style_no SEPARATOR '<br/>') as style, group_concat(distinct order_del_no SEPARATOR ',') as schedule, group_concat(distinct order_col_des SEPARATOR '<br/>') as color, group_concat(distinct concat(char(color_code),acutno) SEPARATOR '<br/>') as jobs,clubbing FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' group by module";
-		
-			//echo $sql131."<br>";
-			$sql_result131=mysqli_query($link, $sql131) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row131=mysqli_fetch_array($sql_result131))
-			{
-				$clubbing=$sql_row131['clubbing'];
-			}
-			$sql11="select sum(ims_qty-ims_pro_qty) as wip from $bai_pro3.ims_log where ims_mod_no=$module";
-			//echo $sqll;
-			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row11=mysqli_fetch_array($sql_result11))
-			{
-				$wip=$sql_row11['wip'];
-			}
 			
-			$sql11="select (sum(plan_pro)/15) as plan_pro from $pts.pro_plan_today where plant_code='$plantcode' and mod_no=$module  and date='$date2'";
-			//echo $sqll;
-			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row11=mysqli_fetch_array($sql_result11))
-			{
-				$plan_tgt=round(($sql_row11['plan_pro']*1.1),0);
-			}
-			$c_doc_no=0;
-			$sql23="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing=0 group by module";
-			//echo $sql23."<br/>";
-			$sql_result2=mysqli_query($link, $sql23) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row1=mysqli_fetch_array($sql_result2))
-			{
-				$total15=$row1['total'];
-			}
-			
-			$sql232="SELECT  sum(total) as total,group_concat(doc_no separator ',') as doc_no FROM $bai_pro3.plan_dash_doc_summ WHERE module=$module and cut_inp_temp is null and act_cut_status='' and fabric_status=5 and clubbing!=0 group by module";
-			//echo $sql23."<br/>";
-			$sql_result232=mysqli_query($link, $sql232) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row232=mysqli_fetch_array($sql_result232))
-			{
-				$c_doc_no=$row232['doc_no'];
-			}
-			if($clubbing>0 && $c_doc_no>0)
-				{
-					$sql21="SELECT group_concat(doc_ref separator ',') as docref FROM $bai_pro3.fabric_priorities where doc_ref_club in ($c_doc_no)";
-					$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error3".$sql21);
-					//echo $sql21."<br/>";
-					while($sql_row21=mysqli_fetch_array($sql_result21))
-					{
-						$club_doc_ref=$sql_row21['docref'];
-					}
-						//echo $club_doc_ref."-".sizeof($club_doc_ref)."<br/>";
-					$total16=0;	
-					$sql22="select (p_xs+p_s+p_m+p_l+p_xl+p_xxl+p_xxxl+p_s01+p_s02+p_s03+p_s04+p_s05+p_s06+p_s07+p_s08+p_s09+p_s10+p_s11+p_s12+p_s13+p_s14+p_s15+p_s16+p_s17+p_s18+p_s19+p_s20+p_s21+p_s22+p_s23+p_s24+p_s25+p_s26+p_s27+p_s28+p_s29+p_s30+p_s31+p_s32+p_s33+p_s34+p_s35+p_s36+p_s37+p_s38+p_s39+p_s40+p_s41+p_s42+p_s43+p_s44+p_s45+p_s46+p_s47+p_s48+p_s49+p_s50)*p_plies as total from $bai_pro3.order_cat_doc_mk_mix where category in ($in_categories) and cut_inp_temp is null and act_cut_status='' and doc_no in ($club_doc_ref) group by doc_no";
-					$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error4".$sql22);
-					//echo $sql22."<br/>";
-					while($sql_row22=mysqli_fetch_array($sql_result22))
-					{
-						$total16+=$sql_row22['total'];
-					}	
+			/**
+			 * get MIN operation wrt jobs based on operation seq
+			 */
+			$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+			$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
+			if(mysqli_num_rows($minOperationResult)>0){
+				while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+					$minGoodQty=$minOperationResultRow['good_quantity'];
 				}
-			$total1=$total15+$total16;
+			}
+
+			/**
+			 * get MAX operation wrt jobs based on operation seq
+			 */
+			$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
+			sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+			$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+			if(mysqli_num_rows($maxOperationResult)>0){
+				while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+					$maxGoodQty=$maxOperationResultRow['good_quantity'];
+					$maxRejQty=$maxOperationResultRow['rejected_quantity'];
+				}
+			}
+			$wip=$minGoodQty-($maxGoodQty+$maxRejQty);
+			
+
+			/**getting plant timings wrt plant*/
+			$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
+			$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$hrsNum=mysqli_num_rows($PlantTimingsResult);
+			if($hrsNum>0){
+				while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
+				{
+					$tot_hrs=$PlantTimingsRow['Hours'];
+				}
+			}
+
+			/**getting plan quantity from monthly and */
+			$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN monthly_production_plan p 
+			ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+			$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$plannedNum=mysqli_num_rows($plannedResult);
+			if($plannedNum>0){
+				while($plannedRow=mysqli_fetch_array($plannedResult))
+				{
+					$plannedQty=$plannedRow['planned_qty'];
+				}
+			}
+			$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
+
+			/**here we have condition that cut status not done*/
+			$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+			LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
+			WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
+			$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+			if($qrylpLayNum>0){
+				while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
+				{
+					/**These plies are cut status done  */
+					$plies=$lpLayRow['plies'];
+					$ratio_id=$lpLayRow['ratio_id'];
+
+					//get the docket qty
+					$size_ratio_sum = 0;
+					$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+					$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row = mysqli_fetch_array($size_ratios_result))
+					{
+						$size_ratio_sum += $row['size_ratio'];
+					}
+				}
+
+				/**
+					 * Available fabric PCs based cut status done
+					 */
+					$total1=$plies*$size_ratio_sum;
+			}else{
+				$total1=0;
+			}
+
 			$res=$wip/div_by_zero1($plan_tgt);
 			$wip1=round(($res),0);			
 			$message.= "<tr><th align=left>$section</th><th align=left>$module</th><td></td><td></td><td></td><td></td><td>$total1</td><td>0</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>Critical</td><td>$wip</td><td>$wip1</td></tr>";
@@ -337,15 +438,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 
 $message.= "</table>
 </div>";
-// $message.= '<br/><br/>Message Sent via: http://bffnet';
 $message.='
 </html>';
-
-
-//$to  = 'SenthooranS@brandix.com,gayanl@brandix.com,DuminduW@brandix.com,NalakaSB@brandix.com,ChandrasekharD@brandix.com,RanjanG@brandix.com,NihalS@brandix.com,SajithA@brandix.com,brandixalerts@schemaxtech.com';
-//$to  = 'fazlulr@brandix.com,brandixalerts@schemaxtech.com';
-//$to  = 'rajesh.nalam@schemaxtech.com';
-
 // subject
 $to = $cutting_mail;
 $subject = 'Hourly Input Availability Report';
@@ -357,28 +451,6 @@ $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 // Additional headers
 $headers .= 'To: '.$to. "\r\n";
 $headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
-//$headers .= 'Cc: YasanthiN@brandix.com' . "\r\n";
-
-
-// if(!isset($_GET['alertfilter']))
-// {
-// // Mail it
-// mail($to, $subject, $message, $headers);
-// $self_page = 'index.php?r='.$_GET['r'];
-// //echo $message;
-// echo "<script> 
-// 		setTimeout('CloseWindow()',100); 
-// 		function CloseWindow(){ 
-// 			window.open('$self_page','Input Availability forecast',''); 
-// 			window.close(); 
-// 		} 
-// 	  </script>";
-
-// }
-// else
-// {
-// 	echo $message;
-// }
 echo $message;
 ?>
 </div><!-- panel body -->

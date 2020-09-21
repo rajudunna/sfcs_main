@@ -1,68 +1,83 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 $color=$_GET['color'];
 $input_job=$_GET['input_job'];
-
+$inputJobNo=$_GET['inputJobNo'];
 $date=date('Y-m-d');
-$acut_no=array();
-$bundle_num=array();
-$size=array();
-$quantity=array();
-$status=0;
-$sql2="SELECT * from $bai_pro3.packing_summary_input where input_job_no_random='".$input_job."' and order_col_des='".$color."' order by tid,m3_size_code";
-$sql_result41=mysqli_query($link, $sql2) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row41=mysqli_fetch_array($sql_result41))
-{
-	if($status==0)
-	{
-		
-		$sql322="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$sql_row41['type_of_sewing']."";
-		$sql_result12321=mysqli_query($link, $sql322) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row12213=mysqli_fetch_array($sql_result12321))
-		{				
-			$sewing_job  = $sql_row12213['prefix'].leading_zeros($sql_row41['input_job_no'],3);				
+
+	/**
+	 * getting cut jobs based on jm jg header 
+	 */
+	$taskType = TaskTypeEnum::SEWINGJOB;
+	//Qry to check sewing job planned or not
+	$check_job_status="SELECT task_header_id,resource_id FROM $tms.task_header WHERE task_ref='$input_job' AND plant_code='$plantcode' AND task_type='$taskType' AND (resource_id IS NOT NULL OR  resource_id!='')";
+	$job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+	$job_status_num=mysqli_num_rows($job_status_result);
+	if($job_status_num>0){
+		while($task_header_id_row=mysqli_fetch_array($job_status_result))
+			{
+				$task_header_id[]=$task_header_id_row['task_header_id'];
+				$resource_id=$task_header_id_row['resource_id'];
+			}
+
+			/**
+			 * getting workstation based resource id
+			 */
+			$qryGetWorkstation="SELECT workstation_description FROM $pms.workstation WHERE workstation_id='$resource_id' AND plant_code='$plantcode' AND is_active=1";
+			$getWorkstationResult=mysqli_query($link_new, $qryGetWorkstation) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+			$workstationNum=mysqli_num_rows($getWorkstationResult);
+			if($workstationNum>0){
+				while($workstationRow=mysqli_fetch_array($getWorkstationResult))
+				{
+					$workstationDescription=$workstationRow['workstation_description'];
+				}
+			}
+		//Qry to fetch taskrefrence from task_job  
+		$qry_toget_taskrefrence="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_type='$tasktype' AND plant_code='$plantcode' AND task_header_id IN ('".implode("','" , $task_header_id)."')";
+		$toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
+		if($toget_taskrefrence_num>0){
+				while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
+				{  
+					$task_jobs_id[]=$toget_taskrefrence_row['task_jobs_id'];
+				}
+
+				/**getting cut jobs based on task job id */
+				$qry_toget_style_sch="SELECT GROUP_CONCAT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL) SEPARATOR ',') AS SCHEDULE,GROUP_CONCAT(IF(attribute_name='STYLE', attribute_VALUE, NULL) SEPARATOR ',') AS STYLEGROUP_CONCAT(IF(attribute_name='PONUMBER', attribute_VALUE, NULL) SEPARATOR ',') AS PONUMBER, FROM $tms.`task_attributes` WHERE  plant_code='AIP' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."') GROUP BY attribute_name";
+				echo $qry_toget_style_sch;
+				$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+				while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+					
+						if($row2['SCHEDULE']!=''){
+							$schedules = $row2['SCHEDULE'];
+						}
+						if($row2['STYLE']!=''){
+							$styles = $row2['STYLE'];
+						}
+						if($row2['PONUMBER']!=''){
+							$poNumber = $row2['PONUMBER'];
+						}
+				}
 		}
-	
-		$sql41="select vpo from $bai_pro3.bai_orders_db_confirm where order_del_no='".$sql_row41['order_del_no']."'";
-		$sql_result412=mysqli_query($link, $sql41) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row413=mysqli_fetch_array($sql_result412))
-		{
-			$vpo=$sql_row413["vpo"];
-		}
-		$status=1;
-		$c_block=$sql_row41['destination'];
-		$style=$sql_row41['order_style_no'];
-		$schedule=$sql_row41['order_del_no'];
 	}
 
-	$acut_no[$sql_row41['tid']]=$sql_row41['acutno'];
-	$bundle_num[]=$sql_row41['tid'];
-	$size[$sql_row41['tid']]=$sql_row41['m3_size_code'];
-	$quantity[$sql_row41['tid']]=$sql_row41['carton_act_qty'];
-	
-}
-
-$sql76="SELECT input_module,log_time  FROM $bai_pro3.plan_dashboard_input WHERE  input_job_no_random_ref='$input_job'";
-$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error013".mysqli_error($GLOBALS["___mysqli_ston"]));
-if(mysqli_num_rows($sql_result76)>0)
-{
-	while($sql_row76=mysqli_fetch_array($sql_result76))
-	{
-		$input_module=$sql_row76['input_module'];
-	}
-}
-else
-{
-	$sql76="SELECT input_module,log_time  FROM $pps.plan_dashboard_input_backup WHERE plant_code='$plantcode' and input_job_no_random_ref='$input_job'";
-	$sql_result76=mysqli_query($link, $sql76) or exit("Sql Error014".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row76=mysqli_fetch_array($sql_result76))
-	{
-		$input_module=$sql_row76['input_module'];
-	}
-}
+	/**
+	 * getting destination from oms details
+	 */
+	$qryGetDestination="SELECT destination,vpo FROM $oms.oms_mo_details WHERE po_number='$poNumber' AND plant_code='$plantcode' AND is_active='1' LIMIT 0,1";
+	$getDestinationResult=mysqli_query($link_new, $qryGetDestination) or exit("Sql Error at destination".mysqli_error($GLOBALS["___mysqli_ston"]));    
+	$destinationNum=mysqli_num_rows($getDestinationResult);
+	if($destinationNum>0){
+		while($destinationRow=mysqli_fetch_array($getDestinationResult))
+			{
+				$c_block=$destinationRow['destination'];
+				$vpo=$destinationRow['vpo'];
+			}
+		}
 
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -555,9 +570,9 @@ tags will be replaced.-->
  <tr height=20 style='height:15.0pt'>
   <td height=20 class=xl6632733 width=35 style='height:15.0pt;width:26pt'></td>
   <td class=xl6932733 width=88 style='width:66pt'>Style</td>
-  <td class=xl7032733 width=87 style='border-left:none;width:65pt'><?php echo $style;?></td>
+  <td class=xl7032733 width=87 style='border-left:none;width:65pt'><?php echo $styles;?></td>
   <td class=xl6932733 width=64 style='border-left:none;width:48pt'>Schedule</td>
-  <td class=xl7032733 width=64 style='border-left:none;width:48pt'><?php echo $schedule;?></td>
+  <td class=xl7032733 width=64 style='border-left:none;width:48pt'><?php echo $schedules;?></td>
   <td class=xl6632733 width=37 style='width:28pt'></td>
   <td class=xl6632733 width=66 style='width:50pt'></td>
   <td class=xl6632733 width=99 style='width:74pt'></td>
@@ -591,7 +606,7 @@ tags will be replaced.-->
   <td rowspan=2 class=xl7732733 width=64 style='border-bottom:.5pt solid black;
   border-top:none;width:48pt'>Line no</td>
   <td rowspan=2 class=xl7732733 width=64 style='border-bottom:.5pt solid black;
-  border-top:none;width:48pt'><?php echo $input_module; ?></td>
+  border-top:none;width:48pt'><?php echo $workstationDescription; ?></td>
   <td class=xl1532733></td>
   <td class=xl1532733></td>
   <td class=xl1532733></td>
@@ -602,7 +617,7 @@ tags will be replaced.-->
   <td height=20 class=xl6632733 width=35 style='height:15.0pt;width:26pt'></td>
   <td class=xl6932733 width=88 style='border-top:none;width:66pt'>Sewing Job no</td>
   <td class=xl7032733 width=87 style='border-top:none;border-left:none;
-  width:65pt'><?php echo $sewing_job; ?></td>
+  width:65pt'><?php echo $inputJobNo; ?></td>
   <td class=xl1532733></td>
   <td class=xl1532733></td>
   <td class=xl1532733></td>
@@ -646,42 +661,54 @@ tags will be replaced.-->
  </tr>
   <?php
   $total=0;
-  
-	for($i=0;$i<sizeof($bundle_num);$i++)
-	{
-		?>
- <tr height=30 style='mso-height-source:userset;height:22.5pt'>
-  <td height=30 class=xl6632733 width=35 style='height:22.5pt;width:26pt'></td>
-  <td class=xl7132733 width=88 style='border-top:none;width:66pt'><?php echo ($i+1);?></td>
-  <td class=xl7132733 width=87 style='border-top:none;border-left:none;
-  width:65pt'><?php echo $acut_no[$bundle_num[$i]]."-".$bundle_num[$i];?></td>
-  <td class=xl7132733 width=93 style='border-top:none;border-left:none;
-  width:48pt'><?php echo $size[$bundle_num[$i]];?></td>
-  <td class=xl7132733 width=64 style='border-top:none;border-left:none;
-  width:48pt'><?php echo $quantity[$bundle_num[$i]];?></td>
-  <td class=xl6932733 colspan=2 width=37 style='border-top:none;border-left:none;
-  width:80pt'>&nbsp;</td>
+	/**
+	 * getting bundles info based on input job and color
+	 */
+	$qryBundleInfo="SELECT bundle_number,quantity,size FROM $pps.jm_job_bundles WHERE jm_jg_header_id='$input_job' AND fg_color='$color' AND plant_code='$plantcode' AND is_active=1 GROUP BY bundle_number";
+	$qryBundleInfoResult=mysqli_query($link_new, $qryBundleInfo) or exit("Sql Error at destination".mysqli_error($GLOBALS["___mysqli_ston"]));    
+	$destinationNum=mysqli_num_rows($qryBundleInfoResult);
+	if($destinationNum>0){
+		while($bundleRow=mysqli_fetch_array($qryBundleInfoResult))
+			{
+				$bundle_number=$bundleRow['bundle_number'];
+				$quantity=$bundleRow['quantity'];
+				$size=$bundleRow['size'];
 
-  <td class=xl6932733 width=99 style='border-top:none;border-left:none;
-  width:74pt'>&nbsp;</td>
-  
-  <td class=xl6932733 width=58 style='border-top:none;border-left:none;
-  width:44pt'>&nbsp;</td>
-  <td class=xl6932733 width=59 style='border-top:none;border-left:none;
-  width:44pt'>&nbsp;</td>
-  <td class=xl6932733 width=57 style='border-top:none;border-left:none;
-  width:43pt'>&nbsp;</td>
-  <td class=xl6932733 width=57 style='border-top:none;border-left:none;
-  width:43pt'>&nbsp;</td>
-  <td class=xl6932733 width=102 style='border-top:none;border-left:none;
-  width:77pt'>&nbsp;</td>
-  <td class=xl6932733 colspan=2 width=166 style='border-top:none;border-left:none;
-  width:125pt'>&nbsp;</td>
-  <td class=xl6632733 width=40 style='width:30pt'></td>
- </tr>
-  <?php
-	$total+= $quantity[$bundle_num[$i]];
+				?>
+				<tr height=30 style='mso-height-source:userset;height:22.5pt'>
+				<td height=30 class=xl6632733 width=35 style='height:22.5pt;width:26pt'></td>
+				<td class=xl7132733 width=88 style='border-top:none;width:66pt'><?php echo ($i+1);?></td>
+				<td class=xl7132733 width=87 style='border-top:none;border-left:none;
+				width:65pt'><?php echo $bundle_number;?></td>
+				<td class=xl7132733 width=93 style='border-top:none;border-left:none;
+				width:48pt'><?php echo $size;?></td>
+				<td class=xl7132733 width=64 style='border-top:none;border-left:none;
+				width:48pt'><?php echo $quantity;?></td>
+				<td class=xl6932733 colspan=2 width=37 style='border-top:none;border-left:none;
+				width:80pt'>&nbsp;</td>
+
+				<td class=xl6932733 width=99 style='border-top:none;border-left:none;
+				width:74pt'>&nbsp;</td>
+				
+				<td class=xl6932733 width=58 style='border-top:none;border-left:none;
+				width:44pt'>&nbsp;</td>
+				<td class=xl6932733 width=59 style='border-top:none;border-left:none;
+				width:44pt'>&nbsp;</td>
+				<td class=xl6932733 width=57 style='border-top:none;border-left:none;
+				width:43pt'>&nbsp;</td>
+				<td class=xl6932733 width=57 style='border-top:none;border-left:none;
+				width:43pt'>&nbsp;</td>
+				<td class=xl6932733 width=102 style='border-top:none;border-left:none;
+				width:77pt'>&nbsp;</td>
+				<td class=xl6932733 colspan=2 width=166 style='border-top:none;border-left:none;
+				width:125pt'>&nbsp;</td>
+				<td class=xl6632733 width=40 style='width:30pt'></td>
+				</tr>
+				<?php
+					$total+= $quantity[$bundle_num[$i]];	
+			}
 	}
+	
   
   ?>
  <tr height=30 style='mso-height-source:userset;height:22.5pt'>

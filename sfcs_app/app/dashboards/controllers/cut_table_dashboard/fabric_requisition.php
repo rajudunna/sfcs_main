@@ -15,7 +15,6 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	// $username="sfcsproject1";	
 	//$mods=array();	
-
 	if(isset($_POST['sdat'])) 
 	{ 
 		//echo $_POST['doc'];
@@ -40,7 +39,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
-	}	
+	}		
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
@@ -145,18 +144,26 @@ function GetSelectedItem()
 <div class="panel-heading">Fabric Requisition Form</div>
 <div class="panel-body">
 <?php 
-$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code'";
-$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-   echo "<SELECT name='marker_version'  id='marker_version' style='height: 30px;'>";
-
-   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
-	while($row111x1=mysqli_fetch_array($sql_result11x1))
-	{
-		$marker_version=$row111x1["marker_version"];
-		$marker_version_id=$row111x1["marker_version_id"];
-		echo"<option  value='$marker_version_id'>".$marker_version."</option>";
-	 }
-	echo "</select>";
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
+	
+	   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
+		while($row111x1=mysqli_fetch_array($sql_result11x1))
+		{
+			$marker_version=$row111x1["marker_version"];
+			
+			if($row111x1['marker_version_id']==$marker_version_id)
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\" selected>".$row111x1['marker_version']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\">".$row111x1['marker_version']."</option>";
+			}
+			
+		 }
+    echo "</select>";
  ?>
 </br></br>
 <div id ="dynamic_table1">
@@ -182,6 +189,7 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
+		$marker_version_id =$result_docketinfo['marker_version_id'];
 		
 	}
 		
@@ -221,6 +229,8 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 
 			<td style="display:none"><input type="hidden" id="doc" name="doc" value="<?php echo $doc_no; ?>" ></td>
 			<td style="display:none"><input type="hidden" id="$group_docs" name="group_docs" value="<?php echo $group_docs; ?>" ></td>
+			<td style="display:none"><input type="hidden" id="plantCode" name="plantCode" value="<?php echo $plant_code; ?>" ></td>
+			<td style="display:none"><input type="hidden" id="userName" name="userName" value="<?php echo $username; ?>" ></td>
 
 		<?php
 			if($rows2 > 0)
@@ -334,11 +344,10 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 
 				?>
 			</td>
-	
-			<td style="display:none"><input type="hidden" id="name" name="name" value="<?php echo $username; ?>" ></td>	
+				
 			<td style="display:none"><input type="hidden" id="name" name="secs" value="<?php echo $section; ?>" ></td>	
 			<td style="display:none"><input type="hidden" id="name" name="mods" value="<?php echo $module; ?>" ></td>
-			
+						
 		<?php
 					
 				if(date("H:i:s") <= "23:59:59")
@@ -371,13 +380,21 @@ if(isset($_POST["submit1"]))
 	$secs=$_POST["secs"];
 	$mods=$_POST["mods"];
 	$ref=$_POST['reference'];
-	$dockets=$_POST['doc_details'];
-
+	$marker_version=$_POST['marker_version'];
+	$select_uuid1="SELECT UUID() as uuid";
+	//echo $select_uuid;
+	$uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($uuid_row1=mysqli_fetch_array($uuid_result1))
+	{
+		$uuid1=$uuid_row1['uuid'];
+	
+	}
 	for($i=0;$i < count($ref);$i++ )
 	{		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$insert="insert into $pps.requested_dockets(jm_docket_line_id,reference,created_user,created_at,updated_user,updated_at,plant_code) values(\"".$dockets[$i]."\",\"".$ref[$i]."\",\"".$username."\",'NOW()',\"".$username."\",NOW(),'$plant_code')";		
+		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",'NOW()','$plant_code')";	
+		
 	}
 	// var_dump($insert);
 	// die();
@@ -406,11 +423,19 @@ if(isset($_POST["submit1"]))
 	$doc_nos_split=explode(",",$group_docs);
 	$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	$note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
+	/**Insert new record in header for if new reource id alloacted with in cut job */
+	$select_uuid="SELECT UUID() as uuid";
+	//echo $select_uuid;
+	$uuid_result=mysqli_query($link_new, $select_uuid) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($uuid_row=mysqli_fetch_array($uuid_result))
+	{
+		$uuid=$uuid_row['uuid'];
 	
+	}
 	//for($i=0;$i<sizeof($doc_nos_split);$i++)
 	for($i=0;$i<1;$i++)
 	{
-		$sql1="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_nos_split[$i]."\" and plant_code='$plant_code'";
+		$sql1="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_nos."\" and plant_code='$plant_code'";
 		$result=mysqli_query($link, $sql1) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows=mysqli_num_rows($result);
 		//Date: 2013-10-09
@@ -421,7 +446,7 @@ if(isset($_POST["submit1"]))
 		{
 			if($rows==0)
 			{
-				$sql="insert into $pps.fabric_prorities(jm_docket_line_id,doc_ref_club,req_time,log_time,created_user,section_id,work_station_id,plant_code) values(\"".$doc_nos_split[$i]."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",'$plant_code')";
+				$sql="insert into $pps.fabric_prorities(fabric_prorities_id,jm_docket_line_id,doc_ref_club,req_time,log_time,created_user,section_id,work_station_id,plant_code) values(\"".$uuid."\",\"".$doc_nos."\",\"".$doc_nos."\",\"".$req_time."\",\"".$log_time."\",\"".$username."\",\"".$secs."\",\"".$mods."\",'$plant_code')";
 				// echo "<br>".$sql."<br>";
 				$note.=$sql."<br>";
 				if(!mysqli_query($link, $sql))
@@ -432,7 +457,9 @@ if(isset($_POST["submit1"]))
 				{
 					echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
 				}
-				
+				$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version' updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_nos' and plant_code='$plant_code'";
+
+				mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//Date:2013-08-27
 				//Track the requested user details and system details.
 				$myFile = "log/".date("Y_m_d")."_fabric_request_track.html";

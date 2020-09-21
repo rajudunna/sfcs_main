@@ -1,7 +1,7 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'order_status_buffer.php',0,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-$plantcode=$_SESSION['plantCode'];
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
 <?php
@@ -39,19 +39,24 @@ function thirdbox()
 	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value;
 	window.location.href = uriVal;
 }
-function fourthbox()
-{
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value;
-	window.location.href = uriVal;
-}
+// function fourthbox()
+// {
+// 	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value;
+// 	window.location.href = uriVal;
+// }
 function fifthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 function sixthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&style_id="+document.test.style_id.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	window.location.href = uriVal;
+}
+function seventhbox()
+{
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
@@ -150,6 +155,7 @@ if(isset($_POST['submit1']))
 	$date_filter=$_POST['date_filter'];
 	$from_date=$_POST['from_date'];
 	$to_date=$_POST['to_date'];
+	$get_mpo=$_POST['mpo']; 
 	
 }else{
 	$style=$_GET['style'];
@@ -161,11 +167,12 @@ if(isset($_POST['submit1']))
 	$style_id=$_GET['style_id'];
 	$from_date=$_GET['from_date'];
 	$to_date=$_GET['to_date'];
+	$get_mpo=$_GET['mpo'];
 }
 ?>
 <form name="test" action="<?php echo getFullURLLevel($_GET['r'],'tabular_rep_new5.php','0','N'); ?>" method="post">
 <?php
-	$sql="select distinct CPO from $pps.order_status_buffer where plant_code='$plantcode' order by CPO";	
+	$sql="select distinct cpo from $oms.oms_mo_details where plant_code='$plant_code' order by cpo";	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
@@ -178,12 +185,12 @@ if(isset($_POST['submit1']))
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		
-		if(str_replace(" ","",$sql_row['CPO'])==str_replace(" ","",$cpo))
+		if(str_replace(" ","",$sql_row['cpo'])==str_replace(" ","",$cpo))
 	    {
-			echo "<option value=\"".$sql_row['CPO']."\" selected>".$sql_row['CPO']."</option>";	
+			echo "<option value=\"".$sql_row['cpo']."\" selected>".$sql_row['cpo']."</option>";	
 		}
 		else{
-			echo "<option value=\"".$sql_row['CPO']."\" >".$sql_row['CPO']."</option>";
+			echo "<option value=\"".$sql_row['cpo']."\" >".$sql_row['cpo']."</option>";
 		}
 
 	}
@@ -191,7 +198,7 @@ if(isset($_POST['submit1']))
     echo "  </select>
 	</div>";
 
-	$sql_buyer="select distinct buyer_div from $pps.order_status_buffer where plant_code='$plantcode' and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' order by buyer_div";
+	$sql_buyer="select distinct buyer_desc from $oms.oms_mo_details where plant_code='$plant_code' and cpo='$cpo' order by buyer_desc";
 	$sql_result1=mysqli_query($link, $sql_buyer) or exit("Sql Error1a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check1=mysqli_num_rows($sql_result1);
 	echo "<div class=\"col-sm-3\"><label>Select Buyer Division:</label><select class='form-control' name=\"buyer_div\"  id=\"buyer_div\" onchange=\"secondbox();\">";
@@ -200,22 +207,21 @@ if(isset($_POST['submit1']))
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 
-		if(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div))
+		if(str_replace(" ","",$sql_row1['buyer_desc'])==str_replace(" ","",$buyer_div))
 		 {
-			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
+			echo "<option value=\"".$sql_row1['buyer_desc']."\" selected>".$sql_row1['buyer_desc']."</option>";
 		}
 	
-		elseif(str_replace(" ","",$sql_row1['buyer_div'])==str_replace(" ","",$buyer_div1)){
-			echo "<option value=\"".$sql_row1['buyer_div']."\" selected>".$sql_row1['buyer_div']."</option>";
+		elseif(str_replace(" ","",$sql_row1['buyer_desc'])==str_replace(" ","",$buyer_div1)){
+			echo "<option value=\"".$sql_row1['buyer_desc']."\" selected>".$sql_row1['buyer_desc']."</option>";
 		}
 		else{
-			echo "<option value=\"".$sql_row1['buyer_div']."\">".$sql_row1['buyer_div']."</option>";
+			echo "<option value=\"".$sql_row1['buyer_desc']."\">".$sql_row1['buyer_desc']."</option>";
 		}
 	}
 	echo "  </select>
 	</div>";
-	
-	$sql_style="select distinct style from $pps.order_status_buffer where plant_code='$plantcode' and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' order by style";
+	$sql_style="SELECT distinct style FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND oms_mo_details.plant_code='$plant_code' order by style";
 	$sql_result2=mysqli_query($link, $sql_style) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\">";
 	echo "<option value='' disabled selected>Please Select</option>";
@@ -234,30 +240,8 @@ if(isset($_POST['submit1']))
 	}
 	echo "  </select>
     </div>";
-	$sql_query="select distinct style_id from $pps.order_status_buffer where plant_code='$plantcode' and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' order by style_id";
-   	$sql_result3=mysqli_query($link, $sql_query) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_num_check3=mysqli_num_rows($sql_result3);
-	echo "<div class=\"col-sm-2\"><label>Select User Style ID:</label><select class='form-control' name=\"style_id\"  id=\"style_id\" onchange=\"fourthbox();\">";
-	
-	echo "<option value='' disabled selected>Please Select</option>";
-	while($sql_row3=mysqli_fetch_array($sql_result3))
-	{	
-
-		if(str_replace(" ","",$sql_row3['style_id'])==str_replace(" ","",$style_id))
-		{
-			echo "<option value=\"".$sql_row3['style_id']."\" selected>".$sql_row3['style_id']."</option>";
-		}
-		else
-		{
-	    	echo "<option value=\"".$sql_row3['style_id']."\">".$sql_row3['style_id']."</option>";
-		}
-
-
-	}
-	echo "  </select>
-	</div>";
-	$sql_schedule="select distinct schedule from $pps.order_status_buffer where plant_code='$plantcode' and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' order by schedule";
-	$sql_result4=mysqli_query($link, $sql_schedule) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_schedule="SELECT distinct schedule FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND style='$style' AND oms_mo_details.plant_code='$plant_code'";
+	$sql_result4=mysqli_query($link, $sql_schedule) or exit("Sql Error1333".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check4=mysqli_num_rows($sql_result4);
 	echo "<div class=\"col-sm-2\"><label>Select Schedule:</label><select class='form-control' name=\"schedule\"  id=\"schedule\" onchange=\"fifthbox();\">";
 	
@@ -279,8 +263,8 @@ if(isset($_POST['submit1']))
 	echo "  </select>
 	</div>";
 
-	$sql2="select distinct color from $pps.order_status_buffer where plant_code='$plantcode' and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."' and  buyer_div='$buyer_div' and style='$style' and style_id='$style_id' and schedule='$schedule' order by color";	
-	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql2="SELECT distinct color_desc as color FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND style='$style' AND schedule='$schedule' AND oms_mo_details.plant_code='$plant_code' order by color_desc";	
+	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check5=mysqli_num_rows($sql_result5);
 	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\">";
 	
@@ -300,7 +284,29 @@ if(isset($_POST['submit1']))
 	}
 	echo "  </select>
 	</div>";
-
+	
+	/*function to get mpo from getdata_MPOs
+	@params : plantcode,schedule,color
+	@returns: mpo
+	*/
+	if($schedule!='' && $color!='' && $plant_code!=''){
+		$result_bulk_MPO=getMpos($schedule,$color,$plant_code);
+		$master_po_description=$result_bulk_MPO['master_po_description'];
+	}
+	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
+	echo "<select style='min-width:100%' name=\"mpo\" onchange=\"seventhbox();\" class='form-control' >
+			<option value=\"NIL\" selected>NIL</option>";
+				foreach ($master_po_description as $key=>$master_po_description_val) {
+					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\' selected>'.$key.'</option>'; 
+					} 
+					else 
+					{ 
+						echo '<option value=\''.$master_po_description_val.'\'>'.$key.'</option>'; 
+					}
+				} 
+	echo "</select></div>";
 	
 	echo "<div class=\"col-sm-3\"><label> Exfactory From:</label>";
 	
@@ -310,14 +316,9 @@ if(isset($_POST['submit1']))
 	
 	echo'<input type="text" data-toggle="datepicker" class="form-control"  name="to_date" value="';if($to_date==""){ echo date("Y-m-d"); } else { echo $to_date; }  echo '">';
 	echo"</div>";
-
-	echo"</div>";
-
-
-
-       
+    echo '<input type="submit" name="submit1" value="Submit" class="btn btn-success" style="margin-top: 22px;">';
+	echo"</div>";       
 ?>
-<input type="submit" name="submit1" value="Submit" class="btn btn-success" style="margin-top: 22px;">
 </form>
 
 <?php
@@ -325,96 +326,67 @@ if(isset($_POST['submit1']))
 
 if(isset($_POST['submit1']))
 {
-	
-
-	$order_status_buffer="temp_pool_db.".$username.date("YmdHis")."_"."order_status_buffer";
-	
-	$sql="create TEMPORARY table $order_status_buffer ENGINE = MyISAM select * from $pps.order_status_buffer plant_code='$plantcode'";
-	$newwww = $sql;
-	mysqli_query($link, $sql) or exit("Sql Error1z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	$sql1="delete from $bai_pro2.order_status_buffer where plant_code='$plantcode'";
-	mysqli_query($link, $sql1) or exit("Sql Error2z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	$sql1="insert into $pps.order_status_buffer (cust_order,CPO,buyer_div,style,style_id,schedule,color,exf_date,ssc_code,order_qty,plant_code,created_user,created_at) select Cust_order,CPO,buyer_div,style_no,style_id,schedule_no,color,exfact_date,ssc_code,order_qty from $pps.shipment_plan_summ where plant_code='$plantcode'";
-	mysqli_query($link, $sql1) or exit("Sql Error3z".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-	
-	$ssc_code_filter="temp_pool_db.".$username.date("YmdHis")."_"."ssc_code_filter";
-	
-	$sql="create TEMPORARY table $ssc_code_filter ENGINE = MyISAM select * from $pps.ssc_code_filter where plant_code='$plantcode'";
-	mysqli_query($link, $sql) or exit("Sql Error4z".mysqli_error($GLOBALS["___mysqli_ston"]));
-	
-	$sql="delete from  $bai_pro2.ssc_code_filter where plant_code='$plantcode'";
-	mysqli_query($link, $sql) or exit("Sql Error5z".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
 	$color=$_POST['color'];
 	$cpo=$_POST['cpo'];
 	$buyer_div=$_POST['buyer_div'];
-	$style_id=$_POST['style_id'];
 	$date_filter=$_POST['date_filter'];
-	$from_date=$_POST['from_date'];
-	$to_date=$_POST['to_date'];
+	$from_date=str_replace("-", "", $_POST['from_date']);
+	$to_date=str_replace("-", "", $_POST['to_date']);
+	$mpo=$_POST['mpo'];
+
+
+
 	if($cpo=='all'){
-		$sql11="select * from  $pps.order_status_buffer where plant_code='$plantcode' and exf_date between \"$from_date\" and \"$to_date\"";
-		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql11="select * from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
 	}
 	else{
-		$sql11="select * from  $pps.order_status_buffer where plant_code='$plantcode' and exf_date between \"$from_date\" and \"$to_date\"";
-		if($cpo!=''){
-			$sql11.="and replace(cpo,\"'\",\"\")='".str_replace("'","",$cpo)."'";
-		}
-		if($buyer_div!=''){
-			$sql11.="and buyer_div='$buyer_div'";
-		}
-		if($style!=''){
-			$sql11.="and style='$style'";
-		}
-		if($style_id!=''){
-			$sql11.="and style_id='$style_id'";
-		}
-		if($schedule!=''){
-			$sql11.="and schedule='$schedule'";
-		}
-		if($color!=''){
-			$sql11.="and color='$color'";
-		}
+		$sql11="select * from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
 	}
 	//echo $sql11."<br>";
-	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result11_count=mysqli_num_rows($sql_result11);
-
+	$sql_result1122=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result11_count=mysqli_num_rows($sql_result1122);
+	while($mo_row=mysqli_fetch_array($sql_result1122))
+	{
+		$cust_order=$mo_row['customer_order_no'];
+		$exfact_date=$mo_row['planned_delivery_date'];
+	}
+	//To get mpo description
+	$qry_toget_podescri="SELECT master_po_description FROM $pps.mp_order WHERE master_po_number ='$mpo'";
+	$toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($mo_desc=mysqli_fetch_array($toget_podescri_result))
+	{
+      $mpo_desc=$mo_desc['master_po_description'];
+	}	
+	
 	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
 	<input type="hidden" name="csv_123" id="csv_123">
 	<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 
-	$operation_code = array();	$ops_get_code = array();	$operations_no = array();
-
-	$get_operations_workflow= "select DISTINCT(operation_code) from $brandix_bts.default_operation_workflow where operation_code not in (10) order by operation_order*1";
-	$result1 = $link->query($get_operations_workflow);
-	while($row1 = $result1->fetch_assoc())
+	//To get Total order qty
+	$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
+	$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row2=mysqli_fetch_array($sql_result2))
 	{
-		$operation_code[] = $row1['operation_code'];
+		$total_order_qty=$row2['quantity'];
 	}
-	
-	
-	$get_operations_no= "select DISTINCT(operation_id) from $brandix_bts.bundle_creation_data_temp";				
-	$result4 = $link->query($get_operations_no);
-	while($row3 = $result4->fetch_assoc())
+	//To get finished_good_id
+	$get_details="SELECT * FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code' limit 1";
+	$sql_result11=mysqli_query($link, $get_details) or exit("Sql Error get_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row=mysqli_fetch_array($sql_result11))
 	{
-		$operations_no[] = $row3['operation_id'];
+		$finished_good_id= $row['finished_good_id'];   
 	}
-
-	$opertions = array_intersect($operation_code,$operations_no);
-	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in (".implode(',', $opertions).")";
-	$ops_query_result=$link->query($get_ops_query);
-	while ($row123 = $ops_query_result->fetch_assoc())
+	//get operations
+	$operations=array();
+	$get_operations="SELECT DISTINCT operation_code FROM $pts.fg_operation WHERE finished_good_id='$finished_good_id'  AND plant_code='$plant_code' ORDER BY operation_code*1";
+	$sql_result12=mysqli_query($link, $get_operations) or exit("Sql Error get_operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($sql_result12))
 	{
-		$ops_get_code[$row123['operation_code']] = $row123['operation_name'];
+       $operations[]=$row1['operation_code'];
 	}
-
 	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
 	echo "<tr class='info'>";
 	echo "<th>Customer Order</th>";
@@ -422,143 +394,72 @@ if(isset($_POST['submit1']))
 	echo "<th>CPO</th>";
 	echo "<th>Buyer Division</th>";
 	echo "<th>Style</th>";
-	echo "<th>User Def. Style</th>";
 	echo "<th>Schedule</th>";
 	echo "<th>Color</th>";
 	echo "<th>Ex-Factory Date</th>";
 	echo "<th>Order Qty</th>";
-	foreach ($ops_get_code as $key => $value)
+	foreach ($operations as $key => $value)
 	{
-		echo "<th>$value ($key)</th>";
-		echo "<th>$value Completed %</th>";
+		echo "<th>Operation-$value</th>";
+		echo "<th>Operation-$value Completed %</th>";
 	}
-	// echo "<th>Cut Qty</th>";
-	// echo "<th>%</th>";
-	// echo "<th>Sewing In Qty</th>";
-	// echo "<th>%</th>";
-	// echo "<th>Sewing Out Qty</th>";
-	// echo "<th>%</th>";
-	// echo "<th>Pack Qty</th>";
-	// echo "<th>%</th>";
-	echo "<th>Ship Qty</th>";
-	echo "<th>Shipping Completed %</th>";
+	// echo "<th>Ship Qty</th>";
+	// echo "<th>Shipping Completed %</th>";
 	echo "</tr></thead><tbody>";
+
 	$count=0;
-	while($sql_row11=mysqli_fetch_array($sql_result11))
+	echo "<tr>";
+	echo "<td>$cust_order</td>";
+	echo "<td>$mpo_desc</td>";
+	echo "<td>$cpo</td>";
+	echo "<td>$buyer_div</td>";
+	echo "<td>$style</td>";
+	echo "<td>$schedule</td>";
+	echo "<td>$color</td>";
+	echo "<td>$exfact_date</td>";
+	echo "<td>$total_order_qty</td>";
+    $tot_qty=0;
+
+	foreach($operations as $operation => $value)
 	{
+		$tot_qty=0;
 
-		$cut_qty=0;
-		$sewing_in=0;
-		$sewing_out=0;
-		$pack_qty=0;
-		$ship_qty=0;
-		$ssc_code=$sql_row11['ssc_code'];
-		$cut_qty_today=0;
-		$sewing_in_today=0;
-		$sewing_out_today=0;
-		$pack_qty_today=0;
-		$ship_qty_today=0;
-		$cust_order="";
-		$cpo="";
-		$mpo="";
-		$buyer_div="";
-		$style_no="";
-		$schedule_no="";
-		$color="";
-		$exfact_date="";
-		$order_qty=0;
-		$style_id="";
-        $sql1="select act_cut,act_in,output,act_fg,act_ship from $bai_pro3.bai_orders_db_confirm where order_tid=\"$ssc_code\"";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-		
-		while($sql_row1=mysqli_fetch_array($sql_result1))
+		//To get finished_good_id
+		$get_details1="SELECT finished_good_id FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code'";
+		$sql_result111=mysqli_query($link, $get_details1) or exit("Sql Error get_details1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row2=mysqli_fetch_array($sql_result111))
 		{
-			$cut_qty=$sql_row1['act_cut'];
-			$sewing_in=$sql_row1['act_in'];
-			$sewing_out=$sql_row1['output'];
-			$pack_qty=$sql_row1['act_fg'];
-			$ship_qty=$sql_row1['act_ship'];
-			$sql1="select Cust_order,CPO,buyer_div,style,schedule,color,exf_date,order_qty,style_id from $pps.order_status_buffer  where plant_code='$plantcode' and ssc_code=\"$ssc_code\"";
-			// echo $sql1;
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result1_count=mysqli_num_rows($sql_result1);
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
+			$fg_id=$row2['finished_good_id'];
+			
+			//To get qty for operations
+			$get_qty="SELECT fg_operation_id FROM $pts.fg_operation WHERE finished_good_id ='$fg_id' AND operation_code='$value' AND required_components = completed_components AND plant_code='$plant_code'";
+			$sql_result112=mysqli_query($link, $get_qty) or exit("Sql Error get_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$result_num=mysqli_num_rows($sql_result112);
+            if($result_num>0){
 
-
-
-				$cust_order=$sql_row1['Cust_order'];
-				$cpo=$sql_row1['CPO'];
-				$mpo=$sql_row1['MPO'];
-				$buyer_div=$sql_row1['buyer_div'];
-				$style_no=$sql_row1['style'];
-				$schedule_no=$sql_row1['schedule'];
-				$color=$sql_row1['color'];
-				$exfact_date=$sql_row1['exf_date'];
-				$order_qty=$sql_row1['order_qty'];
-				
-				$style_id=$sql_row1['style_id'];				
-			}
-
-			$bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id from $brandix_bts.bundle_creation_data where style='$style_no' and schedule ='$schedule_no' and color='$color' group by operation_id";
-			// echo $bcd_data_query.';<br>';
-			$bcd_get_result =$link->query($bcd_data_query);
-		    while ($row3 = $bcd_get_result->fetch_assoc())
-		    {
-				$bcd_rec[$row3['operation_id']] = $row3['recevied'];
-		    }
-
-			echo "<tr>";
-			echo "<td>$cust_order</td>";
-			echo "<td>$mpo</td>";
-			echo "<td>$cpo</td>";
-			echo "<td>$buyer_div</td>";
-			echo "<td>$style_no</td>";
-			echo "<td>$style_id</td>";
-			echo "<td>$schedule_no</td>";
-			echo "<td>$color</td>";
-			echo "<td>$exfact_date</td>";
-			echo "<td>$order_qty</td>";
-
-			foreach ($ops_get_code as $key => $value)
-			{
-				if ($bcd_rec[$key] > 0)
-				{
-					echo "<td>".$bcd_rec[$key]."</td>";
-				}
-				else
-				{
-					echo "<td>0</td>";
-				}
-				
-				if ($bcd_rec[$key] > 0 && $order_qty > 0)
-				{
-					echo "<td>".round(($bcd_rec[$key]/$order_qty)*100,0)."%</td>";
-				}
-				else
-				{
-					echo "<td>0%</td>";
-				}
-			}
-
-			echo  "<td>$ship_qty</td>";
-			if($order_qty>0 && $ship_qty>0)
-			{
-				echo "<td>".round(($ship_qty/$order_qty)*100,0)."%</td>";
-			}
-			else
-			{
-				echo "<td>0%</td>";
-			}
-			echo "</tr>";
-			$count++;	
+				$tot_qty++;
+			}		 	
+            
 		}
+		echo "<td>$tot_qty</td>";
+	    echo "<td>".round(($tot_qty/$total_order_qty)*100,0)."%</td>";
+		
 	}
+	
+	// echo  "<td>$ship_qty</td>";
+	// if($order_qty>0 && $ship_qty>0)
+	// {
+	// 	echo "<td>".round(($ship_qty/$order_qty)*100,0)."%</td>";
+	// }
+	// else
+	// {
+	// 	echo "<td>0%</td>";
+	// }
+	echo "</tr>";
+	$count++;	
 	echo "</tbody></table></div>"; 
-	if($sql_result1_count==0){
-		echo"<style>#table1{display:none;}</style>";
-		echo"<style>#excel{display:none;}</style>";
-	}
+		
+	
 	if($count==0 or $sql_result11_count == 0){
 		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 	}
