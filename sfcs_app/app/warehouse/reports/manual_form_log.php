@@ -16,7 +16,6 @@
 	//echo var_dump($has_permission);
 ?>
 
-
  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',4,'R'); ?>" type="text/css" media="all" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',4,'R'); ?>"></script>
 
@@ -127,8 +126,6 @@ echo "<tr>
 $sql="select * from $wms.manual_form where month(log_date)=month(\"$date\") and year(log_date)=year(\"$date\") and plant_code='".$plant_code."' order by status";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-log_statement('debug',$sql,$main_url,__LINE__);
-log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$tid=$sql_row['rand_track'];

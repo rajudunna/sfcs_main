@@ -22,6 +22,12 @@ body
 }
 
 </style>
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <?php 
 // echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
 ?>
@@ -96,165 +102,162 @@ if(isset($_GET['location']))
 //Normal Process
 if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 {
-	$code=$_POST['cartonid'];
-	$location=$_POST['location'];
-	$plantcode=$_POST['plantcode'];
-	if($location=='')
+	try
 	{
-		$location=$code;
-		$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and sno>0";
-		$sql_result=mysqli_query($link, $sql);
-		log_statement('debug',$sql,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-		if(mysqli_num_rows($sql_result)>0)
+		$code=$_POST['cartonid'];
+		$location=$_POST['location'];
+		$plantcode=$_POST['plantcode'];
+		if($location=='')
 		{
-			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
+			$location=$code;
+			$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and sno>0";
+			$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+			if(mysqli_num_rows($sql_result)>0)
+			{
+				$status=4;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
 
-		}
-		else
-		{
-			$status=5;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
-		}	
-	}
-	else
-	{	
-		$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
-		$sql_result12=mysqli_query($link, $sql12);
-		log_statement('debug',$sql12,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-		if(mysqli_num_rows($sql_result12))
-		{
-			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
-		}
-		else
-		{	
-			$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\"  and status=1";
-			$sql_result=mysqli_query($link, $sql);
-			log_statement('debug',$sql,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-			$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			log_statement('debug',$sql2,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);			
-			if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
-			{ 
-				while($row=mysqli_fetch_array($sql_result2))
-				{
-					$existing_location=$row['ref1'];
-				}
-				// $code=ltrim($code,"0");
-				if($location==$existing_location)
-				{
-					$status=0;
-				}
-				else
-				{
-					$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
-					$sql_result1=mysqli_query($link, $sql1);
-					log_statement('debug',$sql1,$main_url,__LINE__);
-					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);					
-					if(mysqli_affected_rows($link)>0)
-					{
-						$status=1;
-					} 
-					else 
-					{
-						$status=2;
-					}
-				}				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";			
 			}
 			else
 			{
-				$status=3;
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
+				$status=5;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
+			}	
+		}
+		else
+		{	
+			$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
+			$sql_result12=mysqli_query($link, $sql12) or die(exception($sql12));
+			if(mysqli_num_rows($sql_result12))
+			{
+				$status=4;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
+			}
+			else
+			{	
+				$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\"  and status=1";
+				$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+				$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
+				$sql_result2=mysqli_query($link, $sql2) or die(exception($sql2));		
+				if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
+				{ 
+					while($row=mysqli_fetch_array($sql_result2))
+					{
+						$existing_location=$row['ref1'];
+					}
+					// $code=ltrim($code,"0");
+					if($location==$existing_location)
+					{
+						$status=0;
+					}
+					else
+					{
+						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
+						$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));				
+						if(mysqli_affected_rows($link)>0)
+						{
+							$status=1;
+						} 
+						else 
+						{
+							$status=2;
+						}
+					}				
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";			
+				}
+				else
+				{
+					$status=3;
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
+				}
 			}
 		}
+	}
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
 	}	
 }
 //Manual Lable Entry
 if(isset($_POST['check2']))
 {
-	$code=$_POST['cartonid2'];
-	$location=$_POST['location'];
-	$plantcode=$_POST['plantcode'];
-	if($location=='')
+	try
 	{
-		$location=$code;
-		$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
-		$sql_result=mysqli_query($link, $sql);
-		log_statement('debug',$sql,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-		if(mysqli_num_rows($sql_result)>0)
+		
+		$code=$_POST['cartonid2'];
+		$location=$_POST['location'];
+		$plantcode=$_POST['plantcode'];
+		if($location=='')
 		{
-			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
-
-		}
-		else
-		{
-			$status=5;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
-		}	
-	}
-	else
-	{		
-		$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
-		$sql_result12=mysqli_query($link, $sql12);
-		log_statement('debug',$sql12,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-		if(mysqli_num_rows($sql_result12))
-		{
-			$status=4;
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
-		}
-		else
-		{		
+			$location=$code;
 			$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
-			$sql_result=mysqli_query($link, $sql);
-			log_statement('debug',$sql,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-			$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			log_statement('debug',$sql2,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-			if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
-			{ 
-				while($row=mysqli_fetch_array($sql_result2))
-				{
-					$existing_location=$row['ref1'];
-				}
-				// $code=ltrim($code,"0");
-				if($location==$existing_location)
-				{
-					$status=0;
-				}
-				else
-				{
-					$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
-					$sql_result1=mysqli_query($link, $sql1);
-					log_statement('debug',$sql1,$main_url,__LINE__);
-					log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);					
-					if(mysqli_affected_rows($link)>0)
-					{
-						$status=1;
-					} 
-					else 
-					{
-						$status=2;
-					}
-				}				
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";		
+			$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+			if(mysqli_num_rows($sql_result)>0)
+			{
+				$status=4;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&status=$status&plantcode=$plantcode\"; }</script>";
+
 			}
 			else
 			{
-				$status=3;
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
+				$status=5;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",100); function Redirect() {  location.href = \"in_trims_new.php?location=$location&&status=$status&plantcode=$plantcode\"; }</script>";
+			}	
+		}
+		else
+		{		
+			$sql12="select * from $wms.location_db where plant_code='$plantcode' and location_id='".$code."' and status=1";
+			$sql_result12=mysqli_query($link, $sql12)or die(exception($sql12));
+			if(mysqli_num_rows($sql_result12))
+			{
+				$status=4;
+				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$code&status=$status&plantcode=$plantcode\"; }</script>";
+			}
+			else
+			{		
+				$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
+				$sql_result=mysqli_query($link, $sql)or die(exception($sql));
+				$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
+				$sql_result2=mysqli_query($link, $sql2) or die(exception($sql2));
+				if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
+				{ 
+					while($row=mysqli_fetch_array($sql_result2))
+					{
+						$existing_location=$row['ref1'];
+					}
+					// $code=ltrim($code,"0");
+					if($location==$existing_location)
+					{
+						$status=0;
+					}
+					else
+					{
+						$sql1="update $wms.store_in set ref1=\"$location\",updated_user='$username',updated_at='Now()' where plant_code='$plantcode' and barcode_number=\"$code\"";
+						$sql_result1=mysqli_query($link, $sql1)or die(exception($sql1));				
+						if(mysqli_affected_rows($link)>0)
+						{
+							$status=1;
+						} 
+						else 
+						{
+							$status=2;
+						}
+					}				
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";		
+				}
+				else
+				{
+					$status=3;
+					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",70); function Redirect() {  location.href = \"in_trims_new.php?location=$location&code=$code&status=$status&plantcode=$plantcode\"; }</script>";
+				}
 			}
 		}
+	}
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
 	}
 }
 

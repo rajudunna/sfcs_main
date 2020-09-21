@@ -1,4 +1,9 @@
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <?php
 // include("security1.php");
 
@@ -11,25 +16,33 @@ $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 if(isset($_POST['submit2']))
 {
-	$status=$_POST['status'];
-	$tid=$_POST['tid'];
-	
-	for($i=0;$i<sizeof($status);$i++)
+	try
 	{
-		if($status[$i]==4)
+		$status=$_POST['status'];
+		$tid=$_POST['tid'];
+		
+		for($i=0;$i<sizeof($status);$i++)
 		{
-			$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
-			
+			if($status[$i]==4)
+			{
+				$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+				
+			}
+			else
+			{
+				$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+			}
+			mysqli_query($link, $sql) or die(exception($sql));
 		}
-		else
-		{
-			$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
-		}
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
+		$url = getFullURL($_GET['r'],'manual_form_log.php','N');
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
-	echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
-	$url = getFullURL($_GET['r'],'manual_form_log.php','N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
+	}
 }
 
 
@@ -43,8 +56,6 @@ if(isset($_POST['submit1']))
 	$qty_db=array();
 	$sql="select * from $wms.manual_form where status=1 and plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	log_statement('debug',$sql,$main_url,__LINE__);
-	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$style=$sql_row['style'];
@@ -70,8 +81,6 @@ if(isset($_POST['submit1']))
 		{
 			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			log_statement('debug',$sql,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 			if($status[$i]==2)
 			{
 				$count=1;

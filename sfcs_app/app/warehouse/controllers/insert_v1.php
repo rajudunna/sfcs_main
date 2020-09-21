@@ -24,7 +24,12 @@ Change Log:
 .clear { clear: both;}
 
 </style>
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <body onload="dodisable();">
 
 <?php 
@@ -39,8 +44,6 @@ if(isset($_POST['submit']))
 {	
 	$sql="select lot_no from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
-	log_statement('debug',$sql,$main_url,__LINE__);
-	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
 	// echo $sql.'<br>';
 	// echo "Rows".mysql_num_rows($sql_result);
 	if(mysqli_num_rows($sql_result)>0)
@@ -65,13 +68,11 @@ else
 <?php
 if(strlen($lot_no)>0)
 {
-	
+try
+{	
 
 $sql="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-log_statement('debug',$sql,$main_url,__LINE__);
-log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -114,10 +115,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-log_statement('debug',$sql,$main_url,__LINE__);
-log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -509,8 +507,12 @@ for($j=0;$j<100;$j++)
 echo '</table></div>';
 echo '</form></div>';
 // echo "</div></div>";
-
-
+}
+catch(Exception $e) 
+{
+  $msg=$e->getMessage();
+  log_statement('error',$msg,$main_url,__LINE__);
+}
 }
 ?>
 <div class="clear">

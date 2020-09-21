@@ -27,7 +27,12 @@ function oper_display(){
 }
 
 </script>
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 </head>
 <body>
 <div class='panel panel-primary'>
@@ -79,47 +84,49 @@ function oper_display(){
 					<?php
                     
 					if(isset($_POST['submit']))
-					{        
-						$shift=$_POST['shift'];
-						$operation=$_POST['operation'];
-						$operation_name=$_POST['operation'];
-						$plant_code=$_POST['plant_code'];
-						$username=$_POST['username'];
-						$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
-						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
-						log_statement('debug',$sql1,$main_url,__LINE__);
-						log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-						if(mysqli_num_rows($sql_result1)>0)
-						{			
-							
-							
-							$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
-							while($sql_row1=mysqli_fetch_array($sql_result1))
-							{
-								echo "<div class='col-sm-10'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Info! Still one gate pass is pending please close that and proceed. Click below to close.
-								<a class='btn btn-warning' href='$url1&gatepassid=".$sql_row1['id']."&plant_code=".$plant_code."&username=".$username."' >Gate Pass No: ".$sql_row1['id']."</a>									
-								</div>";
-							}
-						}
-						else
-						{
-							if($_POST['operation']=='0')
-							{
-								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."')";
-								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								log_statement('debug',$sql,$main_url,__LINE__);
-								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+					{
+						try
+						{						
+							$shift=$_POST['shift'];
+							$operation=$_POST['operation'];
+							$operation_name=$_POST['operation'];
+							$plant_code=$_POST['plant_code'];
+							$username=$_POST['username'];
+							$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
+							$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
+							if(mysqli_num_rows($sql_result1)>0)
+							{			
+								
+								
+								$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',0,'N');
+								while($sql_row1=mysqli_fetch_array($sql_result1))
+								{
+									echo "<div class='col-sm-10'><br><div class='alert alert-info' style='font-size:13px;padding:5px'>Info! Still one gate pass is pending please close that and proceed. Click below to close.
+									<a class='btn btn-warning' href='$url1&gatepassid=".$sql_row1['id']."&plant_code=".$plant_code."&username=".$username."' >Gate Pass No: ".$sql_row1['id']."</a>									
+									</div>";
+								}
 							}
 							else
 							{
-								$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."')";
-								$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-								log_statement('debug',$sql,$main_url,__LINE__);
-								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+								if($_POST['operation']=='0')
+								{
+									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."')";
+									$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+								}
+								else
+								{
+									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."')";
+									$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+								}
+								$gate_id=mysqli_insert_id($link);
+								$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops_new.php',0,'N');
+								echo "<script>window.location = '$url&shift=$shift&opertion=$operation&id=$gate_id&plant_code=$plant_code&username=$username';</script>";		
 							}
-							$gate_id=mysqli_insert_id($link);
-							$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops_new.php',0,'N');
-							echo "<script>window.location = '$url&shift=$shift&opertion=$operation&id=$gate_id&plant_code=$plant_code&username=$username';</script>";		
+						}
+						catch(Exception $e) 
+						{
+						  $msg=$e->getMessage();
+						  log_statement('error',$msg,$main_url,__LINE__);
 						}
 					}
 					?>

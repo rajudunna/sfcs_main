@@ -11,6 +11,13 @@
     $username = $_SESSION['userName'];
 ?>
 
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
+
 <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/filtergrid.css',3,'R'); ?>">
 <style type="text/css" media="screen">
 
@@ -88,10 +95,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         <?php
                             $doc_nos=array();    
                             $query = "select * from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
-                            $sql_result = mysqli_query($link,$query);
+                            $sql_result = mysqli_query($link,$query) or die(exception($query));
                             // echo $query;
-							log_statement('debug',$query,$main_url,__LINE__);
-							log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
                                 // var_dump($sql_row);
@@ -106,9 +111,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
 								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
 								WHERE jdl.`docket_line_number`=".$doc_no." and jdl.plant_code='".$plant_code."'";
-								$sql_result2 = mysqli_query($link,$query2);
-								log_statement('debug',$query2,$main_url,__LINE__);
-								log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+								$sql_result2 = mysqli_query($link,$query2) or die(exception($query2));;
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 
 								{
 									// var_dump($sql_row2['order_style_no']);
@@ -159,10 +162,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         </thead>
                         <?php
                             $query = "select * from $wms.material_deallocation_track where status<>'Open' and plant_code='".$plant_code."'";
-                            $sql_result = mysqli_query($link,$query);
+                            $sql_result = mysqli_query($link,$query) or die(exception($query));
                             // echo $query;
-							log_statement('debug',$query,$main_url,__LINE__);
-							log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
                             $index=0;
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
@@ -193,6 +194,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 
 if(isset($_POST['formSubmit']))
 {
+	try
+	{
         $doc_no = $_POST['docket_number'];
         $plant_code = $_POST['plant_code'];
         $username = $_POST['username'];
@@ -200,9 +203,7 @@ if(isset($_POST['formSubmit']))
         $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE doc_no=$doc_no and plant_code='".$plant_code."'";
         // echo $fabric_status_qry;
     
-        $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
-		log_statement('debug',$fabric_status_qry,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+        $fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or die(exception($fabric_status_qry));
         if(mysqli_num_rows($fabric_status_qry_result)>0)
         {
             while($sql_row0=mysqli_fetch_array($fabric_status_qry_result))
@@ -211,20 +212,18 @@ if(isset($_POST['formSubmit']))
             }
         
             $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
-            $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
-			log_statement('debug',$fab_qry,$main_url,__LINE__);
-			log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+            $fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
             if(mysqli_num_rows($fab_qry_result)>0)
             {     
                 if($fabric_status != 5)
                 {
                     $is_requested="SELECT * FROM $wms.material_deallocation_track WHERE doc_no=$doc_no and status='Open' and plant_code='".$plant_code."'";
-                    $is_requested_result=mysqli_query($link, $is_requested) or exit("Sql Error0: fabric_status_qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    $is_requested_result=mysqli_query($link, $is_requested) or die(exception($is_requested));
 
                     if(mysqli_num_rows($is_requested_result)==0)
                     {
                         $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
-                        $fab_qry_result=mysqli_query($link, $fab_qry) or exit("Sql Error1: fabric_cad_allocation".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        $fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
                         $allocated_qty=0;
                         while($sql_row1=mysqli_fetch_array($fab_qry_result))
                         {
@@ -232,9 +231,7 @@ if(isset($_POST['formSubmit']))
                         }
                         $req_at = date("Y-m-d H:i:s");
                         $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ($doc_no,$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
-                        $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or exit("Sql Error2: material_deallocation_track".mysqli_error($GLOBALS["___mysqli_ston"]));
-						log_statement('debug',$insert_req_qry,$main_url,__LINE__);
-						log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+                        $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or die(exception($insert_req_qry));
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
                         echo "<script>setTimeout(function(){
@@ -259,6 +256,12 @@ if(isset($_POST['formSubmit']))
         else{
             echo "<script>swal('Error','Enter Valid Docket Number','error')</script>";
         }
+	}
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
+	}
 }
 ?>
 <script>

@@ -127,6 +127,13 @@
 </form>
 
 <br>
+
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <?php
 if(isset($_POST['submit']))
 {
@@ -144,184 +151,183 @@ else
 <?php
 if(strlen($lot_no)>0)
 {
-
-$sql="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
-// echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-log_statement('debug',$sql,$main_url,__LINE__);
-log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-$sql_num_check=mysqli_num_rows($sql_result);
-// echo $sql_num_check;
-if($sql_num_check>0)
+try
 {
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$product_group=$sql_row['product_group'];
-		$item=$sql_row['item'];
-		$item_name=$sql_row['item_name'];
-		$item_desc=$sql_row['item_desc'];
-		$inv_no=$sql_row['inv_no'];
-		$po_no=$sql_row['po_no'];
-		$rec_no=$sql_row['rec_no'];
-		$rec_qty=$sql_row['rec_qty'];
-		$batch_no=$sql_row['batch_no'];
-		$buyer=$sql_row['buyer'];
-		$pkg_no=$sql_row['pkg_no'];
-		$grn_date=$sql_row['grn_date'];
-	}
-
-	$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
+	$sql="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 	// echo $sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	log_statement('debug',$sql,$main_url,__LINE__);
-	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
+	$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+	
 	$sql_num_check=mysqli_num_rows($sql_result);
-	while($sql_row=mysqli_fetch_array($sql_result))
+	// echo $sql_num_check;
+	if($sql_num_check>0)
 	{
-		$qty=$sql_row['qty_rec'];
-	}
-
-	$diff=$rec_qty-$qty;
-
-
-	echo "<table class='table table-bordered'>";
-	echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
-	echo "<tr><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
-	echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
-	echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
-	echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
-	echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
-	echo "</table><br>";
-
-	echo '<form id="myForm" name="input" action="'.getFullURL($_GET['r'],'location_transfer_process.php','N').'" method="post">';
-	echo "<table class='table table-bordered'>";
-	echo "<tr class='tblheading'><th>Current Location</th><th>Box/Roll No</th><th>Available Qty</th>";
-
-	switch (trim($product_group))
-	{
-		case "Elastic":
-		{
-			echo "<th>Transfer Qty (MTR)</th><th>New Location</th><th>Remarks</th></tr>";	
-			if(!in_array($view,$has_permission))
-			{
-				$url = getFullURL($_GET[r],'restrict.php','N');
-				header("Location: ".$url);
-			}		
-			break;
-		}
-		case "Lace":
-		{
-			echo "<th>Transfer Qty ($fab_uom)</th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($view,$has_permission))
-			{
-				$url = getFullURL($_GET[r],'restrict.php','N');
-				header("Location: ".$url);
-			}
-			break;
-		}
-		case "Fabric":
-		{
-			echo "<th>Transfer Qty (YARDS)</th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($view,$has_permission))
-			{
-				$url = getFullURL($_GET[r],'restrict.php','N');
-				header("Location: ".$url);
-			}
-			break;
-		}
-		case "Thread":
-		{
-			echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($view,$has_permission))
-			{
-				$url = getFullURL($_GET[r],'restrict.php','N');
-				header("Location: ".$url);
-			}
-			break;
-		}
-		default:
-		{
-			echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-			if(!in_array($view,$has_permission))
-			{
-				$url = getFullURL($_GET[r],'restrict.php','N');
-				header("Location: ".$url);
-			}
-			break;
-		}
-	}
-
-	$sql="select * from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
-	// echo $sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	log_statement('debug',$sql,$main_url,__LINE__);
-	log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-	$sql_num_check=mysqli_num_rows($sql_result);
-
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$tid=$sql_row['tid'];
-			$barcode_number=$sql_row['barcode_number'];
-			$ref_tid=$sql_row['ref_tid'];
-			$location=$sql_row['ref1'];
-			$box=$sql_row['ref2'];
-			$qty_rec=$sql_row['qty_rec'];
-			$status=$sql_row['status'];
-			$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
-
-			echo "<tr>";
-			if(($status==0) && ($available>0))
-			{
-				echo "<td>$location</td><td>$box</td><td>$available</td>";
-				echo '<td><input type="text" class="form-control float" name="qty_issued[]" value="" onchange="if(check1(this.value, '.$available.')==1010){ this.value=0;} "  ></td>';
-				
-				echo '<td><select name="n_location[]" class="select2_single form-control">';
-				echo "<option value=\"0\">Select Location</option>";
-				$sql1="select * from $wms.location_db where status=1 and plant_code='".$plant_code."' and location_id NOT IN ('".$location."') order by location_id,sno";
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1=mysqli_fetch_array($sql_result1))
-				{
-					echo "<option value=\"".$sql_row1['location_id']."\">".$sql_row1['location_id']."</option>";
-				}
-				echo '</select></td>';
-				echo '<td><input type="text" class="form-control" name="remarks[]" value="">';
-				echo '<input type="hidden" name="s_location[]" value="'.$location.'"><input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="qty_rec[]" value="'.$qty_rec.'"><input type="hidden" name="barcode_number[]" value="'.$barcode_number.'"><input type="hidden" name="ref_tid[]" value="'.$ref_tid.'"></td>';
-			}
-			echo "</tr>";	
+			$product_group=$sql_row['product_group'];
+			$item=$sql_row['item'];
+			$item_name=$sql_row['item_name'];
+			$item_desc=$sql_row['item_desc'];
+			$inv_no=$sql_row['inv_no'];
+			$po_no=$sql_row['po_no'];
+			$rec_no=$sql_row['rec_no'];
+			$rec_qty=$sql_row['rec_qty'];
+			$batch_no=$sql_row['batch_no'];
+			$buyer=$sql_row['buyer'];
+			$pkg_no=$sql_row['pkg_no'];
+			$grn_date=$sql_row['grn_date'];
 		}
 
-		echo "</table><br>";
-		echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
-		echo '<input type="checkbox" name="option"  id="option" onclick="pop_test();">Enable<input type="submit" value="Submit" class="btn btn-info" name="put" id="put" disabled></form>';
-		echo "<h2>Transaction Log:</h2>";
+		$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
+		// echo $sql."<br>";
+		$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+		$sql_num_check=mysqli_num_rows($sql_result);
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
+			$qty=$sql_row['qty_rec'];
+		}
+
+		$diff=$rec_qty-$qty;
 
 
 		echo "<table class='table table-bordered'>";
-		echo "<tr class='tblheading'><th>Date</th><th>Previous Location</th><th>New Location</th><th>Old Qty</th><th>New Qty</th><th>Remarks</th><th>User</th></tr>";
-		$sql="select * from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
-		// echo $sql."<br>";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		log_statement('debug',$sql,$main_url,__LINE__);
-		log_statement('error',mysqli_error($GLOBALS["___mysqli_ston"]),$main_url,__LINE__);
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$date=$sql_row['date'];
-			$prv_location=$sql_row['source_location'];
-			$new_location=$sql_row['new_location'];
-			$old_qty=$sql_row['old_qty'];
-			$new_qty=$sql_row['new_qty'];	
-			$remarks=$sql_row['remarks'];
-			$user=$sql_row['log_user'];
-			
-			echo "<tr><td>$date</td><td>$prv_location</td><td>$new_location</td><td>$old_qty</td><td>$new_qty</td><td>$remarks</td><td>$user</td></tr>";
-		}
-		echo "</table>";
-}
-else
-{
-	echo "<script>sweetAlert('Please enter valid lot Number','','warning');</script>";
-}
+		echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
+		echo "<tr><td>Batch</td><td>:</td><td>$batch_no</td></tr>";
+		echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
+		echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
+		echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
+		echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
+		echo "</table><br>";
 
+		echo '<form id="myForm" name="input" action="'.getFullURL($_GET['r'],'location_transfer_process.php','N').'" method="post">';
+		echo "<table class='table table-bordered'>";
+		echo "<tr class='tblheading'><th>Current Location</th><th>Box/Roll No</th><th>Available Qty</th>";
+
+		switch (trim($product_group))
+		{
+			case "Elastic":
+			{
+				echo "<th>Transfer Qty (MTR)</th><th>New Location</th><th>Remarks</th></tr>";	
+				if(!in_array($view,$has_permission))
+				{
+					$url = getFullURL($_GET[r],'restrict.php','N');
+					header("Location: ".$url);
+				}		
+				break;
+			}
+			case "Lace":
+			{
+				echo "<th>Transfer Qty ($fab_uom)</th><th>New Location</th><th>Remarks</th></tr>";
+				if(!in_array($view,$has_permission))
+				{
+					$url = getFullURL($_GET[r],'restrict.php','N');
+					header("Location: ".$url);
+				}
+				break;
+			}
+			case "Fabric":
+			{
+				echo "<th>Transfer Qty (YARDS)</th><th>New Location</th><th>Remarks</th></tr>";
+				if(!in_array($view,$has_permission))
+				{
+					$url = getFullURL($_GET[r],'restrict.php','N');
+					header("Location: ".$url);
+				}
+				break;
+			}
+			case "Thread":
+			{
+				echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
+				if(!in_array($view,$has_permission))
+				{
+					$url = getFullURL($_GET[r],'restrict.php','N');
+					header("Location: ".$url);
+				}
+				break;
+			}
+			default:
+			{
+				echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
+				if(!in_array($view,$has_permission))
+				{
+					$url = getFullURL($_GET[r],'restrict.php','N');
+					header("Location: ".$url);
+				}
+				break;
+			}
+		}
+
+		$sql="select * from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
+		// echo $sql."<br>";
+		$sql_result=mysqli_query($link, $sql)or die(exception($sql));
+		$sql_num_check=mysqli_num_rows($sql_result);
+
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$tid=$sql_row['tid'];
+				$barcode_number=$sql_row['barcode_number'];
+				$ref_tid=$sql_row['ref_tid'];
+				$location=$sql_row['ref1'];
+				$box=$sql_row['ref2'];
+				$qty_rec=$sql_row['qty_rec'];
+				$status=$sql_row['status'];
+				$available=$qty_rec-$sql_row['qty_issued']+$sql_row['qty_ret'];
+
+				echo "<tr>";
+				if(($status==0) && ($available>0))
+				{
+					echo "<td>$location</td><td>$box</td><td>$available</td>";
+					echo '<td><input type="text" class="form-control float" name="qty_issued[]" value="" onchange="if(check1(this.value, '.$available.')==1010){ this.value=0;} "  ></td>';
+					
+					echo '<td><select name="n_location[]" class="select2_single form-control">';
+					echo "<option value=\"0\">Select Location</option>";
+					$sql1="select * from $wms.location_db where status=1 and plant_code='".$plant_code."' and location_id NOT IN ('".$location."') order by location_id,sno";
+					$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
+					while($sql_row1=mysqli_fetch_array($sql_result1))
+					{
+						echo "<option value=\"".$sql_row1['location_id']."\">".$sql_row1['location_id']."</option>";
+					}
+					echo '</select></td>';
+					echo '<td><input type="text" class="form-control" name="remarks[]" value="">';
+					echo '<input type="hidden" name="s_location[]" value="'.$location.'"><input type="hidden" name="tid[]" value="'.$tid.'"><input type="hidden" name="available[]" value="'.$available.'"><input type="hidden" name="qty_rec[]" value="'.$qty_rec.'"><input type="hidden" name="barcode_number[]" value="'.$barcode_number.'"><input type="hidden" name="ref_tid[]" value="'.$ref_tid.'"></td>';
+				}
+				echo "</tr>";	
+			}
+
+			echo "</table><br>";
+			echo '<input type="hidden" name="lot_no" value="'.$lot_no.'">';
+			echo '<input type="checkbox" name="option"  id="option" onclick="pop_test();">Enable<input type="submit" value="Submit" class="btn btn-info" name="put" id="put" disabled></form>';
+			echo "<h2>Transaction Log:</h2>";
+
+
+			echo "<table class='table table-bordered'>";
+			echo "<tr class='tblheading'><th>Date</th><th>Previous Location</th><th>New Location</th><th>Old Qty</th><th>New Qty</th><th>Remarks</th><th>User</th></tr>";
+			$sql="select * from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
+			// echo $sql."<br>";
+			$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+			while($sql_row=mysqli_fetch_array($sql_result))
+			{
+				$date=$sql_row['date'];
+				$prv_location=$sql_row['source_location'];
+				$new_location=$sql_row['new_location'];
+				$old_qty=$sql_row['old_qty'];
+				$new_qty=$sql_row['new_qty'];	
+				$remarks=$sql_row['remarks'];
+				$user=$sql_row['log_user'];
+				
+				echo "<tr><td>$date</td><td>$prv_location</td><td>$new_location</td><td>$old_qty</td><td>$new_qty</td><td>$remarks</td><td>$user</td></tr>";
+			}
+			echo "</table>";
+	}
+	else
+	{
+		echo "<script>sweetAlert('Please enter valid lot Number','','warning');</script>";
+	}
+}
+catch(Exception $e) 
+{
+  $msg=$e->getMessage();
+  log_statement('error',$msg,$main_url,__LINE__);
+}
 }
 
 ?>
