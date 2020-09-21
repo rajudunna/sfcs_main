@@ -760,7 +760,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-				echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$doc_no."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$doc_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -770,7 +770,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		}
 		else
 		{
-			echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$doc_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_id=".$doc_no."&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_id=".$docket_line_number."&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
@@ -801,6 +801,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		echo "</td>"; */
 		
 		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_no."\">";
+		
 		//For New Implementation
 		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$doc_cat."\">";
 		echo "<input type=\"hidden\" name=\"doc_com[]\" value=\"".$doc_com."\">";
@@ -884,7 +885,6 @@ if($print_status=='0000-00-00 00:00:00'){
 	} 
 	
 //echo "Print Status==".$sql_row1['print_status']."</br>";	
-echo $print_status1;
 if($print_status1>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
@@ -1054,6 +1054,7 @@ if(isset($_POST['submit']))
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
+	$marker_version=$_POST['marker_version'];
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
@@ -1201,6 +1202,7 @@ if(isset($_POST['allocate']))
 
 	// echo "test";
 	$doc=$_POST['doc'];
+	$marker_version=$_POST['marker_version'];
 	
 	for($i=0;$i<sizeof($doc);$i++)
 	{
