@@ -124,7 +124,7 @@ function getDaysInBetween($start, $end)
 				</div>
 
 				<input class='btn btn-primary' type="submit" id="submit" name="submit" value="submit" onclick="return verify_date()" style="margin-top:22px;" />
-				<a href="<?= getFullURLLevel($_GET['r'], 'frplan_vs_output_analysis_sunday.php', 0, 'N') ?>" style="margin-top:22px;" class="btn btn-warning">History</a>
+				<a href="<?= getFullURLLevel($_GET['r'], 'frplan_vs_output_analysis_sunday.php', 0, 'N') ?>" style="margin-top:22px;display:none" class="btn btn-warning">History</a>
 
 			</div>
 		</form>
