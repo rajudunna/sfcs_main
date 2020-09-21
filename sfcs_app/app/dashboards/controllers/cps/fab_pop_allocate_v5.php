@@ -53,10 +53,10 @@ if(isset($_POST['allocate']))
 	$dash=$_POST['dashboard'];
 }
 if($dash==1){
-$php_self = explode('/',$_SERVER['PHP_SELF']);
-$ctd =array_slice($php_self, 0, -2);
-$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
+	$php_self = explode('/',$_SERVER['PHP_SELF']);
+	$ctd =array_slice($php_self, 0, -2);
+	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
 }
 else{
 	$php_self = explode('/',$_SERVER['PHP_SELF']);
@@ -64,7 +64,6 @@ else{
 	$url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
 	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 }
-
 ?>
 <br/>
 <div class='row'>
@@ -676,6 +675,7 @@ if(isset($_POST['allocate_new']))
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
+	$marker_version=$_POST['marker_version'];
 	
 	for($i=0;$i<sizeof($doc_ref);$i++)
 	{
@@ -838,8 +838,8 @@ if(isset($_POST['allocate_new']))
 						{
 							$status=1;
 						}
-						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where tid=".$tid_ref[$j];
-						mysqli_query($link, $sql121) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid=".$tid_ref[$j];
+						mysqli_query($link, $sql121) or exit("$sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
 			}
@@ -887,16 +887,18 @@ if(isset($_POST['allocate_new']))
 					
 				}
 			}
-			
+			$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version' updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_ref'";
+
+			mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
 	}
 	$dash=$_POST['dashboard'];
 	if($dash==1){
- 	$php_self = explode('/',$_SERVER['PHP_SELF']);
-	$ctd =array_slice($php_self, 0, -2);
-	$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
-	$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
+		$php_self = explode('/',$_SERVER['PHP_SELF']);
+		$ctd =array_slice($php_self, 0, -2);
+		$url_rr=base64_encode(implode('/',$ctd)."/cut_table_dashboard/cut_table_dashboard.php");
+		$url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_rr;
 	}
 	else{
 		$php_self = explode('/',$_SERVER['PHP_SELF']);
