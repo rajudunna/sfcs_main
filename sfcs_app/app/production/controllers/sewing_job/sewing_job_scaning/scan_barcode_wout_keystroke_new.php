@@ -161,7 +161,6 @@ $(document).ready(function()
 					if(bundet)
 					{
 						tableConstruction(bundet);
-						swal(res.internalMessage,'','success');
 					}
 					else
 					{
@@ -189,9 +188,9 @@ function tableConstruction(bundet){
     if(bundet)
     {
 		$('#dynamic_table1').html('');
-		for(var i=0;i<bundet.data.length;i++)
-        {
-			if(bundet.data[i].style!='' || bundet.data[i].style!=null)
+		// for(var i=0;i<bundet.length;i++)
+        // {
+			if(bundet.style!='' || bundet.style!=null)
 			{
 				var hidden_class='';
 				if(i==0)
@@ -201,23 +200,23 @@ function tableConstruction(bundet){
 				}
 				s_no++;
 				
-				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.data[i].bundleNumber+"</td><td data-title='operation'>"+bundet.data[i].operation+"</td><td data-title='style'>"+bundet.data[i].style+"</td><td data-title='fgColor'>"+bundet.data[i].fgColor+"</td><td data-title='size'>"+bundet.data[i].size+"</td><td data-title='goodQty'>"+bundet.data[i].goodQty+"</td><td data-title='internalMessage'>"+bundet.internalMessage+"</td></tr>";
+				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+res.bundleBrcdNumber+"</td><td data-title='operation'>"+res.operationCode+"</td><td data-title='style'>"+bundet.style+"</td><td data-title='fgColor'>"+bundet.fgColor+"</td><td data-title='size'>"+bundet.size+"</td><td data-title='goodQty'>"+bundet.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
 				$("#dynamic_table").append(markup1);
 				$("#dynamic_table").hide();
 				
 				$('#dynamic_table2').html('');
-				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+res.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+res.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
 				$("#dynamic_table2").append(dynamic2);
 				$("#dynamic_table2").show();
 			}
 			else
 			{
 				$('#dynamic_table2').html('');
-				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.data[i].bundleNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.data[i].operation+"</td></tr><tr><td>Status</td><td>"+bundet.status+"</td></tr></thead><tbody>";
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+res.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+res.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
 				$("#dynamic_table2").append(dynamic2);
 				$("#dynamic_table2").show();
 			}
-		}
+		// }
 	}
 	var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
