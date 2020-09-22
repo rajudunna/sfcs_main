@@ -376,6 +376,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
+		$marker_version_id =$result_docketinfo['marker_version_id'];
 		
 	}
 	echo "<tr>";
@@ -650,8 +651,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
         $width =$result_docketinfo['width'];
         $cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['requirement'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
+		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 		
 	}
 	echo "<tr><td>".$cat_refnce."</td>";
@@ -669,17 +671,25 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
        
     }
   
-$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' group by marker_version_id";
-$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange='marker_edit1()'>";
-
-   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
-	while($row111x1=mysqli_fetch_array($sql_result11x1))
-	{
-		$marker_version=$row111x1["marker_version"];
-		$marker_version_id=$row111x1["marker_version_id"];
-		echo"<option  value='$marker_version_id'>".$marker_version."</option>";
-	 }
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
+	
+	   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
+		while($row111x1=mysqli_fetch_array($sql_result11x1))
+		{
+			$marker_version=$row111x1["marker_version"];
+			
+			if($row111x1['marker_version_id']==$marker_version_id)
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\" selected>".$row111x1['marker_version']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\">".$row111x1['marker_version']."</option>";
+			}
+			
+		 }
     echo "</select>
     <div id ='dynamic_table1' style='width: 350px;'>
 </div></td>";
@@ -730,6 +740,13 @@ echo"</br></br>";
 	//if(strlen($sql_row1['plan_lot_ref'])>0)
 	//if(strlen($sql_row1['plan_lot_ref'])>0)
 
+if($print_status=='0000-00-00 00:00:00'){
+	$print_status=0;
+	$print_status1=0;
+}else{
+	$print_status=$print_status;
+	$print_status1=1;
+}
 	
 	if($plan_lot_ref!='')
 	{	
@@ -743,7 +760,7 @@ echo"</br></br>";
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-				echo "<td><a href=\"$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$doc_no."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
 			else
@@ -753,7 +770,7 @@ echo"</br></br>";
 		}
 		else
 		{
-			echo "<td><a href=\"$path?print_status=$print_status&order_tid=$main_order_tid&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$doc_no."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_no=$doc_no&username=".$username."&plant_code=".$plant_code."&cat_title=".$sql_row1['category']."&clubbing=".$club_id."&cut_no=".$act_cut_no."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\" onclick=\"Popup1=window.open('$path?print_status=$print_status&doc_id=".$docket_line_number."&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
@@ -784,6 +801,7 @@ echo"</br></br>";
 		echo "</td>"; */
 		
 		echo "<td><input type=\"hidden\" name=\"doc[]\" value=\"".$doc_no."\">";
+		
 		//For New Implementation
 		echo "<input type=\"hidden\" name=\"doc_cat[]\" value=\"".$doc_cat."\">";
 		echo "<input type=\"hidden\" name=\"doc_com[]\" value=\"".$doc_com."\">";
@@ -867,8 +885,7 @@ echo"</br></br>";
 	} 
 	
 //echo "Print Status==".$sql_row1['print_status']."</br>";	
-
-if($print_status>0)
+if($print_status1>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
 	$print_validation=$print_validation+1;
@@ -1037,6 +1054,7 @@ if(isset($_POST['submit']))
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
 	$schedule=$_POST['schedule'];
+	$marker_version=$_POST['marker_version'];
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
@@ -1184,6 +1202,7 @@ if(isset($_POST['allocate']))
 
 	// echo "test";
 	$doc=$_POST['doc'];
+	$marker_version=$_POST['marker_version'];
 	
 	for($i=0;$i<sizeof($doc);$i++)
 	{

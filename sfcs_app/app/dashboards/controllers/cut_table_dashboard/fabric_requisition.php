@@ -144,18 +144,26 @@ function GetSelectedItem()
 <div class="panel-heading">Fabric Requisition Form</div>
 <div class="panel-body">
 <?php 
-$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code'";
-$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-   echo "<SELECT name='marker_version'  id='marker_version' style='height: 30px;'>";
-
-   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
-	while($row111x1=mysqli_fetch_array($sql_result11x1))
-	{
-		$marker_version=$row111x1["marker_version"];
-		$marker_version_id=$row111x1["marker_version_id"];
-		echo"<option  value='$marker_version_id'>".$marker_version."</option>";
-	 }
-	echo "</select>";
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
+	
+	   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
+		while($row111x1=mysqli_fetch_array($sql_result11x1))
+		{
+			$marker_version=$row111x1["marker_version"];
+			
+			if($row111x1['marker_version_id']==$marker_version_id)
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\" selected>".$row111x1['marker_version']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\">".$row111x1['marker_version']."</option>";
+			}
+			
+		 }
+    echo "</select>";
  ?>
 </br></br>
 <div id ="dynamic_table1">
@@ -181,6 +189,7 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
+		$marker_version_id =$result_docketinfo['marker_version_id'];
 		
 	}
 		
@@ -371,6 +380,7 @@ if(isset($_POST["submit1"]))
 	$secs=$_POST["secs"];
 	$mods=$_POST["mods"];
 	$ref=$_POST['reference'];
+	$marker_version=$_POST['marker_version'];
 	$select_uuid1="SELECT UUID() as uuid";
 	//echo $select_uuid;
 	$uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -447,7 +457,9 @@ if(isset($_POST["submit1"]))
 				{
 					echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
 				}
-				
+				$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version' updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_nos' and plant_code='$plant_code'";
+
+				mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//Date:2013-08-27
 				//Track the requested user details and system details.
 				$myFile = "log/".date("Y_m_d")."_fabric_request_track.html";

@@ -7,6 +7,8 @@
 
 
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/global_error_function.php");
+$main_url=getFullURL($_GET['r'],'update_status.php','R');
 $has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
@@ -71,7 +73,6 @@ $sql="select * from $wms.manual_form where rand_track=$tid and status=$check and
 //echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 if(mysqli_num_rows($sql_result)>0)
 {
 	if($checkx==1)
