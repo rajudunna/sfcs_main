@@ -1163,7 +1163,7 @@ if(isset($_POST['submit']))
 		
 		//if($issue_status==5)
 		//{
-		$sql3="update $pps.fabric_priorities set issued_time='".date("Y-m-d H:i:s")."',updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql3="update $pps.fabric_prorities set issued_time='".date("Y-m-d H:i:s")."',updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
