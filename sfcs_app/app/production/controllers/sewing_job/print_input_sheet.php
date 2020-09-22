@@ -92,7 +92,7 @@
 							<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 							<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
 							<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
-							<tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr>
+							<!-- <tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> -->
 							</table>
 						</div>
 					</div><br><br><br><br><br><br><br><br>
@@ -204,15 +204,28 @@
 							$vpo=$row1['vpo'];
 							$planned_delivery_date=$row1['planned_delivery_date'];
 						}
-                        //get cut details
-						$result_cuts=getCutDetails($po_number,$plant_code);
-						$cut_number = $result_cuts['cut_number'];
 						//To get PO Description
 						$result_po_des=getPoDetaials($po_number,$plant_code);
 						$po_des=$result_po_des['po_description'];
 						$tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
 						foreach($job_number as $sew_num=>$value)
 		                {
+							//get_task_job_id
+							$get_task_job_id="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$value' and plant_code='$plant_code'";
+							$sql_result21=mysqli_query($link, $get_task_job_id) or die("Error".$get_task_job_id.mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($row21=mysqli_fetch_array($sql_result21))
+							{
+                                $task_job_id=$row21['task_jobs_id'];
+							}
+
+							//get cutjob
+							$job_detail_attributes = [];
+							$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$plant_code'";
+							$qry_toget_style_sch_result = mysqli_query($link, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+							while ($row22 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+								$job_detail_attributes[$row22['attribute_name']] = $row22['attribute_value'];
+							}
+							$cut_no = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 							echo "<tr height=20 style='height:15.0pt; background-color:$bg_color1;'>";
 							echo "<td height=20 style='height:15.0pt'>".$style."</td>";
 							echo "<td height=20 style='height:15.0pt'>$po_des</td>";
@@ -220,12 +233,12 @@
 							echo "<td height=20 style='height:15.0pt'>".$schedule."</td>";
 							echo "<td height=20 style='height:15.0pt'>$destination</td>";
 							echo "<td height=20 style='height:15.0pt'>".$color."</td>";
-							echo "<td height=20 style='height:15.0pt'>".$cut_number[$value]."</td>";
+							echo "<td height=20 style='height:15.0pt'>".$cut_no."</td>";
 							echo "<td height=20 style='height:15.0pt'>".$planned_delivery_date."</td>";
 							echo "<td height=20 style='height:15.0pt'>".$sew_num."</td>";
 							for($i=0;$i<sizeof($size_main);$i++)
 							{
-							  $get_quantity="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id`WHERE size='".$size_main[$i]."' AND job_number='$sew_num' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
+							  $get_quantity="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND job_number='$sew_num' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
 							  $sql_result2=mysqli_query($link, $get_quantity) or die("Error".$get_quantity.mysqli_error($GLOBALS["___mysqli_ston"]));
 							  while($row2=mysqli_fetch_array($sql_result2))
 							  {
@@ -251,7 +264,7 @@
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
 						for ($i=0; $i < sizeof($size_main); $i++)
 						{ 
-							$sql1="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN pps_prod.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id`WHERE size='".$size_main[$i]."' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
+							$sql1="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN pps_prod.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
 							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row1=mysqli_fetch_array($sql_result1))
 							{

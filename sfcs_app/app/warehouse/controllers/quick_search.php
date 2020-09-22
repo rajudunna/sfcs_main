@@ -11,11 +11,18 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'quick_search.php','R');
 	$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
 ?>
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 
 <!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml">
@@ -86,49 +93,57 @@ table{
 		$temp = 0;
 		if(isset($_POST['submit']) or isset($_GET['ref']))
 		{
-			if(isset($_POST['submit']))
+			try
 			{
-				$ref=$_POST['reference'];
-			}
-			else
-			{
-				$ref=$_GET['ref'];
-			}
-			echo '<div id="main_div">';
-			echo '<div class="table-responsive"><table id="table1" class="table table-bordered"><tr class="info"><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>UOM</th><th>PKG No</th><th>GRN Date</th></tr>';
-
-			$sql1="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\" or product_group=\"$ref\"";
-			//echo $sql1;
-			$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_num_rows=mysqli_num_rows($sql_result1);
-			if($sql_num_rows > 0)
-			{
-				$flag=true;
-			}
-			else
-			{
-				$flag=false;
-			}
-			$url=  getFullURL($_GET['r'],'insert_v1.php','N');
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{		
-				echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td><td>".$sql_row1['item_desc']."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".$sql_row1['rec_qty']."</td><td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['uom']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
-				echo "</tr>";
-				$temp += $sql_row1['rec_qty'];
-			}
-		echo '<tr>
-				<td colspan="6">Total:</td>
-				<td id="table1Tot1" style="background-color:#FFFFCC;">'.$temp.'</td>
-				<td colspan="5"></td>
-				</tr>';
-		echo "</table></div></div>";
-
-
-				if(!$flag)
+				if(isset($_POST['submit']))
 				{
-					echo "<script>sweetAlert('No Data Found','','warning');
-					$('#main_div').hide()</script>";
+					$ref=$_POST['reference'];
 				}
+				else
+				{
+					$ref=$_GET['ref'];
+				}
+				echo '<div id="main_div">';
+				echo '<div class="table-responsive"><table id="table1" class="table table-bordered"><tr class="info"><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>UOM</th><th>PKG No</th><th>GRN Date</th></tr>';
+
+				$sql1="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\" or product_group=\"$ref\"";
+				//echo $sql1;
+				$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
+				$sql_num_rows=mysqli_num_rows($sql_result1);
+				if($sql_num_rows > 0)
+				{
+					$flag=true;
+				}
+				else
+				{
+					$flag=false;
+				}
+				$url=  getFullURL($_GET['r'],'insert_v1.php','N');
+				while($sql_row1=mysqli_fetch_array($sql_result1))
+				{		
+					echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td><td>".$sql_row1['item_desc']."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".$sql_row1['rec_qty']."</td><td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['uom']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
+					echo "</tr>";
+					$temp += $sql_row1['rec_qty'];
+				}
+			echo '<tr>
+					<td colspan="6">Total:</td>
+					<td id="table1Tot1" style="background-color:#FFFFCC;">'.$temp.'</td>
+					<td colspan="5"></td>
+					</tr>';
+			echo "</table></div></div>";
+
+
+					if(!$flag)
+					{
+						echo "<script>sweetAlert('No Data Found','','warning');
+						$('#main_div').hide()</script>";
+					}
+			}
+			catch(Exception $e) 
+			{
+			  $msg=$e->getMessage();
+			  log_statement('error',$msg,$main_url,__LINE__);
+			}
 		}
 		?>
 	</div>

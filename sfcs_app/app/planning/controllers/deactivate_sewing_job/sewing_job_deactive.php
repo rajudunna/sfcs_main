@@ -187,7 +187,7 @@ if(isset($_POST['submit']) || $module)
                     // echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
                     echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$po_des."</td><td>".$workstation_description."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
 
-                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
+                    $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($row=mysqli_fetch_array($job_deacive_result))
                     {
