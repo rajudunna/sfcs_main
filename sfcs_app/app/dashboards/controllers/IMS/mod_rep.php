@@ -18,19 +18,19 @@
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
     $has_permission=haspermission($url_r);
-    $user_name = $_SESSION['userName'];;
     error_reporting(0);
-    $plantCode=$_SESSION['plantCode'];
     $ref_no=time();
     //echo $ref_no;
 
     if($_GET['module'])
     {
         $module=$_GET['module']; 
+        $plantCode=$_GET['plantCode']; 
+        $user_name=$_GET['username']; 
     }
     else
     {
-        $module=$_POST['module']; 
+        $module=$_POST['module'];
     }
 
     /**
@@ -277,7 +277,7 @@
                                 <input type="hidden" value="'.$module.'" name="module"> 
                                 <input type="hidden" value="'.$section_id.'" name="section_id">
                                 <input type="hidden" value="'.$plant_code.'" name="plant_code">
-                                <input type="hidden" value="'.$user_name.'" name="plant_code">'; 
+                                <input type="hidden" value="'.$user_name.'" name="user_name">'; 
                     ?>
                 </form>
             </div>
@@ -303,6 +303,8 @@ $(document).ready(function(){
                 }
             });
             var module = '<?= $module?>';
+            var plantCode = '<?= $plantCode?>';
+            var user_name = '<?= $user_name?>';
                 const data={
                                 "bundleNumber": bundles,
                                 "plantCode": '<?= $plantCode ?>',
@@ -317,19 +319,19 @@ $(document).ready(function(){
                         if(res.status)
                         {
                             swal('','Sewing Job Transfered Successfully','success')
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                             
                         }
                         else
                         {
                             swal('',res.internalMessage,'error');
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                         }                       
                         //$('#loading-image').hide();
                     },
                     error: function(res){
                         swal('Error in getting data');
-                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                         //$('#loading-image').hide();
                     }
                 });

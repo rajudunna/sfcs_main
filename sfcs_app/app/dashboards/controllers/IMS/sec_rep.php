@@ -11,7 +11,6 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
 $has_permission=haspermission($url_r);
-$plantCode=$_SESSION['plantCode'];
 ?>
 <?php
 //To find time days difference between two dates
@@ -190,6 +189,7 @@ if(isset($_GET['val']))
         }
 
         $section=$_GET['section'];
+        $plantCode=$_GET['plantCode'];
         /**
          * getting setion name wrt section id
          */
