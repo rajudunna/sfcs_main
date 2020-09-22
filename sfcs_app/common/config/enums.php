@@ -58,6 +58,14 @@ class TrimStatusEnum {
     const ISSUED = 'Issued To Module';
 }
 
+class BarcodeType {
+    const PPLB = 'PPLB';
+    const PSLB = 'PSLB';
+    const PD = 'PD';
+    const PDB = 'PDB';
+    const PCRT = 'PCRT';
+}
+
 class TaskAttributeNamesEnum {
     const STYLE = 'STYLE';
     const SCHEDULE = 'SCHEDULE';
