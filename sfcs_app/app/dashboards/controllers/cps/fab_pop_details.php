@@ -734,7 +734,7 @@ echo"</br></br>";
 
 
 
-	//$docket_num[]=$sql_row1['doc_no'];
+	$docket_num[]=$doc_no;
 	//echo var_dump($docket_num);
 	//echo "</br>Length :".$sql_row1['plan_lot_ref']."</br>";
 	//if(strlen($sql_row1['plan_lot_ref'])>0)

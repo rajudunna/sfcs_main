@@ -1169,7 +1169,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       {
         case "1":
         {
-            $id="yellow";
+            $id="green";
             /* if($fab_wip>$cut_wip_control)
             {
               $id="lgreen";
@@ -1219,7 +1219,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             $id="yellow";
       }
      
-      if($fabric_status!=1)
+      if($fabric_status!=1 && $fabric_status!=5)
       {
         $id="green";
 
@@ -1281,7 +1281,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$fabric_required =$result_docketinfo['requirement'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
-		$width =$result_docketinfo['width'];
+    $width =$result_docketinfo['width'];
+    $docket_number =$result_docketinfo['docket_line_number'];
+    
 		
 	}
     //   $sql11="select catyy,material_req from $bai_pro3.order_cat_doc_mk_mix where category in ('".implode("','",$in_categories)."') and order_del_no='$schedule' and order_col_des='$colorx' and doc_no=".$sql_row1['doc_no'];
@@ -1319,7 +1321,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             str_pad("Color:".$colorx,50)."</br>".
             str_pad("Job_No:".$cut_no,80)."</br>".
             $tool_tip.
-            str_pad("Docket No:".$doc_no,80)."</br>".
+            str_pad("Docket No:".$docket_number,80)."</br>".
             // str_pad("Total_Qty:".$total_qty,80)."\n".
             str_pad("Plan_Time:".$log_time,50)."</br>".
             str_pad("Lay_Req_Time:".$lay_time,50);

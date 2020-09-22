@@ -26,7 +26,7 @@
 				
 			}
 			for ($x = 0; $x <= sizeof($roll_det); $x++) {
-				echo "<tr><td>$invoice_no[$x]</td><td>$batch_det[$x]</td><td>$lot_det[$x]</td><td>$shade_det[$x]</td><td>$roll_det[$x]</td><td>$ctex_len[$x]</td></tr>";
+				echo "<tr><td>$invoice_no[$x]</td><td>$batch_det[$x]</td><td>$lot_det[$x]</td><td>$shade_det[$x]</td><td>$roll_det[$x]</td><td>$leng_det[$x]</td></tr>";
 				$total_issue_qty=$total_issue_qty+$ctex_len[$x];
 			  }
 		echo "<tr><th colspan=5 style='text-align:right'>Total Issued Qty</th><th style='background-color:white;color:black;'>$total_issue_qty</th></tr>";
