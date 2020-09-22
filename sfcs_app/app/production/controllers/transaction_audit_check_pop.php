@@ -62,40 +62,53 @@ if(isset($_POST['submit']))
 	ob_end_flush();
 	flush();
 	usleep(10);
-	
 	//Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
-echo "<h2>Production Status</h2>";
-$url1=getFullURLLevel($_GET['r'],'transaction_audit_schedule.php',0,'R');
-echo "<br/><h3><a href=\"$url1?schedule=$schedule\" onclick=\"return popitup("."'"."$url1?schedule=$schedule"."'".")\" class='btn btn-success' style=\"margin-top: -35px;\">Production Status</a></h3><br/>";
-
+	echo "<h2>Production Status</h2>";
+	$url1=getFullURLLevel($_GET['r'],'transaction_audit_schedule.php',0,'R');
+	echo "<br/><h3><a href=\"$url1?schedule=$schedule\" onclick=\"return popitup("."'"."$url1?schedule=$schedule"."'".")\" class='btn btn-success' style=\"margin-top: -35px;\">Production Status</a></h3><br/>";
 	//if($username=="kirang")
 	{
 		include("transaction_audit_recon_check.php");
 	}
 
-//echo "<div>";
-echo "<div class=\"panel panel-primary\"><div class=\"panel-heading\"><h2>Plan Board Transaction Log</h2></div>";
-echo "<table id=\"table10\" border=1 class='table table-bordered'>";
-echo "<tr><th>Docket ID</th><th width=\"150\">What</th><th>Who</th><th>When</th></tr>";
-
-
-//$sql="select * from $bai_pro3.plan_dashboard_change_log where doc_no in (select doc_no from $bai_pro3.order_cat_doc_mk_mix where order_del_no=\"$schedule\")";
-$sql="select * from $pps.jobs_movement_track where plant_code='$plantcode' and doc_no in (select doc_no from $bai_pro3.order_cat_doc_mk_mix where order_del_no=\"$schedule\")";
-//echo $sql;
-mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error15".mysqli_error());
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	
-		echo "<tr>";
-
-		echo "<td>".$sql_row['doc_no']."</td>";
-		echo "<td>".$sql_row['from_module']." - ".$sql_row['to_module']."</td>";
-		echo "<td>".$sql_row['username']."</td>";
-		echo "<td>".$sql_row['log_time']."</td>";
-		echo "</tr>";
-}
-
+	// docket movement track
+	echo "<div class=\"panel panel-primary\"><div class=\"panel-heading\"><h2>Plan Board Transaction Log</h2></div>";
+	echo "<table id=\"table10\" border=1 class='table table-bordered'>";
+	echo "<tr><th>Docket ID</th><th width=\"150\">What</th><th>Who</th><th>When</th></tr>";
+	// getting docket line ids for a schedule
+	$sql_docket = "SELECT DISTINCT dl.jm_docket_line_id, dl.`docket_line_number` FROM pps_prod.`jm_docket_lines` dl
+	LEFT JOIN pps_prod.`jm_docket_bundle` db ON db.`jm_docket_line_id` = dl.`jm_docket_line_id`
+	LEFT JOIN pps_prod.`jm_docket_logical_bundle` dlb ON dlb.`jm_docket_bundle_id` = db.`jm_docket_bundle_id`
+	LEFT JOIN pps_prod.`jm_product_logical_bundle` plb ON plb.`jm_product_logical_bundle_id` = dlb.`jm_product_logical_bundle_id`
+	WHERE plb.`feature_value` = '$schedule'";
+	$sql_result_sql_docket=mysqli_query($link,$sql_docket) or exit("Sql Error15".mysqli_error());
+	while($sql_row_docket=mysqli_fetch_array($sql_result_sql_docket))
+	{
+		$task_job_ref = $sql_row_docket['jm_docket_line_id'];
+		$sql="SELECT th.resource_id, th.created_user, th.created_at FROM tms_prod.`task_jobs` tj LEFT JOIN tms_prod.`task_header` th ON th.`task_header_id` = tj.`task_header_id`
+		WHERE th.`resource_id` IS NOT NULL AND `task_job_reference` = '$task_job_ref'";
+		mysqli_query($link,$sql) or exit("Sql Error14".mysqli_error());
+		$sql_result=mysqli_query($link,$sql) or exit("Sql Error15".mysqli_error());
+		while($sql_row_work=mysqli_fetch_array($sql_result))
+		{
+				$workstation = $sql_row_work['resource_id'];
+				$qry_workstation_type="SELECT workstation_code FROM $pms.workstation where  workstation_id = '$workstation'";
+				$workstation_type_result=mysqli_query($link, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$workstation_typet_num=mysqli_num_rows($workstation_type_result);
+				if($workstation_typet_num>0){
+				while($workstaton_type_row=mysqli_fetch_array($workstation_type_result))
+				{
+					$workstationCode = $workstaton_type_row['workstation_code'];
+				}	
+				echo "<tr>";
+				echo "<td>".$sql_row_docket['docket_line_number']."</td>";
+				echo "<td>".$workstationCode."</td>";
+				echo "<td>".$sql_row_work['created_user']."</td>";
+				echo "<td>".$sql_row_work['created_at']."</td>";
+				echo "</tr>";
+			}
+		}
+	}
 
 echo "</table>";
 echo "</div>";
@@ -105,156 +118,92 @@ echo "</div>";
 
 echo "<div class='table-responsive'><div class=\"panel panel-primary\" style=\"width:2000px\"><div class=\"panel-heading\"><h2>BAI Log</h2></div>";
 echo "<table id=\"table1\" border=1 class='table table-bordered'>";
-echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>DocketNo</th><th>Qty</th><th>SMV</th><th>NOP</th>";
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"$schedule\" group by order_del_no";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-if(mysqli_num_rows($sql_result)>0)
-{
-	$ord_tbl_name="$bai_pro3.bai_orders_db_confirm";	
-}
-else{
-	$ord_tbl_name="$bai_pro3.bai_orders_db";		
-}
-$count_val  = 0;
-$sql1="select * from $ord_tbl_name where order_del_no=\"$schedule\" group by order_del_no";
-$sql_result=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row10=mysqli_fetch_array($sql_result))
-{
-	for($s=0;$s<sizeof($sizes_code);$s++)
-	{
-		if($sql_row10["title_size_s".$sizes_code[$s].""]<>'')
-		{
-			$count_val++;
-			$s_tit=$sql_row10["title_size_s".$sizes_code[$s].""];
-			echo " <th>".$sql_row10["title_size_s".$sizes_code[$s].""]."</th>";
-			
-		}	
-	}
-}
-// echo $count_val;
-//$sql="select tid,bac_no,bac_sec,bac_date,bac_shift,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop, sum(size_xs) as \"size_xs\", sum(size_s) as \"size_s\", sum(size_m) as \"size_m\", sum(size_l) as \"size_l\", sum(size_xl) as \"size_xl\", sum(size_xxl) as \"size_xxl\", sum(size_xxxl) as \"size_xxxl\", sum(size_s06) as \"size_s06\",sum(size_s08) as \"size_s08\", sum(size_s10) as \"size_s10\", sum(size_s12) as \"size_s12\", sum(size_s14) as \"size_s14\", sum(size_s16) as \"size_s16\", sum(size_s18) as \"size_s18\", sum(size_s20) as \"size_s20\", sum(size_s22) as \"size_s22\", sum(size_s24) as \"size_s24\", sum(size_s26) as \"size_s26\", sum(size_s28) as \"size_s28\",sum(size_s30) as \"size_s30\",sum(size_s31) as \"size_s31\",sum(size_s32) as \"size_s32\",sum(size_s33) as \"size_s33\",sum(size_s34) as \"size_s34\",sum(size_s35) as \"size_s35\",sum(size_s36) as \"size_s36\",sum(size_s37) as \"size_s37\",sum(size_s38) as \"size_s38\",sum(size_s39) as \"size_s39\",sum(size_s40) as \"size_s40\",sum(size_s41) as \"size_s41\",sum(size_s42) as \"size_s42\",sum(size_s43) as \"size_s43\",sum(size_s44) as \"size_s44\",sum(size_s45) as \"size_s45\",sum(size_s46) as \"size_s46\",sum(size_s47) as \"size_s47\",sum(size_s48) as \"size_s48\",sum(size_s49) as \"size_s49\",sum(size_s50) as \"size_s50\" from $pts.bai_log where delivery=\"$schedule\" group by tid order by ims_doc_no";
-foreach($sizes_array as $key=>$size){
-	$append.= " SUM(size_$size) as size_$size,";
-}
-$append = rtrim($append,',');
-$sql="select tid,bac_no,bac_sec,bac_date,bac_shift,sum(bac_Qty) as \"bac_Qty\",bac_lastup,bac_style,ims_doc_no,ims_tid,ims_table_name,log_time,smv,nop,$append from $pts.bai_log where plant_code='$plantcode' and delivery=\"$schedule\" group by tid order by ims_doc_no";
-mysqli_query($link,$sql) or exit("Sql Error1".mysqli_error());
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error2".mysqli_error());
+echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Qty</th><th>SMV</th><th>NOP</th>";
+$sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM pps_prod.`jm_aplb` aplb
+LEFT JOIN pps_prod.`jm_product_logical_bundle` pplb ON
+aplb.`jm_product_logical_bundle_id` = pplb.`jm_product_logical_bundle_id`
+LEFT JOIN pps_prod.`jm_cut_bundle_details` ppb ON pplb.`jm_cut_bundle_detail_id` = ppb.jm_cut_bundle_detail_id
+WHERE  pplb.`feature_value` = '$schedule' GROUP BY aplb.`fg_color`, aplb.`size`,ppb.`bundle_type`";
+mysqli_query($link_new,$sql) or exit("Sql Error4".mysqli_error());
+$sql_result=mysqli_query($link_new,$sql) or exit("Sql Error6".mysqli_error());
+$count=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
-	$tid=$sql_row['tid'];
-	$module=$sql_row['bac_no'];
-	$section=$sql_row['bac_sec'];
-	$date=$sql_row['bac_date'];
-	$shift=$sql_row['bac_shift'];
-	$qty=$sql_row['bac_Qty'];
-	$lastup=$sql_row['bac_lastup'];
-	$userstyle=$sql_row['bac_style'];
-	$doc_no=$sql_row['ims_doc_no'];
-	$ims_tid=$sql_row['ims_tid'];
-	$ims_table_name=$sql_row['ims_table_name'];
-	$log_time=$sql_row['log_time'];
-	$smv=$sql_row['smv'];
-	$nop=$sql_row['nop'];
-	
-	
-
-
-	
-			// 
-		
-			$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-			//echo $sql1;
-			mysqli_query($link,$sql1) or exit("Sql Error3".mysqli_error());
-			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error4".mysqli_error());
-			while($sql_row1=mysqli_fetch_array($sql_result1))
+	$aplbIds = $sql_row["aplbids"];
+	$bundle_type = $sql_row["bundle_type"];
+	$fg_color = $sql_row["fg_color"];
+	$size = $sql_row["size"];
+	// for getting output ops for
+	$sql_barcodes = "SELECT GROUP_CONCAT(CONCAT('''', trans.`parent_ext_ref_id`, '''' )) AS parent_ext_ref_id FROM pts_prod.`transaction_log` trans 
+	LEFT JOIN pts_prod.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
+	WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB'  GROUP BY trans.`resource_id`";
+	mysqli_query($link,$sql_barcodes) or exit("Sql Error7".mysqli_error());
+	$sql_result_barcodes=mysqli_query($link,$sql_barcodes) or exit("Sql Error5".mysqli_error());
+	$count_barcodes=mysqli_num_rows($sql_result_barcodes); 
+	while($sql_row_barcodes = mysqli_fetch_array($sql_result_barcodes))
+	{
+		$jg_header_ids = $sql_row_barcodes['parent_ext_ref_id'];
+		$sql_tms = "SELECT operation_code FROM tms_prod.`task_jobs` tj LEFT JOIN tms_prod.`task_job_transaction` trans ON trans.task_jobs_id = tj.task_jobs_id WHERE task_job_reference IN ($jg_header_ids) ORDER BY operation_seq  DESC LIMIT 0,1";
+		mysqli_query($link,$sql_tms) or exit("Sql Error7".mysqli_error());
+		$sql_result_tms=mysqli_query($link,$sql_tms) or exit("Sql Error5".mysqli_error());
+		while($sql_row_tms = mysqli_fetch_array($sql_result_tms))
+		{
+			$out_put_ops = $sql_row_tms['operation_code'];
+		}
+	}
+	$sql_pts_trans_out = "SELECT trans.created_at,sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty, resource_id, shift FROM pts_prod.`transaction_log` trans 
+	LEFT JOIN pts_prod.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
+	WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' 
+	AND operation = '$out_put_ops' GROUP BY trans.created_at,operation,resource_id,shift";
+	$sql_result_sql_pts_trans_out=mysqli_query($link,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
+	while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
+	{
+		$out_put_qty = $sql_row_pts_trans_out['good_qty'];
+		$rejected_qty += $sql_row_pts_trans_out['rej_qty'];
+		$workstation = $sql_row_pts_trans_out['resource_id'];
+		$date = $sql_row_pts_trans_out['created_at'];
+		$shift =  $sql_row_pts_trans_out['shift'];
+		$smv = 0;
+		$qry_workstation_type="SELECT workstation_code, sec.section_code FROM $pms.workstation wrk LEFT JOIN $pms.sections sec on sec.section_id = wrk.section_id where  workstation_id = '$workstation'";
+		$workstation_type_result=mysqli_query($link, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$workstation_typet_num=mysqli_num_rows($workstation_type_result);
+		if($workstation_typet_num>0) {
+			while($workstaton_type_row=mysqli_fetch_array($workstation_type_result))
 			{
-				$order_tid=$sql_row1['order_tid'];
-				$cutno=$sql_row1['acutno'];
-				$cat_ref=$sql_row1["cat_ref"];
+				$workstationCode = $workstaton_type_row['workstation_code'];
+				$section_code = $workstaton_type_row['section_code'];
 			}
-			
-			$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-			mysqli_query($link,$sql1) or exit("Sql Error5".mysqli_error());
-			$sql_result1=mysqli_query($link,$sql1) or exit("Sql Error6".mysqli_error());
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{
-				$style=$sql_row1['order_style_no'];
-				$schedule=$sql_row1['order_del_no'];
-				$color=$sql_row1['order_col_des'];
-				$color_code=$sql_row1['color_code'];
-				$$carton_id_new_create=$sql_row1["carton_id"];
-				$tran_order_tid=$sql_row1["order_tid"];
-				
+			$plan_qry = "SELECT capacity_factor AS nop, smv, product_code as style FROM pps_prod.`monthly_production_plan`  
+			WHERE row_name = '$workstationCode' AND planned_date like '%$date'  AND order_code = '$schedule' AND colour = '$fg_color'";
+			$plan_qry_result=mysqli_query($link, $plan_qry) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$plan_qry_num=mysqli_num_rows($plan_qry_result);
+			if($plan_qry_num>0){
+				while($plan_qry_row=mysqli_fetch_array($plan_qry_result))
+				{
+					$nop = $plan_qry_row['workstation_code'];
+					$smv = $plan_qry_row['smv'];
+					$style = $plan_qry_row['style'];
+					$userstyle =$plan_qry_row['style'];
+				}
 			}
-		
-		$bgcolor="";	
-		if($smv==0 and $nop==0)
-		{
-			$bgcolor="RED";
+			echo "<tr bgcolor=\"$bgcolor\">";
+			//echo "<td>$tid</td>";
+			echo "<td>$date</td>";
+			echo "<td>$workstationCode</td>";
+			echo "<td>$section_code</td>";
+			echo "<td>$shift</td>";
+			echo "<td>$userstyle</td>";
+			echo "<td>$style</td>";
+			echo "<td>$schedule</td>";
+			echo "<td>$fg_color</td>";
+			// echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td>";
+			// echo "<td>$doc_no</td>";
+			echo "<td>$out_put_qty</td>";
+			echo "<td>".$smv."</td>";
+			echo "<td>".$nop."</td>";
+			echo "</tr>";
 		}
-				
-		echo "<tr bgcolor=\"$bgcolor\">";
-		
-		//echo "<td>$tid</td>";
-		echo "<td>$date</td>";
-		echo "<td>$module</td>";
-		echo "<td>$section</td>";
-		echo "<td>$shift</td>";
-		
-		//echo "<td>$lastup</td>";
-		//echo "<td>$log_time</td>";
-		/*if($qty>=0)
-		{
-			echo "<td><a href=\"delete_transaction.php?tid=$tid&ims_tid=$ims_tid\">Delete Entry</a></td>";
-		}
-		else
-		{
-			echo "<td>Edit</td>";
-		} */
-		
-		echo "<td>$userstyle</td>";
-		echo "<td>$style</td>";
-		echo "<td>$schedule</td>";
-		echo "<td>$color</td>";
-		echo "<td>".chr($color_code).leading_zeros($cutno,3)."</td>";
-		echo "<td>$doc_no</td>";
-		echo "<td>$qty</td>";
-		echo "<td>".$smv."</td>";
-		echo "<td>".$nop."</td>";
-			
-
-		for($s=0;$s<$count_val;$s++){
-			echo "<td>".$sql_row["size_s".$sizes_code[$s].""]."</td>";
-			$tot1+=$sql_row["size_s".$sizes_code[$s].""];
-		}
-		
-		
-	      
-		// echo "<td>$xs</td>";
-		// echo "<td>$s</td>";
-		// echo "<td>$m</td>";
-		// echo "<td>$l</td>";
-		// echo "<td>$xl</td>";
-		// echo "<td>$xxl</td>";
-		// echo "<td>$xxxl</td>";
-		//  echo "<td>$s06</td>";
-		//   echo "<td>$s08</td>";
-		//   echo "<td>$s10</td>";
-		//   echo "<td>$s12</td>";
-		//   echo "<td>$s14</td>";
-		//   echo "<td>$s16</td>";
-		//   echo "<td>$s18</td>";
-		//   echo "<td>$s20</td>";
-		//   echo "<td>$s22</td>";
-		//   echo "<td>$s24</td>";
-		//   echo "<td>$s26</td>";
-		//   echo "<td>$s28</td>";
-		//    echo "<td>$s30</td>";
-
-	
-
-		echo "</tr>";
+	}
 }
 $count_val = 0;	
 echo "<tr><td>Output Total:</td><td id=\"table1Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$tot1."
