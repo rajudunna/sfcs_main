@@ -156,7 +156,7 @@
 						$style=implode("','" , $main_style);
 						$schedule=implode(',',$main_schedule);
 						$color=implode("','" , $main_color);
-						
+						$size_total_qty=[];
 						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE feature_value in($schedule) AND jm_job_bundles.fg_color in ('".implode("','" , $main_color)."') AND jm_job_bundles.plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($sql_result))
@@ -187,9 +187,10 @@
 						}
 						echo "<th>Total</th>";
 						echo "</thead></tr>";
+						$tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
 						//get jobs from po_number
 						$job_number=array();
-						$get_jobs="SELECT job_number,jm_jg_header_id FROM $pps.`jm_job_header` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_job_header = jm_job_header.jm_job_header_id WHERE po_number='$po_number' AND jm_jg_header.plant_code='$plant_code'";
+						$get_jobs="SELECT job_number,jm_jg_header_id FROM $pps.`jm_job_header` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_job_header = jm_job_header.jm_job_header_id WHERE po_number='$po_number' AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
 						$result22=mysqli_query($link, $get_jobs) or die("Error8-".$get_jobs."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result22))
 						{
@@ -207,7 +208,7 @@
 						//To get PO Description
 						$result_po_des=getPoDetaials($po_number,$plant_code);
 						$po_des=$result_po_des['po_description'];
-						$tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
+						
 						foreach($job_number as $sew_num=>$value)
 		                {
 							//get_task_job_id
@@ -246,7 +247,9 @@
 							  }
 							  if($size_quantity > 0){
 								echo "<td class=xl787179 align=\"center\">".$size_quantity."</td>";
-								$total_qty1=$total_qty1+$row2["quantity"];
+								$total_qty1=$total_qty1+$size_quantity;
+								$size_total_qty[$size_main[$i]] +=$size_quantity;
+								$size_total_qty['total'] +=$size_quantity;
 							  }else
 							  {
 								echo "<td class=xl787179 align=\"center\">0</td>";
@@ -260,29 +263,22 @@
 						}	
 						
 						$o_total=0;
+						$o_s=0;
 						echo "<tr>";
 						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
 						for ($i=0; $i < sizeof($size_main); $i++)
 						{ 
-							$sql1="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN pps_prod.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
-							$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row1=mysqli_fetch_array($sql_result1))
+							if ($size_total_qty[$size_main[$i]]!=0)
 							{
-								$o_s=$sql_row1['quantity'];
-								if ($o_s!=0)
-								{
-									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>";
-								}
-								else
-								{
-									echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
-								}
-								$o_total=$o_s+$o_total;
-								//echo $o_total;
+								echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$size_total_qty[$size_main[$i]]."</th>";
+							}
+							else
+							{
+								echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
 							}
 						}
 							
-						echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
+						echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$size_total_qty['total']."</th>";
 						echo "</tr>";
 
 						echo "</table></div></div></div></div><br>";
