@@ -7,20 +7,20 @@ $doc_num=$_GET['doc_id'];
 $print_status=$_GET['print_status'];
 $plant_code = $_GET['plant_code'];
 $username = $_GET['username'];
-$sql22="select docket_line_number from $pps.jm_docket_lines where jm_docket_line_id='$doc_num' and plant_code='$plant_code'";
+$sql22="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_num' and plant_code='$plant_code'";
 	    $jm_cut_job_result1=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12=mysqli_fetch_array($jm_cut_job_result1))
 		{
-			$doc_id= $sql_row12['docket_line_number'];
+			$doc_id= $sql_row12['jm_docket_line_id'];
 
 		}
 
 
 
 
-if($doc_id!="" && $plant_code!=''){
+if($doc_num!="" && $plant_code!=''){
 	//this is function to get style,color,and cutjob
-	$result_jmdockets=getJmDockets($doc_id,$plant_code);
+	$result_jmdockets=getJmDockets($doc_num,$plant_code);
 	$style =$result_jmdockets['style'];
 	$fg_color =$result_jmdockets['fg_color'];
 	$plies =$result_jmdockets['plies'];
@@ -2087,7 +2087,7 @@ function printpr()
   
   <?php
 
- $sql1="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_id' and plant_code='$plant_code'";
+ $sql1="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number=$doc_num and plant_code='$plant_code'";
  $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error at inspection123".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row1=mysqli_fetch_array($sql_result1))
  {
