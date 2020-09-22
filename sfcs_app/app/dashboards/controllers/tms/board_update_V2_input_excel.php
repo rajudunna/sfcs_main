@@ -27,7 +27,12 @@ include('functions_tms.php');
  if(isset($_POST['export_excel'])){
         $section_no=$_POST["section"];
         $plant_code=$_POST["plant_code"];
-       
+       $output.="<table class='table table-bordered'>
+			<tr>
+			<th colspan=10 >Production Plan for <?= $section_display_name; ?></th>
+			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
+			</tr>
+			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>";
 	   $sqlx="SELECT GROUP_CONCAT(`workstation_id` ORDER BY workstation_id+0 ASC) AS sec_mods FROM $pms.`sections` s
 		LEFT JOIN $pms.`workstation` w ON w.section_id=s.section_id
 		WHERE s.section_id='$section_no' AND s.plant_code='$plant_code' and s.is_active=1";
