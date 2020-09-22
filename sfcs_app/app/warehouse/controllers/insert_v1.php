@@ -8,6 +8,8 @@ Change Log:
 <?php
 	$url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'insert_v1.php','R');
 	ob_start();	
 ?>
   <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',3,'R'); ?>" type="text/css" media="all" />
@@ -22,7 +24,12 @@ Change Log:
 .clear { clear: both;}
 
 </style>
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <body onload="dodisable();">
 
 <?php 
@@ -61,11 +68,11 @@ else
 <?php
 if(strlen($lot_no)>0)
 {
-	
+try
+{	
 
 $sql="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -108,8 +115,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 $sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -501,8 +507,12 @@ for($j=0;$j<100;$j++)
 echo '</table></div>';
 echo '</form></div>';
 // echo "</div></div>";
-
-
+}
+catch(Exception $e) 
+{
+  $msg=$e->getMessage();
+  log_statement('error',$msg,$main_url,__LINE__);
+}
 }
 ?>
 <div class="clear">
