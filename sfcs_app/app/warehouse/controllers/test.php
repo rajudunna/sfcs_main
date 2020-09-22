@@ -4,11 +4,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+$main_url=getFullURL($_GET['r'],'test.php','R');
 //$view_access=user_acl("SFCS_0153",$username,1,$group_id_sfcs); 
 $plantcode = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <link href="<?= getFullURLLevel($_GET['r'],'common/css/table_style.css',1,'R'); ?>"  rel="stylesheet" type="text/css" />
 
 <?php //include("header_scripts.php"); ?>
@@ -322,76 +329,62 @@ echo "</td></tr></table>";
 <?php
 if(isset($_POST['submit']))
 {
-	$style=$_POST['style'];
-	$color=$_POST['color'];
-	$schedule=$_POST['schedule'];
-	$mpo=$_POST['mpo'];
-	$sub_po=$_POST['sub_po'];	
-	
-	$rand=date("Hi").rand();
-	$item=$_POST['item'];
-	$reason=$_POST['reason'];
-	$qty=$_POST['qty'];
-	$category=$_POST['category'];
-	$spoc=$_POST['spoc'];
-
-	
-	//echo sizeof($item);
-	$table="Dear All, <br/><br/> Please find below details of manual request for RM.<br/><br/>";
-	$table.="Style:$style<br/>Schedule:$schedule<br/>Color:$color<br/>Requested By:$username<br/><br/>";
-	$table.="<table><tr><th>M3 Item Code</th><th>Reason</th><th>Qty</th></tr>";
-	$count=0;
-	for($i=0;$i<20;$i++)
+	try
 	{
-		if(strlen($item[$i])>0)
-		{
-			$count=1;
-			$sql="insert into $wms.manual_form(style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
-			//echo $sql;
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
-			$table.="<tr><td>".$item[$i]."</td><td>".$reason[$i]."</td><td>".$qty[$i]."</td></tr>";
-		}
-	}
-	
-	$table.="</table>";
-	$url = getFullURLLevel($_GET['r'],'reports/update_status.php',1,'N');
-	$app_message=$message.$table."<br/><br/> <a href=\"$url&tid=$rand&check=1\"><strong>Click here to update the status.</strong></a><br/><br/>".$message_f;
-	$message.=$table.$message_f;
-	
-	
-	
-	if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
-	{
-		$recipients=array_merge($pink_team,$rm_team);
-	}
-	if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
-	{
-		$recipients=array_merge($logo_team,$rm_team);
-	}
-	if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
-	{
-		$recipients=array_merge($dms_team,$rm_team);
-	}
-	if(strlen($recipients))
-	{
-	$to  = implode(", ",$recipients);
-	}
-	$subject = 'BAI RM - Manual Form Ref. '.$rand. ' (Request)';
-	
-	// To send HTML mail, the Content-type header must be set
-	$headers  = 'MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-	
-	// Additional headers
-	$headers .= 'To: '.$to. "\r\n";
-	$headers .= 'From: BAINet - Alert <baiict@brandix.com>'. "\r\n";
-	
-	if($count==1)
-	{
-		//mail($to, $subject, $message, $headers); (Enable to send mail to requester and RM Team)
+		$style=$_POST['style'];
+		$color=$_POST['color'];
+		$schedule=$_POST['schedule'];
+		$mpo=$_POST['mpo'];
+		$sub_po=$_POST['sub_po'];	
 		
-		$to  = implode(", ",$app_team);
+		$rand=date("Hi").rand();
+		$item=$_POST['item'];
+		$reason=$_POST['reason'];
+		$qty=$_POST['qty'];
+		$category=$_POST['category'];
+		$spoc=$_POST['spoc'];
+
+		
+		//echo sizeof($item);
+		$table="Dear All, <br/><br/> Please find below details of manual request for RM.<br/><br/>";
+		$table.="Style:$style<br/>Schedule:$schedule<br/>Color:$color<br/>Requested By:$username<br/><br/>";
+		$table.="<table><tr><th>M3 Item Code</th><th>Reason</th><th>Qty</th></tr>";
+		$count=0;
+		for($i=0;$i<20;$i++)
+		{
+			if(strlen($item[$i])>0)
+			{
+				$count=1;
+				$sql="insert into $wms.manual_form(style,schedule,color,item,reason,qty,req_from,status,rand_track,category,spoc,plant_code,created_user,updated_user,updated_at) values (\"$style\",\"$schedule\",\"$color\",\"".$item[$i]."\",\"".$reason[$i]."\",\"".$qty[$i]."\",\"$username\",1,$rand,$category,\"$spoc\",'".$plantcode."','".$username."','".$username."',NOW())";
+				//echo $sql;
+				mysqli_query($link, $sql) or die(exception($sql));
+				$table.="<tr><td>".$item[$i]."</td><td>".$reason[$i]."</td><td>".$qty[$i]."</td></tr>";
+			}
+		}
+		
+		$table.="</table>";
+		$url = getFullURLLevel($_GET['r'],'reports/update_status.php',1,'N');
+		$app_message=$message.$table."<br/><br/> <a href=\"$url&tid=$rand&check=1\"><strong>Click here to update the status.</strong></a><br/><br/>".$message_f;
+		$message.=$table.$message_f;
+		
+		
+		
+		if(substr($style,0,1)=="P" or substr($style,0,1)=="K")
+		{
+			$recipients=array_merge($pink_team,$rm_team);
+		}
+		if(substr($style,0,1)=="L" or substr($style,0,1)=="O")
+		{
+			$recipients=array_merge($logo_team,$rm_team);
+		}
+		if(substr($style,0,1)=="D" or substr($style,0,1)=="M")
+		{
+			$recipients=array_merge($dms_team,$rm_team);
+		}
+		if(strlen($recipients))
+		{
+		$to  = implode(", ",$recipients);
+		}
 		$subject = 'BAI RM - Manual Form Ref. '.$rand. ' (Request)';
 		
 		// To send HTML mail, the Content-type header must be set
@@ -400,15 +393,36 @@ if(isset($_POST['submit']))
 		
 		// Additional headers
 		$headers .= 'To: '.$to. "\r\n";
-		$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
+		$headers .= 'From: BAINet - Alert <baiict@brandix.com>'. "\r\n";
 		
-		// mail($to, $subject, $app_message, $headers);
+		if($count==1)
+		{
+			//mail($to, $subject, $message, $headers); (Enable to send mail to requester and RM Team)
+			
+			$to  = implode(", ",$app_team);
+			$subject = 'BAI RM - Manual Form Ref. '.$rand. ' (Request)';
+			
+			// To send HTML mail, the Content-type header must be set
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			
+			// Additional headers
+			$headers .= 'To: '.$to. "\r\n";
+			$headers .= 'From: Shop Floor System Alert <ictsysalert@brandix.com>'. "\r\n";
+			
+			// mail($to, $subject, $app_message, $headers);
+		}
+		
+		
+		echo "<script>sweetAlert('Successfully','Updated','success')</script>";
+		$url=getFullURLLevel($_GET['r'],'reports/manual_form_log.php',1,'N');
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
-	
-	
-	echo "<script>sweetAlert('Successfully','Updated','success')</script>";
-	$url=getFullURLLevel($_GET['r'],'reports/manual_form_log.php',1,'N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
+	}
 }
 ?> 
 <script type="text/javascript">

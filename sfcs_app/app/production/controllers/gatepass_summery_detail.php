@@ -1,7 +1,8 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
-
+$main_url=getFullURL($_GET['r'],'gatepass_summery_detail.php','R');
 if(isset($_GET['gatepassid']))
 {
 	$plant_code= $_GET['plant_code']; 
@@ -167,7 +168,7 @@ if(isset($_POST['submit']) || ($status==1)){
 		$tot_qty=0;
 		$tot_bds=0;
 		$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));		
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$quantity[$sql_row1['schedule']][$sql_row1['color']][$sql_row1['size']]=$sql_row1['qty'];
@@ -176,7 +177,7 @@ if(isset($_POST['submit']) || ($status==1)){
 			$tot_bds=$tot_bds+$sql_row1['cnts'];
 		}
 		$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by schedule,color";
-		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));		
 		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{
 			$quantity_val[$sql_row12['schedule']][$sql_row12['color']]=$sql_row12['qty'];
