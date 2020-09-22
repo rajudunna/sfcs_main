@@ -7,17 +7,18 @@
  ?>   
 
 <?php  
-
+    include('imsCalls.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 	include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
     include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-    include('imsCalls.php');
+
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
     $has_permission=haspermission($url_r);
-    $user_name = getrbac_user()['uname'];
+    $user_name = $_SESSION['userName'];;
     error_reporting(0);
     $plantCode=$_SESSION['plantCode'];
     $ref_no=time();
@@ -51,39 +52,16 @@
         $section_id=$_POST['section_id']; 
     }
 ?> 
- <?php
-
-    function dateDiff($start, $end) {
-
-    $start_ts = strtotime($start);
-
-    $end_ts = strtotime($end);
-
-    $diff = $end_ts - $start_ts;
-
-    return round($diff / 86400);
-
-    }
-
-
-    function dateDiffsql($start,$end)
-    {
-        
-        include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-        $sql="select distinct bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date<='$start' and bac_date>='$end'";
-        $sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-        
-        return mysqli_num_rows($sql_result);
-    }
-
- ?>  
-
+  
 <head>
-    <title>Module Transfer Panel</title>
+    <title>Module Transfer Panel</title> 
+    <script src="../../../../common/js/jquery1.min.js"></script>
+    <script src="/sfcs_app/common/js/jquery-ui.js"></script>
     <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
     <script type="text/javascript" src="../../common/js/tablefilter_1.js"></script>
     <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
     <script src="../../../../common/js/sweetalert.min.js"></script>
+   
 
     <style type="text/css">
         table, th, td {
@@ -92,111 +70,7 @@
     </style>
 </head> 
 
-<body>
-    <?php
-        // if(isset($_POST['submit']))
-        // {
-        //     $tid=array();   $selected_sewing_jobs = array();
-        //     $tid=$_POST['log_tid'];
-
-        //     if (sizeof($tid) > 0)
-        //     {
-        //         $implode_tids = implode(",",$tid);
-        //         $get_ip_jobs_selected_tids = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE tid in ($implode_tids)";
-        //         // echo $get_ip_jobs_selected_tids;
-        //         $slected_ij_result = $link->query($get_ip_jobs_selected_tids);
-        //         while($row1 = $slected_ij_result->fetch_assoc()) 
-        //         {
-        //             $selected_sewing_jobs[] = $row1['input_job_rand_no_ref'];
-        //         }
-
-        //         $module= $_POST['module'];
-        //         // $tid1=array();
-        //         // $tid1=$_POST['pac_tid'];
-        //         $to_module= $_POST['module_ref'];
-
-        //         $validating_qry = "SELECT DISTINCT input_job_rand_no_ref FROM $bai_pro3.`ims_log` WHERE ims_mod_no = '$to_module'";
-        //         // echo $validating_qry;
-        //         $result_validating_qry = $link->query($validating_qry);
-        //         while($row = $result_validating_qry->fetch_assoc()) 
-        //         {
-        //             $input_job_array[] = $row['input_job_rand_no_ref'];
-        //         }
-
-                
-        //         $block_prio_qry = "SELECT block_priorities FROM $bai_pro3.`module_master` WHERE module_name='$to_module'";
-        //         $result_block_prio = $link->query($block_prio_qry);
-        //         while($sql_row = $result_block_prio->fetch_assoc()) 
-        //         {
-        //             $block_priorities = $sql_row['block_priorities'];
-        //         }
-
-        //         $allowable_jobs = $block_priorities-sizeof($input_job_array);
-        //         // echo 'selected size = '.sizeof($selected_sewing_jobs).' allowable = '.$allowable_jobs.' block Priorities = '.$block_priorities.' already inputs in module = '.sizeof($input_job_array) ;
-        //         if(in_array($override_sewing_limitation,$has_permission))
-        //         { 
-        //             $flag = 1;
-        //         }
-        //         else
-        //         {
-        //             if (sizeof($selected_sewing_jobs) > $allowable_jobs)
-        //             {
-        //                 echo "<script>sweetAlert('You are Not Authorized to report more than Block Priorities','','warning');</script>";
-        //                 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",2000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-        //             }
-        //             else
-        //             {
-        //                 $flag=1;
-        //             }
-        //         }            
-
-        //         if ($flag == 1)
-        //         {
-        //             $transfer_query="insert into $brandix_bts.input_transfer(user,input_module,transfer_module,bundles) values ('$user_name',".$module.",".$to_module.",".sizeof($tid).")";
-        //             $sql_result0=mysqli_query($link, $transfer_query) or exit("Sql Error5.0".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        //             $insert_id=mysqli_insert_id($link);
-        //             foreach($tid as $selected)
-        //             {
-        //                 $sql33="update $bai_pro3.ims_log set ims_mod_no = '$to_module' where tid= '$selected'";
-        //                 //echo $sql33;
-        //                 $sql_result=mysqli_query($link, $sql33) or exit("Sql Error5123".mysqli_error($GLOBALS["___mysqli_ston"]));
-
-
-        //                 $sql_ims="select pac_tid from bai_pro3.ims_log where tid='$selected'"; 
-        //                 $sql_result123=mysqli_query($link, $sql_ims) or exit("Sql Error_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
-        //                 while($sql_rowx=mysqli_fetch_array($sql_result123))  
-        //                 { 
-        //                     $pac_tid=$sql_rowx['pac_tid'];
-        //                 }
-
-        //                 $bund_update="update $brandix_bts.bundle_creation_data set assigned_module ='$to_module' where bundle_number='$pac_tid'";
-        //                 $sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        
-		// 				//commented in #2391
-        //                 //$bund_update="update $brandix_bts.bundle_creation_data_temp set assigned_module ='$to_module' where bundle_number='$pac_tid'";
-        //                 //$sql_result1=mysqli_query($link, $bund_update) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-        //                 $sql="select  ims_mod_no, ims_qty,input_job_no_ref,pac_tid from $bai_pro3.ims_log where tid='$selected'"; 
-        //                 //echo $sql."<br>";
-        //                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error455".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        //                 while($sql_row=mysqli_fetch_array($sql_result)) 
-        //                 { 
-        //                     $sql331="insert into $brandix_bts.module_bundle_track (ref_no,bundle_number,module,quantity,job_no) values (".$insert_id.",\"".$sql_row['pac_tid']."\",". $to_module.",  \"".$sql_row['ims_qty']."\",\"".$sql_row['input_job_no_ref']."\" )";
-        //                     //echo $sql331;
-        //                     mysqli_query($link, $sql331) or exit("Sql Error_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
-        //                 } 
-        //             }
-        //             echo "<script>sweetAlert('Sewing Job Transfered Successfully','','success');</script>";
-        //             echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-        //         }
-        //     }
-        //     else
-        //     {
-        //         echo "<script>sweetAlert('Please Select Atleast One Sewing Job','','warning');</script>";
-        //         echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1000); function Redirect() {  location.href = \"mod_rep.php?module=$module\"; }</script>";
-        //     }   
-        // }
-    ?>    
+<body>   
     <br>
     <div class="container-fluid">
         <div class="panel panel-primary">
@@ -230,7 +104,6 @@
                             $input_qty=array();
 
                             $jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$module);
-                            var_dump($jobsArray);
                             if(sizeof($jobsArray)>0)
                             {
                                 if($toggle==0) 
@@ -292,13 +165,30 @@
                                         // echo $bundleRow['fg_color']."</br>";
                                         // echo $bundleRow['quantity']."</br>";
                                         // Call pts barcode table
-                                        $barcodesQry = "select barcode_id from $pts.barcode where external_ref_id = '".$bundleRow['jm_job_bundle_id']."' and barcode_type='APLB'";
+                                        $barcodesQry = "select barcode_id,barcode from $pts.barcode where external_ref_id = '".$bundleRow['jm_job_bundle_id']."' and barcode_type='PSLB' and plant_code='$plantCode' AND is_active=1";
                                         $barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                                         while($barcodeRow=mysqli_fetch_array($barcodeResult))
-                                        {
-                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation from $pts.transaction_log where barcode_id ='".$barcodeRow['barcode_id']."'";
+                                        {   
+                                            $Original_barcode=$barcodeRow['barcode'];
+                                            $qrygetParentBarcodePPLB="SELECT parent_barcode FROM $pts.parent_barcode WHERE child_barcode='".$barcodeRow['barcode_id']."' AND parent_barcode_type='PPLB' AND plant_code='$plantCode' AND is_active=1";
+                                            $barcodePPLBResult=mysqli_query($link_new, $qrygetParentBarcodePPLB) or exit("PPLB Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                            while($PPLBRow=mysqli_fetch_array($barcodePPLBResult))
+                                            {
+                                                $parent_barcode=$PPLBRow['parent_barcode'];
+                                            }
+
+                                            $child_barcode[]=$APLBRow['child_barcode'];
+                                            $child_barcode=array();
+                                            $qrygetParentBarcodeAPLB="SELECT child_barcode FROM $pts.parent_barcode WHERE parent_barcode='$parent_barcode' AND child_barcode_type='APLB' AND plant_code='$plantCode' AND is_active=1";
+                                            $barcodeAPLBResult=mysqli_query($link_new, $qrygetParentBarcodeAPLB) or exit("PPLB Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                            while($APLBRow=mysqli_fetch_array($barcodeAPLBResult))
+                                            {
+                                                $child_barcode[]=$APLBRow['child_barcode'];
+                                            }
+
+
+                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where barcode_id IN ('".implode("','" , $child_barcode)."') GROUP BY operation";
                                             $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-                                            $rejQtyOps=array();
                                             while($transactionRow=mysqli_fetch_array($transactionsResult)) {
                                                 // echo $transactionRow['good_quantity']."</br>";
                                                 // echo $transactionRow['rejected_quantity']."</br>";
@@ -307,6 +197,8 @@
                                                 /** getting input and out put based on operations*/
                                                 if($minOperation==$transactionRow['operation']){
                                                     $inputQty=$transactionRow['good_quantity'];
+                                                    $input_date=$transactionRow['input_date'];
+                                                    $aging=$transactionRow['days'];
                                                 }
                                                 if($maxOperation==$transactionRow['operation']){
                                                     $outputQty=$transactionRow['good_quantity'];
@@ -318,26 +210,19 @@
 
                                         echo "<tr>
                                                 <td>"; 
-                                                if($original_qty == $recevied_qty and $sql_row12['ims_pro_qty']==0 )   
-                                                { 
-                                                    if($recevied_qty1 == 0)
+                                                 
+                                                    if($inputQty==0)
                                                     {    
-                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$sql_row12['tid']."\">"; 
+                                                        echo "<input type=\"checkbox\" name=\"log_tid[]\"   value=\"".$Original_barcode."\">"; 
                                                     }
                                                     else 
                                                     { 
                                                         echo "N/A"; 
                                                     } 
-                                                } 
-                                                else 
-                                                { 
-                                                    echo "N/A"; 
-                                                }
-                                                // echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
-                                            $aging=dateDiffsql(date("Y-m-d"),$sql_row12['ims_date']);
+                                                //echo '<input type="hidden" value="'.$pac_tid.'" name="pac_tid[]">'; 
                                             echo "</td>
-                                                <td>".$bundleRow['bundle_number']."</td>
-                                                <td>".$sql_row12['ims_date']."</td>";
+                                                <td>".$Original_barcode."</td>
+                                                <td>".$input_date."</td>";
                                             echo "<td>".$style."</td>
                                                 <td>".$schedule."</td>
                                                 <td>".$color."</td>
@@ -353,6 +238,9 @@
                                                 <td>".($inputQty-($outputQty+$outputRejQty))."</td>
                                         </tr>";
                                         
+                                        $inputQty=0;
+                                        $outputQty=0;
+                                        $outputRejQty=0;
                                     }
  
                                 }
@@ -368,59 +256,28 @@
                     <select class='form-control' name="module_ref"  id='module_ref' required>
                         <option value=''>Please Select</option>
                             <?php
-                                $sqlx="select * from $bai_pro3.sections_db where sec_id>0 ";
-                                $sql_resultx=mysqli_query($link, $sqlx) or exit("NO sections availabel");
-                                $break_counter = 0;
-                                while($sql_rowx=mysqli_fetch_array($sql_resultx))
+                             $departmentType = DepartmentTypeEnum::SEWING;
+                             /**getting workstations based plant and department*/
+                             $workstationsResult=getWorkstations($departmentType,$plantCode,$module);
+                             $workStations=$workstationsResult['workstation'];
+                                // for($x=0;$x<sizeof($work_mod);$x++)
+                                foreach($workStations as $key=>$value)
                                 {
-                                    //$section_mods = [] ;
-                                    $break_counter++;
-                                    $section=$sql_rowx['sec_id'];
-                                    $section_head=$sql_rowx['sec_head'];
-                                    
-									if($sql_rowx['sec_mods']!='')
-									{
-										 $section_mods[]=$sql_rowx['sec_mods']; 
-									}
-                                    
-                                    $mods1 = implode(',',$section_mods);
-
-                                    $get_operations="SELECT * FROM $brandix_bts.`tbl_orders_ops_ref` WHERE default_operation='yes' AND  (work_center_id IS NULL OR work_center_id='')";
-                                    $sql_res=mysqli_query($link, $get_operations) or exit("workstation id error");
-                                    while ($row2=mysqli_fetch_array($sql_res)) 
-                                    {
-                                        $short_key = $row2['short_cut_code'];
-                                    }
-
-                                    $work_station_module="select module from $bai_pro3.work_stations_mapping where module IN ($mods1) and operation_code = '$short_key'";
-                                    $sql_result1=mysqli_query($link, $work_station_module) or exit("NO Modules availabel");
-                                    while ($row1=mysqli_fetch_array($sql_result1))
-                                    {
-                                        if (!in_array($row1['module'], $work_mod))
-                                        {
-                                            $work_mod[]=$row1['module'];
-                                        }
-                                    }
-                                }
-                                // $final_mods = array_unique($work_mod);
-                                // echo($final_mods);
-                                for($x=0;$x<sizeof($work_mod);$x++)
-                                {
-                                  echo "<option value=\"".$work_mod[$x]."\" >".$work_mod[$x]."</option>";
+                                  echo "<option value=\"".$key."\" >".$value."</option>";
                                   //$module=$mods[$x];
                                 }
                             ?>
                     </select>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <?php
-                        if(in_array($authorized,$has_permission))
-                        { 
+                           
                             // echo "&nbsp;<input  title='click to transfer the input' type='radio' name = 'option' Id='option' value='input_transfer'> Input Transfer";
 
-                            echo '<input type="submit" name="submit" class="btn btn-primary " value="Input Transfer"> 
+                            echo '<input type="button" name="submit" id="submit" class="btn btn-primary " value="Input Transfer"> 
                                 <input type="hidden" value="'.$module.'" name="module"> 
-                                <input type="hidden" value="'.$section_id.'" name="section_id">'; 
-                        }
+                                <input type="hidden" value="'.$section_id.'" name="section_id">
+                                <input type="hidden" value="'.$plant_code.'" name="plant_code">
+                                <input type="hidden" value="'.$user_name.'" name="plant_code">'; 
                     ?>
                 </form>
             </div>
@@ -431,6 +288,55 @@
 
 </body>
 
+
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+    
+<script>
+$(document).ready(function(){
+       $('body').on('click','#submit',function(){
+        var bundles=[];
+            $('input[type=checkbox]').each(function (){
+                if(this.checked){
+                    //console.log($(this).val());
+                    bundles.push($(this).val())
+
+                }
+            });
+            var module = '<?= $module?>';
+                const data={
+                                "bundleNumber": bundles,
+                                "plantCode": '<?= $plantCode ?>',
+                                "resourceId": '<?= $module ?>',
+                                "createdUser": '<?= $user_name ?>'
+                            }
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+                    data: data,
+                    success: function (res) {
+                        if(res.status)
+                        {
+                            swal('','Sewing Job Transfered Successfully','success')
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                            
+                        }
+                        else
+                        {
+                            swal('',res.internalMessage,'error');
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                        }                       
+                        //$('#loading-image').hide();
+                    },
+                    error: function(res){
+                        swal('Error in getting data');
+                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module)} , 3000);
+                        //$('#loading-image').hide();
+                    }
+                });
+   });
+
+});
+</script>
 <script language="javascript" type="text/javascript">
     var table2_Props =  {            
         display_all_text: "All",

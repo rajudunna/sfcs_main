@@ -158,7 +158,6 @@ function save_details($data,$module,$module1,$plant_code,$username){
     global $link_new;
     global $tms;
     global $pps;
-    global $pts;
     global $TaskTypeEnum;
     $counter = 0;
     $tasktype = TaskTypeEnum::SEWINGJOB; 
@@ -229,11 +228,11 @@ function save_details($data,$module,$module1,$plant_code,$username){
             mysqli_query($link_new, $task_header_update)or exit("task_header_update error".mysqli_error($GLOBALS["___mysqli_ston"]));
         }   
 
-        $insert_qry="insert into $pts.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values ('".$job."','".$module1."','".$module."','".$username."','".$plant_code."','".$username."','".$username."')";
+        $insert_qry="insert into $tms.ips_job_transfer (job_no,module,transfered_module,user,plant_code,created_user,updated_user) values ('".$job."','".$module1."','".$module."','".$username."','".$plant_code."','".$username."','".$username."')";
         // echo  $insert_qry;
         mysqli_query($link_new, $insert_qry)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-        $insert_qry1="insert into $pts.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values ('".$job."','".$module."','P','".$plant_code."','".$username."','".$username."')";
+        $insert_qry1="insert into $tms.job_transfer_details (sewing_job_number,transfered_module,status,plant_code,created_user,updated_user) values ('".$job."','".$module."','P','".$plant_code."','".$username."','".$username."')";
         mysqli_query($link_new, $insert_qry1)or exit("insert qty error".mysqli_error($GLOBALS["___mysqli_ston"]));
         $counter++;
     }
