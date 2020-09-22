@@ -99,7 +99,7 @@ $(document).ready(function()
                 if(res.status)
                 {
                     bundet=res.data;
-                    tableConstruction(bundet);
+                    tableConstruction(res,barcode,tomodule);
                 }
                 else
                 {
@@ -115,9 +115,9 @@ $(document).ready(function()
     }); 
 });
 
-function tableConstruction(bundet){
+function tableConstruction(res,barcode,tomodule){
     s_no = 0;
-    if(bundet)
+    if(res)
     {
         $('#dynamic_table1').html('');
         // for(var i=0;i<bundet.length;i++)
