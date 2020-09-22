@@ -157,10 +157,10 @@ $(document).ready(function()
 			success: function (res) {            
 				if(res.status)
 				{
-					bundet=res.data
+					
 					if(bundet)
 					{
-						tableConstruction(bundet);
+						tableConstruction(res);
 					}
 					else
 					{
@@ -182,22 +182,23 @@ $(document).ready(function()
 	});			
 });
 
-function tableConstruction(bundet){
-    console.log(bundet);
+function tableConstruction(res){
+    console.log(res);
 	s_no = 0;
-    if(bundet)
+    if(res)
     {
+		bundet=res.data;
 		$('#dynamic_table1').html('');
 		// for(var i=0;i<bundet.length;i++)
         // {
 			if(bundet.style!='' || bundet.style!=null)
 			{
 				var hidden_class='';
-				if(i==0)
-				{
+				// if(i==0)
+				// {
 					var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
 					$("#dynamic_table1").append(markup);
-				}
+				// }
 				s_no++;
 				
 				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+res.bundleBrcdNumber+"</td><td data-title='operation'>"+res.operationCode+"</td><td data-title='style'>"+bundet.style+"</td><td data-title='fgColor'>"+bundet.fgColor+"</td><td data-title='size'>"+bundet.size+"</td><td data-title='goodQty'>"+bundet.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
