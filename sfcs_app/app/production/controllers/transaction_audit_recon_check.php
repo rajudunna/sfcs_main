@@ -85,10 +85,10 @@ foreach($org_qty_details as $fgColor => $colorDetails) {
 				+$recut_qty
 				+$replaced
 				+$transfer+$sample_out_qty+$sample_in_qty)-($ops_details['output_qty']+$ops_details['rejected_qty']+$outofratio+$sample_out_qty))."</td>";
-				$missing_qty+=((($ops_details['input_qty']-$transfer)
+				$missing_qty+= ((($ops_details['input_qty']-$transfer)
 				+$recut_qty
 				+$replaced
-				+$transfer+$sample_out_qty+$sample_in_qty)-($output+$ops_details['rejected_qty']+$outofratio+$sample_out_qty));	
+				+$transfer+$sample_out_qty+$sample_in_qty)-($ops_details['output_qty']+$ops_details['rejected_qty']+$outofratio+$sample_out_qty));	
 				echo "</tr>";
 			}
 		}
