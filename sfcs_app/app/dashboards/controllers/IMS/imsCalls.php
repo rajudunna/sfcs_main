@@ -14,7 +14,7 @@ function getShifts($plantCode) {
             $shifts = [];
             while($row = mysqli_fetch_array($shiftQueryResult)){
                 $shiftRecord = [];
-                $shiftRecord["shiftValue"] = $row['shift_id'];
+                $shiftRecord["shiftValue"] = $row['shift_code'];
                 $shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
                 array_push($shifts, $shiftRecord);
             }
@@ -146,7 +146,7 @@ function getOperationsTypeSewing($plantCode){
    * @param:department,plantcode
    * @return:workstation
    * */
-  function getWorkstations($department,$plantcode){
+  function getWorkstations($department,$plantcode,$workstationid){
     global $link_new;
     global $pms;
     /**Qry to get departmen wise id's */
@@ -172,7 +172,7 @@ function getOperationsTypeSewing($plantCode){
     }
     $workstations = implode("','", $workstationtype);
     /**Getting work stations against workstation type*/
-    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_type_id IN ('$workstations')";
+    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_id!='$workstationid' AND workstation_type_id IN ('$workstations')";
     $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstation=array();
     $workstations_result_num=mysqli_num_rows($workstations_result);
