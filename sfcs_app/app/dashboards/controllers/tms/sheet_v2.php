@@ -154,7 +154,6 @@ if(count($colors)>0){
                         $size_qty = $row['quantity'];
                         
                         $mo_sql="SELECT oms_mo_details.mo_number as mo_no FROM $oms.`oms_mo_details` LEFT JOIN $oms.`oms_products_info` ON oms_mo_details.mo_number=oms_products_info.`mo_number` WHERE style='".$style."' AND SCHEDULE='".$schedule."' AND color_desc='".$color."' AND size_name='".$size_name."'";
-                        echo  $mo_sql;
                         $mo_sql_result=mysqli_query($link, $mo_sql) or die("Error".$mo_sql.mysqli_error($GLOBALS["___mysqli_ston"]));
                         $mo_numrows=mysqli_num_rows($mo_sql_result);
                         

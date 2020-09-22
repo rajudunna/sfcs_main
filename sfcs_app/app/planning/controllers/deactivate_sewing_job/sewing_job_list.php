@@ -27,23 +27,23 @@ if(isset($_POST['Save']))
             // $ims_remarks = $_POST['ims_remarks'][$key];
             // $module = $_POST['module'];
             $remove_type=3;
-            $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no'  and plant_code='$plant_code' and remove_type = '0'";
+            $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no'  and plant_code='$plant_code' and remove_type = '0'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
             if($sql_num_check>0){
                 while($sql_row=mysqli_fetch_array($job_deacive_result))
                 {
                     $reverse_deactive_job_id = $sql_row['id'];
-                    $update_revers_qry = "update $pts.job_deactive_log set remove_type='$remove_type',input_qty='$input_qty',updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and id=".$reverse_deactive_job_id;
+                    $update_revers_qry = "update $tms.job_deactive_log set remove_type='$remove_type',input_qty='$input_qty',updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and id=".$reverse_deactive_job_id;
                     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $deactive_job_id = $reverse_deactive_job_id;
                 }
             } else {
-                $job_deacive_hold = "SELECT * FROM $pts.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
+                $job_deacive_hold = "SELECT * FROM $tms.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                 $job_deacive_hold_result=mysqli_query($link, $job_deacive_hold) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $sql_num_check_hold=mysqli_num_rows($job_deacive_hold_result);
                 if($sql_num_check_hold == 0 ){
-                    $insert_qry = "insert into $pts.job_deactive_log(input_date,style,schedule,color,po_number,module_no,input_job_no,input_job_no_random,input_qty,remove_type,tran_user,plant_code,created_user,updated_user) values('$planned_date','$style','$schedule','$color','$po_number','$module','$input_job_no','$jm_jg_header_id','$input_qty','$remove_type','$username','$plant_code','$username','$username')";
+                    $insert_qry = "insert into $tms.job_deactive_log(input_date,style,schedule,color,po_number,module_no,input_job_no,input_job_no_random,input_qty,remove_type,tran_user,plant_code,created_user,updated_user) values('$planned_date','$style','$schedule','$color','$po_number','$module','$input_job_no','$jm_jg_header_id','$input_qty','$remove_type','$username','$plant_code','$username','$username')";
                     // echo $insert_qry;
                     $insert_qry_result=mysqli_query($link, $insert_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $deactive_job_id = mysqli_insert_id($link);
@@ -69,7 +69,7 @@ if(isset($_POST['Save']))
             $input_job_no = $_POST['input_job_no'][$key];
             $jm_jg_header_id = $_GET['jm_jg_header_id'];
             $jm_jg_header_id = $_POST['jm_jg_header_id'][$key];
-            $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
+            $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
             if($sql_num_check>0){
@@ -77,7 +77,7 @@ if(isset($_POST['Save']))
                 {
                     $reverse_deactive_job_id = $sql_row['id'];
                    // $module = $sql_row['module_no'];
-                    $update_revers_qry = "update $pts.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
+                    $update_revers_qry = "update $tms.job_deactive_log set remove_type='0' where id=".$reverse_deactive_job_id;
                     $update_revers_qry_result = mysqli_query($link, $update_revers_qry) or exit("update error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $tasktype=TaskTypeEnum::SEWINGJOB;
                     

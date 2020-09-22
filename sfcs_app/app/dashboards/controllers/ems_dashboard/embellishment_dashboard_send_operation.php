@@ -28,8 +28,10 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/enums.php', 4, 'R'));
 set_time_limit(200000);
 $session_plant_code = $_SESSION['plantCode'];
-// $session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
+// $session_plant_code = 'AIP';
+// $username = 'AIP';
+
 ?>
 
 <meta charset="utf-8">

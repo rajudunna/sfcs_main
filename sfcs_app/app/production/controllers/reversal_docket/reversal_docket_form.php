@@ -162,6 +162,7 @@ if(isset($_POST['reversesubmit']))
    $reverseRollIds = $_POST['roll_ids'];
    $reverseVal = $_POST['reverseVal'];
    $lay_id = $_POST['lay_id'];
+   $docket_number = $_POST['docket_number'];
    $lay_plies = 0;
    foreach($reverseRollIds as $key=>$value)
    {
@@ -172,6 +173,9 @@ if(isset($_POST['reversesubmit']))
    }
    $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+   $updateDocketQty = "UPDATE $pps.jm_docket_lines set lay_status = 'OPEN' where jm_docket_line_id = '$docket_number'";
+   mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script>sweetAlert('Lay Reversed Successfully!!!','','success');
    window.location = '".$url."'</script>"; 

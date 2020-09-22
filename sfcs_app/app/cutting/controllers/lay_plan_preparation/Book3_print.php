@@ -3,19 +3,24 @@ include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
 include('../../../../common/config/functions_v2.php');
 include('../../../../common/config/functions_dashboard.php');	
-$doc_id=$_GET['doc_no'];
+$doc_num=$_GET['doc_id'];
 $print_status=$_GET['print_status'];
-
-
-
-
-
 $plant_code = $_GET['plant_code'];
 $username = $_GET['username'];
+$sql22="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_num' and plant_code='$plant_code'";
+	    $jm_cut_job_result1=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row12=mysqli_fetch_array($jm_cut_job_result1))
+		{
+			$doc_id= $sql_row12['jm_docket_line_id'];
 
-if($doc_id!="" && $plant_code!=''){
+		}
+
+
+
+
+if($doc_num!="" && $plant_code!=''){
 	//this is function to get style,color,and cutjob
-	$result_jmdockets=getJmDockets($doc_id,$plant_code);
+	$result_jmdockets=getJmDockets($doc_num,$plant_code);
 	$style =$result_jmdockets['style'];
 	$fg_color =$result_jmdockets['fg_color'];
 	$plies =$result_jmdockets['plies'];
@@ -104,9 +109,8 @@ if($ratio_id!=' ' && $plant_code!=''){
 <?php
 
 	
-	$doc_num = "'" . str_replace(',',"','",$doc_id) . "'";
+	$doc_num = "'" . str_replace(',',"','",$doc_num) . "'";
 	$sql="select min(roll_width) as width from $wms.fabric_cad_allocation where doc_no in ($doc_num) and doc_type=\"normal\" and plant_code='".$plant_code."'";
-//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1x=mysqli_fetch_array($sql_result))
 	{
@@ -1811,7 +1815,7 @@ function printpr()
   <td class=xl944118><?php echo $created_at; ?></td>
   <td class=xl964118></td>
   <td colspan=2 class=xl914118>Category :</td>
-  <td colspan=2 class=xl1214118>Binding</td>
+  <td colspan=2 class=xl1214118>Normal</td>
   <td  colspan=2 class=xl984118></td>
   <td colspan=2 class='xl984118 right'></td>
  </tr>
@@ -1860,30 +1864,7 @@ function printpr()
  <tr class=xl674118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl674118 style='height:15.0pt'></td>
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >(Docket - Cut No):
-  <?php
-	// $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
-	// mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row33=mysqli_fetch_array($sql_result33))
-	// {
-	// 	$color_code=$sql_row33['color_code']; //Color Code
-	// }
-  
-	// $docsqry="select doc_no,cutno from $bai_pro3.binding_consumption_items where parent_id=$bindid";
-	// $sql_result_doc=mysqli_query($link, $docsqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// while($sql_row=mysqli_fetch_array($sql_result_doc))
-	// {
-	// 	$doc_id=$sql_row['doc_no'];
-	// 	$cutno=$sql_row['cutno'];
-		
-	// 	$finresult[]=$doc_id.'-'.chr($color_code).leading_zeros($cutno,3);
-	// }
-	//$finresult[]=$doc.'-'.chr($color_code).leading_zeros($cut_number,3);
-	$finresult[]=$doc.'-'.$cut_number;
-
-	$findata=implode(',',$finresult);
-	echo $findata;
-  ?>
+ 
   </td>
  </tr>
  
@@ -1906,21 +1887,7 @@ function printpr()
   <td class=xl654118></td>
   <td class=xl654118></td>
  </tr>
- 	<?php if (count($original_details) > 0)
-	{
-		?>
-	<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
-		<td height=20 class=xl654118 style='height:10.0pt'></td>
-		<td class=xl694118 colspan="30">(<?php echo $label; ?> - Docket): <?php
-						                                        {
-						                                            $org_details =  implode(',', $original_details);
-						                                            echo "$org_details";
-						                                        } 
-						                                   ?> </td>
-	</tr>
-	<?php
-	}
-	?>
+
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl654118></td>
@@ -1952,57 +1919,57 @@ function printpr()
 		// if($flag == 1)
 		// {
 			
-			//number of sizes-which excludes null
-			$total_size = sizeof($size_tit);
-			//echo $total_size;
-			// $total_size = 50;
-			for($s=0;$s<$total_size;$s++)
-			{
+			// //number of sizes-which excludes null
+			// $total_size = sizeof($size_tit);
+			// //echo $total_size;
+			// // $total_size = 50;
+			// for($s=0;$s<$total_size;$s++)
+			// {
 				
-				if($temp == 0){
-					echo "<td class=xl654118>Size</td>";
-					$temp = 1;
-				}
-				echo  "<td class=xl694118>".$size_tit[$s]."</td>";
-				if(($s+1) % $divide == 0){
-					$temp_len = $s+1;
-					echo "</tr>";
-					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
-						<td height=20 class=xl654118 style='height:10.0pt'></td>
-						<td class=xl654118>Ratio</td>";
-					for($i=$temp_len1;$i<$total_size;$i++) {
-							echo "<td class=xl734118>N/A</td>";
-						}
-					echo "</tr>";
-					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
-					<td height=20 class=xl654118 style='height:10.0pt'></td>
-					<td class=xl654118>Quantity</td>";
-					for($i=0;$i<$total_size;$i++) {
-						echo "<td class=xl734118 >".($ratioof[$i])."</td>";
-					}
-					echo "</tr>";
-					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'></tr><td></td>";
-					$temp = 0;
-					$temp_len1=$temp_len;
-				}
-				// echo $s.'=='.$total_size;
-				if($s+1==$total_size) {
-					echo "<td class=xl714118>Total</td></tr><tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'><td height=20 class=xl654118 style='height:10.0pt'></td><td class=xl654118>Ratio</td>";
-					for($i=$temp_len1;$i<$total_size;$i++) {
-						echo "<td class=xl734118>N/A</td>";
-					}
-					echo "<td class=xl754118>N/A</td>";
-					echo "</tr>";
-					echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
-					<td height=20 class=xl654118 style='height:10.0pt'></td>
-					<td class=xl654118>Quantity</td>";
-					for($i=$temp_len1;$i<$total_size;$i++) {
-						echo "<td class=xl734118 >".($ratioof[$i]*$plies)."</td>";
-					}
-					echo "<td class=xl754118>".(array_sum($ratioof)*$plies)."</td>";
-					echo "</tr>";
-				}
-			}
+			// 	if($temp == 0){
+			// 		echo "<td class=xl654118>Size</td>";
+			// 		$temp = 1;
+			// 	}
+			// 	echo  "<td class=xl694118>".$size_tit[$s]."</td>";
+			// 	if(($s+1) % $divide == 0){
+			// 		$temp_len = $s+1;
+			// 		echo "</tr>";
+			// 		echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
+			// 			<td height=20 class=xl654118 style='height:10.0pt'></td>
+			// 			<td class=xl654118>Ratio</td>";
+			// 		for($i=$temp_len1;$i<$total_size;$i++) {
+			// 				echo "<td class=xl734118>N/A</td>";
+			// 			}
+			// 		echo "</tr>";
+			// 		echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
+			// 		<td height=20 class=xl654118 style='height:10.0pt'></td>
+			// 		<td class=xl654118>Quantity</td>";
+			// 		for($i=0;$i<$total_size;$i++) {
+			// 			echo "<td class=xl734118 >".($ratioof[$i])."</td>";
+			// 		}
+			// 		echo "</tr>";
+			// 		echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'></tr><td></td>";
+			// 		$temp = 0;
+			// 		$temp_len1=$temp_len;
+			// 	}
+			// 	// echo $s.'=='.$total_size;
+				
+			// 		echo "<td class=xl714118>Total</td></tr><tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'><td height=20 class=xl654118 style='height:10.0pt'></td><td class=xl654118>Ratio</td>";
+			// 		for($i=$temp_len1;$i<$total_size;$i++) {
+			// 			echo "<td class=xl734118>N/A</td>";
+			// 		}
+			// 		echo "<td class=xl754118>N/A</td>";
+			// 		echo "</tr>";
+			// 		echo "<tr class=xl654118 height=20 style='mso-height-source:userset;height:10.0pt'>
+			// 		<td height=20 class=xl654118 style='height:10.0pt'></td>
+			// 		<td class=xl654118>Quantity</td>";
+			// 		for($i=$temp_len1;$i<$total_size;$i++) {
+			// 			echo "<td class=xl734118 >".($ratioof[$i]*$plies)."</td>";
+			// 		}
+			// 		echo "<td class=xl754118>".(array_sum($ratioof)*$plies)."</td>";
+			// 		echo "</tr>";
+				
+			// }
 		// }
 	  ?>
 	  </tr>
@@ -2120,7 +2087,7 @@ function printpr()
   
   <?php
 
- $sql1="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_id' and plant_code='$plant_code'";
+ $sql1="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number=$doc_num and plant_code='$plant_code'";
  $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error at inspection123".mysqli_error($GLOBALS["___mysqli_ston"]));
  while($sql_row1=mysqli_fetch_array($sql_result1))
  {
