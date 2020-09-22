@@ -248,7 +248,7 @@
 								} else {
 									// the API is successfull
 									$inventory_id = $decoded[0]['id'];
-									$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id." and fg_status<>'pass'";
+									$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id."";
 									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
 								}								
 							}							
