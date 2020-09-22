@@ -57,4 +57,13 @@ class TrimStatusEnum {
     const PARTIALISSUED = 'Partial Issued';
     const ISSUED = 'Issued To Module';
 }
+
+class BarcodeType {
+    const PPLB = 'PPLB';
+    const PSLB = 'PSLB';
+    const PD = 'PD';
+    const PDB = 'PDB';
+    const PCRT = 'PCRT';
+}
+
 ?>
