@@ -45,12 +45,17 @@ $reject_report = '';
 echo '<input type="hidden" name="good_report" id="good_report" value="'.$good_report.'">';
 echo '<input type="hidden" name="reject_report" id="reject_report" value="'.$reject_report.'">';
 if(isset($_GET['doc_no'])){
+    $docket_line_id=$_GET['doc_no'];
+    $get_docket_number="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_line_id='$docket_line_id'";
+    $sql_result121=mysqli_query($link, $get_docket_number) or exit("Sql Error get_docket_number".mysqli_error($GLOBALS["___mysqli_ston"]));
+    while($row_doc = mysqli_fetch_array($sql_result121)){
+        $doc_no = $row_doc['docket_line_number'];
+    }
     $cut_table = $_GET['cut_table'];
-    $doc_no = $_GET['doc_no'];
+    //$doc_no = $_GET['doc_no'];
     echo "<script>
         $(document).ready(function(){
             $('#doc_no').val($doc_no);
-            $('#cut_table option[value=$cut_table]').attr('selected','selected');
             loadDetails($doc_no);
         });
     </script>";
