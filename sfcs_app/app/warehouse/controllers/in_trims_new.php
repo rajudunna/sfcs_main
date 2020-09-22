@@ -4,7 +4,7 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/user_acl_v1.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/global_error_function.php");
-$main_url=getFullURL($_GET['r'],'in_trims_new.php','R');
+$main_url=$_SERVER['PHP_SELF'];
 $plantcode=$_GET['plantcode'];
 $username=$_GET['username'];
  ?>
