@@ -3,20 +3,20 @@ include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
 include('../../../../common/config/functions_v2.php');
 include('../../../../common/config/functions_dashboard.php');	
-$doc_id=$_GET['doc_id'];
+$doc_num=$_GET['doc_id'];
 $print_status=$_GET['print_status'];
-
-$sql22="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_id' and plant_code='$plant_code'";
+$plant_code = $_GET['plant_code'];
+$username = $_GET['username'];
+$sql22="select docket_line_number from $pps.jm_docket_lines where jm_docket_line_id='$doc_num' and plant_code='$plant_code'";
 	    $jm_cut_job_result1=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row12=mysqli_fetch_array($jm_cut_job_result1))
 		{
-			$doc_num = $sql_row12['jm_docket_line_id'];
+			$doc_id= $sql_row12['docket_line_number'];
 
 		}
 
 
-$plant_code = $_GET['plant_code'];
-$username = $_GET['username'];
+
 
 if($doc_id!="" && $plant_code!=''){
 	//this is function to get style,color,and cutjob
