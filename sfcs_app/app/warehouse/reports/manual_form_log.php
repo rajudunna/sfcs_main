@@ -9,11 +9,12 @@
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'manual_form_log.php','R');
 	$has_permission=haspermission($_GET['r']);
 	$plant_code = $_SESSION['plantCode'];
 	//echo var_dump($has_permission);
 ?>
-
 
  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',4,'R'); ?>" type="text/css" media="all" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',4,'R'); ?>"></script>

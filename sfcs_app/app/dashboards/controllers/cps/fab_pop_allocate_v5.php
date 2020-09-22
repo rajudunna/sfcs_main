@@ -676,7 +676,6 @@ if(isset($_POST['allocate_new']))
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
 	$marker_version=$_POST['marker_version'];
-	
 	for($i=0;$i<sizeof($doc_ref);$i++)
 	{
 		$temp="lable".$doc_ref[$i];
@@ -840,6 +839,9 @@ if(isset($_POST['allocate_new']))
 						}
 						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid=".$tid_ref[$j];
 						mysqli_query($link, $sql121) or exit("$sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_ref[$j]'";
+						//echo $sql1211;
+		mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 					}
 				}
 			}
@@ -884,12 +886,10 @@ if(isset($_POST['allocate_new']))
 					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_line_id='.$doc_ref[$i].'";
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+				
 				}
 			}
-			$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version' updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_ref'";
-
-			mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
+			
 		}
 		
 	}
@@ -928,6 +928,7 @@ if(isset($_POST['allocate']))
 	$username=$_POST['username'];
 	$plant_code=$_POST['plantcode1'];
 	$process_cat=$_POST['process_cat'];
+	$marker_version=$_POST['marker_version'];
 	$style_ref=$_POST['style_ref'];
 	$size_doc=sizeof($doc);
 	$note="";
@@ -1061,6 +1062,7 @@ if(isset($_POST['allocate']))
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
 		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
 		echo "<input type=\"hidden\" name=\"username\" value=\"".$username."\">";
+		echo "<input type=\"hidden\" name=\"marker_version\" value=\"".$marker_version."\">";
 		echo "<input type=\"hidden\" name=\"plant_codename\" value=\"".$plant_code."\">";
 		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(",",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
