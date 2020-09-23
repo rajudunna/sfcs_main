@@ -453,7 +453,7 @@ $.ajax
           ?>
         <div class="section_main_box">
               <div class="sections_heading1">
-                <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $department['sectionId']; ?>', 'myPop1',800,600);" ><?php echo $department['sectionName']; ?><br />
+                <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $department['sectionId']; ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1',800,600);" ><?php echo $department['sectionName']; ?><br />
                 </a>
               </div>
           <?php    
@@ -474,7 +474,7 @@ $.ajax
                 <!-- module number DIV start -->  
               <div class="line_no">
                 <a href="#" data-toggle="tooltip" tile="M-<?php echo $workstations['workstationCode']; ?> WIP :  
-                <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>', 'myPop1');">
+                <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1');">
                 <?= $workstations['workstationCode'] ?></a>
               </div>  
               <!-- module number DIV END -->
