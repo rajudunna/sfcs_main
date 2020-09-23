@@ -20,23 +20,23 @@ function firstbox()
 {
 	var cpo_value=document.test.cpo.value;
 	if(cpo_value!='all'){
-		window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&cpo="+cpo_value;
+		window.location.href ="<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+cpo_value;
 		
 	}else{
-		window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&cpo="+'all';
+		window.location.href ="<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+'all';
 	}
 	
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value;
 	window.location.href = uriVal;
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value;
 	window.location.href = uriVal;
 }
 // function fourthbox()
@@ -46,17 +46,17 @@ function thirdbox()
 // }
 function fifthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 function sixthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
 	window.location.href = uriVal;
 }
 function seventhbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&cpo="+document.test.cpo.value+"&buyer_div="+document.test.buyer_div.value+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
