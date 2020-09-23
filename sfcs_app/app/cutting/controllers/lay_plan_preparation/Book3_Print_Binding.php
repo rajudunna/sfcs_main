@@ -3,10 +3,9 @@ include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 //getting style and scheduele and color
-$doc=$_GET['binding_id'];
-
-	$doc_id[]=$doc;
-
+$doc1=$_GET['binding_id'];
+$doc=$_GET['docket_number'];
+$doc_id[]=$doc;
 $doc_id=implode(',',$doc_id);
 $divide = 15;
 $plant_code = $_GET['plant_code'];
@@ -2116,12 +2115,18 @@ function printpr()
   <td rowspan="2" colspan="11" class=xl764118 style='border-bottom:.5pt solid black;' >Inspection Comments:
   
   <?php
-
+ $docket_query = "select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc' and plant_code='".$plant_code."'";
+ $docket_query_result = mysqli_query($link_new,$docket_query);
+ while($sql_row1=mysqli_fetch_array($docket_query_result))
+ {
+	 $jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+ }
 //function to get docket 
+
 $doc=4;
 $doc_ype="binding";
-if($doc!='' && $doc_ype!=''){
-	$result_docketinfo=getDocketInfo($doc,$doc_ype);
+if($jm_docket_line_id!='' && $doc_ype!='' && $plant_code!=''){
+	$result_docketinfo=getDocketInfo($jm_docket_line_id,$doc_ype,$plant_code);
 	$roll_det =$result_docketinfo['roll_det'];
 	$width_det =$result_docketinfo['width_det'];
 	$leng_det =$result_docketinfo['leng_det'];
@@ -2151,8 +2156,8 @@ if($doc!='' && $doc_ype!=''){
 		}
 	   
 	    $batchs=array_unique($batchs);
-	    $sql="select group_concat(sp_rem) as rem from $wms.inspection_db where batch_ref in (".implode(",",$batchs).")";
-   	    //echo $sql;
+	    $sql="select group_concat(sp_rem) as rem from $wms.inspection_db where batch_ref in (".implode(",",$batchs).") and plant_code='$plant_code'";
+   	   
 	    $sql_result=mysqli_query($link, $sql) or exit("Sql Error at inspection".mysqli_error($GLOBALS["___mysqli_ston"]));
 	    while($sql_row=mysqli_fetch_array($sql_result))
 	    {
@@ -2174,14 +2179,15 @@ if($doc!='' && $doc_ype!=''){
  <?php
  $roll_length = array();
 //  $roll_det = array();
- $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $wms.docket_ref WHERE doc_no=\"B".$bindid."\" AND doc_type='binding' GROUP BY ref4";
- $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
- while($sql_row123=mysqli_fetch_array($sql_result123))
-{
-	$roll_length[]=$sql_row123['ref2'];
-	$shade_lengt[]=$sql_row123['shade_lengt'];
-	$shade[]=$sql_row123['ref4'];
-}
+//  $sql123="SELECT ref2,ref4,SUM(allocated_qty) AS shade_lengt FROM $wms.docket_ref WHERE doc_no=\"B".$bindid."\" AND doc_type='binding' GROUP BY ref4";
+//  echo $sql123;
+//  $sql_result123=mysqli_query($link, $sql123) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+//  while($sql_row123=mysqli_fetch_array($sql_result123))
+// {
+// 	$roll_length[]=$sql_row123['ref2'];
+// 	$shade_lengt[]=$sql_row123['shade_lengt'];
+// 	$shade[]=$sql_row123['ref4'];
+// }
  ?>
  <!--</td>-->
  </tr>
@@ -2687,8 +2693,8 @@ $(document).ready(function(){
 </script>
 
 <?php
-$printqry="select status from $pps.binding_consumption where id='$bindid' and plant_code='".$plant_code."'";
-$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$printqry="select status from $pps.binding_consumption where id='$doc1' and plant_code='".$plant_code."'";
+$sql_result_print=mysqli_query($link, $printqry) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result_print))
 {
 	$printstatus=$sql_row['status'];
@@ -2696,7 +2702,7 @@ while($sql_row=mysqli_fetch_array($sql_result_print))
 
 if($printstatus!='Close')
 {
-	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id = $bindid and plant_code='".$plant_code."'";
+	$query = "UPDATE $pps.binding_consumption set status = 'Close',status_at= '".date("Y-m-d H:i:s")."',updated_user= '".$username."',updated_at=NOW() where id = $doc1 and plant_code='".$plant_code."'";
     $update_query = mysqli_query($link,$query);
 }
 ?>
