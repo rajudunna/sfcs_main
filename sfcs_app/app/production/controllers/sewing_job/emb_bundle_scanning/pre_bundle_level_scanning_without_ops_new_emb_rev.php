@@ -20,7 +20,7 @@ $category="'sewing'";
 
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-<div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
+<div class="panel-heading">EMB bundle reversal Without Operation</div>
 <div class="panel-body">
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
