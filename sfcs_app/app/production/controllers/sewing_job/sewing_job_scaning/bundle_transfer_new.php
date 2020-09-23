@@ -24,22 +24,6 @@ $username=$_SESSION['userName'];
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
 <div class="col-md-4">
-<label for="title">Operation:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
-<select class='form-control' name = 'operation_code'  id = 'operation' required>
-        <option value="">Select Operation</option>
-        <?php 
-        $sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
-        $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($sql_rowy=mysqli_fetch_array($sql_resulty))
-        {
-            $operation_code=$sql_rowy['operation_code'];
-            $operation_name=$sql_rowy['operation_name'];
-            echo "<option value='".$operation_code."' >".$operation_name.' - '.$operation_code."</option>"; 
-        }
-        ?>
-    </select>
-</div>
-<div class="col-md-4">
 <label for="title">To Module:<span data-toggle="tooltip" data-placement="top" title="It's Mandatory field"><font color='red'>*</font></span></label>
 <select class="form-control select2" name="Module" id="Module" required onchange="changeWorkstationCode(this)">
 <option value="">Select Module</option>

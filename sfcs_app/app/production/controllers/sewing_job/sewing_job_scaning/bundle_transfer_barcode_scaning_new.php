@@ -125,12 +125,12 @@ function tableConstruction(res,barcode,tomodule){
 			// if(bundet.data[i].fromModule!='' || bundet.data[i].fromModule!=null)
 			// {
 				var hidden_class='';
-				if(i==0)
-				{
+				// if(i==0)
+				// {
 					var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>S.No</th><th>Bundle Number</th><th>To Module</th><th>Remarks</th></tr></thead><tbody>";
 					$("#dynamic_table1").append(markup);
-				}
-				s_no++;
+				// }
+				// s_no++;
 				
 				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+barcode+"</td><td data-title='status'>"+tomodule+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
 				$("#dynamic_table").append(markup1);
