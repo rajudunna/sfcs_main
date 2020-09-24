@@ -13,9 +13,8 @@ if(isset($_GET['id'])){
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'bundle_transfer_barcode_scaning_new.php',0,'N');
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-
   
 ?>
 <div class="panel panel-primary " id="module_scanBarcode">
@@ -28,7 +27,11 @@ $username=$_SESSION['userName'];
 <select class="form-control select2" name="Module" id="Module" required onchange="changeWorkstationCode(this)">
 <option value="">Select Module</option>
 <?php 
-        $sqly="SELECT workstation_id,workstation_code,workstation_description FROM $pms.workstation where plant_code = '$plant_code' and is_active=1";
+
+        $sqly="SELECT workstation_id,workstation_code,workstation_description FROM $pms.departments d 
+		LEFT JOIN $pms.workstation_type wt ON wt.department_id=d.department_id
+		LEFT JOIN $pms.workstation w ON w.workstation_type_id=wt.workstation_type_id
+		WHERE d.department_type='SEWING' AND w.plant_code = '$plant_code' AND w.is_active=1";
         $sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($sql_rowy=mysqli_fetch_array($sql_resulty))
         {
@@ -37,6 +40,7 @@ $username=$_SESSION['userName'];
             $workstation_description=$sql_rowy['workstation_description'];
             echo "<option value='".$workstation_id."' >".$workstation_description.' - '.$workstation_code."</option>"; 
         }
+	
         ?>
 </select>
 </div><br>
