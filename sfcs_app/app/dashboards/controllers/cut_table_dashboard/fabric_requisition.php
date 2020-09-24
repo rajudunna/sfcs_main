@@ -174,7 +174,13 @@ function GetSelectedItem()
 		$marker_version_id =$result_docketinfo['marker_version_id'];
 		$ratio_comp_group_id=$result_docketinfo['ratio_comp_group_id'];
 		$docket_line_number=$result_docketinfo['docket_line_number'];
-		
+		$po_number=$result_docketinfo['sub_po'];
+			
+	}
+
+	if($po_number!='' && $plant_code!=''){
+		$result_scheduleinfo= getMpMoQty($po_number,$plant_code);
+		$schedule =$result_scheduleinfo['schedule'];
 		
 	}
 	
@@ -200,7 +206,7 @@ function GetSelectedItem()
     echo "</select>";
 
 		echo "<td>".$style."</td>";
-		echo "<td>".$schedulex."</td>";
+		echo "<td>".implode(",",$schedule)."</td>";
 		echo "<td>".$colorx."</td>";
 		echo "<td>".$cut_no."</td>";
 		echo "<td>".$cat_refnce."</td>";
@@ -512,9 +518,16 @@ while($row2=mysqli_fetch_array($result2))
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
-		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
+		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id']; 
+		$po_number =$result_docketinfo['sub_po'];
 		
 	}
+	if($po_number!='' && $plant_code!=''){
+		$result_scheduleinfo= getMpMoQty($po_number,$plant_code);
+		$schedule =$result_scheduleinfo['schedule'];
+		
+	}
+
 	$sql4="select * from $pms.workstation where workstation_id=\"".$row2["work_station_id"]."\" and plant_code='$plant_code'";
 		$result4=mysqli_query($link, $sql4) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row4=mysqli_fetch_array($result4))
@@ -525,12 +538,12 @@ while($row2=mysqli_fetch_array($result2))
 	echo "<td>".$workstation."</td>";	
 	echo "<td>".$log_split[0]."</td>";
 	echo "<td>".$log_split[1]."</td>";
-	echo "<td>".strtoupper($row2["log_user"])."</td>";	
+	echo "<td>".strtoupper($row2["created_user"])."</td>";	
 	
 
 	
 	echo "<td>".$style1."</td>";
-	echo "<td>".$schedule."</td>";
+	echo "<td>".implode(",",$schedule)."</td>";
 	echo "<td>".$colorx1."</td>";
 	
 	echo "<td>".$row2["docket_line_number"]."</td>";
