@@ -86,7 +86,7 @@
                 <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
                 </div>
                 <div class="modal-body">
-                    <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+                    <form action="index-no-navi.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
                         <div id ="dynamic_table1">
                         </div>
                         <div class="pull-right"><input type="submit" id='reverse' class="btn btn-primary" value="Submit" name="reversesubmit" onclick = 'hiding()'></div>
