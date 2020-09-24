@@ -63,14 +63,13 @@ function get_details($module,$plant_code){
     global $TaskTypeEnum; 
     //To get workstation description
     $query = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$module'";
-    echo $query;
     $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($des_row=mysqli_fetch_array($query_result))
     {
-      $workstation_description = $des_row['workstation_code'];
+      $workstation_code = $des_row['workstation_code'];
     }
     $html_out = "<div class='panel panel-primary'>";
-     $html_out.= "<div class='panel-heading'><h3>Module -$workstation_description</h3></div>";
+     $html_out.= "<div class='panel-heading'><h3>Module -$workstation_code</h3></div>";
        $html_out.= "<div class='panel-body'>";
        $html_out.= "";
          $html_out.= "<table class='table table-bordered'>
