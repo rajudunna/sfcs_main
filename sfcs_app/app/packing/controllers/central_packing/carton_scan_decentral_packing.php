@@ -173,21 +173,21 @@
 						$("#scan_carton_id").html('');
 						if(response.status)
                         {
-							swal('',response.internalMessage,'success');
-							return;
+							
 							// status: 0-invaild carton no; 1-already scanned; 2-newly scanned; 3-scanning failed; 4-Carton not eligible for scanning(no qty in tbl_carton_ready)
-							console.log(response);
-							if(response['status']==1)
+							
+							if(response['status']=='1')
 							{ 
+								
 								$("#loading_img").hide();
 								$("#display_result").show();
 								$("#error_msg").hide();
-								document.getElementById('carton_no').innerHTML = response['cartonNumber'];
-								document.getElementById('style').innerHTML = response['style'];
-								document.getElementById('schedule').innerHTML = response['schedules'];
-								document.getElementById('color').innerHTML = response['colors'];
-								document.getElementById('carton_act_qty').innerHTML = response['actualQuantity'];
-								document.getElementById('original_size').innerHTML = response['sizes'];
+								document.getElementById('carton_no').innerHTML = response.data['cartonNumber'];
+								document.getElementById('style').innerHTML =  response.data['style'];
+								document.getElementById('schedule').innerHTML =  response.data['schedules'];
+								document.getElementById('color').innerHTML =  response.data['colors'];
+								document.getElementById('carton_act_qty').innerHTML =  response.data['actualQuantity'];
+								document.getElementById('original_size').innerHTML =  response.data['sizes'];
 								document.getElementById('status').innerHTML = "<center style='color: #ffffff; font-weight: bold;'> Carton Already Scanned</center>";
 								$('#status').css("background-color", "red");
 								$('#'+id).val('');
@@ -252,6 +252,8 @@
 								$("#submit_btn").attr("disabled", true);
 								$('#carton_id').focus();
 							}
+							swal('',response.internalMessage,'success');
+							return;
 						} else {
 							swal('', response.internalMessage, 'error');
 						}  

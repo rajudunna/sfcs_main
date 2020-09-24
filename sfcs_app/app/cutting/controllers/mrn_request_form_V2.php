@@ -455,22 +455,21 @@ $(document).ready(function(){
                     } 
                     echo "</select></div>";
 
-
                     //Fetching the batch number against to the lot issued to docket(cutno)
                     echo "<div class='col-md-2'>Select Batch No: <select name=\"batchno\" onchange=\"fifthbox();\" class='form-control'>";
 
                     echo "<option value=\"0\" selected>NIL</option>";
 
                     $sql11="select jm_cut_job_id from $pps.jm_cut_job where cut_number=\"".$cut_no."\"";
-                    
                     $sql_result11=mysqli_query($link, $sql11) or die("Error".$sql11.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row11=mysqli_fetch_array($sql_result11))
                     {
                         $cut_num=$sql_row11["jm_cut_job_id"];
+                       
                     }
 
                     $sql111="select jm_docket_id from $pps.jm_dockets where jm_cut_job_id=\"".$cut_num."\"";
-                   // echo "<option value=\"0\" selected>".$sql11."</option>";
+                    // echo "<option value=\"0\" selected>".$sql11."</option>";
                     $sql_result111=mysqli_query($link, $sql111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($sql_row111=mysqli_fetch_array($sql_result111))
                     {
@@ -478,8 +477,17 @@ $(document).ready(function(){
 
 
                     }
-                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref,docket_line_number from $pps.jm_docket_lines where  jm_docket_id IN ('".implode("','" , $jm_docket_id)."') AND (fabric_status=5 or LENGTH(plan_lot_ref) > 0)";
-                        // echo "<option value=\"0\" selected>".$sql12."</option>";
+                    $sql1111="select jm_docket_line_id from $pps.jm_docket_lines where jm_docket_line_id IN ('".implode("','" , $jm_docket_id)."') and plant_code='$plant_code'";
+                //    echo "<option value=\"0\" selected>".$sql1111."</option>";
+                    $sql_result111=mysqli_query($link, $sql1111) or die("Error".$sql111.mysqli_error($GLOBALS["___mysqli_ston"]));
+                    while($sql_row111=mysqli_fetch_array($sql_result111))
+                    {
+                        $jm_docket_line_id[]=$sql_row111["jm_docket_line_id"];
+
+
+                    }
+                        $sql12="select group_concat(plan_lot_ref) as plan_lot_ref from $pps.requested_dockets where  jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND (fabric_status=5 or LENGTH(plan_lot_ref) > 0)";
+                        //echo "<option value=\"0\" selected>".$sql12."</option>";
                         $sql_result12=mysqli_query($link, $sql12) or die("Error".$sql12.mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row12=mysqli_fetch_array($sql_result12))
                         {
@@ -635,7 +643,9 @@ $(document).ready(function(){
 						$count_ref=0;
 						//CR# 376 // kirang // 2015-05-05 // Referred the Batch number details to restrict the request of quantity requirement.
 						$inp_5=$_POST["batchno"];
-						$post_color = $_POST['color'];
+                        $post_color = $_POST['color'];
+                     
+
 						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
 						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
 						LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
@@ -648,7 +658,7 @@ $(document).ready(function(){
 						$MIRecords_color = array();
 						while($sql_result_32=mysqli_fetch_array($sql_result))
 						{
-							$mo_no=trim($sql_result_32['mo_no']);
+							$mo_no=trim($sql_result_32['mo_number']);
 							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$mo_no;
 							$response_result = $obj->getCurlAuthRequest($url);
 							$response_result = json_decode($response_result);
