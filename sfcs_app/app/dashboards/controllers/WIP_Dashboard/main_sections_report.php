@@ -330,11 +330,10 @@ $operation=$_GET['operations'];
 							<td>$sizes</td>
 							<td>$previous_ops_qty</td>
 							<td>$current_ops_qty</td>";
-							echo "<td>$rejected</td>";
-							echo "<td>$aging</td>";
-		                          			
+							echo "<td>$rejected</td>";	                          			
 							echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
 							<td>$remarks</td>";
+							echo "<td>$aging</td>";
 							//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
 							//if($row_counter > 0)
 								echo "<td class=\"$tr_color\" ></td>";
