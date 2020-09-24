@@ -12,10 +12,12 @@
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
     $dashboard_name="IPS";
-    $sec_result = mysqli_query($link, "SELECT section_id,section_name FROM $pms.sections WHERE plant_code='$plant_code' and is_active=1 order by section_id") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $departmentType = DepartmentTypeEnum::SEWING;
+    $sec_result = mysqli_query($link, "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plant_code."' and dept.plant_code='".$plant_code."' and dept.department_type= '".$departmentType."' and sec.is_active=1") or exit("Sec qry".mysqli_error($GLOBALS["___mysqli_ston"]));
     $sections = mysqli_fetch_all($sec_result,MYSQLI_ASSOC);
     echo "<script>var sec_ids = '".implode(',',array_column($sections, 'section_id'))."';</script>";
     echo "<script>var sec_names = '".implode(',',array_column($sections, 'section_name'))."';</script>";
