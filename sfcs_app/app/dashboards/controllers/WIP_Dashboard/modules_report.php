@@ -263,7 +263,7 @@ if(isset($_POST['submit']))
 							            while($row3 = $result_get_jobs_data->fetch_assoc()) 
 							            {
 	                                       $size = $row3['size_title'];
-	                                       $input_date = $row3['input_date'];
+	                                      // $input_date = $row3['input_date'];
 	                                       $job_no = $row3['input_job_no'];
 	                                       $bundle = $row3['bundle_number'];
 	                                       $docket_number = $row3['docket_number'];
@@ -284,13 +284,20 @@ if(isset($_POST['submit']))
 		                                    }
 
 	                                       
-	                                       //Previous operation qty check
-	                                       $bundle_check_qty="select original_qty,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$pre_ops_code";
+	                                        //Previous operation qty check
+	                                        $bundle_check_qty="select original_qty,recevied_qty from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$pre_ops_code";
 		                                    $sql_result56=mysqli_query($link, $bundle_check_qty) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 		                                    while($sql_row=mysqli_fetch_array($sql_result56))
 		                                    {
 		                                        $original_qty=$sql_row['original_qty'];
 		                                        $recevied_qty=$sql_row['recevied_qty'];
+		                                    }
+											//Get date
+											$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$operation_code";
+		                                    $sql_result561=mysqli_query($link, $bundle_check_qty1) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+		                                    while($sql_row1=mysqli_fetch_array($sql_result561))
+		                                    {
+		                                        $input_date=$sql_row1['daten'];
 		                                    }
 
 		                                    //Current operation qty check

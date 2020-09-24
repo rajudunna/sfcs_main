@@ -284,7 +284,7 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 					while($row12=mysqli_fetch_array($sql_result12))
 				    {
 	                    $docket = $row12['docket_number'];
-	                    $input_date = $row12['input_date'];
+	                   // $input_date = $row12['input_date'];
 	                    $bundle_number=$row12['bundle_number'];
 	                    $previous_ops_qty=$row12['input'];
 	                    $current_ops_qty=$row12['output'];
@@ -314,6 +314,8 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 						}
 
 		                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
+						$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and operation_id=$operation";
+						
 		                //getting selection and apend result to query
 						if(isset($_POST['submit']))
 						{
@@ -324,9 +326,11 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 
 							if($input_selection=='bundle_wise'){
 								$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
+								$bundle_check_qty1.=" and bundle_number= $bundle_number";
 							}
 						}else{
 							$get_rejected_qty.=" and bundle_number= $bundle_number group by operation_id,size_title";
+							$bundle_check_qty1.=" and bundle_number= $bundle_number";
 						}
 						//echo  $get_rejected_qty;
 						$sql_result33=mysqli_query($link, $get_rejected_qty) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -334,6 +338,15 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 						{
 							$rejected = $sql_row33['rejected'];
 						}
+						
+						//Get date
+						$sql_result561=mysqli_query($link, $bundle_check_qty1) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row1=mysqli_fetch_array($sql_result561))
+						{
+							$input_date=$sql_row1['daten'];
+						}
+						
+						
 						$aging=dateDifference(date("Y-m-d"), $input_date);
 						if($rowcount_check==1)
 						{	
