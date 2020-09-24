@@ -1508,6 +1508,10 @@ if($status_sew=='open')
 
 						$status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 						$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+						$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key]";
+						$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
+						$status_update_query = "UPDATE $brandix_bts.bundle_creation_data_temp SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key]";
+						$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
 					}
 					else
 					{
@@ -1529,7 +1533,6 @@ if($status_sew=='open')
 				while($row231 = $result_rejected_bundles->fetch_assoc()) 
 				{
 					$bundle_number = $row231['bundle_number'];
-
 					$update_status_query = "update $bai_pro3.ims_log set ims_status = 'DONE' where pac_tid = $bundle_number";
 					mysqli_query($link,$update_status_query) or exit("While updating status in ims_log".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$ims_backup="insert into $bai_pro3.ims_log_backup select * from bai_pro3.ims_log where pac_tid = $bundle_number";
