@@ -131,200 +131,203 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                 {
                     $docket_line_ids=$docket_row123['docket_line_ids'];
                 }
-                $sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
-                $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql_result1x1)>0)
+                if($docket_line_ids)
                 {
-                    $cut_status="0";
-                }
-                else
-                {
-                    $cut_status="5";
-                }
-                // fabric request logic
-                $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
-                $sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql_result1x115)>0)
-                {
-                    if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+                    $sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
+                    $sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_result1x1)>0)
+                    {
+                        $cut_status="0";
+                    }
+                    else
+                    {
+                        $cut_status="5";
+                    }
+                    // fabric request logic
+                    $sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
+                    $sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_result1x115)>0)
+                    {
+                        if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+                        {
+                            $fabric_req="0";
+                        }
+                        else
+                        {
+                            $fabric_req="5";
+                        }   
+                    }
+                    else
                     {
                         $fabric_req="0";
                     }
-                    else
+                    // fabric status logic
+                    $fabric_status="";
+                    $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
+                    $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_result1x12)>0)
                     {
-                        $fabric_req="5";
-                    }   
-                }
-                else
-                {
-                    $fabric_req="0";
-                }
-                // fabric status logic
-                $fabric_status="";
-                $sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
-                $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql_result1x12)>0)
-                {
-                    if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
-                    {
-                        $fabric_status="1";
-                    }
-                }
-                $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
-                $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-                if(mysqli_num_rows($sql_result1x11)>0)
-                {
-                    if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
-                    {
-                        $fabric_status="5";
-                    }
-                }
-                if ($fabric_status == "")
-                {
-                    $fabric_status="0";
-                }
-                // assigning colors for status based on fabric
-                if($cut_status=="5")
-                {
-                    $id="blue";                 
-                    $rem="Cut Completed";
-                }
-                elseif($fabric_status=='5')
-                {
-                    $id="yellow";                   
-                    $rem="Fabric Issued";   
-                }
-                elseif($fabric_status=='1')
-                {
-                    $id="pink";                 
-                    $rem="Ready To Issue";  
-                }
-                elseif($fabric_req=="5")
-                {
-                    $id="green";                    
-                    $rem="Fabric Requested";
-                }
-                elseif($fabric_status<"5")
-                {
-                    switch ($ft_status)
-                    {
-                        case "1":
+                        if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
                         {
-                            $id="lgreen";                   
-                            $rem="Available";
-                            break;
-                        }
-                        case "0":
-                        {
-                            $id="red";
-                            $rem="Not Available";
-                            break;
-                        }
-                        case "2":
-                        {
-                            $id="red";
-                            $rem="In House Issue";
-                            break;
-                        }
-                        case "3":
-                        {
-                            $id="red";
-                            $rem="GRN issue";
-                            break;
-                        }
-                        case "4":
-                        {
-                            $id="red";
-                            $rem="Put Away Issue";
-                            break;
-                        }                                   
-                        default:
-                        {
-                            $id="yash";
-                            $rem="Not Update";
-                            break;
+                            $fabric_status="1";
                         }
                     }
-                }
-                else
-                {
-                    $id="yash";
-                    $rem="Not Update";
-                }               
-                $title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($balance),50)."\n".str_pad("Cut Job No:".$cut_job_no)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
-                //$ui_url='input_status_update_input.php';  
-                $ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
-                $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
-                $application='IPS';
-                $cols_de='';
-                $sidemenu=true;
-                if($id=="blue" || $id=="yellow")
-                {
-                    // SELECT original_quantity 
-                    $cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_transaction`
-                        WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
-                    $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    while($sql_row=mysqli_fetch_array($cut_input_report_result))
+                    $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
+                    $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    if(mysqli_num_rows($sql_result1x11)>0)
                     {
-                        $cut_origional_qty=$sql_row['cut_qty'];
-                        $report_origional_qty=$sql_row['report_qty'];
-                        $recevied_qty=$sql_row['recevied_qty'];                                 
-                    }
-                    
-                    if(($cut_origional_qty > $report_origional_qty) && $recevied_qty>0){
-                        $id='orange';
-                    }
-                    /*else{
-                        $id='blue';
-                    }*/
-                    if($id=="yellow")
-                    {                                   
-                        if($add_css == ""){             
-                            $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-                                <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                    <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no','$input_ops_code','$sidemenu','$plantCode','$username');\"><font style=\"color:black;\"></font></a>
-                                    </div>
-                                </div>
-                            </div>";
-                        }
-                        else
+                        if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
                         {
-                            $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-                                <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                    <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
-                                    </div>
-                                </div>
-                            </div>";
+                            $fabric_status="5";
+                        }
+                    }
+                    if ($fabric_status == "")
+                    {
+                        $fabric_status="0";
+                    }
+                    // assigning colors for status based on fabric
+                    if($cut_status=="5")
+                    {
+                        $id="blue";                 
+                        $rem="Cut Completed";
+                    }
+                    elseif($fabric_status=='5')
+                    {
+                        $id="yellow";                   
+                        $rem="Fabric Issued";   
+                    }
+                    elseif($fabric_status=='1')
+                    {
+                        $id="pink";                 
+                        $rem="Ready To Issue";  
+                    }
+                    elseif($fabric_req=="5")
+                    {
+                        $id="green";                    
+                        $rem="Fabric Requested";
+                    }
+                    elseif($fabric_status<"5")
+                    {
+                        switch ($ft_status)
+                        {
+                            case "1":
+                            {
+                                $id="lgreen";                   
+                                $rem="Available";
+                                break;
+                            }
+                            case "0":
+                            {
+                                $id="red";
+                                $rem="Not Available";
+                                break;
+                            }
+                            case "2":
+                            {
+                                $id="red";
+                                $rem="In House Issue";
+                                break;
+                            }
+                            case "3":
+                            {
+                                $id="red";
+                                $rem="GRN issue";
+                                break;
+                            }
+                            case "4":
+                            {
+                                $id="red";
+                                $rem="Put Away Issue";
+                                break;
+                            }                                   
+                            default:
+                            {
+                                $id="yash";
+                                $rem="Not Update";
+                                break;
+                            }
                         }
                     }
                     else
                     {
-                        if($add_css == "")
+                        $id="yash";
+                        $rem="Not Update";
+                    }               
+                    $title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($balance),50)."\n".str_pad("Cut Job No:".$cut_job_no)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
+                    //$ui_url='input_status_update_input.php';  
+                    $ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
+                    $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
+                    $application='IPS';
+                    $cols_de='';
+                    $sidemenu=true;
+                    if($id=="blue" || $id=="yellow")
+                    {
+                        // SELECT original_quantity 
+                        $cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_transaction`
+                            WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
+                        $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        while($sql_row=mysqli_fetch_array($cut_input_report_result))
+                        {
+                            $cut_origional_qty=$sql_row['cut_qty'];
+                            $report_origional_qty=$sql_row['report_qty'];
+                            $recevied_qty=$sql_row['recevied_qty'];                                 
+                        }
+                        
+                        if(($cut_origional_qty > $report_origional_qty) && $recevied_qty>0){
+                            $id='orange';
+                        }
+                        /*else{
+                            $id='blue';
+                        }*/
+                        if($id=="yellow")
                         {                                   
-                            $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-                                <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                    <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no','$input_ops_code','$sidemenu','$plantCode','$username');\"><font style=\"color:black;\"></font></a>
+                            if($add_css == ""){             
+                                $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+                                    <div id=\"SJ$input_job_no\" style=\"float:left;\">
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no','$input_ops_code','$sidemenu','$plantCode','$username');\"><font style=\"color:black;\"></font></a>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>";
+                                </div>";
+                            }
+                            else
+                            {
+                                $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+                                    <div id=\"SJ$input_job_no\" style=\"float:left;\">
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        </div>
+                                    </div>
+                                </div>";
+                            }
                         }
                         else
                         {
-                            $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
-                                <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                    <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                            if($add_css == "")
+                            {                                   
+                                $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+                                    <div id=\"SJ$input_job_no\" style=\"float:left;\">
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"javascript:void(0);\" onclick=\"viewPopupCenter('$style','$schedule','$module','$input_job_no','$input_ops_code','$sidemenu','$plantCode','$username');\"><font style=\"color:black;\"></font></a>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>";
+                                </div>";
+                            }
+                            else
+                            {
+                                $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
+                                    <div id=\"SJ$input_job_no\" style=\"float:left;\">
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        </div>
+                                    </div>
+                                </div>";
+                            }
                         }
                     }
-                }
-                else
-                {
-                    
-                    $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
-                }
-                $y++;   
+                    else
+                    {
+                        
+                        $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+                    }
+                    $y++;   
+                } 
             }
             $buyer_div = ''; // select buyer_div from $bai_pro3.plan_modules where module_id=$module
         }
