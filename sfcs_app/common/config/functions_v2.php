@@ -168,7 +168,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
             }
             //echo "</br>Comp grp ID: ".$component_group_id;
             /**Getting fabric categoery and item code by using component group from lp_ratio_component_group */
-            $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
+            $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE lp_cg_id='$component_group_id' AND plant_code='$plant_code'";
             //echo "</br> Com group : ".$qry_component_group;
             $qry_component_group_result=mysqli_query($link_new, $qry_component_group) or exit("Sql Errorat_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
             $component_group_num=mysqli_num_rows($qry_component_group_result);
@@ -1202,7 +1202,7 @@ function getDocketInformation($docket_no, $plant_code) {
     }
 
     // get the rm sku, fabric catrgory
-    $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where master_po_component_group_id = '$cg_id' ";
+    $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where lp_cg_id = '$cg_id' ";
     $fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row = mysqli_fetch_array($fabric_info_result))
     {

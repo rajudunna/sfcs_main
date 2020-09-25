@@ -188,8 +188,8 @@ if(isset($_POST['show']))
 					{
 						$component_group_id=$get_component_id_row['component_group_id'];
 
-						//get main component from master_po_component_group_id
-						$get_component_name="select component_group_name from $pps.lp_component_group where master_po_component_group_id='$component_group_id' and is_main_component_group =true and is_active=true";
+						//get main component from lp_cg_id
+						$get_component_name="select component_group_name from $pps.lp_component_group where lp_cg_id='$component_group_id' and is_main_component_group =true and is_active=true";
 						// echo $get_component_name;
 						$get_component_name_result=mysqli_query($link, $get_component_name) or exit("Sql Error--1x==".$get_component_name.mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($get_component_name_result)>0)
