@@ -130,16 +130,16 @@ function verify_date()
 
 		if($sch=="")
 		{
-			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM pts_prod.`transaction_log` tl
-			LEFT JOIN pts_prod.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
-			LEFT JOIN pts_prod.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
+			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
+			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
+			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
 			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2'";
 		}
 		else if($sch !="")
 		{
-			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM pts_prod.`transaction_log` tl
-			LEFT JOIN pts_prod.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
-			LEFT JOIN pts_prod.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
+			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
+			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
+			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
 			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2' AND fg.`schedule`='$sch'";
 		}
 		// echo $sql;
