@@ -24,6 +24,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$module=$_POST["module"];
 		$plant_code = $_POST['plantCode'];
 		$username = $_POST['userName'];
+		$ratio_comp_group_id = $_POST['ratio_comp_group_id'];
 		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);
@@ -36,10 +37,12 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$module=$_GET["module"];
 		$plant_code = $_GET['plantCode'];
 		$username = $_GET['userName'];
+		$ratio_comp_group_id = $_GET['ratio_comp_group_id'];
 		$sql2x="select * from $pps.fabric_prorities where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
-	}		
+	}	
+	
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
@@ -143,20 +146,7 @@ function GetSelectedItem()
 <div class="panel panel-primary">
 <div class="panel-heading">Fabric Requisition Form</div>
 <div class="panel-body">
-<?php 
-$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code'";
-$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-   echo "<SELECT name='marker_version'  id='marker_version' style='height: 30px;'>";
 
-   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
-	while($row111x1=mysqli_fetch_array($sql_result11x1))
-	{
-		$marker_version=$row111x1["marker_version"];
-		$marker_version_id=$row111x1["marker_version_id"];
-		echo"<option  value='$marker_version_id'>".$marker_version."</option>";
-	 }
-	echo "</select>";
- ?>
 </br></br>
 <div id ="dynamic_table1">
 </div>
@@ -166,7 +156,7 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 <form method="POST" name="apply">
 <table class="table table-bordered">
 
-<tr><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th></tr>
+<tr><th>Marker</th><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th></tr>
 <?php
 
 	
@@ -181,16 +171,47 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
+		$marker_version_id =$result_docketinfo['marker_version_id'];
+		$ratio_comp_group_id=$result_docketinfo['ratio_comp_group_id'];
+		$docket_line_number=$result_docketinfo['docket_line_number'];
+		$po_number=$result_docketinfo['sub_po'];
+			
+	}
+
+	if($po_number!='' && $plant_code!=''){
+		$result_scheduleinfo= getMpMoQty($po_number,$plant_code);
+		$schedule =$result_scheduleinfo['schedule'];
 		
 	}
-		
+	
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
+	
+	   echo"<option value=\"select_version\" selected>Select Marker Version</option>";
+		while($row111x1=mysqli_fetch_array($sql_result11x1))
+		{
+			$marker_version=$row111x1["marker_version"];
+			
+			if($row111x1['marker_version_id']==$marker_version_id)
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\" selected>".$row111x1['marker_version']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$row111x1['marker_version_id']."\">".$row111x1['marker_version']."</option>";
+			}
+			
+		 }
+    echo "</select>";
+
 		echo "<td>".$style."</td>";
-		echo "<td>".$schedulex."</td>";
+		echo "<td>".implode(",",$schedule)."</td>";
 		echo "<td>".$colorx."</td>";
 		echo "<td>".$cut_no."</td>";
 		echo "<td>".$cat_refnce."</td>";
 		echo "<td>".$cat_compo."</td>";
-		echo "<td>".$doc_no."</td>";
+		echo "<td>".$docket_line_number."</td>";
 		echo "<td>".$doc_mat."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$doc_no."'> <input type='text' name='reference[]' value=''></td>";
 	
@@ -205,7 +226,12 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 		
 		echo "</tr>";
 		
-			 
+		
+		if($doc_nos!='' && $plant_code!=''){
+			$result_docketinfo=getDocketInformation($doc_nos,$plant_code);
+			$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
+			
+		}
 		
 		 
 		 
@@ -222,6 +248,8 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 			<td style="display:none"><input type="hidden" id="$group_docs" name="group_docs" value="<?php echo $group_docs; ?>" ></td>
 			<td style="display:none"><input type="hidden" id="plantCode" name="plantCode" value="<?php echo $plant_code; ?>" ></td>
 			<td style="display:none"><input type="hidden" id="userName" name="userName" value="<?php echo $username; ?>" ></td>
+			<td style="display:none"><input type="hidden" id="ratio_comp_group_id" name="ratio_comp_group_id" value="<?php echo $ratio_comp_group_id; ?>" ></td>
+		
 
 		<?php
 			if($rows2 > 0)
@@ -244,6 +272,7 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 			</td>
 
 			<th>Time</th>
+			
 			<td>
 				<?php
 
@@ -338,9 +367,10 @@ $sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($
 				
 			<td style="display:none"><input type="hidden" id="name" name="secs" value="<?php echo $section; ?>" ></td>	
 			<td style="display:none"><input type="hidden" id="name" name="mods" value="<?php echo $module; ?>" ></td>
-						
+			<td style="display:none"><input type="hidden" id="ratio_comp_group_id1" name="ratio_comp_group_id1" value="<?php echo $ratio_comp_group_id; ?>" ></td>		
+				
 		<?php
-					
+				
 				if(date("H:i:s") <= "23:59:59")
 				{
 					echo "<td><input type=\"checkbox\" onClick=\" document.apply['submit1'].disabled =(document.apply['submit1'].disabled)? false : true; GetSelectedItem();\" name=\"check\">
@@ -371,8 +401,10 @@ if(isset($_POST["submit1"]))
 	$secs=$_POST["secs"];
 	$mods=$_POST["mods"];
 	$ref=$_POST['reference'];
+	$username=$_POST['userName'];
+	$marker_version=$_POST['marker_version'];
+	$ratio_comp_group_id=$_POST['ratio_comp_group_id'];
 	$select_uuid1="SELECT UUID() as uuid";
-	//echo $select_uuid;
 	$uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($uuid_row1=mysqli_fetch_array($uuid_result1))
 	{
@@ -409,7 +441,6 @@ if(isset($_POST["submit1"]))
 	$diff_in_hrs = $diff/3600;
 	//print_r(round($diff_in_hrs,0));
 	$log_req_diff=round($diff_in_hrs,0);
-	
 	$doc_nos_split=explode(",",$group_docs);
 	$host_name=str_replace(".brandixlk.org","",gethostbyaddr($_SERVER['REMOTE_ADDR']));
 	$note=date("Y-m-d H:i:s")."_".$username."_".$host_name."<br/>";
@@ -447,7 +478,9 @@ if(isset($_POST["submit1"]))
 				{
 					echo "<h2 style=\"color:red;\">Request Sent Successfully...</h2>";
 				}
-				
+				$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_nos' and plant_code='$plant_code'";
+
+				mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 				//Date:2013-08-27
 				//Track the requested user details and system details.
 				$myFile = "log/".date("Y_m_d")."_fabric_request_track.html";
@@ -485,8 +518,16 @@ while($row2=mysqli_fetch_array($result2))
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
+		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id']; 
+		$po_number =$result_docketinfo['sub_po'];
 		
 	}
+	if($po_number!='' && $plant_code!=''){
+		$result_scheduleinfo= getMpMoQty($po_number,$plant_code);
+		$schedule =$result_scheduleinfo['schedule'];
+		
+	}
+
 	$sql4="select * from $pms.workstation where workstation_id=\"".$row2["work_station_id"]."\" and plant_code='$plant_code'";
 		$result4=mysqli_query($link, $sql4) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row4=mysqli_fetch_array($result4))
@@ -497,12 +538,12 @@ while($row2=mysqli_fetch_array($result2))
 	echo "<td>".$workstation."</td>";	
 	echo "<td>".$log_split[0]."</td>";
 	echo "<td>".$log_split[1]."</td>";
-	echo "<td>".strtoupper($row2["log_user"])."</td>";	
+	echo "<td>".strtoupper($row2["created_user"])."</td>";	
 	
 
 	
 	echo "<td>".$style1."</td>";
-	echo "<td>".$schedule."</td>";
+	echo "<td>".implode(",",$schedule)."</td>";
 	echo "<td>".$colorx1."</td>";
 	
 	echo "<td>".$row2["docket_line_number"]."</td>";

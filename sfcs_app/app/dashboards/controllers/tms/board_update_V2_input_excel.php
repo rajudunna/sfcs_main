@@ -1,7 +1,10 @@
 
 <?php
-    include ("../../../../common/config/config.php");
-    include ("../../../../common/config/functions.php");
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
+include('functions_tms.php');
   
 //     // Report all PHP errors (see changelog)
 // error_reporting(E_ALL);
@@ -22,128 +25,238 @@
     <?php
 		
  if(isset($_POST['export_excel'])){
-        $section=$_POST["section"];
-        $username=$_POST["uname1"];
-        // echo $username;
-        $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
+        $section_no=$_POST["section"];
+        $plant_code=$_POST["plant_code"];
+       $output.="<table class='table table-bordered'>
+			<tr>
+			<th colspan=10 >Production Plan for <?= $section_display_name; ?></th>
+			<th colspan=20 >Date :<?= date('Y-m-d H:i'); ?></th>
+			</tr>
+			<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Priority 2</th><th>Priority 3</th><th>Priority 4</th><th>Priority 5</th><th>Priority 6</th><th>Priority 7</th><th>Priority 8</th><th>Priority 9</th><th>Priority 10</th><th>Priority 11</th><th>Priority 12</th><th>Priority 13</th><th>Priority 14</th></tr>";
+	   $sqlx="SELECT GROUP_CONCAT(`workstation_id` ORDER BY workstation_id+0 ASC) AS sec_mods FROM $pms.`sections` s
+		LEFT JOIN $pms.`workstation` w ON w.section_id=s.section_id
+		WHERE s.section_id='$section_no' AND s.plant_code='$plant_code' and s.is_active=1";
+		$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
+		while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		{
-			$section_display_name=$sql_rowx1['section_display_name'];
-        }
-
-        $report_data_ary = array();
-        $sql2x="select module_id from $bai_pro3.plan_modules where section_id=$section order by module_id*1";
-        $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-        $i=0;
-        $mod_ary = array();$dmod_ary = array();
-        while($row2x=mysqli_fetch_array($result2x)){
-
-            array_push($mod_ary,$row2x['module_id']);
-        }
-        $mod = "'".implode("', '",$mod_ary)."'";
-        $mod_qry = "SELECT input_job_no_random_ref as input_job_random FROM $bai_pro3.plan_dashboard_input WHERE 
-        input_module IN ($mod) order by  input_module*1,input_priority*1";
-        // echo  $mod_qry;
-        $doc_result=mysqli_query($link, $mod_qry) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-            while($row2x=mysqli_fetch_array($doc_result))
-            {
-                $job_ref_no=$row2x["input_job_random"];
-            
+			$section_mods=$sql_rowx['sec_mods'];
 			
-			   
-                $count_qry = "SELECT ps.input_job_no,pd.input_module,ps.order_style_no,ps.order_del_no,ps.order_col_des,ps.acutno,ps.doc_no,pd.input_trims_request_time,pd.log_time,pd.input_trims_status FROM $bai_pro3.packing_summary_input ps, plan_dashboard_input pd where ps.input_job_no_random = pd.input_job_no_random_ref  and pd.input_job_no_random_ref='$job_ref_no' group by ps.input_job_no_random ";
-                //  echo $count_qry."<br>";
-                $doc_result1=mysqli_query($link, $count_qry) ;
-                while($jobsresult=mysqli_fetch_array($doc_result1)){
-                    $report_data_ary[$i]['style'] = $jobsresult['order_style_no'];
-                    $report_data_ary[$i]['schedule'] = $jobsresult['order_del_no'];
-                    $report_data_ary[$i]['color']=$jobsresult['order_col_des'];
-                    $report_data_ary[$i]['module']=$jobsresult['input_module'];
-                    $report_data_ary[$i]['docket'] = $jobsresult['doc_no'];
-                    $report_data_ary[$i]['job_no'] = $jobsresult['input_job_no'];;
-                    $report_data_ary[$i]['req_time']=$jobsresult["input_trims_request_time"];
-                    $report_data_ary[$i]['issue_time']=$jobsresult["log_time"];
-                    $status = $jobsresult['input_trims_status'];
-                $sql2="SELECT min(st_status) as st_status,order_style_no,order_del_no,input_job_no FROM $bai_pro3.plan_dash_doc_summ_input WHERE input_job_no_random='$job_ref_no'";	
-				$result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row2=mysqli_fetch_array($result2))
-				{
-					$trims_status1=$row2['st_status'];
-					$style1=$row2['order_style_no'];
-					$schedule1=$row2['order_del_no'];
-					$input_job_no1=$row2['input_job_no'];
-				}
-                    $trims_status="";	
-                    
-                   
-                    
-                    if($status == 1)
-                    {
-                        $trims_status="Preparing Material";
-                    }
-                    
-                    else if($status == 2)
-                    {
-                        $trims_status="Material ready for Production";
-                    }
-                    else if($status == 3)
-                    {
-                        $trims_status="Partially Issued";
-                    }
-                    else if($status == 4)
-					{
-						$trims_status="Trims already issue to module"; 
-					}
-					else
-					{
-						if($trims_status1=="NULL" || $trims_status1=="" || $trims_status1=="(NULL)")
-						{
-							$trims_status="Material Status Not Updated";
-						}			
-						else if($trims_status1 == 0 || $trims_status1 == 9)
-						{
-							$trims_status="Material Not Avaiable and Not preparing from W/H";
-						}			
-						else if($trims_status1 == 1)
-						{
-							$trims_status="Material Avaiable and Not preparing from W/H";
-						}			
-						else
-						{
-							$trims_status="Material Not Avaiable and Not preparing from W/H";
-						}
-				   }					
-                    if($jobsresult["input_trims_request_time"] == "0000-00-00 00:00:00")
-                    {
-                        $trims_status="Need To Apply For Trims";
-                    }
-                    $report_data_ary[$i]['tstatus'] = $trims_status;
-                    $i++;
-                }
-                
-            
-            }
-            $output = '';
-        if(sizeof($report_data_ary)>=0){
-            
-            $output.=' <body style="border: 1px solid #ccc"><table ><th colspan="8">Job Plan Details</th><tr><th>Style</th><th>Schedule</th><th>Color</th><th>Module</th><th>Docket Number</th><th>Job Number</th><th>Request Time</th><th>Issue Time</th><th>status</th>';
-            foreach($report_data_ary as $report){
-                
-                $output.='<tr><td>'.$report['style'].'</td><td>'.$report['schedule'].'</td><td>'.$report['color'].'</td><td>'.$report['module'].'</td><td>'.$report['docket'].'</td><td>'.$report['job_no'].'</td><td>'.$report['req_time'].'</td><td>'.$report['issue_time'].'</td><td>'.$report['tstatus'].'</td></tr>';
+			$mods=array();
+			$mods=explode(",",$section_mods);
 
-            }
-            $output.='</table></body>';
-            header("Content-Type: application/xls");
-            // header("Content-type: application/vnd.ms-excel; name='excel'");
-            header("Content-Disposition: attachment; filename= Job Loading plan.xls ");
-            echo $output;
-        }else{
-            $url = "board_update_v2_input.php?section_no=".$section;
-            echo"<script>
-                alert('No Data to Download for selected Section:".$section_display_name."');
-                window.location = '".$url."';
-            </script>";
-        }
+			for($x=0;$x<sizeof($mods);$x++)
+			{
+				//getting workstation code to display
+				$get_wrkcode_qry="select workstation_code from $pms.workstation where workstation_id='".$mods[$x]."'";
+				$wrkcode_resultx=mysqli_query($link,$get_wrkcode_qry) or exit("Sql Error1".mysqli_error());
+				while($code_row=mysqli_fetch_array($wrkcode_resultx))
+				{
+					$workstation_code=$code_row['workstation_code'];
+				}
+				$output.="<tr>";
+				$output.="<td>".$workstation_code."</td>";
+				$output.="<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:<br/>Fab. Status:<br/>Trim Status:</td>";
+				$$work_id=$mods[$x];
+				
+				$tasktype=TaskTypeEnum::SEWINGJOB;
+				$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
+				$job_number=$result_planned_jobs['job_number'];
+				$task_header_id=$result_planned_jobs['task_header_id'];
+				foreach($job_number as $jm_sew_id=>$sew_num)
+				{
+					//To get taskjobs_id
+				  $task_jobs_id = [];
+				  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
+				 // echo $qry_get_task_job;
+				  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
+					  $task_jobs_id[] = $row21['task_jobs_id'];
+					  $task_job_id = $row21['task_jobs_id'];
+				  }
+				  //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
+				  $job_detail_attributes = [];
+				  $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+				  $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				  while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+					$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+				  }
+				  //TaskAttributeNamesEnum
+				//    $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO', 'embjobno' => 'EMBJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP', 'cono' => 'CONO'];
+				  $style = $job_detail_attributes[$sewing_job_attributes['style']];
+				  $color = $job_detail_attributes[$sewing_job_attributes['color']];
+				  $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
+				  $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']]; 
+				  $cono = $job_detail_attributes[$sewing_job_attributes['cono']];  
+				  $doc_no_ref = $job_detail_attributes[$sewing_job_attributes['docketno']];  
+				  
+				  //to get qty from jm job lines
+				  $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
+				  $toget_qty_qry_result=mysqli_query($link_new, $toget_qty_qry) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+				  $toget_qty=mysqli_num_rows($toget_qty_qry_result);
+				  if($toget_qty>0){
+					  while($toget_qty_det=mysqli_fetch_array($toget_qty_qry_result))
+					  {
+						 $sew_qty = $toget_qty_det['qty'];
+					  }
+				  }
+				  //qry to get trim status
+				  $get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id'";
+				  $get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					while ($row2 = mysqli_fetch_array($get_trims_status_result)) 
+					{
+					   $input_trims_status=$row2['trim_status'];
+					}
+					
+					//qry to get fabric status
+				  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE doc_no ='$doc_no_ref' and plant_code='".$plant_code."'";
+				  $get_fabric_status_result = mysqli_query($link_new, $get_fabric_status) or exit("Sql Error at get_fabric_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					while ($row_stat = mysqli_fetch_array($get_fabric_status_result)) 
+					{
+					   $fabric_status=$row_stat['fabric_status'];
+					}
+					$rem="Nil";
+
+					$doc_no_ref_input = implode("','",$doc_no_ref);
+					$doc_no_ref_explode=explode(",",$doc_no_ref);
+					
+					$num_docs=sizeof($doc_no_ref_explode);
+					
+					switch ($fabric_status)
+					{
+						case "1":
+						{
+							$id="L-Green";					
+							$rem="Available";
+							if(sizeof($num_docs) > 0)
+							{
+								$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+								//echo $sql1x1."<br>";
+								$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error7".mysqli_error());
+								if(mysqli_num_rows($sql_result1x1)==$num_docs)
+								{
+									$id="Yellow";
+								}
+								else
+								{
+									$id="L-Green";
+									//$id=$id;
+								}
+							}
+							break;
+						}
+						case "0":
+						{
+							$id="red";
+							$rem="Not Available";
+							break;
+						}
+						case "2":
+						{
+							$id="red";
+							$rem="In House Issue";
+							break;
+						}
+						case "3":
+						{
+							$id="red";
+							$rem="GRN issue";
+							break;
+						}
+						case "4":
+						{
+							$id="red";
+							$rem="Put Away Issue";
+							break;
+						}		
+						case "5":
+						{
+							if(sizeof($num_docs) > 0)
+							{
+								$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+								//echo $sql1x1."<br>";
+								$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9".mysqli_error());
+								if(mysqli_num_rows($sql_result1x1)==$num_docs)
+								{
+									$id="Yellow";
+								}
+								else
+								{
+									$id="L-Green";
+									//$id=$id;
+								}
+							}
+							break;
+						}				
+						default:
+						{
+							$id="Ash";
+							$rem="Not Update";
+							break;
+						}
+					}
+					
+					$sql11x="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and plant_code='$plant_code'";
+					//echo $sql11x."<br>";
+					$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9".mysqli_error());
+					if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
+					//if(mysqli_num_rows($sql_result11x) and $id!="yellow")
+					{
+						$id="D-Green";	
+					} 
+					
+					$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+					//echo $sql1x1."<br>";
+					$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error10".mysqli_error());
+					if(mysqli_num_rows($sql_result1x1)==$num_docs)
+					{
+						$id="Yellow";
+					}
+					//echo $num_docs."<br>";
+					$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in ('$doc_no_ref_input') and act_cut_status=\"DONE\"";
+					//echo $sql11x1."<br>";
+					$sql_result11x1=mysqli_query($link,$sql11x1) or exit("Sql Error11".mysqli_error());
+					if(mysqli_num_rows($sql_result11x1)==$num_docs and $id=="Yellow")
+					{
+						$id="Blue";
+					} 
+					
+								
+					if($trim_status == TrimStatusEnum::OPEN)
+					{
+						$trimid="yash";
+					}
+					else if($trim_status == TrimStatusEnum::PREPARINGMATERIAL)
+					{
+						$trimid="yellow";
+					}
+					else if($trim_status == TrimStatusEnum::MATERIALREADYFORPRODUCTION)
+					{
+						$trimid="blue"; 
+					}
+					else if($trim_status == TrimStatusEnum::PARTIALISSUED)
+					{
+						$trimid="orange";
+					}
+					else if($trim_status == TrimStatusEnum::ISSUED)
+					{
+						$trimid="pink"; 
+					}
+					$output.="<td >".$style."<br/><strong>".$schedule."<br/>".$sewingjobno."</strong><br/>".$sew_qty."<br>".$id."<br>".$trimid."</td>";
+
+				}
+				
+				for($i=1;$i<=14-$sql_num_check;$i++)
+				{
+					$output.="<td></td>";
+				}
+				$output.="</tr>";
+			}
+		}
+		
+		$output.="</table>";
+		header("Content-Type: application/xls");
+		// header("Content-type: application/vnd.ms-excel; name='excel'");
+		header("Content-Disposition: attachment; filename= Job Loading plan.xls ");
+		echo $output;
     }
 ?>

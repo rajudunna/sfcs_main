@@ -494,7 +494,7 @@ if(isset($_POST['allocate_new']))
 	$schedule=$_POST['schedule1'];
 	$plant_code = $_POST['plant_code_name1'];
     $username = $_POST['username1']; 
-    
+	$jm_docket_line_id = $_POST['jm_docket_line_id']; 
    	for($i=0;$i<sizeof($doc_ref);$i++)
 	{
 		$temp="lable".$doc_ref[$i];
@@ -571,6 +571,13 @@ if(isset($_POST['allocate_new']))
 						{
 							$total_qty = $sql_row3["qty_issued"]+$sql_row3["qty_ret"]+$sql_row3["qty_allocated"];
 						}
+					}
+					$select_uuid1="SELECT UUID() as uuid";
+					$uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($uuid_row1=mysqli_fetch_array($uuid_result1))
+					{
+						$uuid1=$uuid_row1['uuid'];
+					
 					}	
                     $row_id_new1 = 'B'.$row_id_new;
 					$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$row_id_new1."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
@@ -584,7 +591,10 @@ if(isset($_POST['allocate_new']))
 						$sql121="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and  tid=".$tid_ref[$j];
 						// echo $sql121."<br>";
 						mysqli_query($link, $sql121) or exit("Sql Error344: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
-					}                 
+					}    
+					$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,plan_lot_ref,plant_code,created_user,created_at) values('$uuid1','".$jm_docket_line_id."',\"".$lot_db[$j]."\",'".$plant_code."','".$username."','NOW()')";
+					mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
 					$sql111="select * from $wms.fabric_cad_allocation where doc_no='".$row_id_new1."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -664,11 +674,9 @@ if(isset($_POST['allocate']))
 	$doc_com=$_POST['doc_com'];
 	$doc_mer=$_POST['doc_mer'];
 	$cat_ref=$_POST['cat_ref'];
-	
 	$process_cat=$_POST['process_cat'];
     $style_ref=$_POST['style_ref'];
 	$schedule=$_POST['schedule'];
-    
 	$size_doc=sizeof($doc);
 	$note="";
 	echo "<input type='hidden' id='size_doc' value=\"$size_doc\"></>";
@@ -760,19 +768,26 @@ if(isset($_POST['allocate']))
 		//Table to show all list of available items
 		if(sizeof($lot_db_2)>0)
 		{
-
+			$docket_query = "select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_ref' and plant_code='".$plant_code."'";
+			$docket_query_result = mysqli_query($link_new,$docket_query);
+			while($sql_row1=mysqli_fetch_array($docket_query_result))
+			{
+				$jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+			}
         echo "<input type=\"hidden\" name=\"row_id1\" value=\"".$row_id."\">";
 		echo "<input type=\"hidden\" name=\"style_ref1\" value=\"".$style_ref."\">";
 		echo "<input type=\"hidden\" name=\"schedule1\" value=\"".$schedule."\">";
 		echo "<input type=\"hidden\" name=\"plant_code_name1\" value=\"".$plant_code."\">";
+		echo "<input type=\"hidden\" name=\"jm_docket_line_id\" value=\"".$jm_docket_line_id."\">";
 		echo "<input type=\"hidden\" name=\"username1\" value=\"".$username."\">";
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
 		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
-		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(";",$lot_db)."\">";
+		echo "<input type=\"hidden\" name=\"lot_db[$i]\" value=\"".implode(",",$lot_db)."\">";
 		echo "<input type=\"hidden\" name=\"min_width[$i]\" value=\"\">";
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]."</font></h3>";
 		
+
 		//To show stats
 		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
@@ -867,7 +882,7 @@ if(isset($_POST['allocate']))
 				$temp_var.="<td>";
 				
 				$sql1="select max(log_time),doc_type,doc_no from $wms.fabric_cad_allocation where plant_code='".$plant_code."' and roll_id=".$sql_row['tid'];
-				$temp_var.="</br>Qry : ".$sql1."</br>";
+				//$temp_var.="</br>Qry : ".$sql1."</br>";
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error13: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{

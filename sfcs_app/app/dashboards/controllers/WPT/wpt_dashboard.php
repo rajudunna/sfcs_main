@@ -1,17 +1,19 @@
 
 
 <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+    include('wpt_dashboard_data.php');
     $url = getFullURLLevel($_GET['r'],'wpt_dashboard_data.php',0,'R');
 	$RELOAD_TIME = (int)$wpt_refresh_time;
     $dashboard_name="WPT";
-    // $sections_query = "Select sec_id from $bai_pro3.sections_db where sec_id > 0";
-    $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE module_master.status='active' and section>0 GROUP BY section ORDER BY section + 0";
-    $sections_result = mysqli_query($link,$sections_query);
-    while($row = mysqli_fetch_array($sections_result)){
-        $sections[] = $row['sec_id'];
+    // get sections for department sewing and plant code 
+    $sections = getSectionByDeptTypeSewing($plant_code);
+    $sectionIds = [];
+    foreach($sections as $section)
+    {
+        array_push($sectionIds, $section['sectionId']);
     }
-    $sections_str = implode(',',$sections);
+    $sections_str = implode(',',$sectionIds);
 ?>
 
 
@@ -44,20 +46,13 @@
         <?php
             foreach($sections as $section)
             {
-                $id1 = "sec-load-$section";
-                $id2 = "sec-$section";
-
-                $sqlx1="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-                $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
-                {
-                    $section_display_name=$sql_rowx1['section_display_name'];
-                }
+                $id1 = "sec-load-".$section['sectionId'];
+                $id2 = "sec-".$section['sectionId'];
         ?>    
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
-                        <div class='panel-body sec-box'>
-                            <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
+                        <div class='panel-body sec-box' style="overflow: scroll;">
+                            <center><span class='section-heading'><b><?= $section['sectionName']; ?></b></span></center>
                             <span style='height:50px'>&nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
                             <div id='<?= $id2 ?>'>
@@ -165,30 +160,33 @@
     }
 
     function call_ajax(section,sync_type){
-        console.log(section);
         var blocks = $('#blocks').val();
         if(Number(blocks) == 0)
             blocks = 4;
-        console.log(blocks);    
         $('#sec-load-'+section).css('display','block');
         $('#sec-'+section).html('');
         $.ajax({
             url: "<?= $url ?>?section="+section+"&blocks="+blocks
         }).done(function(data) {
-            console.log("Response Came");
             try{
                 var sec_data = JSON.parse(data) ;
-                $('#sec-'+section).html(sec_data.data);
-                $('body').append(sec_data.java_scripts);
-                $('#sec-load-'+section).css('display','none');
-                $('[data-toggle="tooltip"]').tooltip(); 
+                if(sec_data.data) {
+                    $('#sec-'+section).html(sec_data.data);
+                    $('body').append(sec_data.java_scripts);
+                    $('#sec-load-'+section).css('display','none');
+                    $('[data-toggle="tooltip"]').tooltip(); 
 
-                if(sync_type){
-                    var ind = sections.indexOf(section);
-                    if(sections[ind+1]){ 
-                        call_ajax(sections[ind+1],true);
+                    if(sync_type){
+                        var ind = sections.indexOf(section);
+                        if(sections[ind+1]){ 
+                            call_ajax(sections[ind+1],true);
+                        }
                     }
+                } else {
+                    $('#sec-'+section).html('<b>No module data found.It will automatically refresh in <?= $RELOAD_TIME ?> mins</b>');
+                    $('#sec-load-'+section).css('display','none');
                 }
+                
             }catch(err){
                 if(sync_type){
                     $('#sec-'+section).html('<b>couldn\'t fetch the data.It will automatically refresh in <?= $RELOAD_TIME ?> mins</b>');

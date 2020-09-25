@@ -103,7 +103,7 @@ echo "<h2>Trims Status View Form</h2>";
 	// $dropdown_disable="disabled=\"disabled\"";
 
 
-echo "<h3>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h3>";
+echo "<h4>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h4>";
 
 $seq1=-1;
 echo "<h4><u>Consumption Report</u> </h4>";

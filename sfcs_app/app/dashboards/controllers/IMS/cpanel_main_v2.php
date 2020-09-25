@@ -1,3 +1,9 @@
+<?php
+    include('imsCalls.php');
+    $start_timestamp = microtime(true);
+    $plantCode = $_SESSION['plantCode'];
+    $username = $_SESSION['userName'];
+?>
 <style>
 .green_back{
   background : #00ff00;
@@ -272,9 +278,11 @@ width:350px;
 function loadpopup(url)
 { 
     var shift = document.getElementById('shift').value;
+    //$("#selectId option:selected").html();
+    //alert(shift);
     if(shift)
     {
-        url = url+'&shift='+shift;
+        url = url+'&shift='+shift+'&plant_code='+'<?=$plantCode?>'+'&username='+'<?=$username?>';
         window.open(url,'Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;
     }
     else
@@ -392,13 +400,6 @@ $.ajax
 });
 </script>
 <title>IMS</title>
-<?php
-    include('imsCalls.php');
-    $start_timestamp = microtime(true);
-    $plantCode = $_SESSION['plantCode'];
-    $username = $_SESSION['userName']; 
-?>
-
 <body>
 <div class="panel panel-primary">
   <div class="panel-heading">    
@@ -452,7 +453,7 @@ $.ajax
           ?>
         <div class="section_main_box">
               <div class="sections_heading1">
-                <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $department['sectionId']; ?>', 'myPop1',800,600);" ><?php echo $department['sectionName']; ?><br />
+                <a href="javascript:void(0);" onclick="PopupCenterSection('<?= getFullURL($_GET['r'],'sec_rep.php','R');?>?section=<?php echo $department['sectionId']; ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1',800,600);" ><?php echo $department['sectionName']; ?><br />
                 </a>
               </div>
           <?php    
@@ -465,6 +466,7 @@ $.ajax
             $wip=0;
             foreach($workstationsArray as $workstations)
               {
+                $module=$workstations['workstationId'];
           ?>
 
           <div class="line_main"  style="background:<?= $module_col_lab['color']; ?>">
@@ -472,7 +474,7 @@ $.ajax
                 <!-- module number DIV start -->  
               <div class="line_no">
                 <a href="#" data-toggle="tooltip" tile="M-<?php echo $workstations['workstationCode']; ?> WIP :  
-                <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>', 'myPop1');">
+                <?php echo $wip; ?>" class="red-tooltip" onclick="window.open('<?= getFullURL($_GET['r'],'mod_rep.php','R');?>?module=<?= $workstations['workstationId'] ?>&plantCode=<?= $plantCode?>&username=<?= $username?>', 'myPop1');">
                 <?= $workstations['workstationCode'] ?></a>
               </div>  
               <!-- module number DIV END -->
@@ -507,7 +509,7 @@ $.ajax
                     $qrytoGetMinOperation="SELECT job_group,operation_code,
                     original_quantity,
                     good_quantity,
-                    rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+                    rejected_quantity,date(created_at) as inputdate FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
                     $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
                     if(mysqli_num_rows($minOperationResult)>0){
                       while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -515,10 +517,11 @@ $.ajax
                           $minOperation=$minOperationResultRow['operation_code'];
                           $minOrgnalQty=$minOperationResultRow['original_quantity'];
                           $minGoodQty=$minOperationResultRow['good_quantity'];
+                          $minRejQty=$minOperationResultRow['rejected_quantity'];
+                          $inputdate=$minOperationResultRow['inputdate'];
                         }
-                        $minRejQty=$minOperationResultRow['rejected_quantity'];
+                        
                     }
-
                     /**
                      * get MAX operation wrt jobs based on operation seq
                      */
@@ -565,25 +568,26 @@ $.ajax
                           $packingjobno = $job_detail_attributes[$sewing_job_attributes['packingjobno']];
                           $cartonno = $job_detail_attributes[$sewing_job_attributes['cartonno']];
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
+                          $conumber = $job_detail_attributes[$sewing_job_attributes['cono']];
                           
                           $sidemenu=true;
-                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu&shift=$shift";
+                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
                           ?>
                           <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                           Style No : <?php echo $style."<br/>"; ?>
-                          Co No : <?php echo $co_no."<br/>"; ?>
+                          Co No : <?php echo $conumber."<br/>"; ?>
                           Schedul No :<?php echo $schedule."<br/>"; ?>
                           Color : <?php echo $color."<br/>"; ?>
                           Docket No : <?php echo $docketno."<br/>"; ?>
                           Job No : <?php echo $sewingjobno."<br/>"; ?>
                           Cut No : <?php echo $cutjobno."<br/>"; //chr($color_code).leading_zeros(?>
-                          Input Date : <?php echo $input_date."<br/>"; ?>
+                          Input Date : <?php echo $inputdate."<br/>"; ?>
                           Total Input :<?php echo $input_qty."<br/>"; ?>
                           Total Output:<?php echo $output_qty."<br/>"; ?>
                           Rejected:<?php echo $MaxRejQty."<br/>"; ?>
                           <?php echo "Balance : ".($input_qty - ($output_qty+$MaxRejQty))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
                           " rel="tooltip">
-                          <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
+                          <?php echo "<div class=\"blue_box\" id=\"S$schedule\" style=\"$rejection_border\">";?>
                           <?php echo $value; ?>
                           </div></a>
                           <?php
@@ -592,85 +596,6 @@ $.ajax
                 }
               }
               
-              /*
-              $pending=array();
-              $pending_tmp=array();
-              $pending_tmp=array_values(array_diff($recut_job,$available_job));
-              $pending=array_values(array_diff($pending_tmp,$jobs_not_consider));
-              $pending=5;
-              if(sizeof($pending)>0)
-              {           
-                    for($kk=0;$kk<$pending;$kk++)
-                    { 
-                        $sqlwip122="SELECT style,color FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
-                        $sql_resultwip122=mysqli_query($link, $sqlwip122) or exit("Sql Error1225".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_rowwip122=mysqli_fetch_array($sql_resultwip122))
-                        {
-                          $style=$sql_rowwip122['style'];
-                          $color=$sql_rowwip122['color'];
-                        }
-                        $application2='IPS';
-
-                        $scanning_query12="select operation_code from $brandix_bts.tbl_ims_ops where appilication='$application2'";
-                        $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_row123=mysqli_fetch_array($scanning_result12))
-                        {
-                          $operation_in_code=$sql_row123['operation_code'];
-                        }
-                        if($operation_in_code == 'Auto'){
-                          $get_ips_op = get_ips_operation_code($link,$style,$color);
-                          $operation_in_code=$get_ips_op['operation_code'];
-                        }
-                        $value=$recut_job_val[$pending[$kk]];             
-                        $sqlwip12="SELECT input_job_no,remarks,cut_number,docket_number,style,schedule,color,sum(if(operation_id = $operation_in_code,recevied_qty,0)) as input,sum(if(operation_id = $operation_out_code,recevied_qty,0)) as output,SUM(IF(operation_id = $operation_out_code,rejected_qty,0))  as rejected FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref='".$pending[$kk]."'";
-                        $sql_resultwip12=mysqli_query($link, $sqlwip12) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($sql_rowwip12=mysqli_fetch_array($sql_resultwip12))
-                        {
-                          $style_no=$sql_rowwip12['style'];
-                          $schedul_no=$sql_rowwip12['schedule'];
-                          $color_name=$sql_rowwip12['color'];
-                          $docket_no=$sql_rowwip12['docket_number'];
-                          $input_qty=$sql_rowwip12['input'];
-                          $output_qty=$sql_rowwip12['output'];
-                          $cut_no=$sql_rowwip12['cut_number'];
-                          $type_of_sewing=$sql_rowwip12['remarks'];
-                          $inputno=$sql_rowwip12['input_job_no'];
-                          $rejected=$sql_rowwip12['rejected'];
-                        }
-                        if(!in_array($schedul_no,$scheudles))
-                        {
-                            $color_code=echo_title("$bai_pro3.bai_orders_db_confirm","color_code","order_col_des='".$color_name."' and order_del_no",$schedul_no,$link);
-                            $co_no=echo_title("$bai_pro3.bai_orders_db_confirm","co_no","order_del_no",$schedul_no,$link);              
-                            $sewing_prefi=echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$type_of_sewing,$link);
-                            $display = $sewing_prefi.leading_zeros($inputno,3);
-                            $sidemenu=true;
-                            $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$pending[$kk]&style=$style_no&schedule=$schedul_no&operation_id=$operation_code&sidemenu=$sidemenu&shift=$shift";
-                            ?>
-                            <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  
-                              title="
-                                Style No : <?php echo $style_no."<br/>"; ?>
-                                Co No : <?php echo $co_no."<br/>"; ?>
-                                Schedul No :<?php echo $schedul_no."<br/>"; ?>
-                                Color : <?php echo $color_name."<br/>"; ?>
-                                Docket No : <?php echo $docket_no."<br/>"; ?>
-                                Job No : <?php echo $display."<br/>"; ?>
-                                Cut No : <?php echo chr($color_code).leading_zeros($cut_no,3)."<br/>"; ?>
-                                Input Date : <?php echo $input_date."<br/>"; ?>
-                                Total Input :<?php echo $input_qty."<br/>"; ?>
-                                Total Output:<?php echo $output_qty."<br/>"; ?>
-                                Rejected:<?php echo $rejected."<br/>"; ?>
-                                <?php echo "Balance : ".($input_qty - ($output_qty+$rejected))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
-                            " 
-                            rel="tooltip">
-                            <?php echo "<div class=\"blue_box\" id=\"S$schedul_no\" style=\"$rejection_border\">";?>
-                              <?php echo $value; ?>
-                            </div></a>
-                            <?php
-                        }
-                  }
-              }
-              */
-
               /*docket boxes Loop -End 
               closing while for red blocks
               */

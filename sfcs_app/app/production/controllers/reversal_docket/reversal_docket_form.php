@@ -86,7 +86,7 @@
                 <button type="button" class="btn btn-danger" value="Close" id = "cancel" data-dismiss="modal" style="float: right;">Close</button>
                 </div>
                 <div class="modal-body">
-                    <form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+                    <form action="index-no-navi.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
                         <div id ="dynamic_table1">
                         </div>
                         <div class="pull-right"><input type="submit" id='reverse' class="btn btn-primary" value="Submit" name="reversesubmit" onclick = 'hiding()'></div>
@@ -130,7 +130,7 @@ if(isset($_POST['formSubmit']))
                             while($row = mysqli_fetch_array($docketLineDetails)){
                                 $id = '"'.$row['lp_lay_id'].'"';
                                 echo "<tr><td>$docket_number_post</td>";
-                                echo "<tr><td>$s_no</td>";
+                                echo "<td>$s_no</td>";
                                 echo "<td>".$row['shift']."</td>";
                                 echo "<td>".$row['docket_plies']."</td>";
                                 echo "<td>".$row['lay_plies']."</td>";
@@ -162,6 +162,7 @@ if(isset($_POST['reversesubmit']))
    $reverseRollIds = $_POST['roll_ids'];
    $reverseVal = $_POST['reverseVal'];
    $lay_id = $_POST['lay_id'];
+   $docket_number = $_POST['docket_number'];
    $lay_plies = 0;
    foreach($reverseRollIds as $key=>$value)
    {
@@ -172,6 +173,9 @@ if(isset($_POST['reversesubmit']))
    }
    $updateLayQty = "UPDATE $pps.lp_lay set plies = plies - $lay_plies where lp_lay_id = '$lay_id'";
    mysqli_query($link, $updateLayQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+   $updateDocketQty = "UPDATE $pps.jm_docket_lines set lay_status = 'OPEN' where jm_docket_line_id = '$docket_number'";
+   mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
    echo "<script>sweetAlert('Lay Reversed Successfully!!!','','success');
    window.location = '".$url."'</script>"; 
