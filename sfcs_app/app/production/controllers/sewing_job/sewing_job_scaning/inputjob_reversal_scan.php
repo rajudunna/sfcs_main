@@ -263,6 +263,8 @@
 		
 	function check_pack()
 	{
+		$('#smartbtn').attr('disabled', 'disabled');
+		
 		var count = document.getElementById('count_of_data').value;
 		var rejectReportData = new Object();
 		// reportData.sewingJobNo = $('#job_number').val();
@@ -302,6 +304,7 @@
 				swal('','Network Error','error');
 			}
 		});
+		$('#smartbtn').attr('disabled', false);
 		$('.submissiaon').hide();
 	}
 
