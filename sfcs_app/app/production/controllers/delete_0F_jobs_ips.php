@@ -3,7 +3,6 @@
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');  
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
-    $application = 'IPS';    
     $status = 'F';
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
@@ -48,7 +47,7 @@
                     <th>Style</th>
                     <th>Schedule</th>
                     <th>Color</th>
-                    <th>PO Number</th>
+                    <th>PO Description</th>
                     <th>Job No</th>
                     <th>Original Qty</th>
                     <th>Module</th>
@@ -128,7 +127,6 @@
                         $color = $job_detail_attributes[$sewing_job_attributes['color']];
                         $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
                         $docketno = $job_detail_attributes[$sewing_job_attributes['docketno']];
-                        $ponumber = $job_detail_attributes[$sewing_job_attributes['ponumber']];
 
                         //to get qty from jm job lines
                         $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$key' and plant_code='$plant_code'";
@@ -147,25 +145,28 @@
                         {
                             $resource_id = $get_module_row['resource_id'];
                         }
-                       //To get workstation description
-                        $query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '$resource_id'";
+                       //To get workstation_code
+                        $query = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$resource_id'";
                         $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($des_row=mysqli_fetch_array($query_result))
                         {
-                            $workstation_description = $des_row['workstation_description'];
+                            $workstation_description = $des_row['workstation_code'];
                         }
                         $jg_header_id=$key;
                         $job_number=$value;
-                        $ponumber=$jm_job_header_id[$key];
+                        $po_number=$ponumber[$key];
+                        //To get PO Description
+                        $result_po_des=getPoDetaials($po_number,$plant_code);
+                        $po_des=$result_po_des['po_description'];
                         if($check_status == 0){
-                            $url = 'index.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
+                            $url = 'index-no-navi.php?r='.$_GET['r']."&job_no=$jg_header_id&job=$job_number";
                             $counter++;
                             echo "<tr>";
                                 echo "<td>$counter</td>"; 
                                 echo "<td>$style</td>"; 
                                 echo "<td>$schedule</td>";
                                 echo "<td>$color</td>";
-                                echo "<td>$ponumber</td>"; 
+                                echo "<td>$po_des</td>"; 
                                 echo "<td>$job_number</td>";                   
                                 echo "<td>$sew_qty</td>";
                                 echo "<td>$workstation_description</td>";
