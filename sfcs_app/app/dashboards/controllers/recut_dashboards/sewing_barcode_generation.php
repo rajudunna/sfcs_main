@@ -68,7 +68,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
            $mo_no = $row_mo['mo_no'];
         }
  
-        $pre_send_qty_qry = "select max(carton_act_qty) as bundle_qty,carton_act_qty,destination,packing_mode,sref_id,input_job_no,old_size from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_no' and size_code= '$size_title'";
+        $pre_send_qty_qry = "select max(carton_act_qty) as bundle_qty,carton_act_qty,destination,packing_mode,sref_id,input_job_no,old_size,type_of_sewing from $bai_pro3.pac_stat_log_input_job where input_job_no_random = '$input_job_no' and size_code= '$size_title'";
             //echo $pre_send_qty_qry;
             //die();
         $result_pre_send_qty = $link->query($pre_send_qty_qry);
@@ -80,6 +80,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
             $packing_mode = $row['packing_mode'];
             $sref_id = $row['sref_id'];
             $input_job = $row['input_job_no'];
+            $type_of_swng = $row['type_of_sewing'];
             $size_id = $row['old_size'];
         } 
 
@@ -94,7 +95,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
       
             if($reported_qty <= $bundle_qty)
             {
-               $insert_pac_stat_log="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,doc_type,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values('".$recut_doc."','".$size_title."','R','".$reported_qty."','".$input_job."','".$input_job_no."','".$destination."','".$packing_mode."','".$size_id."','".$sref_id."','".$job_counter."')";
+               $insert_pac_stat_log="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,doc_type,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence,type_of_sewing) values('".$recut_doc."','".$size_title."','R','".$reported_qty."','".$input_job."','".$input_job_no."','".$destination."','".$packing_mode."','".$size_id."','".$sref_id."','".$job_counter."','".$type_of_swng."')";
 
                 mysqli_query($link, $insert_pac_stat_log) or die("Error---1".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $id = mysqli_insert_id($link);
@@ -122,7 +123,7 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
             else
             {
                $reported_qty -= $bundle_qty;
-               $insert_pac_stat_log="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,doc_type,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence) values('".$recut_doc."','".$size_title."','R','".$bundle_qty."','".$input_job."','".$input_job_no."','".$destination."','".$packing_mode."','".$size_id."','".$sref_id."','".$job_counter."')";
+               $insert_pac_stat_log="insert into $bai_pro3.pac_stat_log_input_job(doc_no,size_code,doc_type,carton_act_qty,input_job_no,input_job_no_random,destination,packing_mode,old_size,sref_id,barcode_sequence,type_of_sewing) values('".$recut_doc."','".$size_title."','R','".$bundle_qty."','".$input_job."','".$input_job_no."','".$destination."','".$packing_mode."','".$size_id."','".$sref_id."','".$job_counter."','".$type_of_swng."')";
                 //echo  $insert_pac_stat_log;
                // die();
                 mysqli_query($link, $insert_pac_stat_log) or die("Error---2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -145,7 +146,8 @@ function issue_to_sewing($job_no,$size,$qty,$doc,$bcd_ids)
                      //echo $moq_qry;
                      mysqli_query($link,$moq_qry) or exit("Whille inserting recut to moq".mysqli_error($GLOBALS["___mysqli_ston"]));
                 }
-            }   
+            } 
+            $job_counter++;  
         }
    }
 }

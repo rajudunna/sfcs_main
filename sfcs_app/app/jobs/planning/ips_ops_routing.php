@@ -235,28 +235,30 @@ while($row=mysqli_fetch_array($get_style_color_query_result))
                     $orginal_qty=$sql_row["org_qty"];
                     $replace_in_qty=$sql_row["replace_qty"];
                 }
-    
-                if(($orginal_qty+$replace_in_qty)==($rec_qty1+$rej_qty1)) 
+                if($orginal_qty > 0)
                 {
-                    $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
-                    $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_check_res)==0)
+                    if(($orginal_qty+$replace_in_qty)==($rec_qty1+$rej_qty1)) 
                     {
-                        $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$input_job_num."'";
-                        mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                        $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
+                        $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_check_res)==0)
+                        {
+                            $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input_backup SELECT * FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='".$input_job_num."'";
+                            mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                        }
+                        $sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
+                        mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
+                    } else {
+                        $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
+                        $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($sql_check_res)==0)
+                        {
+                            $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref='".$input_job_num."' order by input_trims_status desc limit 1";
+                            mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
+                        }
+                        $sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
+                        mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
                     }
-                    $sqlx="delete from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
-                    mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
-                } else {
-                    $sql_check="select input_job_no_random_ref from $bai_pro3.plan_dashboard_input where input_job_no_random_ref='".$input_job_num."'";
-                    $sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    if(mysqli_num_rows($sql_check_res)==0)
-                    {
-                        $backup_query="INSERT INTO $bai_pro3.plan_dashboard_input SELECT * FROM $bai_pro3.`plan_dashboard_input_backup` WHERE input_job_no_random_ref='".$input_job_num."'";
-                        mysqli_query($link, $backup_query) or exit("Error while saving backup plan_dashboard_input_backup");
-                    }
-                    $sqlx="delete from $bai_pro3.plan_dashboard_input_backup where input_job_no_random_ref='".$input_job_num."'";
-                    mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));	
                 }
             }
 

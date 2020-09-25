@@ -8,6 +8,7 @@ Revised CSS files for interface standardization,Add the Validation on trims stat
 error_reporting(0);
 //include("header.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
@@ -152,7 +153,7 @@ else
 {
 	$doc=$_GET["doc_no"];
 	$section=$_GET["section"];
-	$style=$_GET["style"];
+	$style=style_decode($_GET["style"]);
 	$schedule=$_GET["schedule"];
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
@@ -280,9 +281,10 @@ while($sql_row=mysqli_fetch_array($sql_result1))
 }
 // echo "<h4>Ratio Sheet</h4>";
 // echo "<a class='btn btn-info btn-sm' href=\"print_input_sheet.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet.php?schedule=$org_schs')\">Print Input Job Sheet - Job Wise</a><br>";
-
+//Style Encoded
+$main_style=style_encode($style);
 echo "<h4><u>Consumption Report</u> </h4>";
-echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$join_sch&style=$style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
+echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$join_sch&style=$main_style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$join_sch&style=$main_style&input_job=$jobno')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
 $sql4="select input_trims_status as t_status from $table_name where input_job_no_random_ref='$doc'";
 //echo $sql4;
@@ -293,7 +295,7 @@ while($row4=mysqli_fetch_array($result4))
 }
 // if($t_status==1)
 // {
-echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
+echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$main_style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$main_style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1')\">Print Input Job Sheet - Job Wise</a></b></u><br>";
 // }

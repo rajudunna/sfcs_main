@@ -1861,7 +1861,7 @@ tags will be replaced.-->
 		}
 		else
 		{
-			echo "<td colspan=2 class=xl8514212>".$row1["ref2"]."</td>";
+			echo "<td colspan=2 class=xl8514212></td>";
 		}
 		
 	}

@@ -37,6 +37,7 @@ $has_permission=haspermission($url_r);
 <?php
 include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
+include("../../../../common/config/functions_dashboard.php");
 error_reporting(0);
 $has_permission = haspermission($_GET['r']);
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -209,7 +210,7 @@ else
 {
 	$doc=$_GET["doc_no"];
 	$section=$_GET["section"];
-	$style=$_GET["style"];
+	$style=style_decode($_GET["style"]);
 	$schedule=$_GET["schedule"];
 	$jobno=$_GET["jobno"];
 	$module_no=$_GET["module"];
@@ -346,7 +347,9 @@ echo "<br>";
 if($job_color_status=="blue")
 if(true)
 {
-	echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a><br>";
+	//Decode Style
+	$main_style=style_encode($style);
+	echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$main_style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$main_style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a><br>";
 }
 // $production_reviewss_sheet_users=array("chathurangad","dinushapre","buddhikam");
 if(in_array($authorized,$has_permission))

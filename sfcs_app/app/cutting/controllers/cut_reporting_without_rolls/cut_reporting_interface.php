@@ -60,7 +60,7 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table";
+$cut_table_query = "SELECT * from $bai_pro3.tbl_cutting_table where status = 'active' ";
 $cut_table_result = mysqli_query($link,$cut_table_query);
 while($row = mysqli_fetch_array($cut_table_result)){
     $cut_tables[$row['tbl_id']] = $row['tbl_name'];
@@ -170,12 +170,12 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                     <td id='d_shortages'></td>
                     <td id='d_reported'></td>
                 </tr>
-                
-            </table>
             </div>
+            </table>
+         </div>
             <hr>
         </div><br/>
-        <div class='row' id='hide_details_reported_roll_wise' style='overflow-x:scroll;display:none'>
+        <!-- <div class='row' id='hide_details_reported_roll_wise' style='overflow-x:scroll;display:none'>
             <div class='col-sm-12'>
             <hr> 
             <table class='table table-bordered' id='reported_table_roll_wise'>
@@ -196,7 +196,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             </table>
             </div>
             <hr>
-        </div>
+        </div> -->
         <br/>
 
         
@@ -266,6 +266,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                 <table class='table table-bordered' id='reporting_table'>
                     <thead>
                         <tr class='info'>
+                            <th>Category</th>
                             <th>Docket</th>
                             <th>Quantity</th>
                             <th>Cut Status</th>
@@ -283,8 +284,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id='docket_info_table'>
                         <tr>
+                            <td id='r_category'></td>
                             <td id='r_doc_no'></td>
                             <td id='r_doc_qty'></td>
                             <td id='r_cut_status'></td>
@@ -316,6 +318,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             </td>
                             <td><input type='button' class='btn btn-sm btn-success' value='Submit' id='submit'></td>
                         </tr>
+
                     </tbody>
                 </table> 
                 <input type='hidden' value='' id='p_plies'> 
@@ -1185,6 +1188,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var color       = $('#post_color').val();
         var fab_req     = Number($('#fab_required').val());
         var error_message = '';
+      
         
         //Screen Validations
         if(c_plies == 0 && full_reporting_flag == '1'){
@@ -1661,12 +1665,40 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     */
     //Rejection Panel Code Ends
 
-    function camelCase(str) { 
-            return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) 
-            { 
-                return index == 0 ? word.toUpperCase() : word.toLowerCase(); 
-            }).replace(/\s+/g, ''); 
+    function constructDocketsForCutTable(docketsForCut) {
+        var dockets_html = '';
+        if(docketsForCut){
+            var dockets = Object.values(docketsForCut);
+            console.log('------------------------------');
+            console.log(dockets);
+            console.log('------------------------');
+            dockets.forEach( docketInfo => {
+                console.log(docketInfo);
+                var r_plies=docketInfo.a_plies;
+                if(docketInfo.p_plies == docketInfo.a_plies){
+                    r_plies=0;
+                }
+                dockets_html += "\
+                    <tr class='dockets_for_cut'>\
+                        <td>"+docketInfo['category']+"</td>\
+                        <td>"+docketInfo['doc_no']+"</td>\
+                        <td>"+docketInfo.doc_qty+"</td>\
+                        <td>"+docketInfo.act_cut_status+"</td>\
+                        <td>"+docketInfo.fab_required+"</td>\
+                        <td>"+docketInfo.p_plies+"</td>\
+                        <td>"+r_plies+"</td>\
+                    <tr>";
+            });
+            $('#docket_info_table').append(dockets_html);
         }
+        
+    }
+    function camelCase(str) { 
+        return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) 
+        { 
+            return index == 0 ? word.toUpperCase() : word.toLowerCase(); 
+        }).replace(/\s+/g, ''); 
+    }
 
     function loadDetails(doc_no){
         $.ajax({
@@ -1675,6 +1707,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             GLOBAL_CALL = 0;
             var data = $.parseJSON(res);
             console.log(data);
+            $('.dockets_for_cut').remove();
+            constructDocketsForCutTable(data.dockets_for_cut);
             avl_plies = Number(data.avl_plies);
             fab_req = Number(data.fab_required);
             console.log(data);
@@ -1765,6 +1799,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             //storing doc,plies in hidden fields for post refference
             $('#post_doc_no').val(data.doc_no);
             $('#p_plies').val(data.p_plies);
+            $('#a_plies').val(data.a_plies);
             $('#doc_target_type').val(data.doc_target_type);
             $('#ratio').val(data.ratio);
             
@@ -1776,14 +1811,13 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#binding_consum').val(data.binding_consumption);
             $('#seperat_dock').val(data.seperate_docket);
 
-
             //doc type
-             
+
             $('#d_doc_type').html(camelCase(data.doc_target_type)+' Docket');
             
             //setting size wise ratios
             $('#hide_details_reporting_ratios').html(data.ratio_data);
-            //setting values for display table    
+            //setting values for display table  
             $('#d_doc_no').html(doc_no);
             $('#d_cut_no').html(data.acut_no);
             $('#d_cut_status').html(data.act_cut_status);
@@ -1808,6 +1842,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
             $('#d_reported').html(data.reported);
             $('#r_doc_qty').html(data.doc_qty);
             //setting values for reporting table
+            $('#r_category').html(data.category);
             $('#r_doc_no').html(doc_no);
             $('#r_cut_status').html(data.act_cut_status);
             $('#r_plan_plies').html(data.p_plies);

@@ -1,10 +1,11 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');   ?>
-<?php include('../../../../common/config/functions.php'); ?>
+<?php include('../../../../common/config/functions.php'); 
+      include('../../../../common/config/functions_dashboard.php');?>
 <?php ini_set('error_reporting', E_ALL); ?>
 <?php
 $divide=15;
 $schedule=$_GET['schedule'];
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
 $style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 

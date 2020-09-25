@@ -1,22 +1,23 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));  
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));  
 ?>
 <script> 
 
     function firstbox() 
     { 
-        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value 
+        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
     } 
 
     function secondbox() 
     { 
-        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value 
     } 
 
     function thirdbox() 
     { 
-        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value 
+        window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value))) 
     } 
     </script> 
 
@@ -26,9 +27,9 @@
     <form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'schedule_mix_bek_delete.php',0,'R') ?>"> 
 
     <?php 
-        $style=$_GET['style']; 
+        $style=style_decode($_GET['style']); 
         $schedule=$_GET['schedule'];  
-        $color=$_GET['color']; 
+        $color=color_decode($_GET['color']); 
 
         if(isset($_POST['submit'])) 
         { 

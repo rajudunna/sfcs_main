@@ -1,6 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 $path="".getFullURLLevel($_GET['r'], "barcode_new.php", "0", "r")."";
 $path2="".getFullURLLevel($_GET['r'], "barcode2_1.php", "0", "r")."";
 
@@ -15,18 +16,18 @@ $has_permission=haspermission($url_r);
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
@@ -58,9 +59,9 @@ $(document).ready(function() {
 
 <?php
 	//include("menu_content.php");
-	$style=$_GET['style'];
+	$style=style_decode($_GET['style']);
 	$schedule=$_GET['schedule']; 
-    $color=$_GET['color'];
+    $color=color_decode($_GET['color']);
     if(isset($_POST['submit']))
     {
         $style=$_POST['style'];
@@ -69,9 +70,9 @@ $(document).ready(function() {
     }
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule']; 
-		$color=$_GET['color'];
+		$color=color_decode($_GET['color']);
 	}
 ?>
 
@@ -201,6 +202,9 @@ if(isset($_POST['submit']))
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
 	$url1=getFullURL($_GET['r'],'release.php','N');
+	//Encoded style and color
+	$main_style = style_encode($style);
+	$color = color_encode($color);
 	
 	$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -274,7 +278,7 @@ if(isset($_POST['submit']))
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{
-								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$style."&schedule=".$schedule."&color=".$color."' class='btn btn-danger btn-xs'>Release</a></td>";		
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$main_style."&schedule=".$schedule."&color=".$main_color."' class='btn btn-danger btn-xs'>Release</a></td>";		
 							}
 							echo "</tr>";						
 						}
@@ -296,7 +300,7 @@ if(isset($_POST['submit']))
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{
-								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$style."&schedule=".$schedule."&color=".$color."' class='btn btn-danger btn-xs'>Release</a></td>";	
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$main_style."&schedule=".$schedule."&color=".$main_color."' class='btn btn-danger btn-xs'>Release</a></td>";	
 							}
 							echo "</tr>";						
 						}						
@@ -318,10 +322,13 @@ if(isset($_GET['style']) && isset($_GET['schedule']) && isset($_GET['color']))
 {
 
 	//include($_SERVER['DOCUMENT_ROOT'].$base_path.'/dbconf.php');
-	$style=$_GET['style'];
-	$color=$_GET['color'];
+	$style=style_decode($_GET['style']);
+	$color=color_decode($_GET['color']);
 	$schedule=$_GET['schedule'];
 	$url1=getFullURL($_GET['r'],'release.php','N');
+	//Encoded style and color
+	$main_style = style_encode($style);
+	$color = color_encode($color);
 	
 	$sql="select * from $bai_pro3.bai_orders_db_confirm  where order_style_no='".$style."' and order_del_no='".$schedule."' and order_col_des='".$color."'";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -395,7 +402,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']) && isset($_GET['color']))
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{
-								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$style."&schedule=".$schedule."&color=".$color."' class='btn btn-danger btn-xs'>Release</a></td>";		
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$main_style."&schedule=".$schedule."&color=".$main_color."' class='btn btn-danger btn-xs'>Release</a></td>";		
 							}
 							echo "</tr>";						
 						}
@@ -417,7 +424,7 @@ if(isset($_GET['style']) && isset($_GET['schedule']) && isset($_GET['color']))
 							echo "<td>Print Done</td>";
 							if(in_array($authorized,$has_permission))
 							{
-								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$style."&schedule=".$schedule."&color=".$color."' class='btn btn-danger btn-xs'>Release</a></td>";	
+								echo "<td><a href='$url1&doc_no=".$sql_row['docno']."&repseqid=".$seq[$i]."&style=".$main_style."&schedule=".$schedule."&color=".$main_color."' class='btn btn-danger btn-xs'>Release</a></td>";	
 							}
 							echo "</tr>";						
 						}						

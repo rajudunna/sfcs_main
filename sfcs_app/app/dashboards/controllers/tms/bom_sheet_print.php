@@ -2,6 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autoload.php';
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 
 
 $body = "<style>
@@ -50,7 +51,7 @@ $host= $api_hostname;
 $port= $api_port_no;
 
 $schedule=$_GET['schedule'];
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $input_job_no=$_GET['input_job'];
 
 $colors=[];

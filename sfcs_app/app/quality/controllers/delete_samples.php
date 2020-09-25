@@ -1,6 +1,7 @@
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 
 ?>
 
@@ -19,7 +20,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 session_start();
 	if($_GET['style'])
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 	}
 	else
 	{
@@ -27,7 +28,7 @@ session_start();
 	}
 	if($_GET['color'])
 	{
-		$color=$_GET['color'];
+		$color=color_decode($_GET['color']);
 	}
 	else
 	{
@@ -49,17 +50,17 @@ session_start();
 
 function firstbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 }
 
 function secondbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 }
 
 function thirdbox()
 {
-	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+	window.location.href ="index.php?r=<?= $_GET['r'] ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 }
 
 </script>

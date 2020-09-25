@@ -72,7 +72,8 @@ table{
 	$sdate=$_GET['sdate'];
 	$edate=$_GET['edate'];	
 	$suppliers_list_ref_query=str_replace("*","'",$_GET["suppliers"]);
-	echo "<br>";
+	$suppliers_list_ref_query=str_replace("~~~","&",$_suppliers_list_ref_query);
+	//echo $_GET["suppliers"]."<br>";
 	$mon1=date('F(Y)', strtotime($sdate));
     $mon2=date('F(Y)', strtotime($edate));
 	
@@ -194,7 +195,7 @@ table{
 					style: {
                     fontSize: '20px'
 					},
-                    format: '<b>{point.name}</b>'
+                    format: '<b>{point.name}</b>-{point.percentage:.1f}%'
                 },
 				showInLegend: true
             }
@@ -212,7 +213,7 @@ table{
         series: [{
             type: 'pie',
 			fontSize: '55px',
-            name: 'Received Qty',
+      name: 'Received Qty',
 			color: '#000000',
 			style: {
 			fontSize: '20px',

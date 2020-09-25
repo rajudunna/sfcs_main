@@ -1,8 +1,9 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 
-$color=$_GET['color'];
+$color=color_decode($_GET['color']);
 $input_job=$_GET['input_job'];
 
 $date=date('Y-m-d');

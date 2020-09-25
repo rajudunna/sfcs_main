@@ -1,25 +1,26 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php $self_url = 'index.php?r='.$_GET['r']; ?>
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value;
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)));
 	}
 
 	function midbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&po="+document.test.po.value;
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&po="+document.test.po.value;
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&po="+document.test.po.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= $self_url ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&po="+document.test.po.value
+		window.location.href ="<?= $self_url ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&po="+document.test.po.value
 	}
 
 	function SetAllCheckBoxes(FormName, FieldName, CheckValue)
@@ -41,8 +42,8 @@
 
 
 <?php
-	$style=$_GET['style'];
-	$color=$_GET['color'];
+	$style=style_decode($_GET['style']);
+	$color=color_decode($_GET['color']);
 	if(isset($_POST['submit']))
 	{
 		$style=$_POST['style'];
@@ -130,8 +131,8 @@ if(isset($_POST['submit']) || $_GET['color']<>'')
 	$color=$_POST['color'];
 	if($_GET['color']<>'')
 	{
-		$style=$_GET['style']; 
-		$color=$_GET['color']; 
+		$style=style_decode($_GET['style']); 
+		$color=color_decode($_GET['color']); 
 	}
 	$size_array=array();
 	$orginal_size_array=array();
@@ -603,7 +604,9 @@ if(isset($_POST['fix']))
 		else
 		{
 			$status=1;
-		}	
+		}
+		$main_style = style_encode($style);
+        $main_color = color_encode($color);	
 		if($status==0) 
 		{			
 			$sql="select * from $bai_pro3.cat_stat_log csl
@@ -760,19 +763,19 @@ if(isset($_POST['fix']))
 					echo "<br>";
 				}
 				echo "<script>swal('Clubbing Completed Successfully.','','success');</script>";
-				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");				
+				echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$main_style&color=$main_color';</script>");				
 			}			
 		}																								
 		else
 		{
 			echo "<script>swal('You cannot proceed Schedule Clubbing.','Some of the Item codes are not equal for selected Schedules.','warning');</script>";
-			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+			echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$main_style&color=$main_color';</script>");
 		}
 	}
 	else
 	{
 		echo "<script>swal('Please select more than one schedule for clubbing.','','warning');";
-		 echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$style&color=$color';</script>");
+		 echo("<script>location.href = '".getFullURLLevel($_GET['r'],'mix_schedules.php',0,'N')."&style=$main_style&color=$main_color';</script>");
 	}
 	
 }

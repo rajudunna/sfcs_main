@@ -2,6 +2,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function($){
@@ -321,7 +322,7 @@ else
 
 $sql1="select fabric_status,order_tid,print_status,cat_ref,allocate_ref,doc_no, plan_lot_ref,cat_ref,order_tid
       from $bai_pro3.plandoc_stat_log 
-       where LENGTH(plan_lot_ref)>0 and lastup='0000-00-00 00:00:00' and act_cut_status<>'DONE'";
+       where LENGTH(plan_lot_ref)>0 and lastup='0000-00-00 00:00:00' and short_shipment_status = '0' and act_cut_status<>'DONE'";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //echo mysqli_num_rows($sql_result1);
 echo "<div class='col-sm-12' style='max-height:600px;overflow-x:scroll;overflow-y:scroll'>";
@@ -338,12 +339,15 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$buyer_code=substr($sql_row1['order_tid'],0,1);
 	$print_date=$sql_row1['print_status'];
 	$fabric_status=$sql_row1['fabric_status'];
-	
+	$order_tid = $sql_row1['order_tid'];
+	//Encoding order_tid
+     $main_tran_order_tid=order_tid_encode($order_tid);
+
 	
 	$path="sfcs_app/app/cutting/controllers/lay_plan_preparation/Book3_print.php";
 	
 
-	$tab= "<tr><td><a href=\"$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
+	$tab= "<tr><td><a href=\"$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."\" onclick=\"Popup1=window.open('$path?order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class='fa fa-print'></i>".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";

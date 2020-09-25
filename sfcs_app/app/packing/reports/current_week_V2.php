@@ -127,11 +127,11 @@ if(isset($_POST['submitx']) or isset($_GET['division']))
 	}
 	
 	$query1="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by left(style,1)";
-	$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\"  order by left(style,1)";
+	$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" group by schedule_no,color order by left(style,1)";
 
 	if($division!="All")
 	{
-		$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" $order_div_ref order by left(style,1)";
+		$query="where ex_factory_date_new between \"".trim($start_date)."\" and  \"".trim($end_date)."\" $order_div_ref group by schedule_no,color order by left(style,1)";
 	}
 	// echo $query;
 	$sHTML_Header="<html><head><title>Out Of Ratio Report</title></head><body>";

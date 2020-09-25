@@ -40,7 +40,7 @@ function oper_display(){
                 <option selected="selected" value=''>--Select Shift--</option>
                  <?php
                   foreach($shifts_array as $name) { ?>
-                     <option value="<?php echo $name['name'] ?>"><?php echo $name['name'] ?></option>
+                     <option value="<?php echo $name ?>"><?php echo $name ?></option>
                         <?php
                          } 
                         ?>

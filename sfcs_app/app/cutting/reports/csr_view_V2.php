@@ -56,7 +56,7 @@ function verify_date(){
 
 			?>
 			<div class="col-md-2">
-				<label>Section: </label>
+				<label>Cut Table: </label>
 				<select name="section" class="form-control" required>
 					<!-- <option value=''>Please Select</option> -->
 					<?php if($all_secs){
@@ -175,6 +175,12 @@ function verify_date(){
 				for($ii=0;$ii<sizeof($cut_remarks_explode);$ii++)
 				{
 					$cut_details_explode=explode("^",$cut_remarks_explode[$ii]);
+					$cut_tbl = $cut_details_explode[1];
+					$tbl_query = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $cut_tbl ";
+					$tbl_result = mysqli_query($link,$tbl_query) or exit('Unable to get table data');
+					while($tbl = mysqli_fetch_array($tbl_result)){
+						$cut_tbl_val = $tbl['tbl_name'];
+					}
 					$cut_plies=$cut_details_explode[8];
 					$cut_date=$cut_details_explode[0];
 					$sql1="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";					
@@ -219,7 +225,7 @@ function verify_date(){
 							echo "<tr>
 							<td>".$cut_details_explode[0]."</td> 
 							<td>".$cut_details_explode[2]."</td> 
-							<td>".$cut_details_explode[1]."</td> 
+							<td>".$cut_tbl_val."</td> 
 							<td>".leading_zeros($doc_no,9)."</td> 
 							<td>$style</td> 
 							<td>$schedule</td> 
@@ -253,7 +259,7 @@ function verify_date(){
 
 			$sql="select * from $bai_pro3.act_cut_status_recut_v2 where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\"";
 			//echo $sql;
-			mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -261,7 +267,7 @@ function verify_date(){
 				echo "<div class='table-responsive'><table class='table table-bordered'>";
 				echo "<tr class='warning'>
 						<th class='tblheading'>Date 2</th><th class='tblheading'>Shift 2</th>
-						<th class='tblheading' >Section</th>
+						<th class='tblheading' >Cut table</th>
 						<th class='tblheading'>Docket No</th>
 						<th class='tblheading'>Style</th>
 						<th class='tblheading'>Schedule</th>
@@ -282,7 +288,7 @@ function verify_date(){
 				
 				
 				$sql1="select * from $bai_pro3.recut_v2 where doc_no=\"$doc_no\"";
-				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -362,7 +368,11 @@ function verify_date(){
 							
 					// $act_total=$act_xs+$act_s+$act_m+$act_l+$act_xl+$act_xxl+$act_xxxl+$act_s01+$act_s02+$act_s03+$act_s04+$act_s05+$act_s06+$act_s07+$act_s08+$act_s09+$act_s10+$act_s11+$act_s12+$act_s13+$act_s14+$act_s15+$act_s16+$act_s17+$act_s18+$act_s19+$act_s20+$act_s21+$act_s22+$act_s23+$act_s24+$act_s25+$act_s26+$act_s27+$act_s28+$act_s29+$act_s30+$act_s31+$act_s32+$act_s33+$act_s34+$act_s35+$act_s36+$act_s37+$act_s38+$act_s39+$act_s40+$act_s41+$act_s42+$act_s43+$act_s44+$act_s45+$act_s46+$act_s47+$act_s48+$act_s49+$act_s50;
 				}
-	
+				$tbl_query1 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $act_section ";
+				$tbl_result1 = mysqli_query($link,$tbl_query1) or exit('Unable to get table data');
+				while($tbl1 = mysqli_fetch_array($tbl_result1)){
+					$cut_tbl_val1 = $tbl1['tbl_name'];
+				}
 				// $sql1="select * from cat_stat_log where tid=$cat_ref";
 				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -393,7 +403,7 @@ function verify_date(){
 				$inner_count = 0;
 				echo "<td>$date</td>
 						<td>$act_shift</td> 
-						<td>$act_section</td> 
+						<td>$cut_tbl_val1</td> 
 						<td>".leading_zeros($doc_no,9)."</td> 
 						<td>$style</td> 
 						<td>$schedule</td> 
@@ -414,7 +424,7 @@ function verify_date(){
 							echo "<tr>
 								<td>".$cut_details_explode[0]."</td> 
 								<td>".$cut_details_explode[2]."</td> 
-								<td>".$cut_details_explode[1]."</td> 
+								<td>".$cut_tbl_val."</td> 
 								<td>".leading_zeros($doc_no,9)."</td> 
 								<td>$style</td> 
 								<td>$schedule</td> 
@@ -452,14 +462,14 @@ function verify_date(){
 			echo"
 		  <table class='table table-bordered' >
 		  <tr class='warning'>
-		  <th class='tblheading'>Section</th>
+		  <th class='tblheading'>Cut Table</th>
 		  <th class='tblheading'>Shift</th>
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Cut Qty</th>
 		  </tr>";
  			$sql="select distinct section from $bai_pro3.act_cut_status where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
 			
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -468,14 +478,14 @@ function verify_date(){
 				$row_count++;
 				$section_new=$sql_row['section'];
 				$sql1="select distinct shift from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
-				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
 					$shift_new=$sql_row1['shift'];
 					$doc_list="";
 					$sql2="select doc_no from $bai_pro3.act_cut_status where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift=\"$shift_new\"";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -484,7 +494,7 @@ function verify_date(){
 					$doc_list=substr($doc_list,0,-2);
 					$cat_list="";
 					$sql2="select distinct cat_ref from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list) order by cat_ref";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -492,14 +502,14 @@ function verify_date(){
 					}
 					$cat_list=substr($cat_list,0,-2);
 					$sql2="select distinct category from $bai_pro3.cat_stat_log where tid in ($cat_list)";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
 						$category=$sql_row2['category'];
 						$cat_base="";
 						$sql3="select distinct tid from $bai_pro3.cat_stat_log where category=\"$category\" and tid in ($cat_list)";
-						mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -507,14 +517,19 @@ function verify_date(){
 						}
 						$cat_base=substr($cat_base,0,-2);
 						$sql3="select sum((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) as \"cut_qty\" from $bai_pro3.plandoc_stat_log where doc_no in ($doc_list) and cat_ref in ($cat_base)";
-						mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$cut_qty=$sql_row3['cut_qty'];
 						}
+						$tbl_query2 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $section_new ";
+						$tbl_result2 = mysqli_query($link,$tbl_query2) or exit('Unable to get table data');
+						while($tbl2 = mysqli_fetch_array($tbl_result2)){
+							$cut_tbl_val2 = $tbl2['tbl_name'];
+						}
 	 					echo "<tr >";
-					    echo "<td >$section_new</td>";
+					    echo "<td >$cut_tbl_val2</td>";
 					  	echo "<td >$shift_new</td>";
 					  	echo "<td >$category</td>";
 					  	echo "<td >$cut_qty</td>";
@@ -540,14 +555,14 @@ function verify_date(){
 	
 	echo"<table class='table table-bordered'>
 		  <tr class='warning'>
-		  <th class='tblheading'>Section</th>
+		  <th class='tblheading'>Cut Table</th>
 		  <th class='tblheading'>Shift</th>
 		  <th class='tblheading'>Category</th>
 		  <th class='tblheading'>Re Cut Qty</th>
 		  </tr>";
  			$sql="select distinct section from $bai_pro3.act_cut_status_recut_v2 where section in ($section) and shift in ($shift) and date between \"$from_date\" and \"$to_date\" order by section";
 			
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			$row_count = 0;
@@ -555,7 +570,7 @@ function verify_date(){
 			{
 				$section_new=$sql_row['section'];
 				$sql1="select distinct shift from $bai_pro3.act_cut_status_recut_v2 where date between \"$from_date\" and \"$to_date\" and section=\"$section_new\" and shift in ($shift) order by shift";
-				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row1=mysqli_fetch_array($sql_result1))
 				{
@@ -563,7 +578,7 @@ function verify_date(){
 					$shift_new=$sql_row1['shift'];
 					$doc_list="";
 					$sql2="select doc_no from $bai_pro3.act_cut_status_recut_v2 where date between \"$from_date\" and \"$to_date\" and section=$section_new and shift=\"$shift_new\"";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -572,7 +587,7 @@ function verify_date(){
 					$doc_list=substr($doc_list,0,-2);
 					$cat_list="";
 					$sql2="select distinct cat_ref from $bai_pro3.recut_v2 where doc_no in ($doc_list) order by cat_ref";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
@@ -580,14 +595,14 @@ function verify_date(){
 					}
 					$cat_list=substr($cat_list,0,-2);
 					$sql2="select distinct category from $bai_pro3.cat_stat_log where tid in ($cat_list)";
-					mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row2=mysqli_fetch_array($sql_result2))
 					{
 						$category=$sql_row2['category'];
 						$cat_base="";
 						$sql3="select distinct tid from $bai_pro3.cat_stat_log where category=\"$category\" and tid in ($cat_list)";
-						mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
@@ -595,15 +610,20 @@ function verify_date(){
 						}
 						$cat_base=substr($cat_base,0,-2);
 						$sql3="select sum((a_xs+a_s+a_m+a_l+a_xl+a_xxl+a_xxxl+a_s01+a_s02+a_s03+a_s04+a_s05+a_s06+a_s07+a_s08+a_s09+a_s10+a_s11+a_s12+a_s13+a_s14+a_s15+a_s16+a_s17+a_s18+a_s19+a_s20+a_s21+a_s22+a_s23+a_s24+a_s25+a_s26+a_s27+a_s28+a_s29+a_s30+a_s31+a_s32+a_s33+a_s34+a_s35+a_s36+a_s37+a_s38+a_s39+a_s40+a_s41+a_s42+a_s43+a_s44+a_s45+a_s46+a_s47+a_s48+a_s49+a_s50)*a_plies) as \"cut_qty\" from $bai_pro3.recut_v2 where doc_no in ($doc_list) and cat_ref in ($cat_base)";
-						mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row3=mysqli_fetch_array($sql_result3))
 						{
 							$cut_qty=$sql_row3['cut_qty'];
 						}
+						$tbl_query3 = "SELECT tbl_name FROM $bai_pro3.tbl_cutting_table WHERE tbl_id = $section_new ";
+						$tbl_result3 = mysqli_query($link,$tbl_query3) or exit('Unable to get table data');
+						while($tbl3 = mysqli_fetch_array($tbl_result3)){
+							$cut_tbl_val3 = $tbl3['tbl_name'];
+						}
 						$row_count++;
 	 					echo "<tr >";
-					    echo "<td >$section_new</td>";
+					    echo "<td >$cut_tbl_val3</td>";
 					  	echo "<td >$shift_new</td>";
 					  	echo "<td >$category</td>";
 					  	echo "<td >$cut_qty</td>";

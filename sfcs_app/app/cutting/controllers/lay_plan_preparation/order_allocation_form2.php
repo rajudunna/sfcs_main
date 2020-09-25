@@ -1,10 +1,11 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 <?php
-$style = $_GET['style'];
+$style = style_decode($_GET['style']);
 $schedule = $_GET['schedule'];
-$color = $_GET['color'];
+$color = color_decode($_GET['color']);
 $serial_no = $_GET['serial_no'];
 
 if(short_shipment_status($style,$schedule,$link)){
@@ -78,7 +79,7 @@ div.block
 <?php
 
 $check_id=$_GET['check_id'];
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $total_cuttable_qty=$_GET['total_cuttable_qty'];
 $ref_id = $_GET['ref_id'];
 
@@ -749,9 +750,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$ratiocount=$sql_row['ratio'];
 }
-
+//Color encoded
+$main_color = color_encode($color_back);
+$main_style = style_encode($style_back);
 $ratiocount=$ratiocount+1;
-echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back\"><<<< Click here to Go Back</a>";
 echo "<br/><br/>";
 echo "<div class='row'><div class='col-md-6'><table class=\"table table-bordered\">";
 echo "<tr><th>New Ratio</th><th>:</th><td style=\"color: #000000\"> ".$ratiocount."</td></tr>";
@@ -1202,9 +1205,11 @@ echo "</div>";
 </body>
 <?php
 	} else {
-
+        //Color encoded
+        $main_color = color_encode($color);
+        $main_style = style_encode($style);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect(){
-			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color&style=$style&schedule=$schedule\"; }</script>";	
+			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\"; }</script>";	
 		
 	}
 ?>

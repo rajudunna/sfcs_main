@@ -4,6 +4,16 @@
 
 
 <style>
+.ajax-loader{
+		
+		background:black;
+		position:absolute;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+	  opacity:0.5;
+	}
 .textbox{
     background-color:#99ff88;
     width:auto;
@@ -189,13 +199,15 @@ if(isset($_POST['filter']))
     $url=getFullURL($_GET['r'],'supplier_per_charts.php','N');
     $url1=getFullURLLevel($_GET['r'],'reports/supplier_perf_v2_report.php',1,'N');
     echo "<div id='main_div'>";
-    echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".str_replace("'","*",$suppliers_list_ref_query)."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
+    $suppliers_list_ref_query_new=str_replace("'","*",$suppliers_list_ref_query);
+    $suppliers_list_ref_query_new=str_replace("&","~~~",$suppliers_list_ref_query_new);
+    echo "<a href=\"$url&sdate=$sdate&edate=$edate&suppliers=".$suppliers_list_ref_query_new."\" onclick=\"return popitup('$url&sdate=$sdate&edate=$edate&suppliers=".$suppliers_list_ref_query_new."')\"><button class='btn btn-info btn-sm'>Click Here For Charts</button></a>&nbsp;&nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$url1\"><button class='btn btn-info btn-sm'>Click Here For Log Report</button></a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class='label label-success lb-lg'> Preformance Updated</span> &nbsp;&nbsp;||&nbsp;&nbsp; <span class='label label-danger lb-lg'>Performance Not Updated </span> ";
     echo "<br>";
     echo "<b style='color:red' >Note:Please Fill All Fields to Update Supplier Performance Report </b>";
     // include($_SERVER['DOCUMENT_ROOT'].getFullURL($_GET['r'],'supplier_perf_summary.php','R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'controllers/supplier_perf_summary.php',1,'R')); 
     echo "<form action='".getFullURL($_GET['r'],'supplier_perf_v2_update.php','N')."' 
-     method='POST'>";
+     method='POST' id='supplier' name='supplier'>";
     echo "<div class='table-responsive'><div ><table cellspacing=\"0\" id=\"table1\" class=\"table table-bordered\" style='width: 5900px;'>";
     echo "<tr><th style='width:67px;'>RECORD #</th><th style='width:65px;'>WEEK #</th><th style='width:70px;'>ENTRY NO</th><th>INVOICE NO & DATE</th><th style='width:100px;'>SWATCHES<br>RECEIVED<br> DATE<br> FROM STORES</th><th>SWATCHES RECEIVED <br>TIME FROM STORES</th>
     <th>SWATCHES RECEIVED<br> FROM (SUPPLIER/WH)</th><th>INSPECTED<br> DATE</th><th>RELEASED<br> DATE</th><th>REPORT #</th><th>GRN.DATE</th><th>ENT. DATE</th><th>BUYER</th><th>STYLE</th>
@@ -307,7 +319,7 @@ if(mysqli_num_rows($sql_result) > 0){
                 $fab_tech="";
             }
             //echo $log_time."</br>";
-            if($log_time=="0000-00-00 00:00:00"){
+            if($log_time=="0000-00-00 00:00:00" or $log_time==""){
                 $tr_color="#d00b0b";
             }else{
                 $tr_color="#2c7b038a";
@@ -662,9 +674,10 @@ if(mysqli_num_rows($sql_result) > 0){
                         while($sql_row33=mysqli_fetch_array($sql_result33))
                         {
                             $reason_name=$sql_row33["res"];
+                        
                         }
-                        echo "<td><input type=\"hidden\" name=\"reason_name[".$n."][".$i3."]\" id=\"reason_name\" value=\"".$reason_name."\">".$reason_name."-".$i3."-".$n."</td>";
-                        echo "<td><input type=\"hidden\" name=\"reason_ref_explode_ex[".$n."][".$i3."]\" id=\"reason_ref_explode_ex\" value=\"".$reason_ref_explode_ex[1]."\">".$reason_ref_explode_ex[1]."-".$i3."-".$n."</td>";
+                        echo "<td><input type=\"hidden\" name=\"reason_name[".$n."][".$i3."]\" id=\"reason_name\" class=\"reason_name_$n\" value=\"".$reason_name."\">".$reason_name."-".$i3."-".$n."</td>";
+                        echo "<td><input type=\"hidden\" name=\"reason_ref_explode_ex[".$n."][".$i3."]\" id=\"reason_ref_explode_ex\" class=\"reason_ref_explode_ex_$n\" value=\"".$reason_ref_explode_ex[1]."\">".$reason_ref_explode_ex[1]."-".$i3."-".$n."</td>";
                     }
                     if(sizeof($reason_ref_explode)==1)
                     {
@@ -678,7 +691,7 @@ if(mysqli_num_rows($sql_result) > 0){
                 echo "<td><input type=\"hidden\" name=\"reason_qty[".$n."]\" id=\"reason_qty\" value=\"\"></td>";
                 for($i31=0;$i31<2;$i31++)
                 {
-                    echo "<td><input type=\"hidden\" name=\"reason_name[".$n."][".$i31."]\" id=\"reason_name\" value=\"\"></td>";
+                    echo "<td><input type=\"hidden\" class=\"reason_name_$n\" name=\"reason_name[".$n."][".$i31."]\" id=\"reason_name\" value=\"\"></td>";
                     echo "<td><input type=\"hidden\" name=\"reason_ref_explode_ex[".$n."][".$i31."]\" id=\"reason_ref_explode_ex\" value=\"\"></td>";   
                 }
             }
@@ -718,11 +731,11 @@ if(mysqli_num_rows($sql_result) > 0){
                     {
                         if($batch_status_refx==0)
                         {
-                            echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" id=\"status\" value=\"Pending\">Pending</td>";    
+                            echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" class=\"status_$n\" id=\"status\" value=\"Pending\">Pending</td>";    
                         }
                         else
                         {
-                            echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" id=\"status\" value=\"Fail\">Fail</td>";  
+                            echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" class=\"status_$n\" id=\"status\" value=\"Fail\">Fail</td>";  
                         }
                         
                         $x=$x+1;
@@ -732,11 +745,11 @@ if(mysqli_num_rows($sql_result) > 0){
                 {
                     if($batch_status_refx==0)
                     {
-                        echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" id=\"status\" value=\"Pending\">Pending</td>";    
+                        echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" class=\"status_$n\" id=\"status\" value=\"Pending\">Pending</td>";    
                     }
                     else
                     {
-                        echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" id=\"status\" value=\"Pass\">Pass</td>";  
+                        echo "<td><input type=\"hidden\" name=\"status[".$n."][".$i1."]\" class=\"status_$n\" id=\"status\" value=\"Pass\">Pass</td>";  
                     }
                     
                 }
@@ -788,10 +801,173 @@ if(mysqli_num_rows($sql_result) > 0){
 
 
 ?>
+<div  id="loading-image">
 
+<center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',1,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
+</div>
 
 
 <script language="javascript" type="text/javascript">
+    $(document).on('ready',function(){
+		 $('#loading-image').hide();
+        document.getElementById('update').disabled='true';
+    });
+    
+    $('#supplier').on('submit', function(e){
+        document.getElementById('update').disabled='true';
+		$("#loading-image").show();
+		$("#loading-image").addClass("ajax-loader");
+        e.preventDefault();
+        // var values = $("input[name='reason_name[1]']");
+            //   .map(function(){return $(this).val();}).get();
+        // console.log($("input[name='reason_name[]']")
+            //   .map(function(){return $(this).val();}).get(););
+        var count = '<?= $n; ?>';
+        var srdfs;
+        var srtfs;
+        var srdfsw;
+        var reldat;
+        var quality;
+        var rms;
+        var syp;
+        var qty_insp_act;
+        var defects;
+        var sup_test_rep;
+        var inspec_per_rep;
+        var cc_rep;
+        var fab_tech;
+        var ItemArray= new Array(); 
+        
+        for(var i=1; i<= count; i++){
+            srdfs = $("[name='srdfs["+i+"]']").val();
+            srtfs = $("[name='srtfs["+i+"]']").val();
+            srdfsw = $("[name='srdfsw["+i+"]']").val();
+            reldat = $("[name='reldat["+i+"]']").val();
+            quality = $("[name='quality["+i+"]']").val();
+            rms = $("[name='rms["+i+"]']").val();
+            constt = $("[name='const["+i+"]']").val();
+            syp = $("[name='syp["+i+"]']").val();
+            qty_insp_act = $("[name='qty_insp_act["+i+"]']").val();
+            defects = $("[name='defects["+i+"]']").val();
+            sup_test_rep = $("[name='sup_test_rep["+i+"]']").val();
+            inspec_per_rep = $("[name='inspec_per_rep["+i+"]']").val();
+            cc_rep = $("[name='cc_rep["+i+"]']").val();
+            fab_tech = $("[name='fab_tech["+i+"]']").val();
+            
+            if(srdfs != '' || srtfs != '' || srdfsw != '' || reldat != '' || quality != '' || rms != '' || constt != '' || syp != '' || (qty_insp_act != '0.00' && qty_insp_act != '') || defects != '' || sup_test_rep != 'N/A' || inspec_per_rep != 'N/A' || cc_rep != 'N/A' || fab_tech != ''){
+                var reason_name_array = [];
+                reason_name_array[i] = [];
+                var reason_ref_explode_ex_array = [];
+                reason_ref_explode_ex_array[i] = [];
+                var status_array = [];
+                status_array[i] = [];
+                var index = 0;
+                $(".reason_name_" + i).each(function(){
+                    reason_name_array[i].push($(this).val());
+                    index++;
+                });
+                $(".reason_ref_explode_ex_" + i).each(function(){
+                    reason_ref_explode_ex_array[i].push($(this).val());
+                    index++;
+                });
+                $(".status_" + i).each(function(){
+                    status_array[i].push($(this).val());
+                    index++;
+                });
+                ItemArray.push({
+                    bai1_rec : $("[name='bai1_rec["+i+"]']").val(),
+                    weekno : $("[name='weekno["+i+"]']").val(),
+                    pkg_no : $("[name='pkg_no["+i+"]']").val(),
+                    invoice : $("[name='invoice["+i+"]']").val(),
+                    srdfs : $("[name='srdfs["+i+"]']").val(),
+                    srtfs : $("[name='srtfs["+i+"]']").val(),
+                    srdfsw : $("[name='srdfsw["+i+"]']").val(),
+                    insp_date : $("[name='insp_date["+i+"]']").val(),
+                    reldat : $("[name='reldat["+i+"]']").val(),
+                    unique_id : $("[name='unique_id["+i+"]']").val(),
+                    grn_date : $("[name='grn_date["+i+"]']").val(),
+                    entdate : $("[name='entdate["+i+"]']").val(),
+                    buyer : $("[name='buyer["+i+"]']").val(),
+                    item : $("[name='item["+i+"]']").val(),
+                    lots_ref : $("[name='lots_ref["+i+"]']").val(),
+                    po_ref : $("[name='po_ref["+i+"]']").val(),
+                    supplier_name : $("[name='supplier_name["+i+"]']").val(),
+                    quality : $("[name='quality["+i+"]']").val(),
+                    rms : $("[name='rms["+i+"]']").val(),
+                    const : $("[name='const["+i+"]']").val(),
+                    compo : $("[name='compo["+i+"]']").val(),
+                    color_ref : $("[name='color_ref["+i+"]']").val(),
+                    syp : $("[name='syp["+i+"]']").val(),
+                    batch_ref : $("[name='batch_ref["+i+"]']").val(),
+                    rolls_count : $("[name='rolls_count["+i+"]']").val(),
+                    tktlen : $("[name='tktlen["+i+"]']").val(),
+                    ctexlen : $("[name='ctexlen["+i+"]']").val(),
+                    lenper : $("[name='lenper["+i+"]']").val(),
+                    qty_insp : $("[name='qty_insp["+i+"]']").val(),
+                    qty_insp_act : $("[name='qty_insp_act["+i+"]']").val(),
+                    inches : $("[name='inches["+i+"]']").val(),
+                    pur_width_ref : $("[name='pur_width_ref["+i+"]']").val(),
+                    act_width_ref : $("[name='act_width_ref["+i+"]']").val(),
+                    pur_gsm : $("[name='pur_gsm["+i+"]']").val(),
+                    act_gsm : $("[name='act_gsm["+i+"]']").val(),
+                    consumption : $("[name='consumption["+i+"]']").val(),
+                    pts : $("[name='pts["+i+"]']").val(),
+                    fallout : $("[name='fallout["+i+"]']").val(),
+                    defects : $("[name='defects["+i+"]']").val(),
+                    skew_cat_ref : $("[name='skew_cat_ref["+i+"]']").val(),
+                    skew : $("[name='skew["+i+"]']").val(),
+                    shrink_l : $("[name='shrink_l["+i+"]']").val(),
+                    shrink_w : $("[name='shrink_w["+i+"]']").val(),
+                    sup_test_rep : $("[name='sup_test_rep["+i+"]']").val(),
+                    inspec_per_rep : $("[name='inspec_per_rep["+i+"]']").val(),
+                    cc_rep : $("[name='cc_rep["+i+"]']").val(),
+                    com_ref1 : $("[name='com_ref1["+i+"]']").val(),
+                    reason_qty : $("[name='reason_qty["+i+"]']").val(),
+                    reason_name : (reason_name_array.filter(function (el) {
+                                    return el != null;
+                                    })),
+                    reason_ref_explode_ex : (reason_ref_explode_ex_array.filter(function (el) {
+                                            return el != null;
+                                            })),
+                    status : (status_array.filter(function (el) {
+                            return el != null;
+                            })),
+                    status_f : $("[name='status_f["+i+"]']").val(),
+                    impact : $("[name='impact["+i+"]']").val(),
+                    month_ref : $("[name='month["+i+"]']").val(),
+                    fab_tech : $("[name='fab_tech["+i+"]']").val(),
+                    id:i
+                });
+            }
+        }
+
+        
+        $.ajax({
+			url: 'sfcs_app/app/inspection/controllers/supplier_perf_v2_update.php',
+			type:'POST',
+            data:{dataset :ItemArray},
+			success: function (data) 
+			{
+				if(data!=''){
+    				$("#loading-image").hide();
+						swal({
+							text:'"'+data+'" Records Updated Successfully',
+							type: "success"
+						}).then(function() {
+							  location.reload( true);
+						});
+				}else{
+    				$("#loading-image").hide();
+					swal('Enter Atleast one Quantity','','warning');
+				}
+			},error: function(error)
+                {
+                    alert("Error AJAX not working: "+ error );
+                } 
+			
+		});
+    });
+
     var table3Filters = {
     col_65: "select",
     col_64: "select",
@@ -816,4 +992,5 @@ if(mysqli_num_rows($sql_result) > 0){
     btn_reset: false
     }
     setFilterGrid("table1",table3Filters);
+    
 </script>

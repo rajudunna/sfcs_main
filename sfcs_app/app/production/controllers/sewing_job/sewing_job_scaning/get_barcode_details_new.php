@@ -14,6 +14,53 @@
     //changing for #978 cr
     $barcode_number = explode('-', $barcode)[0];
     $op_no = explode('-', $barcode)[1];
+	$reqst_status="INSERT INTO `bai_pro3`.`request_log` (`request_time`, `sewing_job_no`, `ops_id`, `user_name`, `reported_qty`, `module_no`) VALUES ('".date("Y-m-d H:i:s")."', '$barcode_number', '$op_no', '$username',0, 'Bundle')";
+	$reqst_status_result=mysqli_query($link, $reqst_status)or exit("get_reqst_sewing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$request_id = mysqli_insert_id($link);
+
+	$sewing_status = "select * from bai_pro3.sewing_scanning_status where sewing_job='$barcode_number' and operation_id=$op_no";
+	$sewing_status_result=mysqli_query($link, $sewing_status)or exit("get_sewing_statuss_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($sewing_status_result) == 0)
+	{
+		$sql_status_scan="INSERT INTO `bai_pro3`.`sewing_scanning_status` (`sewing_job`, `operation_id`, `module`, `status`, `log_user`) VALUES ('$barcode_number', $op_no, 'Bundle scan', 'reporting', '$username')";
+		$sql_status_result=mysqli_query($link, $sql_status_scan)or exit("get_sewing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$affectced_rows = mysqli_affected_rows($link);
+		if($affectced_rows==0)
+		{
+			$status_sew='reporting';
+		}
+		else
+		{
+			$status_sew='open';
+		}	
+	}
+	else
+	{
+		$sewing_status2 = "select status from bai_pro3.sewing_scanning_status where sewing_job='$barcode_number' and operation_id=$op_no";
+		$sewing_status_result2=mysqli_query($link, $sewing_status2)or exit("get_sewing_status_new_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sewing_reslt=mysqli_fetch_array($sewing_status_result2))
+		{
+			$status_sew=$sewing_reslt['status'];
+		}
+		
+		if($status_sew=='open')
+		{
+			$status_update="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'reporting' WHERE sewing_job = '$barcode_number' AND `operation_id` = $op_no AND status='open'";
+			$status_update_result=mysqli_query($link, $status_update)or exit($status_update."get_sewing_new_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$affectced_rows=mysqli_affected_rows($link);
+			if($affectced_rows==0)
+			{
+				$status_sew='reporting';
+			}
+			else
+			{
+				$status_sew='open';
+			}
+		}	
+	}
+
+if($status_sew=='open')
+{
 
     //auth
     $good_report = 0;
@@ -77,7 +124,11 @@
     }
     else
     {
-        $result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
+        $closing_new='revert29';
+		$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
+		// $status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open' WHERE sewing_job = '$barcode_number' AND `operation_id` = $op_no";
+	    // $status_update_reslt=mysqli_query($link, $status_update_last)or exit("get_sewing_last_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
         echo json_encode($result_array);
         die();  
     }
@@ -121,7 +172,11 @@
     }
     if($category_act != 'sewing')
     {
-        $result_array['status'] = 'Invalid opeartion!!! You can only scan Sewing operatinos here';
+        $closing_new='revert24';
+		$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
+		// $status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open' WHERE sewing_job = '$barcode_number' AND `operation_id` = $op_no";
+	    // $status_update_reslt=mysqli_query($link, $status_update_last)or exit("get_sewing_last_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$result_array['status'] = 'Invalid opeartion!!! You can only scan Sewing operatinos here';
         echo json_encode($result_array);
         die();
     }
@@ -132,50 +187,75 @@
         $ret = validating_with_module($stri);
         // 5 = Trims not issued to Module, 4 = No module for sewing job, 3 = No valid Block Priotities, 2 = check for user access (block priorities), 0 = allow for scanning
         if($good_report == 1) {
+			$closing_new='revert1';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'You are Not Authorized to report Bundle';
             echo json_encode($result_array);
             die();
         }
         else if($short_ship_status==1){
-             $result_array['status'] = 'Short Shipment Done Temporarly';
+			$closing_new='revert2';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
+            $result_array['status'] = 'Short Shipment Done Temporarly';
             echo json_encode($result_array);
             die();
         }
         else if ($short_ship_status==2) {
+			$closing_new='revert3';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'Short Shipment Done Permanently';
             echo json_encode($result_array);
             die();
         }
         else if ($short_ship_status==3) {
+			$closing_new='revert4';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'Sewing Job is Deactivated';
             echo json_encode($result_array);
             die();
         }
         else if ($ret == 5) {
+			$closing_new='revert5';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'Trims Not Issued';
             echo json_encode($result_array);
             die();
         } else if ($ret == 4) {
+			$closing_new='revert6';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'No module for Bundle';
             echo json_encode($result_array);
             die();
         } else if ($ret == 3) {
+			$closing_new='revert7';
+			$sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
             $result_array['status'] = 'No valid Block Priotities';
             echo json_encode($result_array);
             die();
         } else if ($ret == 2) {
             if ($user_permission == 'authorized') {
-                getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id);
+                getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$request_id);
             } else {
+				$closing_new='revert8';
+			    $sts_reslt=validating_status($barcode_number,$op_no,$request_id,$closing_new);
                 $result_array['status'] = 'You are Not Authorized to report more than Block Priorities';
                 echo json_encode($result_array);
                 die();
             }
         } else if ($ret == 0) {
-            getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id);
+            getjobdetails1($string, $bundle_no, $op_no, $shift ,$gate_id,$request_id);
         }        
-    }    
-    function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id)
+    }
+}
+else
+{
+	$close_time_update22="UPDATE `bai_pro3`.`request_log` SET `close_time` = 'reverted' WHERE `id` = $request_id ";
+	$close_time_reslt22=mysqli_query($link, $close_time_update22)or exit("get_sewing_revrting_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$result_array['status'] = 'Another User is reporting !!!';
+	echo json_encode($result_array);
+	die();
+}    
+    function getjobdetails1($job_number, $bundle_no, $op_no, $shift ,$gate_id,$request_id_new)
     {
         error_reporting(0);
         $job_number = explode(",",$job_number);
@@ -187,6 +267,7 @@
         $column_to_search = $job_number[0];
         $column_in_where_condition = 'input_job_no_random_ref';
         $column_in_pack_summary = 'input_job_no_random';
+		$rqst_id=$request_id_new;
         if($job_number[2] == 0)
         {
             $column_in_where_condition = 'bundle_number';
@@ -224,7 +305,9 @@
         }
         else
         {
-            $result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
+            $closing_new='revert25';
+		    $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
+			$result_array['status'] = 'Invalid Input. Please Check And Try Again !!!';
             echo json_encode($result_array);
             die();
         }
@@ -315,7 +398,9 @@
                             }
                             if($recevied_qty == 0)
                             {
-                                $ops_dep_flag =1;
+                                $closing_new='revert9';
+			                    $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
+								$ops_dep_flag =1;
                                 $result_array['status'] = 'The dependency operations for this operation are not yet done.';
                                 echo json_encode($result_array);
                                 die();
@@ -348,7 +433,8 @@
                     }
                 }
                 else
-                {
+                {   $closing_new='revert26';
+		            $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
                     $result_array['status'] = 'Invalid Operation for this input job number.Plese verify Operation Mapping.';
                     echo json_encode($result_array);
                     die();
@@ -457,7 +543,9 @@
 
         if($flags == 2)
         {
-            $result_array['status'] .= 'Previous operation not yet done for this job.';
+            $closing_new='revert11';
+			$sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
+			$result_array['status'] .= 'Previous operation not yet done for this job.';
             echo json_encode($result_array);
             die();
         }
@@ -487,8 +575,10 @@
                    $parallel_balance_report=($previous_minqty-$current_ops_qty);
                    //echo $parallel_balance_report;
                    if($parallel_balance_report<0)
-                   {
-                     $result_array['status'] = 'Previous operation not yet done.';
+                   { 
+			          $closing_new='revert12';
+			          $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
+					  $result_array['status'] = 'Previous operation not yet done.';
                       echo json_encode($result_array);
                       die();
                    }
@@ -499,6 +589,7 @@
                      {
                         $job_number_reference = $row['type_of_sewing'];
                      } 
+					/* 
                     if($job_number_reference == 2)
                     {
                         $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
@@ -512,9 +603,12 @@
                         }
                         else
                         {
+							$closing_new='revert13';
+			                $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
                             $result_array['status'] = 'Sample Quantities not updated!!!';
                         }
-                    }  
+                    }
+                   Code commit under #4694 Fd id #21375 - To clear sample and excess jobs issue */					
    
                 }
                 else
@@ -536,7 +630,9 @@
                                 }
                             }
                             if($sum_balance < $row['balance_to_report'])
-                            {
+                            {   
+						        $closing_new='revert14';
+			                    $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
                                 $result_array['status'] = 'Previous operation not yet done for this jobs.';
                                 echo json_encode($result_array);
                                 die();
@@ -562,6 +658,7 @@
                     {
                         $b_remarks[] = $row_remark['prefix_name'];
                     }
+					/*
                     if($job_number_reference == 2)
                     {
                         $selecting_sample_qtys = "SELECT input_qty FROM $bai_pro3.sp_sample_order_db WHERE order_tid = (SELECT order_tid FROM $bai_pro3.bai_orders_db WHERE order_style_no='$style' AND order_del_no='$schedule' AND order_col_des='$color' ) AND sizes_ref = '$size'";
@@ -574,10 +671,13 @@
                             }
                         }
                         else
-                        {
+                        {   
+					        $closing_new='revert15';
+			                $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
                             $result_array['status'] = 'Sample Quantities not updated!!!';
                         }
                     }
+					Code commit under #4694 Fd id #21375 - To clear sample and excess jobs issue */
                   
                     $barcode_sequence[] = $row['barcode_sequence'];
                 }
@@ -794,8 +894,12 @@
                             }
                             if($previously_scanned == 0){
                                 if($b_send_qty == $b_old_rej_qty_new){
+									$closing_new='revert16';
+			                        $sts_reslt=validating_status($b_tid[$key],$b_op_id,$rqst_id,$closing_new);
                                     $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
                                 }else{
+									$closing_new='revert17';
+									$sts_reslt=validating_status($b_tid[$key],$b_op_id,$rqst_id,$closing_new);
                                     $result_array['status'] = 'Already Scanned';
                                 }
                                 echo json_encode($result_array);
@@ -1039,8 +1143,12 @@
 
                                 if($previously_scanned == 0){
                                     if($b_send_qty == $b_old_rej_qty_new){
+										$closing_new='revert18';
+			                            $sts_reslt=validating_status($b_tid[$key],$b_op_id,$rqst_id,$closing_new);
                                         $result_array['status'] = 'This Bundle Qty Is Completely Rejected';
                                     }else{
+										$closing_new='revert21';
+										$sts_reslt=validating_status($b_tid[$key],$b_op_id,$rqst_id,$closing_new);
                                         $result_array['status'] = 'Already Scanned';
                                     }
                                     echo json_encode($result_array);
@@ -1110,7 +1218,9 @@
                 }
                 if($concurrent_flag == 1)
                 {
-                    echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
+                    $closing_new='revert28';
+		            $sts_reslt=validating_status($bundle_no,$op_no,$rqst_id,$closing_new);
+					echo "<h1 style='color:red;'>You are Scanning More than eligible quantity.</h1>";
                 }
             }   
         }
@@ -1653,6 +1763,12 @@
             for($i=0;$i<sizeof($b_tid);$i++)
             {
                 $updation_m3 = updateM3Transactions($b_tid[$i],$b_op_id,$b_rep_qty[$i]);
+				if($b_rep_qty[$i]>0){
+				$close_time_update="UPDATE `bai_pro3`.`request_log` SET `close_time` = '".date("Y-m-d H:i:s")."',module_no='".$b_module[$i]."',reported_qty='".$b_rep_qty[$i]."' WHERE `id` = $request_id_new ";
+				$close_time_reslt=mysqli_query($link, $close_time_update)or exit("get_sewing_closing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				}
+				$status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open',module='".$b_module[$i]."' WHERE sewing_job = '$b_tid[$i]' AND `operation_id` = $b_op_id";
+	            $status_update_reslt=mysqli_query($link, $status_update_last)or exit("get_sewing_last_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
             }
             $result_array['bundle_no'] = $bundle_no;
             $result_array['op_no'] = $op_no;
@@ -1661,4 +1777,15 @@
         }
        
     }
+	function validating_status($bno,$ops,$request_id_new,$closing_rslt)
+	{
+		error_reporting(0);
+        include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+	    $status_update_last="UPDATE `bai_pro3`.`sewing_scanning_status` SET `status` = 'open' WHERE sewing_job = '$bno' AND `operation_id` = $ops";
+		//echo $status_update_last;
+	    $status_update_reslt=mysqli_query($link, $status_update_last)or exit("get_sewwing_last_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$close_time_update="UPDATE `bai_pro3`.`request_log` SET `close_time` = '$closing_rslt' WHERE `id` = $request_id_new ";
+		$close_time_reslt=mysqli_query($link, $close_time_update)or exit("get_sewing_closing_status_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		
+	}
 ?>

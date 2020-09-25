@@ -1,5 +1,6 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
     
 	$sql = "SELECT * FROM $bai_pro3.`short_shipment_job_track` where remove_type in ('1','2') order by id desc";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -26,10 +27,10 @@
 			}else{
 				echo "<td><label class='label label-danger'>Permanent</label></td>";
 			}
-			
+			$main_style = style_encode($style);
 			echo "<td>".$row["removed_by"]."</td><td>".$row["remove_reason"]."</td>";
 			if($status == '1') {
-				echo "<td><a href='$edit_url&id=$id&style=$style&schedule=$schedule&rem_type=$rem_type' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></td>";
+				echo "<td><a href='$edit_url&id=$id&style=$main_style&schedule=$schedule&rem_type=$rem_type' class='btn btn-warning btn-sm editor_edit glyphicon glyphicon-retweet' onclick='return confirm_reverse(event,this);'> REVERSE </a></td>";
 			} else {
 				echo "<td><label class='label label-sm label-danger'>Can't Reverse</label></td>";
 			}

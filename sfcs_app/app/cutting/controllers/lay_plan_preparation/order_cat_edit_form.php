@@ -1,6 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R')); ?>
-<?php  ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/header_scripts.php',4,'R'));?>
 
@@ -58,11 +58,12 @@
 if(isset($_GET['cat_tid']))
 {
 	$cat_tid=$_GET['cat_tid'];
-	$get_color=$_GET['color'];
-	$get_style=$_GET['style'];
+	$get_color=color_decode($_GET['color']);
+	$get_style=style_decode($_GET['style']);
 	$get_schedule=$_GET['schedule'];
 	// echo "Cat Tid = ".$cat_tid.'<br>';
-
+    $main_color = color_encode($get_color);
+    $main_style = style_encode($get_style);
 	$colors_array = array();	$array1= array();	$array2= array();
 	$sql="select order_tid from $bai_pro3.cat_stat_log where tid='$cat_tid'";
 	// echo $sql."<br>";
@@ -114,7 +115,7 @@ if(isset($_GET['cat_tid']))
 			if(sizeof($array1) == 0 || sizeof($array2) == 0){
 				echo "<script>swal('Operations Doesnt exist','Please Check the backend Job','danger');</script>";
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -127,7 +128,7 @@ if(isset($_GET['cat_tid']))
 				echo "<script>swal('Operation codes does not match','','warning');</script>";
 				$url = getFullUrlLevel($_GET['r'],'test.php',0,'N');
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -138,7 +139,7 @@ if(isset($_GET['cat_tid']))
 			if(!mysqli_num_rows($mo_result) > 0){
 				echo "<script>swal('MO Details Does not Exist','','warning');</script>";
 				echo "<script>setTimeout(function() {
-						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\";
 						},3000);
 					</script>";
 				exit();
@@ -146,7 +147,7 @@ if(isset($_GET['cat_tid']))
 		}
 	}
 }
-echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
+echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br></br>"; ?>
 <div class="panel panel-primary">
 <div class="panel-heading">Order Category Classification FORM</div>
 <div class="panel-body">
@@ -241,12 +242,13 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		}
 
 		// var_dump($_POST);die();
-
+        $main_color = color_encode($get_color);
+        $main_style = style_encode($get_style);
 		$cat_exist = verify_category($tran_order_tid,$in_cat);
 		if($cat_exist == 1)
 		{
 			echo "<script>swal('The Category Cant Be Updated','','error')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"; }</script>";
 			exit();
 		}
 
@@ -291,7 +293,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 					//echo "<script>swal('Category Already selected. Please Select Other.','','warning');</script>";
 					echo "<script>swal('Category Already selected. Please Select Other.')
 					.then((value) => {
-							location.href = '".getFullURLLevel($_GET['r'], "order_cat_edit_form.php", "0", "N")."&cat_tid=".$cat_tid."&style=".$get_style."&schedule=".$get_schedule."&color=".$get_color."'; 
+							location.href = '".getFullURLLevel($_GET['r'], "order_cat_edit_form.php", "0", "N")."&cat_tid=".$cat_tid."&style=".$main_style."&schedule=".$get_schedule."&color=".$main_color."'; 
 					});
 					</script>";
 					$flag=0;
@@ -324,6 +326,11 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		//echo $sql_num_check;
 		if($sql_num_check==0)
 		{
+			
+		   $sql_bod="UPDATE `bai_pro3`.`bai_orders_db` SET old_order_s_s01=order_s_s01,old_order_s_s02=order_s_s02, old_order_s_s03=order_s_s03,old_order_s_s04=order_s_s04,old_order_s_s05=order_s_s05,old_order_s_s06=order_s_s06, old_order_s_s07=order_s_s07,old_order_s_s08=order_s_s08,old_order_s_s09=order_s_s09,old_order_s_s10=order_s_s10, old_order_s_s11=order_s_s11,old_order_s_s12=order_s_s12,old_order_s_s13=order_s_s13,old_order_s_s14=order_s_s14, old_order_s_s15=order_s_s15,old_order_s_s16=order_s_s16,old_order_s_s17=order_s_s17,old_order_s_s18=order_s_s18, old_order_s_s19=order_s_s19,old_order_s_s20=order_s_s20,old_order_s_s21=order_s_s21,old_order_s_s22=order_s_s22, old_order_s_s23=order_s_s23,old_order_s_s24=order_s_s24,old_order_s_s25=order_s_s25,old_order_s_s26=order_s_s26, old_order_s_s27=order_s_s27,old_order_s_s28=order_s_s28,old_order_s_s29=order_s_s29,old_order_s_s30=order_s_s30, old_order_s_s31=order_s_s31,old_order_s_s32=order_s_s32,old_order_s_s33=order_s_s33,old_order_s_s34=order_s_s34, old_order_s_s35=order_s_s35,old_order_s_s36=order_s_s36,old_order_s_s37=order_s_s37,old_order_s_s38=order_s_s38, old_order_s_s39=order_s_s39,old_order_s_s40=order_s_s40,old_order_s_s41=order_s_s41,old_order_s_s42=order_s_s42, old_order_s_s43=order_s_s43,old_order_s_s44=order_s_s44,old_order_s_s45=order_s_s45,old_order_s_s46=order_s_s46, old_order_s_s47=order_s_s47,old_order_s_s48=order_s_s48,old_order_s_s49=order_s_s49,old_order_s_s50=order_s_s50 WHERE order_tid=\"$order_tid\" ";
+		   
+           $sql_result_bod=mysqli_query($link, $sql_bod) or exit("Sql Error bod".mysqli_error($GLOBALS["___mysqli_ston"])); 		   
+			
 			$sql="insert into $bai_pro3.bai_orders_db_confirm select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 			// echo $sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -333,7 +340,7 @@ echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFu
 		if($flag == 1)
 		{
 			echo "<script>swal('Order category Updated Successfully','','success')</script>";
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$get_color&style=$get_style&schedule=$get_schedule\"; }</script>";
+			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$get_schedule\"; }</script>";
 		}
 	}
 ?>

@@ -10,6 +10,7 @@ table, th, td {
 	<?php
 		include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 		include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+		include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 		if(isset($_POST['vpo']))
 		{
 			$style = $_POST['style'];
@@ -18,7 +19,7 @@ table, th, td {
 		}
 		else
 		{
-			$style = $_GET['style'];
+			$style = style_decode($_GET['style']);
 			$vpo = $_GET['vpo'];
 		}
 	?>
@@ -32,7 +33,7 @@ table, th, td {
 
 	function secondbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'eligible_cartons_report.php',0,'N'); ?>&style="+document.test.style.value+"&vpo="+document.test.vpo.value;
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'eligible_cartons_report.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&vpo="+document.test.vpo.value;
 	}
 	
 	

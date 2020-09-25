@@ -5,6 +5,7 @@
 // include("header_scripts.php");  
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R')); 
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?> 
 
 <?php  
@@ -36,16 +37,16 @@ $add_excess_qty_to_first_sch=1; //0-Yes, 1-NO
 
 function firstbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value))) 
 } 
 function secondbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value 
 } 
 
 function thirdbox() 
 { 
-    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value 
+    window.location.href ="<?= getFullURLLevel($_GET['r'],'schedule_split_bek.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value))) 
 } 
 </script> 
 </head> 
@@ -199,9 +200,9 @@ table{
 
 <?php 
 
-$style=$_GET['style']; 
+$style=style_decode($_GET['style']); 
 $schedule=$_GET['schedule'];  
-$color=$_GET['color']; 
+$color=color_decode($_GET['color']); 
 $po=$_GET['po']; 
 
 if(isset($_POST['submit'])) 
@@ -1018,9 +1019,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 				
 			}
 		}
+		$main_style = style_encode($style);
+        $main_color = color_encode($color);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$color&style=$style&schedule=$order_del_no&club_status=1\";
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$main_color&style=$main_style&schedule=$order_del_no&club_status=1\";
 			}
 		</script>";
 		// echo " <div class='alert alert-success alert-dismissible'>

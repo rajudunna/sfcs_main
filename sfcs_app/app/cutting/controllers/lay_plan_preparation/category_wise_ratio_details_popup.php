@@ -1,10 +1,11 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));
+      include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
 
 if(isset($_GET['order_tid']))
 {
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];
 $cat_desc=$_GET['cat_desc'];
 $mk_status=$_GET['mk_status'];

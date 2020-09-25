@@ -1,7 +1,8 @@
 
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));	  
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));	  
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));	  
 	?> 
 <style>
 
@@ -26,17 +27,17 @@
 <script>
 	function firstbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))
 	}
 
 	function secondbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value
 	}
 
 	function thirdbox()
 	{
-		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
+		window.location.href ="<?= getFullURLLevel($_GET['r'],'mix_jobs.php',0,'N'); ?>&style="+window.btoa(unescape(encodeURIComponent(document.test.style.value)))+"&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))
 	}
 	
 	function check_all()
@@ -66,9 +67,9 @@
 	<div class="panel-body">
 	<form name="test" method="post" action="<?php getFullURLLevel($_GET['r'],'mix_jobs.php',0,'R') ?>">
 	<?php
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule']; 
-		$color=$_GET['color'];
+		$color=color_decode($_GET['color']);
 		$po=$_GET['po'];
 
 		if(isset($_POST['submit']))
@@ -672,7 +673,8 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						//echo $delete_sqls."<bR>";
 						mysqli_query( $link, $delete_sqls) or exit(message_sql());
 					}
-				}				 
+				}
+
 				
 				//Executing Docket Creation & Updation
 				$sql1="SELECT cutno,order_col_des,order_del_no,order_tid,doc_no,GROUP_CONCAT(size ORDER BY size) as size,GROUP_CONCAT(qty ORDER BY size) as  ratio,cat_ref,plies FROM $bai_pro3.`mix_temp_desti` where size NOT LIKE \"%p_%\" and cat_ref='".$cat_ref."' GROUP BY order_tid,doc_no order by doc_no*1"; 
@@ -690,7 +692,19 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						from plandoc_stat_log where cat_ref='$cat_ref' and doc_no='".$sql_row1x['doc_no']."'";
 						//echo $sqlx351."<br>";
 						$sql_result351=mysqli_query( $link, $sqlx351) or exit(message_sql());
-						$docn=mysqli_insert_id($link);						
+						$docn=mysqli_insert_id($link);	
+						/*
+						$sql_tt="select count(*) as cnt from  $bai_pro3.plandoc_stat_log where  order_tid='".$sql_row1x['order_tid']."'";
+						$sql_resulttt=mysqli_query( $link, $sql_tt) or exit(message_sql());
+						while($sql_rowx1256=mysqli_fetch_array($sql_resulttt)) 
+						{
+							$doc_cnt=$sql_rowx1256['cnt'];
+							$sql471_tt="update $bai_pro3.plandoc_stat_log set acutno=$doc_cnt,pcutno=$doc_cnt where doc_no='$docn'"; 
+								//echo $sql471."<br>"; 
+							$sql_result471_tt=mysqli_query( $link, $sql471_tt) or exit(message_sql()); 
+						}
+
+						*/
 						for($j=0;$j<sizeof($size_p);$j++)
 						{
 							if($size_q[$j]>0)
@@ -744,6 +758,15 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 						from $bai_pro3.plandoc_stat_log where cat_ref='$cat_ref' and order_tid='".$order_tid."' and doc_no='".$sql_row1['doc_no']."'";
 						$sql_result351=mysqli_query($link, $sqlx351) or exit(message_sql()); 
 						$docn=mysqli_insert_id($link);
+						$sql_tt1="select count(*)+1 as cnt from  $bai_pro3.plandoc_stat_log where order_tid='".$sql_row1['order_tid']."'";
+						$sql_resulttt1=mysqli_query( $link, $sql_tt1) or exit(message_sql());
+						while($sql_rowx1212=mysqli_fetch_array($sql_resulttt1)) 
+						{
+							$doc_cnt=$sql_rowx1212['cnt'];
+							$sql471_tt="update $bai_pro3.plandoc_stat_log set acutno=$doc_cnt,pcutno=$doc_cnt where doc_no='$docn'"; 
+							$sql_result471_tt=mysqli_query( $link, $sql471_tt) or exit(message_sql()); 
+						}
+
 						$size_p=explode(",",$sql_row1['size']);
 						$size_q=explode(",",$sql_row1['ratio']);
 						for($j=0;$j<sizeof($size_p);$j++)
@@ -767,7 +790,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 				$sqly32="update $bai_pro3.plandoc_stat_log set org_doc_no=1 where doc_no in (select doc_no from $bai_pro3.mix_temp_desti where cat_ref='".$cat_ref."')"; 
 				//echo $sqly32."<br/>"; 
 				mysqli_query( $link, $sqly32) or exit(message_sql()); 
-				
+				// die();
 				//Allocation Stat Log allocation
 				$sql12="SELECT cutt_ref,order_del_no,order_col_des,order_tid,GROUP_CONCAT(distinct doc_no) as docs FROM $bai_pro3.`mix_temp_desti` where cat_ref='".$cat_ref."' GROUP BY order_tid order by order_tid*1"; 
 				//echo $sql12."<br>";
@@ -875,10 +898,11 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 				
 			}
 		}
-		
+		$main_style = style_encode($style);
+        $main_color = color_encode($color);
 		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 		function Redirect() {
-			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$color&style=$style&schedule=$order_sch&club_status=2\";
+			location.href = \"".getFullURLLevel($_GET['r'], 'orders_sync.php',1,'N')."&color=$main_color&style=$main_style&schedule=$order_sch&club_status=2\";
 			}
 		</script>";
 		

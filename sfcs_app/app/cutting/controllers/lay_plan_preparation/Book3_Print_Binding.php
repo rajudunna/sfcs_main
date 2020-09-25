@@ -2804,7 +2804,7 @@ $tot_tick_len=0;
 $tot_ctex_len=0;
 $tot_alloc_qty=0;
 $tot_bind_len=0;
- 
+$val=array_sum($leng_det);
  if(sizeof($roll_det)>0)
  {
 	 for($i=0;$i<sizeof($roll_det);$i++)
@@ -2830,7 +2830,7 @@ $tot_bind_len=0;
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
 	  <td class=xl814118>&nbsp;</td>
-	  <td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+	  <td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]/$val*$fab_bind),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]/$val*$fab_bind);?></td>
 	  <td colspan=3 class=xl684118 style='border-left:none'></td>
 	  <td class=xl654118></td>
 	  </tr>

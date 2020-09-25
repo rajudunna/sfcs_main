@@ -2,6 +2,7 @@
 <?php 
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 ?>
 <script>
  $(document).ready(function(){
@@ -11,14 +12,14 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected = this.value;
-	  window.location.href =url1+"&style="+valueSelected
+	  window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(valueSelected)))
     });
 	 $("#schedule").change(function(){
         //alert("The text has been changed.");
 		var optionSelected = $("option:selected", this);
        var valueSelected2 = this.value;
 	   var style1 = $("#style").val();
-	   window.location.href =url1+"&style="+style1+"&schedule="+valueSelected2
+	   window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(style1)))+"&schedule="+valueSelected2
 	  });
 });
 </script>
@@ -31,7 +32,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 <body>
 <form>
 <?php
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $schedule=$_GET['schedule']; 
 if(isset($_POST['myval']))
 {

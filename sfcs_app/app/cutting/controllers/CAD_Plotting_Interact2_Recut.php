@@ -5,7 +5,8 @@ create the interface for recut plot job priority.
 <?php 
 	// include("../dbconf.php"); 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R')); 
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
 
@@ -268,7 +269,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$allocate_ref=$sql_row1['allocate_ref'];
 	$cutno=$sql_row1["acutno"];
 	$sql="select purwidth,clubbing,category from $bai_pro3.cat_stat_log where tid=$cat_ref";
-	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -313,8 +314,9 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		}		
 	}
 	// $path= getFullURLLevel($_GET['r'],'new_doc_gen/color_club_docket_print.php',1,'N');
-	
-	$tab= "<tbody><tr><td><a href=\"$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$sql_row1['order_tid']."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</td>";
+	$tran_order_tid=$sql_row1['order_tid'];
+	$main_tran_order_tid=order_tid_encode($tran_order_tid);
+	$tab= "<tbody><tr><td><a href=\"$path&order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."&cat_title=$category&clubbing=$clubbing&cut_no=1\" onclick=\"Popup1=window.open('$path&order_tid=".$main_tran_order_tid."&cat_ref=".$sql_row1['cat_ref']."&doc_id=".$sql_row1['doc_no']."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">".$sql_row1['doc_no']."</td>";
 	
 	$tab.= "<td>$buyer_code</td>";
 	$tab.= "<td>$print_date</td>";

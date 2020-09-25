@@ -9,7 +9,16 @@ error_reporting(0);
 // Report simple running errors
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-$date=date("Y-m-d");
+if($_GET['date'])
+{
+	$date=$_GET['date'];
+}
+else
+{
+	$date=date("Y-m-d");
+}
+
+//$date=date("Y-m-d");
 $heading="Today";
 
 

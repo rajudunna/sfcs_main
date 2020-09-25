@@ -490,14 +490,15 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 		// echo $sql3."-A<br/>";
 		mysqli_query($link, $sql3) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
+		//Update queries commented because already these tables are updating in order_summary_update job
 		//TO Update Orders_db
 		$sql3="update $table_ref2 set act_cut=$cut_total ".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		// echo $sql3."-A<br/>";
-		mysqli_query($link, $sql3) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql3) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 		$sql3="update $table_ref3 set act_cut=$cut_total ".$query_add.", act_fca=$internal_audited, act_mca=$fcamca, act_fg=$fgqty, act_ship=$shipped, cart_pending=$pendingcarts, priority=$status, output=$qty_temp where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 		// echo $sql3."-A<br/>";
-		mysqli_query($link, $sql3) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+		//mysqli_query($link, $sql3) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 		//To Update Orders_db
 		}
 		else
@@ -505,11 +506,11 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS
 			//TO Update Orders_db
 			$sql3="update $table_ref2 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 			// echo $sql3."-B<br/>";
-			mysqli_query($link, $sql3) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql3) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			$sql3="update $table_ref3 set priority=6 where order_style_no=\"$style\" and order_del_no=\"$schedule\" and order_col_des=\"$color\"";
 			// echo $sql3."-B<br/>";
-			mysqli_query($link, $sql3) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
+			//mysqli_query($link, $sql3) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
 			//To Update Orders_db
 		}
 		

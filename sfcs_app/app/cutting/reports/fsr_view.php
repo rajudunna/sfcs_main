@@ -94,7 +94,7 @@ $cat=$_POST['cat'];
 				}
 			?>
 			<div class="col-sm-2">
-				<label for='section'>Section :</label>
+				<label for='section'>Cut Table Name :</label>
 				<select class='form-control' name="section">
 					<option value='<?= $all_secs ?>'>All</option>
 				<?php
@@ -277,14 +277,14 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<tr class='info'>";
 	echo "<th>Date</th>";
 	echo "<th>Shift</th>";
-	echo "<th>Section</th>";
+	echo "<th>Cut Table Name</th>";
 	echo "<th>Docket No</th>";
 	echo "<th>Style</th>";
 	echo "<th>Schedule</th>";
 	echo "<th>Color</th>";
 	echo "<th>Category</th>";
 	echo "<th>Cut No</th>";
-	echo "<th>Pcs</th>";
+	echo "<th>Marker Ratio</th>";
 	echo "<th>Plies</th>";
 	echo "<th>MK Len.</th>";
 	echo "<th>Cut Qty</th>";
@@ -915,5 +915,3 @@ function getCSVData(){
 	document.getElementById("msg").style.display="none";
 	document.getElementById("export").style.display="";		
 </script>
-
-

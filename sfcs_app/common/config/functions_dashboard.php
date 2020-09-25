@@ -14,5 +14,42 @@ function get_ips_operation_code($link,$style,$color){
 
     return $data;
 }
+function style_decode($style)
+{
+   $main_style=base64_decode($style);
+   return $main_style;
+}
+
+function style_encode($style)
+{
+   $main_style=base64_encode($style);
+   return $main_style;
+}
+
+function color_decode($color)
+{
+   $main_color=base64_decode($color);
+   return $main_color;
+}
+
+function color_encode($color)
+{
+   $main_color=base64_encode($color);
+   return $main_color;
+}
+
+function order_tid_decode($order_tid)
+{
+	$main_order_tid=base64_decode($order_tid);
+    return $main_order_tid;
+}
+
+function order_tid_encode($order_tid)
+{
+	$main_order_tid=base64_encode($order_tid);
+    return $main_order_tid;
+}	
+
+
 
 ?>

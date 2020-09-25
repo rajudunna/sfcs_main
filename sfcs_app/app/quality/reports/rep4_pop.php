@@ -148,7 +148,7 @@ if(isset($_GET['section']))
 						
 			$fab_tot= $fab_tot + ($vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16]);
 			$cut_tot= $cut_tot + ($vals[6]+$vals[7]+$vals[8]);
-			$sew_tot= $sew_tot + ($vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]);
+			$sew_tot= $sew_tot + ($vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[35]+$vals[36]);
 			$trim_tot= $trim_tot + ($vals[21]+$vals[20]);
 			$sew_exces_tot= $sew_exces_tot + ($vals[22]);
 			$emb_tot= $emb_tot + ($vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]);
@@ -162,7 +162,7 @@ if(isset($_GET['section']))
 			$emb_tot_mod= ($vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]);
 			$mac_tot_mod= ($vals[23]+$vals[24]+$vals[25]);
 			
-			$qms_qty= $vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16]+$vals[6]+$vals[7]+$vals[8]+$vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[20]+$vals[21]+$vals[22]+$vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]+$vals[23]+$vals[24]+$vals[25];
+			$qms_qty= $vals[0]+$vals[1]+$vals[2]+$vals[3]+$vals[4]+$vals[5]+$vals[15]+$vals[16]+$vals[6]+$vals[7]+$vals[8]+$vals[9]+$vals[11]+$vals[12]+$vals[17]+$vals[18]+$vals[19]+$vals[13]+$vals[10]+$vals[20]+$vals[21]+$vals[22]+$vals[14]+$vals[26]+$vals[27]+$vals[28]+$vals[29]+$vals[30]+$vals[31]+$vals[32]+$vals[23]+$vals[24]+$vals[25]+$vals[35]+$vals[36];
 			//$qms_qty=array_sum($vals);
 			//$qms_tot= $qms_tot + $sql_row1['qms_qty'];
 		}

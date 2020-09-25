@@ -1,4 +1,3 @@
-
 <?php
 $double_modules=array();
 $dashboard_name="TMS";
@@ -433,6 +432,7 @@ window.onload = startBlink;
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 $has_permission=haspermission($_GET['r']);
 
 ?>
@@ -661,17 +661,17 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 						$id="red";
 					}
 				}
-				
+				$main_style=style_encode($style);
 				//$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$get_color,$input_job_no,$link);
-				$title=str_pad("Style:".$style,80)."\n".str_pad("Co No:".$co_no,80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Colors:".$order_col,80)."\n".str_pad("Job_No:".$display_prefix1,80)."\n".str_pad("Job Qty:".$qty,80);
+				$title=str_pad("Style:".$style,80)."</br>".str_pad("Co No:".$co_no,80)."</br>".str_pad("Schedule:".$schedule,80)."</br>".str_pad("Colors:".$order_col,80)."</br>".str_pad("Job_No:".$display_prefix1,80)."</br>".str_pad("Job Qty:".$qty,80);
 				$order_col='';
 				if(in_array($authorized,$has_permission))
 				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter</font></a></div></div></div>";
+					echo "<a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?prefix=$prefix&jobno=$input_job_no&style=$main_style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&isinput=0','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><font style=\"color:black;\">$letter</font></div></div></div></a>";
 				}
 				else
 				{
-					echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ></div></div></div>";
+					echo "<a data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ></div></div></div></a>";
 				}					
 				$y++;			
 			}
@@ -740,3 +740,106 @@ function calculateJobsCount($table_name,$module,$order_div_ref){
 
 
 ?>
+<script>
+$(document).ready(function() {
+$('a[rel=tooltip]').mouseover(function(e) {
+  
+  var tip = $(this).attr('data-title');  
+  $(this).attr('data-title','');
+  $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
+  
+}).mousemove(function(e) {
+
+
+  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
+  console.log(e);
+
+
+  $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+  $('#tooltip').css('left',$(this).offset.left - 255 );
+   $('#tooltip').css('margin-left','10px' );
+   $('#tooltip').css('text-align','left' );
+   $('#tooltip').css('margin-top','10px' );
+   $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('z-index', '999999' );
+}).mouseout(function() {
+
+  $(this).attr('data-title',$('.tipBody').html());
+  $(this).children('div#tooltip').remove();
+  
+});
+
+});
+</script>
+<style>
+.tooltip {
+    
+    outline: none;
+    cursor: auto; 
+    text-decoration: none;
+    position: relative;
+    color:#333;
+    
+  }
+  .tooltip  {
+    margin-left: -1500em;
+    position: absolute;
+    
+  }
+  .tooltip:hover  {
+    border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    position: absolute; 
+    left: 0em; top: 0em; z-index: 99;
+    margin-left: -100px; width: 150px;
+    margin-top: -100px;
+    
+
+
+  }
+  .tooltip:hover img {
+    border: 0; 
+    margin: -10px 0 0 -55px;
+    float: left; position: absolute;
+  }
+  .tooltip:hover em {
+    font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+    display: block; padding: 0.2em 0 0.6em 0;
+  }
+ 
+  
+
+  /* Tooltip */
+.red-tooltip + .tooltip > .tooltip-inner {
+background-color: black;
+width:350px;
+}
+#tooltip {
+position:absolute;
+z-index:9999;
+color:#fff;
+font-size:12px;
+width:220px;
+pointer-events: none; 
+
+}
+
+#tooltip .tipHeader {
+height:8px;
+/*background:url('<?= getFullURL($_GET['r'],'common/images/tipHeader.gif',2,'R');?>') no-repeat;*/
+font-size:0px;
+}
+
+
+#tooltip .tipBody {
+background-color:#000;
+padding:5px 5px 5px 15px;
+}
+
+#tooltip .tipFooter {
+ height:8px;
+ /*background:url('<?= getFullURL($_GET['r'],'common/images/tipFooter.gif',2,'R');?>') no-repeat;*/
+}
+
+</style>

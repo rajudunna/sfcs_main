@@ -1,8 +1,9 @@
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 include('../../../../common/config/config.php');
 include('../../../../common/config/functions.php');
+include('../../../../common/config/functions_dashboard.php');
 $divide = 15;
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 $cat_ref=$_GET['cat_ref'];	
 $doc_id=$_GET['doc_id'];
 if($_GET['print_status']<>'')
@@ -2094,16 +2095,13 @@ body{
 	size: potrait;
 	margin: 0cm;
 }
-</style>
-
-<style>
 
 @media print {
     @page { margin: 0; }
 @page narrow {size: 9in 11in}
 @page rotated {size: landscape}
 DIV {page: narrow}
-TABLE {page: rotated}
+/*TABLE {page: rotated}*/
 #non-printable { display: none; }
 #printable { display: block; }
 #logo { display: block; }
@@ -2669,7 +2667,7 @@ if(sizeof($shades)>0)
 { 
 	for($i=0;$i<sizeof($shades);$i++)
 	{ 
-		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no,qty_rec DESC";
+		$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='$doc_type' and ref4='".$shades[$i]."' group by roll_id  ORDER BY ref4,batch_no,lot_no DESC, ref2*1 ASC";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -2846,7 +2844,9 @@ $tot_alloc_qty=0;
 $tot_bind_len=0;
 $shade_tot=0;
 $previouse='0';
+$val=array_sum($leng_det);
 if(sizeof($roll_det)>0)
+
 {
 	for($i=0;$i<sizeof($roll_det);$i++)
 	{		
@@ -2873,7 +2873,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
-			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]/$val*$fab_bind),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]/$val*$fab_bind);?></td>
 			<td colspan=3 class=xl684118 style='border-left:none'></td>
 			<td class=xl654118></td>
 			</tr>
@@ -2913,7 +2913,7 @@ if(sizeof($roll_det)>0)
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
 			<td class=xl814118>&nbsp;</td>
-			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]*$binding_con*$a_ratio_tot),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]*$binding_con*$a_ratio_tot);?></td>
+			<td colspan=1 class=xl684118 style='text-align:right;padding-bottom:5pt;'><?php echo round(($leng_det[$i]/$val*$fab_bind),2); $tot_bind_len=$tot_bind_len+($leng_det[$i]/$val*$fab_bind);?></td>
 			<td colspan=3 class=xl684118 style='border-left:none'></td>
 			<td class=xl654118></td>
 			</tr>
@@ -2945,7 +2945,7 @@ if(sizeof($roll_det)>0)
 		<td class=xl814118></td>
 		<td class=xl814118></td>
 		<td class=xl814118></td>
-		<td class=xl684118 style='text-align:right;padding-bottom:5pt;'>".$tot_bind_len."</td>
+		<td class=xl684118 style='text-align:right;padding-bottom:5pt;'>".round ($tot_bind_len,2)."</td>
 		<td class=xl814118></td>";
 		?>
 		</tr>

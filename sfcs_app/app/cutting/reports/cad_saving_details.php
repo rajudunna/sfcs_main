@@ -310,16 +310,31 @@ $sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in ("
 $result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
-	$issued_qty=$row["qty"];
+	$issued_qty1=$row["qty"];
 }
-
+$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$docketnos).")";
+//echo $sql."<br>";
+$result=mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row=mysqli_fetch_array($result))
+{
+	$issued_qty2=$row["qty"];
+}
+$issued_qty=$issued_qty1+$issued_qty2;
 $sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$recut_docketnos).")";
 //echo $sql."<br>";
 $result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
-	$recut_issued_qty=$row["qty"];
+	$recut_issued_qty1=$row["qty"];
 }
+$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$recut_docketnos).")";
+//echo $sql."<br>";
+$result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row=mysqli_fetch_array($result))
+{
+	$recut_issued_qty2=$row["qty"];
+}
+$recut_issued_qty=$recut_issued_qty1+$recut_issued_qty2;
 $damages_qty=0;
 $shortages_qty=0;
 $sql="select sum(damages) as dam,sum(shortages) as shrt from $bai_pro3.act_cut_status where doc_no in (".implode(",",$docketno).")";

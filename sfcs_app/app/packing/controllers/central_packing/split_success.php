@@ -1,6 +1,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
     $has_permission=haspermission($_GET['r']);
@@ -116,7 +117,7 @@
 								{
 									while($row23=mysqli_fetch_array($result23))
 									{ 
-										$sql22="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$nqty WHERE ref_no=$tid and op_code=$ops_id[$i]";
+										$sql22="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$nqty WHERE ref_no=$tid and op_code=$ops_id[$i] and mo_no='".$row23['mo_no']."'";
 										//echo $sql22.'<br>'; 
 										mysqli_query($link, $sql22) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 										
@@ -135,7 +136,7 @@
 											if($qty<$row23['bundle_quantity'])
 											{
 												$qty_tm=$row23['bundle_quantity']-$qty;
-												$sql221="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$qty_tm WHERE ref_no=$tid and op_code=$ops_id[$i]";
+												$sql221="UPDATE $bai_pro3.mo_operation_quantites SET bundle_quantity=$qty_tm WHERE ref_no=$tid and op_code=$ops_id[$i] and mo_no='".$row23['mo_no']."'";
 												//echo $sql221.'<br>'; 
 												mysqli_query($link, $sql221) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 												
@@ -164,12 +165,14 @@
 			}
 		}
 	}
+	//Encoded Style
+    $main_style = style_encode($style);
 	echo '<h4><b>New Carton No : <a class="btn btn-warning">'.$maxcartonno.'</a></b></h4>';	
     echo "<script>sweetAlert('Success','Successfully Splitted your Carton.','success');</script>";
     echo "<script> 
                     setTimeout('Redirect()',1000); 
                     function Redirect() {  
-                        location.href = '$url_s&schedule=$schedule&style=$style'; 
+                        location.href = '$url_s&schedule=$schedule&style=$main_style'; 
                     }
                 </script>"; 
 ?> 

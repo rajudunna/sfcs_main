@@ -1,13 +1,14 @@
 <?php
 	
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 error_reporting(0);
 
 if(isset($_GET['submit']))
 {
   $row_count = 0;
   $counter = 0;
-    $style = $_GET['style'];
+    $style = style_decode($_GET['style']);
     $schedule = $_GET['schedule'];
     //$color = $_GET['color'];
 	$get_mo_details="select * from bai_pro3.mo_details where style='".$style."' and schedule='". $schedule."'";

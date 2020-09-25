@@ -1,11 +1,12 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 
 
 <?php
 
 
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 //echo $tran_
 $cat_ref=$_GET['cat_ref'];
 $cuttable_ref=$_GET['cuttable_ref'];
@@ -56,12 +57,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$style_back=$sql_row['order_style_no'];
 		$schedule_back=$sql_row['order_del_no'];
 }
-
+//To get Encoded Color & style
+$main_style = style_encode($style_back);
+$main_color = color_encode($color_back);
 
 echo "<script type=\"text/javascript\"> 
 		setTimeout(\"Redirect()\",0); 
 		function Redirect(){	 
-				location.href = \"".getFullURL($_GET['r'], "recut_lay_plan.php","N")."&color=$color_back&style=$style_back&schedule=$schedule_back&serial_no=$serial_no\"; 
+				location.href = \"".getFullURL($_GET['r'], "recut_lay_plan.php","N")."&color=$main_color&style=$main_style&schedule=$schedule_back&serial_no=$serial_no\"; 
 			}
 	</script>";	
 //echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURL($_GET['r'], "recut_lay_plan.php", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<<< Click here to Go Back</a>";

@@ -28,7 +28,8 @@ function printPreview(){
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php'); 
 ?>
 <div class="panel panel-primary">
     <div class="panel-heading"><center><button onclick="return printPreview()" id="printid" style="float:left;color:blue;">Print</button><strong>Job Wise Sewing and Packing Trim Requirement Report - <?= $plant_name ?></strong></center></div>
@@ -42,7 +43,7 @@ $host= $api_hostname;
 $port= $api_port_no;
 
 $schedule=$_GET['schedule'];
-$style=$_GET['style'];
+$style=style_decode($_GET['style']);
 $input_job_no=$_GET['input_job'];
 
 echo "<input type='hidden' id='style' value='".$_GET['style']."'>

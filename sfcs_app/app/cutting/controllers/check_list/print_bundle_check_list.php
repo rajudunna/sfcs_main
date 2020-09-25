@@ -13,8 +13,9 @@
 		<?php
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 
-			$style = $_GET['style'];
+			$style = style_decode($_GET['style']);
 			$schedule = $_GET['schedule'];
 			$doc_no = $_GET['doc_no'];
 			$org_doc_no = $_GET['org_doc_no'];

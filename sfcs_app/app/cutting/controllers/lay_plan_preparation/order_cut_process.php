@@ -1,4 +1,5 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <?php
 // var_dump($_POST);
@@ -90,10 +91,13 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$schedule=$sql_row['order_del_no'];
 
 }
+//Encoding color
+$main_color = color_encode($color);
+$main_style = style_encode($style);
 // echo getFullURLLevel($_GET['r'], "main_interface.php", "1", "N");
 	echo "<script type=\"text/javascript\">
 			sweetAlert('Success','Cuttable Quantities Updated Successfully...','success');
-			setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color."&style=".$style."&schedule=".$schedule."\"; }
+			setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$main_color."&style=".$main_style."&schedule=".$schedule."\"; }
 		</script>";
 	
 }

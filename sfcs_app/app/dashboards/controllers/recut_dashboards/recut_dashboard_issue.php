@@ -97,7 +97,8 @@ if(isset($_POST['formIssue']))
     $size = $_POST['size'];
     // var_dump($bcd_id1);
     // die();
-    $job_list = implode(",",$job_no);
+    // $job_list = implode(",",$job_no);
+    $job_list = "'" . implode("','", $job_no) . "'";
     // $get_schedule="SELECT distinct(SCHEDULE),input_job_no FROM $bai_pro3.pac_stat_log_input_job WHERE input_job_no_random in (".$job_list.")";
     // $get_schedule_result=mysqli_query($link, $get_schedule)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     // while($row = mysqli_fetch_array($get_schedule_result))
@@ -114,6 +115,7 @@ if(isset($_POST['formIssue']))
     //     $job_deactivated = 1;
     // }
     $job_deactivated="SELECT * FROM $bai_pro3.job_deactive_log WHERE input_job_no_random in (".$job_list.") and remove_type='3'";
+    // echo $job_deactivated;die();
     $job_deactivated_result=mysqli_query($link, $job_deactivated)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     if(mysqli_num_rows($job_deactivated_result) == 0){
         $job_deactivated_status = 1;
@@ -695,7 +697,7 @@ echo $drp_down;
                       
                         $html_hiding = "IssueToModule";
                     }
-					if($html_hiding == "ReportPending")
+					if($html_hiding == "ReportPending" || $html_hiding == "Planning Pending")
 					{
 						if(strtolower($row['category'])=='body' or strtolower($row['front']))
 						{

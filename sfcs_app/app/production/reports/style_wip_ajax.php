@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions_dashboard.php");
 error_reporting(0);
 if($_GET['some'] == 'bundle_no')
 {
@@ -103,6 +104,7 @@ if($_GET['some'] == 'bundle_no')
 			    //echo $bcd_data_query.'<br/>';
 			    while ($row3 = $bcd_get_result->fetch_assoc())
 			    {
+					$ops_code=$row3['operation_id'];
 					$bcd_rec[$row3['operation_id']] = $row3['recevied'];
 					$bcd_rej[$row3['operation_id']] = $row3['rejection'];
 					// $user = $row3['scanned_user'];
@@ -110,6 +112,12 @@ if($_GET['some'] == 'bundle_no')
 					$shift[$row3['operation_id']] = $row3['shift'];
 					$scanned_time[$row3['operation_id']] = $row3['max'];
 					$module[$row3['operation_id']] = $row3['assigned_module'];
+					$module_data_query = "SELECT assigned_module  from $brandix_bts.bundle_creation_data_temp where  bundle_number=$bundle_number and operation_id=$ops_code order by id desc limit 1";
+					$module_get_result =$link->query($module_data_query);
+					while ($row_module = $module_get_result->fetch_assoc())
+			        {
+						$modules[$row3['operation_id']]=$row_module['assigned_module'];
+					}	
 			    }
 
 			    
@@ -130,7 +138,7 @@ if($_GET['some'] == 'bundle_no')
 								</tr>
 								<tr>
 								   <th>Module</th>
-								   <td>$module[$value]</td>
+								   <td>$modules[$value]</td>
 								</tr>
 								<tr>
 								   <th>Scanned User</th>
@@ -172,9 +180,9 @@ else
 {
 	//Style Wip Report Code
 	$counter = 0;
-	$style = $_GET['style'];
+	$style = style_decode($_GET['style']);
 	$schedule = $_GET['schedule'];
-	$color = $_GET['color'];
+	$color = color_decode($_GET['color']);
 	$size_get = $_GET['size'];
 	if($schedule == 'all')
 	{

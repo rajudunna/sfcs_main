@@ -7,10 +7,11 @@
     <?php
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
         include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+        include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
         echo '<script src="'.getFullURLLevel($_GET['r'],'common/js/jquery-ui.js',2,'R').'"></script>';
         if (isset($_GET['style']))
         {
-            $style=$_GET['style'];
+            $style=style_decode($_GET['style']);
             $schedule=$_GET['schedule'];
            // $style_ori = echo_title("$brandix_bts.tbl_orders_style_ref","product_style","id",$style,$link); 
             //$schedule_ori = echo_title("$brandix_bts.tbl_orders_master","product_schedule","id",$schedule,$link);
@@ -27,12 +28,12 @@
         var url1 = '<?= getFullURL($_GET['r'],'carton_club_drag_drop.php','N'); ?>';
         function firstbox()
         {
-            window.location.href =url1+"&style="+document.mini_order_report.style.value
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
         }
 
         function secondbox()
         {
-            window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+            window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))+"&schedule="+document.mini_order_report.schedule.value
         }
     </script>
     <style>
@@ -80,7 +81,7 @@
                             <label>Style: </label>";
                                 // Style
                                 echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-                                $sql="select * from $bai_pro3.pac_stat group by style order by style*1";
+                                $sql="select * from $bai_pro3.pac_stat group by style order by style";
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2");
                                 $sql_num_check=mysqli_num_rows($sql_result);
                                 echo "<option value=''>Please Select</option>";
@@ -251,10 +252,12 @@
     <?php
         if (isset($_GET['carton']))
         {
-            $style = $_GET['style'];
+            $style = style_decode($_GET['style']);
             $schedule = $_GET['schedule'];
             $cartons = $_GET['carton'];
             $packmethod = $_GET['packmethod'];
+            //Encoded Style
+            $main_style = style_encode($style);
             if ($cartons != '' || $cartons != null)
             {
                 $test = substr($cartons,0,-1);
@@ -285,7 +288,7 @@
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 						function Redirect() 
 						{
-							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$main_style&schedule=$schedule&packmethod=$packmethod\";
 						}
 						</script>";
                 }
@@ -295,7 +298,7 @@
                     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 						function Redirect() 
 						{
-							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
+							location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$main_style&schedule=$schedule&packmethod=$packmethod\";
 						}
 						</script>";
                 }
@@ -306,7 +309,7 @@
                 echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 					function Redirect() 
 					{
-						location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$style&schedule=$schedule&packmethod=$packmethod\";
+						location.href = \"".getFullURLLevel($_GET['r'], "carton_club_drag_drop.php", "0", "N")."&style=$main_style&schedule=$schedule&packmethod=$packmethod\";
 					}
 					</script>";
             }

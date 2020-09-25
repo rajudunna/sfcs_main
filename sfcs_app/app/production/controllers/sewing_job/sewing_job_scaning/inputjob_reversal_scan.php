@@ -107,7 +107,7 @@
 		if(e.keyCode == 13)
 			return;
 		var p = String.fromCharCode(e.which);
-		var c = /^[0-9]*\.?[0-9]*\.?[0-9]*$/;
+		var c = /^[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*\.?[0-9]*$/;
 		var v = document.getElementById(t.id);
 		if( !(v.value.match(c)) && v.value!=null ){
 			v.value = '';
@@ -868,7 +868,7 @@
 					{
 						$buyer_div=str_replace("'","",(str_replace('"',"",$buyer_qry_row['order_div'])));
 					}
-					$qry_nop="select((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module='".$b_module[$key]."' and shift='".$b_shift."'";
+					$qry_nop="select ((present+jumper)-absent) as nop FROM $bai_pro.pro_attendance WHERE date='".$bac_dat."' and module='".$b_module[$key]."' and shift='".$b_shift."'";
 					$qry_nop_result=mysqli_query($link,$qry_nop) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($nop_qry_row=mysqli_fetch_array($qry_nop_result))
 					{

@@ -12,7 +12,126 @@ $dashboard_name="CTDC";
 
 $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'R'); 
 ?>
+<script>
+$(document).ready(function() {
+//Select all anchor tag with rel set to tooltip
+$('div[rel=tooltip]').mouseover(function(e) {
+  
+  //Grab the title attribute's value and assign it to a variable
+  var tip = $(this).attr('data-title');  
+  
+  //Remove the title attribute's to avoid the native tooltip from the browser
+  $(this).attr('data-title','');
+  
+  //Append the tooltip template and its value
+  $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
+  
+}).mousemove(function(e) {
 
+  //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
+  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset );
+  console.log(e.pageY - $(this).offset().top + + $(window).scrollTop());
+// console.log($(this).offset().top-$(window).scrollTop());
+  //e.pageY + 0.5 * e.view.parent.pageYOffset
+  $('#tooltip').css('top',e.pageY - 75);
+  $('#tooltip').css('left',$(this).offset.left - 255 );
+   $('#tooltip').css('margin-left','-38px' );
+   $('#tooltip').css('text-align','left' );
+   $('#tooltip').css('margin-top','10px' );
+   $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('display', 'block' );
+   $('#tooltip').css('z-index', '999999' );
+}).mouseout(function() {
+
+  //Put back the title attribute's value
+  $(this).attr('data-title',$('.tipBody').html());
+
+  //Remove the appended tooltip template
+  $(this).children('div#tooltip').remove();
+  
+});
+
+});
+</script>
+<style>
+.tooltip {
+    
+    outline: none;
+    cursor: auto; 
+    text-decoration: none;
+    position: relative;
+    color:#333;
+    
+  }
+  .tooltip span {
+    margin-left: -1500em;
+    position: absolute;
+    
+  }
+  .tooltip:hover span {
+    border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    position: absolute; 
+    left: 0em; top: 0em; z-index: 99;
+    margin-left: -100px; width: 150px;
+    margin-top: -100px;
+    
+
+
+  }
+  .tooltip:hover img {
+    border: 0; 
+    margin: -10px 0 0 -55px;
+    float: left; position: absolute;
+  }
+  .tooltip:hover em {
+    font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+    display: block; padding: 0.2em 0 0.6em 0;
+  }
+  .classic { padding: 0.8em 1em; }
+  .custom { padding: 0.5em 0.8em 0.8em 2em; }
+  * html a:hover { background: transparent; }
+  .classic {background: #000; border: 1px solid #FFF;font-weight:bold; }
+  .critical { background: #FFCCAA; border: 1px solid #FF3334; }
+  .help { background: #9FDAEE; border: 1px solid #2BB0D7; }
+  .info { background: #9FDAEE; border: 1px solid #2BB0D7; }
+  .warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+  
+
+  /* Tooltip */
+.red-tooltip + .tooltip > .tooltip-inner {
+background-color: black;
+width:350px;
+}
+#tooltip {
+position:absolute;
+z-index:9999;
+color:#fff;
+font-size:12px;
+width:220px;
+pointer-events: none; 
+
+}
+
+#tooltip .tipHeader {
+height:8px;
+/*background:url('<?= getFullURL($_GET['r'],'common/images/tipHeader.gif',2,'R');?>') no-repeat;*/
+font-size:0px;
+}
+
+
+#tooltip .tipBody {
+background-color:#000;
+padding:5px 5px 5px 15px;
+}
+
+#tooltip .tipFooter {
+ height:8px;
+ /*background:url('<?= getFullURL($_GET['r'],'common/images/tipFooter.gif',2,'R');?>') no-repeat;*/
+}
+
+</style>
 <div style='width=100%;'>
   <div class="panel panel-primary">
     <div class='panel-heading'>
@@ -528,16 +647,16 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                           $rem="No status";
                         }
                             
-                        $title=str_pad("Style:".trim($style),80)."\n".
-                              str_pad("CO:".trim($co_no),80)."\n".
-                              str_pad("Schedule:".$schedule,80)."\n".
-                              str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".
-                              str_pad("Job_No:".implode(", ",$club_c_code),80)."\n".
+                        $title=str_pad("Style:".trim($style),80)."</br>".
+                              str_pad("CO:".trim($co_no),80)."</br>".
+                              str_pad("Schedule:".$schedule,80)."</br>".
+                              str_pad("Color:".trim(implode(",",$colors_db)),50)."</br>".
+                              str_pad("Job_No:".implode(", ",$club_c_code),80)."</br>".
                               $tool_tip.
-                              str_pad("Docket No:".implode(", ",$club_docs),80)."\n".
-                              str_pad("Total_Qty:".$total_qty,80)."\n".
-                              str_pad("Plan_Time:".$log_time,50)."\n".
-                              str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."\n".
+                              str_pad("Docket No:".implode(", ",$club_docs),80)."</br>".
+                              str_pad("Total_Qty:".$total_qty,80)."</br>".
+                              str_pad("Plan_Time:".$log_time,50)."</br>".
+                              str_pad("Lay_Req_Time:".$lay_time[array_search($doc_no,$doc_no_ref)],80)."</br>".
                               str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);              
                       
                         $clr=trim(implode(',',$colors_db),50);
@@ -620,21 +739,22 @@ $url = '/'.getFullURLLevel($_GET['r'],'cps/fabric_requisition_report_v2.php',1,'
                         //if(in_array($authorized,$has_permission) and $final_cols!="yellow" and $final_cols!="green")
                       if($rep_status!=''){
                         if($final_cols=="yellow" || $final_cols=="orange"){
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;'>$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+                            echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='".$get_cut_qty."&doc_no=$doc_no&cut_table=$cut_table' onclick='Popup=window.open('$get_cut_qty.php?doc_no=$doc_no&cut_table=$cut_table','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;' >$emb_stat_title ".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div></div><br/>";
                         }else if($final_cols=="yash" || $final_cols=="red" || $final_cols=="lgreen"){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' title='$title' ><a href='#'
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:$final_cols' ><a href='#'
                             onclick=\"window.open('$href','yourWindowName','width=800,height=600')\"
-                            >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</span></a></div></div><br/>";
+                            >$emb_stat_title"."LT:".$req_time[array_search($doc_no,$doc_no_ref)]."</a></div></div></div><br/>";
                         }
                         else if($final_cols=="pink"){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' >RT:".$req_time1."</div></div></div><br/>";
                         }
                         else{
                           if($fabric_req_date<date("Y-M-d h:i:sa")){
-                          echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white' title='$title'><span class='blink'>RT:".$req_time1."</span></div></div><br/>";
+                          echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; text-align:center; float:left; color:white'>
+                          <div class='blink'>RT:".$req_time1."</div></div></div></div><br/>";
                           }
                           else{
-                            echo "<div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' title='$title'>RT:".$req_time1."</div></div><br/>";
+                            echo "<div data-title='$title' rel='tooltip'><div id='S$schedule' style='float:left;'><div id='$doc_no' class='$final_cols $recut_class' style='font-size:11px; float:left; color:white;text-align:center' >RT:".$req_time1."</div></div></div><br/>";
                           }
                         }
                       }
@@ -1115,4 +1235,6 @@ height: 25px;
   text-decoration:none;
   background-color: black;
 }
+
+
 </style>

@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/php/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <!-- <style>
 div.block
@@ -68,7 +69,7 @@ div.block
 <?php
 
 $check_id=$_GET['check_id'];
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 $total_cuttable_qty=$_GET['total_cuttable_qty'];
 $ref_id = $_GET['ref_id'];
 $serial_no = $_GET['serial_no'];
@@ -728,9 +729,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$ratiocount=$sql_row['ratio'];
 }
-
+//To get Encoded Color & style
+$main_style = style_encode($style_back);
+$main_color = color_encode($color_back);
 $ratiocount=$ratiocount+1;
-echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back&serial_no=$serial_no\"><<<< Click here to Go Back</a>";
+echo "<a class=\"btn btn-xs btn-warning pull-left\" href=\"".getFullURLLevel($_GET['r'], "recut_lay_plan.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back&serial_no=$serial_no\"><<<< Click here to Go Back</a>";
 echo "<br/><br/>";
 echo "<div class='row'><div class='col-md-6'><table class=\"table table-bordered\">";
 echo "<tr><th>New Ratio</th><th>:</th><td style=\"color: #000000\"> ".$ratiocount."</td></tr>";

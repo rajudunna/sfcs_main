@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php') ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php') ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php') ?>
 <?php ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); ?>
 
 <?php
@@ -23,7 +24,7 @@ for ($i=0; $i < sizeof($sizes_array); $i++)
 // 	}
 // }
 
-$order_tid=$_GET['order_tid'];
+$order_tid=order_tid_decode($_GET['order_tid']);
 
 $cat_ref=$_GET['cat_ref'];
 $cat_title=$_GET['cat_title'];

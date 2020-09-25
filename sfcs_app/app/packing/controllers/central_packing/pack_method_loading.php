@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.mini_order_report.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))+"&schedule="+document.mini_order_report.schedule.value
 	}
 
 </script>
@@ -28,6 +28,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
 	
 	error_reporting(0);
@@ -46,7 +47,7 @@
 		}
 		else
 		{
-			$style=$_GET['style'];
+			$style=style_decode($_GET['style']);
 			$schedule=$_GET['schedule'];
 		}
 		echo "<div class='col-md-12'>
@@ -54,7 +55,7 @@
 					<label>Style: </label>";
 						// Style
 						echo "<select name=\"style\" id=\"style\" class='form-control' onchange=\"firstbox();\" required>";
-						$sql="select * from $bai_pro3.pac_stat group by style order by style*1";
+						$sql="select * from $bai_pro3.pac_stat group by style order by style";
 						$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=''>Select Style</option>";
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -244,11 +245,13 @@
 					//}
 					$url=getFullURL($_GET['r'],'check_list.php','R');
 					$url2=getFullURL($_GET['r'],'barcode_carton.php','R');
+					//Encoded Style
+	                $main_style = style_encode($style);
 					echo "
 						<div class='col-md-12'>
 							<div class='pull-right'>
-								<a class='btn btn-warning' href='$url?p_status=2&seq_no=0&schedule=$schedule&style=$style' target='_blank' >Print Packing list
-								<a class='btn btn-warning' href='$url?p_status=1&seq_no=0&schedule=$schedule&style=$style' target='_blank' >Print Carton track
+								<a class='btn btn-warning' href='$url?p_status=2&seq_no=0&schedule=$schedule&style=$main_style' target='_blank' >Print Packing list
+								<a class='btn btn-warning' href='$url?p_status=1&seq_no=0&schedule=$schedule&style=$main_style' target='_blank' >Print Carton track
 								<a class='btn btn-warning' href='$url2?schedule=$schedule' target='_blank' >Print All Labels</a>
 							</div>
 						</div>";
@@ -285,8 +288,8 @@
 											<td>".$pack_result1['cartons']."</td>
 											<td>".$carton_qty_pac_stat."</td>
 											<td>
-												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >FG Check List
-												<a class='btn btn-warning' href='$url?p_status=1&schedule=$schedule&seq_no=$seq_no&style=$style' target='_blank' >Carton Track
+												<a class='btn btn-warning' href='$url?p_status=2&schedule=$schedule&seq_no=$seq_no&style=$main_style' target='_blank' >FG Check List
+												<a class='btn btn-warning' href='$url?p_status=1&schedule=$schedule&seq_no=$seq_no&style=$main_style' target='_blank' >Carton Track
 												<a class='btn btn-warning' href='$url2?schedule=$schedule&seq_no=$seq_no' target='_blank' >Print Lables</a>
 											</td>
 											<tr>";

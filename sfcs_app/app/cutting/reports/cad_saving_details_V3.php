@@ -1,5 +1,6 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
 ?>
 
 <title>CAD Saving Details</title>
@@ -13,13 +14,13 @@ function firstbox()
 
 function secondbox()
 {
-	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value;
+	var ur1="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)));
 	window.location.href =ur1;
 }
 
 function thirdbox()
 {
-	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value;
+	var uri="<?= 'index.php?r='.$_GET['r']; ?>&schedule="+document.test.schedule.value+"&color="+window.btoa(unescape(encodeURIComponent(document.test.color.value)))+"&category="+document.test.category.value;
 	window.location.href = uri; 
 	//document.testx.submit();
 }
@@ -94,7 +95,7 @@ function check_sch()
 				<label for="color">Select Color</label>
 				<?php
 				$schedule=$_GET['schedule'];
-				$color=$_GET["color"];
+				$color=color_decode($_GET["color"]);
 				if($schedule==""){
 					$schedule=-1;
 				}
@@ -115,7 +116,7 @@ function check_sch()
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 
-					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$_GET['color']))
+					if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
 					{
 						echo "<option value=\"".rtrim($sql_row['order_col_des']," ")."\" selected>".$sql_row['order_col_des']."</option>";
 					}
@@ -133,7 +134,7 @@ function check_sch()
 				<label for="category">Select Category</label>
 				<?php
 				$schedule=$_GET['schedule'];
-				$color=$_GET["color"];
+				$color=color_decode($_GET["color"]);
 				if($color){
 					//echo $schedule;
 					$sql="select category from $bai_pro3.cat_stat_log where order_tid like \"%$schedule$color%\" and category != ''  order by category";
@@ -371,7 +372,7 @@ while($row=mysqli_fetch_array($result))
 	$plan_start_date=$row["plan_start_date"];
 }
 if($order_yy-$cad_yy)
-	$savings_new=round((($order_yy-$cad_yy)/$order_yy)*100,1);
+	$savings_new=round((($order_yy-$cad_yy)/$order_yy)*100,2);
 //echo "<td>".."</td>";
 
 $sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in (".implode(",",$docketnos).")";
@@ -397,8 +398,16 @@ $sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out where cutno in ("
 $result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
-	$recut_issued_qty=$row["qty"];
+	$recut_issued_qty1=$row["qty"];
 }
+$sql="select sum(qty_issued) as qty from $bai_rm_pj1.store_out_backup where cutno in (".implode(",",$recut_docketnos).")";
+//echo $sql."<br>";
+$result=mysqli_query($link, $sql) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row=mysqli_fetch_array($result))
+{
+	$recut_issued_qty2=$row["qty"];
+}
+$recut_issued_qty=$recut_issued_qty1+$recut_issued_qty2;
 $damages_qty=0;
 $shortages_qty=0;
 $fab_rec1=0;
@@ -499,7 +508,7 @@ echo "<td>".$style."</td>";
 echo "<td>".$schedule."</td>";
 echo "<td>".$category."</td>";
 echo "<td>".$compo_no."</td>";
-echo "<td>".$color."</td>";
+echo "<td>".$color."</td>"; 
 echo "<td>".$plan_start_date."</td>";
 echo "<td>".$ex_factory_date_new."</td>";
 echo "<td>".$old_order_total."</td>";
@@ -511,19 +520,19 @@ echo "<td>".$order_yy."</td>";
 echo "<td>".round($cad_yy,4)."</td>";
 echo "<td>".$savings_new."%</td>";
 //echo "<td>".ROUND((($order_yy-$cad_yy)*$old_order_total*99),0)."</td>";
-echo "<td>".round((($old_order_total*$order_yy)-(round($cad_yy,4)*$old_order_total)),0)."</td>";
-echo "<td>".round(($order_yy*$old_order_total),0)."</td>";
-echo "<td>".round($issued_qty,0)."</td>";
-echo "<td>".round($recut_issued_qty,0)."</td>";
-echo "<td>".round($mrn_issued_qty,0)."</td>";
-echo "<td>".round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0)."</td>";
-echo "<td>".round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),0)."</td>";
-echo "<td>".round($damages_qty+$recut_damages_qty,0)."</td>";
-echo "<td>".round($shortages_qty+$recut_shortages_qty,0)."</td>";
+echo "<td>".round((($old_order_total*$order_yy)-(round($cad_yy,4)*$old_order_total)),2)."</td>";
+echo "<td>".round(($order_yy*$old_order_total),2)."</td>";
+echo "<td>".round($issued_qty,2)."</td>";
+echo "<td>".round($recut_issued_qty,2)."</td>";
+echo "<td>".round($mrn_issued_qty,2)."</td>";
+echo "<td>".round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2)."</td>";
+echo "<td>".round(($fab_rec_total-$fab_ret_total-$damages_total-$shortages_total),2)."</td>";
+echo "<td>".round($damages_qty+$recut_damages_qty,2)."</td>";
+echo "<td>".round($shortages_qty+$recut_shortages_qty,2)."</td>";
 echo "<td>".$joints."</td>";
 echo "<td>".round($endbits,4)."</td>";
-echo "<td>".(round(($order_yy*$old_order_total),0)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,0))."</td>";
-echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),0)."</td>";
+echo "<td>".(round(($order_yy*$old_order_total),2)-round($issued_qty+$recut_issued_qty+$mrn_issued_qty,2))."</td>";
+echo "<td>".round((($cut_total_qty-$cut_comp_qty)*round($cad_yy,4)),2)."</td>";
 echo "<td>".$ship_status."</td>";
 echo "</tr>
 	</table>

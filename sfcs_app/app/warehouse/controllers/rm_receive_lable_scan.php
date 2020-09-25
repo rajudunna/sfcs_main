@@ -9,9 +9,7 @@
 <?php
 if(isset($_POST['check2']))
 {
-	$plant_name2=$_POST['plant_name'];
-	
-	
+	$plant_name2=$_POST['plant_name'];	
 }
 else
 {
@@ -30,7 +28,7 @@ else
 					<td>Sender Plant Name</td><td>:</td></br>
 					<td>
 					<select name=\"plant_name\" id='plant_name' required>";
-			echo "<option value='' selected disabled>Select Plant Name</option>";
+				echo "<option value='' selected disabled>Select Plant Name</option>";
 			
 			while($row=mysqli_fetch_array($query_result))
 			{
@@ -70,7 +68,7 @@ else
 					$bar_code_new = $_POST['barcode1'];
 				}
 				$plant_name1=$_POST['plant_name'];
-			
+				echo '<script>document.getElementById("plant_name").value = "'.$plant_name1.'";</script>';
 				$query = "select ip_address,port_number,database_type,username,password from $bai_pro3.plant_details where plant_code='".$plant_name1."'";
 				$res = mysqli_query($link, $query) or exit($sql."<br/>Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($rm = mysqli_fetch_array($res)){

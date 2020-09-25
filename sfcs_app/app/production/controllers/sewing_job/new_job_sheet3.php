@@ -18,6 +18,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
 <?php
     include("../../../../common/config/config.php");
     include("../../../../common/config/functions.php");
+    include("../../../../common/config/functions_dashboard.php");
     error_reporting(0);
 
     $ssql122="select serial_no  from  $bai_pro3.`tbl_serial_number` "; 
@@ -88,7 +89,7 @@ xmlns="http://www.w3.org/TR/REC-html40">
     else 
     { 
         $doc=$_GET["doc_no"]; 
-        $style=$_GET["style"]; 
+        $style=style_decode($_GET['style']); 
         $schedule=$_GET["schedule"]; 
         $jobno=$_GET["jobno"]; 
         $module_no=$_GET["moduleno"]; 

@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/functions.php',4,'R')); ?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R')); ?>
 
 <script type="text/javascript" src="<?= '../'.getFullURLLevel($_GET['r'],'common/js/check.js',4,'R')?>"></script>
 <!-- <link href="style.css" rel="stylesheet" type="text/css" /> -->
@@ -124,7 +125,7 @@ function ind_per_cal(x)
 <?php
 
 $check_id=$_GET['check_id'];
-$tran_order_tid=$_GET['tran_order_tid'];
+$tran_order_tid=order_tid_decode($_GET['tran_order_tid']);
 
 
 echo "<input type=\"hidden\" name=\"tran_order_tid\" value=\"".$tran_order_tid."\">";
@@ -833,8 +834,10 @@ for($ii=0;$ii<sizeof($order_tidss);$ii++)
 }
 
 // Samples End By SK-05-07-2018
-
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$color_back."&style=".$style_back."&schedule=".$schedule_back."\"><<<< Click here to Go Back</a>";
+//Color Encoded
+$main_color = color_encode($color_back);
+$main_style = style_encode($style_back);
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=".$main_color."&style=".$main_style."&schedule=".$schedule_back."\"><<<< Click here to Go Back</a>";
 echo "<br><br>";
 $url = getFullURL($_GET['r'],'order_cut_process.php','N');
 //echo $url;

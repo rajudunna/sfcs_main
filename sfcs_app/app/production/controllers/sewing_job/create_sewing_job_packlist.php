@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.mini_order_report.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))+"&schedule="+document.mini_order_report.schedule.value
 	}
 
 	function check_val()
@@ -38,6 +38,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
     $has_permission=haspermission($_GET['r']);
@@ -77,7 +78,7 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 				echo "<form name=\"mini_order_report\" action=\"?r=".$_GET['r']."\" method=\"post\" >";
@@ -136,7 +137,7 @@
 			<?php
 			if ($_GET['style'] and $_GET['schedule'])
 			{
-				$style=$_GET['style'];
+				$style=style_decode($_GET['style']);
 				$schedule = $_GET['schedule'];
 			} 
 			else if ($_POST['style'] and $_POST['schedule'])
@@ -409,6 +410,8 @@
 												<td>".$pack_result1['qnty']."</td>
 												<td colspan=3>".$pack_result1['color']."</td>
 												<td>".$pack_result1['size']."</td>";
+											//Encoded Style
+                                            $main_style = style_encode($style);	
 											
 											if ($check_pack_list=='' || $check_pack_list==0 || $check_pack_list==null)
 											{
@@ -428,7 +431,7 @@
 													echo"<td>
 															<h4><span class='label label-success'>Sewing Job Generated</span></h4>
 															<br>
-															<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$style'>Print Job Sheets</a>
+															<a class='btn btn-info' href='$url&schedule=$schedule&seq_no=$seq_no&style=$main_style'>Print Job Sheets</a>
 														</td>";
 												}
 											}

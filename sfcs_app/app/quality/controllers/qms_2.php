@@ -127,6 +127,14 @@ if(isset($_GET['tid']))
 		$schedule = $sql_row['qms_schedule'];
 		$form = $sql_row['form'];
 	}
+
+	$url = '?r='.$_GET['r'];
+	$job_deacive = "SELECT * FROM $bai_pro3.job_deactive_log where schedule = '$schedule' and input_job_no_random='$input_job_no' and remove_type = 3";
+	$job_deacive_res=mysqli_query($link, $job_deacive) or die("Sql error".$sql1.mysqli_errno($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($job_deacive_res)>0){
+		echo "<script>swal('Sewing Job Deactivated!','','warning');window.location = '".$url."'</script>"; 
+		return false;
+	}
 	
 	$emb_cut_check_flag = 0;
 	$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code=$operation_id";
@@ -313,8 +321,11 @@ if(isset($_POST['search']) || $_GET['schedule_id'])
 	}
 
 	 $sewing_cat = 'sewing';
+	 $cutting_cat = 'cutting';
+	 $embs_cat = 'Send PF';
+	 $embr_cat = 'Receive PF';
 	$op_code_query  ="SELECT group_concat(operation_code) as codes FROM $brandix_bts.tbl_orders_ops_ref 
-						WHERE trim(category) = '$sewing_cat' ";
+						WHERE trim(category) in ('$sewing_cat','$cutting_cat','$embs_cat','$embr_cat') ";
 	$op_code_result = mysqli_query($link, $op_code_query) or exit("No Operations Found for Sewing");
 	while($row=mysqli_fetch_array($op_code_result)) 
 	{

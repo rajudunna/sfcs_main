@@ -1,5 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'/common/config/functions.php',4,'R'));?>
+<?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));?>
 
 <!-- <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?> -->
 <script>
@@ -42,7 +43,7 @@ return false;
 
 <?php
 
-$tran_order_tid=$_GET['order_tid'];
+$tran_order_tid=order_tid_decode($_GET['order_tid']);
 $cat_id=$_GET['cat_ref'];
 $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
 
@@ -162,7 +163,10 @@ $sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid
 
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><<<<< Click here to Go Back</a>";
+//Encoding color
+$main_color = color_encode($color_back);
+$main_style = style_encode($style_back);
+echo "<a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule_back\"><<<<< Click here to Go Back</a>";
 echo "<br><br>";
 echo "<div class=\"table-responsive\"><table class=\"table table-bordered\">";
 
@@ -327,11 +331,12 @@ $color_code=$sql_row33['color_code']; //Color Code
 	echo "<td>".$a_s50."</td>";
 	*/
 	echo "<td>".$a_plies."</td>";
-	
-	$path="".getFullURLLevel($_GET['r'], "Book3_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cut_no=$pcutno";
+	//Encoding order_tid
+    $main_tran_order_tid=order_tid_encode($tran_order_tid);
+	$path="".getFullURLLevel($_GET['r'], "Book3_print.php", "0", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cut_no=$pcutno";
 	if($clubbing>0)
 	{
-		$path="".getFullURLLevel($_GET['r'], "color_club_docket_print.php", "0", "R")."?order_tid=$tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cat_title=$category&clubbing=$clubbing&cut_no=$pcutno";
+		$path="".getFullURLLevel($_GET['r'], "color_club_docket_print.php", "0", "R")."?order_tid=$main_tran_order_tid&cat_ref=$cat_id&doc_id=$pcutdocid&cat_title=$category&clubbing=$clubbing&cut_no=$pcutno";
 	}
 	
 	echo "<td><a class=\"btn btn-xs btn-info\" href=\"$path\"\">View</a></td>";

@@ -9,13 +9,13 @@
 	function firstbox()
 	{
 		//alert("report");
-		window.location.href =url1+"&style="+document.mini_order_report.style.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))
 	}
 
 	function secondbox()
 	{
 		//alert('test');
-		window.location.href =url1+"&style="+document.mini_order_report.style.value+"&schedule="+document.mini_order_report.schedule.value
+		window.location.href =url1+"&style="+window.btoa(unescape(encodeURIComponent(document.mini_order_report.style.value)))+"&schedule="+document.mini_order_report.schedule.value
 	}
 
 	function check_val()
@@ -58,6 +58,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
+    include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
     $has_permission=haspermission($_GET['r']);
 	
 	error_reporting(0);
@@ -96,7 +97,7 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 	}
 				echo "<form name=\"mini_order_report\" action=\"?r=".$_GET['r']."\" method=\"post\" >";
@@ -160,7 +161,7 @@
 					
 					if ($_GET['style'] and $_GET['schedule'])
 					{
-						$style=$_GET['style'];
+						$style=style_decode($_GET['style']);
 						//$schedule=$_GET['schedule'];
 						$schedule = $_GET['schedule'];
 					} 
@@ -482,7 +483,7 @@
 				//packing method details
 				if ($_GET['style'] and $_GET['schedule'])
 				{
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$schedule = $_GET['schedule'];
 				} 
 				else if ($_POST['style'] and $_POST['schedule'])
@@ -492,6 +493,8 @@
 				}
 				$style_id = echo_title("$brandix_bts.tbl_orders_style_ref","id","product_style",$style,$link); 
 				$schedule_id = echo_title("$brandix_bts.tbl_orders_master","id","product_schedule",$schedule,$link);
+				//Encoded Style
+				$main_style = style_encode($style);
 					
 				$get_pack_id=" select id from $bai_pro3.tbl_pack_ref where schedule=$schedule AND style='".$style."'"; 
 				// echo $get_pack_id;
@@ -541,7 +544,7 @@
 									{
 										echo "<td>
 										<a class='btn btn-success generate_pack_job' href='$url&c_ref=$parent_id&pack_method=$pack_method&seq_no=$seq_no'>Generate Pack Job</a>
-										<a class='btn btn-danger' onclick='return confirm_delete(event,this)' id='delete_single' href='$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$style'>Delete</a>
+										<a class='btn btn-danger' onclick='return confirm_delete(event,this)' id='delete_single' href='$url1&option=delete&schedule1=$schedule&parent_id=$parent_id&seq_no=$seq_no&style1=$main_style'>Delete</a>
 										</td>";
 									}
 									else
@@ -557,7 +560,7 @@
 				$ordr_qnty = $_GET['ordr_qnty'];
 				$url2=getFullURL($_GET['r'],'decentralized_packing_ratio.php','N');
 				echo "<div class='col-md-12 col-sm-12 col-xs-12'>
-				<a class='btn btn-success btn-sm' id='add_pack_method' href='$url2&schedule=$schedule&style=$style' >Add Packing Method</a>
+				<a class='btn btn-success btn-sm' id='add_pack_method' href='$url2&schedule=$schedule&style=$main_style' >Add Packing Method</a>
 				</div>";
 			}
 
@@ -565,15 +568,17 @@
 			{
 				$seq_no=$_GET['seq_no'];
 				$parent_id=$_GET['parent_id'];
-				$style=$_GET['style1'];
+				$style=style_decode($_GET['style1']);
 				$schedule=$_GET['schedule1'];
+				//Encoded Style
+				$main_style = style_encode($style);
 
 				$delete_pack_method="DELETE FROM bai_pro3.`tbl_pack_size_ref` WHERE parent_id='$parent_id' AND seq_no='$seq_no';";
 				$delete_result=mysqli_query($link, $delete_pack_method) or exit("Error while deleting pack method");
 				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 				function Redirect() {
 					swal('Packing Method Deleted Successfully','','success');
-					location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+					location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 					}
 				</script>";	
 			}

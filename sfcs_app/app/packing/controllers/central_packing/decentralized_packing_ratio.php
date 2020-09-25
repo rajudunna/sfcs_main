@@ -470,6 +470,7 @@
 <?php
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 
 	
 	$has_permission=haspermission($_GET['r']);
@@ -481,18 +482,20 @@
 	}
 	else
 	{
-		$style=$_GET['style'];
+		$style=style_decode($_GET['style']);
 		$schedule=$_GET['schedule'];
 		$pack_method=$_POST['pack_method'];
 	}
 
 	$url2=getFullURL($_GET['r'],'order_qty_vs_packed_qty.php','N');
+	//Encoded Style
+	$main_style = style_encode($style);
 	
 ?>
 
 	
 <div class="panel panel-primary">
-	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$style&schedule=$schedule' style='padding-bottom: 0px;'><i class=\"fas fa-arrow-left\"></i>&nbsp; Go Back</a>";  ?></div>
+	<div class="panel-heading"><strong>Add Packing Ratio</strong> <?php echo "<a class='btn btn-warning	pull-right btn-sm' href='$url2&style=$main_style&schedule=$schedule' style='padding-bottom: 0px;'><i class=\"fas fa-arrow-left\"></i>&nbsp; Go Back</a>";  ?></div>
 	<div class="panel-body">
 		<div class="col-md-12">
 			<form method="POST" class="form-inline" name="decentralized_packing_ratio">
@@ -525,7 +528,7 @@
 			if (isset($_POST["submit"]) or ($_GET['style'] and $_GET['schedule'] and $_POST['pack_method']))
 			{
 				if ($_GET['style'] and $_GET['schedule']) {
-					$style=$_GET['style'];
+					$style=style_decode($_GET['style']);
 					$schedule=$_GET['schedule'];
 					$pack_method=$_POST['pack_method'];
 				} else if ($_POST['style'] and $_POST['schedule']) {
@@ -1366,13 +1369,14 @@
 						}
 					}
 				}
-
+                //Encoded Style
+	            $main_style = style_encode($style);
 				if($statuscode==1)
 				{	
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 				}
@@ -1381,7 +1385,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 				}
@@ -1478,13 +1482,14 @@
 						}
 					}
 				}
-
+                //Encoded Style
+	            $main_style = style_encode($style);
 				if($statuscode==1)
 				{	
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio Saved Successfully','','success');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 				}
@@ -1493,7 +1498,7 @@
 					echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
 					function Redirect() {
 						sweetAlert('Packing Ratio not updated.',' Please Re-add Pack Method','warning');
-						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$style&schedule=$schedule\";
+						location.href = \"".getFullURLLevel($_GET['r'], "order_qty_vs_packed_qty.php", "0", "N")."&style=$main_style&schedule=$schedule\";
 						}
 					</script>";
 				}

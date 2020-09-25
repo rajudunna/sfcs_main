@@ -541,11 +541,22 @@ for($j=0;$j<100;$j++)
 			}
 			else
 			{
-				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';	
-				echo '<td><div class="col-md-6 col-md-offset-3">
-				<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
-				value="" class="form-control alpha" onChange="verify_dup_box_no(this)"/>
-				</div></td>';	
+				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';
+                if($names[$i]=="ref2")
+                {					
+					echo '<td><div class="col-md-6 col-md-offset-3">
+					<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
+					value="" class="form-control boxnumber" onChange="verify_dup_box_no(this)"/>
+					</div></td>';
+				}
+                else
+				{ 
+			        echo '<td><div class="col-md-6 col-md-offset-3">
+					<input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  
+					value="" class="form-control alpha" onChange="verify_dup_box_no(this)"/>
+					</div></td>';
+					
+				}				
 			}
 		}
 	}
@@ -569,6 +580,17 @@ echo '</form></div>';
 jQuery(document).ready(function($){
    $('#course1').keypress(function (e) {
        var regex = new RegExp("^[0-9a-zA-Z\]+$");
+       var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+       if (regex.test(str)) {
+           return true;
+       }
+       e.preventDefault();
+       return false;
+   });
+});
+jQuery(document).ready(function($){
+   $('.boxnumber').keypress(function (e) {
+       var regex = new RegExp("^[0-9a-zA-Z-\]+$");
        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
        if (regex.test(str)) {
            return true;

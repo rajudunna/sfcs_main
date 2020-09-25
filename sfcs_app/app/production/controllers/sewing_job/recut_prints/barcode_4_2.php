@@ -84,7 +84,7 @@
 						{
 							$destination=$dest_row['destination'];
 						}
-						$get_prefix="select prefix from $brandix_bts.tbl_sewing_job_prefix where id=".$type."";
+						$get_prefix="select prefix from $brandix_bts.tbl_sewing_job_prefix where type_of_sewing=".$type."";
 						$prefix_result=mysqli_query($link, $get_prefix)  or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($prefix_row = mysqli_fetch_array($prefix_result))
 						{
