@@ -99,7 +99,9 @@ function sendResponse(){
             if(res.status)
             {
                 swal('',res.internalMessage, 'success');
-        		document.getElementById("split").disabled = true;
+                document.getElementById("split").disabled = true;
+                location.reload();
+                
                 // $('#goBack').trigger("click");
                 /*
                 var data = JSON.parse(res);
