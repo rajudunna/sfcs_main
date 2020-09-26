@@ -12,9 +12,11 @@ $main_url=getFullURL($_GET['r'],'update_status.php','R');
 $has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
-$plant_code = $_SESSION['plantCode'];
+$plant_code=$_GET['plant_code'];
+$username=$_GET['username'];
+//$plant_code = $_SESSION['plantCode'];
 
-if($check==1 and in_array($authorized,$has_permission))
+if($check==1)
 
 {
 	$checkx=1;
@@ -70,7 +72,6 @@ else
 <?php
 
 $sql="select * from $wms.manual_form where rand_track=$tid and status=$check and plant_code='".$plant_code."'";
-//echo $sql;
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)
@@ -124,7 +125,8 @@ else
 {
 	echo "<h2>This request was already processed.</h2>";
 }
-
+echo "<input type=\"hidden\" name=\"username\" value=\"".$username."\">";
+echo "<input type=\"hidden\" name=\"plant_code\" value=\"".$plant_code."\">";
 
 ?>
 </form>
