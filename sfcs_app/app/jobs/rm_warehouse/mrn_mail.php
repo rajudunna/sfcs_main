@@ -77,15 +77,17 @@ while($row=mysqli_fetch_array($result))
 	$message.="<td>".$row["PTRIM"]."</td>";
 	$message.="<td>".$row["STRIM"]."</td>";
 	$message.="<td>".$row["FAB"]."</td>";
-	$sql1="select sec_mods from $bai_pro3.sections_db where sec_id=".$row["section"]."";
+	$sql1="SELECT workstation_id FROM $pms.`workstation` w
+	LEFT JOIN $pms.`sections` s ON s.section_id=w.section_id
+	WHERE s.section_code='".$row["section"]."' AND s.plant_code= '$plant_code'";
 	//echo $sql1;
 	$result1=mysqli_query($link, $sql1) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$mods=$row1["sec_mods"];
+		$mods=$row1["workstation_id"];
 	}
 	$recut_count=0;
-	$sql2="SELECT COUNT(DISTINCT qms_schedule) AS sch FROM $bai_pro3.bai_qms_db WHERE log_date BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND qms_tran_type=6 AND SUBSTRING_INDEX(remarks,'-',1) IN ($mods) GROUP BY log_time";
+	$sql2="SELECT COUNT(DISTINCT qms_schedule) AS sch FROM $pms.bai_qms_db WHERE log_date BETWEEN \"".trim($start_date_w)."\" AND \"".trim($end_date_w)."\" AND qms_tran_type=6 AND plant_code= '$plant_code' AND SUBSTRING_INDEX(remarks,'-',1) IN ($mods) GROUP BY log_time";
 	//echo $sql2;
 	$result2=mysqli_query($link, $sql2) or die("Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row2=mysqli_fetch_array($result2))
@@ -100,7 +102,7 @@ while($row=mysqli_fetch_array($result))
 }
 
 $message.="</table>";
-$message.='<br/>Message Sent Via:'.$plant_name;
+$message.='<br/>Message Sent Via:'.$plant_code;
 $message.="</body></html>";
 
 // echo $message;
