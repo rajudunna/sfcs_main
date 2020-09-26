@@ -12,15 +12,16 @@ $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 $main_url=getFullURL($_GET['r'],'update_status_process.php','R');
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+// $plant_code = $_SESSION['plantCode'];
+// $username = $_SESSION['userName'];
 if(isset($_POST['submit2']))
 {
 	try
 	{
 		$status=$_POST['status'];
 		$tid=$_POST['tid'];
-		
+		$plant_code=$_POST['plant_code'];
+		$username=$_POST['username'];
 		for($i=0;$i<sizeof($status);$i++)
 		{
 			if($status[$i]==4)
@@ -50,6 +51,8 @@ if(isset($_POST['submit1']))
 {
 	$status=$_POST['status'];
 	$tid=$_POST['tid'];
+	$plant_code=$_POST['plant_code'];
+	$username=$_POST['username'];
 	
 	$item_db=array();
 	$reason_db=array();

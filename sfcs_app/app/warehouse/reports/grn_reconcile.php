@@ -1,8 +1,10 @@
 
 <?php
 //chnages for recommitt
-	set_time_limit(50000);
+set_time_limit(50000);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 
 <style>
@@ -80,7 +82,9 @@ echo '<div class="table-responsive"><table class="table table-bordered" id="tabl
 <th>Label Pending</th><th>Shade Group Pending</th><th>C-Tax Pending</th><th>Location Tran. Pending</th><th>Rolls</th></tr></thead>';
 
 
-	$sql1="SELECT *,sticker_report.supplier,sticker_report.batch_no,sticker_report.item,sticker_report.item_name,sticker_report.item_desc,sticker_report.rec_qty FROM $bai_rm_pj1.grn_track_pendings LEFT JOIN $bai_rm_pj1.sticker_report ON grn_track_pendings.lot_no=sticker_report.lot_no where trim(grn_track_pendings.product) in ('Fabric') and left(grn_track_pendings.lot_no,4)>1111 order by grn_track_pendings.date";
+	$sql1="SELECT TRIM(`sticker_report`.`product_group`) AS `product`,`sticker_report`.`lot_no` AS `lot_no`,`sticker_report`.`rec_qty` AS `grn_qty`,COALESCE(SUM(`store_in`.`qty_rec`),0) AS `qty_rec`,ROUND(`sticker_report`.`rec_qty`,2) - COALESCE(SUM(ROUND(`store_in`.`qty_rec`,2)),0) AS `qty_diff`,IF(ROUND(`sticker_report`.`rec_qty`,2) - COALESCE(SUM(ROUND(`store_in`.`qty_rec`,2)),0) >= 1,1,0) AS `label_pending`,CAST(`sticker_report`.`grn_date` AS DATE) AS `date`,SUM(IF(`store_in`.`ref4` = '' AND TRIM(`sticker_report`.`product_group`) = 'Fabric',1,0)) AS `shade_pending`,SUM(IF(`store_in`.`ref1` = '',1,0)) AS `location_pending`,SUM(ROUND(`store_in`.`qty_rec`,2)) - SUM(ROUND(`store_in`.`qty_issued`,2)) + SUM(ROUND(`store_in`.`qty_ret`,2)) AS `balance`,IF(OCTET_LENGTH(`store_in`.`ref3`) <= 1 AND TRIM(`sticker_report`.`product_group`) = 'Fabric',1,0) AS `ctax_pending`,REPLACE(REPLACE(GROUP_CONCAT(IF(OCTET_LENGTH(`store_in`.`ref3`) <= 1 AND TRIM(`sticker_report`.`product_group`) = 'Fabric',CONCAT(`store_in`.`ref2`,'@',`store_in`.`ref1`),'x') SEPARATOR ','),'x,',''),'x','') AS `ctax_pending_rolls`,sticker_report.supplier,sticker_report.batch_no,sticker_report.item,sticker_report.item_name,sticker_report.item_desc,sticker_report.rec_qty 
+	FROM ($wms.`sticker_report` LEFT JOIN $wms.`store_in` ON(`sticker_report`.`lot_no` = `store_in`.`lot_no`)) 
+	WHERE sticker_report.plant_code='$plantcode' AND `sticker_report`.`backup_status` = 0 AND sticker_report.product_group IN ('Fabric') GROUP BY sticker_report.lot_no order by sticker_report.grn_date";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
 	{

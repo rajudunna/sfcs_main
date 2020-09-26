@@ -52,7 +52,7 @@ function verify_date(){
 <div class="panel-body">
 
 
-<form name="input" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+<form name="input" method="post" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 <div>
 	<?php
 		echo "<b style='color:red' >Note:The Selected Dates are Supplier Performance Updated Dates </b>";

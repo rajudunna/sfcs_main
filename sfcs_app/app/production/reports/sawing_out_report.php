@@ -130,11 +130,17 @@ function verify_date()
 
 		if($sch=="")
 		{
-			$sql="SELECT style, schedule, pac_stat_id, scan_date, sum(carton_act_qty) as qty, group_concat(distinct color) as col, group_concat(distinct size_tit) as siz FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND date(scan_date) BETWEEN '$dat1' AND '$dat2' group by pac_stat_id";
+			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
+			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
+			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
+			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2'";
 		}
 		else if($sch !="")
 		{
-			$sql="SELECT style, schedule, pac_stat_id, scan_date, sum(carton_act_qty) as qty, group_concat(distinct color) as col, group_concat(distinct size_tit) as siz FROM $bai_pro3.pac_stat_log where status=\"DONE\" AND schedule='$sch' AND date(scan_date) BETWEEN '$dat1' AND '$dat2' group by pac_stat_id";
+			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
+			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
+			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
+			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2' AND fg.`schedule`='$sch'";
 		}
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -146,7 +152,6 @@ function verify_date()
 			<div class="col-md-12 table-responsive" style="max-height:900px;overflow-y:scroll;">
 				<table id="table5" class="table table-bordered">
 					<tr>
-						<th>Barcode ID</th>
 						<th>Date and Time</th>
 						<th>Style</th>
 						<th>Schedule</th>
@@ -157,26 +162,63 @@ function verify_date()
 					<?php
 					while($rows=mysqli_fetch_array($sql_result))
 					{
-						$dat=$rows['scan_date'];
-						$bid=$rows['pac_stat_id'];
-
-						$style=$rows['style'];
-						$schedule=$rows['schedule'];
-						$color=$rows['col'];
-
-						$size=$rows['siz'];
-						$qty=$rows['qty'];
-						?>
-						<tr>
-							<td><?= $bid; ?></td>
-							<td><?= $dat; ?></td>
-							<td><?= $style; ?></td>
-							<td><?= $schedule; ?></td>
-							<td><?= $color; ?></td>
-							<td><?= $size; ?></td>
-							<td><?= $qty; ?></td>
-						</tr>
-						<?php
+						$barcode_id=$rows['barcode_id'];
+						$parent_ext_ref_id=$rows['parent_ext_ref_id'];
+						$date=$rows['created_at'];
+						
+						//getting finished good id
+						$get_finshgood_qry="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id='$barcode_id' AND plant_code='$plant_code'";
+						$get_finshgood_qry_result=mysqli_query($link, $get_finshgood_qry) or exit("Sql Error finished_good_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($get_finshgood_qry_row=mysqli_fetch_array($get_finshgood_qry_result))
+						{
+							$finished_good_id=$get_finshgood_qry_row['finished_good_id'];
+							//getting style,schedule,color,size
+							$get_det_qry="SELECT style,schedule,color,size FROM $pts.`finished_good` WHERE finished_good_id='$finished_good_id' AND plant_code='$plant_code'";
+							$get_det_qry_result=mysqli_query($link, $get_det_qry) or exit("Sql Error getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($get_det_qry_row=mysqli_fetch_array($get_det_qry_result))
+							{
+								$style=$get_det_qry_row['style'];
+								$schedule=$get_det_qry_row['schedule'];
+								$color=$get_det_qry_row['color'];
+								$size=$get_det_qry_row['size'];
+								//getting task job id
+								$get_taskjobid_qry="SELECT task_jobs_id FROM $tms.`task_jobs` WHERE task_job_reference='$parent_ext_ref_id' AND plant_code='$plant_code'";
+								$get_taskjobid_qry_result=mysqli_query($link, $get_taskjobid_qry) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($get_taskjobid_qry_result_row=mysqli_fetch_array($get_taskjobid_qry_result))
+								{
+									$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
+								}
+								//getting max operation
+								$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+								$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+								if(mysqli_num_rows($maxOperationResult)>0)
+								{
+									while($minOperationResultRow = mysqli_fetch_array($maxOperationResult))
+									{
+										$maxOperation=$minOperationResultRow['operation_code'];
+									}
+								}
+								
+								//getting quantity 
+								$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$maxOperation";
+								$get_quant_qry_result = mysqli_query($link_new, $get_quant_qry) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+								while ($get_quant_qry_row = mysqli_fetch_array($get_quant_qry_result)) 
+								{
+									$quantity=$get_quant_qry_row['quantity'];
+								}
+																
+								echo "<tr>";
+								echo "<td>".$date."</td>";
+								echo "<td>".$style."</td>";
+								echo "<td>".$schedule."</td>";
+								echo "<td>".$color."</td>";
+								echo "<td>".$size."</td>";
+								echo "<td>".$quantity."</td>";
+								echo "</tr>";				
+									
+							}
+						}
+						
 					}
 				echo "</table>
 			</div>";
@@ -194,10 +236,10 @@ function verify_date()
 var table3Filters = {
 		btn: true,
 		display_all_text: "All",
+		col_1: "select",
 		col_2: "select",
 		col_3: "select",
 		col_4: "select",
-		col_5: "select",
 		exact_match: true,
 		alternate_rows: true,
 		loader: true,
