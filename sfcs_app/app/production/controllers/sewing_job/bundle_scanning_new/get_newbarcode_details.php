@@ -223,7 +223,7 @@ if(isset($_POST["trans_action"])){
                                             $get_total_rejection_qty_query_res=mysqli_query($link,$get_total_rejection_qty_query) or exit("get_total_rejection_qty_query error".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             
                                             if($get_total_rejection_qty_query_res->num_rows > 0){
-                                                $bundle_status=5;
+                                                $bundle_status=5;//complete bundle rejection
                                                 //get operation order
                                                 $ops_order_query="select operation_order from $brandix_bts.tbl_style_ops_master where style='$b_style' and color='$b_colors' and operation_code=$op_no";
                                                 $ops_order_res=mysqli_query($link,$ops_order_query) or exit("ops_order_query error".mysqli_error($GLOBALS["___mysqli_ston"]));
