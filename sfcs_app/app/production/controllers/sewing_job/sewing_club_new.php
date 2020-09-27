@@ -9,6 +9,8 @@ $table_filter = getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R');
 
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plantcode='AIP';
+// $username='Mounika';
 ?>
 <script>
 var url = '<?= getFullURLLevel($_GET['r'],'sewing_club_new.php',0,'N'); ?>';
@@ -189,7 +191,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 	<div id='alert-box' class='deliveryChargeDetail'></div>
 		<form method='post'>
 			<input type='hidden' id='myval' name='myval'>
-			<input type="button" class="btn btn-primary btn-md" id="submit" name="Merge Jobs" value="submit" style='display:none;'>
+			<input type="button" class="btn btn-primary btn-md" id="submit" name="Merge Jobs" value="Merge Jobs" style='display:none;'>
 		</form>
 	</div>
 </div>
@@ -239,7 +241,7 @@ $(document).ready(function()
 						tableConstruction(jobsInfo.data);
 						$('#submit').show();
 					} else {
-						swal('','No Jobs for this Sub Po', 'error');
+						swal('','No Jobs found for this Sub Po', 'error');
 						return;
 					}
 				} else {
@@ -270,7 +272,12 @@ function tableConstruction(jobsInfo){
             s_no++;
             var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td>\
             <td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" \
-			onclick='showdet(this,\""+jobsInfo[i].jobNumbers+'\",\"'+jobsInfo[i].schedule.toString()+"\");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+			onclick='showdet(this,\""+jobsInfo[i].jobNumbers+'\",\"'+jobsInfo[i].schedule.toString()+"\");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td>";
+			if(jobsInfo[i].plannedStatus){
+				markup1 += "<td>Already Job Planned</td></tr>";
+			} else {
+				markup1 += "<td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+			}
 			
 			
             $("#dynamic_table").append(markup1);
@@ -341,14 +348,15 @@ $(document).ready(function()
 		}else {
 			swal('','Please Select More than One Sewing Job to Club','error');
 		}
-		
+		$('#sub_po').val(document.test.sub_po.value);
+		$('#sub_po').trigger('change');
 	});
 });		
 </script>	
 
 <script>
 	$(document).ready(function() {
-    // var tableUsers =  $('#dynamic_table').DataTable();
+    var tableUsers =  $('#dynamic_table').DataTable();
 	var rows = tableUsers.rows({ 'search': 'applied' }).nodes();
 		$('input[type="checkbox"]', rows).each(function(i,e){				
 			$(e).change(function(){

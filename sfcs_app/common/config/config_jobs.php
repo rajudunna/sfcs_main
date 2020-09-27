@@ -137,10 +137,14 @@ $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $bai_kpi="bai_kpi";
 $bai_ict="bai_ict";
 /*These all are related 2.0 integration databses*/
-$mdm="mdm";
-$oms="oms";
-$pps="pps";
-$pms="pms";
+$mdm="mdm_prod";
+$oms="oms_prod";
+$pps="pps_prod";
+$pms="pms_prod";
+$sms="sms_prod";
+$tms="tms_prod";
+$pts="pts_prod";
+$wms="wms_prod";
 
 ?>
 <?php
