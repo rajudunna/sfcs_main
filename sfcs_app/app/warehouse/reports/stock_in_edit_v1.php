@@ -273,59 +273,8 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 				$cutno=$sql_row['jobno'];
 				$doc_no = preg_replace('/[^0-9]+/', '', $cutno);
 				$doc_str = preg_replace('/[^a-zA-Z]+/', '', $cutno);
-				if($doc_str == 'D' || $doc_str == 'd')
-				{
-					$sql = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.plandoc_stat_log where doc_no = '$doc_no');";
-					// echo $sql."<br>";
-					$result = mysqli_query($link, $sql) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($result)>0)
-					{
-						while($row = mysqli_fetch_array($result))
-						{
-							$schedule_no = $row['order_del_no'];
-							$style_no = $row['order_style_no'];
-						}
-					}
-					else
-					{
-						$schedule_no = 0;
-						$style_no = 0;
-					}
-					
-				}
-				else
-				{
-					$sql11 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2 where doc_no = '$doc_no');";
-					$result11 = mysqli_query($link, $sql11) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-					if(mysqli_num_rows($result11)>0)
-					{
-						while($row = mysqli_fetch_array($result11))
-						{
-							$schedule_no = $row['order_del_no'];
-							$style_no = $row['order_style_no'];
-						}
-					}
-					else
-					{
-						$sql22 = "SELECT order_del_no,order_style_no FROM $bai_pro3.bai_orders_db_confirm where order_tid in (SELECT order_tid FROM bai_pro3.recut_v2_archive where doc_no = '$doc_no');";
-						$result22 = mysqli_query($link, $sql22) or exit("Sql Error--1".mysqli_error($GLOBALS["___mysqli_ston"]));
-						if(mysqli_num_rows($result22)>0)
-						{
-							while($row = mysqli_fetch_array($result22))
-							{
-								$schedule_no = $row['order_del_no'];
-								$style_no = $row['order_style_no'];
-							}
-						}
-						else
-						{
-							$schedule_no = 0;
-							$style_no = 0;
-						}
-						
-					}
-					
-				}
+				$schedule_no = 0;
+				$style_no = 0;
 				$remarks=$sql_row['remarks'];
 				$user=$sql_row['user'];
 				$box_number=$sql_row['ref2'];
@@ -339,12 +288,10 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			echo "<h2>MRN Transaction Log:</h2>";
 			echo "<table class='table table-striped table-bordered '>";
 			echo "<thead><tr class=''><th>Date</th><th>Time</th><th>Style</th><th>Schedule</th><th>Qty</th><th>Box/Roll Number</th><th>Label ID</th><th>Remarks</th><th>User</th><th>Host</th></tr></thead>";
-			//$sql2="SELECT DATE(log_time) as dat,TIME(log_time) as tim,mrn_tid as tid,lot_no as lot,lable_id as label,iss_qty as qty,SUBSTRING_INDEX(updated_user,'^',1) AS username,SUBSTRING_INDEX(updated_user,'^',-1) AS hostname FROM bai_rm_pj2.mrn_out_allocation WHERE lot_no=".trim($lot_no)."";
 			$mr_tid = implode(',',$MRN_tid);
-			// echo $mr_tid."<br>";
 			if($mr_tid!='')
 			{
-				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $bai_rm_pj2.mrn_out_allocation left join $bai_rm_pj1.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.lable_id in (select tid from $bai_rm_pj1.store_in where tid in ($mr_tid))";
+				$sql2="SELECT DATE(mrn_out_allocation.log_time) as dat,TIME(mrn_out_allocation.log_time) as tim,mrn_out_allocation.mrn_tid as tid,mrn_out_allocation.lot_no as lot,mrn_out_allocation.lable_id as label,mrn_out_allocation.iss_qty as qty,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',1) AS username,SUBSTRING_INDEX(mrn_out_allocation.updated_user,'^',-1) AS hostname,store_in.ref2 FROM $wms.mrn_out_allocation left join $wms.store_in on mrn_out_allocation.lable_id = store_in.tid WHERE mrn_out_allocation.plant_code='$plantcode' AND mrn_out_allocation.lable_id in (select tid from $wms.store_in where tid in ($mr_tid))";
 				// echo $sql2."<br>";
 				$sql_result=mysqli_query($link, $sql2) or exit("No Data In MRN Transaction Log".mysqli_error($GLOBALS["___mysqli_ston"]));
 

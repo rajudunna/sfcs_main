@@ -3,6 +3,8 @@ $start_timestamp = microtime(true);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
  ?>
 <?php
 $table='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -297,7 +299,7 @@ $table.= "</body>
 		{
 			if(mail($to, $subject, $table, $headers))
 			{
-				$sqlx="update wms.inspection_db set status=2,updated_user='$username',updated_at=NOW() where status=1 and plant_code= '$plant_code'";
+				$sqlx="update $wms.inspection_db set status=2,updated_user='$username',updated_at=NOW() where status=1 and plant_code= '$plant_code'";
 				mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				print("Updated and mail sent successfully")."\n";
 			}

@@ -117,6 +117,7 @@
 				dataType: 'JSON',
 				success: function (response) 
 				{
+					console.log(response);
 					$('#loading-image').hide();
 
 					// {	
@@ -126,18 +127,24 @@
 					// 	"operations":{"130":"SEWINGOUT - 130"},
 					// 	"mp_number":"46e49155-547d-493a-bfa6-517855f5446f"
 					// }
-
 					if (!response['workstation_id'] || !response['sew_job_type'] || !response['workstaiton_desc']) {
 						swal('','Sewing job info not found', 'error');
 					}
 					if (!response['operations']) {
 						swal('','No operations found for the sewing job', 'error');
 					}
-					$('select[name="module"]').append('<option value="'+ response['workstation_id'] +'" selected>'+ response['workstaiton_desc']  +'</option>');
-					$('select[name="sampling"]').append('<option value="'+ response['sew_job_type'] +'" selected>'+ response['sew_job_type']  +'</option>');
+					if(response['workstation_id']){
+						$('select[name="module"]').append('<option value="'+ response['workstation_id'] +'" selected>'+ response['workstaiton_desc']  +'</option>');
+					}
+					
+					if(response['sew_job_type']){
+						$('select[name="sampling"]').append('<option value="'+ response['sew_job_type'] +'" selected>'+ response['sew_job_type']  +'</option>');
+					}
+					
 					$.each(response['operations'], function (opCode, opDesc) {
 						$('select[name="operation"]').append('<option value="'+ opCode +'">'+ opDesc  +'</option>');
 					});
+					
 				},
 				error: function(error) {
 					$('#loading-image').hide();
@@ -263,6 +270,8 @@
 		
 	function check_pack()
 	{
+		$('#smartbtn').attr('disabled', 'disabled');
+		
 		var count = document.getElementById('count_of_data').value;
 		var rejectReportData = new Object();
 		// reportData.sewingJobNo = $('#job_number').val();
@@ -302,6 +311,7 @@
 				swal('','Network Error','error');
 			}
 		});
+		$('#smartbtn').attr('disabled', false);
 		$('.submissiaon').hide();
 	}
 

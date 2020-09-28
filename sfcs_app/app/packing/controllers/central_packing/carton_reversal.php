@@ -24,7 +24,7 @@
 				<input type="hidden" name="operation_id" id="operation_id" value="<?php echo $operation_id; ?>">
 				<input type="hidden" name="plant_code" id="plant_code" value="<?php echo $plant_code; ?>">
 				<input type="hidden" name="username" id="username" value="<?php echo $username; ?>">
-				<input type="button" name="submit" id="submit" class="btn btn-success confirm-submit" onclick="return cartonReversal()" value="Submit">
+				<input type="button" name="submit" id="submit" class="btn btn-success submit" onclick="return cartonReversal()" value="Submit">
 			</form>
 			
 		</div>

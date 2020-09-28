@@ -8,8 +8,11 @@ include(getFullURLLevel($_GET['r'],'docket_allocation_functions.php',0,'R'));
 $path="".getFullURLLevel($_GET['r'], "bundle_guide_print.php", "0", "r")."";
 
 $plant_code=$_SESSION['plantCode'];
-// $plant_code='Q01';
 $username=$_SESSION['userName'];
+// $plant_code='AIP';
+// $username='Mounika';
+// L3NmY3NfYXBwL2FwcC9jdXR0aW5nL2NvbnRyb2xsZXJzL2N1dF9kb2NrZXRfYWxsb2NhdGVfZm9ybS5waHA=
+
 ?>
 
 <script>
@@ -79,9 +82,9 @@ $(document).ready(function() {
 <div class = "panel panel-primary">
 <div class = "panel-heading">Cut Docket Allocation Form</div>
 <div class = "panel-body">
-<form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
+<form name="test" method="post">
 <?php
-//function to get style from mp_color_details
+//function to get style from mp_color_details	
 if($plant_code!=''){
 	$result_mp_color_details=getMpColorDetail($plant_code);
 	$get_style=$result_mp_color_details['style'];
@@ -213,10 +216,9 @@ if(isset($_POST['submit']))
 		$result_get_doc_details=getJobsDetails($sub_po,$plant_code);
 		$data=$result_get_doc_details['data'];
 	}
-	// var_dump($result_get_doc_details);
 	if(sizeof($data)>0)
 	{
-		echo "<div class='alert alert-info' style='text-align:center; font-size: 20px;'><b>Style Code : ".$data['cut']['style'][0]."</b>Schedule : <b>".$data['cut']['schedule'][0]."</b> VPO No : <b>".$data['cut']['po_number']."</b></div>";
+		echo "<div class='alert alert-info' style='text-align:center; font-size: 20px;'><b>Style Code : ".$data['cut']['style'][0]."</b>Schedule : <b>".$data['cut']['schedule'][0]."</b> VPO No : <b>".$data['cut']['po_description']."</b></div>";
 		
 		echo "<div class='col-sm-12 table-responsive'>
 		<table width='100%' class='table table-bordered info'><thead>

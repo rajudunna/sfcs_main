@@ -46,7 +46,7 @@ $reptype=$_POST['reptype'];
 <div class="panel panel-primary">
 	<div class="panel-heading">Input Status Report</div>
 	<div class="panel-body">
-		<form class="form-inline" method="post" name="input" action="<?php echo "index.php?r=".$_GET['r']; ?>">
+		<form class="form-inline" method="post" name="input" action="<?php echo "index-no-navi.php?r=".$_GET['r']; ?>">
 			<div class="form-group">
 				<label>From Date:</label>
 				<input type="text" class="form-control" data-toggle="datepicker" id="from_date" name="from_date" value="<?php if($from_date=="") {echo  date("Y-m-d"); } else {echo $from_date;}?>">

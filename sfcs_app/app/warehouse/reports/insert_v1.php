@@ -1,69 +1,12 @@
-<!--
-Change Log: 
-2014-12-16/ kirang/ service request #780212  / add the User Names from database level
-
-2015-04-17/ kirang/ Service Request #116858 / Added Validation For Auto Quantity Fill Textbox to avoid the Negative Entries
-
--->
-<?php
-	//include("dbconf.php");
-	//require_once('phplogin/auth.php');
-	//ob_start();
-	//require_once "ajax-autocomplete/config.php";
-?>
 
 <?php	
-	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-$has_permission=haspermission($_GET['r']);	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
-
-<?php
-//$authorized=array("kirang","maheswararaok","nazeers","sureshg","sivashankarb","baiadmn","bainet","kirang","apparaoo","kirang","narasingaraon","ramprasadk","demudun","pothurajus","kirang");
-//include("dbconf.php");
-/*
-$username_list=explode('\\',$_SERVER['REMOTE_USER']);
-$username=strtolower($username_list[1]);
-
-$sql="select * from menu_index where list_id=161";
-$result=mysql_query($sql,$link1) or mysql_error("Error=".mysql_error());
-while($row=mysql_fetch_array($result))
-{
-	$users=$row["auth_members"];
-}
-
-$auth_users=explode(",",$users);*/
-if(in_array($authorized,$has_permission))
-{
-	
-}
-else
-{
-	header("Location:restrict.php");		
-}
-
 ?>
-
-<!-- <script type="text/javascript" src="ajax-autocomplete/jquery.js"></script>
-<script type='text/javascript' src='ajax-autocomplete/jquery.autocomplete.js'></script>
-<link rel="stylesheet" type="text/css" href="ajax-autocomplete/jquery.autocomplete.css" /> -->
-
 <script type="text/javascript">
-// $().ready(function() {
-// 	$("#course").autocomplete("ajax-autocomplete/get_course_list_rec_no.php", {
-// 		width: 260,
-// 		matchContains: true,
-// 		//mustMatch: true,
-// 		//minChars: 0,
-// 		//multiple: true,
-// 		//highlight: false,
-// 		//multipleSeparator: ",",
-// 		selectFirst: false
-// 	});
-// });
-
-
 function isNumber(evt) {
 		var charCode = (evt.which) ? evt.which : evt.keyCode;
 		if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) )
@@ -141,14 +84,10 @@ function isNumberKey(evt)
 <?php include("stock_in.php"); ?>
 
 <?php
-
-//echo "Host : ".$host;
 if(isset($_POST['submit']))
 {	
-	$sql="select lot_no from $bai_rm_pj1.sticker_report where lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
+	$sql="select lot_no from $wms.sticker_report where plant_code='$plantcode' AND lot_no=\"".trim($_POST['lot_no'])."\" or rec_no=\"".trim($_POST['lot_no'])."\"";
 	$sql_result=mysqli_query($link, $sql);
-	// echo $sql.'<br>';
-	// echo "Rows".mysql_num_rows($sql_result);
 	if(mysqli_num_rows($sql_result)>0)
 	{
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -156,11 +95,8 @@ if(isset($_POST['submit']))
 			$lot_no=$sql_row['lot_no'];
 		}
 	}else{
-		// echo "<table class='table table-bordered'><tr class='danger'><td align='center'>Lot Number not found</td></tr></table>";
 		echo "<script>sweetAlert('Receiving / Lot Number not found','','warning')</script>";
-	}		
-	
-	//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0); function Redirect() {  location.href = \"insert.php?lot_no=$lot_no_new\"; }</script>";
+	}
 }
 else
 {
@@ -173,7 +109,7 @@ if(strlen($lot_no)>0)
 {
 	
 
-$sql="select * from $bai_rm_pj1.sticker_report where lot_no=\"".trim($lot_no)."\"";
+$sql="select * from $wms.sticker_report where plant_code='$plantcode' AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -198,25 +134,9 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		$message="<font color=red><b>Account Closed</b></font>";
 	}
-	
-	//NEW SYSTEM IMPLEMENTATION RESTRICTION
-	
-	
-	// $new_ref_date=substr($grn_date,0,4)."-".substr($grn_date,4,2)."-".substr($grn_date,6,2);
-	// if($new_ref_date>"2017-01-01")
-	// {
-		
-	// }
-	// else
-	// {
-	// 	// echo "<br/> GRN Date:".$new_ref_date."<br/>";
-	// 	//echo "test";
-	// 	//header("Location:restrict.php");
-	// }
-	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select sum(qty_rec) as \"qty_rec\" from $bai_rm_pj1.store_in where lot_no=\"".trim($lot_no)."\"";
+$sql="select sum(qty_rec) as \"qty_rec\" from $wms.store_in where plant_code='$plantcode' AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -247,7 +167,6 @@ if ($batch_no=='') {
 	$bat=$batch_no;
 }
 $url=  getFullURLLevel($_GET['r'],'common/lib/mpdf7/labels.php',3,'R');
-//getFullURL($_GET['r'],'labels.php','N');
 echo '<form name="test" id="myForm" action="'.getFullURL($_GET['r'],'data_v1.php','N').'" method="post" enctype="multipart/form-data">';
 echo "<div class='panel panel-default'>
 		<div class='panel-body'>
@@ -326,31 +245,6 @@ echo "<div class='panel panel-default'>
 		echo "</div>
 			</div>
 		</div></div>";
-
-// echo "<div class='col-md-4'>";
-// 	echo "<table class='table table-bordered'>";
-// 	echo "<tr><td>Lot No</td><td>:</td><td>$lot_no</td></tr>";
-// 	echo "<tr><td>Batch</td><td>:</td><td>".$bat."</td></tr>";
-// 	echo "<tr><td>PO No</td><td>:</td><td>".$po."</td></tr>";
-// 	echo "<tr><td>Receiving No</td><td>:</td><td>$rec_no</td></tr>";
-
-// 	echo "<tr><td>Item Code</td><td>:</td><td>$item</td></tr>";
-// 	echo "<tr><td>Invoice #</td><td>:</td><td>".$inv."</td></tr>";
-
-// 	echo "<tr><td>Item Description</td><td>:</td><td>$item_desc</td></tr>";
-// 	echo "<tr><td>Item Name</td><td>:</td><td>$item_name</td></tr>";
-// 	echo "<tr><td>Product</td><td>:</td><td>$product_group</td></tr>";
-// 	echo "<tr><td>Package</td><td>:</td><td>$pkg_no</td></tr>";
-// 	echo "<tr><td>GRN Date</td><td>:</td><td>$grn_date</td></tr>";
-// 	echo "<tr><td>Received Qty</td><td>:</td><td>$rec_qty</td></tr>";
-// 	echo "<tr><td>Labeled Qty</td><td>:</td><td>$qty</td></tr>";
-// 	echo "<tr><td>Balance to be Labeled</td><td>:</td><td><input type=\"hidden\" value=\"$diff\" name=\"available\" id=\"available\">$diff</td></tr>";
-// 	echo '<tr><td>Balance to enter</td><td>:</td><td><input type="text" name="balance_new11" id="balance_new11" readonly="readonly" value="'.$diff.'" class="form-control"></td></tr>';
-// 	echo "</table></div>";
-
-//echo "</td><td>";
-
-
 $labels=array();
 $status=array();
 $names=array();
@@ -426,109 +320,7 @@ echo '<div class="panel panel-default">
 			</div>
 		</div></div>';
 
-// echo '<div class="col-md-8">
-// <table class="table table-bordered"><tr><th>Field Name</th><th>Value</th></tr>
-
-// <tr>
-// <td>Date:</td><td><div class="col-md-6"><input type="text" name="date" value="'.date("Y-m-d").'" class="form-control" readonly="true"></div></td></tr>';
-
-// echo '<tr><td style="display:none;">Location:</td><td style="display:none;"><select name="ref1">';
-// echo "<option value=\"\"></option>";
-// $sql="select * from location_db where status=1 order by sno";
-// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-// $sql_num_check=mysqli_num_rows($sql_result);
-// while($sql_row=mysqli_fetch_array($sql_result))
-// {
-// 	echo "<option value=\"".$sql_row['location_id']."\">".$sql_row['location_id']."</option>";
-// }
-
-
-// echo '</select></td></tr>';
-// echo '<tr><td>Remarks/ REF No:</td><td><div class="col-md-6"><input type="text" name="remarks" value="" class="form-control"></div></td></tr>';
-// echo '<tr><td>Choose File :
-// 		<select name="selectsearch" id="selectsearch1" class="form-control">
-// 			<option value="No">No</option>
-// 			<option value="Yes">Yes</option>
-// 		</select> </td>
-// 		<td width="80%"><div id="upload">Select file:<input type="file" name="file" id="file" accept=".csv" /></br><a href="'.$url=  getFullURL($_GET['r'],'samplefile.csv','R').'" class="btn btn-warning btn-xs"><i class="fa fa-download"></i>  Download Sample CSV file</a></div></td>
-// 	   </tr>';
-// echo '<tr>
-// 		<td>
-// 			<input type="hidden" value="'.$lot_no.'" name="lot_no">
-// 			<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable
-// 			<input type="submit" value="Submit" name="put" id="put" onclick="return button_disable();" class="btn btn-success btn-xs"/>';
-// // echo '<div id="process_message"><h2><font color="red">Please wait!!</font></h2></div>';
-// echo '</td>';
-// $url=  getFullURL($_GET['r'],'/mpdf7/labels.php','R');
-// if($qty>0){
-// 	echo "<td><a href=\"$url?lot_no=$lot_no\" onclick=\"Popup=window.open('$url?lot_no=$lot_no"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" class=\"btn btn-warning btn-xs\"><i class=\"fa fa-print\"></i>Print Labels Here</a></td></tr>";
-// }else{
-// 	echo "<td><a href=\"#\" class=\"btn btn-danger btn-xs\"><i class=\"fa fa-print\"></i>No Rolls Updated</a></td></tr>";
-// }
-//echo "<tr><td><a href=\"#\" onclick=\"javascript:fill_sr();\">Fill Series</a></td><td><a href=\"#\" onclick=\"javascript:clear_sr();\">Clear Series</a></td></tr>";
- 
-
- 
-//  echo "<tr><td>Updating Unit</td><td>";
- 
-//  if(trim($product_group)=="Elastic" or trim($product_group)=="Fabric")
-//  {
-//  	echo "<input type=\"radio\" name=\"convert\" value=\"1\" > $fab_uom Nos <input type=\"radio\" name=\"convert\" value=\"2\" checked> YRD";
-//  }
-//  else
-//  {
-//  	echo "<input type=\"radio\" name=\"convert\" value=\"1\" checked> $fab_uom/Nos <input type=\"radio\" name=\"convert\" value=\"2\"> YRD";
-//  }
- 
-// echo "</td></tr>";
 echo "<input type=\"radio\" name=\"convert\" value=\"2\" checked style='display:none;'>";
-
-
-
-
-
-
-//2015-04-17/ kirang/ Service Request #116858 / Added Validation For Auto Quantity Fill Textbox to avoid the Negative Entries
-
-//  echo "<tr><td>Fixed Values Auto Fill <br></td>
-// 			<td>
-// 				<div class='row'>
-// 					<div class='col-sm-1'><label>Qty:</label></div>
-// 					<div class=\"col-md-2\">
-// 					<input type=\"text\" size=\"5\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\"  name=\"auto_qty\" id=\"auto_qty\" class=\"form-control float\">
-// 					</div>
-// 					<div class='col-sm-3'><label>X Number of Rolls</label></div> 
-// 					<div class=\"col-md-2\"><input type=\"text\" size=\"5\" value=\"0\" onfocus=\"if(this.value==0){this.value=''}\" onblur=\"javascript: if(this.value==''){this.value=0;}\" name=\"auto_rows\" id=\"auto_rows\" class=\"form-control integer\">
-// 					</div>
-// 					<a href=\"#\" onclick=\"javascript:fill_vsr();\" class=\"btn btn-info btn-xs\">Fill Values</a> | <a href=\"#\" onclick=\"javascript:clear_sr();\"  class=\"btn btn-danger btn-xs\">Clear Values</a>
-// 				<br/><div class='col-sm-12'><font color='red'><label>Note : Auto-Complete is for One Time Use Only</label></font></div>
-// 			</td>
-// 		</tr>";
-// echo "<tr><td>Status</td><td><h2>$message</h2></td></tr>";
-
-// //echo "<tr><td colspan=2><a href=\"quick_insert_v1.php\"><h2>Bulk Entry Form (Price Tickets)</h2></a></td></tr>";
-// echo "</table>";
-
-// echo "</div>";
-// echo"<br>";
-
-/* echo"<form style='float:left' method='GET'>
-		Choose File :
-		<select name='selectsearch' id='selectsearch1'>
-			<option value='No'>No</option>
-			<option value='Yes'>Yes</option>
-		</select>
-	</form>";
-echo"<table width='400' id='upload'>
-		<form  method='post' enctype='multipart/form-data' >
-			<tr>
-				<td width='20%'>Select file</td>
-				<td width='80%'><input type='file' name='file' id='file' /></td>
-			</tr>
-		</form>
-	</table></br>"; */
-// echo "<div class='panel panel-default'><div class='panel-body'>";
 echo "<div class='row col-md-12' style='width:102%;'><table id='table' class='table table-bordered'>";
 echo "<tr><td><div class=\"col-md-12 col-md-offset-3\"><input type=\"text\" size=\"5\" value=\"1\" name=\"s_start\" class='integer'>&nbsp;&nbsp;<a href=\"#\" onclick=\"javascript:fill_sr();\" class=\"btn btn-info btn-xs\" style='margin-top:4px;'>Fill Series</a></div></td>
 	<td>
@@ -570,8 +362,6 @@ for($j=0;$j<100;$j++)
 			if($names[$i]=="qty")
 			{
 				$counter++;
-				// <b>'.$uoe.'</b>
-				//echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value="" onchange="if(check3(this.value,'.$diff.','.$j.",'qty[]'".')==1010){ this.value=0;}">'.$uoe.'</td>';
 				echo '<td><div class="col-md-6 col-md-offset-3"><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" id=name="'.$names[$i].'['.$j.']" value="" onChange="quantity(this);" class="form-control float"></div>';
 				if($counter == 1){
 					echo "
@@ -584,18 +374,15 @@ for($j=0;$j<100;$j++)
 			}
 			else
 			{
-				// echo '<td><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']" value=""  onkeypress="return validate2(event)"></td>';	
 				echo '<td><div class="col-md-6 col-md-offset-3"><input type="'.$status[$i].'" name="'.$names[$i].'['.$j.']"  value="" class="form-control float" onChange="verify_dup_box_no(this)"/></div></td>';	
 			}
 		}
 	}
-	//echo $status[$i]; 
 	echo "</tr>";
 
 }
 echo '</table></div>';
 echo '</form></div>';
-// echo "</div></div>";
 
 
 }
@@ -648,20 +435,6 @@ $(document).ready(function()
 	};
 
 });
-
-// window.onscroll = function() {myFunction()};
-
-// var header = document.getElementById("myHeader");
-// var sticky = header.offsetTop;
-
-// function myFunction() {
-//   if (window.pageYOffset >= sticky) {
-//     header.classList.add("sticky");
-//   } else {
-//     header.classList.remove("sticky");
-//   }
-// }
-
 </script>
 
 <style>
