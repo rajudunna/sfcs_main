@@ -1,8 +1,6 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
-$main_url=getFullURL($_GET['r'],'gatepass_summery_detail.php','R');
 if(isset($_GET['gatepassid']))
 {
 	$plant_code= $_GET['plant_code']; 
@@ -39,7 +37,7 @@ if($gatepassid!='')
 					<form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
 						<div class="row">
 							<div class="col-md-2">
-								<label>Enter Vehice Number: </label>
+								<label>Enter Vehicle Number: </label>
 								<input type="text"  id="vehicle_no"  name="vehicle_no" class="form-control"  value="<?php  if(isset($_POST['vehicle_no'])) { echo $_POST['vehicle_no']; } else { echo ""; } ?>" />
 								 <input type="hidden"  id="gatepassno"  name="gatepassno" class="form-control"  value="<?=$gatepassid; ?>" />
 							</div>
@@ -257,8 +255,6 @@ if(isset($_POST['submit']) || ($status==1)){
 
 	if(isset($_POST['submitdetails'])){
 		$date=$_POST['date'];
-		$plant_code=$_POST['plant_code'];
-		$username=$_POST['username'];
 		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
 		echo  "<div class='panel-body'>";

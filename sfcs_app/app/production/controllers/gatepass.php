@@ -47,7 +47,6 @@ function exception($sql_result)
 					<option value="">Select Shift</option>
 					<?php 
 					$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
-					echo $shift_sql;
 					$shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($shift_row = mysqli_fetch_array($shift_sql_res))
 					{
@@ -110,13 +109,13 @@ function exception($sql_result)
 							{
 								if($_POST['operation']=='0')
 								{
-									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."')";
-									$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`,`created_at`,`updated_at`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
+									// $sql_result=mysqli_query($link, $sql) or die(exception($sql));
 								}
 								else
 								{
-									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."')";
-									$sql_result=mysqli_query($link, $sql) or die(exception($sql));
+									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`,`created_at`,`updated_at`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
+									// $sql_result=mysqli_query($link, $sql) or die(exception($sql));
 								}
 								$gate_id=mysqli_insert_id($link);
 								$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops_new.php',0,'N');
