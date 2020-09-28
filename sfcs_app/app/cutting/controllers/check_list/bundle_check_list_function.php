@@ -126,7 +126,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         }
                     }
                     
-                    $get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(bun.bundle_number) as bun_num,GROUP_CONCAT(distinct(fg_color)) as fg_color,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY bun.size";
+                    $get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(bun.bundle_number) as bun_num,GROUP_CONCAT(distinct(fg_color)) as fg_color,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number";
                     // echo $get_job_details;
                     $get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($get_job_details_result>0){
@@ -135,6 +135,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         $sewing_job_numbers='';
                         $job_header_ids_list='';
                         $qty = 0;
+                        $cnt = 0;
                         $fg_colorss = array();
                         while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
                         {
@@ -142,7 +143,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                             $job_header_idss[] = $get_job_details_row['jm_jg_header_id'];
                             $qty += $get_job_details_row['qty'];
                             $fg_colorss[] = $get_job_details_row['fg_color'];
-                            $cnt = $get_job_details_row['cnt'];
+                            $cnt += $get_job_details_row['cnt'];
                         }
                         $fg_colorsss = implode(",", array_unique($fg_colorss));
                         $sewing_job_numbers = implode(",", $job_numberss);

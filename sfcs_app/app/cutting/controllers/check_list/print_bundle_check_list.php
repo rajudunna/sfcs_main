@@ -25,8 +25,8 @@
 			$cut_job_id = $_GET['cut_job_id'];
 			$plantcode = $_GET['plantcode'];
 
-			$sql11="select customer_order_no from $oms.oms_mo_details where schedule in ('".implode("','",$schedule)."') and plant_code='$plantcode' group by customer_order_no";
-			//echo $sql11."<br>";
+			$sql11="select customer_order_no from $oms.oms_mo_details where schedule in ($schedule) and plant_code='$plantcode' group by customer_order_no";
+			// echo $sql11."<br>";
 			$sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row111=mysqli_fetch_array($sql_result111))
 			{
@@ -36,58 +36,32 @@
 			}   
 			$co_no=implode(",",$customer_order_no) ;
 
-			$qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id  = '$cut_job_id' AND plant_code='$plantcode' order by docket_number ASC";
-			$toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$toget_dockets_num=mysqli_num_rows($toget_dockets_result);
-			if($toget_dockets_num>0){
-				$jm_dockets_idss = array();
-				$jm_dockets_id = '';
-				while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
+			$get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE ref_id='$cut_job_id' AND plant_code='$plantcode'";
+			$jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
+			if($jm_job_header_id_result_num>0){
+				$jm_job_header_id = array();
+				while($jm_job_header_id_row=mysqli_fetch_array($jm_job_header_id_result))
 				{
-					$jm_dockets_idss[]=$toget_docket_row['jm_docket_id']; 
+					$jm_job_header_id[]=$jm_job_header_id_row['jm_job_header_id'];
 				}
-				$jm_dockets_id = implode("','", $jm_dockets_idss);
 			}
-			var_dump($jm_dockets_id);
-			die();
-			// echo $style.$schedule.$doc_no;
-			// $sql12="SELECT order_div,co_no,order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
-			// // echo $sql12;
-			// $sql_result12=mysqli_query($link, $sql12) or exit("Error while fetching details for the selected style and schedule");
-			// while($m1=mysqli_fetch_array($sql_result12))
-			// {
-			// 	$order_div = $m1['order_div'];
-			// 	$co_no = $m1['co_no'];
-			// 	$order_tid = $m1['order_tid'];
-			// }
-			// if($org_doc_no==0)
-			// {
-			//    $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$doc_no limit 1";
-			// //echo $sql123;
-			// }
-			// else
-			// {
-			//    $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$org_doc_no limit 1";
-			// }
-			// $sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
-			// while($m13=mysqli_fetch_array($sql_result123))
-			// {
-			// 	$bundle_loc = $m13['bundle_loc'];
-			// 	$leader_name = $m13['leader_name'];
-			// }
-			$order_div= 'abc';
-			// $co_no= 'abc';
-			$bundle_loc= 'abc';
-			$leader_name= 'abc';
-			$doc_no ="'" . str_replace(",", "','", $doc_no) . "'";
-			$sql1="SELECT job_number FROM $pps.`jm_jg_header` WHERE doc_no in ($doc_no)";
-			echo $sql1;
-			$sql_result1=mysqli_query($link, $sql1) or exit("Error while fetching details for the selected style and schedule");
-			while($m=mysqli_fetch_array($sql_result1))
-			{
-				$input_job_no_random_array[] = $m['job_number'];
+
+			$get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(DISTINCT CONCAT(bun.bundle_number,'-',bun.quantity)) as bun_num,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number,bun.size";
+			// echo $get_job_details;
+			$get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if($get_job_details_result>0){
+				while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
+				{
+					$input_job_no_random_array[] = $get_job_details_row['job_number'];
+					$bun_num[$get_job_details_row['job_number']] = $get_job_details_row['bun_num'];
+					$job_size[$get_job_details_row['job_number']] = $get_job_details_row['size'];
+					$job_qty[$get_job_details_row['job_number']] = $get_job_details_row['qty'];
+					$job_color[$get_job_details_row['job_number']] = $get_job_details_row['color'];
+					$bun_count[$get_job_details_row['job_number']] = $get_job_details_row['cnt'];
+				}
 			}
-			var_dump($input_job_no_random_array);
+			$order_div= '-';
 		?>
 	</head>
 	<body>
@@ -823,132 +797,130 @@
 						<td colspan=7 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo date("Y-m-d H:i:s"); ?></td>
 					</tr>
 					<tr height=20 style='height:15.0pt'>
-						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Original Docket</td>
-						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $org_doc_no; ?></td>
+						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Docket Number</td>
+						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
 						<td colspan=2 class=xl806065 style='border-right:.5pt solid black;border-left:none'>Product Category</td>
 						<td colspan=7 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $order_div; ?></td>
 					</tr>
-					<tr height=20 style='height:15.0pt'>
+					<!-- <tr height=20 style='height:15.0pt'>
 						<td colspan=2 height=20 class=xl786065 style='border-right:.5pt solid black;height:15.0pt'>Docket Number</td>
-						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'><?php echo $doc_no; ?></td>
-					</tr>
+						<td colspan=2 class=xl776065 style='border-right:.5pt solid black;border-left:none'></td>
+					</tr> -->
 					<!-- Header End -->
 
 					<!-- Loop for Sewing Jobs in Docket -->
 					<?php
 						foreach ($input_job_no_random_array as $key => $value)
 						{
-							$display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
-							$total_bundle_qty = 0;	$total_bundles = 0;
-							$location='';
-							$sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
-							 //echo $sql1;
-							$sql_result1234=mysqli_query($link, $sql1234) or exit("Error3 while fetching details for the selected style and schedule");
-							while($m134=mysqli_fetch_array($sql_result1234))
-							{
-								$input_module = $m134['input_module'];
-							}
+							if($bun_count[$value] > 0) {
 
-							if($input_module != "")
-							{
-								$loc="L-".$input_module.'/';
-								if($bundle_loc=='')
-								{
-									$loc="L-".$input_module;
-								}
-								else
-								{
-									$loc="/L-".$input_module;
-								}
-							
-							}
-							else
-							{
-								// echo 'test';
-								// $sql1235="SELECT emp_name FROM $bai_pro3.`tbl_leader_name` WHERE id=$leader_name limit 1";
-								 // echo $sql1235	;
-								//$sql_result1235=mysqli_query($link, $sql1235) or exit("Error2 while fetching details for the selected style and schedule");
-								// while($m135=mysqli_fetch_array($sql_result1235))
+								// $display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
+								$total_bundle_qty = 0;	$total_bundles = 0;
+								// $location='';
+								// $sql1234="SELECT input_module FROM $bai_pro3.`plan_dashboard_input` WHERE input_job_no_random_ref='$value' limit 1";
+								//  //echo $sql1;
+								// $sql_result1234=mysqli_query($link, $sql1234) or exit("Error3 while fetching details for the selected style and schedule");
+								// while($m134=mysqli_fetch_array($sql_result1234))
 								// {
-									// $leader_name1 = $m135['emp_name'];
+								// 	$input_module = $m134['input_module'];
 								// }
-									//$location=$leader_name1;
-									$loc='';
-							}
-                            						
-							
-						    //$location=$loc.$bundle_loc;
-							$location=$bundle_loc.$loc;
-							
-							echo "
-								<tr height=20 style='height:15.0pt'></tr>
-								<tr height=20 style='height:15.0pt' bgcolor='#BFBFBF'>
-									<td colspan=15 height=20 class=xl9418757 style='height:15.0pt'>Sewing Job No: ".$value." ($display_sewing_job)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cut No:".chr($color_code).leading_zeros($acutno,3)."</td>
-								</tr>
-								<tr height=20 style='height:15.0pt'>
-									<td height=20 class=xl636065 style='height:15.0pt'>Sno</td>
-									<td colspan=4 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Color</td>
-									<td class=xl646065>Size</td>
-									<td class=xl646065>Bundles<br>Total<br>Quantity</td>
-									<td class=xl646065>Bundles<br>Count</td>
-									<td class=xl646065 colspan=2>Location<br>/team</td>
-									<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
-								</tr>";
-								$sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty ORDER BY tid) AS bundle_nos 
-								FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
-								 //echo $sql123;
-								$sql_result123=mysqli_query($link, $sql123) or exit("Error1 while fetching details for the selected style and schedule");
-								$sno = 1;
-								while($n=mysqli_fetch_array($sql_result123))
-								{
-									$counter = 1;
-									$val = explode(',', $n['bundle_nos']);
-									$rooo = ceil(count($val)/3);
+
+								// if($input_module != "")
+								// {
+								// 	$loc="L-".$input_module.'/';
+								// 	if($bundle_loc=='')
+								// 	{
+								// 		$loc="L-".$input_module;
+								// 	}
+								// 	else
+								// 	{
+								// 		$loc="/L-".$input_module;
+								// 	}
+								
+								// }
+								// else
+								// {
+								// 		$loc='';
+								// }
+														
+								
+								// $location=$bundle_loc.$loc;
+								
+								echo "
+									<tr height=20 style='height:15.0pt'></tr>
+									<tr height=20 style='height:15.0pt' bgcolor='#BFBFBF'>
+										<td colspan=15 height=20 class=xl9418757 style='height:15.0pt'>Sewing Job No: ".$value." &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cut No:".$acutno."</td>
+									</tr>
+									<tr height=20 style='height:15.0pt'>
+										<td height=20 class=xl636065 style='height:15.0pt'>Sno</td>
+										<td colspan=4 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Color</td>
+										<td class=xl646065>Size</td>
+										<td class=xl646065>Bundles<br>Total<br>Quantity</td>
+										<td class=xl646065>Bundles<br>Count</td>
+										<td colspan=7 class=xl746065 style='border-right:.5pt solid black;border-left:none'>Bundle Numbers - Bundle Quantity</td>
+									</tr>";
+									// <td class=xl646065 colspan=2>Location<br>/team</td>
+
+									// $sql123="SELECT order_col_des,size_code, SUM(carton_act_qty) AS qty, COUNT(*) AS bundle_count,GROUP_CONCAT(tid, '-', carton_act_qty ORDER BY tid) AS bundle_nos 
+									// FROM bai_pro3.`packing_summary_input` WHERE input_job_no_random='".$value."' and doc_no = '".$doc_no."' GROUP BY order_col_des,size_code;";
+									//  //echo $sql123;
+									// $sql_result123=mysqli_query($link, $sql123) or exit("Error1 while fetching details for the selected style and schedule");
+									$sno = 1;
+									// while($n=mysqli_fetch_array($sql_result123))
+									// {
+										$counter = 1;
+										$val = explode(',', $bun_count[$value]);
+										$rooo = ceil(count($val)/3);
 									echo "
 									<tr height=20 style='height:15.0pt'>
 										<td height=20 rowspan=$rooo class=xl656065 style='height:15.0pt'>".$sno."</td>
-										<td colspan=4 rowspan=$rooo class=xl686065 style='text-align:left; border-right:.5pt solid black;border-left:none'>".$n['order_col_des']."</td>
-										<td class=xl666065 rowspan=$rooo>".$n['size_code']."</td>
-										<td class=xl666065 rowspan=$rooo >".$n['qty']."</td>
-										<td class=xl666065 rowspan=$rooo >".$n['bundle_count']."</td>
-										<td class=xl646065 colspan=2 rowspan=$rooo >".$location."</td>";
-										for ($i=0; $i < count($val); $i+=3)
-										{
-											$temp = "";
-											if ($counter > 1)
-											{
-												echo "<tr height=20 style='height:15.0pt'>";
-											}
-												for($m=$i;$m<$i+3;$m++)
-												{
-													if ($val[$m] != '' || $val[$m] != null) 
-													{
-														$temp.= $val[$m].', ';
-													}
-												}
-												$display = substr($temp, 0, -2);
-												echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none'>$display</td>";
-											if ($counter > 1)
-											{
-												echo "</tr>";
-											}
-											$counter++;
-										}
+										<td colspan=4 rowspan=$rooo class=xl686065 style='text-align:left; border-right:.5pt solid black;border-left:none'>".$job_color[$value]."</td>
+										<td class=xl666065 rowspan=$rooo>".$job_size[$value]."</td>
+										<td class=xl666065 rowspan=$rooo >".$job_qty[$value]."</td>
+										<td class=xl666065 rowspan=$rooo >".$bun_count[$value]."</td>
+										";
+										// <td class=xl646065 colspan=2 rowspan=$rooo >".$location."</td>
+										// for ($i=0; $i < count($val); $i+=3)
+										// {
+										// 	$temp = "";
+										// 	if ($counter > 1)
+										// 	{
+										// 		echo "<tr height=20 style='height:15.0pt'>";
+										// 	}
+										// 		for($m=$i;$m<$i+3;$m++)
+										// 		{
+										// 			if ($val[$m] != '' || $val[$m] != null) 
+										// 			{
+										// 				$temp.= $val[$m].', ';
+										// 			}
+										// 		}
+										// 		$display = substr($temp, 0, -2);
+										// 		echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none'>$display</td>";
+										// 	if ($counter > 1)
+										// 	{
+										// 		echo "</tr>";
+										// 	}
+										// 	$counter++;
+										// }
+										echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none'>";
+										echo $bun_num[$value];
+										echo "</td>";
 									echo "</tr>";
-									$sno++;
-									$total_bundle_qty = $total_bundle_qty+$n['qty'];
-									$total_bundles = $total_bundles+$n['bundle_count'];
-								}								
+										$sno++;
+										$total_bundle_qty = $total_bundle_qty+$job_qty[$value];
+										$total_bundles = $total_bundles+$bun_count[$value];
+									// }								
 
-								echo "
-								<tr height=20 style='height:15.0pt'>
-									<td colspan=6 height=20 class=xl716065 style='border-right:.5pt solid black;height:15.0pt'>Total Quantity</td>
-									<td class=xl676065>".$total_bundle_qty."</td>
-									<td class=xl676065>".$total_bundles."</td>
-									<td colspan=9 class=xl686065 style='border-right:.5pt solid black;border-left:none'></td>
-								</tr>
-							";
-							unset($input_module);
+									echo "
+									<tr height=20 style='height:15.0pt'>
+										<td colspan=6 height=20 class=xl716065 style='border-right:.5pt solid black;height:15.0pt'>Total Quantity</td>
+										<td class=xl676065>".$total_bundle_qty."</td>
+										<td class=xl676065>".$total_bundles."</td>
+										<td colspan=9 class=xl686065 style='border-right:.5pt solid black;border-left:none'></td>
+									</tr>
+								";
+								unset($input_module);
+							}
 							//unset($bundle_loc);
 						}
 					?>
