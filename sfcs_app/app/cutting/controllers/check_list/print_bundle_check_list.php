@@ -11,8 +11,8 @@
 			}
 		</script>
 		<?php
-		$plantcode=$_SESSION['plantCode'];
-		$username=$_SESSION['userName'];
+		// $plantcode=$_SESSION['plantCode'];
+		// $username=$_SESSION['userName'];
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 			include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 
@@ -22,38 +22,72 @@
 			$org_doc_no = $_GET['org_doc_no'];
 			$acutno = $_GET['acutno'];
 			$color_code = $_GET['color_code'];
+			$cut_job_id = $_GET['cut_job_id'];
+			$plantcode = $_GET['plantcode'];
+
+			$sql11="select customer_order_no from $oms.oms_mo_details where schedule in ('".implode("','",$schedule)."') and plant_code='$plantcode' group by customer_order_no";
+			//echo $sql11."<br>";
+			$sql_result111=mysqli_query($link, $sql11) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row111=mysqli_fetch_array($sql_result111))
+			{
+				$customer_order_no[]=$sql_row111['customer_order_no'];
+				//echo "Test=".$fabric_required."<br>";
+				// $cat_yy+=$sql_row111['catyy'];
+			}   
+			$co_no=implode(",",$customer_order_no) ;
+
+			$qry_get_dockets="SELECT jm_docket_id From $pps.jm_dockets WHERE jm_cut_job_id  = '$cut_job_id' AND plant_code='$plantcode' order by docket_number ASC";
+			$toget_dockets_result=mysqli_query($link_new, $qry_get_dockets) or exit("Sql Error at dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$toget_dockets_num=mysqli_num_rows($toget_dockets_result);
+			if($toget_dockets_num>0){
+				$jm_dockets_idss = array();
+				$jm_dockets_id = '';
+				while($toget_docket_row=mysqli_fetch_array($toget_dockets_result))
+				{
+					$jm_dockets_idss[]=$toget_docket_row['jm_docket_id']; 
+				}
+				$jm_dockets_id = implode("','", $jm_dockets_idss);
+			}
+			var_dump($jm_dockets_id);
+			die();
 			// echo $style.$schedule.$doc_no;
-			$sql12="SELECT order_div,co_no,order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
-			// echo $sql12;
-			$sql_result12=mysqli_query($link, $sql12) or exit("Error while fetching details for the selected style and schedule");
-			while($m1=mysqli_fetch_array($sql_result12))
-			{
-				$order_div = $m1['order_div'];
-				$co_no = $m1['co_no'];
-				$order_tid = $m1['order_tid'];
-			}
-			if($org_doc_no==0)
-			{
-			   $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$doc_no limit 1";
-			//echo $sql123;
-			}
-			else
-			{
-			   $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$org_doc_no limit 1";
-			}
-			$sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
-			while($m13=mysqli_fetch_array($sql_result123))
-			{
-				$bundle_loc = $m13['bundle_loc'];
-				$leader_name = $m13['leader_name'];
-			}
-			$sql1="SELECT DISTINCT input_job_no_random, input_job_no FROM $bai_pro3.`pac_stat_log_input_job` WHERE doc_no='$doc_no' order by input_job_no_random*1";
-			// echo $sql1;
+			// $sql12="SELECT order_div,co_no,order_tid FROM $bai_pro3.`bai_orders_db_confirm` WHERE order_del_no='$schedule' limit 1";
+			// // echo $sql12;
+			// $sql_result12=mysqli_query($link, $sql12) or exit("Error while fetching details for the selected style and schedule");
+			// while($m1=mysqli_fetch_array($sql_result12))
+			// {
+			// 	$order_div = $m1['order_div'];
+			// 	$co_no = $m1['co_no'];
+			// 	$order_tid = $m1['order_tid'];
+			// }
+			// if($org_doc_no==0)
+			// {
+			//    $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$doc_no limit 1";
+			// //echo $sql123;
+			// }
+			// else
+			// {
+			//    $sql123="SELECT bundle_loc,leader_name FROM $pps.`act_cut_status` WHERE plant_code='$plantcode' and doc_no =$org_doc_no limit 1";
+			// }
+			// $sql_result123=mysqli_query($link, $sql123) or exit("Error while fetching details for the selected style and schedule");
+			// while($m13=mysqli_fetch_array($sql_result123))
+			// {
+			// 	$bundle_loc = $m13['bundle_loc'];
+			// 	$leader_name = $m13['leader_name'];
+			// }
+			$order_div= 'abc';
+			// $co_no= 'abc';
+			$bundle_loc= 'abc';
+			$leader_name= 'abc';
+			$doc_no ="'" . str_replace(",", "','", $doc_no) . "'";
+			$sql1="SELECT job_number FROM $pps.`jm_jg_header` WHERE doc_no in ($doc_no)";
+			echo $sql1;
 			$sql_result1=mysqli_query($link, $sql1) or exit("Error while fetching details for the selected style and schedule");
 			while($m=mysqli_fetch_array($sql_result1))
 			{
-				$input_job_no_random_array[$m['input_job_no']] = $m['input_job_no_random'];
+				$input_job_no_random_array[] = $m['job_number'];
 			}
+			var_dump($input_job_no_random_array);
 		?>
 	</head>
 	<body>

@@ -1,5 +1,7 @@
 <?php
 function getCheckList($get_style,$get_schedule,$plantcode){
+	$url1 = getFullURL($_GET['r'],'print_bundle_check_list.php','R');
+
     $table = '<table class="table table-bordered">
     				<thead>
     					<tr class="info">
@@ -124,7 +126,7 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         }
                     }
                     
-                    $get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY bun.size";
+                    $get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(bun.bundle_number) as bun_num,GROUP_CONCAT(distinct(fg_color)) as fg_color,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY bun.size";
                     // echo $get_job_details;
                     $get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if($get_job_details_result>0){
@@ -132,53 +134,34 @@ function getCheckList($get_style,$get_schedule,$plantcode){
                         $job_header_idss = array();
                         $sewing_job_numbers='';
                         $job_header_ids_list='';
+                        $qty = 0;
+                        $fg_colorss = array();
                         while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
                         {
                             $job_numberss[] = $get_job_details_row['job_number'];
                             $job_header_idss[] = $get_job_details_row['jm_jg_header_id'];
+                            $qty += $get_job_details_row['qty'];
+                            $fg_colorss[] = $get_job_details_row['fg_color'];
+                            $cnt = $get_job_details_row['cnt'];
                         }
+                        $fg_colorsss = implode(",", array_unique($fg_colorss));
                         $sewing_job_numbers = implode(",", $job_numberss);
-                        $job_header_ids_list = implode(",", $job_header_idss);
-                        $table .= "<td>".$sewing_job_numbers."</td>";
-                        
-
-                        $get_bundle="SELECT fg_color,bundle_number,quantity FROM $pps.jm_job_bundles WHERE jm_jg_header_id in ('$job_header_ids_list') AND plant_code='$plantcode'";
-                        // echo $get_bundle;
-                        $get_bundle_result=mysqli_query($link_new, $get_bundle) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        $get_bundle_result_num=mysqli_num_rows($get_bundle_result);
-                        if($get_bundle_result_num>0){
-                            $fg_colorss = array();
-                            $qty = 0;
-                            $fg_colorsss='';
-                            while($get_bundle_row=mysqli_fetch_array($get_bundle_result))
-                            {
-                                $fg_colorss[] = $get_bundle_row['fg_color'];
-                                $qty += $get_bundle_row['quantity'];
-                            }
-                            $fg_colorsss = implode(",", array_unique($fg_colorss));
-                        }
-                        $table .= "<td>".$fg_colorsss."</td>";
-                        $table .= "<td>".$get_bundle_result_num."</td>";
-                        $table .= "<td>".$qty."</td>";
-                        $table .= "<td ><a class='btn btn-warning' href='$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."'' onclick=\"return popitup2('$url1?style=$style&schedule=$schedule&doc_no=".$m['doc_no']."&org_doc_no=".$m['org_doc_no']."&acutno=".$m['acutno']."&color_code=".$m['color_code']."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
-                        							</td>";
                     }
+                    $table .= "<td>".$sewing_job_numbers."</td>";
+                    $table .= "<td>".$fg_colorsss."</td>";
+                    $table .= "<td>".$cnt."</td>";
+                    $table .= "<td>".$qty."</td>";
+                    $table .= "<td ><a class='btn btn-warning' href='$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_line_number."&org_doc_no=".$docket_line_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."'' onclick=\"return popitup2('$url1?style=$get_style&schedule=$get_schedule&doc_no=".$docket_line_number."&org_doc_no=".$docket_line_number."&acutno=".$cut_num."&color_code=".$m['color_code']."&plantcode=".$plantcode."&cut_job_id=".$cut_job_id."')\" target='_blank'><i class=\"fa fa-print\" aria-hidden=\"true\"></i>&nbsp;&nbsp;&nbsp;Print Check List</a>
+                    </td>";
                     $sno++;
                     $table .= "</tr>";
                 }
             }
         }
     }
-    // var_dump($cuts);
 
     $table .= "</table>";
     return $table;
-    
-    //get docket
-    //get sewing jobs
-    
-    //get bundles
-    // get bundle level qty
 }
 
 ?>
