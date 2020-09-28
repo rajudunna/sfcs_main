@@ -664,6 +664,7 @@ $('input[type=submit]').click(function() {
 function check_pack()
 {
 	$('#smartbtn').attr('disabled', 'disabled');
+	$('#loading-image').show();
 	var count = document.getElementById('count_of_data').value;
 	var tot_qty = 0;
 	var tot_rej_qty = 0;
@@ -780,7 +781,7 @@ function check_pack()
 					$('#smartbtn').attr('disabled', false);
 					$('.submission').show();
 					swal('',res.internalMessage,'error');
-				}                       
+				}     
 			},
 			error: function(res){
 				$('.submission').show();
