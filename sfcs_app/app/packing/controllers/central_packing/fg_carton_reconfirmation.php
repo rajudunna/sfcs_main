@@ -47,9 +47,8 @@ function checkAll()
 
 
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',4,'R'));
-$plant_code = $plant_wh_code;
 ?>
 <?php
 	if(!isset($_POST['reconfirm']))
@@ -105,7 +104,7 @@ $plant_code = $plant_wh_code;
 				$carton_id=$carton_details[$j];
 				$sql_carton="SELECT * from $bai_pro3.pac_stat where id=".$carton_id."";
 				$carton_result=mysqli_query($link, $sql_carton) or exit("Sql Error1112".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
+				while($sql_row=mysqli_fetch_array($carton_result))
 				{
 					$style=$sql_row['style'];
 					$schedule=$sql_row['schedule'];
@@ -135,10 +134,9 @@ $plant_code = $plant_wh_code;
 					"m3ReferenceNumber" : "",
 					"confirmedDeliveryDate" : "'.$order_date.'"
 				}
-				]';				
-				$post_carton_response = $obj->postCartonInfo($carton_info, $plant_code, $carton_id);
+				]';	
+				$post_carton_response = $obj->postCartonInfo($carton_info, $plant_wh_code, $carton_id);
 				$decoded = json_decode($post_carton_response,true);
-				var_dump($decoded);
 				//die();
 				if($decoded['api_status'] == 'fail') {
 					// the API is unsuccessfull
@@ -150,8 +148,7 @@ $plant_code = $plant_wh_code;
 					$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id."";
 					mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
 				}
-			}
-			
+			}			
 			echo "<script>sweetAlert('Reconfirmation submitted','','success');</script>";
 			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",1500);
 			function Redirect() 
@@ -159,6 +156,7 @@ $plant_code = $plant_wh_code;
 				location.href = \"".getFullURLLevel($_GET['r'], "fg_carton_reconfirmation.php", "0", "N")."\";
 			}
 			</script>";
+			
 		}
 		else
 		{
