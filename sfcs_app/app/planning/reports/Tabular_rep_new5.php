@@ -175,13 +175,13 @@ if(isset($_POST['submit1']))
 	$sql="select distinct cpo from $oms.oms_mo_details where plant_code='$plant_code' order by cpo";	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
-	echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\">";
+	echo "<div class=\"row\"><div class=\"col-sm-2\"><label>Select CPO:</label><select class='form-control' name=\"cpo\"  id=\"cpo\" onchange=\"firstbox();\" required>";
 	echo "<option value='' disabled selected>Please Select</option>";
-	if($cpo=="all") {
-		echo "<option value='all' selected>All</option>";
-	}else{
-	echo "<option value='all'>All</option>";
-	}
+	// if($cpo=="all") {
+	// 	echo "<option value='all' selected>All</option>";
+	// }else{
+	// echo "<option value='all'>All</option>";
+	// }
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		
@@ -201,7 +201,7 @@ if(isset($_POST['submit1']))
 	$sql_buyer="select distinct buyer_desc from $oms.oms_mo_details where plant_code='$plant_code' and cpo='$cpo' order by buyer_desc";
 	$sql_result1=mysqli_query($link, $sql_buyer) or exit("Sql Error1a".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check1=mysqli_num_rows($sql_result1);
-	echo "<div class=\"col-sm-3\"><label>Select Buyer Division:</label><select class='form-control' name=\"buyer_div\"  id=\"buyer_div\" onchange=\"secondbox();\">";
+	echo "<div class=\"col-sm-3\"><label>Select Buyer Division:</label><select class='form-control' name=\"buyer_div\"  id=\"buyer_div\" onchange=\"secondbox();\" required>";
 	
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -223,7 +223,7 @@ if(isset($_POST['submit1']))
 	</div>";
 	$sql_style="SELECT distinct style FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND oms_mo_details.plant_code='$plant_code' order by style";
 	$sql_result2=mysqli_query($link, $sql_style) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\">";
+	echo "<div class=\"col-sm-2\"><label>Select Style:</label><select class='form-control' name=\"style\"  id=\"style\" onchange=\"thirdbox();\" required>";
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{	
@@ -243,7 +243,7 @@ if(isset($_POST['submit1']))
 	$sql_schedule="SELECT distinct schedule FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND style='$style' AND oms_mo_details.plant_code='$plant_code'";
 	$sql_result4=mysqli_query($link, $sql_schedule) or exit("Sql Error1333".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check4=mysqli_num_rows($sql_result4);
-	echo "<div class=\"col-sm-2\"><label>Select Schedule:</label><select class='form-control' name=\"schedule\"  id=\"schedule\" onchange=\"fifthbox();\">";
+	echo "<div class=\"col-sm-2\"><label>Select Schedule:</label><select class='form-control' name=\"schedule\"  id=\"schedule\" onchange=\"fifthbox();\" required>";
 	
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row4=mysqli_fetch_array($sql_result4))
@@ -266,7 +266,7 @@ if(isset($_POST['submit1']))
 	$sql2="SELECT distinct color_desc as color FROM $oms.oms_products_info LEFT JOIN $oms.oms_mo_details ON oms_mo_details.mo_number=oms_products_info.mo_number WHERE cpo='$cpo' AND buyer_desc='$buyer_div' AND style='$style' AND schedule='$schedule' AND oms_mo_details.plant_code='$plant_code' order by color_desc";	
 	$sql_result5=mysqli_query($link, $sql2) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check5=mysqli_num_rows($sql_result5);
-	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\">";
+	echo "<div class=\"col-sm-3\"><label>Select Color:</label><select class='form-control' name=\"color\"  id=\"color\" onchange=\"sixthbox();\" required>";
 	
 	echo "<option value='' disabled selected>Please Select</option>";
 	while($sql_row5=mysqli_fetch_array($sql_result5))
@@ -294,7 +294,7 @@ if(isset($_POST['submit1']))
 		$master_po_description=$result_bulk_MPO['master_po_description'];
 	}
 	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
-	echo "<select style='min-width:100%' name=\"mpo\" onchange=\"seventhbox();\" class='form-control' >
+	echo "<select style='min-width:100%' name=\"mpo\" onchange=\"seventhbox();\" class='form-control'>
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($master_po_description as $key=>$master_po_description_val) {
 					if(str_replace(" ","",$master_po_description_val)==str_replace(" ","",$get_mpo)) 
@@ -338,12 +338,12 @@ if(isset($_POST['submit1']))
 
 
 
-	if($cpo=='all'){
+	// if($cpo=='all'){
+	// 	$sql11="select * from  $oms.oms_mo_details where plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
+	// }
+	// else{
 		$sql11="select * from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
-	}
-	else{
-		$sql11="select * from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
-	}
+	// }
 	//echo $sql11."<br>";
 	$sql_result1122=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result11_count=mysqli_num_rows($sql_result1122);
@@ -352,116 +352,121 @@ if(isset($_POST['submit1']))
 		$cust_order=$mo_row['customer_order_no'];
 		$exfact_date=$mo_row['planned_delivery_date'];
 	}
-	//To get mpo description
-	$qry_toget_podescri="SELECT master_po_description FROM $pps.mp_order WHERE master_po_number ='$mpo'";
-	$toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($mo_desc=mysqli_fetch_array($toget_podescri_result))
+	if($sql_result11_count>0)
 	{
-      $mpo_desc=$mo_desc['master_po_description'];
-	}	
-	
-	echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
-	<input type="hidden" name="csv_123" id="csv_123">
-	<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
-	</form>';
+        //To get mpo description
+		$qry_toget_podescri="SELECT master_po_description FROM $pps.mp_order WHERE master_po_number ='$mpo'";
+		$toget_podescri_result=mysqli_query($link_new, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($mo_desc=mysqli_fetch_array($toget_podescri_result))
+		{
+		 $mpo_desc=$mo_desc['master_po_description'];
+		}	
+		
+		echo '<form action="'."../".getFullURL($_GET['r'],"export_excel1.php",'R').'" method ="post" > 
+		<input type="hidden" name="csv_123" id="csv_123">
+		<input class="pull-right btn btn-info" type="submit" id="excel" value="Export to Excel" onclick="getCSVData()">
+		</form>';
 
-	//To get Total order qty
-	$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
-	$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row2=mysqli_fetch_array($sql_result2))
-	{
-		$total_order_qty=$row2['quantity'];
-	}
-	//To get finished_good_id
-	$get_details="SELECT * FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code' limit 1";
-	$sql_result11=mysqli_query($link, $get_details) or exit("Sql Error get_details".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row=mysqli_fetch_array($sql_result11))
-	{
-		$finished_good_id= $row['finished_good_id'];   
-	}
-	//get operations
-	$operations=array();
-	$get_operations="SELECT DISTINCT operation_code FROM $pts.fg_operation WHERE finished_good_id='$finished_good_id'  AND plant_code='$plant_code' ORDER BY operation_code*1";
-	$sql_result12=mysqli_query($link, $get_operations) or exit("Sql Error get_operations".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row1=mysqli_fetch_array($sql_result12))
-	{
-       $operations[]=$row1['operation_code'];
-	}
-	echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
-	echo "<tr class='info'>";
-	echo "<th>Customer Order</th>";
-	echo "<th>MPO</th>";	
-	echo "<th>CPO</th>";
-	echo "<th>Buyer Division</th>";
-	echo "<th>Style</th>";
-	echo "<th>Schedule</th>";
-	echo "<th>Color</th>";
-	echo "<th>Ex-Factory Date</th>";
-	echo "<th>Order Qty</th>";
-	foreach ($operations as $key => $value)
-	{
-		echo "<th>Operation-$value</th>";
-		echo "<th>Operation-$value Completed %</th>";
-	}
-	// echo "<th>Ship Qty</th>";
-	// echo "<th>Shipping Completed %</th>";
-	echo "</tr></thead><tbody>";
+		//To get Total order qty
+		$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
+		$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row2=mysqli_fetch_array($sql_result2))
+		{
+			$total_order_qty=$row2['quantity'];
+		}
+		//To get finished_good_id
+		$get_details="SELECT finished_good_id FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code' limit 1";
+		$sql_result11=mysqli_query($link, $get_details) or exit("Sql Error get_details".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row_main=mysqli_fetch_array($sql_result11))
+		{
+			$fg_good_id= $row_main['finished_good_id'];   
+		}
+		//get operations
+		$operations=array();
+		$get_operations="SELECT DISTINCT operation_code FROM $pts.fg_operation WHERE finished_good_id='$fg_good_id'  AND plant_code='$plant_code' ORDER BY operation_code*1";
+		$sql_result12=mysqli_query($link, $get_operations) or exit("Sql Error get_operations".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row1=mysqli_fetch_array($sql_result12))
+		{
+		  $operations[]=$row1['operation_code'];
+		}
+		echo "<div class='table-responsive'><table id=\"table1\"  class=\" table table-bordered\"><thead>";
+		echo "<tr class='info'>";
+		echo "<th>Customer Order</th>";
+		echo "<th>MPO</th>";	
+		echo "<th>CPO</th>";
+		echo "<th>Buyer Division</th>";
+		echo "<th>Style</th>";
+		echo "<th>Schedule</th>";
+		echo "<th>Color</th>";
+		echo "<th>Ex-Factory Date</th>";
+		echo "<th>Order Qty</th>";
+		foreach ($operations as $key => $value)
+		{
+			echo "<th>Operation-$value</th>";
+			echo "<th>Operation-$value Completed %</th>";
+		}
+		// echo "<th>Ship Qty</th>";
+		// echo "<th>Shipping Completed %</th>";
+		echo "</tr></thead><tbody>";
 
-	$count=0;
-	echo "<tr>";
-	echo "<td>$cust_order</td>";
-	echo "<td>$mpo_desc</td>";
-	echo "<td>$cpo</td>";
-	echo "<td>$buyer_div</td>";
-	echo "<td>$style</td>";
-	echo "<td>$schedule</td>";
-	echo "<td>$color</td>";
-	echo "<td>$exfact_date</td>";
-	echo "<td>$total_order_qty</td>";
-    $tot_qty=0;
-
-	foreach($operations as $operation => $value)
-	{
+		$count=0;
+		echo "<tr>";
+		echo "<td>$cust_order</td>";
+		echo "<td>$mpo_desc</td>";
+		echo "<td>$cpo</td>";
+		echo "<td>$buyer_div</td>";
+		echo "<td>$style</td>";
+		echo "<td>$schedule</td>";
+		echo "<td>$color</td>";
+		echo "<td>$exfact_date</td>";
+		echo "<td>$total_order_qty</td>";
 		$tot_qty=0;
 
-		//To get finished_good_id
-		$get_details1="SELECT finished_good_id FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code'";
-		$sql_result111=mysqli_query($link, $get_details1) or exit("Sql Error get_details1".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($row2=mysqli_fetch_array($sql_result111))
+		foreach($operations as $operation => $value)
 		{
-			$fg_id=$row2['finished_good_id'];
-			
-			//To get qty for operations
-			$get_qty="SELECT fg_operation_id FROM $pts.fg_operation WHERE finished_good_id ='$fg_id' AND operation_code='$value' AND required_components = completed_components AND plant_code='$plant_code'";
-			$sql_result112=mysqli_query($link, $get_qty) or exit("Sql Error get_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$result_num=mysqli_num_rows($sql_result112);
-            if($result_num>0){
+			$tot_qty=0;
 
-				$tot_qty++;
-			}		 	
-            
+			//To get finished_good_id
+			$get_details1="SELECT finished_good_id FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND master_po='$mpo' AND plant_code='$plant_code'";
+			$sql_result111=mysqli_query($link, $get_details1) or exit("Sql Error get_details1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row2=mysqli_fetch_array($sql_result111))
+			{
+				$fg_id=$row2['finished_good_id'];
+				
+				//To get qty for operations
+				$get_qty="SELECT fg_operation_id FROM $pts.fg_operation WHERE finished_good_id ='$fg_id' AND operation_code='$value' AND required_components = completed_components AND plant_code='$plant_code'";
+				$sql_result112=mysqli_query($link, $get_qty) or exit("Sql Error get_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$result_num=mysqli_num_rows($sql_result112);
+				if($result_num>0){
+
+					$tot_qty++;
+				}		 	
+				
+			}
+			echo "<td>$tot_qty</td>";
+			echo "<td>".round(($tot_qty/$total_order_qty)*100,0)."%</td>";
+			
 		}
-		echo "<td>$tot_qty</td>";
-	    echo "<td>".round(($tot_qty/$total_order_qty)*100,0)."%</td>";
 		
+		// echo  "<td>$ship_qty</td>";
+		// if($order_qty>0 && $ship_qty>0)
+		// {
+		// 	echo "<td>".round(($ship_qty/$order_qty)*100,0)."%</td>";
+		// }
+		// else
+		// {
+		// 	echo "<td>0%</td>";
+		// }
+		echo "</tr>";
+		$count++;	
+		echo "</tbody></table></div>"; 
+		// if($count==0){
+		// 	echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
+		// }
 	}
-	
-	// echo  "<td>$ship_qty</td>";
-	// if($order_qty>0 && $ship_qty>0)
-	// {
-	// 	echo "<td>".round(($ship_qty/$order_qty)*100,0)."%</td>";
-	// }
-	// else
-	// {
-	// 	echo "<td>0%</td>";
-	// }
-	echo "</tr>";
-	$count++;	
-	echo "</tbody></table></div>"; 
-		
-	
-	if($count==0 or $sql_result11_count == 0){
-		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
+	else
+	{
+		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found1</p></div><script>$('#main_content').hide();</script>";
 	}
 	
 }
