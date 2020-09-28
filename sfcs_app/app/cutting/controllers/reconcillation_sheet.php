@@ -14,21 +14,21 @@ $path="".getFullURLLevel($_GET['r'], "bundle_guide_print.php", "0", "r")."";
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	window.location.href ="<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value
 }
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&mpo="+document.test.mpo.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&mpo="+document.test.mpo.value;
 	window.location.href = uriVal;
 }
 function forthbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
 	window.location.href = uriVal;
 }
 $(document).ready(function() {
