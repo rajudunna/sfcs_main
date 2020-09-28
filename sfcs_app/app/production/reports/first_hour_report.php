@@ -1,8 +1,6 @@
 <?php 
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-//$view_access=user_acl("SFCS_0064",$username,1,$group_id_sfcs);//1
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
 ?>
 	<title>First Hour Output</title>
 	<style>
@@ -76,152 +74,6 @@ echo "<input type=\"submit\" value=\"Show\" name=\"submit\" id=\"submit\" onclic
 
 if(isset($_POST['submit']))
 {
-	// include("../dbconf.php");
-	
-	//Responsible Persons Text-Database Reference
-	// {
-	// 	$resp_list['1A']="Shiva";
-	// 	$resp_list['2A']="Hyma";
-	// 	$resp_list['3A']="Anil";
-	// 	$resp_list['4A']="Shyam";
-	// 	$resp_list['5A']="Senavi";
-	// 	$resp_list['6A']="Vara";
-	// 	$resp_list['7A']="Madhavi";
-	// 	$resp_list['8A']="Indika";
-	// 	$resp_list['9A']="Malkanthi";
-	// 	$resp_list['10A']="Umar";
-	// 	$resp_list['12A']="Poornima";
-	// 	$resp_list['13A']="Devi";
-	// 	$resp_list['14A']="Kusuma";
-	// 	$resp_list['15A']="Ganesh";
-	// 	$resp_list['16A']="Swathi";
-	// 	$resp_list['17A']="Venu";
-	// 	$resp_list['18A']="Prasad";
-	// 	$resp_list['19A']="Naidu";
-	// 	$resp_list['20A']="Suba";
-	// 	$resp_list['21A']="Rajesh";
-	// 	$resp_list['22A']="Rama Rao";
-	// 	$resp_list['23A']="Hari";
-	// 	$resp_list['24A']="Maha";
-	// 	$resp_list['25A']="Santhosh";
-	// 	$resp_list['26A']="Kranthi";
-	// 	$resp_list['27A']="Vara";
-	// 	$resp_list['28A']="Anand";
-	// 	$resp_list['29A']="Babuji";
-	// 	$resp_list['30A']="Suresh";
-	// 	$resp_list['31A']="Raj ";
-	// 	$resp_list['32A']="Ruwan";
-	// 	$resp_list['33A']="Kanaka";
-	// 	$resp_list['34A']="Kala";
-	// 	$resp_list['35A']="Ajith";
-	// 	$resp_list['36A']="Lalitha";
-	// 	$resp_list['37A']="Ganesh";
-	// 	$resp_list['38A']="Aravind";
-	// 	$resp_list['39A']="Sathish";
-	// 	$resp_list['40A']="Rama & Roy";
-	// 	$resp_list['41A']="Dimantha";
-	// 	$resp_list['42A']="Laxman";
-	// 	$resp_list['43A']="Srikanth";
-	// 	$resp_list['44A']="Gowrish & Ruwan";
-	// 	$resp_list['45A']="Madhu";
-	// 	$resp_list['46A']="Swaraj";
-	// 	$resp_list['47A']="Srinu";
-	// 	$resp_list['48A']="Santhoshi";
-	// 	$resp_list['61A']="Gayan";
-	// 	$resp_list['64A']="Gayan";
-	// 	$resp_list['49A']="Uma ";
-	// 	$resp_list['50A']="Pushpa";
-	// 	$resp_list['51A']="Shoba Rani";
-	// 	$resp_list['52A']="Srinivas";
-	// 	$resp_list['53A']="Jeewantha";
-	// 	$resp_list['55A']="Sasi";
-	// 	$resp_list['56A']="Santhosh";
-	// 	$resp_list['57A']="Adhi Lakshmi";
-	// 	$resp_list['58A']="Revathi";
-	// 	$resp_list['59A']="Deepthi";
-	// 	$resp_list['60A']="Prasad";
-	// 	$resp_list['62A']="Raja";
-	// 	$resp_list['63A']="Sanyasi Rao";
-	// 	$resp_list['65A']="Ramesh";
-	// 	$resp_list['66A']="Lalith ";
-	// 	$resp_list['67A']="Vara";
-	// 	$resp_list['68A']="Koti";
-	// 	$resp_list['69A']="Shekar";
-	// 	$resp_list['70A']="Nirmala";
-	// 	$resp_list['71A']="Mahesh";
-	// 	$resp_list['72A']="Shyam";
-	// 	$resp_list['1B']="Chakri";
-	// 	$resp_list['2B']="Devi";
-	// 	$resp_list['3B']="Ramesh";
-	// 	$resp_list['4B']="Kumar";
-	// 	$resp_list['5B']="Sirisha";
-	// 	$resp_list['6B']="Naidu";
-	// 	$resp_list['7B']="Shekar";
-	// 	$resp_list['8B']="Lokesh";
-	// 	$resp_list['9B']="Sujith";
-	// 	$resp_list['10B']="Hema";
-	// 	$resp_list['12B']="Nalaka";
-	// 	$resp_list['13B']="Srinu";
-	// 	$resp_list['14B']="Srinivas";
-	// 	$resp_list['15B']="Vamsi";
-	// 	$resp_list['16B']="Satya";
-	// 	$resp_list['17B']="Susila";
-	// 	$resp_list['18B']="Gowri";
-	// 	$resp_list['19B']="Naveena";
-	// 	$resp_list['20B']="Chandra";
-	// 	$resp_list['21B']="Piyari";
-	// 	$resp_list['22B']="Balaji";
-	// 	$resp_list['23B']="Lakshmi & Ramanamma";
-	// 	$resp_list['24B']="venu";
-	// 	$resp_list['25B']="Nuwan";
-	// 	$resp_list['26B']="Padma";
-	// 	$resp_list['27B']="Krishna";
-	// 	$resp_list['28B']="Syamala";
-	// 	$resp_list['29B']="Devid";
-	// 	$resp_list['30B']="Thushara";
-	// 	$resp_list['31B']="Abdul";
-	// 	$resp_list['32B']="Lakshmi ";
-	// 	$resp_list['33B']="Aravind";
-	// 	$resp_list['34B']="Raj";
-	// 	$resp_list['35B']="Rajulamma";
-	// 	$resp_list['36B']="Sulthana";
-	// 	$resp_list['37B']="Hyma";
-	// 	$resp_list['38B']="Santhoo";
-	// 	$resp_list['39B']="Phani";
-	// 	$resp_list['40B']="Ranjith";
-	// 	$resp_list['41B']="Mamatha";
-	// 	$resp_list['42B']="Sunny";
-	// 	$resp_list['43B']="Ganesh";
-	// 	$resp_list['44B']="Mahesh";
-	// 	$resp_list['45B']="Deepa";
-	// 	$resp_list['46B']="Sirisha";
-	// 	$resp_list['47B']="Nishantha";
-	// 	$resp_list['48B']="Surya";
-	// 	$resp_list['61B']="Asela";
-	// 	$resp_list['64B']="Asela";
-	// 	$resp_list['49B']="Vijaya";
-	// 	$resp_list['50B']="O.Lakshmi";
-	// 	$resp_list['51B']="Prasad";
-	// 	$resp_list['52B']="Madhavi Latha";
-	// 	$resp_list['53B']="Ruwan";
-	// 	$resp_list['55B']="Raju";
-	// 	$resp_list['56B']="Rama Krishna";
-	// 	$resp_list['57B']="Sridevi";
-	// 	$resp_list['58B']="Nooka Ratnam";
-	// 	$resp_list['59B']="Ajith";
-	// 	$resp_list['60B']="Kumar";
-	// 	$resp_list['62B']="Surya";
-	// 	$resp_list['63B']="Shiva";
-	// 	$resp_list['65B']="Santhosh";
-	// 	$resp_list['66B']="Noori";
-	// 	$resp_list['67B']="Karthik";
-	// 	$resp_list['68B']="Srinivas";
-	// 	$resp_list['69B']="Rama Krishna";
-	// 	$resp_list['70B']="Sundar";
-	// 	$resp_list['71B']="Uma";
-	// 	$resp_list['72B']="Srinu";
-
-	// }
 	
 	$fdate=$_POST['fdate'];
 	$tdate=$_POST['tdate'];
@@ -246,59 +98,75 @@ if(isset($_POST['submit']))
 	
 	
     //get last hour
-    $get_end_hour="SELECT HOUR(end_time) as last_time FROM $bai_pro3.tbl_plant_timings ORDER BY time_id DESC LIMIT 1";
-    $sql_result123=mysqli_query($link, $get_end_hour) or exit("Sql Error2.1111".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $get_end_hour="SELECT HOUR(plant_end_time) as last_time FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1";
+    $sql_result123=mysqli_query($link_new, $get_end_hour) or exit("Sql Error2.1111".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows123=mysqli_fetch_array($sql_result123))
     {
-        $last_time = $rows123['last_time'];
+        $last_time = $rows123['plant_end_time'];
     }
     
     $time_value_pm = $last_time - 8;
-
-	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings LIMIT 1"; 
-	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$start_time_pm = $time_value_pm;
+    $end_time_pm = $time_value_pm + 1.29;
+	$sql22121="SELECT HOUR(plant_start_time) as start_time FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1"; 
+	$sql_result22121=mysqli_query($link_new, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($rows1231=mysqli_fetch_array($sql_result22121))
 	{
-		$start_time_am=$rows1231['start_time'];
-		$end_time_am=$rows1231['end_time'];
+		$start_time_am=$rows1231['plant_start_time'];
 	}
-	$sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$time_value_pm'"; 
-	$sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows125=mysqli_fetch_array($sql_result25))
-	{
-		$start_time_pm=$rows125['start_time'];
-		$end_time_pm=$rows125['end_time'];
-	}
+	$end_time_am= $start_time_am + 1.29;
 
-	$sql="SELECT bac_date,bac_sec,bac_no,bac_shift,nop,SUM(bac_qty) AS bac_qty, GROUP_CONCAT(DISTINCT bac_style) AS bac_style,ROUND(SUM((bac_qty*smv)/60),2) AS sah, (nop*1) AS clh FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty>0 AND bac_date BETWEEN \"$fdate\" AND \"$tdate\" AND ((TIME(bac_lastup) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) OR (TIME(bac_lastup) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))) GROUP BY bac_date,bac_no,bac_shift ORDER BY bac_date,bac_shift,bac_no;";
-	//echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql=$get_details="SELECT GROUP_CONCAT(DISTINCT style) AS style,schedule,color,sum(good_quantity) as qty,resource_id,shift,date(created_at) as bac_date FROM $pts.transaction_log WHERE plant_code='$plant_code' AND ((TIME(created_at) BETWEEN ('".$start_time_am."') AND ('".$end_time_am."')) OR (TIME(created_at) BETWEEN ('".$start_time_pm."') AND ('".$end_time_pm."'))) AND is_active=1 GROUP BY style,schedule,color,resource_id,shift";
+	$sql_result=mysqli_query($link_new, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		echo "<tr>";
-		echo "<td>".$sql_row['bac_date']."</td>";
-		echo "<td>".$sql_row['bac_sec']."</td>";
-		echo "<td>".$sql_row['bac_shift']."</td>";	
-		echo "<td>".$sql_row['bac_no']."</td>";
-		//echo "<td>".$resp_list[$sql_row['bac_no'].$sql_row['bac_shift']]."</td>";
-		echo "<td>".$sql_row['bac_style']."</td>";
-		echo "<td>".$sql_row['delivery']."</td>";
-		echo "<td>".$sql_row['nop']."</td>";
-		
-		
-		$sql1="select plan_eff, round(plan_pro/act_hours,0) as plan_out from $pts.pro_plan where plant_code='$plantcode' and date=\"".$sql_row['bac_date']."\" and mod_no=\"".$sql_row['bac_no']."\" and shift=\"".$sql_row['bac_shift']."\"";
-		//echo $sql1;
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
+		//To get workstation description
+		$query = "select workstation_description from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$sql_row['resource_id']."' AND is_active=1";
+		$query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($des_row=mysqli_fetch_array($query_result))
 		{
-			$plan_eff=$sql_row1['plan_eff'];
-			$plan_out=$sql_row1['plan_out'];
+		  $workstation_description = $des_row['workstation_description'];
 		}
-		echo "<td>$plan_eff</td>";
 		
+		$color=$sql_row['color'];
+		$qty=$sql_row['qty'];
 		
+	
+		//TO caliculate act hours
+		$get_acthours="SELECT * FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1"; 
+		$sql_get_acthours=mysqli_query($link_new, $get_acthours) or exit("Sql sql_get_acthours".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($actrows=mysqli_fetch_array($sql_get_acthours))
+		{
+		   $start_time=$actrows['plant_start_time'];
+		   $end_time=$actrows['plant_end_time'];
+		   $diff_time=$end_time-$start_time;
+		   $act_hrs=$diff_time-0.5;
+		}
+
+		//To get nop,plan_eff,planned_qty
+		$get_planned_details="SELECT sum(planned_qty) as plan_qty,planned_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE row_name='$workstation_description' AND planned_date='".$sql_row['bac_date']."' AND plant_code='$plant_code' AND is_active=1";
+		$get_planned_details_result=mysqli_query($link_new, $get_planned_details) or exit("Sql Error at get_planned_details_result".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($planned_row=mysqli_fetch_array($get_planned_details_result))
+		{
+		   $nop=$planned_row['capacity_factor'];
+		   $plan_eff=$planned_row['planned_eff'];
+		   $plan_qty=$planned_row['plan_qty'];
+		   $clh=$planned_row['clh'];
+		}
 		
-		$act_eff=round((round(($sql_row['sah']/$sql_row['clh'])*100,0)/$plan_eff)*100,2);
+		//caliculation for plan_out
+		$plan_out=round($plan_qty/$act_hrs,0);
+		//To get SMV
+		$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE style='".$sql_row['style']."' AND color='$color' AND plant_code='$plant_code'
+		AND is_active=1";
+		$query_result1=mysqli_query($link_new, $get_smv) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($smv_row=mysqli_fetch_array($query_result1))
+		{
+           $smv=$smv_row['smv'];
+		}
+		//sah caliculation
+		$sah=ROUND((($qty*$smv)/60),2);
+		$act_eff=round((round(($sah/$clh)*100,0)/$plan_eff)*100,2);
 		if($act_eff>=100)
 		{
 			$color="#66FF88";
@@ -314,10 +182,19 @@ if(isset($_POST['submit']))
 				$color="#FF6655";
 			}
 		}
-		echo "<td bgcolor=\"$color\" style=\"color:black;\">".round(($sql_row['sah']/$sql_row['clh'])*100,0)."</td>";
+		echo "<tr>";
+		echo "<td>".$sql_row['bac_date']."</td>";
+		echo "<td></td>";
+		echo "<td>".$sql_row['shift']."</td>";	
+		echo "<td>".$workstation_description."</td>";
+		echo "<td>".$sql_row['style']."</td>";
+		echo "<td>".$sql_row['schedule']."</td>";
+		echo "<td>".$nop."</td>";
+		echo "<td>$plan_eff</td>";
+		echo "<td bgcolor=\"$color\" style=\"color:black;\">".round(($sah/$clh)*100,0)."</td>";
 		echo "<td>".$plan_out."</td>";
-		echo "<td>".$sql_row['bac_qty']."</td>";
-		echo "<td>".round($sql_row['sah'],0)."</td>";
+		echo "<td>".$qty."</td>";
+		echo "<td>".round($sah,0)."</td>";
 		echo "</tr>";
 	}
 	echo "</table>";
