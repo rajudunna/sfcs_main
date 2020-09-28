@@ -82,9 +82,9 @@ $(document).ready(function() {
 <div class = "panel panel-primary">
 <div class = "panel-heading">Cut Docket Allocation Form</div>
 <div class = "panel-body">
-<form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
+<form name="test" method="post">
 <?php
-//function to get style from mp_color_details
+//function to get style from mp_color_details	
 if($plant_code!=''){
 	$result_mp_color_details=getMpColorDetail($plant_code);
 	$get_style=$result_mp_color_details['style'];
