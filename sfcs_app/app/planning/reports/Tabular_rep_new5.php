@@ -368,7 +368,7 @@ if(isset($_POST['submit1']))
 		</form>';
 
 		//To get Total order qty
-		$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code'";
+		$sql2="SELECT mo_quantity AS quantity FROM $oms.`oms_mo_details` WHERE schedule='$schedule' AND plant_code='$plant_code'";
 		$sql_result2=mysqli_query($link, $sql2) or die("Error".$sql2.mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row2=mysqli_fetch_array($sql_result2))
 		{
@@ -466,7 +466,7 @@ if(isset($_POST['submit1']))
 	}
 	else
 	{
-		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found1</p></div><script>$('#main_content').hide();</script>";
+		echo "<div class=' col-sm-12'><p class='alert alert-danger'>No Data Found</p></div><script>$('#main_content').hide();</script>";
 	}
 	
 }

@@ -17,7 +17,7 @@ $plant_code='AIP';
 <div class="panel-heading">Orders Summary Report</div>
 <div class="panel-body">
 <div class="form-group">
-<form name="input" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+<form name="input" method="post" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 <div class="row">
 <div class="col-sm-3">
 

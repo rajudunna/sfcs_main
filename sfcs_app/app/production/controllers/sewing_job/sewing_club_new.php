@@ -191,7 +191,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 	<div id='alert-box' class='deliveryChargeDetail'></div>
 		<form method='post'>
 			<input type='hidden' id='myval' name='myval'>
-			<input type="button" class="btn btn-primary btn-md" id="submit" name="Merge Jobs" value="Merge Jobs" style='display:none;'>
+			<input type="button" class="btn btn-primary btn-md pull-right" id="submit" name="Merge Jobs" value="Merge Jobs" style='display:none;'>
 		</form>
 	</div>
 </div>
@@ -234,17 +234,18 @@ $(document).ready(function()
 			data: inputObj,
             success: function(response) 
             {
-				$('#loading-image').hide();
 				if (response.status) {
 					var jobsInfo = response;
 					if(jobsInfo.data.length > 0){
 						tableConstruction(jobsInfo.data);
 						$('#submit').show();
 					} else {
+						$('#loading-image').hide();
 						swal('','No Jobs found for this Sub Po', 'error');
 						return;
 					}
 				} else {
+					$('#loading-image').hide();
 					swal('',response.internalMessage, 'error');
 					return;
 				}
@@ -301,6 +302,7 @@ function tableConstruction(jobsInfo){
     }
     var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
+	$('#loading-image').hide();
     $("#dynamic_table").show();
     $('#schedule').val('');
     
@@ -320,6 +322,7 @@ function showdet(btn,inpjob,schedule)
 $(document).ready(function() 
 {
 	$('#submit').on('click', function(){
+		$('#loading-image').show();
 		var numberOfChecked = $('input:checkbox:checked').length;
 		if(numberOfChecked > 1) {
 			var jobIds = [];
@@ -339,17 +342,20 @@ $(document).ready(function()
 				success: function(response) 
 				{
 					if (response.status) {
+						$('#loading-image').hide();
 						swal('','Sewing jobs clubbed successfully','success');
 					} else {
+						$('#loading-image').hide();
 						swal('',response.internalMessage,'error');
 					}
+					$("#sub_po").val(document.test.sub_po.value).change();
+					$('#sub_po').trigger('change');
 				}
 			});	
 		}else {
+			$('#loading-image').hide();
 			swal('','Please Select More than One Sewing Job to Club','error');
 		}
-		$('#sub_po').val(document.test.sub_po.value);
-		$('#sub_po').trigger('change');
 	});
 });		
 </script>	

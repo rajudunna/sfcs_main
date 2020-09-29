@@ -13,7 +13,11 @@
 		$edate="";
 	}	
 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));	
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
+$plant_code = $_session['plantCode'];
+$username =  $_session['userName'];	
 ?>
 
 <script type="text/javascript">
@@ -73,9 +77,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				</form>';
 				echo '</div>';
 				echo '</div>';
-
-				$sql_operation="SELECT op_flow.operation_name AS ops_name,op_flow.operation_code AS ops_code 
-				FROM $brandix_bts.tbl_orders_ops_ref AS op_flow LEFT JOIN $brandix_bts.default_operation_workflow AS w_flow ON op_flow.operation_code=w_flow.operation_code WHERE op_flow.display_operations='yes' ORDER BY w_flow.`operation_order`"; 
+                
+				$sql_operation="SELECT operation_code AS ops_code,operation_name AS ops_name FROM $pms.operation_mapping WHERE plant_code='$plant_code' AND is_active=1 ORDER BY operation_code*1"; 
 				$select_opertation=mysqli_query($link,$sql_operation) or exit($sql_operation."Error at something");
 				echo "<div class='table-scroll' id='table-scroll' style='height:500px;overflow-y: scroll;'>";
 				echo '<table class="table table-bordered table-fixed" id="report" name="report">
@@ -110,88 +113,120 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				$smv=array();
 				$sah=array();
 				$query='';
-				$opcodes=implode(',',$operation_codes);	
-				$appilication = 'IMS_OUT';
-				$checking_output_ops_code = "SELECT operation_code from $brandix_bts.tbl_ims_ops where appilication='$appilication'";
-				$result_checking_output_ops_code = $link->query($checking_output_ops_code);
-				if($result_checking_output_ops_code->num_rows > 0)
+				$workstationsArray=getWorkstationsForSectionId($plantCode,$section);
+				foreach($workstationsArray as $workStation)
 				{
-					while($row_result_checking_output_ops_code = $result_checking_output_ops_code->fetch_assoc()) 
-					{
-					   $output_ops_code = $row_result_checking_output_ops_code['operation_code'];
-					}
-				}
-				else
-				{
-					$output_ops_code = 130;
-				}
-				
-				for ($jj=0; $jj< count($operation_codes); $jj++) 
-				{
-					if($operation_codes[$jj]== $output_ops_code)
-					{
-						$query .= "sum(if(operation_id=".$operation_codes[$jj].",recevied_qty,0)) as good_".$operation_codes[$jj].",sum(if(operation_id=".$operation_codes[$jj].",rejected_qty,0)) as reject_".$operation_codes[$jj].",MAX(sfcs_smv) as smv,";
-					}
-					else
-					{
-						$query .= "sum(if(operation_id=".$operation_codes[$jj].",recevied_qty,0)) as good_".$operation_codes[$jj].",sum(if(operation_id=".$operation_codes[$jj].",rejected_qty,0)) as reject_".$operation_codes[$jj].",";
-					}
-				}
-				$selectSQL = "SELECT DATE(date_time) as dates,assigned_module,shift,style,SCHEDULE,color,$query size_title FROM 
-				$brandix_bts.`bundle_creation_data_temp` WHERE date_time BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' 
-				GROUP BY DATE(date_time),assigned_module,shift,style,SCHEDULE,color,size_title";
-				//echo $selectSQL."<br>";
-				//die();
-				$selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at retirieving the info");
-				while($row = mysqli_fetch_assoc( $selectRes ))
-				{                                                    
-					$tid[]=$i;
-					$date[$i]=$row['dates'];
-					$mod[$i]=$row['assigned_module'];
-					$shift[$i]=$row['shift'];
-					$style[$i] = $row['style'];
-					$schedule[$i] = $row['SCHEDULE'];
-					$color[$i] = $row['color'];
-					$size_title[$i] = $row['size_title'];
-					for ($jjj=0; $jjj< count($operation_codes); $jjj++) 
-					{					
-						if($row['smv']>0)
+					$jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$workStation['workstationId']);
+					if(sizeof($jobsArray)>0)
 						{
-							if($output_ops_code==$operation_codes[$jjj])
+							foreach($jobsArray as $job)     
 							{
-								$sah[$i] = round($row["good_".$operation_codes[$jjj].""]*$row['smv']/60,2);
-								$smv[$i] = $row['smv'];
+								/**
+								 * getting min and max operations
+								 */
+								$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+								$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+								if(mysqli_num_rows($maxOperationResult)>0){
+									while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+										$maxOperation=$maxOperationResultRow['operation_code'];
+									}
+								}
+								$barcode_type=BarcodeType::PPLB;
+								$bundlesQry = "select GROUP_CONCAT(CONCAT('''', jm_job_bundle_id, '''' ))AS jmBundleIds,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id ='".$job['taskJobRef']."' and plant_code='$plant_code' AND is_active=1";
+								$bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($bundleRow=mysqli_fetch_array($bundlesResult))
+								{
+									$jmBundleIds=$bundleRow['jmBundleIds'];
+									if($jmBundleIds!=''){
+										$barcodesQry = "select barcode from $pts.barcode where external_ref_id in ($jmBundleIds) and barcode_type='$barcode_type' and plant_code='$plant_code' AND is_active=1";
+										$barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$originalBarcode=array();
+										while($barcodeRow=mysqli_fetch_array($barcodeResult))
+										{   
+											$originalBarcode[]=$barcodeRow['barcode'];
+										}
+									}
+
+								}
+								for ($jj=0; $jj< count($operation_codes); $jj++) 
+								{
+								
+									$query .= "sum(if(operation_id=".$operation_codes[$jj].",good_quantity,0)) as good_".$operation_codes[$jj].",sum(if(operation_id=".$operation_codes[$jj].",rejected_quantity,0)) as reject_".$operation_codes[$jj].",";
+								
+								}
+								$selectSQL = "SELECT DATE(created_at) as dates,resource_id,shift,style,schedule,color,$query size FROM 
+								$pts.`transaction_log` WHERE bundle_number IN ('".implode("','" , $originalBarcode)."') AND created_at BETWEEN '".$sdate."' AND '".$edate."' AND plant_code='$plant_code' AND is_active=1 GROUP BY DATE(created_at),resource_id,shift,style,schedule,color,size";
+								//echo $selectSQL."<br>";
+								//die();
+								$selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at retirieving the info");
+								while($row = mysqli_fetch_assoc( $selectRes ))
+								{                                                    
+									$tid[]=$i;
+									$date[$i]=$row['dates'];
+									$mod[$i]=$row['resource_id'];
+									$shift[$i]=$row['shift'];
+									$style[$i] = $row['style'];
+									$schedule[$i] = $row['schedule'];
+									$color[$i] = $row['color'];
+									$size_title[$i] = $row['size'];
+									for ($jjj=0; $jjj< count($operation_codes); $jjj++) 
+									{
+										//To get SMV
+										$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE style='".$style[$i]."' AND color='$color[$i]' AND plant_code='$plant_code' AND is_active=1";
+										$query_result1=mysqli_query($link_new, $get_smv) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($smv_row=mysqli_fetch_array($query_result1))
+										{
+										  $smv_row=$smv_row['smv'];
+										}					
+										if($smv_row>0)
+										{
+											if($maxOperation==$operation_codes[$jjj])
+											{
+												$sah[$i] = round($row["good_".$operation_codes[$jjj].""]*$smv_row/60,2);
+												$smv[$i] = $smv_row;
+											}
+										}
+										else
+										{
+											$sah[$i]=0;
+										}
+										$good[$i][$operation_codes[$jjj]]=$row["good_".$operation_codes[$jjj].""];
+										$reject[$i][$operation_codes[$jjj]]=$row["reject_".$operation_codes[$jjj].""];
+									}					
+									$i++;
+								}
+								for($ii=0;$ii<$i;$ii++)
+								{ 
+									//To get workstation description
+									$query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$mod[$ii]' AND is_active=1";
+									$result3 = $link->query($query_get_workdes);
+									while($des_row = $result3->fetch_assoc())
+									{
+										$workstation_code = $des_row['workstation_code'];
+									}                                    
+								   echo "<tr><td>".$date[$ii]."</td><td>".$workstation_code."</td><td>".$shift[$ii]."</td><td>".$style[$ii]."</td><td>".$schedule[$ii]."</td><td>".$color[$ii]."</td><td>".$size_title[$ii]."</td>";
+								   
+											   
+									for ($j=0; $j< count($operation_codes); $j++) 
+									{
+										if($good[$ii][$operation_codes[$j]]==""){
+											echo "<td>0</td>";
+										}else{
+											 echo "<td>".$good[$ii][$operation_codes[$j]]."</td>";
+										}
+										
+										if($reject[$ii][$operation_codes[$j]]==""){
+											echo "<td>0</td>";
+										}else{
+											 echo "<td>".$reject[$ii][$operation_codes[$j]]."</td>";
+										}						
+									}
+									echo "<td>".$sah[$ii]."</td></tr>";
+								}
+
 							}
+
 						}
-						else
-						{
-							$sah[$i]=0;
-						}
-						$good[$i][$operation_codes[$jjj]]=$row["good_".$operation_codes[$jjj].""];
-						$reject[$i][$operation_codes[$jjj]]=$row["reject_".$operation_codes[$jjj].""];
-					}					
-					$i++;
-				}
-				for($ii=0;$ii<$i;$ii++)
-				{                                     
-				   echo "<tr><td>".$date[$ii]."</td><td>".$mod[$ii]."</td><td>".$shift[$ii]."</td><td>".$style[$ii]."</td><td>".$schedule[$ii]."</td><td>".$color[$ii]."</td><td>".$size_title[$ii]."</td>";
-				   
-				   			
-					for ($j=0; $j< count($operation_codes); $j++) 
-					{
-						if($good[$ii][$operation_codes[$j]]==""){
-							echo "<td>0</td>";
-						}else{
-							 echo "<td>".$good[$ii][$operation_codes[$j]]."</td>";
-						}
-						
-						if($reject[$ii][$operation_codes[$j]]==""){
-							echo "<td>0</td>";
-						}else{
-							 echo "<td>".$reject[$ii][$operation_codes[$j]]."</td>";
-						}						
-					}
-					echo "<td>".$sah[$ii]."</td></tr>";
 				}
 				?>
 				</tbody>
