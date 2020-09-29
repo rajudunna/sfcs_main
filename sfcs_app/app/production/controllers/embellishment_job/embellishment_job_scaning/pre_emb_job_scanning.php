@@ -66,12 +66,12 @@ $configuration_bundle_print_array = ['0'=>'Bundle Level','1'=>'Job Level'];
                 <input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
                 <div class="col-md-1">
                     <br>
-                    <button type='submit' value='Continue with Embellishment' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=embellishment';?>' style="margin-top: 4px;">Continue with Embellishment</button>
+                    <button type='submit' value='Continue with Embellishment' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=embellishment';?>' style="margin-top: 4px;">Submit</button>
                 </div>
-                
+                                
                 <div class="col-md-1">
                     <br>
-                    <button type='submit' value='Continue with Sewing' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=sewing';?>' style="margin-top: 4px;;margin-left: 150px;">Continue with Sewing</button>
+                    <button type='submit' value='Continue with Sewing' name='SUBMIT' class='btn btn-primary' formaction='<?=$url.'&type=sewing';?>' style="margin-top: 4px;;margin-left: 20px;">Continue with Sewing</button>
                 </div>
 			</div>
 		</div>
