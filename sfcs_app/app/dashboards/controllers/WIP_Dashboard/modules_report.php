@@ -293,7 +293,7 @@ if(isset($_POST['submit']))
 		                                        $recevied_qty=$sql_row['recevied_qty'];
 		                                    }
 											//Get date
-											$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data where bundle_number=$bundle and operation_id=$operation_code";
+											$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data_temp where bundle_number=$bundle and operation_id=$pre_ops_code";
 		                                    $sql_result561=mysqli_query($link, $bundle_check_qty1) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 		                                    while($sql_row1=mysqli_fetch_array($sql_result561))
 		                                    {

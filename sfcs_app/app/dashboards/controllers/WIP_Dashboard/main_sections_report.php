@@ -251,7 +251,7 @@ $operation=$_GET['operations'];
 						}
 						
 						//Get date
-						$bundle_check_qty1="select  min(date(date_time)) as daten from $brandix_bts.bundle_creation_data where bundle_number=$bundle_number and operation_id=$operation limit 1";
+						$bundle_check_qty1="select  min(date(date_time)) as daten from $brandix_bts.bundle_creation_data_temp where bundle_number=$bundle_number and operation_id=$pre_ops_code";
 						$sql_result561=mysqli_query($link, $bundle_check_qty1) or exit("Sql bundle_check_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row1=mysqli_fetch_array($sql_result561))
 						{

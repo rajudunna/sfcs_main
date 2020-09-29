@@ -314,7 +314,7 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 						}
 
 		                $get_rejected_qty="select sum(rejected_qty) as rejected,operation_id,size_title from $brandix_bts.bundle_creation_data where assigned_module='$module' and input_job_no_random_ref = '$job_no' and operation_id=$operation and size_title='$sizes'";
-						$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data where input_job_no_random_ref = '$job_no' and operation_id=$operation";
+						$bundle_check_qty1="select min(date(date_time)) as daten from $brandix_bts.bundle_creation_data_temp where input_job_no_random_ref = '$job_no' and operation_id=$pre_ops_code";
 						
 		                //getting selection and apend result to query
 						if(isset($_POST['submit']))
