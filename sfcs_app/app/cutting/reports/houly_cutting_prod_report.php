@@ -11,7 +11,7 @@ $username = $_SESSION['userName'];
 <div class="panel panel-primary">
 	<div class="panel-heading">Hourly Cutting Production Report</div>
 	<div class="panel-body">
-		<form method="post" class="form-inline" name="input" action="index.php?r=<?php echo $_GET['r']; ?>">
+		<form method="post" class="form-inline" name="input" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 			<div class="form-group">
 				<label for="date">Enter Date:</label>
 				<input type="text" data-toggle="datepicker" id="from_date" class="form-control" name="from_date" size=12 value="<?php  if(isset($_POST['from_date'])) { echo $_POST['from_date']; } else { echo date("Y-m-d"); } ?>"> 

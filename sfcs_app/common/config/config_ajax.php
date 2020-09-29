@@ -83,6 +83,7 @@ $sizes_title=array('S01','S02','S03','S04','S05','S06','S07','S08','S09','S10','
 
 //TaskAttributeNamesEnum
 $sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP','remarks'=>'REMARKS','conumber'=>'CONUMBER'];
-
+//FabricAttributesEnum
+$fabric_lay_attributes=['fabricrecevied'=>'FABRICRECEIVED','fabricreturned'=>'FABRICRETURNED','shortages'=>'SHORTAGES','damages'=>'DAMAGES','endbits'=>'END-BITS','joints'=>'JOINTS'];
 
 ?>

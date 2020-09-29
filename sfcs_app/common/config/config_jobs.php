@@ -180,7 +180,10 @@ $command ="webshotcmd /url 'http://$http_host/sfcs_app/app/jobs/planning/SAH_Cou
 // quality->critical rejection 
 $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
-
+//TaskAttributeNamesEnum
+$sewing_job_attributes=['style'=>'STYLE','schedule'=>'SCHEDULE','color'=>'COLOR','ponumber'=>'PONUMBER','masterponumber'=>'MASTERPONUMBER','cutjobno'=>'CUTJOBNO','docketno'=>'DOCKETNO','sewingjobno'=>'SEWINGJOBNO','bundleno'=>'BUNDLENO','packingjobno'=>'PACKINGJOBNO','cartonno'=>'CARTONNO','componentgroup'=>'COMPONENTGROUP','remarks'=>'REMARKS','conumber'=>'CONUMBER'];
+//FabricAttributesEnum
+$fabric_lay_attributes=['fabricrecevied'=>'FABRICRECEIVED','fabricreturned'=>'FABRICRETURNED','shortages'=>'SHORTAGES','damages'=>'DAMAGES','endbits'=>'END-BITS','joints'=>'JOINTS'];
 ?>
 
 

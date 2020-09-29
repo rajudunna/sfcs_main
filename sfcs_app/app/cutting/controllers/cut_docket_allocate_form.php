@@ -19,29 +19,29 @@ $username=$_SESSION['userName'];
 
 function firstbox()
 {
-	window.location.href ="<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value
+	window.location.href ="<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value
 }
 
 function secondbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value;
 	window.location.href = uriVal;
 }
 
 function thirdbox()
 {
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value);
 	window.location.href = uriVal;
 }
 
 function forthbox() 
 { 
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value;
 	window.location.href = uriVal;
 }
 function fifthbox() 
 { 
-	var uriVal = "<?= 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+	var uriVal = "<?= 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+encodeURIComponent(document.test.color.value)+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
 	window.location.href = uriVal;
 }
 
@@ -82,9 +82,9 @@ $(document).ready(function() {
 <div class = "panel panel-primary">
 <div class = "panel-heading">Cut Docket Allocation Form</div>
 <div class = "panel-body">
-<form name="test" action="?r=<?php echo $_GET['r']; ?>" method="post">
+<form name="test" method="post">
 <?php
-//function to get style from mp_color_details
+//function to get style from mp_color_details	
 if($plant_code!=''){
 	$result_mp_color_details=getMpColorDetail($plant_code);
 	$get_style=$result_mp_color_details['style'];

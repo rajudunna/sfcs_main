@@ -15,7 +15,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new_emb.php',0,'N');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$category="'sewing'";
+$category="'EMBELLISHMENT'";
 
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
@@ -44,7 +44,7 @@ $category="'sewing'";
 	<select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
 		<?php 
-		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
+		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='EMBELLISHMENT'";
 		$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{

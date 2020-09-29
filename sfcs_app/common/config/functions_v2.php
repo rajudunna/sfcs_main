@@ -860,7 +860,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
                            $task_id= $job_id_row['task_jobs_id'];
-                           $jobs_trims_insert="INSERT INTO $pps.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                           $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
                            $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         } 
                         
