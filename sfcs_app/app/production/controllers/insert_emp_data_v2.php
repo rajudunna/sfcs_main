@@ -18,20 +18,20 @@ if($count == 0){
 	mysqli_query($link, $sql2) or exit("Sql Errorc $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
 $modules_array = array();	$modules_id_array=array();
-$get_modules = "SELECT DISTINCT workstation_code, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_code*1";
+$get_modules = "SELECT DISTINCT workstation_description, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_id*1";
 $modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 while($module_row=mysqli_fetch_array($modules_result))
 {
-	$modules_array[]=$module_row['workstation_code'];
+	$modules_array[]=$module_row['workstation_description'];
 	$modules_array1[]=$module_row['workstation_id'];
-	$modules_id_array[$module_row['workstation_code']]=$module_row['workstation_id'];
+	$modules_id_array[$module_row['workstation_description']]=$module_row['workstation_id'];
 }
 
 for($i=0;$i<sizeof($modules_array);$i++)
 {
 	$pra_id = 'pra'.$modules_array1[$i];
 	$aba_id = 'aba'.$modules_array1[$i];
-	// echo $i."--present---".$_POST[$pra_id]."<br>";
+	//  echo $i."--present---".$_POST[$pra_id]."<br>";die();
 	// echo $i."--Absent---".$_POST[$aba_id]."<br>";
 	// $attenid=$date."-".$modules_array[$i];
 	$sqla="Select * from $pms.pro_attendance where plant_code='$plantcode' and date=\"$date\" and module=\"$modules_array1[$i]\" and shift='".$shift."'";
