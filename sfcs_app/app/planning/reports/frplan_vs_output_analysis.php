@@ -168,7 +168,7 @@ function getDaysInBetween($start, $end)
 			$table .= "</tr>";
 			// **************************** NEW ***************************
 			// Get production plan upload data for given date
-			$sql = "SELECT DISTINCT(row_name) AS work_station, GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
+			$sql = "SELECT DISTINCT(row_name) AS work_station, GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
 
 			$res = mysqli_query($link, $sql);
 			$frdayWisetotalQty = [];
@@ -181,19 +181,21 @@ function getDaysInBetween($start, $end)
 				$workstationResult = mysqli_query($link, $workstationIdQuery);
 				$workstationRow = mysqli_fetch_row(($workstationResult));
 				$workstationId = $workstationRow[0];
+				 
 				echo "<tr> 
 				<td>" . $row['work_station'] . " </td>
 				<td>" . $row['style'] . " </td>";
 				$table .= "<tr> <td>" . $row['work_station'] . " </td>	<td>" . $row['style'] . " </td>";
-				$style = str_replace(",","','",$styles);
+				 $style = str_replace(",","','",$styles);
+				 
 				for ($i = 0; $i < sizeof($dates_between); $i++) {
 					// Get Planned quantity for selected date and workstation
-					$sql_get_planned_qty = "SELECT sum(planned_qty) as planned_qty FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where row_name = '" . $workstationCode . "' AND  product_code IN ('" . $style . "') AND plant_code = '" . $plantcode . "' and planned_date ='" . $dates_between[$i] . "'";
+					$sql_get_planned_qty = "SELECT sum(planned_qty) as planned_qty FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where row_name = '" . $workstationCode . "' AND  product_code IN ('" . $style . "') AND plant_code = '" . $plantcode . "' and planned_date ='" . $dates_between[$i] . "'";
 					$res_planned_qty = mysqli_query($link, $sql_get_planned_qty);
 					$row_planned_qty = mysqli_fetch_row($res_planned_qty);
 					$planned_qty = $row_planned_qty[0] ? $row_planned_qty[0] : 0;
 					$frdayWisetotalQty[$i] = $frdayWisetotalQty[$i] + $planned_qty;
-
+					
 					//============== Get reported quantity ==========================//
 					$sqlReportedQty = "SELECT sum(good_quantity) as quantity FROM $pts.transaction_log WHERE resource_id='" . $workstationId . "' AND created_at BETWEEN '" . $dates_between[$i] . "00:00:00' AND '" . $dates_between[$i]  . "23:59:59' AND plant_code ='" . $plantcode . "' AND operation='130'";
 					$resultQty = mysqli_query($link, $sqlReportedQty);
