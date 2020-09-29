@@ -7,7 +7,7 @@ $schedule=$_GET['schedule'];
 $color=$_GET['color'];
 $mpo=$_GET['mpo'];
 $ponum=$_GET['ponum'];
-$cut_number=$_GET['cut_number'];
+$cut_number_get=$_GET['cut_number'];
 $plant_code=$_GET['plant_code'];
 
 //getting cut number based on po number
@@ -42,8 +42,20 @@ while($sql_row_cut=mysqli_fetch_array($get_cut_number_qry_result))
 		}
 	}
 }
-$docketdetials="select * from $pps.docket_roll_info where plant_code='$plantcode' and docket=".$doc_no." order by shade";
-$docketdetials_result=mysqli_query($link, $docketdetials) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+$get_doclinenum_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
+$get_doclinenum_qry_result=mysqli_query($link, $get_doclinenum_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row_jmline=mysqli_fetch_array($get_doclinenum_qry_result))
+{
+	$jm_docket_line_id=$sql_row_jmline['jm_docket_line_id'];
+	
+	$get_bundle_no="SELECT docket_bundle_number FROM $pps.`jm_docket_bundle` WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plant_code'";
+	$get_bundle_no_result=mysqli_query($link, $get_bundle_no) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_bunno=mysqli_fetch_array($get_bundle_no_result))
+	{
+		$bundle_no[] = $sql_row_bunno['docket_bundle_number'];
+	}
+}
 
 ?>
 
@@ -513,7 +525,7 @@ tags will be replaced.-->
   <td colspan=2 class=xl70305>Style:</td>
   <td colspan=3 class=xl68305><?php echo $style;?></td>
   <td colspan=2 class=xl69305>Cut Number:</td>
-  <td colspan=2 class=xl68305><?php echo $cut_number;?></td>
+  <td colspan=2 class=xl68305><?php echo $cut_number_get;?></td>
   <td class=xl15305></td>
   <td class=xl15305></td>
   <td class=xl67305>&nbsp;</td>
@@ -556,7 +568,8 @@ $temp = 0;
 $temp_len1 = 0;
 $temp_len = 0;
 $divide=10;
-for($j=0;$j<sizeof($sizesarr);$j++)
+
+for($j=0;$j<sizeof(array_unique($sizesarr));$j++)
 {
 	if($temp == 0){
 	echo "<table border=0 cellpadding=0 cellspacing=0 width=300 style='border-collapse:collapse;table-layout:fixed;'><tr style='margin-top:5pt;'>";
@@ -564,19 +577,32 @@ for($j=0;$j<sizeof($sizesarr);$j++)
         $temp = 1;
     }
     echo  "<td class=xl73305a style='background-color: gainsboro;'>".$sizesarr[$j]."</td>";
-    if(($j+1) % $divide == 0){
+    // if(($j+1) % $divide == 0){
         $temp_len = $j+1;
         echo "</tr>";
         echo "<tr>
             <td class=xl73305a>Quantity</td>";
         	for($i=$temp_len1;$i<$temp_len;$i++) 
 			{
-                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$sizesarr[$j]."</td>";
+				$get_doclinenum_qry="SELECT jm_docket_line_id FROM $pps.`jm_docket_lines` WHERE docket_line_number='$doc_no' AND plant_code='$plant_code'";
+				$get_doclinenum_qry_result=mysqli_query($link, $get_doclinenum_qry) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row_jmline=mysqli_fetch_array($get_doclinenum_qry_result))
+				{
+					$jm_docket_line_id=$sql_row_jmline['jm_docket_line_id'];
+					
+					$get_bundle_no="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_bundle` WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plant_code' and size='".$sizesarr[$j]."'";
+					$get_bundle_no_result=mysqli_query($link, $get_bundle_no) or exit("Sql Error while getting cutno".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($sql_row_bunno=mysqli_fetch_array($get_bundle_no_result))
+					{
+						$quantity = $sql_row_bunno['quantity'];
+					}
+				}
+                echo "<td class=xl73305a style='border-top:none;text-align:center;'>".$quantity."</td>";
 			}
         echo "</tr>";
         $temp = 0;
         $temp_len1=$temp_len;
-    }
+    // }
 	echo "</table><br/>";
 }
 ?>
@@ -610,28 +636,7 @@ for($j=0;$j<sizeof($sizesarr);$j++)
 </table>
 </div>
 <br><br>
-<div id="bundle_guide_305" align="left" x:publishsource="Excel" style="margin-left:60px;">
-<table border=0 cellpadding=0 cellspacing=0 width=600 style='border-collapse:
- collapse;table-layout:fixed;'>
 
-<tr height=19 style='height:14.4pt'>
-  <td class=xl73305 style='background-color: gainsboro;'>Laysequence</td>
-  <td class=xl73305 style='background-color: gainsboro;'>Shade</td>
-  <td class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Total Plies</td>
- </tr>
-			<?php 
-			while($docketdetials_row=mysqli_fetch_array($docketdetials_result))
-			{	
-				?>
-			<tr height=19 style='height:14.4pt'>
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['lay_sequence']; ?></td>			
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['shade']; ?></td>
-			<td class=xl75305 style='border-top:none;text-align:center;'><?php echo $docketdetials_row['reporting_plies']; ?></td>
-			</tr>				
-			<?php
-		}?>
-</table>
-</div>
 <br><br><br>
 <div id="bundle_guide_305" align="left" x:publishsource="Excel">
 
@@ -643,12 +648,12 @@ for($j=0;$j<sizeof($sizesarr);$j++)
 
  <tr height=19 style='height:14.4pt'>
   <td height=19 class=xl15305 style='height:14.4pt'></td>
-  <td colspan=2 rowspan=2 class=xl73305 style='background-color: gainsboro;'>RM Color Code</td>
   <td colspan=3 rowspan=2 class=xl73305 style='background-color: gainsboro;'>Color</td>
+  <!---<td colspan=3 rowspan=2 class=xl73305 style='background-color: gainsboro;'>Color</td>--->
   <td rowspan=2 class=xl73305 style='background-color: gainsboro;'>Size</td>
   <td rowspan=2 class=xl73305 style='background-color: gainsboro;'>Bundle No</td>
-  <td rowspan=2 class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Shade Bundle No</td>
-  <td rowspan=2 class=xl73305 style='background-color: gainsboro;'>Shade</td>
+  <!---<td rowspan=2 class=xl74305 width=70 style='width:53pt;background-color: gainsboro;'>Shade Bundle No</td>
+  <td rowspan=2 class=xl73305 style='background-color: gainsboro;'>Shade</td>--->
   <td rowspan=2 class=xl74305 width=64 style='width:48pt;background-color: gainsboro;' >Bundle Start No</td>
   <td rowspan=2 class=xl74305 width=64 style='width:48pt;background-color: gainsboro;' >Bundle End No</td>
   <td rowspan=2 class=xl73305 style='background-color: gainsboro;'>Qty</td>
@@ -663,16 +668,18 @@ for($j=0;$j<sizeof($sizesarr);$j++)
 	<?php
 	//	var_dump($bundle_no);
 	$bundle=0;
+	$bundlestart=1;
 	for($i=0;$i<sizeof($bundle_no);$i++)
 	{	
-		$getdetails21="SELECT shade_bundle,bundle_start,bundle_end,shade,sum(qty) as qty FROM $pps.docket_number_info where plant_code='$plantcode' and doc_no=".$doc_no." and bundle_no=".$bundle_no[$i]." group by id order by id";
+		$getdetails21="SELECT docket_bundle_number,fg_color,size,quantity,org_db_number from $pps.jm_docket_bundle where docket_bundle_number='".$bundle_no[$i]."' and plant_code='$plant_code'";
 		$getdetailsresult1 = mysqli_query($link,$getdetails21);
 		while($sql_row1=mysqli_fetch_array($getdetailsresult1))
-		{			
+		{	
+			$bundleend=($bundlestart+$sql_row1['quantity'])-1;
 			?>
 			<td height=19 class=xl15305 style='height:14.4pt'></td>
-			<td colspan=2 class=xl75305><?php echo $compo_no; ?></td>
-			<td colspan=3 class=xl75305 style='border-left:none'><?php echo $color; ?></td>	
+			<td colspan=3 class=xl75305><?php echo $color; ?></td>
+			<!---<td colspan=3 class=xl75305 style='border-left:none'><?php echo $color; ?></td>--->	
 			<?php
 			if($bundle==$bundle_no[$i])
 			{				
@@ -684,19 +691,20 @@ for($j=0;$j<sizeof($sizesarr);$j++)
 			else
 			{	
 			?>
-				<td class=xl75305 style='border-top:none;border-left:none'><?php echo $size[$i]; ?></td>
+				<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['size']; ?></td>
 				<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundle_no[$i]; ?></td>
 			<?php	
 			}	
 			?>
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade_bundle']; ?></td>			
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade']; ?></td>
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['bundle_start']; ?></td>
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['bundle_end']; ?></td>
-			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['qty']; ?></td>
+			<!---<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade_bundle']; ?></td>			
+			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['shade']; ?></td>--->
+			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundlestart; ?></td>
+			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $bundleend; ?></td>
+			<td class=xl75305 style='border-top:none;border-left:none'><?php echo $sql_row1['quantity']; ?></td>
 			<td class=xl15305></td>
 			</tr>				
 			<?php
+			$bundlestart=$bundleend+1;
 			$bundle=$bundle_no[$i];
 		}
 	}
