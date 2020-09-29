@@ -249,19 +249,19 @@ function check_val()
 													
 													//}
 													
-                                                        $pack_bundles111="SELECT * FROM `bai_pro3`.`packing_summary_input` WHERE tid not in ($bundle_nums) and order_del_no='".$schedule."'";
-                                                        //echo "PAcking summary :".$pack_bundles111."</br>"; 
-                                                        $pack_bundles12=mysqli_query($link,$pack_bundles111) or exit($pack_bundles."Error at something");
-                                                        if(mysqli_num_rows($pack_bundles12)>0)
-                                                        {
-                                                            while($row_2112 = mysqli_fetch_assoc( $pack_bundles12)){
-                                                            $data_array_input[$row_2112['tid']] = $row_2112['input_job_no'];
-                                                            $data_array_col[$row_2112['tid']] = $row_2112['order_col_des'];
-                                                            $data_array_size[$row_2112['tid']] = $row_2112['size_code'];
-                                                            $data_array_qty[$row_2112['tid']] = $row_2112['carton_act_qty'];
-                                                            $tot_bundles[]=$row_2112['tid'];
-                                                            }
-                                                        }
+                                                        // $pack_bundles111="SELECT * FROM `bai_pro3`.`packing_summary_input` WHERE tid not in ($bundle_nums) and order_del_no='".$schedule."'";
+                                                        // //echo "PAcking summary :".$pack_bundles111."</br>"; 
+                                                        // $pack_bundles12=mysqli_query($link,$pack_bundles111) or exit($pack_bundles."Error at something");
+                                                        // if(mysqli_num_rows($pack_bundles12)>0)
+                                                        // {
+                                                        //     while($row_2112 = mysqli_fetch_assoc( $pack_bundles12)){
+                                                        //     $data_array_input[$row_2112['tid']] = $row_2112['input_job_no'];
+                                                        //     $data_array_col[$row_2112['tid']] = $row_2112['order_col_des'];
+                                                        //     $data_array_size[$row_2112['tid']] = $row_2112['size_code'];
+                                                        //     $data_array_qty[$row_2112['tid']] = $row_2112['carton_act_qty'];
+                                                        //     $tot_bundles[]=$row_2112['tid'];
+                                                        //     }
+                                                        // }
                                                     $tot_bundles=array_values(array_unique($tot_bundles));
                                                     for($i=0;$i<sizeof($tot_bundles);$i++)
                                                     {                                     
