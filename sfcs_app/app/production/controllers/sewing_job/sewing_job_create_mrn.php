@@ -254,8 +254,8 @@
                       $operations_version_id = $row14['operations_version_id'];
 					}
 					$op_code1=1;
-					$result_mrn_operation=getJobGroups($style,$color,$plant_code,$operations_version_id);
-					$operation_codes=$result_mrn_operation['styleColorOps'];
+					$result_mrn_operation=getJobOpertions($style,$color,$plant_code,$operations_version_id);
+					$operation_codes=$result_mrn_operation;
 					foreach($operation_codes as $key){
 						
 						if($op_code1  == $key['operationCode'])
