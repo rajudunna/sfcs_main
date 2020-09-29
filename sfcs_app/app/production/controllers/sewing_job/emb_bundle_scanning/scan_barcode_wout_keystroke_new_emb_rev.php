@@ -172,11 +172,11 @@ function tableConstruction(res){
 		$('#dynamic_table1').html('');
 			var hidden_class='';
 			
-            var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>#</th><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
+            var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Bundle Number</th><th>Operation Code</th><th>Style</th><th>Color</th><th>Size</th><th>Reported Good Qty</th><th>Remarks</th></tr></thead><tbody>";
             $("#dynamic_table1").append(markup);
         
            
-			var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>#</td><td data-title='bundlenumber'>"+res.data.bundleBrcdNumber+"</td><td data-title='operation'>"+res.data.operationCode+"</td><td data-title='style'>"+res.data.style+"</td><td data-title='fgColor'>"+res.data.fgColor+"</td><td data-title='size'>"+res.data.size+"</td><td data-title='goodQty'>"+res.data.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
+			var markup1 = "<tr class="+hidden_class+"><td data-title='bundlenumber'>"+res.data.bundleBrcdNumber+"</td><td data-title='operation'>"+res.data.operationCode+"</td><td data-title='style'>"+res.data.style+"</td><td data-title='fgColor'>"+res.data.fgColor+"</td><td data-title='size'>"+res.data.size+"</td><td data-title='goodQty'>"+res.data.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 			

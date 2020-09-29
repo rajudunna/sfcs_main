@@ -15,7 +15,7 @@ include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new_emb.php',0,'N');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$category="'sewing'";
+$category="'EMBELLISHMENT'";
 
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
