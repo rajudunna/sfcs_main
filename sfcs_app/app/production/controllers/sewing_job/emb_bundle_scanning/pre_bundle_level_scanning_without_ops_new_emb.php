@@ -44,7 +44,7 @@ $category="'EMBELLISHMENT'";
 	<select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
 		<?php 
-		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
+		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='EMBELLISHMENT'";
 		$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{
