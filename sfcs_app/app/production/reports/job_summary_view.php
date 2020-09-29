@@ -5,28 +5,11 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+$plantcode='AIP';
 
-// $username_list=explode('\\',$_SERVER['REMOTE_USER']);
-// $username=strtolower($username_list[1]);
-
-/*$author_id_db=array("kirang","chathurangad","dinushapre","sudathra","neilja","rameshk","gayanbu");
-if(in_array($username,$author_id_db))
-{
-	
-}
-else
-{
-	header("Location:../restricted.php");
-}*/
 ?>
 
 <style>
-body
-{
-	/* font-family:calibri;
-	font-size:12px; */
-}
-
 table tr
 {
 	border: 1px solid black;
@@ -38,7 +21,7 @@ table td
 {
 	border: 1px solid black;
 	text-align: right;
-white-space:nowrap; 
+	white-space:nowrap; 
 }
 
 table th
@@ -64,10 +47,6 @@ table{
 	font-size:12px;
 }
 
-
-}
-
-}
 </style>
 
 <style rel="stylesheet" type="text/css">
@@ -83,18 +62,7 @@ float:right;
 
 
 <style type="text/css" media="screen">
-/*====================================================
-	- HTML Table Filter stylesheet
-=====================================================*/
-/* @import "../TableFilter_EN/filtergrid.css"; */
 
-/*====================================================
-	- General html elements
-=====================================================*/
-body{ 
-	/* margin:15px; padding:15px; border:1px solid #666; */
-	/* font-family:Arial, Helvetica, sans-serif; font-size:88%;  */
-}
 h2{ margin-top: 50px; }
 caption{ margin:10px 0 0 5px; padding:10px; text-align:left; }
 pre{ font-size:13px; margin:5px; padding:5px; background-color:#f4f4f4; border:1px solid #ccc;  }
@@ -108,9 +76,6 @@ div.tools input{ background-color:#f4f4f4; border:2px outset #f4f4f4; margin:2px
 .mytable td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; white-space: nowrap;}
 
 </style>
-<!-- <script language="javascript" type="text/javascript" src="../TableFilter_EN/actb.js"></script>External script
-<script language="javascript" type="text/javascript" src="../TableFilter_EN/tablefilter.js"></script> -->
-
 <script>
 
 function enable_button()
@@ -151,12 +116,12 @@ jQuery(document).ready(function($){
    });
 });
 
-function check_sch()
+function check_spo()
 {
-	var sch=document.getElementById('schedule').value;
-	if(sch=='')
+	var spo=document.getElementById('sub_po').value;
+	if(spo=='')
 	{
-		sweetAlert('Please Enter Schedule','','warning')
+		sweetAlert('Please Select Sub PO','','warning')
 		return false;
 
 	}
@@ -165,20 +130,36 @@ function check_sch()
 </script>
 
 <div class="panel panel-primary">
-<div class="panel-heading">Schedule Wise Job Reconciliation Report</div>
+<div class="panel-heading">Sub PO Wise Job Reconciliation Report</div>
 <div class="panel-body">
 
 <?php $phppageurl = getFullURL($_GET['r'],'print_input_sheet_ch.php','N'); ?>
 <form name="filter" method="post" action="<?= $phppageurl ?>">
 <div class="row">
-	<div class="col-md-3"></div>
-	<div class="col-md-3">
-		<label>Enter Schedule number:</label>
-		<input type="text" onkeypress="return validateQty(event);"  size="30" name="schedule" id="schedule" class="form-control">
-		<!-- <input type="text" value="" required size="30" name="schedule" id="schedule"   class="form-control"> -->
+	<div class="col-md-4">
+		<label>Select Sub PO:</label>
+		<?php
+			$sub_po_description=array();
+			$qry_toget_sub_order="SELECT po_description,po_number FROM $pps.mp_sub_order WHERE plant_code='$plantcode'";
+			$toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
+			if($toget_podescri_num>0){
+				while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
+				{
+					$sub_po_description[$toget_sub_order_row["po_description"]]=$toget_sub_order_row["po_number"];
+				}
+			}
+			echo "<select name=\"sub_po\" id=\"sub_po\" class='form-control' >
+					<option value=\"NIL\" selected>Please Select</option>";
+					foreach ($sub_po_description as $key=>$sub_po_description_val) {
+						echo '<option value=\''.$sub_po_description_val.'\'>'.$key.'</option>'; 
+					} 
+			echo "</select>";
+		?>
+		<input type="hidden" name="plantcode" id="plantcode" class="form-control" value=<?=$plant_code?>>
 	</div>
 	<div class="col-md-1"><br/>
-		<input type="submit" name="schsbt" value="Submit" class="btn btn-success" onclick="return check_sch();">
+		<input type="submit" name="schsbt" value="Submit" class="btn btn-success" onclick="return check_spo();">
 	</div>
 </div>	
 </form>
@@ -250,7 +231,6 @@ if(strlen($schlist)>0 or $showall=="1")
 {
 
 
-//Serial number and Post variable index key
 $x=0;
 
 $location_id=array();
@@ -258,7 +238,6 @@ $location_title=array();
 $location_id[]="";
 $location_title[]="";
 $sql="select * from $pps.bai_qms_location_db where plant_code='$plantcode' and active_status=0 and qms_cur_qty<qms_location_cap order by qms_cur_qty desc,order_by desc";
-//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {	
@@ -268,7 +247,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 $note_no=1;
 $sql="select max(qms_des_note_no) as qms_des_note_no from $pps.bai_qms_destroy_log where plant_code='$plantcode'";
-//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -301,7 +279,6 @@ SUM(IF((qms_tran_type= 12 and location_id<>'DESTROYED'),qms_qty,0))
    
    ) as qms_qty,qms_style,qms_schedule,qms_color,qms_size,group_concat(qms_tid) as qms_tid, group_concat(concat(location_id,'-',qms_qty,' PCS<br/>')) as existing_location from $pps.bai_qms_db where plant_code='$plantcode' and $addfilter left(location_id,9)<>'DESTROYED' and location_id<>'PAST_DATA' and qms_tran_type in (12,7) GROUP BY CONCAT(qms_schedule,qms_color,qms_size),location_id order by qms_schedule,qms_color,qms_size
 ";
-//echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -354,7 +331,6 @@ else
 
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[
 	var fnsFilters = {
 	
 	rows_counter: true,
@@ -376,7 +352,6 @@ else
 	};
 	
 	 setFilterGrid("table1",fnsFilters);
-	//]]>
 </script>
 
 
