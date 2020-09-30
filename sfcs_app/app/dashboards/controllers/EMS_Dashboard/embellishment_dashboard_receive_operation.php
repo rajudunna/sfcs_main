@@ -19,7 +19,125 @@
   });
   });
 </script>
+<script>
+$(document).ready(function() {
+//Select all anchor tag with rel set to tooltip
+$('a[rel=tooltip]').mouseover(function(e) {
+  
+  //Grab the title attribute's value and assign it to a variable
+  var tip = $(this).attr('data-title');  
+  
+  //Remove the title attribute's to avoid the native tooltip from the browser
+  $(this).attr('data-title','');
+  
+  //Append the tooltip template and its value
+  $(this).append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');   
+  
+}).mousemove(function(e) {
 
+  //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
+  console.log('y = '+e.pageY+' : '+e.view.parent.pageYOffset);
+  console.log(e);
+
+  //e.pageY + 0.5 * e.view.parent.pageYOffset
+  $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
+  $('#tooltip').css('left',$(this).offset.left - 255 );
+   $('#tooltip').css('margin-left','50px' );
+   $('#tooltip').css('text-align','left' );
+   $('#tooltip').css('margin-top','20px' );
+   $('#tooltip').css('position', 'absolute' );
+   $('#tooltip').css('z-index', '999999' );
+}).mouseout(function() {
+
+  //Put back the title attribute's value
+  $(this).attr('data-title',$('.tipBody').html());
+
+  //Remove the appended tooltip template
+  $(this).children('div#tooltip').remove();
+  
+});
+
+});
+</script>
+<style>
+.tooltip {
+    
+    outline: none;
+    cursor: auto; 
+    text-decoration: none;
+    position: relative;
+    color:#333;
+    
+  }
+  .tooltip span {
+    margin-left: -1500em;
+    position: absolute;
+    
+  }
+  .tooltip:hover span {
+    border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+    font-family: Calibri, Tahoma, Geneva, sans-serif;
+    position: absolute; 
+    left: 0em; top: 0em; z-index: 99;
+    margin-left: -100px; width: 150px;
+    margin-top: -100px;
+    
+
+
+  }
+  .tooltip:hover img {
+    border: 0; 
+    margin: -10px 0 0 -55px;
+    float: left; position: absolute;
+  }
+  .tooltip:hover em {
+    font-family: Candara, Tahoma, Geneva, sans-serif; font-size: 1.2em; font-weight: bold;
+    display: block; padding: 0.2em 0 0.6em 0;
+  }
+  .classic { padding: 0.8em 1em; }
+  .custom { padding: 0.5em 0.8em 0.8em 2em; }
+  * html a:hover { background: transparent; }
+  .classic {background: #000; border: 1px solid #FFF;font-weight:bold; }
+  .critical { background: #FFCCAA; border: 1px solid #FF3334; }
+  .help { background: #9FDAEE; border: 1px solid #2BB0D7; }
+  .info { background: #9FDAEE; border: 1px solid #2BB0D7; }
+  .warning { background: #FFFFAA; border: 1px solid #FFAD33; }
+  
+
+  /* Tooltip */
+.red-tooltip + .tooltip > .tooltip-inner {
+background-color: black;
+width:350px;
+}
+#tooltip {
+position:absolute;
+z-index:9999;
+color:#fff;
+font-size:12px;
+width:220px;
+pointer-events: none; 
+
+}
+
+#tooltip .tipHeader {
+height:8px;
+/*background:url('<?= getFullURL($_GET['r'],'common/images/tipHeader.gif',2,'R');?>') no-repeat;*/
+font-size:0px;
+}
+
+
+#tooltip .tipBody {
+background-color:#000;
+padding:5px 5px 5px 15px;
+}
+
+#tooltip .tipFooter {
+ height:8px;
+ /*background:url('<?= getFullURL($_GET['r'],'common/images/tipFooter.gif',2,'R');?>') no-repeat;*/
+}
+
+</style>
 <?php
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R')); 
   include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));  
@@ -576,13 +694,13 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
           $club_c_code=array_unique($club_c_code);
           $club_docs=array_unique($club_docs);
 
-          $title=str_pad("Style:".trim($style),80)."\n".str_pad("CO:".trim($co_no),80)."\n".str_pad("Schedule:".$schedule,80)."\n".str_pad("Color:".trim(implode(",",$colors_db)),50)."\n".str_pad("Cut_No:".implode(", ",$club_c_code),80)."\n".str_pad("DOC No:".implode(", ",$club_docs),80)."\n".str_pad("Total Plan Qty:".$orginal_qty,80)."\n".str_pad("Actual Cut Qty:".$total,80)."\n".str_pad("Send Qty:".($send_qty-$reject_qty_s),80)."\n".str_pad("Received Qty:".($receive_qty-$reject_qty_r),80)."\n".str_pad("Rejected Qty:".$reject_qty_r,80)."\n".str_pad("Plan_Time:".$log_time,50)."\n";
+          $title=str_pad("Style:".trim($style),80)."</br>".str_pad("CO:".trim($co_no),80)."</br>".str_pad("Schedule:".$schedule,80)."</br>".str_pad("Color:".trim(implode(",",$colors_db)),50)."</br>".str_pad("Cut_No:".implode(", ",$club_c_code),80)."</br>".str_pad("DOC No:".implode(", ",$club_docs),80)."</br>".str_pad("Total Plan Qty:".$orginal_qty,80)."</br>".str_pad("Actual Cut Qty:".$total,80)."</br>".str_pad("Send Qty:".($send_qty-$reject_qty_s),80)."</br>".str_pad("Received Qty:".($receive_qty-$reject_qty_r),80)."</br>".str_pad("Rejected Qty:".$reject_qty_r,80)."</br>".str_pad("Plan_Time:".$log_time,50)."</br>";
 
           $clr=trim(implode(',',$colors_db),50);
           
           if($send_qty > 0)
           {            
-            echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(".implode(", ",$club_c_code).")-OP:$receive_op_code</span></div></div><br>"; 
+            echo "<a onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;' data-title='$title' rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;'>$schedule(".implode(", ",$club_c_code).")-OP:$receive_op_code</div></div></a><br>"; 
           }          
         }
 		}

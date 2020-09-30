@@ -100,13 +100,21 @@ function updateM3Transactions($ref_id,$op_code,$qty)
 
                         if ($count > 0)
                         {
-                            $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+                            $update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+							mysqli_query($link,$update_tbl_carton_ready);
                         }
                         else
                         {
-                            $insert_update_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty');";
+                            $insert_tbl_carton_ready = "INSERT INTO $bai_pro3.tbl_carton_ready (operation_id, mo_no, remaining_qty, cumulative_qty) VALUES ('$op_code', '$mo_number', '$to_update_qty', '$to_update_qty')";
+							mysqli_query($link,$insert_tbl_carton_ready);
+                            $affectced_rows=mysqli_affected_rows($link);
+                            if($affectced_rows == -1)
+                            {
+                                $insert_update_tbl_carton_ready = "UPDATE $bai_pro3.tbl_carton_ready set remaining_qty = remaining_qty + $to_update_qty, cumulative_qty = cumulative_qty + $to_update_qty where mo_no= '$mo_number'";
+                                mysqli_query($link,$insert_update_tbl_carton_ready);
+                            }
                         }
-                        mysqli_query($link,$insert_update_tbl_carton_ready);
+                        //mysqli_query($link,$insert_update_tbl_carton_ready);
                     }                                                                                      
                 // 763 mo filling for new operation end
                 $dep_ops_array_qry = "select default_operration from $brandix_bts.tbl_style_ops_master WHERE style='$style' AND color = '$color' and operation_code=$op_code";

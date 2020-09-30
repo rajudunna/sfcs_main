@@ -697,7 +697,7 @@ echo $drp_down;
                       
                         $html_hiding = "IssueToModule";
                     }
-					if($html_hiding == "ReportPending")
+					if($html_hiding == "ReportPending" || $html_hiding == "Planning Pending")
 					{
 						if(strtolower($row['category'])=='body' or strtolower($row['front']))
 						{
