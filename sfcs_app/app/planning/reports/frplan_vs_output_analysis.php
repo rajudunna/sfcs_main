@@ -432,7 +432,12 @@ function getDaysInBetween($start, $end)
 			<form name="input1" action="<?= getFullURLLevel($_GET['r'], 'plan_vs_output_analysis_excel.php', 0, 'R') ?>" method="post">
 
 				<input type="hidden" name="table" value="<?php echo $table; ?>">
+				<?php
+				if(isset($_POST['submit']))
+				{
+				?>
 				<input type="submit" name="submit1" class='btn btn-info pull-right' value="Export to Excel">
+				<?php } ?>
 			</form>
 		</div>
 	</div>

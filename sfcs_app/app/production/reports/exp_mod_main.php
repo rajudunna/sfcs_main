@@ -4,6 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 $exp_mod_week_data_old = getFullURL($_GET["r"], "exp_mod_week_data_old.php", "N");
 $exp_mod_shift_data = getFullURL($_GET["r"], "exp_mod_shift_data.php", "N");
 $view_access = user_acl("SFCS_0072", $username, 1, $group_id_sfcs);
+$plantCode = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 ?>
 
 <script>
@@ -57,6 +59,7 @@ $view_access = user_acl("SFCS_0072", $username, 1, $group_id_sfcs);
 			<div class="row">
 				<div class="col-md-3">
 				<?php
+
 			$sadte = (isset($_POST['dat1'])) ? $_POST['dat1'] : date("Y-m-d"); // Start date
 			$eadte = (isset($_POST['dat2'])) ? $_POST['dat2'] : date("Y-m-d"); // End date
 
@@ -66,17 +69,19 @@ $view_access = user_acl("SFCS_0072", $username, 1, $group_id_sfcs);
 				<div class="col-md-3">
 					<label>End Date </label>
 					<input type="text" data-toggle='datepicker' class="form-control" id="dat2" name="dat2" size=8 value="<?= $eadte?>" /></div>
-				<div class="col-md-1"><label>Section</label>
+				<div class="col-md-3"><label>Section</label>
 					<?php
 					echo "<select name=\"sec\" class='form-control'>";
-					$sql = "SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-					$result17 = mysqli_query($link, $sql) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($sql_row = mysqli_fetch_array($result17)) {
-						$sql_sec = $sql_row["secid"];
+					// Get Sections for sewing 
+					$sql_sections = "SELECT section_id,section_code,section_name FROM $pms.sections LEFT JOIN $pms.departments ON departments.department_id = sections.department_id where department_type='SEWING' AND sections.plant_code='".$plantCode."' AND sections.is_active=".TRUE;					 
+					$res_sections = mysqli_query($link,$sql_sections) or exit("Sql Error" . mysqli_error($link));
+					while($row_sections = mysqli_fetch_array($res_sections)) {						 
+						$section_id = $row_sections["section_id"];						 
+						$sec_code_name = $row_sections["section_code"] ."-". $row_sections["section_name"];
 						if ($_GET['sec'] == $sql_sec) {
-							echo "<option value=\"" . $sql_sec . "\" selected>" . $sql_sec . "</option>";
+							echo "<option value=\"" . $section_id . "\" selected>" . $sec_code_name  . "</option>";
 						} else {
-							echo "<option value=\"" . $sql_sec . "\" >" . $sql_sec . "</option>";
+							echo "<option value=\"" . $section_id . "\" >" . $sec_code_name . "</option>";
 						}
 					}
 					echo "</select>";
@@ -114,7 +119,7 @@ $view_access = user_acl("SFCS_0072", $username, 1, $group_id_sfcs);
 			if ($cat == "Weekly") {
 				// header("Location:exp_mod_week_data_old.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");
 				echo '<script>
-				window.location.href="' . $exp_mod_week_data_old . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '";
+				window.location.href="' . $exp_mod_week_data_old . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '&plantcode='.$plantCode.'";
 		</script>';
 			} elseif ($cat == "Shift") {
 				// header("Location:exp_mod_shift_data.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");	
