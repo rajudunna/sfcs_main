@@ -1,17 +1,23 @@
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script><!-- External script -->
 <script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/table2CSV.js',3,'R')?>"></script>
+<script>
+function firstbox()
+{
+	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_bundle_wise_report.php','N'); ?>';
+	window.location.href =url1+"&style="+document.input.style.value;
+}
+</script>
 <?php 
-
-/*
-	********* Create By Mounika *********
-	Created at : 17-12-2019
-	Input : Style & Type Of Report(Bundle Wise / Mini Order Wise Report).
-	Output : Get Performance Report Of All Sewing Operations.
-*/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+$plant_code = $_session['plantCode'];
+$username =  $_session['userName'];
 $style=$_POST['style'];
+$master_po=$_POST['mpo'];
+$style=$_GET['style'];
 $reptype=$_POST['reptype'];
 if($_POST['reptype'] == NULL){
     $reptype=1;
@@ -32,22 +38,47 @@ if($reptype == 1) {
                 <div class="col-md-2">
                     <label for='style'>Style</label>
                     <?php
-                    //geting style of sewing operation only so used packing_summary_input to retrive
-                    $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.packing_summary_input where order_style_no != ''";	
+                    //geting style
+                    $sql="SELECT DISTINCT style FROM $pts.transaction_log where style != '' AND plant_code='$plant_code' AND is_active=1";	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    echo "<select class='form-control' name=\"style\"  id=\"style\" id='style' onchange='verify(event)'>";
+                    echo "<select class='form-control' name=\"style\"  id=\"style\" id='style' onchange='firstbox();' required>";
     
                     echo "<option value='' disabled selected>Please Select</option>";
                     while($sql_row=mysqli_fetch_array($sql_result))
                     {
     
-                        if($sql_row['order_style_no']==$style)
+                        if($sql_row['style']==$style)
                         {
-                            echo "<option value=\"".$sql_row['order_style_no']."\" selected>".$sql_row['order_style_no']."</option>";
+                            echo "<option value=\"".$sql_row['style']."\" selected>".$sql_row['style']."</option>";
                         }
                         else
                         {
-                            echo "<option value=\"".$sql_row['order_style_no']."\">".$sql_row['order_style_no']."</option>";
+                            echo "<option value=\"".$sql_row['style']."\">".$sql_row['style']."</option>";
+                        }
+    
+                    }
+                    echo "  </select>";
+                    ?>
+                </div>
+                <div class="col-md-3">
+                    <label for='style'>Master Po</label>
+                    <?php
+                    //geting style
+                    $sql="SELECT DISTINCT mpo FROM $pts.transaction_log where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
+                    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                    echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='verify(event)'>";
+    
+                    echo "<option value='' disabled selected>Please Select</option>";
+                    while($sql_row=mysqli_fetch_array($sql_result))
+                    {
+    
+                        if($sql_row['mpo']==$mpo)
+                        {
+                            echo "<option value=\"".$sql_row['mpo']."\" selected>".$sql_row['mpo']."</option>";
+                        }
+                        else
+                        {
+                            echo "<option value=\"".$sql_row['mpo']."\">".$sql_row['mpo']."</option>";
                         }
     
                     }
@@ -83,69 +114,60 @@ if($reptype == 1) {
                     $total_data = [];
                     $main_result = [];
                     
-                    //To get all the operations	
-                    //To get default Operations
-                    $get_operations_workflow= "select DISTINCT(operation_code),default_operration from $brandix_bts.default_operation_workflow where operation_code IN (SELECT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category='sewing') order by operation_order";
-                    $result1 = $link->query($get_operations_workflow);
-                    $op_count = mysqli_num_rows($result1);
-                    if($op_count>0){
-                        while($row1 = $result1->fetch_assoc())
+                    //get style and color operations
+                    $get_details="SELECT schedule,color,mpo FROM $pts.transaction_log WHERE style='$style' AND mpo='$master_po' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
+                    $result1 = $link->query($get_details);
+                    while($row1 = $result1->fetch_assoc())
+                    {
+                      $schedule=$row1['schedule'];
+                      $color=$row1['color'];
+                      $mpo=$row1['mpo'];
+                      //get operations_version_id
+                      $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$mpo' AND plant_code='$plant_code' AND is_active=1";
+                      $version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+                      while($row14=mysqli_fetch_array($version_id_result))
+                      {
+                        $operations_version_id = $row14['operations_version_id'];
+                      }
+                      //Function to get operations for style,color
+                      $result_mrn_operation=getJobOpertions($style,$color,$plant_code,$operations_version_id);
+					  $operations=$result_mrn_operation;
+
+                    }
+                    $category=DepartmentTypeEnum::SEWING;
+                    foreach($operations as $key =>$mpo_operations){
+                        if($key['operationCategory'] == $category)
                         {
-                            $operation_code[] = ['op_code'=>$row1['operation_code'],'def_op'=>$row1['default_operration']];
+                            $operation_codes[]=$key['operationCode'];
+                            $operation_names[]=['op_name'=>$key['operationName'],'op_code'=>$key['operationCode']];
                         }
                     }
                     
-                    if(count($operation_code)>0){
-                        foreach ($operation_code as $key => $value) {	
-                            //columns
-                            $get_operations_no= "select DISTINCT(operation_id) from $brandix_bts.bundle_creation_data_temp where style = '$style' and operation_id =".$value['op_code']."";
-                            // echo $get_operations_no.'<br/>';
-                            $result4 = $link->query($get_operations_no);
-                            $op_count = mysqli_num_rows($result4);
-                            if($op_count){
-                                while($row3 = $result4->fetch_assoc()){
-                                    $over_all_operations[] = $row3['operation_id'];
-                                    $operations_no[] = $row3['operation_id'];
-                                }
-                            }
-                        }
-                    }
-                    $operation_codes_str = implode(',',$over_all_operations);
-                    //To get operation names
-                    $get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($operation_codes_str) and category='sewing' order by field(operation_code,$operation_codes_str) ";
-                    $ops_query_result=$link->query($get_ops_query);
-                    $op_count = mysqli_num_rows($ops_query_result);
-                    if($op_count >0){		
-                        while ($row3 = $ops_query_result->fetch_assoc())
-                        {
-                            $opertion_names[]= ['op_name'=>$row3['operation_name'],'op_code'=>$row3['operation_code']];
-                        }
-                    }
                     $main_result['columns'] = $opertion_names;
 
                     
-                    if(count($over_all_operations)>0){
-                        $operation_codes_no = implode(',',$over_all_operations);
+                    if(count($operation_codes)>0){
+                        $operation_codes_no = implode(',',$operation_codes);
                         //columns Data
                         if($reptype == 1){
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(original_qty) as job_qty,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,assigned_module,input_job_no,operation_id as op_code,remarks FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY bundle_number,operation_id order by bundle_number,operation_id";
+                            $get_data_transaction= "SELECT style,schedule,color,job_number,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,bundle_number,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY bundle_number,operation order by bundle_number,operation";
                         } 
                         else{
-                            $get_data_bcd_temp= "SELECT style,SCHEDULE,color,input_job_no_random_ref,size_title,sum(original_qty) as job_qty,sum(recevied_qty) as recevied_qty,sum(rejected_qty) as rejected_qty,bundle_number,assigned_module,input_job_no,operation_id as op_code,remarks FROM brandix_bts.`bundle_creation_data_temp` WHERE style='".$style."' AND operation_id in ($operation_codes_no) GROUP BY SCHEDULE,input_job_no_random_ref,color,size_title,operation_id order by input_job_no_random_ref,size_title,operation_id";
+                            $get_data_transaction= "SELECT style,schedule,color,job_number,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,bundle_number,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation_id in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,job_number,color,size,operation order by job_number,size,operation";
                         }
                
                   
-                        $result5 = $link->query($get_data_bcd_temp);
+                        $result5 = $link->query($get_data_transaction);
                         $operation_array = explode(",", $operation_codes_no);
                         $op_count1 = mysqli_num_rows($result5);
                         if($op_count1>0){
                             while($row5 = $result5->fetch_assoc()){
-                                $rec_qty = (int)$row5['recevied_qty'];
+                                $rec_qty = (int)$row5['good_qty'];
                                 $rej_qty = (int)$row5['rejected_qty'];
-                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['SCHEDULE'],'input_job_no_random_ref'=>$row5['input_job_no_random_ref'],'input_job_no'=>$row5['input_job_no'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size_title']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'org_qty'=>$row5['job_qty'],'assigned_module'=>$row5['assigned_module'],'remarks'=>$row5['remarks']];
+                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['schedule'],'job_number'=>$row5['job_number'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'resource_id'=>$row5['resource_id']];
 
                                 $bundle_data[$row5['bundle_number']][] = $data;
-                                $sewing_data[$row5['input_job_no_random_ref']][$row5['size_title']][$row5['size_title']][] = $data;
+                                $sewing_data[$row5['job_number']][$row5['size']][$row5['size']][] = $data;
                             }
                             $all_bundles = array_keys($bundle_data);
                             
@@ -213,17 +235,35 @@ if($reptype == 1) {
                     $size= '';
                     if($reptype == 1){
                         foreach($all_bundles as $key => $value){ 
-                            $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$bundle_data[$value][0]['remarks'],$link);
-							$job_number = $prefix.leading_zeros($bundle_data[$value][0]['input_job_no'],3);
                             ?>
                         <tr>
                             <td><?= $bundle_data[$value][0]['style']  ?></td>
                             <td><?= $bundle_data[$value][0]['schedule']  ?></td>
                             <td><?= $bundle_data[$value][0]['color']  ?></td>
-                            <td><?= $job_number  ?></td>
+                            <td><?= $bundle_data[$value][0]['job_number']  ?></td>
 							<td><?= $value ?></td>
-							<td><?= $bundle_data[$value][0]['org_qty']  ?></td>                            
-                            <td><?= $bundle_data[$value][0]['assigned_module']  ?></td>
+                            <?php
+                             //To get bundle original qty
+                             $org_qty=0;
+                             $barcode_type=BarcodeType::PPLB;
+                             $get_qty="SELECT quantity FROM $pts.barcode WHERE barcode='$value' AND barcode_type='$barcode_type' AND plant_code='$plant_code' AND is_active=1";
+                             $result2 = $link->query($get_qty);
+                             while($row2 = $result2->fetch_assoc())
+                             {
+                                $org_qty=$row2['quantity'];
+                             }
+                            ?>
+							<td><?=  $org_qty  ?></td> 
+                            <?php
+                                //To get workstation description
+                                $query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$bundle_data[$value][0]['resource_id']'  AND is_active=1";
+                                $result3 = $link->query($query_get_workdes);
+                                while($des_row = $result3->fetch_assoc())
+                                {
+                                    $workstation_code = $des_row['workstation_code'];
+                                }                             
+                             ?>
+                            <td><?= $workstation_code  ?></td>
 							<td><?= $bundle_data[$value][0]['size']  ?></td>
                             <?php
                                 foreach($operation_array as $main_op_key => $main_op_value ) {
@@ -253,16 +293,41 @@ if($reptype == 1) {
                         foreach($sewing_data as $sew_key => $sew_values){ 
 
                             foreach($sew_values as $size_key => $size_values){
-                               
-                                $prefix = echo_title("$brandix_bts.tbl_sewing_job_prefix","prefix","prefix_name",$size_values[$size_key][0]['remarks'],$link);
-								$job_number = $prefix.leading_zeros($size_values[$size_key][0]['input_job_no'],3);
                             ?>
                             <tr>
                                 <td><?= $size_values[$size_key][0]['style']  ?></td>
                                 <td><?= $size_values[$size_key][0]['schedule']  ?></td>
                                 <td><?= $size_values[$size_key][0]['color']  ?></td>
-                                <td><?= $job_number  ?></td>
-								<td><?= $size_values[$size_key][0]['org_qty']  ?></td>
+                                <td><?= $size_values[$size_key][0]['job_number']  ?></td>
+                                <?php
+                                //To get taskjob_id
+                                $get_task_id="SELECT task_jobs_id FROM $tms.`task_attributes` WHERE attribute_value='$size_values[$size_key][0]['job_number']' AND plant_code='$plant_code'
+                                 AND is_active=1";
+                                $result4 = $link->query($get_task_id);
+                                while($task_row = $result4->fetch_assoc())
+                                {
+                                    $task_id=$task_row['task_jobs_id'];
+                                }
+                                $tasktype = TaskTypeEnum::SEWINGJOB;
+                                //to get task_refrence from task_jobs
+                                $get_task_ref="SELECT task_job_reference FROM $tms.task_jobs WHERE task_jobs_id='$task_id' AND plant_code='$plant_code' AND task_type='$tasktype' AND is_active=1";
+                                $result5 = $link->query($get_task_ref);
+                                while($ref_row = $result5->fetch_assoc())
+                                {
+                                   $task_ref=$ref_row['task_job_reference'];
+                                }
+                                //to get qty from jm job lines
+                                $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$task_ref' and plant_code='$plant_code' AND is_active=1";
+                                $result6 = $link->query($toget_qty_qry);
+                                $toget_qty=mysqli_num_rows($result6);
+                                if($toget_qty>0){
+                                    while($toget_qty_det=mysqli_fetch_array($result6))
+                                    {
+                                      $sew_qty = $toget_qty_det['qty'];
+                                    }
+                                }
+                                ?>
+								<td><?= $sew_qty  ?></td>
                                 <td><?= $size_values[$size_key][0]['size']  ?></td>
 
 
@@ -342,15 +407,15 @@ $('#reset').addClass('btn btn-warning');
 	setFilterGrid( "report",table6_Props );
 	
 function verify(){
-    var style = $('#style').val();
+    var mpo = $('#mpo').val();
     var reptype = $('#reptype').val();
     
-    if(style == null && reptype ==null){
-        swal('Warning','Please Select Style & Report Type','warning');
+    if(mpo == null && reptype ==null){
+        swal('Warning','Please Select Style,masterpo & Report Type','warning');
         var btn = document.getElementById('show');
         btn.disabled = true;
     }
-    else if(style != null && (reptype == 1 || reptype == 2)) {
+    else if(mpo != null && (reptype == 1 || reptype == 2)) {
         var btn = document.getElementById('show');
         btn.disabled = false;
     } else {
