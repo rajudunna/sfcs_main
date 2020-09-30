@@ -65,7 +65,10 @@
             $job_retrieval_url = $PTS_SERVER_IP.'/fg-retrieving/getJobDetailsForEmbJob';
             $job_publish_url = $PTS_SERVER_IP.'/fg-reporting/reportPanelFormJob';
         }
-    }
+    } else {
+		echo "<div style='color:red'><b>Only Embellishment and Sewing jobs are allowed to scan<b></div>";
+		exit();
+	}
     
     // get the operation name for the operation code
     $operation_query = "SELECT operation_name from $mdm.operations where operation_code = $operation_code and is_active=1";
