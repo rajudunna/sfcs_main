@@ -4,7 +4,8 @@ set_time_limit(90000);
 error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-$plantcode=$_SESSION['plantCode'];
+$plant_code=$_SESSION['plantCode'];
+
 ?>
 
 <?php
@@ -62,15 +63,17 @@ table{
 ?>
 <?php
 $text.="<h3>Orders Summary Report</h3>";
-$sdate=$edate=date("Y-m-d");
+$sdate=$edate='20200714';
 
 $email_validate=0;
-$order="(order_s_s01+order_s_s02+order_s_s03+order_s_s04+order_s_s05+order_s_s06+order_s_s07+order_s_s08+order_s_s09+order_s_s10+order_s_s11+order_s_s12+order_s_s13+order_s_s14+order_s_s15+order_s_s16+order_s_s17+order_s_s18+order_s_s19+order_s_s20+order_s_s21+order_s_s22+order_s_s23+order_s_s24+order_s_s25+order_s_s26+order_s_s27+order_s_s28+order_s_s29+order_s_s30+order_s_s31+order_s_s32+order_s_s33+order_s_s34+order_s_s35+order_s_s36+order_s_s37+order_s_s38+order_s_s39+order_s_s40+order_s_s41+order_s_s42+order_s_s43+order_s_s44+order_s_s45+order_s_s46+order_s_s47+order_s_s48+order_s_s49+order_s_s50)";
+$cut_operation=15;
+$sew_in=100;
+$sew_out=130;
+$operation_code_array=[15,100,130];
 
 
-$sql="select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty,  sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from bai_pro3.bai_orders_db_confirm where order_date between '$sdate' and '$edate' group by concat(order_del_no,order_col_des) union select order_date,order_style_no,order_del_no,group_concat(trim(both from order_col_des)) as order_col_des, sum($order) as orderqty,  sum(output) as output,sum(act_cut) as act_cut,sum(act_in) as act_in,sum(act_fg) as act_fg,sum(act_fca) as act_fca,sum(act_ship) as act_ship, priority from $bai_pro3.bai_orders_db_confirm_archive where order_date between '$sdate' and '$edate' group by concat(order_del_no,order_col_des)";
+$sql="SELECT * FROM $oms.oms_mo_details where planned_cut_date between  '$sdate' and '$edate' and po_number !='' and plant_code='$plant_code' group by po_number";
 	
-
 
 	$text.= "<table id=\"example1\">";
 	$text.= "<tr class='tblheading'>
@@ -94,27 +97,74 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 	
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-			$text.= "<tr>";
-			$text.= "<td>".$sql_row['order_date']."</td>";
-			$text.= "<td>".$sql_row['order_style_no']."</td>";
-			$text.= "<td>".$sql_row['order_del_no']."</td>";
-			$text.= "<td>".$sql_row['order_col_des']."</td>";
-			$sql1="select group_concat(distinct(bac_no) order by bac_no) as bac_no from $pts.bai_log_buf where plant_code='$plant_code' and delivery='".$sql_row['order_del_no']."' and color='".$sql_row['order_col_des']."'";
-		 
-		 // echo $sql1;
-		 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 $module = mysqli_fetch_row($sql_result1);
-			$text.= "<td>".$sql_row['orderqty']."</td>";
-			$text.= "<td>".$sql_row['act_cut']."</td>";
-			$text.= "<td>".($sql_row['orderqty']-$sql_row['act_cut'])."</td>";
-			$text.= "<td>".$sql_row['act_in']."</td>";
-			$text.= "<td>".($sql_row['act_cut']-$sql_row['act_in'])."</td>";
-			$text.= "<td>".$sql_row['output']."</td>";
-			$text.= "<td>".($sql_row['act_in']-$sql_row['output'])."</td>";
-			$text.= "<td>".$module[0]."</td>";
+		$po_number=$sql_row['po_number'];
+		$schedule=$sql_row['schedule'];
+		$order_date=$sql_row['planned_cut_date'];
+		$sql1="SELECT * FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
+		// echo $sql1."<br/>";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$row_count++;
+			$style=$sql_row1['style'];
+			$color=$sql_row1['color'];
+			$master_po_details_id=$sql_row1['master_po_details_id'];
+			// var_dump($style,$color,$schedule,$po_number,"<br>");
+			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and master_po_order_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
+			// echo $sql2."<br/>";
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row2=mysqli_fetch_array($sql_result2))
+			{
+				$order_qty=$sql_row2['order_qty'];
+			}
+			$finished_good_id=[];
+			$sql3="SELECT finished_good_id FROM $pts.finished_good WHERE  master_po ='$po_number' AND style='$style' AND color='$color' AND SCHEDULE='$schedule'";
+			// echo $sql3."<br/>";
+
+			$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row3=mysqli_fetch_array($sql_result3))
+			{
+				$finished_good_id[]=$sql_row3['finished_good_id'];
+			}
+			$cut_qty=0;
+			$sew_in=0;
+			$sew_out=0;
+
+			if(sizeof($finished_good_id) >0){
+				$finished_good_ids = "'" . implode( "','", $finished_good_id) . "'";
+				$operation_codes = "'" . implode( "','", $operation_code_array) . "'";
+
+
+				$sql4="SELECT SUM(IF(operation_code=$cut_operation,1,0)) AS cut_qty,SUM(IF(operation_code=$sew_in,1,0)) AS sew_in,SUM(IF(operation_code=$sew_out,1,0)) AS sew_out FROM $pts.fg_operation WHERE finished_good_id IN ($finished_good_ids) AND operation_code IN ($operation_codes) AND required_components=completed_components";
+				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_row4=mysqli_fetch_array($sql_result4))
+				{
+					$cut_qty=(int)$sql_row4['cut_qty'];
+					$sew_in=(int)$sql_row4['sew_in'];
+					$sew_out=(int)$sql_row4['sew_out'];
+				}
+			}
+				
+			$text.="<tr>";
+			$text.="<td>".$order_date."</td>";
+			$text.="<td>".$style."</td>";
+			$text.="<td>".$schedule."</td>";
+			$text.="<td>".$color."</td>";
+			$text.="<td>".$order_qty."</td>";
+			$text.="<td>".$cut_qty."</td>";
+			$text.="<td>".($order_qty-$cut_qty)."</td>";
+			$text.="<td>".$sew_in."</td>";
+			$text.="<td>".($order_qty-$sew_in)."</td>";
+
+			$text.="<td>".$sew_out."</td>";
+			$text.="<td>".($order_qty-$sew_out)."</td>";
+
+			$text.="<td>".$module."</td>";
+			$text.="</tr>";
 			
-			$text.= "</tr>";
 			$email_validate++;
+		}
+			
 	}
 	$text.= "</table></body></html>";
 
