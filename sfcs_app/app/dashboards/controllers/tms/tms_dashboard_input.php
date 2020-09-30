@@ -26,23 +26,18 @@ set_time_limit(200000);
 
 function redirect_priority()
 {
-    y=document.getElementById('view_div').value;
+ 
+    //y=document.getElementById('view_div').value;
     a=document.getElementById('view_priority').value;
-    window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+    window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_priority="+a;
 }
-function redirect_view()
-{
-    y=document.getElementById('view_div').value;
-    a=document.getElementById('view_priority').value;
-    window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-}
+// function redirect_view()
+// {
+//     //y=document.getElementById('view_div').value;
+//     a=document.getElementById('view_priority').value;
+//     window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
+// }
 
-function redirect_dash()
-{
-    y=document.getElementById('view_div').value;
-    a=document.getElementById('view_priority').value;
-    window.location = "<?= getFullURL($_GET['r'],'tms_dashboard_input.php','N')?>&view=2&view_div="+encodeURIComponent(y)+"&view_priority="+a;
-}
 
 
 </script>

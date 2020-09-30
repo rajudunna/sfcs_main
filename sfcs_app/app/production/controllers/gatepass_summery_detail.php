@@ -1,7 +1,6 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
-
 if(isset($_GET['gatepassid']))
 {
 	$plant_code= $_GET['plant_code']; 
@@ -38,7 +37,7 @@ if($gatepassid!='')
 					<form method="post" name="input" action="<?php echo '?r='.$_GET['r']; ?>">
 						<div class="row">
 							<div class="col-md-2">
-								<label>Enter Vehice Number: </label>
+								<label>Enter Vehicle Number: </label>
 								<input type="text"  id="vehicle_no"  name="vehicle_no" class="form-control"  value="<?php  if(isset($_POST['vehicle_no'])) { echo $_POST['vehicle_no']; } else { echo ""; } ?>" />
 								 <input type="hidden"  id="gatepassno"  name="gatepassno" class="form-control"  value="<?=$gatepassid; ?>" />
 							</div>
@@ -167,7 +166,7 @@ if(isset($_POST['submit']) || ($status==1)){
 		$tot_qty=0;
 		$tot_bds=0;
 		$sql1="select style,schedule,color,size,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by style,schedule,color,size";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));		
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$quantity[$sql_row1['schedule']][$sql_row1['color']][$sql_row1['size']]=$sql_row1['qty'];
@@ -176,7 +175,7 @@ if(isset($_POST['submit']) || ($status==1)){
 			$tot_bds=$tot_bds+$sql_row1['cnts'];
 		}
 		$sql12="select schedule,color,sum(bundle_qty) as qty,count(bundle_no) as cnts from $pps.gatepass_track where gate_id=".$gate_id." AND plant_code='".$plant_code."' group by schedule,color";
-		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));	
+		$sql_result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));		
 		while($sql_row12=mysqli_fetch_array($sql_result12))
 		{
 			$quantity_val[$sql_row12['schedule']][$sql_row12['color']]=$sql_row12['qty'];
@@ -256,8 +255,6 @@ if(isset($_POST['submit']) || ($status==1)){
 
 	if(isset($_POST['submitdetails'])){
 		$date=$_POST['date'];
-		$plant_code=$_POST['plant_code'];
-		$username=$_POST['username'];
 		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
 		echo  "<div class='panel-body'>";

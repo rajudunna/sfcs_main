@@ -860,7 +860,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
                            $task_id= $job_id_row['task_jobs_id'];
-                           $jobs_trims_insert="INSERT INTO $pps.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                           $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
                            $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         } 
                         
@@ -1475,5 +1475,81 @@ function getStyleColorSchedule($ponumber,$plantcode){
         'schedule_bulk' => $schedule_bulk,
         'color_bulk' => $color_bulk
     );
+}
+
+function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
+    global $link_new;
+    global $pps;
+    $out_put_results = [];
+    $sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM $pps.`jm_aplb` aplb
+    LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON
+    aplb.`jm_product_logical_bundle_id` = pplb.`jm_product_logical_bundle_id`
+    LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_cut_bundle_detail_id` = ppb.jm_cut_bundle_detail_id
+    WHERE  pplb.`feature_value` = '$schedule'
+    AND ppb.`bundle_type` IN ($bundle_types)
+    GROUP BY aplb.`fg_color`, aplb.`size`,ppb.`bundle_type`";
+    mysqli_query($link_new,$sql) or exit("Sql Error4".mysqli_error());
+    $sql_result=mysqli_query($link_new,$sql) or exit("Sql Error6".mysqli_error());
+    $count=mysqli_num_rows($sql_result);
+    while($sql_row=mysqli_fetch_array($sql_result))
+    {
+        $aplbIds = $sql_row["aplbids"];
+        $bundle_type = $sql_row["bundle_type"];
+        $fg_color = $sql_row["fg_color"];
+        $size = $sql_row["size"];
+        $sql_barcodes = "SELECT GROUP_CONCAT(CONCAT('''', trans.`parent_ext_ref_id`, '''' )) AS parent_ext_ref_id, resource_id FROM $pts.`transaction_log` trans 
+        LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
+        WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' GROUP BY trans.`resource_id`";
+        mysqli_query($link_new,$sql_barcodes) or exit("Sql Error7".mysqli_error());
+        $sql_result_barcodes=mysqli_query($link_new,$sql_barcodes) or exit("Sql Error5".mysqli_error());
+        $count_barcodes=mysqli_num_rows($sql_result_barcodes); 
+        while($sql_row_barcodes = mysqli_fetch_array($sql_result_barcodes))
+        {
+            $jg_header_ids = $sql_row_barcodes['parent_ext_ref_id'];
+            $resource_id = $sql_row_barcodes['resource_id'];
+            $sql_tms = "SELECT operation_code FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_job_transaction` trans ON trans.task_jobs_id = tj.task_jobs_id WHERE task_job_reference IN ($jg_header_ids) ORDER BY operation_seq  DESC LIMIT 0,1";
+            mysqli_query($link_new,$sql_tms) or exit("Sql Error7".mysqli_error());
+            $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
+            while($sql_row_tms = mysqli_fetch_array($sql_result_tms))
+            {
+                $out_put_ops = $sql_row_tms['operation_code'];
+            }
+            $sql_tms_in = "SELECT operation_code FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_job_transaction` trans ON trans.task_jobs_id = tj.task_jobs_id WHERE task_job_reference IN ($jg_header_ids) ORDER BY operation_seq  ASC LIMIT 0,1";
+            mysqli_query($link_new,$sql_tms_in) or exit("Sql Error7".mysqli_error());
+            $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
+            while($sql_row_tms_in = mysqli_fetch_array($sql_result_tms_in))
+            {
+                $input_ops = $sql_row_tms_in['operation_code'];
+            }
+
+            $sql_pts_trans = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
+            LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
+            WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' 
+            AND operation = '$input_ops' AND resource_id = '$resource_id' GROUP BY operation";
+            $sql_result_sql_pts_trans=mysqli_query($link_new,$sql_pts_trans) or exit("Sql Error5".mysqli_error());
+            while($sql_row_pts_trans = mysqli_fetch_array($sql_result_sql_pts_trans))
+            {
+                $input_qty = $sql_row_pts_trans['good_qty'];
+                $rejected_qty = $sql_row_pts_trans['rej_qty'];
+            }
+
+            $sql_pts_trans_out = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
+            LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
+            WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' 
+            AND operation = '$out_put_ops' AND resource_id = '$resource_id'	 GROUP BY operation";
+            $sql_result_sql_pts_trans_out=mysqli_query($link_new,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
+            while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
+            {
+                $out_put_qty = $sql_row_pts_trans_out['good_qty'];
+                $rejected_qty += $sql_row_pts_trans_out['rej_qty'];
+            }
+            $out_put_results[$fg_color][$size][$resource_id] = array(
+                'input_qty' => $input_qty,
+                'output_qty' => $out_put_qty,
+                'rejected_qty' => $rejected_qty,
+            );
+        }
+    }
+    return $out_put_results;
 }
 ?>

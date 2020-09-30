@@ -12,14 +12,15 @@ if(isset($_GET['id'])){
 <?php
 include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
+include(getFullURLLevel($_GET['r'],'common/config/enums.php',5,'R'));
 $url = getFullURLLEVEL($_GET['r'],'scan_barcode_wout_keystroke_new_emb_rev.php',0,'N');
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$category="'sewing'";
+$category="'EMBELLISHMENT'";
 
 ?>
 <div class="panel panel-primary " id="bundlewise_scanBarcode">
-<div class="panel-heading">Bundle Barcode Scanning Without Operation</div>
+<div class="panel-heading">EMB bundle reversal Without Operation</div>
 <div class="panel-body">
 <form method ='POST' id='frm1' action='<?php echo $url ?>'>
 <div class="row">
@@ -44,7 +45,8 @@ $category="'sewing'";
 	<select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
 		<?php 
-		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='sewing'";
+		$category=DepartmentTypeEnum::EMBELLISHMENT;
+		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='$category'";
 		$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{

@@ -154,7 +154,8 @@ $plant_name = $conf1->get('plantname');
 
 //TaskAttributeNamesEnum
 $sewing_job_attributes = ['style' => 'STYLE', 'schedule' => 'SCHEDULE', 'color' => 'COLOR', 'ponumber' => 'PONUMBER', 'masterponumber' => 'MASTERPONUMBER', 'cutjobno' => 'CUTJOBNO', 'embjobno' => 'EMBJOBNO', 'docketno' => 'DOCKETNO', 'sewingjobno' => 'SEWINGJOBNO', 'bundleno' => 'BUNDLENO', 'packingjobno' => 'PACKINGJOBNO', 'cartonno' => 'CARTONNO', 'componentgroup' => 'COMPONENTGROUP', 'cono' => 'CONUMBER', 'remarks' => 'REMARKS'];
-
+//FabricAttributesEnum
+$fabric_lay_attributes=['fabricrecevied'=>'FABRICRECEIVED','fabricreturned'=>'FABRICRETURNED','shortages'=>'SHORTAGES','damages'=>'DAMAGES','endbits'=>'END-BITS','joints'=>'JOINTS'];
 
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');

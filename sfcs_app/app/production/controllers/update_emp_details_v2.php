@@ -128,17 +128,19 @@ if(isset($_POST['submit']))
 	$shift_start_time=$_POST['shift_start'];
 	$shift_end_time=$_POST['shift_end'];
 	$modules_array = array();	$modules_id_array=array();
-	$get_modules = "SELECT DISTINCT workstation_label, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_label*1";
+	$get_modules = "SELECT DISTINCT workstation_code, workstation_id FROM $pms.`workstation` where plant_code='$plantcode' order by workstation_code*1";
 	$modules_result=mysqli_query($link, $get_modules) or exit ("Error while fetching modules: $get_modules");
 	if(mysqli_num_rows($modules_result) > 0)
 	{
 		while($module_row=mysqli_fetch_array($modules_result))
 		{
-			$modules_array[]=$module_row['workstation_label'];
-			$modules_id_array[$module_row['workstation_label']]=$module_row['workstation_id'];
+			$modules_array[]=$module_row['workstation_code'];
+			$modules_array1[]=$module_row['workstation_id'];
+			$modules_id_array[$module_row['workstation_code']]=$module_row['workstation_id'];
 		}
 		$modules = implode("','", $modules_array);
-		$sql1="SELECT * FROM $pts.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND shift='$shift' AND module IN ('$modules') order by module*1";
+		$modules_id = implode("','", $modules_array1);
+		$sql1="SELECT * FROM $pms.pro_attendance WHERE plant_code='$plantcode' and DATE='$date' AND shift='$shift' AND module IN ('$modules_id') ";
 		echo "
 		<table border=1 class='table table-bordered'>
 			<tr class='info'>
@@ -158,11 +160,20 @@ if(isset($_POST['submit']))
 						$avail_av=$sql_row1['present'];
 						$absent_ab=$sql_row1['absent'];
 						$module=$sql_row1['module'];
-						$k=$modules_id_array[$module];
+						
+						// $k=$modules_id_array[$module];
+						$sql2="SELECT workstation_code FROM $pms.workstation WHERE plant_code='$plantcode' AND workstation_id = '$module'";
+						$sql_result2=mysqli_query($link, $sql2) or exit ("Sql Error: $Sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row11=mysqli_fetch_array($sql_result2))
+					    {
+						$workstation_code=$sql_row11['workstation_code'];
+						$workstation_id=$sql_row11['workstation_id'];
+						}
+						$k=$modules_id_array[$workstation_code];
 						echo "<tr>
-								<td>".$module."</td>"; 
-								if(in_array($authorized,$has_permission))
-								{
+								<td>".$workstation_code."</td>"; 
+								// if(in_array($authorized,$has_permission))
+								// {
 									$readonly = ''; ?>
 									<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 									<?php
@@ -172,11 +183,11 @@ if(isset($_POST['submit']))
 										echo "<input type=\"hidden\" name=\"shift_end_time\" value=\"$shift_end_time\">";	
 										echo "<input type=\"hidden\" name=\"plant_code_name\" value=\"$plantcode\">";
 										echo "<input type=\"hidden\" name=\"username\" value=\"$username\">";			
-								}
-								else
-								{
-									$readonly = 'readonly';
-								}
+								//}
+								// else
+								// {
+								// 	$readonly = 'readonly';
+								// }
 							?>
 								
 								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
@@ -185,13 +196,13 @@ if(isset($_POST['submit']))
 								echo "<td>".($avail_av-$absent_ab)."</td>
 							</tr>";
 					}
-					if(in_array($authorized,$has_permission))
-					{
+					// if(in_array($authorized,$has_permission))
+					// {
 						 ?>
 						<tr>
 							<th colspan=5><input type="submit" class="btn btn-primary" value="Submit"> </th>
 						</tr> <?php
-					}
+					//}
 					echo "</table>";
 				}
 				else
@@ -202,9 +213,9 @@ if(isset($_POST['submit']))
 						?>
 						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 							<tr>
-								<td> <?php echo $modules_array[$i]; ?> </td>
-								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $k; ?>"></td>
+								<td value="<?php echo $modules_array1[$i]; ?>"> <?php echo $modules_array[$i]; ?> </td>
+								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $modules_array1[$i]; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $modules_array1[$i]; ?>"></td>
 							</tr>
 						<?php
 					}

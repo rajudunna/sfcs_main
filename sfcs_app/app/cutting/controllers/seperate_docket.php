@@ -122,6 +122,13 @@ th{
                                     $table2_rows++;
                                     $i = $sql_row['id'];
                                     $index+=1;
+
+                                    $docket_query = "select * from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plant_code."'";
+                                    $docket_query_result = mysqli_query($link_new,$docket_query);
+                                    while($sql_row1=mysqli_fetch_array($docket_query_result))
+                                    {
+                                        $docket_number = $sql_row1['doc_no'];
+                                    }
                                     echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                     echo "<td>".$sql_row['style']."</td>";
                                     echo "<td>".$sql_row['schedule']."</td>";
@@ -130,7 +137,7 @@ th{
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
-                                    echo "<td><a href=\"$path?binding_id=$i\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    echo "<td><a href=\"$path?binding_id=$i&docket_number=$docket_number\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plant_code&username=$username&docket_number=$docket_number','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
                                 if($index==0) {
@@ -211,7 +218,7 @@ th{
                             echo "<td>".$child_row['doc_no']."</td>";
                             echo "<td>".$child_row['category']."</td>";
                             echo "<td>".$child_row['cutno']."</td>";
-                            echo "<td>".$child_row['req_qty']."</td>";
+                            echo "<td>".$child_row['bind_req_qty']."</td>";
                             echo "<td>".$child_row['bind_category']."</td>";
                             echo "<td>".$child_row['bind_req_qty']."</td>";
                             echo "</tr>";

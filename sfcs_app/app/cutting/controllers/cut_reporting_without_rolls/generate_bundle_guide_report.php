@@ -195,7 +195,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 </br>
 
 <hr/>
-</div>
+
 <?php
 if(isset($_POST['submit']))
 {
@@ -240,7 +240,7 @@ if(isset($_POST['submit']))
 		}
 	}
 	echo "<div class='col-sm-12 table-responsive'><table width='100%' class='table table-bordered info'><thead><tr><th>Cut No</th><th>Docket No</th>";
-	for($j=0;$j<sizeof($sizesarr);$j++)
+	for($j=0;$j<sizeof(array_unique($sizesarr));$j++)
 	{
 		echo "<th>".$sizesarr[$j]."</th>";
 	}
@@ -273,7 +273,7 @@ if(isset($_POST['submit']))
 						echo "<tr>";
 						echo "<td>".$cut_number."</td>";
 						echo "<td>".$docket_line_number."</td>";
-						for($i=0;$i<sizeof($sizesarr);$i++)
+						for($i=0;$i<sizeof(array_unique($sizesarr));$i++)
 						{
 							//getting details from jm_docket_bundle
 							$get_det_qry="SELECT sum(quantity) as quantity FROM $pps.`jm_docket_bundle` WHERE plant_code='$plant_code' AND jm_docket_line_id='$jm_docket_line_id' and size='".$sizesarr[$i]."'";
@@ -295,6 +295,7 @@ if(isset($_POST['submit']))
 
 	
 ?> 
+</div>
 </div>
 
   

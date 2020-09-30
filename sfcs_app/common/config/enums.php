@@ -57,4 +57,32 @@ class TrimStatusEnum {
     const PARTIALISSUED = 'Partial Issued';
     const ISSUED = 'Issued To Module';
 }
+
+class BarcodeType {
+    const PPLB = 'PPLB';
+    const PSLB = 'PSLB';
+    const PD = 'PD';
+    const PDB = 'PDB';
+    const PCRT = 'PCRT';
+}
+
+class TaskAttributeNamesEnum {
+    const STYLE = 'STYLE';
+    const SCHEDULE = 'SCHEDULE';
+    const COLOR = 'COLOR';
+    const PONUMBER = 'PONUMBER';
+    const MASTERPONUMBER = 'MASTERPONUMBER';
+    const CUTJOBNO = 'CUTJOBNO';
+    const DOCKETNO = 'DOCKETNO';
+    const SEWINGJOBNO = 'SEWINGJOBNO';
+    const BUNDLENO = 'BUNDLENO';
+    const PACKINGJOBNO = 'PACKINGJOBNO';
+    const CARTONNO = 'CARTONNO';
+    const COMPONENTGROUP = 'COMPONENTGROUP';
+    const PARENTJOBNO = 'PARENTJOBNO';
+    const EMBJOBNO = 'EMBJOBNO';
+    const CONUMBER = 'CONUMBER';
+    const REMARKS = 'REMARKS';
+    const JOBGROUP = 'JOBGROUP';
+}
 ?>

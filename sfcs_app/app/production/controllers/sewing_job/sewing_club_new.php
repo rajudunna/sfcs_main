@@ -1,17 +1,22 @@
 <html>
+<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',4,'R'); ?>"></script>
 <?php 
 include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
+$table_filter = getFullURL($_GET['r'],'TableFilter_EN/tablefilter.js','R');
+
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
+// $plantcode='AIP';
+// $username='Mounika';
 ?>
 <script>
 var url = '<?= getFullURLLevel($_GET['r'],'sewing_club_new.php',0,'N'); ?>';
 function firstbox() 
 { 
-    window.location.href =url+"&style="+document.test.style.value 
+	window.location.href =url+"&style="+document.test.style.value 
 } 
 
 function secondbox() 
@@ -32,29 +37,6 @@ function forthbox()
 //     window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value 
 // }
 
-$(document).ready(function() {
-	$('#schedule').on('click',function(e){
-		var style = $('#style').val();
-		if(style == null){
-			sweetAlert('Please Select Style','','warning');
-		}
-	});
-	$('#color').on('click',function(e){
-		var style = $('#style').val();
-		var schedule = $('#schedule').val();
-		if(style == null && schedule == null){
-			sweetAlert('Please Select Style and Schedule','','warning');
-		}
-		else if(schedule == null){
-			sweetAlert('Please Select Schedule','','warning');
-			document.getElementById("submit").disabled = true;
-		}
-		else {
-			document.getElementById("submit").disabled = false;
-		}
-	});
-});
-
 //use this function for check all the boxes
 function checkAll()
 {
@@ -68,6 +50,18 @@ function checkAll()
          }
      }
 }
+
+var table3Filters = {
+	sort_select: true,
+	display_all_text: "Display all",
+	loader: true,
+	loader_text: "Filtering data...",
+	sort_select: true,
+	exact_match: false,
+	rows_counter: true,
+	btn_reset: true
+}
+setFilterGrid("dynamic_table",table3Filters);
 </script>
 <head>
 <?php
@@ -93,7 +87,7 @@ if($plantcode!=''){
 	$style=$result_mp_color_details['style'];
 }
 echo "<div class='row'>"; 
-echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
+echo "<div class='col-sm-4'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
 echo "<option value=\"\" selected>NIL</option>";
 foreach ($style as $style_value) {
 	if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
@@ -111,7 +105,7 @@ if($get_style!=''&& $plantcode!=''){
 	$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
 	$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
 }  
-echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+echo "<div class='col-sm-4'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
 echo "<option value=\"\" selected>NIL</option>";
 foreach ($bulk_schedule as $bulk_schedule_value) {
 	if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
@@ -130,7 +124,7 @@ if($get_schedule!='' && $plantcode!=''){
 	$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
 	$bulk_color=$result_bulk_colors['color_bulk'];
 }
-echo "<div class='col-sm-3'><label>Select Color: </label>";  
+echo "<div class='col-sm-4'><label>Select Color: </label>";  
 echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
 		<option value=\"NIL\" selected>NIL</option>";
 			foreach ($bulk_color as $bulk_color_value) {
@@ -150,7 +144,7 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 	$result_bulk_MPO=getMpos($get_schedule,$get_color,$plantcode);
 	$master_po_description=$result_bulk_MPO['master_po_description'];
 }
-	echo "<div class='col-sm-3'><label>Select Master PO: </label>";  
+	echo "<div class='col-sm-4'><label>Select Master PO: </label>";  
 	echo "<select name=\"mpo\" onchange=\"forthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($master_po_description as $key=>$master_po_description_val) {
@@ -170,8 +164,8 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 		$result_bulk_subPO=getBulkSubPo($get_mpo,$plantcode);
 		$sub_po_description=$result_bulk_subPO['sub_po_description'];
 	}
-	echo "<div class='col-sm-3'><label>Select Sub PO: </label>";  
-	echo "<select name=\"sub_po\" id=\"sub_po\" onchange=\"fifthbox();\" class='form-control' >
+	echo "<div class='col-sm-4'><label>Select Sub PO: </label>";  
+	echo "<select name=\"sub_po\" id=\"sub_po\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
 				foreach ($sub_po_description as $key=>$sub_po_description_val) {
 					if(str_replace(" ","",$sub_po_description_val)==str_replace(" ","",$get_sub_po)) 
@@ -197,19 +191,38 @@ if($get_schedule!='' && $get_color!='' && $plantcode!=''){
 	<div id='alert-box' class='deliveryChargeDetail'></div>
 		<form method='post'>
 			<input type='hidden' id='myval' name='myval'>
-			<input type="button" class="btn btn-primary btn-md" id="submit" name="submit" value="submit">
+			<input type="button" class="btn btn-primary btn-md pull-right" id="submit" name="Merge Jobs" value="Merge Jobs" style='display:none;'>
 		</form>
 	</div>
 </div>
 <script>
 $(document).ready(function() 
 {
+	
 	$('#loading-image').hide();
-	$('#submit').hide();
+	$('#schedule').on('click',function(e){
+		var style = $('#style').val();
+		if(style == null){
+			sweetAlert('Please Select Style','','warning');
+		}
+	});
+	$('#color').on('click',function(e){
+		var style = $('#style').val();
+		var schedule = $('#schedule').val();
+		if(style == null && schedule == null){
+			sweetAlert('Please Select Style and Schedule','','warning');
+		}
+		else if(schedule == null){
+			sweetAlert('Please Select Schedule','','warning');
+			document.getElementById("submit").disabled = true;
+		}
+		else {
+			document.getElementById("submit").disabled = false;
+		}
+	});
 	$('#sub_po').on('change', function(){
 		$('#dynamic_table1').html('');
 		$('#loading-image').show();
-		$('#submit').hide();
 		
 		var plant_code = $('#plant_code').val();
 		var username = $('#username').val();
@@ -221,17 +234,18 @@ $(document).ready(function()
 			data: inputObj,
             success: function(response) 
             {
-				$('#loading-image').hide();
 				if (response.status) {
 					var jobsInfo = response;
 					if(jobsInfo.data.length > 0){
 						tableConstruction(jobsInfo.data);
 						$('#submit').show();
 					} else {
-						swal('','No Jobs for this Sub Po', 'error');
+						$('#loading-image').hide();
+						swal('','No Jobs found for this Sub Po', 'error');
 						return;
 					}
 				} else {
+					$('#loading-image').hide();
 					swal('',response.internalMessage, 'error');
 					return;
 				}
@@ -253,20 +267,42 @@ function tableConstruction(jobsInfo){
             var hidden_class='';
             if(i==0)
             {
-                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Schedule</th><th>Cutting</th><th>Input Job#</th><th>Quantity</th><th>Clubbing Details</th></tr></thead><tbody>";
+                var markup = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table'><thead class='cf'><tr><th>Schedule</th><th>Cut Number</th><th>Input Job#</th><th>Quantity</th><th>Clubbing Details</th></tr></thead><tbody>";
                 $("#dynamic_table1").append(markup);
             }
             s_no++;
             var markup1 = "<tr class="+hidden_class+"><td data-title='schedule'>"+jobsInfo[i].schedule.toString()+"</td><td data-title='cutJob'>"+jobsInfo[i].cutNumber+"</td>\
             <td><button type='button' id='inpjob' name='inpjob' class='btn btn-primary btn-sm' value="+jobsInfo[i].jobNumbers+" \
-            onclick='showdet(this,"+jobsInfo[i].jobNumbers+','+jobsInfo[i].schedule.toString()+");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td><td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+			onclick='showdet(this,\""+jobsInfo[i].jobNumbers+'\",\"'+jobsInfo[i].schedule.toString()+"\");'>"+jobsInfo[i].jobNumbers+"</button></td><td data-title='quantity'>"+jobsInfo[i].quantity+"</td>";
+			if(jobsInfo[i].plannedStatus){
+				markup1 += "<td>Already Job Planned</td></tr>";
+			} else {
+				markup1 += "<td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
+			}
+			
+			
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
 
-        }
+		}
+		var table3Filters = {
+				sort_select: true,
+				display_all_text: "Display all",
+				loader: true,
+				loader_text: "Filtering data...",
+				sort_select: true,
+				exact_match: false,
+				rows_counter: true,
+				btn_reset: true,
+				paging: true,
+				paging_length: 10,
+				col_4: null,
+			}
+			setFilterGrid("dynamic_table",table3Filters);
     }
     var markup99 = "</tbody></table></div></div></div>";
     $("#dynamic_table").append(markup99);
+	$('#loading-image').hide();
     $("#dynamic_table").show();
     $('#schedule').val('');
     
@@ -278,39 +314,48 @@ function showdet(btn,inpjob,schedule)
 	var inputjob=inpjob;
 	var schedule=schedule;
 	var plant_code = $('#plant_code').val();
-	window.open('/sfcs_app/app/production/controllers/sewing_job/small_popup_new.php.php?schedule='+schedule+'&inputjob='+inputjob+'&plantcode='+plant_code+'_blank');
+	
+	window.open('/sfcs_app/app/production/controllers/sewing_job/small_popup_new.php?schedule='+schedule+'&inputjob='+inputjob+'&plantcode='+plant_code+'_blank');
 }
 
 
 $(document).ready(function() 
 {
 	$('#submit').on('click', function(){
-		var jobIds = [];
-		$('input[type="checkbox"]').each((key, element) => {
-			if (element.checked) {
-				jobIds.push(element.value);
-			}
-		});
-		var plant_code="<?= $_SESSION['plantCode'] ;?>";
-		var schedule="<?= $_GET['schedule'] ;?>";
-		var checkarr = $('#myval').val();
-		var inputObj = {"jobNumbers":jobIds, "plantCode":plant_code};
-        $.ajax({
-            type: "POST",
-            url: "<?= $PPS_SERVER_IP ?>/jobs-generation/JobClubbing",
-			data: inputObj,
-            success: function(response) 
-            {
-				if (response.status) {
-					swal('','Sewing jobs clubbed successfully','success');
-				} else {
-					swal('',response.internalMessage,'error');
+		$('#loading-image').show();
+		var numberOfChecked = $('input:checkbox:checked').length;
+		if(numberOfChecked > 1) {
+			var jobIds = [];
+			$('input[type="checkbox"]').each((key, element) => {
+				if (element.checked) {
+					jobIds.push(element.value);
 				}
-				// setTimeout(function(){
-				// 	location.reload();
-				// }, 1000); 
-            }
-        });	
+			});
+			var plant_code="<?= $_SESSION['plantCode'] ;?>";
+			var schedule="<?= $_GET['schedule'] ;?>";
+			var checkarr = $('#myval').val();
+			var inputObj = {"jobNumbers":jobIds, "plantCode":plant_code};
+			$.ajax({
+				type: "POST",
+				url: "<?= $PPS_SERVER_IP ?>/jobs-generation/JobClubbing",
+				data: inputObj,
+				success: function(response) 
+				{
+					if (response.status) {
+						$('#loading-image').hide();
+						swal('','Sewing jobs clubbed successfully','success');
+					} else {
+						$('#loading-image').hide();
+						swal('',response.internalMessage,'error');
+					}
+					$("#sub_po").val(document.test.sub_po.value).change();
+					$('#sub_po').trigger('change');
+				}
+			});	
+		}else {
+			$('#loading-image').hide();
+			swal('','Please Select More than One Sewing Job to Club','error');
+		}
 	});
 });		
 </script>	

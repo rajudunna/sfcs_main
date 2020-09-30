@@ -9,11 +9,14 @@
 	$url = getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R');
 	include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
+	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+	$main_url=getFullURL($_GET['r'],'manual_form_log.php','R');
 	$has_permission=haspermission($_GET['r']);
 	$plant_code = $_SESSION['plantCode'];
+	//$plant_code=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 	//echo var_dump($has_permission);
 ?>
-
 
  <link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/ddcolortabs.css',4,'R'); ?>" type="text/css" media="all" />
 <script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',4,'R'); ?>"></script>
@@ -91,25 +94,26 @@ window.print();
 	{
 $url=getFullURL($_GET['r'],'manual_form_log.php','N');
 $urlform=getFullURL($_GET['r'],'test.php','N');
+
 if(isset($_GET['date']))
 {
 	$date=$_GET['date'];
 
 	// echo "<div id='page_heading'><span style='float: left'><h3>Item Allocation Log : ".date("M-Y",strtotime($date))."</h3></span><span style='float: right'><b>?</b>&nbsp;</span></div>";
-	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month", strtotime($date))).'> Last Month</a>  |  ';
-	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'> Next Month</a>  |  ';
-	echo '<a href='.$urlform.'>Manual Item Allocation Form</a>';
+	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month", strtotime($date))).'&plant_code='.$plant_code.'&username='.$username.'> Last Month</a>  |  ';
+	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("+1 month", strtotime($date))).'&plant_code='.$plant_code.'&username='.$username.'> Next Month</a>  |  ';
+	echo '<a href='.$urlform.'&plant_code='.$plant_code.'&username='.$username.'>Manual Item Allocation Form</a>';
 
 }
 else
 {
 	$date=date("Y-m-d");
 	// echo "<div id='page_heading'><span style='float: left'><h3>Item Allocation Log : ".date("M-Y",strtotime($date))."</h3></span><span style='float: right'><b>?</b>&nbsp;</span></div>";
-	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month")).'> Last Month</a>  |  ';
-	echo '<a href='.$urlform.'>Manual Item Allocation Form</a>';
+	echo '<a href='.$url.'&date='.date("Y-m-d",strtotime("-1 month")).'&plant_code='.$plant_code.'&username='.$username.'> Last Month</a>  |  ';
+	echo '<a href='.$urlform.'&plant_code='.$plant_code.'&username='.$username.'>Manual Item Allocation Form</a>';
 }
 
-//echo $_GET['date'];
+echo $_GET['date'];
 
 echo '<div style=\"overflow:scroll;\">
 <table id="table1" class="table table-bordered">';
@@ -164,18 +168,18 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		case 2:
 		{
 		
-			if(in_array($approve,$has_permission))
-			{
+			// if(in_array($approve,$has_permission))
+			// {
 
 				$url=getFullURL($_GET['r'],'update_status.php','N');
-				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=2\">Approved</a></td>";
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&plant_code=$plant_code&username=$username&check=2\">Approved</a></td>";
 
-			}
-			else
-			{
-				// echo "<td>20 Approved</td>";
-				echo "<td>Approved</td>";
-			}
+			//}
+			// else
+			// {
+			// 	// echo "<td>20 Approved</td>";
+			// 	echo "<td>Approved</td>";
+			// }
 			break;
 		}
 		case 3:
@@ -187,34 +191,34 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		case 4:
 		{
-			if(in_array($authorized,$has_permission))
+			// if(in_array($authorized,$has_permission))
 			
 
-			{
+			// {
 				$url=getFullURL($_GET['r'],'update_status.php','N');
-				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=4\">Manually Issued</a></td>";
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&plant_code=$plant_code&username=$username&check=4\">Manually Issued</a></td>";
 
-			}
-			else
-			{
-				echo "<td>Manually Issued</td>";
-				// echo "<td>40 Manually Issued</td>";
-			}
+			// }
+			// else
+			// {
+			// 	echo "<td>Manually Issued</td>";
+			// 	// echo "<td>40 Manually Issued</td>";
+			// }
 			break;
 		}
 		case 5:
 		{
-			if(in_array($authorized,$has_permission))
-			{
+			// if(in_array($authorized,$has_permission))
+			// {
 			
-				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=5\">Sourcing Cleared </a></td>";
+				echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&plant_code=$plant_code&username=$username&check=5\">Sourcing Cleared </a></td>";
 
-			}
-			else
-			{
-				echo "<td>Sourcing Cleared </td>";
-				// echo "<td>50 Sourcing Cleared </td>";
-			}
+			// }
+			// else
+			// {
+			// 	echo "<td>Sourcing Cleared </td>";
+			// 	// echo "<td>50 Sourcing Cleared </td>";
+			// }
 			break;
 		}
 		case 6:
@@ -228,12 +232,12 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['req_from']."</td>";
 	echo "<td>".$sql_row['app_by']."</td>";
 	
-	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($update,$has_permission))
+	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1)
 	{
 
 		$url=getFullURL($_GET['r'],'update_status.php','N');
             
-		echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&check=1\">Update</a></td>";
+		echo "<td><a class=\"btn btn-info btn-xs\" href=\"$url&tid=$tid&plant_code=$plant_code&username=$username&check=1\">Update</a></td>";
 	}
 	else
 	{

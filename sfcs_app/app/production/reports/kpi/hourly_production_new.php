@@ -55,7 +55,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 		<div class="panel panel-primary">
 			<div class="panel-heading">Hourly Production Report New</div>
 			<div class="panel-body">
-				<form action="index.php" method='GET' class="form-inline">
+				<form method='GET' class="form-inline">
 					<div class='row'>
 						<input type="hidden" value="<?= $_GET['r']; ?>" name="r">
 						<label>Date : </label>
@@ -76,7 +76,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 					$hours =  (($endTime - $startTime) / 3600); // Plant hours 
 
 					// Get production plan upload data for given date
-					$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
+					$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 					$res = mysqli_query($link, $sql);
 
 					$i = 0; ?>

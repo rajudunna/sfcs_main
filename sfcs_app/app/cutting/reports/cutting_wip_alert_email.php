@@ -147,6 +147,17 @@ $departments=getSectionByDeptTypeSewing($plantCode);
 foreach($departments as $department)    //section Loop -start
 {
 	$sectionId=$department['sectionId'];
+	/**Secton name by using section id*/
+	$qryGetSecName="SELECT section_code FROM $pms.sections WHERE section_id='$sectionId' AND plant_code='$plantCode' AND is_active=1";
+	$secNameresult = mysqli_query($link_new, $qryGetSecName) or exit("Section data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+	$secNumRows=mysqli_num_rows($secNameresult);
+	if($secNumRows>0){
+		while ($secRow = mysqli_fetch_array($secNameresult)) {
+				$section_code = $secRow['section_code'];
+		}
+	}
+	
+	
 	$workstationsArray=getWorkstationsForSectionId($plantCode, $sectionId);
 	
 	$total=0;
@@ -161,7 +172,18 @@ foreach($departments as $department)    //section Loop -start
 	$total15=0;
 	$total16=0;
 	foreach($workstationsArray as $workstations)
-    {
+    {	
+		$workstation=$workstations['workstationId'];	
+		/**Secton name by using section id*/
+		$qryGetWorkstation="SELECT workstation_code FROM $pms.workstation WHERE workstation_id='$workstation' AND plant_code='$plantCode' AND is_active=1";
+		$workStationresult = mysqli_query($link_new, $qryGetWorkstation) or exit("workstation data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$secNumRows=mysqli_num_rows($workStationresult);
+		if($secNumRows>0){
+			while ($workStationRow = mysqli_fetch_array($workStationresult)) {
+					$workstation_code = $workStationRow['workstation_code'];
+			}
+		}
+
 		$jobsArray=getJobsForWorkstationIdTypeSewing($plantCode, $workstations['workstationId']);
 		$jobHeaders=implode("','" , $jobsArray['jobs']);
 		
@@ -171,25 +193,29 @@ foreach($departments as $department)    //section Loop -start
 		//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 		$job_detail_attributes = [];
 		// $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJobId' and plant_code='$plantCode' group by ";
-		$qry_toget_style_sch="SELECT GROUP_CONCAT(IF(attribute_name='STYLE', attribute_VALUE, NULL) SEPARATOR ',') AS STYLE,GROUP_CONCAT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL) SEPARATOR ',') AS SCHEDULE,GROUP_CONCAT(IF(attribute_name='COLOR', attribute_VALUE, NULL) SEPARATOR ',') AS COLOR,GROUP_CONCAT(IF(attribute_name='DOCKETNO', attribute_VALUE, NULL) SEPARATOR ',') AS DOCKETNO,GROUP_CONCAT(IF(attribute_name='CUTJOBNO', attribute_VALUE, NULL) SEPARATOR ',') AS CUTJOBNO FROM $tms.`task_attributes` WHERE  plant_code='$plantCode' AND task_jobs_id IN ($jobHeaders) GROUP BY attribute_name";
-		$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
-		while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
-			if($row2['STYLE'] != NULL){
-				$style = $row2['STYLE'];
-			}
-			if($row2['SCHEDULE'] != NULL){
-				$schedule = $row2['SCHEDULE'];
-			}
-			if($row2['COLOR'] != NULL){
-				$color = $row2['COLOR'];
-			}
-			if($row2['DOCKETNO'] != NULL){
-				$dokcetno = $row2['DOCKETNO'];
-			}
-			if($row2['CUTJOBNO'] != NULL){
-				$cutjobs = $row2['CUTJOBNO'];
+
+		if(sizeof($jobsArray['jobs'])>0){
+			$qry_toget_style_sch="SELECT GROUP_CONCAT(DISTINCT(IF(attribute_name='STYLE', attribute_VALUE, NULL)) SEPARATOR ',') AS STYLE,GROUP_CONCAT(DISTINCT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL)) SEPARATOR ',') AS SCHEDULE,GROUP_CONCAT(DISTINCT(IF(attribute_name='COLOR', attribute_VALUE, NULL)) SEPARATOR ',') AS COLOR,GROUP_CONCAT(DISTINCT(IF(attribute_name='DOCKETNO', attribute_VALUE, NULL)) SEPARATOR ',') AS DOCKETNO,GROUP_CONCAT(DISTINCT(IF(attribute_name='CUTJOBNO', attribute_VALUE, NULL)) SEPARATOR ',') AS CUTJOBNO FROM $tms.`task_attributes` WHERE  plant_code='$plantCode' AND task_jobs_id IN ('$jobHeaders') GROUP BY attribute_name";
+			$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+			while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+				if($row2['STYLE'] != NULL){
+					$style = $row2['STYLE'];
+				}
+				if($row2['SCHEDULE'] != NULL){
+					$schedule = $row2['SCHEDULE'];
+				}
+				if($row2['COLOR'] != NULL){
+					$color = $row2['COLOR'];
+				}
+				if($row2['DOCKETNO'] != NULL){
+					$dokcetno = $row2['DOCKETNO'];
+				}
+				if($row2['CUTJOBNO'] != NULL){
+					$cutjobs = $row2['CUTJOBNO'];
+				}
 			}
 		}
+
 		$total=0;
 		$total1=0;
 		$plan_tgt=0;
@@ -202,65 +228,164 @@ foreach($departments as $department)    //section Loop -start
 		$total15=0;
 		$total16=0;
 		$clubbing=0;
-		/**here we have condition that cut status done*/
-		$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
-		LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
-		LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-		LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
-		WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status != 'OPEN' AND jdl.plant_code='$plantCode'";	
-		$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
-		if($qrylpLayNum>0){
-			while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
-			{
-				/**These plies are cut status done  */
-				$plies=$lpLayRow['plies'];
-				$ratio_id=$lpLayRow['ratio_id'];
 
-				//get the docket qty
-				$size_ratio_sum = 0;
-				$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
-				$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row = mysqli_fetch_array($size_ratios_result))
+		if($dokcetno!=''){
+			/**here we have condition that cut status done*/
+			$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+			LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+			WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status != 'OPEN' AND jdl.plant_code='$plantCode'";	
+			$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+			if($qrylpLayNum>0){
+				while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
 				{
-					$size_ratio_sum += $row['size_ratio'];
-				}
+					/**These plies are cut status done  */
+					$plies=$lpLayRow['plies'];
+					$ratio_id=$lpLayRow['ratio_id'];
 
-				/**
-				 * Available fabric PCs based cut status done
-				 */
-				$total1=$plies*$size_ratio_sum;
+					//get the docket qty
+					if($ratio_id!=''){
+						$size_ratio_sum = 0;
+						$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+						$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row = mysqli_fetch_array($size_ratios_result))
+						{
+							$size_ratio_sum += $row['size_ratio'];
+						}
+					}
+					
 
-				/**getting plant timings wrt plant*/
-				$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
-				$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$hrsNum=mysqli_num_rows($PlantTimingsResult);
-				if($hrsNum>0){
-					while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
+					/**
+					 * Available fabric PCs based cut status done
+					 */
+					$total1=$plies*$size_ratio_sum;
+
+					/**getting plant timings wrt plant*/
+					$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
+					$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Error While getting total hours".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$hrsNum=mysqli_num_rows($PlantTimingsResult);
+					if($hrsNum>0){
+						while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
+						{
+							$tot_hrs=$PlantTimingsRow['Hours'];
+						}
+					}
+
+					/**getting plan quantity from monthly and */
+					$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN $pps.monthly_production_plan p 
+					ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+					$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Error getting planned qty".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$plannedNum=mysqli_num_rows($plannedResult);
+					if($plannedNum>0){
+						while($plannedRow=mysqli_fetch_array($plannedResult))
+						{
+							$plannedQty=$plannedRow['planned_qty'];
+						}
+					}
+					$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
+					
+							
+					
+					/**
+					 * get MIN operation wrt jobs based on operation seq
+					 */
+					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+					$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
+					if(mysqli_num_rows($minOperationResult)>0){
+						while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+							$minGoodQty=$minOperationResultRow['good_quantity'];
+						}
+					}
+
+					/**
+					 * get MAX operation wrt jobs based on operation seq
+					 */
+					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
+					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+					$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+					if(mysqli_num_rows($maxOperationResult)>0){
+						while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+							$maxGoodQty=$maxOperationResultRow['good_quantity'];
+							$maxRejQty=$maxOperationResultRow['rejected_quantity'];
+						}
+					}
+					$wip=$minGoodQty-($maxGoodQty+$maxRejQty);
+					
+					if($dokcetno!=''){
+							/**here we have condition that cut status not done*/
+							$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+							LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+							LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+							LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+							WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
+							$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+							if($qrylpLayNum>0){
+								while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
+								{
+									/**These plies are cut status done  */
+									$plies=$lpLayRow['plies'];
+									$ratio_id=$lpLayRow['ratio_id'];
+
+									//get the docket qty
+									$size_ratio_sum = 0;
+									if($ratio_id!=''){
+										$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+										$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+										while($row = mysqli_fetch_array($size_ratios_result))
+										{
+											$size_ratio_sum += $row['size_ratio'];
+										}
+									}	
+								}
+
+								/**
+									 * Available fabric PCs based cut status done
+									 */
+									$total=$plies*$size_ratio_sum;
+							}else{
+								$total=0;
+							}
+					}
+					
+
+
+
+					$add=0;
+					if($plan_tgt>0)
 					{
-						$tot_hrs=$PlantTimingsRow['Hours'];
+					
+						if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") )
+						{
+							$add=8*(((strtotime(date("Y-m-d",(strtotime($date)+(60*60*round(($total/$plan_tgt),0))+(60*60*8))))-strtotime(date("Y-m-d")))/ (60 * 60 * 24))+0);
+						}
+					}
+					else
+					{
+						$add=0;
+					}
+					$res=$wip/div_by_zero1($plan_tgt);
+					$wip1=round(($res),0);
+					
+					if($plan_tgt>0)
+					{
+						$message.= "<tr><td>$section_code</td><td>$workstation_code</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$cutjobs."</td><td>$total1</td><td >$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>".round(($total/div_by_zero1($plan_tgt)),0)."</td><td>".date("Y-m-d H",strtotime($date)+(60*60*round(($total/$plan_tgt)+$add,0))).":00</td><td>$wip</td><td>$wip1</td></tr>";
+					}
+					else
+					{
+						$message.= "<tr><td>$section_code</td><td>$workstation_code</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$cutjobs."</td><td>$total1</td><td>$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>".date("Y-m-d H",strtotime($date)+(60*60*1)).":00</td><td>$wip</td><td>$wip1</td></tr>";
 					}
 				}
-
-				/**getting plan quantity from monthly and */
-				$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN monthly_production_plan p 
-				ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
-				$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$plannedNum=mysqli_num_rows($plannedResult);
-				if($plannedNum>0){
-					while($plannedRow=mysqli_fetch_array($plannedResult))
-					{
-						$plannedQty=$plannedRow['planned_qty'];
-					}
-				}
-				$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
-				
-						
+			}
+			else
+			{
 				
 				/**
 				 * get MIN operation wrt jobs based on operation seq
 				 */
-				$qrytoGetMinOperation="SELECT sum(good_quantity) AS  FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+				$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
 				$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 				if(mysqli_num_rows($minOperationResult)>0){
 					while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -272,7 +397,7 @@ foreach($departments as $department)    //section Loop -start
 				 * get MAX operation wrt jobs based on operation seq
 				 */
 				$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-				sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+				sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
 				$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
 				if(mysqli_num_rows($maxOperationResult)>0){
 					while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
@@ -282,157 +407,75 @@ foreach($departments as $department)    //section Loop -start
 				}
 				$wip=$minGoodQty-($maxGoodQty+$maxRejQty);
 				
-				/**here we have condition that cut status not done*/
-				$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
-				LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
-				LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-				LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
-				WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
-				$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
-				if($qrylpLayNum>0){
-					while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
-					{
-						/**These plies are cut status done  */
-						$plies=$lpLayRow['plies'];
-						$ratio_id=$lpLayRow['ratio_id'];
 
-						//get the docket qty
-						$size_ratio_sum = 0;
-						$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
-						$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($row = mysqli_fetch_array($size_ratios_result))
+				/**getting plant timings wrt plant*/
+				$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
+				$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Error While getting hours".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$hrsNum=mysqli_num_rows($PlantTimingsResult);
+				if($hrsNum>0){
+					while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
+					{
+						$tot_hrs=$PlantTimingsRow['Hours'];
+					}
+				}
+
+				/**getting plan quantity from monthly and */
+				$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN $pps.monthly_production_plan p 
+				ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+				$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Error While getting planned qty ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$plannedNum=mysqli_num_rows($plannedResult);
+				if($plannedNum>0){
+					while($plannedRow=mysqli_fetch_array($plannedResult))
+					{
+						$plannedQty=$plannedRow['planned_qty'];
+					}
+				}
+				$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
+				if($dokcetno!=''){
+					/**here we have condition that cut status not done*/
+					$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
+					LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
+					LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
+					LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+					WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
+					$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
+					if($qrylpLayNum>0){
+						while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
 						{
-							$size_ratio_sum += $row['size_ratio'];
+							/**These plies are cut status done  */
+							$plies=$lpLayRow['plies'];
+							$ratio_id=$lpLayRow['ratio_id'];
+
+							//get the docket qty
+							$size_ratio_sum = 0;
+							if($ratio_id!=''){
+								$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
+								$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($row = mysqli_fetch_array($size_ratios_result))
+								{
+									$size_ratio_sum += $row['size_ratio'];
+								}
+							}
+							
 						}
+
+						/**
+							 * Available fabric PCs based cut status done
+							 */
+							$total1=$plies*$size_ratio_sum;
+					}else{
+						$total1=0;
 					}
-
-					/**
-						 * Available fabric PCs based cut status done
-						 */
-						$total=$plies*$size_ratio_sum;
-				}else{
-					$total=0;
 				}
-
-
-
-				$add=0;
-				if($plan_tgt>0)
-				{
 				
-					if(date("Y-m-d",strtotime($date)+(60*60*round(($total/$plan_tgt),0)))!=date("Y-m-d") )
-					{
-						$add=8*(((strtotime(date("Y-m-d",(strtotime($date)+(60*60*round(($total/$plan_tgt),0))+(60*60*8))))-strtotime(date("Y-m-d")))/ (60 * 60 * 24))+0);
-					}
-				}
-				else
-				{
-					$add=0;
-				}
+
 				$res=$wip/div_by_zero1($plan_tgt);
-				$wip1=round(($res),0);
-				
-				if($plan_tgt>0)
-				{
-					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td >$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>".round(($total/div_by_zero1($plan_tgt)),0)."</td><td>".date("Y-m-d H",strtotime($date)+(60*60*round(($total/$plan_tgt)+$add,0))).":00</td><td>$wip</td><td>$wip1</td></tr>";
-				}
-				else
-				{
-					$message.= "<tr><td>$section</td><td>$module</td><td>".$sql_row1['style']."</td><td>".$sql_row1['schedule']."</td><td>".$sql_row1['color']."</td><td>".$sql_row1['jobs']."</td><td>$total1</td><td>$total</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>".date("Y-m-d H",strtotime($date)+(60*60*1)).":00</td><td>$wip</td><td>$wip1</td></tr>";
-				}
+				$wip1=round(($res),0);			
+				$message.= "<tr><th align=left>$section_code</th><th align=left>$workstation_code</th><td></td><td></td><td></td><td></td><td>$total1</td><td>0</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>Critical</td><td>$wip</td><td>$wip1</td></tr>";
 			}
-		}
-		else
-		{
-			
-			/**
-			 * get MIN operation wrt jobs based on operation seq
-			 */
-			$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
-			$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
-			if(mysqli_num_rows($minOperationResult)>0){
-				while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
-					$minGoodQty=$minOperationResultRow['good_quantity'];
-				}
 			}
-
-			/**
-			 * get MAX operation wrt jobs based on operation seq
-			 */
-			$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-			sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ($jobHeaders) AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
-			$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
-			if(mysqli_num_rows($maxOperationResult)>0){
-				while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
-					$maxGoodQty=$maxOperationResultRow['good_quantity'];
-					$maxRejQty=$maxOperationResultRow['rejected_quantity'];
-				}
-			}
-			$wip=$minGoodQty-($maxGoodQty+$maxRejQty);
-			
-
-			/**getting plant timings wrt plant*/
-			$qryPlantTimings="SELECT TIMESTAMPDIFF(HOUR, plant_start_time,plant_end_time) AS 'Hours' FROM $pms.plant WHERE plant_code='$plantCode'";
-			$PlantTimingsResult=mysqli_query($link_new, $qryPlantTimings) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$hrsNum=mysqli_num_rows($PlantTimingsResult);
-			if($hrsNum>0){
-				while($PlantTimingsRow=mysqli_fetch_array($PlantTimingsResult))
-				{
-					$tot_hrs=$PlantTimingsRow['Hours'];
-				}
-			}
-
-			/**getting plan quantity from monthly and */
-			$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN monthly_production_plan p 
-			ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
-			$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$plannedNum=mysqli_num_rows($plannedResult);
-			if($plannedNum>0){
-				while($plannedRow=mysqli_fetch_array($plannedResult))
-				{
-					$plannedQty=$plannedRow['planned_qty'];
-				}
-			}
-			$plan_tgt=round((($plannedQty/$tot_hrs)*1.1),0);
-
-			/**here we have condition that cut status not done*/
-			$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
-			LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
-			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_component_group_id = doc.ratio_comp_group_id 
-			WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
-			$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
-			if($qrylpLayNum>0){
-				while($lpLayRow=mysqli_fetch_array($qrylpLayResult))
-				{
-					/**These plies are cut status done  */
-					$plies=$lpLayRow['plies'];
-					$ratio_id=$lpLayRow['ratio_id'];
-
-					//get the docket qty
-					$size_ratio_sum = 0;
-					$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id IN ($ratio_id)";
-					$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row = mysqli_fetch_array($size_ratios_result))
-					{
-						$size_ratio_sum += $row['size_ratio'];
-					}
-				}
-
-				/**
-					 * Available fabric PCs based cut status done
-					 */
-					$total1=$plies*$size_ratio_sum;
-			}else{
-				$total1=0;
-			}
-
-			$res=$wip/div_by_zero1($plan_tgt);
-			$wip1=round(($res),0);			
-			$message.= "<tr><th align=left>$section</th><th align=left>$module</th><td></td><td></td><td></td><td></td><td>$total1</td><td>0</td><td>$plan_tgt</td><td>".round(($total1/div_by_zero1($plan_tgt)),0)."</td><td>0</td><td>Critical</td><td>$wip</td><td>$wip1</td></tr>";
-		}
+		
 	}
 }
 

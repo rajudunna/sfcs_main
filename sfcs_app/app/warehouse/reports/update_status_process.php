@@ -1,33 +1,49 @@
-
+<?php
+function exception($sql_result)
+{
+	throw new Exception($sql_result);
+}
+?>
 <?php
 // include("security1.php");
 
 
 $url = getFullURLLevel($_GET['r'],'common/config/config.php',3,'R');
 include($_SERVER['DOCUMENT_ROOT'].'/'.$url);
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
+$main_url=getFullURL($_GET['r'],'update_status_process.php','R');
+// $plant_code = $_SESSION['plantCode'];
+// $username = $_SESSION['userName'];
 if(isset($_POST['submit2']))
 {
-	$status=$_POST['status'];
-	$tid=$_POST['tid'];
-	
-	for($i=0;$i<sizeof($status);$i++)
+	try
 	{
-		if($status[$i]==4)
+		$status=$_POST['status'];
+		$tid=$_POST['tid'];
+		$plant_code=$_POST['plant_code'];
+		$username=$_POST['username'];
+		for($i=0;$i<sizeof($status);$i++)
 		{
-			$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
-			
+			if($status[$i]==4)
+			{
+				$sql="update $wms.manual_form set status=".$status[$i].", issue_closed=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+				
+			}
+			else
+			{
+				$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
+			}
+			mysqli_query($link, $sql) or die(exception($sql));
 		}
-		else
-		{
-			$sql="update $wms.manual_form set status=".$status[$i].", remarks=\"$username\", updated_user= '".$username."',updated_at=NOW() where tid=".$tid[$i]." and plant_code='".$plant_code."'";
-		}
-		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
+		$url = getFullURL($_GET['r'],'manual_form_log.php','N');
+		echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
 	}
-	echo "<h2><font color=\"green\">Successfully Updated.</font></h2>";
-	$url = getFullURL($_GET['r'],'manual_form_log.php','N');
-	echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$url\"; }</script>";
+	catch(Exception $e) 
+	{
+	  $msg=$e->getMessage();
+	  log_statement('error',$msg,$main_url,__LINE__);
+	}
 }
 
 
@@ -35,6 +51,8 @@ if(isset($_POST['submit1']))
 {
 	$status=$_POST['status'];
 	$tid=$_POST['tid'];
+	$plant_code=$_POST['plant_code'];
+	$username=$_POST['username'];
 	
 	$item_db=array();
 	$reason_db=array();
@@ -66,7 +84,6 @@ if(isset($_POST['submit1']))
 		{
 			$sql="update $wms.manual_form set status=".$status[$i].", app_date=\"".date("Y-m-d H:i:s")."\", app_by=\"$username\",updated_user= '".$username."',updated_at=NOW()  where tid=".$tid[$i]." and plant_code='".$plant_code."'";
 			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
 			if($status[$i]==2)
 			{
 				$count=1;

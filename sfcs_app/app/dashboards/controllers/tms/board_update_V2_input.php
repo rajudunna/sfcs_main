@@ -9,7 +9,10 @@ Changes Log:
 <?php
 set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php'); 
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
+include('functions_tms.php'); 
 $section_no=$_GET['section_no'];
 $plant_code=$_GET['plant_code'];
 $username=$_GET['username'];
@@ -49,7 +52,7 @@ $username=$_GET['username'];
 <body>
 	<form action="board_update_v2_input_excel.php" method="post">
 		<input type="hidden" name="section" value="<?= $_GET['section_no']; ?>">
-		<input type="hidden" name="uname1" value="<?= $_GET['uname']; ?>">
+		<input type="hidden" name="plant_code" value="<?= $_GET['plant_code']; ?>">
 		<input type="submit" name="export_excel" value="Export to Excel">
 	</form>
 <div class="panel panel-primary">

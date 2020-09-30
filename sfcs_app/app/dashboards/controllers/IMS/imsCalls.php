@@ -14,7 +14,7 @@ function getShifts($plantCode) {
             $shifts = [];
             while($row = mysqli_fetch_array($shiftQueryResult)){
                 $shiftRecord = [];
-                $shiftRecord["shiftValue"] = $row['shift_id'];
+                $shiftRecord["shiftValue"] = $row['shift_code'];
                 $shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
                 array_push($shifts, $shiftRecord);
             }
@@ -23,7 +23,7 @@ function getShifts($plantCode) {
             return "Shifts not found";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
 
@@ -51,7 +51,7 @@ function getSectionByDeptTypeSewing($plantCode){
             return "Sections not found";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
 
@@ -63,7 +63,6 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
     global $link_new;
     try{
         $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
-        echo $wworkstationsQuery."<br/>";
         $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
         if(mysqli_num_rows($workstationsQueryResult)>0){
             $workstations= [];
@@ -80,7 +79,7 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
             return "Workstations not found";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
 
@@ -108,7 +107,7 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId) {
             return "Jobs not found for the workstation";
         }
     } catch(Exception $e) {
-        throw $error;
+        throw $e;
     }
 }
 
@@ -138,12 +137,57 @@ function getOperationsTypeSewing($plantCode){
 
 
     }catch(Exception $e){
-        throw $error;
+        throw $e;
     }
 
 }
 
+/** Getting work stations based on department wise
+   * @param:department,plantcode
+   * @return:workstation
+   * */
+  function getWorkstations($department,$plantcode,$workstationid){
+    global $link_new;
+    global $pms;
+    /**Qry to get departmen wise id's */
+    $Qry_department="SELECT `department_id` FROM $pms.`departments` WHERE department_type='$department' AND plant_code='$plantcode' AND is_active=1";
+    $Qry_department_result=mysqli_query($link_new, $Qry_department) or exit("Sql Error at department ids".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $Qry_department_result_num=mysqli_num_rows($Qry_department_result);
+    if($Qry_department_result_num>0){
+        while($department_row=mysqli_fetch_array($Qry_department_result))
+        {
+            $department_id=$department_row['department_id'];
+        }
+    }
+    /**Getting work station type against department*/
+    $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id='$department_id' AND plant_code='$plantcode' AND is_active=1";
+    $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstationtype=array();
+    $workstation_typet_num=mysqli_num_rows($workstation_type_result);
+    if($workstation_typet_num>0){
+        while($workstaton_type_row=mysqli_fetch_array($workstation_type_result))
+        {
+            $workstationtype[]=$workstaton_type_row['workstation_type_id'];
+        }
+    }
+    $workstations = implode("','", $workstationtype);
+    /**Getting work stations against workstation type*/
+    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_id!='$workstationid' AND workstation_type_id IN ('$workstations')";
+    $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $workstation=array();
+    $workstations_result_num=mysqli_num_rows($workstations_result);
+    if($workstations_result_num>0){
+        while($workstations_row=mysqli_fetch_array($workstations_result))
+        {
+            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
+        }
+    }
 
+    return array(
+        'workstation' => $workstation
+    );
+
+  }
 
 
 

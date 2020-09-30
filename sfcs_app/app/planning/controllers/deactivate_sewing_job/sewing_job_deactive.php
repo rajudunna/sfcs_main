@@ -79,7 +79,7 @@ if(isset($_POST['submit']) || $module)
             <form name='list' method='post' action="<?php echo getFullURLLevel($_GET['r'],'sewing_job_list.php','0','N'); ?>">
             <?php
             echo "<br/><table id='deactive_sewing_job' class='table table-responsive'>";
-            echo "<thead><tr><th>S.<br/>No</th><th>Input Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Po Number</th><th>Module</th><th>Sewing<br/>Job No</th><th>Job Qty</th><th width='20%'>Status</th></tr></thead><tbody>";
+            echo "<thead><tr><th>S.<br/>No</th><th>Input Date</th><th>Style</th><th>Schedule</th><th>Color</th><th>Po Description</th><th>Module</th><th>Sewing<br/>Job No</th><th>Job Qty</th><th width='20%'>Status</th></tr></thead><tbody>";
             //<th>Output</th><th>Rejected</th><th>WIP</th><th>Remarks</th>
             //To get taskrefrence from task_jobs based on resourceid 
             $task_job_reference=array(); 
@@ -187,7 +187,7 @@ if(isset($_POST['submit']) || $module)
                     // echo "<input type='hidden' name='sizes_implode1[]' value=$sizes_implode1>";
                     echo "<td>".$sno++."</td><td>".$planned_date." </td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td><td>".$po_des."</td><td>".$workstation_description."</td><td>".$input_job_no."</td><td>".$sew_qty."</td>";
 
-                    $job_deacive = "SELECT * FROM $pts.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
+                    $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where input_job_no_random = '$key' and input_job_no='$input_job_no' and plant_code='$plant_code' and remove_type = '3'";
                     $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($row=mysqli_fetch_array($job_deacive_result))
                     {
@@ -199,7 +199,7 @@ if(isset($_POST['submit']) || $module)
                         $selected = 'selected';
                     }
 
-                    echo '<td><select id="remove_type" class="form-control" data-role="select" selected="selected" name="remove_type[]"  data-parsley-errors-container="#errId3" required><option value="0" '.$selected.'>Active</option><option value="3" '.$selected1.'>Hold</option></select></td>';
+                    echo '<td><select id="remove_type" class="form-control" data-role="select" selected="selected" name="remove_type[]"  data-parsley-errors-container="#errId3" style="width: auto;" required><option value="0" '.$selected.'>Active</option><option value="3" '.$selected1.'>Hold</option></select></td>';
                     $selected1='';
                     $selected='';
                     unset($remove_type);
