@@ -11,6 +11,7 @@
 	$username=$_POST['username'];
     $original_qty = $_POST['original_qty'];
     $ops_code = explode("-",$op_code)[1];
+
 ?>
 
 <style>
@@ -54,6 +55,7 @@ th,td{
                     <!-- <input type="hidden" id="operation_id" class="form-control input-lg" name="operation_id" value="<?php echo $op_code;?>"> -->
                     <input type="hidden" id="module" class="form-control input-lg" name="module" value="<?php echo $module;?>">
                     <input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
+                    <input type="hidden" id="dispmod" name="dispmod" value='<?= $workstation_desc; ?>'>
                     <input type="text" id="barcode" class="form-control input-lg" name="barcode" placeholder="scan here" autofocus>
                     <br>                    
                                         
@@ -83,6 +85,7 @@ $(document).ready(function()
         // var operation_id = $('#operation_id').val();
         var plant_code = $('#plant_code').val();
         var tomodule = $('#module').val();
+        var dispmod = $('#dispmod').val();
         var bundet;
         const data={
                         "bundleNumber": [barcode],
@@ -99,7 +102,7 @@ $(document).ready(function()
                 if(res.status)
                 {
                     bundet=res.data;
-                    tableConstruction(res,barcode,tomodule);
+                    tableConstruction(res,barcode,dispmod);
                 }
                 else
                 {
@@ -115,8 +118,8 @@ $(document).ready(function()
     }); 
 });
 
-function tableConstruction(res,barcode,tomodule){
-    s_no = 0;
+function tableConstruction(res,barcode,dispmod){
+    s_no = 1;
     if(res)
     {
         $('#dynamic_table1').html('');
@@ -132,7 +135,7 @@ function tableConstruction(res,barcode,tomodule){
 				// }
 				// s_no++;
 				
-				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+barcode+"</td><td data-title='status'>"+tomodule+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
+				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+barcode+"</td><td data-title='status'>"+dispmod+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
 				$("#dynamic_table").append(markup1);
 				$("#dynamic_table").hide();
 				
