@@ -467,16 +467,42 @@ td,th
 		$operation_code_array[]=$row2['operation_code'];	
 	}
 	$operation_codes = implode("','", $operation_code_array);
+	
 	if(sizeof(explode(",",$team))==1)
 	{
-		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$team."'";
-		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$teams=explode(",",$team);
+		$team = "'".str_replace(",","','",$team)."'"; 
+		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift =".$team."";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z51".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
 			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
 			{
 				$start_check=$sql_row_hr['start_time'];
 				$end_check=$sql_row_hr['end_time'];
+				// Exact Start time
+				$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr['start_time']."'";
+				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+				{
+					$start_time_exact=$sql_row3212['val'];
+				}
+				// Exact End time
+				$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value	='".$sql_row_hr['end_time']."'";
+				$sql_result32121=mysqli_query($link, $sql32121) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
+				{
+					$end_time_exact=$sql_row32121['val'];
+				}
+				if($current_date == $date)
+				{
+					if($start_check<$current_hr)
+					{
+						echo "<h2>Selected Shift still not started.</h2><br>";					
+						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
+						die;
+					}						
+				}
 			}
 		}
 		else
@@ -488,16 +514,44 @@ td,th
 	}
 	else
 	{
-		$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date'";
-		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$teams=explode(",",$team);
+		$team = "'".str_replace(",","','",$team)."'"; 
+		$sql_hr="select MIN(start_time*1)AS vals,MAX(end_time*1) AS vals2 from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z52".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
-			$sql_hr12="SELECT MIN(time_value*1)AS vals,MAX(time_value*1) AS vals2 FROM $bai_pro3.tbl_plant_timings";
-			$sql_result_hr12=mysqli_query($link, $sql_hr12) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row_hr12=mysqli_fetch_array($sql_result_hr12)) 
+			while($sql_row_hr12=mysqli_fetch_array($sql_result_hr)) 
 			{
 				$start_check=$sql_row_hr12['vals'];
-				$end_check=$sql_row_hr12['vals2'];
+				$end_check=$sql_row_hr12['vals2'];	
+
+				// Exact Start time
+				$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr12['vals']."'";
+				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+				{
+					$start_time_exact=$sql_row3212['val'];
+				}
+				// Exact End time
+				$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr12['vals2']."'";
+				$sql_result32121=mysqli_query($link, $sql32121) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				if(mysqli_num_rows($sql_result32121)>0)
+				{	
+					while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
+					{
+						$end_time_exact=$sql_row32121['val'];
+					}
+				}
+				else
+				{
+					// Exact Start time
+					$sql3212="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".($sql_row_hr12['vals2']-1)."'";
+					$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+					{
+						$end_time_exact=$sql_row3212['val'];
+					}
+				}	
 			}
 		}
 		else
@@ -508,137 +562,113 @@ td,th
 		}
 	}
 	
-	if($current_date<>$date)
-    {
-		$sql32="SELECT MAX(time_value*1) as val FROM $bai_pro3.tbl_plant_timings";
-		$sql_result32=mysqli_query($link, $sql32) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_row32=mysqli_fetch_array($sql_result32)) 
+	$sections=explode(",", $_POST['section']);
+    
+	$hoursa_shift=0;
+	//teams based looping start    
+	for($k=0;$k<sizeof($teams);$k++)
+	{
+		$shift=$teams[$k];
+		$sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
+		// echo $sql_nop."<br>";
+		$sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+		if(mysqli_num_rows($sql_result_nop) > 0) 
+		{ 
+			while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
+			{ 
+			   $nop=$sql_row_nop["avail"];
+			   $nop_shift=$nop_shift+$nop; 
+			} 
+		}
+		else
+		{ 
+			  $nop=0; 
+			  $nop_shift=$nop_shift+$nop; 
+		}
+		//if current date == given date start 
+		if($current_date == $date)
 		{
-			$current_hr=$sql_row32['val'];
-		}			
-    }
-    if($hour_filter=='All') 
-    { 
-		$time_query_new=""; 
-		$time_query=""; 
-		$sql="SELECT MIN(start_time) AS start_time,MAX(end_time) AS end_time FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr."";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_row=mysqli_fetch_array($sql_result)) 
-		{				
-			$time_query=" AND TIME(log_time) BETWEEN ('".$sql_row['start_time']."') and ('".$sql_row['end_time']."')"; 		
-			$time_query_new=" date_time BETWEEN ('$date ".$sql_row['start_time']."') and ('$date ".$sql_row['end_time']."')"; 		
-		}		
+			$sql_hr="select min(start_time) as start_time from $bai_pro.pro_atten_hours where date='$date' shift ='".$shift."'";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr['start_time']."'";
+				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+				{
+					$start_time_exact1=$sql_row3212['val'];
+				}
+				// Exact End time
+				$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$current_hr."'";
+				$sql_result32121=mysqli_query($link, $sql32121) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
+				{
+					$end_time_exact1=$sql_row32121['val'];
+				}
+				$time1 = strtotime($start_time_exact1);
+				$time2 = strtotime($end_time_exact1);
+				$difference = round(abs($time2 - $time1) / 3600,2);
+				if($difference>3)
+				{
+					$difference=$difference-($breakhours/60);
+				}
+				$hoursa_shift=$hoursa_shift+$difference;
+			}
+				                     
+		}
+		else
+		{
+			$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+			// echo $sql_hr."<br>";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			if(mysqli_num_rows($sql_result_hr) >0)
+			{
+				while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
+				{ 
+					$start_time=$sql_row_hr['start_time'];
+					$end_time=$sql_row_hr['end_time'];
+					$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr['start_time']."'";
+					$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
+					{
+						$start_time_exact1=$sql_row3212['val'];
+					}
+					// Exact End time
+					$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr['end_time']."'";
+					$sql_result32121=mysqli_query($link, $sql32121) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
+					{
+						$end_time_exact1=$sql_row32121['val'];
+					}
+					$time1 = strtotime($start_time_exact1);
+					$time2 = strtotime($end_time_exact1);
+					$difference = round(abs($time2 - $time1) / 3600,2);
+					if($difference>3)
+					{
+						$difference=$difference-($breakhours/60);
+					}
+					$hoursa_shift=$hoursa_shift+($difference);
+				}
+			}          
+		}
+		//if current date != given date end 
+		$aaa=$nop*$diff_time;
+		$clha_shift=$clha_shift+$aaa;
+	}
+	
+	
+	$time_query_new=""; 	
+	if($hour_filter=='All') 
+    {	
+		$time_query_new=" date_time BETWEEN ('$date ".$start_time_exact."') and ('$date ".$end_time_exact."')"; 		
     } 
     else 
     {	
 		$hour_filter_array=explode("$", $_POST['hour_filter']);
-		$time_query=" AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
 		$time_query_new="date_time BETWEEN ('$date ".$hour_filter_array[0]."') and ('$date ".$hour_filter_array[1]."')"; 
-    }
-    $sections=explode(",", $_POST['section']);
-    $teams=explode(",",$team);
-    $team = "'".str_replace(",","','",$team)."'"; 
-    $work_hrs=0;
-    $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
-    // echo $sql_hr."<br>";
-    $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-    if(mysqli_num_rows($sql_result_hr) >0)
-    {
-        while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-        { 
-            $work_hrs=$work_hrs+($sql_row_hr['end_time']-$sql_row_hr['start_time']);
-
-        }
-        $break_time=sizeof($teams)*($breakhours/60);
-        $work_hours=$work_hrs-$break_time;
-    }
-	else
-	{
-        if(sizeof($teams) > 1) 
-        { 
-            $work_hours=15; 
-        } 
-        else 
-        { 
-            $work_hours=7.5; 
-        }
-    }                          
-   
-	if($current_date==$date)
-    {
-        $hour_dur=0;
-        for($i=0;$i<sizeof($teams);$i++)
-        {
-            $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
-			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            if(mysqli_num_rows($sql_result_hr) >0)
-            {
-                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-                { 
-                    $start_time=$sql_row_hr['start_time'];
-                    $end_time=$sql_row_hr['end_time'];
-                    $diff_time=$current_hr-$start_time;
-                    if($diff_time>3)
-                    {
-                         $diff_time=$diff_time-($breakhours/60);
-                    }
-                    $hour_dur=$hour_dur+$diff_time;
-                }
-            }
-            else
-            {
-                $sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
-                $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-                { 
-                    $start_time=$sql_row_hr['start_time'];
-                    $end_time=$sql_row_hr['end_time'];
-                    if($end_time > $start_time){
-                        $diff_time=$end_time-$start_time;
-                    }
-                    else
-                    {
-                        $start=24-$start_time;
-                        $diff_time=$start+$end_time;
-                    }
-                    if($diff_time>3){
-                         $diff_time=$diff_time-($breakhours/60);
-                    }
-                    $hour_dur=$hour_dur+$diff_time;
-                }
-            }
-            
-        }
-        $hoursa_shift=$hour_dur;
-    }
-    else
-    {
-        $hoursa_shift=$work_hours;
-    }
-	//creation of temp tables start 
-	// $pro_mod="temp_pool_db.".$username.date("YmdHis")."_"."pro_mod"; 
-	// $pro_plan="temp_pool_db.".$username.date("YmdHis")."_"."pro_plan"; 
-	// $grand_rep="temp_pool_db.".$username.date("YmdHis")."_"."grand_rep"; 
-	// $pro_style="temp_pool_db.".$username.date("YmdHis")."_"."pro_style"; 
-	// $table_name="temp_pool_db.".$username.date("YmdHis")."_"."bai_log"; 
-
-	// $sql="create TEMPORARY table ".$pro_mod." ENGINE = MyISAM select * from bai_pro3.module_master where status='Active'"; 
-	// $sql_result1=mysqli_query($link, $sql) or exit("Sql Error1z1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	// $sql="create TEMPORARY table ".$pro_plan." ENGINE = MyISAM select * from bai_pro.pro_plan where date='".$date."'"; 
-	// $sql_result2=mysqli_query($link, $sql) or exit("Sql Error1z2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	// $sql="create TEMPORARY table ".$grand_rep." ENGINE = MyISAM select * from bai_pro.grand_rep where date='".$date."'"; 
-	// $sql_result3=mysqli_query($link, $sql) or exit("Sql Error1z3".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	// $sql="create TEMPORARY table ".$pro_style." ENGINE = MyISAM select * from bai_pro.pro_style where date='".$date."'"; 
-	// $sql_result4=mysqli_query($link, $sql) or exit("Sql Error1z4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	// $sql="create TEMPORARY table ".$table_name." ENGINE = MyISAM select * from bai_pro.bai_log where bac_date='".$date."'"; 
-	// $sql_result5=mysqli_query($link, $sql) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-	//creation of temp tables end
-	//$style_break  $hourly_break  
-	/* sections table mandatory for all scenarios */  
+    }	
+ 
 	$hr=array();
 	$hr_disp=array();
 	$hr_start=array();
@@ -651,7 +681,7 @@ td,th
 	{
 		if($hour_filter=='All') 
 		{ 
-			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr." and time_value BETWEEN $start_check and $end_check";
+			$sql="SELECT * FROM bai_pro3.tbl_plant_timings WHERE end_time <= '$end_time_exact' ORDER BY start_time";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -670,6 +700,7 @@ td,th
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
 				$hr[] = $sql_row['time_value'];
+				$hr_disp[] = $sql_row['time_display']." ".$sql_row['day_part'];
 				$hr_start[] = $sql_row['start_time'];
 				$hr_end[] = $sql_row['end_time'];										
 			}
@@ -821,111 +852,12 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$clha_shift=0; 
 		$hoursa=0; 
 		$nop_shift=0;
-		$hoursa_shift=0;
+		//$hoursa_shift=0;
 		$diff_time=0;
 		$current_date=date("Y-m-d");
 		$current_hr=date('H'); 
 		
-		//teams based looping start    
-		for($k=0;$k<sizeof($teams);$k++)
-		{
-			$shift=$teams[$k];
-			$sql_nop="select (present+jumper) as avail,absent from $bai_pro.pro_attendance where date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
-			// echo $sql_nop."<br>";
-			$sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
-			if(mysqli_num_rows($sql_result_nop) > 0) 
-			{ 
-				while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
-				{ 
-				   $nop=$sql_row_nop["avail"];
-				   $nop_shift=$nop_shift+$nop; 
-				} 
-			}
-			else
-			{ 
-				  $nop=0; 
-				  $nop_shift=$nop_shift+$nop; 
-			}
-            //if current date == given date start 
-			if($current_date == $date)
-			{
-				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."' 
-				and  $current_hr between start_time and end_time";
-				// echo $sql_hr."<br>";
-				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				if(mysqli_num_rows($sql_result_hr) >0)
-				{
-					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-					{ 
-						$start_time=$sql_row_hr['start_time'];
-						$end_time=$sql_row_hr['end_time'];
-						$diff_time=$current_hr-$start_time;
-						if($diff_time>3)
-						{
-							$diff_time=$diff_time-($breakhours/60);
-						}
-						$hoursa_shift=$hoursa_shift+$diff_time;
-					}
-				}
-				else
-				{
-					$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift='".$shift."'
-					 and $current_hr > end_time";
-					// echo $sql_hr."<br>";
-					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-					{ 
-						$start_time=$sql_row_hr['start_time'];
-						$end_time=$sql_row_hr['end_time'];
-						if($end_time > $start_time)
-						{
-							$diff_time=$end_time-$start_time;
-						}
-						else
-						{
-							$start=24-$start_time;
-							$diff_time=$start+$end_time;
-						}
-						if($diff_time>3)
-						{
-							$diff_time=$diff_time-($breakhours/60);
-						}
-						$hoursa_shift=$hoursa_shift+$diff_time;
-					}
-				}		                     
-			}
-			else
-			{
-		 		$work_hrs=0;
-				$sql_hr="select * from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
-				// echo $sql_hr."<br>";
-				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
-				if(mysqli_num_rows($sql_result_hr) >0)
-				{
-					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
-					{ 
-						$start_time=$sql_row_hr['start_time'];
-						$end_time=$sql_row_hr['end_time'];
-						if($end_time > $start_time)
-						{
-							$diff_time=$end_time-$start_time;
-						}else
-						{
-						$start=24-$start_time;
-						$diff_time=$start+$end_time;
-						}
-						if($diff_time>3)
-						{
-							$diff_time=$diff_time-($breakhours/60);
-						}
-						$hoursa_shift=$hoursa_shift+$diff_time;
-					}
-				}          
-			}
-			//if current date != given date end 
-            $aaa=$nop*$diff_time;
-            $clha_shift=$clha_shift+$aaa;
-		}
+		
 		//teams based looping end 
 		
         echo "<td>".$nop_shift."</td>";  
