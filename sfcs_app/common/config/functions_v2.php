@@ -1556,6 +1556,7 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     }
     return $out_put_results;
 }
+
 /**
  * Get master po sequnece no
  * @param it containes master po serial number and plant code
@@ -1564,5 +1565,24 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
 function getMasterPoSequence($master_po_serial,$plant_code){
     $leading_zeros = sprintf('%010d', $master_po_serial);
     return  $plant_code ."-".$leading_zeros;
+}
+
+/**
+ * gets the rejections for the given department
+ */
+function getRejectionReasons($dept_type) {
+    global $link_new;
+    global $mdm;
+    $reasons = [];
+    $reasons_query = "SELECT reason_id, internal_reason_code, internal_reason_description from $mdm.reasons where department_type = '$dept_type' and is_active=1";
+    $reasons_result = mysqli_query($link_new, $reasons_query);
+    while($row = mysqli_fetch_array($reasons_result)) {
+        $reasons[] = array(
+            'reason_id'=>$row['reason_id'],
+            'internal_reason_code'=>$row['internal_reason_code'],
+            'internal_reason_description'=>$row['internal_reason_description'],
+        );
+    }
+    return $reasons;
 }
 ?>
