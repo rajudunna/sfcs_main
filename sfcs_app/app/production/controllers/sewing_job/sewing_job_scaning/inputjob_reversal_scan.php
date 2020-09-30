@@ -279,7 +279,7 @@
 		rejectReportData.plantCode = $('#plant_code').val();
 		rejectReportData.shift = $('#shift_val').val();
 		rejectReportData.operationCode = $('#operation').val();
-		rejectReportData.createdUser = 'Rajesh N';
+		rejectReportData.createdUser = '<?= $username ?>';
 		var sizeQuantities = new Array();
 		for(var i=0; i<count; i++)
 		{
