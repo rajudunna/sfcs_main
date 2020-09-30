@@ -2,10 +2,9 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-// include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-
-// $view_access=user_acl("SFCS_0046",$username,1,$group_id_sfcs); 
-$plantcode=$_SESSION['plantCode'];
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+$plantCode=$_SESSION['plantCode'];
+$plantCode="AIP";
 ?>
 
 <html>
@@ -20,12 +19,68 @@ $plantcode=$_SESSION['plantCode'];
 
 <body>
 <?php
+/**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+function getSectionByDeptTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+        $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plantCode."' and dept.plant_code='".$plantCode."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+        if(mysqli_num_rows($sectionsQueryResult)>0){
+            $sections = [];
+            while($row = mysqli_fetch_array($sectionsQueryResult)){
+                $sectionRecord = [];
+                $sectionRecord["sectionId"] = $row['section_id'];
+                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionName"] = $row["section_name"];
+                array_push($sections, $sectionRecord);
+            }
+            return $sections;
+        } else {
+            return "Sections not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
+/**
+ * Get shifts for a plant code
+ */
+function getShifts($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1";
+        $shiftQueryResult = mysqli_query($link_new,$shiftsQuery) or exit('Problem in getting shifts');
+        if(mysqli_num_rows($shiftQueryResult)>0){
+            $shifts = [];
+            while($row = mysqli_fetch_array($shiftQueryResult)){
+                $shiftRecord = [];
+                $shiftRecord["shiftValue"] = $row['shift_code'];
+                $shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
+                array_push($shifts, $shiftRecord);
+            }
+            return $shifts;
+        } else {
+            return "Shifts not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
 	$sdate=$_POST['sdate'];
 	$edate=$_POST['edate'];
 	$shift=$_POST['shift'];
 	$module=$_POST['module'];
 	$hour_from=$_POST['hour_from'];
 	$hour_to=$_POST['hour_to'];
+
+
 ?>
 <!--<div id="page_heading"><span style="float"><h3>Daily Production Status Report</h3></span><span style="float: right; margin-top: -20px"><b>?</b>&nbsp;</span></div>-->
 <div class="panel panel-primary">
@@ -43,45 +98,39 @@ $plantcode=$_SESSION['plantCode'];
 <div class="col-md-1">
 <label valign="top">Section: </label> <select name="module" id="myModule" class="form-control">
 <option value="0" <?php  if($module=="All")?>selected>All</option>
-<?php
-$sql_mods=array();
-$sql_name=array();
-$sql="SELECT * FROM $bai_pro3.sections_master";
-$result7=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($result7))
-{
-	$sql_mods[]=$sql_row["sec_name"];
-	$sql_name[]=$sql_row["section_display_name"];
-}
-for($i=0;$i<sizeof($sql_mods);$i++)
-{
-	if($sql_mods[$i]==$module)
-	{
-		echo "<option value=\"".$sql_mods[$i]."\" selected>".$sql_name[$i]."</option>";
-	}
-	else
-	{
-		echo "<option value=\"".$sql_mods[$i]."\" >".$sql_name[$i]."</option>";
-	}
-}	
+<?php	
 	
+	/**
+	 * Get Setions for department type 'SEWING' and plant code
+	 */
+	$departments=getSectionByDeptTypeSewing($plantCode);
+	foreach($departments as $department)    //section Loop -start
+	{
+		if($sql_mods[$i]==$module)
+		{
+			//echo "<option value=\"".$sql_mods[$i]."\" selected>".$sql_name[$i]."</option>";
+			echo "<option value=\"".$department['sectionId']."\" selected>".$department['sectionName']."</option>";
+		}
+		else
+		{
+			echo "<option value=\"".$department['sectionId']."\" selected>".$department['sectionName']."</option>";
+		}
+	}
 ?>
 </select></div>
 <div class="col-md-1">
 <label valign="top">Shift Hour: </label> <select name="shift" id="myshift" class="form-control">
 <option value='All' <?php if($shift=="All"){ echo "selected"; } ?> >All</option>
-<?php 
-for ($i=0; $i < sizeof($shifts_array); $i++) {
-	if($shifts_array[$i]==$shift)
-	{
-	?>
-<option  <?php echo 'value="'.$shifts_array[$i].'"'; ?> selected><?php echo $shifts_array[$i] ?></option>
-	<?php
-		}
-		else {
-	?>
-	<option  <?php echo 'value="'.$shifts_array[$i].'"'; ?>><?php echo $shifts_array[$i] ?></option>
-<?php }
+<?php
+
+$shifts_array=getShifts($plantCode);
+$shifts = (isset($_GET['shift']))?$_GET['shift']:'';
+foreach($shifts_array as $shift){
+  if($shifts == $shift){
+	echo "<option value='".$shift['shiftValue']."' selected>'".$shift['shiftLabel']."'</option>";
+  }else{
+	echo "<option value='".$shift['shiftValue']."' >'".$shift['shiftLabel']."'</option>";
+  }
 }
 ?>
 <!-- <option  value="<?= $sf ?>" selected><?php echo 'ALL'; ?></option> -->
@@ -91,22 +140,33 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 
 <label for="hour_filter" valign="top">From Hour: </label>
 <?php
-	echo "<select name=\"hour_from\" id='hour_from' class=\"form-control\" >";
-	$sql22="SELECT time_value FROM $bai_pro3.tbl_plant_timings order by time_value*1"; 
-	$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows=mysqli_fetch_array($sql_result22))
-	{
-		if($hour_from==$rows['time_value'])
+	$qryTiming="SELECT TIMESTAMPDIFF(HOUR,plant_start_time,plant_end_time) AS hours,plant_start_time,plant_end_time  FROM $pms.plant WHERE plant_code='$plantCode' AND is_active=1";
+	$qryTimingResult=mysqli_query($link_new, $qryTiming) or exit("Error getting from hour".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if(mysqli_num_rows($qryTimingResult)>0){
+		while($timingRows=mysqli_fetch_array($qryTimingResult))
 		{
-			echo "<option value=\"".$rows['time_value']."\" selected>".$rows['time_value']."</option>";
+			$workingHours=$timingRows['hours'];
+			$plant_start_time=$timingRows['plant_start_time'];
+			$plant_end_time=$timingRows['plant_end_time'];
+		}
+	}
+	$startHour= explode(':', $plant_start_time);
+	$endHour= explode(':', $plant_end_time);
+	echo "<select name=\"hour_from\" id='hour_from' class=\"form-control\" >";
+	for($i=$startHour[0];$i<=$endHour[0];$i++)
+	{	
+		$startingHour=str_pad($i, 2, '0', STR_PAD_LEFT);
+		if($hour_from==$i)
+		{
+
+			echo "<option value=\"".$startingHour."\" selected>".$startingHour."</option>";
 		}
 		else
 		{
-			echo "<option value=\"".$rows['time_value']."\" >".$rows['time_value']."</option>";
+			echo "<option value=\"".$startingHour."\" >".$startingHour."</option>";
 		}		
 	}  
     echo "</select>"; 
-   // echo $sql; 
 ?>
 </select>
 </div>
@@ -114,219 +174,222 @@ for ($i=0; $i < sizeof($shifts_array); $i++) {
 <label for="hour_filter" valign="top">To Hour: </label>
 <?php
 	echo "<select name=\"hour_to\" id='hour_to' class=\"form-control\" >";
-	$sql221="SELECT time_value FROM $bai_pro3.tbl_plant_timings  order by time_value*1"; 
-	$sql_result221=mysqli_query($link, $sql221) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows1=mysqli_fetch_array($sql_result221))
-	{		
-		if($hour_to==$rows1['time_value'])
+	for($i=$startHour[0];$i<=$endHour[0];$i++)
+	{	
+		$startingHour=str_pad($i, 2, '0', STR_PAD_LEFT);
+		if($hour_to==$i)
 		{
-			echo "<option value=\"".$rows1['time_value']."\" selected>".$rows1['time_value']."</option>";
+
+			echo "<option value=\"".$startingHour."\" selected>".$startingHour."</option>";
 		}
 		else
 		{
-			echo "<option value=\"".$rows1['time_value']."\" >".$rows1['time_value']."</option>";
-		} 
+			echo "<option value=\"".$startingHour."\" >".$startingHour."</option>";
+		}		
 	}  
-    echo "</select>"; 
-   // echo $sql; 
+    echo "</select>";
 ?>
 </select>
 </div>
-
-
 <input type="submit" value="submit" class="btn btn-info" name="submit" style="margin-top:18px" onclick="return verify_date()" >
 </form>
 </div>
-
 <br>
-
 <?php
 
-if(isset($_POST['submit']))
-{
-	
-echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
-
-<input type="hidden" id="csv_text" name="csv_text" >
-<input type="submit" id="exp_exc" class="btn btn-info" value="Export to Excel" onclick="getData()">
-</form><br>';
-	$sdate=$_POST['sdate'];
-	$edate=$_POST['edate'];
-	$shift_new=$_POST['shift'];
-	$module=$_POST['module'];
-	$hour_from=$_POST["hour_from"];
-	$hour_to=$_POST["hour_to"];
-	if($shift_new!='All')
-	{
-		$shift_value="and bac_shift in ('".$shift_new."')";
-	}
-	else 
-	{
-		$shift_value="";
-	}
-	if($module!=0)
-	{
-		$section_value="and bac_sec =$module";
-	}
-	else 
-	{
-		$section_value="";
-	}
-	foreach($sizes_array as $key=>$size)
-	{
-		$append.= " SUM(size_$size) as size_$size,";
-	}
-	$sql22121="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_from'"; 
-	$sql_result22121=mysqli_query($link, $sql22121) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows1231=mysqli_fetch_array($sql_result22121))
-	{
-		$start_check=$rows1231['start_time'];
-	}
-	$sql25="SELECT start_time,end_time FROM $bai_pro3.tbl_plant_timings where time_value='$hour_to'"; 
-	$sql_result25=mysqli_query($link, $sql25) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($rows125=mysqli_fetch_array($sql_result25))
-	{
-		$end_check=$rows125['end_time'];
-	}
-	$sql="select tid from $pts.bai_log where plant_code='$plantcode' and bac_date between \"$sdate\" and \"$edate\" ".$shift_value." ".$section_value." and time(log_time) BETWEEN ('".$start_check."') and ('".$end_check."')";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error311".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result)>0)
-	{
-		echo "<div>";
-		echo "<div  class ='table-responsive'>";
-		echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
-		$total_qty=0;
-		do{
-			for($ii=$hour_from;$ii<=$hour_to;$ii++)
-			{
-				//$number = str_pad($ii, 2, '0', STR_PAD_LEFT);
-				$sql2212="SELECT start_time,end_time,time_display,day_part FROM $bai_pro3.tbl_plant_timings where time_value='$ii'"; 
-				$sql_result2212=mysqli_query($link, $sql2212) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($rows12=mysqli_fetch_array($sql_result2212))
-				{
-					$time_display=$rows12['time_display'];
-					$day_part=$rows12['day_part'];
-					$start_hour=$rows12['start_time'];
-					$end_hour=$rows12['end_time'];
-					$time_query=" AND TIME(log_time) BETWEEN ('".$rows12['start_time']."') and ('".$rows12['end_time']."')";
-				}
-				$sql1="select smv,nop,bac_no,delivery,bac_sec,bac_date,bac_shift, jobno,sum(bac_Qty) as bac_Qty,bac_lastup,bac_style,ims_doc_no,$append log_time from $pts.bai_log where plant_code='$plantcode' and bac_date='".$sdate."' $time_query $shift_value $section_value  GROUP BY bac_sec,bac_no,bac_style,delivery,jobno,bac_shift,color,ims_doc_no ORDER BY bac_style,delivery,bac_shift,jobno*1";
-				$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-				if(mysqli_num_rows($sql_result1)>0)
-				{
-					$count = mysqli_num_rows($sql_result1);
-					while($sql_row=mysqli_fetch_array($sql_result1))
-					{
-						$module=$sql_row['bac_no'];
-						$section=$sql_row['bac_sec'];
-						$sql44="select * from $bai_pro3.sections_master where sec_name = ".$section;
-						//echo $sql1."<br>";
-						$sql_result44=mysqli_query($link, $sql44) or exit("Sql Errorrr4--".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row44=mysqli_fetch_array($sql_result44))
-						{
-							$section_name=$sql_row44['section_display_name'];
-						}
-						$date=$sql_row['bac_date'];
-						$shift=$sql_row['bac_shift'];
-						$qty=$sql_row['bac_Qty'];
-						$lastup=$sql_row['bac_lastup'];
-						$style=$sql_row['bac_style'];
-						$doc_no=$sql_row['ims_doc_no'];
-						$log_time=$sql_row['log_time'];
-						$schedule=$sql_row['delivery'];
-						$color=$sql_row['color'];
-						$smv=round($sql_row['smv'],3);	
-						$nop=$sql_row['nop'];						
-						for($i=0;$i<sizeof($sizes_array);$i++)
-						{
-							if($sql_row["size_".$sizes_array[$i].""]>0 || $sql_row["size_".$sizes_array[$i].""]<0)
-							{						
-								$sizes[$sizes_array[$i]]=$sql_row["size_".$sizes_array[$i].""];
-								
-								$sizes_val[]=$sizes_array[$i];
-								if($smv>0)
-								{								
-									$sah[$sizes_array[$i]]=round($sql_row["size_".$sizes_array[$i].""]*$smv/60,3);
-								}
-								else
-								{
-									$sah[$sizes_array[$i]]=0;
-								}								
-							}
-						}
-						$input_job = $sql_row['jobno'];
-						$sql112="select * from $bai_pro3.plandoc_stat_log where doc_no=$doc_no";
-						//echo $sql1."<br>";
-						$sql_result2=mysqli_query($link, $sql112) or exit("Sql Error4--".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row1=mysqli_fetch_array($sql_result2))
-						{
-							$order_tid=$sql_row1['order_tid'];
-							$cutno=$sql_row1['acutno'];
-						}
-						if(mysqli_num_rows($sql_result2)==0){
-							$sql15="select * from $bai_pro3.plandoc_stat_log_archive where doc_no=$doc_no";
-							$sql_result1212=mysqli_query($link, $sql15) or exit("Sql Error5--".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_row112=mysqli_fetch_array($sql_result1212))
-							{
-								$order_tid=$sql_row112['order_tid'];
-								$cutno=$sql_row112['acutno'];
-							}
-						}					
-						$sql12="select order_style_no,order_del_no,order_col_des,color_code,style_id from $bai_pro3.bai_orders_db where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\"";
-						$sql_result122=mysqli_query($link, $sql12) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql_no_rows=mysqli_num_rows($sql_result122);
-						$table="$bai_pro3.bai_orders_db";
-						if($sql_no_rows == 0)
-						{
-							$table="$bai_pro3.bai_orders_db_archive";
-						}
-						$sql143="select order_style_no,order_del_no,order_col_des,color_code,style_id from $table where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\" ";
-						$sql_result132=mysqli_query($link, $sql143) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row132=mysqli_fetch_array($sql_result132))
-						{
-							$style=$sql_row132['order_style_no'];
-							$schedule=$sql_row132['order_del_no'];
-							$color=$sql_row132['order_col_des'];
-							$color_code=$sql_row132['color_code'];
-							$style_id=$sql_row132['style_id'];
-						}
-						$bgcolor="";	
-						if($smv==0 and $nop==0)
-						{
-							$bgcolor="WHITE";
-						} 
-						for($k=0;$k<sizeof($sizes_val);$k++)
-						{
-							$finalized_size_qty = $sizes[$sizes_val[$k]];
-							$getting_title_size = "select title_size_".$sizes_val[$k]." as size from $table where order_del_no=\"".$schedule."\" and order_tid=\"".$order_tid."\"";
-							$sql_result001=mysqli_query($link, $getting_title_size) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($sql_result_fetch = mysqli_fetch_array($sql_result001)){
-								$finalized_title_size_value = $sql_result_fetch["size"];
-							}
-							$display_prefix1 = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color,$input_job,$link);
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".chr($color_code).leading_zeros($cutno,3)."</td><td>$display_prefix1</td><td>$finalized_title_size_value</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
-							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
-							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];							
-						}				
-						unset($sah);
-						unset($sizes_val);
-						unset($sizes);				
-					}
-				}
-				//$time_query='';
-			}			
-			$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
+/**
+ * get workstations for plant code and section id
+ */
+function getWorkstationsForSectionId($plantCode, $sectionId) {
+    global $pms;
+    global $link_new;
+    try{
+		//echo $sectionId;
+		if($sectionId!='0'){
+			$sectionAppend="and section_id= '".$sectionId."'";
+		}else{
+			$sectionAppend=" ";
 		}
-		while (strtotime($sdate) <= strtotime($edate)); 
-		echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=12>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
-	}
-	else
-	{
-		echo "<div class='alert alert-danger' style='width:1000px';>No Data Found</div>";
-		echo "<script>$(document).ready(function(){
-				 $('#table1').css('display','none');
-			 });</script>";
-	}
+
+		$workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' $sectionAppend and is_active=1";
+		//echo $workstationsQuery;
+        $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
+        if(mysqli_num_rows($workstationsQueryResult)>0){
+            $workstations= [];
+            while($row = mysqli_fetch_array($workstationsQueryResult)){
+                $workstationRecord = [];
+                $workstationRecord["workstationId"] = $row['workstation_id'];
+                $workstationRecord["workstationCode"] = $row["workstation_code"];
+                $workstationRecord["workstationDesc"] = $row["workstation_description"];
+                $workstationRecord["workstationLabel"] = $row["workstation_label"];
+                array_push($workstations, $workstationRecord);
+            }
+            return $workstations;
+        } else {
+            return "Workstations not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
+/**
+ * get planned sewing jobs(JG) for the workstation
+ */
+function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId,$sdate,$edate) {
+    global $tms;
+    global $link_new;
+    try{
+        $taskType = TaskTypeEnum::SEWINGJOB;
+        $taskStatus = TaskStatusEnum::INPROGRESS;
+        $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
+        if(mysqli_num_rows($jobsQueryResult)>0){
+            $jobs= [];
+            while($row = mysqli_fetch_array($jobsQueryResult)){
+                $jobRecord = [];
+                $jobRecord["taskJobId"] = $row['task_jobs_id'];
+                $jobRecord["taskJobRef"] = $row['task_job_reference'];
+                array_push($jobs, $jobRecord);
+            }
+            return $jobs;
+        } else {
+            return "Jobs not found for the workstation";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
+if(isset($_POST['submit']))
+{	
+	echo '<form action="'.getFullURL($_GET["r"],"export_excel.php",'R').'" method ="post" > 
+	<input type="hidden" id="csv_text" name="csv_text" >
+	<input type="submit" id="exp_exc" class="btn btn-info" value="Export to Excel" onclick="getData()">
+	</form><br>';
+		$sdate=$_POST['sdate'];
+		$edate=$_POST['edate'];
+		$shift_new=$_POST['shift'];
+		$section=$_POST['module'];
+		$hour_from=$_POST["hour_from"];
+		$hour_to=$_POST["hour_to"];
+		
+		$workstationsArray=getWorkstationsForSectionId($plantCode,$section);
+		foreach($workstationsArray as $workStation)
+		{
+			$jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$workStation['workstationId']);
+			if(sizeof($jobsArray)>0)
+				{
+					foreach($jobsArray as $job)     
+					{
+						/**
+                         * getting min and max operations
+                         */
+                        $qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+                        $maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
+                        if(mysqli_num_rows($maxOperationResult)>0){
+                            while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+                                $maxOperation=$maxOperationResultRow['operation_code'];
+                            }
+						}
+						
+						$bundlesQry = "select GROUP_CONCAT(CONCAT('''', jm_job_bundle_id, '''' ))AS jmBundleIds,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id ='".$job['taskJobRef']."'";
+						$bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($bundleRow=mysqli_fetch_array($bundlesResult))
+                        {
+							$jmBundleIds=$bundleRow['jmBundleIds'];
+							if($jmBundleIds!=''){
+								$barcodesQry = "select barcode from $pts.barcode where external_ref_id in ($jmBundleIds) and barcode_type='PPLB' and plant_code='$plantCode' AND is_active=1";
+								$barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$originalBarcode=array();
+                                while($barcodeRow=mysqli_fetch_array($barcodeResult))
+                                {   
+									$originalBarcode[]=$barcodeRow['barcode'];
+								}
+							}
+
+						}
+
+					}
+
+				}
+		}
+		
+		if(count($originalBarcode)>0)
+		{
+			echo "<div>";
+			echo "<div  class ='table-responsive'>";
+			echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
+			$total_qty=0;
+			do{
+				for($ii=$hour_from;$ii<=$hour_to;$ii++)
+				{
+					$fromHour=$ii.":00:00";
+					$to=$ii+1;
+					$toHour=$to.":00:00";
+					$time_display=$fromHour."-".$toHour;
+					$qryGettransactions="SELECT * FROM $pts.transaction_log WHERE IN plant_code='$plantCode' AND operation='$maxOperation' AND bundleNumber IN ('".implode("','" , $originalBarcode)."') 
+					AND shift='' AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$rows12['start_time']."') AND ('".$rows12['end_time']."') 
+					AND is_active=1 GROUP BY shift,docketnumber,style,size,sewingjobnumber, ORDER BY style,shift,sewingjobnumber*1
+					";
+					$transactionResult=mysqli_query($link, $qryGettransactions) or exit("Error while getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+					if(mysqli_num_rows($transactionResult)>0)
+					{
+						$count = mysqli_num_rows($transactionResult);
+						while($transactionRow=mysqli_fetch_array($transactionResult))
+						{
+							$style=$sql_row['style'];
+							$schedule=$sql_row['schedule'];
+							$color=$sql_row['color'];
+							$size=$sql_row['size'];
+							$good_qty=$sql_row['good_qty'];
+							$sewingjobnumber=$sql_row['sewingjobnumber'];
+							$docketnumber=$sql_row['docketnumber'];
+							$cutnumber=$sql_row['cutnumber'];
+							$workstation_id=$sql_row['workstation_id'];
+							$createDate=$sql_row['created_at'];
+							$shift=$sql_row['shift'];
+							
+							/**getting smv and nop form monthly upload*/
+							$qryMonthlyupload="SELECT mp.smv AS smv,mp.capacity_factor FROM $pps.monthly_production_plan_upload_log ml LEFT JOIN monthly_production_plan mp 
+							ON ml.monthly_production_plan_upload_log_id=mp.monthly_production_plan_upload_log_id WHERE ml.plant_code='$plantCode' AND 
+							DATE(mp.planned_date)='$createDate' AND mp.product_code='$style' AND mp.colour='$color'";
+							$monthlyResult=mysqli_query($link, $qryMonthlyupload) or exit("Error while getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($monthlyRow=mysqli_fetch_array($monthlyResult))
+							{
+								$smv=round($monthlyRow['smv'],3);	
+								$nop=$monthlyRow['capacity_factor'];
+							}							
+												
+							$bgcolor="";	
+							if($smv==0 and $nop==0)
+							{
+								$bgcolor="WHITE";
+							} 
+							
+								
+							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$module</td><td>$section_name</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cutnumber."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$sizes[$sizes_val[$k]]."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
+							$total_qty=$total_qty+$sizes[$sizes_val[$k]];							
+							$total_qty_sah=$total_qty_sah+$sah[$sizes_val[$k]];										
+							unset($sah);
+							unset($sizes_val);
+							unset($sizes);				
+						}
+					}
+					//$time_query='';
+				}			
+				$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
+			}
+			while (strtotime($sdate) <= strtotime($edate)); 
+			echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=12>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
+		}
+		else
+		{
+			echo "<div class='alert alert-danger' style='width:1000px';>No Data Found</div>";
+			echo "<script>$(document).ready(function(){
+					$('#table1').css('display','none');
+				});</script>";
+		}
 }
  
 ?>

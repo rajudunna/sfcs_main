@@ -1,4 +1,6 @@
-
+<?php
+    $plantCode = $_SESSION['plantCode'];
+?>
 <html>
 <head>
 	<script type="text/javascript" src="sfcs_app/common/js/tablefilter.js" ></script>
@@ -77,7 +79,7 @@
 		{
 			$.ajax({
 				type: "GET",
-				url: '<?= $url1 ?>?bundle='+bundle+'&some=bundle_no',
+				url: '<?= $url1 ?>?bundle='+bundle+'&some=bundle_no&plantCode=<?=$plantCode?>',
 				success: function(response) 
 				{
 					$('#loading-image').hide();
