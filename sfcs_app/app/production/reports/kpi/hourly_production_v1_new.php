@@ -58,7 +58,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 		<div class="panel panel-primary">
 			<div class="panel-heading">Hourly Production Report - Section Wise</div>
 			<div class="panel-body">
-				<form action="index.php" method='GET' class="form-inline">
+				<form   method='GET' class="form-inline">
 					<div class='row'>
 						<input type="hidden" value="<?= $_GET['r']; ?>" name="r">
 						<label>Date : </label>

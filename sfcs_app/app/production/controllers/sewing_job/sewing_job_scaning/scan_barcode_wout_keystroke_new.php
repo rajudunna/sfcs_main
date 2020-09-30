@@ -158,7 +158,7 @@ $(document).ready(function()
 				if(res.status)
 				{
 					
-					if(bundet)
+					if(res)
 					{
 						tableConstruction(res);
 					}
@@ -201,19 +201,19 @@ function tableConstruction(res){
 				// }
 				s_no++;
 				
-				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+res.bundleBrcdNumber+"</td><td data-title='operation'>"+res.operationCode+"</td><td data-title='style'>"+bundet.style+"</td><td data-title='fgColor'>"+bundet.fgColor+"</td><td data-title='size'>"+bundet.size+"</td><td data-title='goodQty'>"+bundet.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
+				var markup1 = "<tr class="+hidden_class+"><td data-title='S.No'>"+s_no+"</td><td data-title='bundlenumber'>"+bundet.bundleBrcdNumber+"</td><td data-title='operation'>"+bundet.operationCode+"</td><td data-title='style'>"+bundet.style+"</td><td data-title='fgColor'>"+bundet.fgColor+"</td><td data-title='size'>"+bundet.size+"</td><td data-title='goodQty'>"+bundet.actualQuantity+"</td><td data-title='internalMessage'>"+res.internalMessage+"</td></tr>";
 				$("#dynamic_table").append(markup1);
 				$("#dynamic_table").hide();
 				
 				$('#dynamic_table2').html('');
-				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+res.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+res.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
 				$("#dynamic_table2").append(dynamic2);
 				$("#dynamic_table2").show();
 			}
 			else
 			{
 				$('#dynamic_table2').html('');
-				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+res.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+res.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
+				var dynamic2="<table class = 'col-sm-12 table-bordered table-striped table-condensed cf' id='dynamic_table2'><thead class='cf'><tr><td>Bundle Number</td><td>"+bundet.bundleBrcdNumber+"</td></tr><tr><td>Operation</td><td>"+bundet.operationCode+"</td></tr><tr><td>Status</td><td>"+res.internalMessage+"</td></tr></thead><tbody>";
 				$("#dynamic_table2").append(dynamic2);
 				$("#dynamic_table2").show();
 			}

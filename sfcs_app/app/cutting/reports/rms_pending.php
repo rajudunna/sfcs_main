@@ -5,7 +5,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 $table_filter = getFullURLLevel($_GET['r'],'common/js/tablefilter.js',3,'R');
-// $plantcode = $_SESSION['plantCode'];
+$plantcode = $_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 // $plantcode = 'AIP';
 ?>
