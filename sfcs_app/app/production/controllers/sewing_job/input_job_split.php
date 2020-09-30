@@ -69,7 +69,9 @@
                     $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
                     echo "<h5><b><u>Select Sub PO :</u></b></h5>";
                     foreach($PoDescription as $key=>$poDesc){
-                        echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs('".$poDesc."','".$key."') value='".$key."'>";
+                        ?>
+                        <input type='button' class='btn btn-warning' onClick="return getSewingJobs('<?php echo $poDesc ?>', '<?php echo $key ?>')" value='<?= $key; ?>'>
+                        <?php
                     }
             }else{
                 echo "</br></br><center><h4 style='color:red;'>No PO's Found on this <b>' ".$schedule." '</b> Schedule,Please Check Once</h4></center>";
