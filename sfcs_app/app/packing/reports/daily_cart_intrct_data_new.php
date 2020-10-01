@@ -10,18 +10,9 @@
 </style>
 
 <?php
-
-$table="upload";
-$table1="packing_summary";
-$table2="packing_summary_tmp";
-if(isset($_POST['division']))
-{
-	$division=$_POST['division'];
-}
-else
-{
-	$division="All";
-}
+$plant_code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
+// $plant_code = 'AIP';
 ?>
 
 <script>
@@ -139,26 +130,14 @@ function verify_date(e){
 <?php
 if(isset($_POST["submit"]))
 {
-	echo "<hr/>";
+
 	$sdate=$_POST["dat"];
 	$edate=$_POST["dat1"];
-	//$shift=$_POST["division"];
 	$hour_from=$_POST["hour"];
 	$hour_to=$_POST["hour1"];
 	
-	//echo "<h3>From ".$_POST['dat']."&nbsp;&nbsp;&nbsp;To ".$_POST['dat1']."<br><br><h3>";
 	set_time_limit(10000000);
 	
-	$sql_del="truncate table $bai_pro3.$table2";
-	//echo $sql_del;
-	if(!mysqli_query($link,$sql_del))
-	{
-		die('Error1'.mysqli_error());
-	}
-	
-
-	
-	//$size=array("XS","S","M","L","XL","XXL","S06","S08","S10","S12","S14","S16","S18","S20","S22","S24","S26","S28","S30"); 
 	$size = $sizes_array;
 
 	$day=0;
@@ -195,40 +174,34 @@ if(isset($_POST["submit"]))
 		$time_stamp1="PM";
 		$hour_to=$hour_to-12;
 	}
+
 	echo "<div id='report'>";
 	echo "<h2><label>Selected Period :-</label> From : <span class='label label-success'>".$hour_from."".$time_stamp."</span> To : <span class='label label-success'>".$hour_to."".$time_stamp1."</h2></span>";
 	echo "<div class='table-responsive col-md-12' style='max-height:600px;overflow-y:scroll'>";
 	echo "<table id=\"table1\" class=\"table table-bordered\" style='width:100%'>";
-	echo "<tr class='danger'><th>TID</th><th>Size</th><th>Status</th><th>Last Updated</th><th>Carton Act Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
+	echo "<tr class='danger'><th>TID</th><th>Size</th><th>Status</th><th>Last Updated</th><th>Carton Reported Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
 	$packing_tid_list=array();
-	$sql="select * from $bai_pro3.packing_summary where scan_date between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and status=\"DONE\" order by scan_date";
+	$sql="select barcode,size,updated_at,style,color,schedule,good_quantity from $pts.transaction_log where created_at between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and plant_code='$plant_code' order by created_at";
+	
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	if(mysqli_num_rows($sql_result))
 	{
 
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
+		while($sql_row=mysqli_fetch_array($sql_result))
+		{
 
-		$tid=$sql_row['tid'];
-		$packing_tid_list[]=$sql_row['tid'];
-		$size_code=$sql_row['size_code'];
-		$status=$sql_row['status'];
-		$lastup=$sql_row['scan_date'];
-		$container=$sql_row['container'];
-		$disp_carton_no=$sql_row['disp_carton_no'];
-		$disp_id=$sql_row['disp_id'];
-		$carton_act_qty=$sql_row['carton_act_qty'];
-		$audit_status=$sql_row['audit_status'];
-		$order_style_no=$sql_row['order_style_no'];
-		$order_del_no=$sql_row['order_del_no'];
-		$order_col_des=$sql_row['order_col_des'];
-		
-		$size_value=ims_sizes('',$sql_row['order_del_no'],$sql_row['order_style_no'],$sql_row['order_col_des'],strtoupper(substr("a_".$sql_row['size_code'],2)),$link);
-					
+			$barcode=$sql_row['barcode'];
+			$size=$sql_row['size'];
+			$status='DONE';
+			$updated_at=$sql_row['updated_at'];
+			$style=$sql_row['style'];
+			$schedule=$sql_row['schedule'];
+			$color=$sql_row['color'];
+			$good_quantity=$sql_row['good_quantity'];
 
-		echo "<tr><td>".$sql_row['tid']."</td><td>".$size_value."</td><td>".(strlen($sql_row['status'])==0?"Pending":$sql_row['status'])."</td><td>".$sql_row['scan_date']."</td><td>".$sql_row['carton_act_qty']."</td><td>".$sql_row['order_style_no']."</td><td>".$sql_row['order_del_no']."</td><td>".$sql_row['order_col_des']."</td></tr>";
-	}
-	echo '<tr><th colspan=7 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
+			echo "<tr><td>".$barcode."</td><td>".$size."</td><td>".$status."</td><td>".$updated_at."</td><td>".$good_quantity."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td></tr>";
+		}
+		echo '<tr><th colspan=4 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
 		echo "</table>";
 	
 	}
@@ -247,18 +220,11 @@ echo "</div>
 ?>
 
 <script language="javascript" type="text/javascript">
-//<![CDATA[
-	//setFilterGrid( "table1111" );
 $('#reset_table1').addClass('btn btn-warning');
 var fnsFilters = {
 	
 	rows_counter: true,
 	sort_select: true,
-	// on_change: true,
-	// display_all_text: " [ Show all ] ",
-	// loader_text: "Filtering data...",  
-	// loader: true,
-	// loader_text: "Filtering data...",
 	btn_reset: true,
 	alternate_rows: true,
 	btn_reset_text: "Clear",
@@ -273,7 +239,6 @@ var fnsFilters = {
 	};
 	
 	 setFilterGrid("table1",fnsFilters);
-//]]>
 	$(document).ready(function(){
 		$('#reset_table1').addClass('btn btn-warning btn-xs');
 	});
