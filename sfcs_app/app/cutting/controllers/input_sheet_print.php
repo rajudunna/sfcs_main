@@ -13,42 +13,48 @@ $date=date('Y-m-d');
 	 * getting cut jobs based on jm jg header 
 	 */
 	$taskType = TaskTypeEnum::SEWINGJOB;
-	//Qry to check sewing job planned or not
-	$check_job_status="SELECT task_header_id,resource_id FROM $tms.task_header WHERE task_ref='$input_job' AND plant_code='$plantcode' AND task_type='$taskType' AND (resource_id IS NOT NULL OR  resource_id!='')";
-	$job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
-	$job_status_num=mysqli_num_rows($job_status_result);
-	if($job_status_num>0){
-		while($task_header_id_row=mysqli_fetch_array($job_status_result))
-			{
-				$task_header_id[]=$task_header_id_row['task_header_id'];
-				$resource_id=$task_header_id_row['resource_id'];
-			}
-
-			/**
-			 * getting workstation based resource id
-			 */
-			$qryGetWorkstation="SELECT workstation_description FROM $pms.workstation WHERE workstation_id='$resource_id' AND plant_code='$plantcode' AND is_active=1";
-			$getWorkstationResult=mysqli_query($link_new, $qryGetWorkstation) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
-			$workstationNum=mysqli_num_rows($getWorkstationResult);
-			if($workstationNum>0){
-				while($workstationRow=mysqli_fetch_array($getWorkstationResult))
-				{
-					$workstationDescription=$workstationRow['workstation_description'];
-				}
-			}
+	
 		//Qry to fetch taskrefrence from task_job  
-		$qry_toget_taskrefrence="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_type='$tasktype' AND plant_code='$plantcode' AND task_header_id IN ('".implode("','" , $task_header_id)."')";
+		$qry_toget_taskrefrence="SELECT task_jobs_id,task_header_id FROM $tms.task_jobs WHERE task_type='$taskType' AND plant_code='$plantcode' AND task_job_reference ='$input_job'";
 		$toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
 		if($toget_taskrefrence_num>0){
 				while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
 				{  
 					$task_jobs_id[]=$toget_taskrefrence_row['task_jobs_id'];
+					$task_header_id[]=$toget_taskrefrence_row['task_header_id'];
+				}
+
+				//Qry to check sewing job planned or not
+				$check_job_status="SELECT resource_id FROM $tms.task_header WHERE task_header_id IN ('".implode("','" , $task_header_id)."') AND plant_code='$plantcode' AND task_type='$taskType' AND (resource_id IS NOT NULL OR  resource_id!='')";
+				//echo $check_job_status;
+				$job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+				$job_status_num=mysqli_num_rows($job_status_result);
+				if($job_status_num>0){
+					while($task_header_id_row=mysqli_fetch_array($job_status_result))
+						{
+							$resource_id=$task_header_id_row['resource_id'];
+						}
+
+						/**
+						 * getting workstation based resource id
+						 */
+						$qryGetWorkstation="SELECT workstation_description FROM $pms.workstation WHERE workstation_id='$resource_id' AND plant_code='$plantcode' AND is_active=1";
+						$getWorkstationResult=mysqli_query($link_new, $qryGetWorkstation) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+						$workstationNum=mysqli_num_rows($getWorkstationResult);
+						if($workstationNum>0){
+							while($workstationRow=mysqli_fetch_array($getWorkstationResult))
+							{
+								$workstationDescription=$workstationRow['workstation_description'];
+							}
+						}
+
 				}
 
 				/**getting cut jobs based on task job id */
-				$qry_toget_style_sch="SELECT GROUP_CONCAT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL) SEPARATOR ',') AS SCHEDULE,GROUP_CONCAT(IF(attribute_name='STYLE', attribute_VALUE, NULL) SEPARATOR ',') AS STYLEGROUP_CONCAT(IF(attribute_name='PONUMBER', attribute_VALUE, NULL) SEPARATOR ',') AS PONUMBER, FROM $tms.`task_attributes` WHERE  plant_code='AIP' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."') GROUP BY attribute_name";
-				echo $qry_toget_style_sch;
+				$qry_toget_style_sch="SELECT GROUP_CONCAT(IF(attribute_name='SCHEDULE', attribute_VALUE, NULL) SEPARATOR ',') AS SCHEDULE,
+				GROUP_CONCAT(IF(attribute_name='STYLE', attribute_VALUE, NULL) SEPARATOR ',') AS STYLE,
+				GROUP_CONCAT(IF(attribute_name='PONUMBER', attribute_VALUE, NULL) SEPARATOR ',') AS PONUMBER FROM $tms.`task_attributes` WHERE  plant_code='AIP' AND task_jobs_id IN ('".implode("','" , $task_jobs_id)."') GROUP BY attribute_name";
 				$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 				while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 					
@@ -63,7 +69,6 @@ $date=date('Y-m-d');
 						}
 				}
 		}
-	}
 
 	/**
 	 * getting destination from oms details

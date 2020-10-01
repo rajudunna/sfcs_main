@@ -148,33 +148,44 @@ if(isset($_POST['show']))
 					while($get_mpo_row=mysqli_fetch_array($get_mpo_result))
 					{
 						$style=$get_mpo_row['style'];
-						$color=$get_mpo_row['color'];
+						// $color=$get_mpo_row['color'];
 
-						$master_po_details_id=array();
-						$qry_mp_color_detail="SELECT master_po_details_id FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND style='$style'";
-						$mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
-						if($mp_color_detail_num>0){
-							while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
-							{
-								$master_po_details_id[]=$mp_color_detail_row["master_po_details_id"];
-							}
-
-							$schedule=array();
-							$qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
-							$mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
-							if($mp_mo_qty_num>0){
-								while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
-									{
-										
-										$schedule[]=$mp_mo_qty_row["schedule"];
-									}
-									$bulk_schedule=array_unique($schedule);
-									$schedules = implode(",",$bulk_schedule);
-
-							}
+						$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+						WHERE po_number='$po_number' AND mp_sub_mo_qty.plant_code='$plantcode'";
+						$qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($qry_get_sch_col_result))
+						{
+							$schedule[]=$row['schedule'];
+							$colors[]=$row['color'];
 						}
+						$schedules = implode(",",array_unique($schedule));
+						$color = implode(",",array_unique($colors));
+
+						// $master_po_details_id=array();
+						// $qry_mp_color_detail="SELECT master_po_details_id FROM $pps.mp_color_detail WHERE plant_code='$plantcode' AND style='$style'";
+						// $mp_color_detail_result=mysqli_query($link_new, $qry_mp_color_detail) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
+						// if($mp_color_detail_num>0){
+						// 	while($mp_color_detail_row=mysqli_fetch_array($mp_color_detail_result))
+						// 	{
+						// 		$master_po_details_id[]=$mp_color_detail_row["master_po_details_id"];
+						// 	}
+
+						// 	$schedule=array();
+						// 	$qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND master_po_details_id IN ('".implode("','" , $master_po_details_id)."')";
+						// 	$mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
+						// 	$mp_mo_qty_num=mysqli_num_rows($mp_mo_qty_result);
+						// 	if($mp_mo_qty_num>0){
+						// 		while($mp_mo_qty_row=mysqli_fetch_array($mp_mo_qty_result))
+						// 			{
+										
+						// 				$schedule[]=$mp_mo_qty_row["schedule"];
+						// 			}
+						// 			$bulk_schedule=array_unique($schedule);
+						// 			$schedules = implode(",",$bulk_schedule);
+
+						// 	}
+						// }
 					}
 				}
 
@@ -206,8 +217,8 @@ if(isset($_POST['show']))
 								$pending_dockets = '';
 								$completed_dockets = '';
 								$completed = '';
-								$get_docket="SELECT jdl.jm_docket_line_id,jdl.docket_line_number,jdl.jm_docket_id FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id = jd.jm_docket_id WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.component_group_name = '$component_group_name' AND jd.plant_code='$plantcode' AND jd.is_active=true";
-								// echo $get_docket;
+								$get_docket="SELECT jdl.jm_docket_line_id,jdl.docket_line_number,jdl.jm_docket_id FROM $pps.jm_dockets jd LEFT JOIN $pps.jm_docket_lines jdl ON jdl.jm_docket_id = jd.jm_docket_id WHERE jd.jm_cut_job_id='$jm_cut_job_id' AND jd.plant_code='$plantcode' AND jd.is_active=true order by jdl.docket_line_number";
+								// echo $get_docket.'<br/>';
 								$get_docket_result=mysqli_query($link, $get_docket) or exit("Sql Error--1x== get_docket".mysqli_error($GLOBALS["___mysqli_ston"]));
 								if(mysqli_num_rows($get_docket_result)>0)
 								{
@@ -217,6 +228,7 @@ if(isset($_POST['show']))
 										$jm_docket_id = $get_docket_row['jm_docket_id'];
 										$dockets_list[]= $component_group_name.':'.$get_docket_row['docket_line_number'];
 										$get_pending_dockets="select cut_report_status from $pps.lp_lay where jm_docket_line_id='$jm_docket_line_id' and plant_code='$plantcode' and is_active=true limit 1";
+										// echo $get_pending_dockets.'<br/>';
 										$get_pending_dockets_result=mysqli_query($link, $get_pending_dockets) or exit("Sql Error--1x==".$get_pending_dockets.mysqli_error($GLOBALS["___mysqli_ston"]));
 										if(mysqli_num_rows($get_pending_dockets_result) > 0)
 										{
@@ -260,13 +272,16 @@ if(isset($_POST['show']))
 								unset($po_description);
 								unset($master_po_number);
 								unset($style);	
-								unset($color);	
-								unset($schedules);	
+								unset($colors);	
+								unset($schedule);	
 								unset($component_group_id);	
 								unset($component_group_name);	
 								unset($open_dockets);	
 								unset($pending_dockets);	
 								unset($completed_dockets);	
+								unset($pending_dockets_list);	
+								unset($completed_dockets_list);	
+								unset($open_dockets_list);	
 							}
 						}
 					}

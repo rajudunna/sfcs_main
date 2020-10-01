@@ -167,7 +167,7 @@ function GetSelectedItem()
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$doc_mat =$result_docketinfo['requirement'];
+		$doc_mat =$result_docketinfo['docket_quantity'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
