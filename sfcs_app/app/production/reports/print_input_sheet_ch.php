@@ -29,7 +29,7 @@
     // echo $plantcode;
 
     //Qry to fetch jm_job_header_id from jm_jobs_header
-    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$sub_po' AND plant_code='$plantcode'";
+    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$sub_po' AND plant_code='$plantcode' order by ref_id";
     $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
     $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
     if($jm_job_header_id_result_num>0){
@@ -39,7 +39,7 @@
         }
     }
     
-    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty ,bun.size as size FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY bun.size";
+    $get_job_details = "SELECT jg.job_group,jg.jm_jg_header_id,jg.job_number as job_number FROM $pps.jm_jg_header jg WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.job_group=3 AND jg.is_active=1";
     // echo $get_job_details;
     $get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
     if($get_job_details_result>0){
@@ -51,45 +51,28 @@
         }
     }
     $task_type=TaskAttributeNamesEnum::SEWINGJOBNO;
-    // var_dump($job_ids);
+    // var_dump($job_number);
+    // die();
 
     if(sizeof($job_ids) > 0){
-        echo "<table class='table table-bordered'>";
-
+        
         $job_ids_list = implode("','", array_unique($job_ids));
         $size_list = "SELECT distinct(size) FROM $pps.jm_job_bundles where jm_jg_header_id IN ('$job_ids_list') and plant_code='$plantcode' and is_active=1";
         $size_list_result = mysqli_query($link_new, $size_list) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row = mysqli_fetch_array($size_list_result)) {
             $sizes[] = $row['size'];
         }
+        $final_total = 0;
         foreach($job_ids as $key => $job_id){
-            if($key == 0){
-                echo "<tr style='background-color:#286090;color:white;'>";
-                echo "<th>Style</th>";
-                echo "<th>PO#</th>";
-                echo "<th>VPO#</th>";
-                echo "<th>Schedule</th>";
-                echo "<th>Destination</th>";
-                echo "<th>Color</th>";
-                echo "<th>Cut Job#</th>";
-                echo "<th>Delivery Date</th>";
-                echo "<th>Input Job#</th>";
-                foreach($sizes as $size){
-                    echo "<th>".$size."</th>";
-                }
-                echo "<th>Total</th>";
-                echo "<th>Input/Output details</th>";
-                echo "</tr>";
-
-            }
-            $get_task_job = "SELECT task_jobs_id,task_header_id FROM $tms.task_jobs where task_job_reference='$job_id' and plant_code='$plantcode' and is_active=1";
+            
+            $get_task_job = "SELECT task_jobs_id,task_header_id FROM $tms.task_jobs where task_job_reference='$job_id' and plant_code='$plantcode' and is_active=1 order by task_jobs_id";
             $get_task_job_result = mysqli_query($link_new, $get_task_job) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
             while ($row1 = mysqli_fetch_array($get_task_job_result)) {
                 $task_job_id = $row1['task_jobs_id'];
                 $task_header_id = $row1['task_header_id'];
-
                 //get resource id 
                 $get_task_header = "SELECT resource_id,planned_date_time FROM $tms.task_header where task_header_id='$task_header_id' and plant_code='$plantcode' and is_active=1";
+                // echo $get_task_header;
                 $get_task_header_result = mysqli_query($link_new, $get_task_header) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                 while ($row6 = mysqli_fetch_array($get_task_header_result)) {
                     $resource_id = $row6['resource_id'];
@@ -101,11 +84,9 @@
                 while ($row6 = mysqli_fetch_array($get_task_header_result)) {
                     $workstation_code = $row6['workstation_code'];
                 }
-
-
                 //get task jobs 
                 $sql_tms = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
-                echo $sql_tms;
+                // echo $sql_tms;
                 mysqli_query($link_new,$sql_tms) or exit("Sql Error7".mysqli_error());
                 $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
                 while($sql_row_tms = mysqli_fetch_array($sql_result_tms))
@@ -119,8 +100,6 @@
                 {
                     $input_ops = $sql_row_tms_in['operation_code'];
                 }
-
-
                 $job_detail_attributes = [];
                 $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_job_id' and plant_code='$plantcode' and is_active=1";
                 $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -158,10 +137,44 @@
             $destinations = implode(",", array_unique($destination));
             $cpos = implode(",", array_unique($cpo));
             $planned_delivery_dates = implode(",", array_unique($planned_delivery_date));
-
+            if($key == 0){
+                echo "<div style='float:left'><table class='table table-bordered' style='font-size:11px;font-family:verdana;text-align:left;'>";
+                echo "<tr>";
+                echo "<td>Style :</td>";
+                echo "<td>$styles</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<td>Schedule :</td>";
+                echo "<td>$schedules</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<td>Color :</td>";
+                echo "<td>$colors</td>";
+                echo "</tr>";
+                echo "</table></div>";
+                
+                echo "<div class='col-md-12 table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
+                echo "<tr style='background-color:#286090;color:white;'>";
+                echo "<th>Style</th>";
+                echo "<th>PO#</th>";
+                echo "<th>VPO#</th>";
+                echo "<th>Schedule</th>";
+                echo "<th>Destination</th>";
+                echo "<th>Color</th>";
+                echo "<th>Cut Job#</th>";
+                echo "<th>Delivery Date</th>";
+                echo "<th>Input Job#</th>";
+                foreach($sizes as $size){
+                    $size_total[$size] = 0;
+                    echo "<th>".$size."</th>";
+                }
+                echo "<th>Total</th>";
+                echo "<th>Input/Output details</th>";
+                echo "</tr>";
+            }
             echo "<tr height=20 style='height:15.0pt;>";
-            echo "<td height=20 style='height:15.0pt'>".$styles."</td>";
-            echo "<td height=20 style='height:15.0pt'>".$styles."</td>";
+            echo "<td height=20 style='height:15.0pt'></td>";
+            echo "<td height=20 style='height:15.0pt'>$styles</td>";
             echo "<td height=20 style='height:15.0pt'>$cpos</td>";
             echo "<td height=20 style='height:15.0pt'>$vpos</td>";
             echo "<td height=20 style='height:15.0pt'>".$schedules."</td>";
@@ -173,19 +186,24 @@
             $cum_qty = 0;
             foreach($sizes as $s){
                 $size_qty_list = "SELECT size,sum(quantity) as qty FROM $pps.jm_job_bundles where jm_jg_header_id='$job_id' and size='$s' and plant_code='$plantcode' and is_active=1 group by size";
+                // echo $size_qty_list;
                 $size_qty_list_result = mysqli_query($link_new, $size_qty_list) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
-                while ($row4 = mysqli_fetch_array($size_qty_list_result)) {
-                    $size_qty[$row4['size']] = $row4['qty'];
-                }
-                if($size_qty[$s] > 0) {
+                $size_qty_list_result_num=mysqli_num_rows($size_qty_list_result);
+
+                if($size_qty_list_result_num > 0){
+                    while($row4 = mysqli_fetch_array($size_qty_list_result)) {
+                        $size_qty[$row4['size']] = $row4['qty'];
+                    }
                     $qty = $size_qty[$s];
                 } else {
                     $qty = 0;
                 }
+                $size_total[$s] += $qty;
                 echo "<td height=20 style='height:15.0pt'>".$qty."</td>";
                 $cum_qty += $qty;
             }
             echo "<td height=20 style='height:15.0pt'>".$cum_qty."</td>";
+            $final_total += $cum_qty;
             echo "<td>";
             echo "<div class='table-responsive'>";
             echo "<table class=\"table table-bordered\">
@@ -196,29 +214,66 @@
             echo "<tr>";
             echo "<th>Sew In</th>";
             echo "<th>Sew Out</th>";
-            echo "</td>";
+           
             echo "</tr>";
-            echo "<tr>";
+            $tot_input=0;
+            $tot_outout=0;
+            $tot=0;
             foreach($sizes as $siz){
+                echo "<tr>";
                 echo "<td>".$planned_date."</td>";
                 echo "<td>".$workstation_code."</td>";
                 echo "<td>".$colors."</td>";
                 
-                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
-                mysqli_query($link_new,$sql_tms_in) or exit("Sql Error7".mysqli_error());
-                $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
-                while($sql_row_tms_in = mysqli_fetch_array($sql_result_tms_in))
+                $get_io_qty = "SELECT SUM(IF(operation_code = $input_ops,good_quantity,0)) AS input,
+                SUM(IF(operation_code = $out_put_ops,good_quantity,0)) AS output FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'";
+                // echo $get_io_qty;
+                mysqli_query($link_new,$get_io_qty) or exit("Sql Error7".mysqli_error());
+                $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
+                while($row7 = mysqli_fetch_array($get_io_qty_result))
                 {
-                    $input_ops = $sql_row_tms_in['operation_code'];
+                    $input_qty = $row7['input'];
+                    $output_qty = $row7['output'];
                 }
-
+                $get_io_qty = "SELECT SUM(IF(operation_code = $input_ops,rejected_quantity,0)) AS input,
+                SUM(IF(operation_code = $out_put_ops,rejected_quantity,0)) AS output FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'";
+                // echo $get_io_qty;
+                mysqli_query($link_new,$get_io_qty) or exit("Sql Error7".mysqli_error());
+                $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
+                while($row7 = mysqli_fetch_array($get_io_qty_result))
+                {
+                    $sew_in_qty = $row7['input'];
+                    $sew_out_qty = $row7['output'];
+                }
                 echo "<td>".$siz."</td>";
-                echo "<td>".$input_ops."</td>";
-                echo "<td>".$out_put_ops."</td>";
+                echo "<td>".$input_qty."</td>";
+                echo "<td>".$output_qty."</td>";
+                echo "<td>".$sew_in_qty."</td>";
+                echo "<td>".$sew_out_qty."</td>";
+                echo "</tr>";
+                $tot_input += $input_qty;
+                $tot_outout += $output_qty;
+                $tot += $sew_in_qty;
             }
+            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=2 style=\"background-color:#ff8396;color:white\">$tot</td></tr>";
+
+            echo "</tbody>";
+            echo "</table>";
+            echo "</div>";
+            echo "</td>";
             echo "</tr>";
+            echo "<tr>";
+            echo "<th colspan=9  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Cut</th>";
+            foreach($sizes as $s)
+            {
+                echo "<th style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\">".$size_total[$s]."</th>";
+            }
+            echo "<th  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">$final_total</th>";
+            echo "<th></th>";
+            echo "</tr>";
+            unset($cutjobno);
         }
-        echo "</table>";
+        echo "</table></div>";
     }
     
     
