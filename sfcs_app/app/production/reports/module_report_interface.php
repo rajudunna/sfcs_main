@@ -50,37 +50,34 @@ if(isset($_POST['submit']))
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
-$sql="select * from $pts.input_transfer where plant_code='$plantcode' and date(date_time) = '$sdate' order by id";
-//echo $sql."<br>";
+$sql="select from_module,to_module,count(bundle_number) as bundle_count,created_user,date(created_at) as created_date from $pts.module_bundle_track where plant_code='$plantcode' and date(created_at) = '$sdate' group by from_module,to_module";
+// echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $x=0;
 if(mysqli_num_rows($result) > 0)
 {
-while($row=mysqli_fetch_array($result))
-{
-	$id=$row['id'];
-	$user=$row['user'];
-	$input_module=$row['input_module'];
-	$transfer_module=$row['transfer_module'];
-	$bundles=$row['bundles'];
+	while($row=mysqli_fetch_array($result))
+	{
+		$from_module=$row['from_module'];
+		$to_module=$row['to_module'];
+		$bundle_count=$row['bundle_count'];
+		$created_user=$row['created_user'];
+		$created_date=$row['created_date'];
 
-   	$x++;
-   	$sidemenu=true;
-	$print_sheet=getFullURLLevel($_GET["r"],"ims_mod_report.php",0,"N");
+		$x++;
+		$sidemenu=true;
+		$print_sheet=getFullURLLevel($_GET["r"],"ims_mod_report.php",0,"N");
 
-	echo "<tr>";
-	echo "<td>".$x."</td>";
-	
-	echo "<td>".$input_module."</td>";
-	echo "<td>".$transfer_module."</td>";
-	echo "<td>".$bundles."</td>";
-	echo "<td>".$user."</td>";
-	
-	echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&id=$id&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&id=$id&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
-	echo "</tr>";
-		
-}
+		echo "<tr>";
+		echo "<td>".$x."</td>";
+		echo "<td>".$from_module."</td>";
+		echo "<td>".$to_module."</td>";
+		echo "<td>".$bundle_count."</td>";
+		echo "<td>".$created_user."</td>";
+		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
+		echo "</tr>";
+	}
 echo "</table></div>";
 }
 else {
