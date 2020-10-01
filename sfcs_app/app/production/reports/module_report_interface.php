@@ -48,39 +48,41 @@ if(isset($_POST['submit']))
 	
 	$sdate=$_POST['sdate'];
 
-echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
-$sql="select * from $pts.input_transfer where plant_code='$plantcode' and date(date_time) = '$sdate' order by id";
-//echo $sql."<br>";
+
+$sql="select * from $tms.bundle_transfer_log where plant_code='$plantcode' and date(created_at) = '$sdate' order by created_at";
+// echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $x=0;
 if(mysqli_num_rows($result) > 0)
 {
-while($row=mysqli_fetch_array($result))
-{
-	$id=$row['id'];
-	$user=$row['user'];
-	$input_module=$row['input_module'];
-	$transfer_module=$row['transfer_module'];
-	$bundles=$row['bundles'];
+	echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
+	while($row=mysqli_fetch_array($result))
+	{
 
-   	$x++;
-   	$sidemenu=true;
-	$print_sheet=getFullURLLevel($_GET["r"],"ims_mod_report.php",0,"N");
+		$id=$row['id'];
+		$user=$row['user'];
+		$input_module=$row['input_module'];
+		$transfer_module=$row['transfer_module'];
+		$bundles=$row['bundles'];
 
-	echo "<tr>";
-	echo "<td>".$x."</td>";
-	
-	echo "<td>".$input_module."</td>";
-	echo "<td>".$transfer_module."</td>";
-	echo "<td>".$bundles."</td>";
-	echo "<td>".$user."</td>";
-	
-	echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&id=$id&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&id=$id&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
-	echo "</tr>";
+		$x++;
+		$sidemenu=true;
+		$print_sheet=getFullURLLevel($_GET["r"],"ims_mod_report.php",0,"N");
+
+		echo "<tr>";
+		echo "<td>".$x."</td>";
 		
-}
+		echo "<td>".$input_module."</td>";
+		echo "<td>".$transfer_module."</td>";
+		echo "<td>".$bundles."</td>";
+		echo "<td>".$user."</td>";
+		
+		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&id=$id&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&id=$id&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
+		echo "</tr>";
+			
+	}
 echo "</table></div>";
 }
 else {

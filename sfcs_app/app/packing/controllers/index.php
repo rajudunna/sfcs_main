@@ -172,7 +172,7 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 			Export Details Shipment Loading Photos
 	</div>
 	<div class='panel-body'>
-		<form method="post" name="input2" enctype="multipart/form-data" action="index.php?r=<?= $_GET['r']; ?>">
+		<form method="post" name="input2" enctype="multipart/form-data">
 			<div class="col-sm-5">	
 				<div class="row">
 					<div class='col-sm-6 right'>Date : </div>
@@ -461,12 +461,12 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					}} 
 				}
 
-				$query = "INSERT INTO $pts.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$newname','$fileSize','$fileType','$newname1','$fileSize1','$fileType1','$newname2','$fileSize2','$fileType2','$newname3','$fileSize3','$fileType3','$newname4','$fileSize4','$fileType4','$newname5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
+				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$newname','$fileSize','$fileType','$newname1','$fileSize1','$fileType1','$newname2','$fileSize2','$fileType2','$newname3','$fileSize3','$fileType3','$newname4','$fileSize4','$fileType4','$newname5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
 				//echo $query;
 			}	
 			else
 			{
-				$query = "INSERT INTO $pts.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$fileName','$fileSize','$fileType','$fileName1','$fileSize1','$fileType1','$fileName2','$fileSize2','$fileType2','$fileName3','$fileSize3','$fileType3','$fileName4','$fileSize4','$fileType4','$fileName5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
+				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$fileName','$fileSize','$fileType','$fileName1','$fileSize1','$fileType1','$fileName2','$fileSize2','$fileType2','$fileName3','$fileSize3','$fileType3','$fileName4','$fileSize4','$fileType4','$fileName5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
 			
 			}
 			// echo $query;

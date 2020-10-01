@@ -47,7 +47,7 @@
 				}
 			}
 
-			$get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(DISTINCT CONCAT(bun.bundle_number,'-',bun.quantity)) as bun_num,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number,bun.size";
+			$get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(DISTINCT CONCAT(bar.barcode,'-',bar.quantity)) as bun_num,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id LEFT JOIN $pts.barcode bar ON bar.external_ref_id = bun.jm_job_bundle_id WHERE jg.plant_code = '$plantcode' AND jg.job_group=3 AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number,bun.size";
 			// echo $get_job_details;
 			$get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($get_job_details_result>0){
@@ -920,6 +920,7 @@
 									</tr>
 								";
 								unset($input_module);
+								
 							}
 							//unset($bundle_loc);
 						}

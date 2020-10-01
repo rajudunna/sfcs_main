@@ -78,11 +78,11 @@ if (newwindow.location && !newwindow.closed) {
 
 //Variable $con is coming from the header.php 
 $x=1;
-$sql1=mysqli_query($link,"select distinct sealno from $pts.upload order by dat desc");
+$sql1=mysqli_query($link,"select distinct sealno from $pps.upload order by dat desc");
 
 while($rows=mysqli_fetch_array($sql1))
 {
-   $sql2=mysqli_query($link,"select * from $pts.upload where sealno='".$rows['sealno']."' order by dat desc");
+   $sql2=mysqli_query($link,"select * from $pps.upload where sealno='".$rows['sealno']."' order by dat desc");
    while($row2=mysqli_fetch_array($sql2))
    {
 		 echo "<tr>";
