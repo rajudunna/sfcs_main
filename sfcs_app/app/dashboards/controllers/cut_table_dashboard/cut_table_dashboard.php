@@ -46,9 +46,9 @@ $('div[rel=tooltip]').mouseover(function(e) {
   //e.pageY + 0.5 * e.view.parent.pageYOffset
   $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','75px' );
+   $('#tooltip').css('margin-left','135px' );
    $('#tooltip').css('text-align','left' );
-   $('#tooltip').css('margin-top','30px' );
+   $('#tooltip').css('margin-top','10px' );
    $('#tooltip').css('position', 'absolute' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
@@ -970,7 +970,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code'";
+    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code' and (issued_time='0000-00-00 00:00:00' or issued_time is null)";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
@@ -1279,7 +1279,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['requirement'];
+		$fabric_required =$result_docketinfo['docket_quantity'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
     $width =$result_docketinfo['width'];
