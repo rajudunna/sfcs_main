@@ -941,7 +941,6 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
     global $pms;
     try{
         $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
-        // echo $workstationsQuery;
         $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
         if(mysqli_num_rows($workstationsQueryResult)>0){
             $workstations= [];
@@ -1556,6 +1555,34 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     }
     return $out_put_results;
 }
+
+/**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+function getSectionByDeptTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+        $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plantCode."' and dept.plant_code='".$plantCode."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+        if(mysqli_num_rows($sectionsQueryResult)>0){
+            $sections = [];
+            while($row = mysqli_fetch_array($sectionsQueryResult)){
+                $sectionRecord = [];
+                $sectionRecord["sectionId"] = $row['section_id'];
+                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionName"] = $row["section_name"];
+                array_push($sections, $sectionRecord);
+            }
+            return $sections;
+        } else {
+            return "Sections not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}    
 /**
  * Get master po sequnece no
  * @param it containes master po serial number and plant code

@@ -115,15 +115,14 @@ if($reptype == 1) {
                     $main_result = [];
                     
                     //get style and color operations
-                    $get_details="SELECT schedule,color,mpo FROM $pts.transaction_log WHERE style='$style' AND mpo='$master_po' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
+                    $get_details="SELECT schedule,color,mpo FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
                     $result1 = $link->query($get_details);
                     while($row1 = $result1->fetch_assoc())
                     {
                       $schedule=$row1['schedule'];
                       $color=$row1['color'];
-                      $mpo=$row1['mpo'];
                       //get operations_version_id
-                      $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$mpo' AND plant_code='$plant_code' AND is_active=1";
+                      $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$master_po' AND plant_code='$plant_code' AND is_active=1";
                       $version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                       while($row14=mysqli_fetch_array($version_id_result))
                       {
@@ -150,10 +149,10 @@ if($reptype == 1) {
                         $operation_codes_no = implode(',',$operation_codes);
                         //columns Data
                         if($reptype == 1){
-                            $get_data_transaction= "SELECT style,schedule,color,job_number,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,bundle_number,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY bundle_number,operation order by bundle_number,operation";
+                            $get_data_transaction= "SELECT style,schedule,color,parent_job,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,parent_barcode,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY parent_barcode,operation order by parent_barcode,operation";
                         } 
                         else{
-                            $get_data_transaction= "SELECT style,schedule,color,job_number,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,bundle_number,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation_id in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,job_number,color,size,operation order by job_number,size,operation";
+                            $get_data_transaction= "SELECT style,schedule,color,parent_job,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,parent_barcode,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation_id in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,parent_job,color,size,operation order by parent_job,size,operation";
                         }
                
                   
@@ -164,10 +163,10 @@ if($reptype == 1) {
                             while($row5 = $result5->fetch_assoc()){
                                 $rec_qty = (int)$row5['good_qty'];
                                 $rej_qty = (int)$row5['rejected_qty'];
-                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['schedule'],'job_number'=>$row5['job_number'],'bundle_number'=>$row5['bundle_number'],'color'=>trim($row5['color']),'size'=>trim($row5['size']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'resource_id'=>$row5['resource_id']];
+                                $data = ['style'=>trim($row5['style']),'schedule'=>$row5['schedule'],'job_number'=>$row5['parent_job'],'bundle_number'=>$row5['parent_barcode'],'color'=>trim($row5['color']),'size'=>trim($row5['size']),'rej'=>$rej_qty,$row5['op_code']=>$rec_qty, 'rec_qty' => $rec_qty,'op_code'=>$row5['op_code'],'resource_id'=>$row5['resource_id']];
 
-                                $bundle_data[$row5['bundle_number']][] = $data;
-                                $sewing_data[$row5['job_number']][$row5['size']][$row5['size']][] = $data;
+                                $bundle_data[$row5['parent_barcode']][] = $data;
+                                $sewing_data[$row5['parent_job']][$row5['size']][$row5['size']][] = $data;
                             }
                             $all_bundles = array_keys($bundle_data);
                             

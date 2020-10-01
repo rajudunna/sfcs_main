@@ -194,8 +194,8 @@ if(isset($_POST['submit']))
 								// }
 							?>
 								
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>"></td>
-								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $avail_av; ?>" name="pra<?php echo $k; ?>" onkeypress="return isNumberKey(event)" maxlength="10"></td>
+								<td><input type="text" class="form-control" <?php echo $readonly; ?> style="width: 180px;" value="<?php echo $absent_ab; ?>" name="aba<?php echo $k; ?>" onkeypress="return isNumberKey(event)" maxlength="10"></td>
 								<?php
 								echo "<td>".($avail_av-$absent_ab)."</td>
 							</tr>";
@@ -218,8 +218,8 @@ if(isset($_POST['submit']))
 						<form method="POST" action="<?= getFullURLLevel($_GET['r'],"insert_emp_data_v2.php",0,"N") ?>" >
 							<tr>
 								<td value="<?php echo $modules_array1[$i]; ?>"> <?php echo $modules_array[$i]; ?> </td>
-								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $modules_array1[$i]; ?>"></td>
-								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $modules_array1[$i]; ?>"></td>
+								<td><input type="text" class="form-control" style="width: 180px;" value="0" name="pra<?php echo $modules_array1[$i]; ?>" onkeypress="return isNumberKey(event)" maxlength="10"></td>
+								<td><input type="text" class="form-control" style="width: 180px;"value="0" name="aba<?php echo $modules_array1[$i]; ?>" onkeypress="return isNumberKey(event)" maxlength="10" ></td>
 							</tr>
 						<?php
 					}
@@ -250,3 +250,13 @@ if(isset($_POST['submit']))
 ?>
 </body>
 </html>
+<script>
+function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+	
+}
+
+</script>

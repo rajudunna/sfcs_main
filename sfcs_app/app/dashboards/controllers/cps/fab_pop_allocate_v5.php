@@ -839,9 +839,7 @@ if(isset($_POST['allocate_new']))
 						}
 						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid=".$tid_ref[$j];
 						mysqli_query($link, $sql121) or exit("$sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_ref[$j]'";
-						//echo $sql1211;
-		mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
 					}
 				}
 			}
@@ -932,6 +930,7 @@ if(isset($_POST['allocate']))
 	$style_ref=$_POST['style_ref'];
 	$size_doc=sizeof($doc);
 	$note="";
+	
 	echo "<input type='hidden' id='size_doc' value=\"$size_doc\"></>";
 	for($i=0;$i<sizeof($doc);$i++)
 	{
@@ -947,7 +946,9 @@ if(isset($_POST['allocate']))
 			$temp=$_POST["pms".$doc[$i]];
 			$pms_lot=array();
 		}
-
+		$sql1211="update $pps.jm_docket_lines set marker_version_id='$marker_version', updated_user='$username',updated_at=NOW() where jm_docket_line_id='$doc_no[$i]'";
+		// echo 	$sql1211;die();			//echo $sql1211;
+		mysqli_query($link, $sql1211) or exit("Sql Error3: $sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(strlen($temp)>0)
 		{
 			$pms_lot=explode(",",$temp);

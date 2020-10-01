@@ -58,14 +58,14 @@ $x=0;
 if(mysqli_num_rows($result) > 0)
 {
 	echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
+	
 	while($row=mysqli_fetch_array($result))
 	{
-
-		$id=$row['id'];
-		$user=$row['user'];
-		$input_module=$row['input_module'];
-		$transfer_module=$row['transfer_module'];
-		$bundles=$row['bundles'];
+		$from_module=$row['from_module'];
+		$to_module=$row['to_module'];
+		$bundle_count=$row['bundle_count'];
+		$created_user=$row['created_user'];
+		$created_date=$row['created_date'];
 
 		$x++;
 		$sidemenu=true;
@@ -73,15 +73,12 @@ if(mysqli_num_rows($result) > 0)
 
 		echo "<tr>";
 		echo "<td>".$x."</td>";
-		
-		echo "<td>".$input_module."</td>";
-		echo "<td>".$transfer_module."</td>";
-		echo "<td>".$bundles."</td>";
-		echo "<td>".$user."</td>";
-		
-		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&id=$id&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&id=$id&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
+		echo "<td>".$from_module."</td>";
+		echo "<td>".$to_module."</td>";
+		echo "<td>".$bundle_count."</td>";
+		echo "<td>".$created_user."</td>";
+		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
 		echo "</tr>";
-			
 	}
 echo "</table></div>";
 }
