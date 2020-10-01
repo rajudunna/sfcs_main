@@ -23,16 +23,20 @@ class ReactApp extends React.Component {
             columnsData: [],
             tableData: [],
             date: currentDate,
-            loadingimage:true  
+            loadingimage:true,
         }
         this.currentDate = currentDate;
+        var url_string = window.location.href; //window.location.href
+        var url = new URL(url_string);
+        this.plant_code = url.searchParams.get("plantCode");
         this.getData(event);
+
+        // alert(c);s
     }    
 				
     componentDidMount () {
         
     }
-
     getData = (event)=>{
         this.setState({loadingimage:true});
         let value = event.target.value;
@@ -41,7 +45,7 @@ class ReactApp extends React.Component {
         }else{
             value = this.currentDate;
         }
-        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value;
+        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value+'plant='+ this.plant_code;
         axios.get(url, {
             responseType: 'json'
         }).then(response => {
