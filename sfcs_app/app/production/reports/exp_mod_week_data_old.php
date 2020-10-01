@@ -47,11 +47,20 @@ $plantcode = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 // echo $start."---".$end;
 include("../" . getFullURL($_GET['r'], 'exp_mod_main.php', 0, 'R'));
+
+// Remove code
+$pts = 'pts_temp';
 //**************************************************** NEw Code *****************************//
-	//Get modules for sections
-	$sql_workstations = "SELECT * FROM $pms.workstation where section_id ='" . $sec . "'";
-	$res_workstations = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
-	
+// Get section_code
+$sql_get_section_code = "SELECT section_code FROM $pms.sections  where section_id='" . $sec . "'";
+$res_sec_code = mysqli_query($link, $sql_get_section_code) or exit("sql section code error" . mysqli_error($link));
+$row_sec_code = mysqli_fetch_row($res_sec_code);
+$section_code = $row_sec_code[0];
+echo $section_code;
+//Get modules for sections
+$sql_workstations = "SELECT workstation_id,workstation_code FROM $pms.workstation where section_id ='" . $sec . "'";
+$res_workstations = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
+
 $sql1_query = "select sec_mods from $bai_pro3.sections_db where sec_id='$sec'";
 $sql1 = mysqli_query($link, $sql1_query) or exit("sql1_query Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 //var_dump($sql1_query);
@@ -81,14 +90,14 @@ if (mysqli_num_rows($res_workstations) < 100) {
 
 		$check_date = date("Y-m-d", strtotime("+1 day", strtotime($check_date)));
 		$weekday = date('l', strtotime($check_date));
-		 
+
 		// $sql_op = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and date='$check_date' and section='$sec'") ;
-		 
+
 		// while ($row_op = mysqli_fetch_array($sql_op)) {
 		// 	// $output1 = $row_op["sum(act_out)"];
 		// 	// echo $check_date."-".$weekday."-".$output1."<br>";
 		// }
-	 
+
 
 		if ($weekday == "Saturday") {
 
@@ -101,13 +110,13 @@ if (mysqli_num_rows($res_workstations) < 100) {
 			// Total good quantity for workstation and date
 			$total_good_qty = 0;
 			// Get workstations for section
-			while($row_workstation = mysqli_fetch_array($res_workstations)){
-				$sql_good_qty = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='".$row_workstation['workstation_id']."' AND plant_code='".$plantcode."' AND operation='130' AND created_at BETWEEN '" . $check_date . "00:00:00' AND '" . $check_date  . "23:59:59'";
-				$res_good_qty = mysqli_query($link,$sql_good_qty) or exit("sql transactions error".mysqli_errno($link));
+			while ($row_workstation = mysqli_fetch_array($res_workstations)) {
+				$sql_good_qty = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $row_workstation['workstation_id'] . "' AND plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $check_date . " 00:00:00' AND '" . $check_date  . " 23:59:59'";
+				$res_good_qty = mysqli_query($link, $sql_good_qty) or exit("sql transactions error" . mysqli_errno($link));
 				$row_good_qty = mysqli_fetch_row($res_good_qty);
 				$total_good_qty += $row_good_qty[0];
 			}
-			 
+
 			//echo "select sum(act_out) from $pts.grand_rep where date='$check_date' and section='$sec'<br>";
 
 			// while ($row = mysqli_fetch_array($sql)) {
@@ -132,38 +141,67 @@ if (mysqli_num_rows($res_workstations) < 100) {
 	$day_dtime_total = 0;
 	$p = 0;
 	$r = 0;
-	$x = 0; 
- 
+	$x = 0;
+
 	echo "</tr>";
 
-	for ($i = 0; $i < sizeof($secs); $i++) {
- 
-		$sql2 = mysqli_query($link, "select distinct(styles) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' AND module='" . $secs[$i] . "' and date between '$start' and '$end' order by module ") ;
+	$res_workstations_2 = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
+	while ($row_workstation2 = mysqli_fetch_array($res_workstations_2)) {
+		$workstation_id = $row_workstation2['workstation_id'];
+		$workstation_code = $row_workstation2['workstation_code'];
+		echo $workstation_id . "<br>";
+		// $sql2 = mysqli_query($link, "select distinct(styles) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' AND module='" . $secs[$i] . "' and date between '$start' and '$end' order by module ");
+
+
+		// Get Distinct Styles from transaction log
+		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
 		 
-		while ($row2 = mysqli_fetch_array($sql2)) {
+		$res_get_styles = mysqli_query($link, $sql_get_styles) or exit("sql styles error - " . mysqli_error($link));
+		$style_count = mysqli_num_rows($res_get_styles);
+		 
+		while ($row_styles = mysqli_fetch_array($res_get_styles)) {
+			$style = $row_styles['style'];
 			echo "<tr>";
-			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $secs[$i] . "</th>";
-			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $row2['styles'] . "</th>";
+			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $workstation_code . "</th>";
+			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $row_styles['style'] . "</th>";
 			echo "<th style=\"background-color:#C4BD97;\">Eff</th>";
 
 			for ($k = 0; $k < sizeof($dates); $k++) {
 				$weekday1 = date('l', strtotime($dates[$k]));
-				$sql17 = mysqli_query($link, "select count(module) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "'")  or exit("sql17 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				while ($row17 = mysqli_fetch_array($sql17)) {
-					$count = $row17["count(module)"];
-					//echo "count = ".$count;
-				}
-				 
-				if ($count != 0) {
-					$sql15 = mysqli_query($link, "select distinct(nop) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "'") or exit("sql15 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row15 = mysqli_fetch_array($sql15)) {
-						$nop = $row15['nop'];
-					}
 
-					$sql16 = mysqli_query($link, "select distinct(smv) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "' order by module ") or exit("sql16 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row16 = mysqli_fetch_array($sql16)) {
-						$smv = $row16['smv'];
-					}
+				$workstations_count = 0;
+				// Get count of workstations for section from transaction log
+				$res_workstations_3 = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
+				while ($row_workstation_3 = mysqli_fetch_array($res_workstations_3)) {
+					$sql_good_qty = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $row_workstation_3['workstation_id'] . "' AND plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$res_good_qty = mysqli_query($link, $sql_good_qty) or exit("sql transactions error" . mysqli_errno($link));
+					$workstations_count += mysqli_num_rows($res_good_qty);
+				}
+				// $sql17 = mysqli_query($link, "select count(module) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "'")  or exit("sql17 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while ($row17 = mysqli_fetch_array($sql17)) {
+				// 	$count = $row17["count(module)"];
+				// 	//echo "count = ".$count;
+				// }
+
+				if ($workstations_count > 0) {
+
+					$sql_smv_nop = "SELECT smv,capacity_factor FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log AS upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id WHERE  plant_code = '" . $plantcode . "'  AND planned_date ='" . $dates[$k] . "' AND `group`='" . $section_code . "' AND row_name='" . $workstation_code . "' limit 1";
+					 
+					$res_smv_nop = mysqli_query($link, $sql_smv_nop) or exit("Sql smv nop error" . mysqli_errno($link));
+					$row_smv_nop = mysqli_fetch_row($res_smv_nop);
+
+					$smv = $row_smv_nop[0]?$row_smv_nop[0]: 0; // SMV
+					$nop = $row_smv_nop[1]?$row_smv_nop[1]: 0; // NOP
+
+					// $sql15 = mysqli_query($link, "select distinct(nop) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "'") or exit("sql15 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row15 = mysqli_fetch_array($sql15)) {
+					// 	$nop = $row15['nop'];
+					// }
+
+					// $sql16 = mysqli_query($link, "select distinct(smv) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' and module='" . $secs[$i] . "' AND date='" . $dates[$k] . "' and styles='" . $row2['styles'] . "' order by module ") or exit("sql16 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row16 = mysqli_fetch_array($sql16)) {
+					// 	$smv = $row16['smv'];
+					// }
 				} else {
 					$nop = 0;
 					$smv = 0;
@@ -171,12 +209,20 @@ if (mysqli_num_rows($res_workstations) < 100) {
 
 
 				if ($weekday1 == "Saturday") {
-					$sql4 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$k] . "' and section='$sec'") or exit("sql14 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row4 = mysqli_fetch_array($sql4)) {
-						$output = $row4['sum(act_out)'];
-						$day_avg = round(($output * $smv * 100) / (60 * 15 * $nop), 0);
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg, 0) . "</th>";
-					}
+					// Get good quantity
+					$sql_good_qty_1 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$res_good_qty_1 = mysqli_query($link, $sql_good_qty_1) or exit("sql transactions error" . mysqli_errno($link));
+					$row_good_qty_1 = mysqli_fetch_row($res_good_qty_1);
+					$total_good_qty = $row_good_qty_1[0];
+					// Day avg
+					$day_avg = round(($total_good_qty * $smv * 100) / (60 * 15 * $nop), 0);
+					echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg, 0) . "</th>";
+					// $sql4 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$k] . "' and section='$sec'") or exit("sql14 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row4 = mysqli_fetch_array($sql4)) {
+					// 	$output = $row4['sum(act_out)'];
+					// 	$day_avg = round(($output * $smv * 100) / (60 * 15 * $nop), 0);
+					// 	echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg, 0) . "</th>";
+					// }
 
 					$avg = 0;
 					$rlimit = $r + 1;
@@ -193,23 +239,42 @@ if (mysqli_num_rows($res_workstations) < 100) {
 					$r = 0;
 					$rlimit = 0;
 				} else {
-					$sql41 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$k] . "' and section='$sec'") or exit("sql41 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row41 = mysqli_fetch_array($sql41)) {
-						$output1 = $row41['sum(act_out)'];
-						$day_avg1 = round(($output1 * $smv * 100) / (60 * 15 * $nop), 0);
-						if ($dates[$k] != $end_date) {
-							$day_avgs = $day_avgs + $day_avg1;
-							$r = $r + 1;
-						} else {
-							$day_avgs = 0;
-							$r = 0;
-						}
+					// Get good quantity
+					$sql_good_qty_2 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$res_good_qty_2 = mysqli_query($link, $sql_good_qty_2) or exit("sql transactions error" . mysqli_errno($link));
+					$row_good_qty_2 = mysqli_fetch_row($res_good_qty_2);
+					$total_good_qty = $row_good_qty_2[0];
 
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg1, 0) . "</th>";
-						//echo "<th>".$dates[$k]."</th>";
+					$day_avg1 = round(($total_good_qty * $smv * 100) / (60 * 15 * $nop), 0);
+					if ($dates[$k] != $end_date) {
+						$day_avgs = $day_avgs + $day_avg1;
+						$r = $r + 1;
+					} else {
+						$day_avgs = 0;
+						$r = 0;
 					}
+
+					echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg1, 0) . "</th>";
+
+					// $sql41 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$k] . "' and section='$sec'") or exit("sql41 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row41 = mysqli_fetch_array($sql41)) {
+					// 	$output1 = $row41['sum(act_out)'];
+					// 	$day_avg1 = round(($output1 * $smv * 100) / (60 * 15 * $nop), 0);
+					// 	if ($dates[$k] != $end_date) {
+					// 		$day_avgs = $day_avgs + $day_avg1;
+					// 		$r = $r + 1;
+					// 	} else {
+					// 		$day_avgs = 0;
+					// 		$r = 0;
+					// 	}
+
+					// 	echo "<th style=\"background-color:#c0dcc0;\">" . round($day_avg1, 0) . "</th>";
+					//echo "<th>".$dates[$k]."</th>";
 				}
 			}
+
+			echo "</tr>";
+
 			echo "<tr>";
 
 
@@ -218,11 +283,20 @@ if (mysqli_num_rows($res_workstations) < 100) {
 				$weekday2 = date('l', strtotime($dates[$l]));
 
 				if ($weekday2 == "Saturday") {
-					$sql42 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql42 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row42 = mysqli_fetch_array($sql42)) {
-						$output = round($row42['sum(act_out)'] / 15, 0);
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($output, 0) . "</th>";
-					}
+					// Get good quantity
+					$sql_good_qty_3 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$res_good_qty_3 = mysqli_query($link, $sql_good_qty_3) or exit("sql transactions error" . mysqli_errno($link));
+					$row_good_qty_3 = mysqli_fetch_row($res_good_qty_3);
+					$total_good_qty = $row_good_qty_3[0] ? $row_good_qty_3[0] : 0;
+
+					$output = round($total_good_qty / 15, 0);
+					echo "<th style=\"background-color:#c0dcc0;\">" . round($output, 0) . "</th>";
+
+					// $sql42 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql42 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row42 = mysqli_fetch_array($sql42)) {
+					// 	$output = round($row42['sum(act_out)'] / 15, 0);
+					// 	echo "<th style=\"background-color:#c0dcc0;\">" . round($output, 0) . "</th>";
+					// }
 
 					$limit = $p + 1;
 					//echo $limit;
@@ -236,20 +310,38 @@ if (mysqli_num_rows($res_workstations) < 100) {
 					$p = 0;
 					$limit = 0;
 				} else {
-					$sql43 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql43 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row43 = mysqli_fetch_array($sql43)) {
-						$output1 = round($row43['sum(act_out)'] / 15, 0);
-						if ($dates[$l] != $end_date) {
-							$day_output = $day_output + $output1;
-							$p = $p + 1;
-							//echo $p;
-						} else {
-							$day_output = 0;
-							$p = 0;
-						}
-						//$day_output=$day_output+$output1;
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($output1, 0) . "</th>";
+
+					$sql_good_qty_4 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$res_good_qty_4 = mysqli_query($link, $sql_good_qty_4) or exit("sql transactions error" . mysqli_errno($link));
+					$row_good_qty_4 = mysqli_fetch_row($res_good_qty_4);
+					$total_good_qty_4 = $row_good_qty_4[0] ? $row_good_qty_4[0] : 0;
+
+					$output1 = round($total_good_qty_4 / 15, 0);
+					if ($dates[$l] != $end_date) {
+						$day_output = $day_output + $output1;
+						$p = $p + 1;
+						//echo $p;
+					} else {
+						$day_output = 0;
+						$p = 0;
 					}
+
+					echo "<th style=\"background-color:#c0dcc0;\">" . round($output1, 0) . "</th>";
+
+					// $sql43 = mysqli_query($link, "select sum(act_out) from $pts.grand_rep where plant_code='$plantcode' and styles='" . $row2['styles'] . "' and module='" . $secs[$i] . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql43 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while ($row43 = mysqli_fetch_array($sql43)) {
+					// 	$output1 = round($row43['sum(act_out)'] / 15, 0);
+					// 	if ($dates[$l] != $end_date) {
+					// 		$day_output = $day_output + $output1;
+					// 		$p = $p + 1;
+					// 		//echo $p;
+					// 	} else {
+					// 		$day_output = 0;
+					// 		$p = 0;
+					// 	}
+					// 	//$day_output=$day_output+$output1;
+					// 	echo "<th style=\"background-color:#c0dcc0;\">" . round($output1, 0) . "</th>";
+					// }
 				}
 			}
 			echo "</tr>";
@@ -257,7 +349,7 @@ if (mysqli_num_rows($res_workstations) < 100) {
 			echo "<th style=\"background-color:#C4BD97;\">LostHrs</th>";
 			for ($l = 0; $l < sizeof($dates); $l++) {
 				$weekday3 = date('l', strtotime($dates[$l]));
-				$sql44 = mysqli_query($link, "select sum(dtime) from $bai_pro.down_log where style='" . $row2['styles'] . "' and mod_no='" . $secs[$i] . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql44 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql44 = mysqli_query($link, "select sum(dtime) from $bai_pro.down_log where style='" . $style . "' and mod_no='" . $workstation_id . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql44 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				while ($row44 = mysqli_fetch_array($sql44)) {
 					if ($weekday3 == "Saturday") {
 						$day_dtime = $row44['sum(dtime)'] / 60;
