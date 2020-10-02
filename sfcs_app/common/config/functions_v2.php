@@ -549,7 +549,7 @@ function getMpSchedulewise($get_schedule,$plantcode){
     global $pps;
     $sub_po_description=array();
     /**Below query to get sub po's by using master po's */
-    $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number='$get_mpo' AND mp_sub_order.plant_code='$plantcode' AND is_active=1";
+    $qry_toget_sub_order="SELECT po_description,po_number,mpo_serial,sub_po_serial FROM $pps.mp_sub_order LEFT JOIN $pps.mp_order ON mp_order.master_po_number = mp_sub_order.master_po_number WHERE mp_sub_order.master_po_number='$get_mpo' AND mp_sub_order.plant_code='$plantcode' AND mp_sub_order.is_active=1";
     $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
     if($toget_podescri_num>0){
@@ -714,6 +714,7 @@ function getDocketDetails($sub_po,$plantcode,$docket_type){
   }
 
 
+$username =  $_SESSION['userName'];
 /** Function to update jobs using workstations
  * @param:inputjobs and work stations
  * @return:true/false
@@ -725,6 +726,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     global $tms;
     global $TaskTypeEnum;
     global $TaskStatusEnum;
+    global $username;
     
     $check_type=TaskTypeEnum::SEWINGJOB;
     $taskStatus=TaskStatusEnum::INPROGRESS;
@@ -748,6 +750,12 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 }
             }
             if ($items[0] == "allItems") {
+                //get_resource_id
+                $Qry_get_resource_id="SELECT resource_id FROM $tms.task_header WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode' AND is_active=1";
+                $Qry_resource_id_result = mysqli_query($link_new, $Qry_get_resource_id) or exit("Sql Error at Qry_get_resource_id" . mysqli_error($GLOBALS["___mysqli_ston"]));
+                while ($resource_row = mysqli_fetch_array($Qry_resource_id_result)) {
+                    $original_module=$resource_row['resource_id'];
+                }
                 /**updtae resource id tasks header with work sation id's*/
                 $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -755,6 +763,16 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 /**Update qry for priority */
                 $qryUpdateJobsPriority="UPDATE $tms.task_jobs SET priority=NULL,updated_at=NOW() WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $UpdateJobsPriority_result=mysqli_query($link_new, $qryUpdateJobsPriority) or exit("Sql Error at TaskjObs priority Update".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+                /**insert records into jobs_movement_track*/
+                if($tasktype == $check_type)
+                {  
+                    if($original_module !='')
+                    {
+                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$task_jobs_id."',  '".$original_module."', 'No Module', '".$plantcode."','".$username."', '".$username."')";
+                        mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
+                    }
+                }    
 
             }
             else
@@ -831,10 +849,12 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
                             $task_id= $job_id_row['task_jobs_id'];
-                            $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                            $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plantcode."','".$created_user."','".$created_user."')";
                             $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
-
+                        /**insert records into jobs_movement_track*/
+                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$items[1]."', 'No Module' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
+                        mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
                     }    
 
                 }elseif($resource_id!=$items[0]){
@@ -867,7 +887,10 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                            $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
                            $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         } 
-                        
+                        /**insert records into jobs_movement_track*/
+                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$task_id."', '".$resource_id."' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
+                        mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
+
                         $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode' AND is_active=1";
                         $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
