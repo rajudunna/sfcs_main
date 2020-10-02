@@ -157,10 +157,6 @@ $sewing_job_attributes = ['style' => 'STYLE', 'schedule' => 'SCHEDULE', 'color' 
 //FabricAttributesEnum
 $fabric_lay_attributes=['fabricrecevied'=>'FABRICRECEIVED','fabricreturned'=>'FABRICRETURNED','shortages'=>'SHORTAGES','damages'=>'DAMAGES','endbits'=>'END-BITS','joints'=>'JOINTS'];
 
-//PDFs URLs
-$locationlabels = 'http://192.168.0.155:8800/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/'.$plant_code.'_locationlabels.pdf';
-$bom_sheet = 'http://192.168.0.155:8800/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/'.$plant_code.'_tms_bom_sheet.pdf';
-$rm_labels = 'http://192.168.0.155:8800/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/'.$plant_code.'_rm_labels.pdf';
 //M3 Rest API Calls Details
 $company_no = $conf1->get('companey-number');
 $api_username = $conf1->get('api-user-name');
