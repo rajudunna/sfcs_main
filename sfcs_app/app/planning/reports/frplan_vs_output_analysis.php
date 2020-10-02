@@ -168,7 +168,7 @@ function getDaysInBetween($start, $end)
 			$table .= "</tr>";
 			// **************************** NEW ***************************
 			// Get production plan upload data for given date
-			$sql = "SELECT DISTINCT(row_name) AS work_station, GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
+			$sql = "SELECT DISTINCT(row_name) AS work_station,`group`,  GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
 
 			$res = mysqli_query($link, $sql);
 			$frdayWisetotalQty = [];
@@ -176,9 +176,10 @@ function getDaysInBetween($start, $end)
 			while ($row = mysqli_fetch_array($res)) {
 				// ============ Get Workstation id =======================//
 				$workstationCode = $row['work_station'];
+				$section_code = $row['group'];
 				$styles = $row['style'];
-				$workstationIdQuery  = "SELECT workstation_id FROM $pms.workstation WHERE workstation_code = '" . $workstationCode . "' and plant_code = '" . $plantcode . "'";
-				$workstationResult = mysqli_query($link, $workstationIdQuery);
+				$workstationIdQuery  = "SELECT workstation_id FROM $pms.workstation LEFT JOIN $pms.sections ON sections.section_id=workstation.section_id LEFT JOIN $pms.departments ON departments.department_id = sections.department_id WHERE workstation_code = '" . $workstationCode . "' AND sections.section_code='".$section_code."' AND department_type='SEWING' AND workstation.plant_code = '" . $plantcode . "'";				 
+				$workstationResult = mysqli_query($link, $workstationIdQuery) or exit("Sql Error workstation" . mysqli_error($link));
 				$workstationRow = mysqli_fetch_row(($workstationResult));
 				$workstationId = $workstationRow[0];
 				 
