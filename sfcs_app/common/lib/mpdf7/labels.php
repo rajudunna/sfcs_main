@@ -243,7 +243,9 @@ $html.='</body></html>';
 //$mpdf= new \mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
 // echo $html;
 $mpdf->WriteHTML($html); 
-$mpdf->Output();
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_rm_labels.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$rm_labels."';</script>";
 
 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));

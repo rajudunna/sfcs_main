@@ -498,6 +498,8 @@ $mpdf->setFooter('<br/><table style="width:100%;border-style: none;">
     </tbody>
 </table>');
 $mpdf->WriteHTML($body);
-$mpdf->Output();
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_tms_bom_sheet.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$bom_sheet."';</script>";
 exit();
 ?>

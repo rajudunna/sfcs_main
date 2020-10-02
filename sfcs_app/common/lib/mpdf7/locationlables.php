@@ -83,6 +83,8 @@ $html.='</body></html>';
 //==============================================================
 
 $mpdf->WriteHTML($html); 
-$mpdf->Output();
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_locationlabels.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$locationlabels."';</script>";
 //exit();
 ?>
