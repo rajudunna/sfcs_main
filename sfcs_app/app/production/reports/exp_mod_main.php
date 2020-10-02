@@ -58,26 +58,26 @@ $username = $_SESSION['userName'];
 		<form method="post" class="form_inline" action=<?php getFullURLLevel($_GET['r'], 'exp_mod_main.php', 0, 'N') ?>>
 			<div class="row">
 				<div class="col-md-3">
-				<?php
+					<?php
 
-			$sadte = (isset($_POST['dat1'])) ? $_POST['dat1'] : date("Y-m-d"); // Start date
-			$eadte = (isset($_POST['dat2'])) ? $_POST['dat2'] : date("Y-m-d"); // End date
+					$sadte = (isset($_GET['dat1'])) ? $_GET['dat1'] : date("Y-m-d"); // Start date
+					$eadte = (isset($_GET['dat2'])) ? $_GET['dat2'] : date("Y-m-d"); // End date
 
-			?>
+					?>
 					<label>Start Date </label>
-				<input type="text" data-toggle='datepicker' class="form-control" id="dat1" name="dat1" size=8 value="<?= $sadte ?>" /></div>
+					<input type="text" data-toggle='datepicker' class="form-control" id="dat1" name="dat1" size=8 value="<?= $sadte ?>" /></div>
 				<div class="col-md-3">
 					<label>End Date </label>
-					<input type="text" data-toggle='datepicker' class="form-control" id="dat2" name="dat2" size=8 value="<?= $eadte?>" /></div>
+					<input type="text" data-toggle='datepicker' class="form-control" id="dat2" name="dat2" size=8 value="<?= $eadte ?>" /></div>
 				<div class="col-md-3"><label>Section</label>
 					<?php
 					echo "<select name=\"sec\" class='form-control'>";
 					// Get Sections for sewing 
-					$sql_sections = "SELECT section_id,section_code,section_name FROM $pms.sections LEFT JOIN $pms.departments ON departments.department_id = sections.department_id where department_type='SEWING' AND sections.plant_code='".$plantCode."' AND sections.is_active=".TRUE;					 
-					$res_sections = mysqli_query($link,$sql_sections) or exit("Sql Error" . mysqli_error($link));
-					while($row_sections = mysqli_fetch_array($res_sections)) {						 
-						$section_id = $row_sections["section_id"];						 
-						$sec_code_name = $row_sections["section_code"] ."-". $row_sections["section_name"];
+					$sql_sections = "SELECT section_id,section_code,section_name FROM $pms.sections LEFT JOIN $pms.departments ON departments.department_id = sections.department_id where department_type='SEWING' AND sections.plant_code='" . $plantCode . "' AND sections.is_active=" . TRUE;
+					$res_sections = mysqli_query($link, $sql_sections) or exit("Sql Error" . mysqli_error($link));
+					while ($row_sections = mysqli_fetch_array($res_sections)) {
+						$section_id = $row_sections["section_id"];
+						$sec_code_name = $row_sections["section_code"] . "-" . $row_sections["section_name"];
 						if ($_GET['sec'] == $sql_sec) {
 							echo "<option value=\"" . $section_id . "\" selected>" . $sec_code_name  . "</option>";
 						} else {
@@ -119,12 +119,12 @@ $username = $_SESSION['userName'];
 			if ($cat == "Weekly") {
 				// header("Location:exp_mod_week_data_old.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");
 				echo '<script>
-				window.location.href="' . $exp_mod_week_data_old . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '&plantcode='.$plantCode.'";
+				window.location.href="' . $exp_mod_week_data_old . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '&plantCode=' . $plantCode . '";
 		</script>';
 			} elseif ($cat == "Shift") {
 				// header("Location:exp_mod_shift_data.php?dat1=$start&dat2=$end&sec=$sec&cat=$cat");	
 				echo '<script>
-			window.location.href="' . $exp_mod_shift_data . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '";
+			window.location.href="' . $exp_mod_shift_data . '&dat1=' . $start . '&dat2=' . $end . '&sec=' . $sec . '&cat=' . $cat . '&plantCode=' . $plantCode . '";
 		</script>';
 				// header("Location:'.$exp_mod_shift_data.'?dat1='.$start.'&dat2='.$end.'&sec='.$sec.'&cat='.$cat.'");
 			} else {

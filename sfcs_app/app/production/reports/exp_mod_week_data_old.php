@@ -48,27 +48,25 @@ $username = $_SESSION['userName'];
 // echo $start."---".$end;
 include("../" . getFullURL($_GET['r'], 'exp_mod_main.php', 0, 'R'));
 
-// Remove code
-$pts = 'pts_temp';
-//**************************************************** NEw Code *****************************//
+ 
 // Get section_code
 $sql_get_section_code = "SELECT section_code FROM $pms.sections  where section_id='" . $sec . "'";
 $res_sec_code = mysqli_query($link, $sql_get_section_code) or exit("sql section code error" . mysqli_error($link));
 $row_sec_code = mysqli_fetch_row($res_sec_code);
 $section_code = $row_sec_code[0];
-echo $section_code;
+ 
 //Get modules for sections
 $sql_workstations = "SELECT workstation_id,workstation_code FROM $pms.workstation where section_id ='" . $sec . "'";
 $res_workstations = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
 
-$sql1_query = "select sec_mods from $bai_pro3.sections_db where sec_id='$sec'";
-$sql1 = mysqli_query($link, $sql1_query) or exit("sql1_query Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-//var_dump($sql1_query);
-while ($row1 = mysqli_fetch_array($sql1)) {
-	$sections = $row1['sec_mods'];
-}
+// $sql1_query = "select sec_mods from $bai_pro3.sections_db where sec_id='$sec'";
+// $sql1 = mysqli_query($link, $sql1_query) or exit("sql1_query Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+// //var_dump($sql1_query);
+// while ($row1 = mysqli_fetch_array($sql1)) {
+// 	$sections = $row1['sec_mods'];
+// }
 
-$secs = explode(",", $sections);
+// $secs = explode(",", $sections);
 //print_r($secs);
 $i = 1;
 if (mysqli_num_rows($res_workstations) < 100) {
@@ -149,7 +147,7 @@ if (mysqli_num_rows($res_workstations) < 100) {
 	while ($row_workstation2 = mysqli_fetch_array($res_workstations_2)) {
 		$workstation_id = $row_workstation2['workstation_id'];
 		$workstation_code = $row_workstation2['workstation_code'];
-		echo $workstation_id . "<br>";
+		 
 		// $sql2 = mysqli_query($link, "select distinct(styles) from $pts.grand_rep where plant_code='$plantcode' and section='$sec' AND module='" . $secs[$i] . "' and date between '$start' and '$end' order by module ");
 
 
@@ -158,9 +156,10 @@ if (mysqli_num_rows($res_workstations) < 100) {
 		 
 		$res_get_styles = mysqli_query($link, $sql_get_styles) or exit("sql styles error - " . mysqli_error($link));
 		$style_count = mysqli_num_rows($res_get_styles);
-		 
+	 
 		while ($row_styles = mysqli_fetch_array($res_get_styles)) {
 			$style = $row_styles['style'];
+	 
 			echo "<tr>";
 			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $workstation_code . "</th>";
 			echo "<th rowspan='3' style=\"background-color:#00ffff;\">" . $row_styles['style'] . "</th>";
@@ -173,7 +172,7 @@ if (mysqli_num_rows($res_workstations) < 100) {
 				// Get count of workstations for section from transaction log
 				$res_workstations_3 = mysqli_query($link, $sql_workstations) or exit("sql workstation error" . mysqli_error($link));
 				while ($row_workstation_3 = mysqli_fetch_array($res_workstations_3)) {
-					$sql_good_qty = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $row_workstation_3['workstation_id'] . "' AND plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$sql_good_qty = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $row_workstation_3['workstation_id'] . "' AND style='".$style."' AND plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
 					$res_good_qty = mysqli_query($link, $sql_good_qty) or exit("sql transactions error" . mysqli_errno($link));
 					$workstations_count += mysqli_num_rows($res_good_qty);
 				}
@@ -349,31 +348,38 @@ if (mysqli_num_rows($res_workstations) < 100) {
 			echo "<th style=\"background-color:#C4BD97;\">LostHrs</th>";
 			for ($l = 0; $l < sizeof($dates); $l++) {
 				$weekday3 = date('l', strtotime($dates[$l]));
-				$sql44 = mysqli_query($link, "select sum(dtime) from $bai_pro.down_log where style='" . $style . "' and mod_no='" . $workstation_id . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql44 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-				while ($row44 = mysqli_fetch_array($sql44)) {
-					if ($weekday3 == "Saturday") {
-						$day_dtime = $row44['sum(dtime)'] / 60;
-						$week_dtime_total = $day_dtime_total + $day_dtime;
-						$xlimit = $x + 1;
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($day_dtime, 0) . "</th>";
-						echo "<th style=\"background-color:#99AADD;\">" . round($week_dtime_total / $xlimit, 0) . "</th>";
-						$x = 0;
-						$xlimit = 0;
-						$day_dtime_total = 0;
-					} else {
-						$day_dtime1 = $row44['sum(dtime)'] / 60;
-
-						if ($dates[$l] != $end_date) {
-							$day_dtime_total = $day_dtime_total + $day_dtime1;
-							$x = $x + 1;
-						} else {
-							$day_dtime_total = 0;
-							$x = 0;
-						}
-
-						echo "<th style=\"background-color:#c0dcc0;\">" . round($day_dtime1, 0) . "</th>";
-					}
+				if ($weekday3 == "Saturday") {
+				echo "<th style=\"background-color:#c0dcc0;\">0</th>";
+				echo "<th style=\"background-color:#99AADD;\">0</th>";
+				}else{
+					echo "<th style=\"background-color:#c0dcc0;\">0</th>";
 				}
+				// ****************** down_log descoped  ***************************//
+				// $sql44 = mysqli_query($link, "select sum(dtime) from $bai_pro.down_log where style='" . $style . "' and mod_no='" . $workstation_id . "' and date='" . $dates[$l] . "' and section='$sec'") or exit("sql44 Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while ($row44 = mysqli_fetch_array($sql44)) {
+				// 	if ($weekday3 == "Saturday") {
+				// 		$day_dtime = $row44['sum(dtime)'] / 60;
+				// 		$week_dtime_total = $day_dtime_total + $day_dtime;
+				// 		$xlimit = $x + 1;
+				// 		echo "<th style=\"background-color:#c0dcc0;\">" . round($day_dtime, 0) . "</th>";
+				// 		echo "<th style=\"background-color:#99AADD;\">" . round($week_dtime_total / $xlimit, 0) . "</th>";
+				// 		$x = 0;
+				// 		$xlimit = 0;
+				// 		$day_dtime_total = 0;
+				// 	} else {
+				// 		$day_dtime1 = $row44['sum(dtime)'] / 60;
+
+				// 		if ($dates[$l] != $end_date) {
+				// 			$day_dtime_total = $day_dtime_total + $day_dtime1;
+				// 			$x = $x + 1;
+				// 		} else {
+				// 			$day_dtime_total = 0;
+				// 			$x = 0;
+				// 		}
+
+				// 		echo "<th style=\"background-color:#c0dcc0;\">" . round($day_dtime1, 0) . "</th>";
+				// 	}
+				// }
 			}
 
 			echo "</tr>";
