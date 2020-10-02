@@ -167,7 +167,7 @@ function GetSelectedItem()
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$doc_mat =$result_docketinfo['requirement'];
+		$doc_mat =$result_docketinfo['docket_quantity'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
@@ -184,7 +184,7 @@ function GetSelectedItem()
 		
 	}
 	
-	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and lp_ratio_cg_id='$ratio_comp_group_id'";
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
 	

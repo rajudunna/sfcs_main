@@ -168,7 +168,7 @@ function getDaysInBetween($start, $end)
 			$table .= "</tr>";
 			// **************************** NEW ***************************
 			// Get production plan upload data for given date
-			$sql = "SELECT DISTINCT(row_name) AS work_station, GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
+			$sql = "SELECT DISTINCT(row_name) AS work_station, GROUP_CONCAT(DISTINCT product_code) AS style FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  plant_code = '" . $plantcode . "' GROUP BY row_name";
 
 			$res = mysqli_query($link, $sql);
 			$frdayWisetotalQty = [];

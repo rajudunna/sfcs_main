@@ -30,18 +30,18 @@
             //get mp_mo_qty details wrt schedule
             $mp_mo_details_id=array();
             $po_number_id=array();
-            $qry_MpMoQty="SELECT master_po_details_mo_quantity_id FROM $pps.mp_mo_qty WHERE schedule='$schedule' AND plant_code='$plant_code'";
+            $qry_MpMoQty="SELECT mp_mo_qty_id FROM $pps.mp_mo_qty WHERE schedule='$schedule' AND plant_code='$plant_code'";
             $MpMoQty_result=mysqli_query($link_new, $qry_MpMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
             $MpMoQty_num=mysqli_num_rows($MpMoQty_result);
             if($MpMoQty_num>0){
                 while($MpMoQty_row=mysqli_fetch_array($MpMoQty_result))
                     {        
-                        $mp_mo_details_id[]=$MpMoQty_row["master_po_details_mo_quantity_id"];
+                        $mp_mo_details_id[]=$MpMoQty_row["mp_mo_qty_id"];
                     }
                     $mp_mo_details_id = implode("','", $mp_mo_details_id);
                     
                     //qry to get po_numbers wrt master po details qty id
-                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE master_po_details_mo_quantity_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
+                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE mp_mo_qty_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
                     $MpSubMoQty_result=mysqli_query($link_new, $qry_MpSubMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $MpSubMoQty_num=mysqli_num_rows($MpSubMoQty_result);
                     if($MpSubMoQty_num>0){
@@ -69,7 +69,9 @@
                     $split_jobs = getFullURL($_GET['r'],'split_jobs.php','N');
                     echo "<h5><b><u>Select Sub PO :</u></b></h5>";
                     foreach($PoDescription as $key=>$poDesc){
-                        echo "<input type='button' class='btn btn-warning' onclick=getSewingJobs('".$poDesc."','".$key."') value='".$key."'>";
+                        ?>
+                        <input type='button' class='btn btn-warning' onClick="return getSewingJobs('<?php echo $poDesc ?>', '<?php echo $key ?>')" value='<?= $key; ?>'>
+                        <?php
                     }
             }else{
                 echo "</br></br><center><h4 style='color:red;'>No PO's Found on this <b>' ".$schedule." '</b> Schedule,Please Check Once</h4></center>";

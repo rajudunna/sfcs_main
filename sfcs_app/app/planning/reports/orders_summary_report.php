@@ -113,7 +113,7 @@ if(isset($_POST['filter']))
 			$style=$sql_row1['style'];
 			$color=$sql_row1['color'];
 			$master_po_details_id=$sql_row1['master_po_details_id'];
-			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and master_po_order_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
+			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
