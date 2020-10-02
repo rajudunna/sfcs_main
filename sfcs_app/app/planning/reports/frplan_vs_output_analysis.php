@@ -197,7 +197,7 @@ function getDaysInBetween($start, $end)
 					$frdayWisetotalQty[$i] = $frdayWisetotalQty[$i] + $planned_qty;
 					
 					//============== Get reported quantity ==========================//
-					$sqlReportedQty = "SELECT sum(good_quantity) as quantity FROM $pts.transaction_log WHERE resource_id='" . $workstationId . "' AND created_at BETWEEN '" . $dates_between[$i] . "00:00:00' AND '" . $dates_between[$i]  . "23:59:59' AND plant_code ='" . $plantcode . "' AND operation='130'";
+					$sqlReportedQty = "SELECT sum(good_quantity) as quantity FROM $pts.transaction_log WHERE resource_id='" . $workstationId . "' AND created_at BETWEEN '" . $dates_between[$i] . " 00:00:00' AND '" . $dates_between[$i]  . " 23:59:59' AND plant_code ='" . $plantcode . "' AND operation='130'";
 					$resultQty = mysqli_query($link, $sqlReportedQty);
 					$rowQty = mysqli_fetch_row($resultQty);
 					$goodQty = $rowQty[0] ? $rowQty[0] : 0;
