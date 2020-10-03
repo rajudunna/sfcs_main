@@ -2677,7 +2677,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v6.php')['url'];
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
-	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&plant_code=$plant_code&username=$username';";
+	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."';";
 	echo "function Redirect(){location.href=url;}</script>";	
 }
 ?>

@@ -411,7 +411,7 @@ $flag = false;
 								}									
 							
 							}
-
+							
 							if($val2==1 && $status == 3 && $val2_1 ==0 && $val2_2 ==0)
 							{
 								echo "<tr><td><a class='btn btn-primary' href=\"$pop_up_path?parent_id=$parent_id&plant_code=$plant_code&username=$username\" onclick=\"Popup1=window.open('$pop_up_path?parent_id=$parent_id&plant_code=$plant_code&username=$username','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Get Report</a></td></tr>";
