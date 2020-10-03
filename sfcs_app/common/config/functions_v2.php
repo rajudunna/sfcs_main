@@ -41,7 +41,7 @@ function getJmDockets($doc_num,$plant_code){
         if($ratio_comp_group_id!=''){
             /**By using ratio component group we can get marker details */
             /**NOte :we can take only default_marker_version=1 details only */
-            $getting_style="SELECT `master_po_details_id` FROM $pps.`lp_ratio_component_group` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND `plant_code`='$plant_code'";
+            $getting_style="SELECT `master_po_details_id` FROM $pps.`lp_ratio_component_group` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND `plant_code`='$plant_code'";
             $getting_style_result=mysqli_query($link_new, $getting_style) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $getting_style_result_num=mysqli_num_rows($getting_style_result);
             if($getting_style_result_num>0){
@@ -63,7 +63,7 @@ function getJmDockets($doc_num,$plant_code){
                 $master_po = $row['master_po_number'];
                 $master_po_desc = $row['master_po_description'];
             }
-            $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
+            $qry_lp_markers="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);
             if($lp_markers_num>0){
@@ -117,16 +117,16 @@ function getMpMoQty($po_number,$plant_code){
     global $pps;
     $schedule='';
     $schedule_temp=array();
-    $qry_mp_sub_mo_qty="SELECT mp_mo_qty_id FROM $pps.mp_sub_mo_qty WHERE po_number='$po_number' AND plant_code='$plant_code'";
+    $qry_mp_sub_mo_qty="SELECT master_po_details_mo_quantity_id FROM $pps.mp_sub_mo_qty WHERE po_number='$po_number' AND plant_code='$plant_code'";
     $mp_sub_mo_qty_result=mysqli_query($link_new, $qry_mp_sub_mo_qty) or exit("Sql Errorat_mp_sub_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
         $mp_sub_mo_qty_num=mysqli_num_rows($mp_sub_mo_qty_result);
         /**By using above query we will get master po details mo quantity id to get schedules*/
         if($mp_sub_mo_qty_num>0){
             while($sql_row1=mysqli_fetch_array($mp_sub_mo_qty_result))
             {
-                $mp_mo_qty_id = $sql_row1['mp_mo_qty_id'];
+                $master_po_details_mo_quantity_id = $sql_row1['master_po_details_mo_quantity_id'];
                 /**So basedon master po details id's we will get schedules */
-                $qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE `mp_mo_qty_id`='$mp_mo_qty_id' AND plant_code='$plant_code'";
+                $qry_mp_mo_qty="SELECT schedule FROM $pps.mp_mo_qty WHERE `master_po_details_mo_quantity_id`='$master_po_details_mo_quantity_id' AND plant_code='$plant_code'";
                 $qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $qry_mp_mo_qty_num=mysqli_num_rows($qry_mp_mo_qty_result);
                     if($qry_mp_mo_qty_num>0){
@@ -155,7 +155,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
     $material_item_code='';
     $master_po_details_id='';
     $master_po_details_id='';
-    $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
+    $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE ratio_wise_component_group_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
     //echo "</br> Qryratio".$qry_ratio_component_group;
     $ratio_component_group_result=mysqli_query($link_new, $qry_ratio_component_group) or exit("Sql Errorat_ratio_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
         $ratio_component_group_num=mysqli_num_rows($ratio_component_group_result);
@@ -168,7 +168,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
             }
             //echo "</br>Comp grp ID: ".$component_group_id;
             /**Getting fabric categoery and item code by using component group from lp_ratio_component_group */
-            $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE lp_cg_id='$component_group_id' AND plant_code='$plant_code'";
+            $qry_component_group="SELECT fabric_category,material_item_code,master_po_details_id FROM $pps.lp_component_group WHERE master_po_component_group_id='$component_group_id' AND plant_code='$plant_code'";
             //echo "</br> Com group : ".$qry_component_group;
             $qry_component_group_result=mysqli_query($link_new, $qry_component_group) or exit("Sql Errorat_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
             $component_group_num=mysqli_num_rows($qry_component_group_result);
@@ -1238,7 +1238,7 @@ function getDocketInformation($docket_no, $plant_code) {
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
         WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
@@ -1281,7 +1281,7 @@ function getDocketInformation($docket_no, $plant_code) {
     }
 
     // get the rm sku, fabric catrgory
-    $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where lp_cg_id = '$cg_id' ";
+    $fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where master_po_component_group_id = '$cg_id' ";
     $fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row = mysqli_fetch_array($fabric_info_result))
     {
@@ -1310,7 +1310,7 @@ function getDocketInformation($docket_no, $plant_code) {
 
     // get the marker requierement
     $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
-    FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
+    FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
    
     $markers_result = mysqli_query($link_new, $markers_query) or exit("Sql markers_query".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row11 = mysqli_fetch_array($markers_result))
@@ -1478,7 +1478,7 @@ function getStyleColorSchedule($ponumber,$plantcode){
     $color=array();
     $schedule=array();
     //To get schedule,color
-    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
+    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
     WHERE po_number='$ponumber' AND mp_sub_mo_qty.plant_code='$plantcode'";
     $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($qry_get_sch_col_result))
@@ -1509,8 +1509,8 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     $out_put_results = [];
     $sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM $pps.`jm_aplb` aplb
     LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON
-    aplb.`jm_pplb_id` = pplb.`jm_pplb_id`
-    LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+    aplb.`jm_product_logical_bundle_id` = pplb.`jm_product_logical_bundle_id`
+    LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_cut_bundle_detail_id` = ppb.jm_cut_bundle_detail_id
     WHERE  pplb.`feature_value` = '$schedule'
     AND ppb.`bundle_type` IN ($bundle_types)
     GROUP BY aplb.`fg_color`, aplb.`size`,ppb.`bundle_type`";
@@ -1614,24 +1614,5 @@ function getSectionByDeptTypeSewing($plantCode){
 function getMasterPoSequence($master_po_serial,$plant_code){
     $leading_zeros = sprintf('%010d', $master_po_serial);
     return  $plant_code ."-".$leading_zeros;
-}
-
-/**
- * gets the rejections for the given department
- */
-function getRejectionReasons($dept_type) {
-    global $link_new;
-    global $mdm;
-    $reasons = [];
-    $reasons_query = "SELECT reason_id, internal_reason_code, internal_reason_description from $mdm.reasons where department_type = '$dept_type' and is_active=1";
-    $reasons_result = mysqli_query($link_new, $reasons_query);
-    while($row = mysqli_fetch_array($reasons_result)) {
-        $reasons[] = array(
-            'reason_id'=>$row['reason_id'],
-            'internal_reason_code'=>$row['internal_reason_code'],
-            'internal_reason_description'=>$row['internal_reason_description'],
-        );
-    }
-    return $reasons;
 }
 ?>
