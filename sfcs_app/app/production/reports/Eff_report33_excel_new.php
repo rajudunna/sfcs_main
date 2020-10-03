@@ -1,15 +1,15 @@
 <?php 
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
-$sql="select GROUP_CONCAT(DISTINCT sec_name) as unit_members from $bai_pro3.sections_master order by sec_id"; 
+$plantcode=$_POST['plantcode'];
+$username=$_POST['username'];
+$sql="select GROUP_CONCAT(DISTINCT section_id) as unit_members from $pms.sections where plant_code='$plantcode' order by section_id"; 
 // echo $sql."<br>";
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+mysqli_query($link, $sql) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error43".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
-$sec_code=$sql_row['unit_members']; 
+$sec_code1=$sql_row['unit_members']; 
 } 
-
+$sec_code = "'" . str_replace(",", "','", $sec_code1) . "'";
 
 
 $h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21); 
@@ -38,8 +38,8 @@ $offstha_sum=0;
 //$sql="select distinct mod_no from $bai_pro.pro_mod where mod_sec in(".$sec_code.") and mod_date between \"$date\" and \"$edate\" order by mod_no"; 
 // echo $sql."<br>";
 $sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec_code.") and date between \"$date\" and \"$edate\" order by module*1"; 
-mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+mysqli_query($link, $sql) or exit("Sql Error2221".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result=mysqli_query($link, $sql) or exit("Sql Error2221".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
 
 $peff_a_total=0; 
@@ -65,8 +65,8 @@ $mod=$sql_row['module'];
 $style=$sql_row['mod_style']; 
 
 $max=0; 
-$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $grand_rep where module=$mod and date between \"$date\" and \"$edate\""; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep where module='$mod' and date between \"$date\" and \"$edate\""; 
+mysqli_query($link, $sql2) or exit("Sql Error6666".mysqli_error($GLOBALS["___mysqli_ston"])); 
 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
@@ -111,7 +111,7 @@ $absent_B=$absent_B+$sql_row2['absent_B'];
 $absent_B_clk=$sql_row2['absent_B'];
 } */
 
-$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowA=mysqli_fetch_array($sql_resultA))
 				{
@@ -126,7 +126,7 @@ $sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" fro
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
 
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
 				{
@@ -142,7 +142,7 @@ $sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" fro
 					$absent_B_fix=$sql_rowB['absent_B'];
 				}
 
-$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
+$sql132="select act_clh as hrs from $pts.grand_rep where module='$mod' and shift=\"A\" and date between \"$date\" and \"$edate\" ";
 //echo $sql132."<br>";
 $result132=mysqli_query($link, $sql132) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row132=mysqli_fetch_array($result132))
@@ -151,7 +151,7 @@ $act_hrsa1=$sql_row132["hrs"];
 //echo $act_hrsa."-".($sql_row2['avail_A']-$sql_row2['absent_A'])."<br>";	
 }
 
-$sql133="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"B\" and date between \"$date\" and \"$edate\" ";
+$sql133="select act_clh as hrs from $pts.grand_rep where module='$mod' and shift=\"B\" and date between \"$date\" and \"$edate\" ";
 //echo $sql133."<br>";
 $result133=mysqli_query($link, $sql133) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row133=mysqli_fetch_array($result133))
@@ -164,20 +164,20 @@ $act_clock_hrs1=$act_clock_hrs1+($act_hrsa1*($avail_A_clk-$absent_A_clk))+($act_
 
 $sql_num_check=mysqli_num_rows($sql_result2); 
 
-$sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module=$mod and date between \"$date\" and \"$edate\""; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-while($sql_row2=mysqli_fetch_array($sql_result2)) 
-{ 
+// $sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module='$mod' and date between \"$date\" and \"$edate\""; 
+// mysqli_query($link, $sql2) or exit("Sql Error43545".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error657".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+// { 
 
-$rew_A=$rew_A+round($sql_row2['rew_A'],0); 
-$rew_B=$rew_B+round($sql_row2['rew_B'],0); 
+// $rew_A=$rew_A+round($sql_row2['rew_A'],0); 
+// $rew_B=$rew_B+round($sql_row2['rew_B'],0); 
 
 
-$auf_A=$auf_A+$sql_row2['auf_A']; 
-$auf_B=$auf_B+$sql_row2['auf_B']; 
+// $auf_A=$auf_A+$sql_row2['auf_A']; 
+// $auf_B=$auf_B+$sql_row2['auf_B']; 
 
-} 
+// } 
 
 $sql_num_check=mysqli_num_rows($sql_result2); 
 
@@ -202,9 +202,9 @@ $pstha=0;
 $psthb=0; 
 
 
-$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\""; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where module='$mod' and date between \"$date\" and \"$edate\" and shift=\"A\""; 
+mysqli_query($link, $sql2) or exit("Sql Error321414".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error43223".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
 $atotal=$sql_row2['act_out']; 
@@ -218,9 +218,9 @@ $ppro_a=$sql_row2['plan_out'];
 $effa=($stha/$pclha)*100; 
 } 
 
-$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $grand_rep where module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\""; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where module='$mod' and date between \"$date\" and \"$edate\" and shift=\"B\""; 
+mysqli_query($link, $sql2) or exit("Sql Error1211".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error232".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
 $btotal=$sql_row2['act_out']; 
@@ -234,9 +234,9 @@ $ppro_b=$sql_row2['plan_out'];
 $effb=($sthb/$pclhb)*100; 
 } 
 
-$sql2="select avg(nop) as \"nop\" from $grand_rep where module=$mod and date in (\"".implode('","',$date_range)."\")"; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select avg(nop) as \"nop\" from $pts.grand_rep where module='$mod' and date in (\"".implode('","',$date_range)."\")"; 
+mysqli_query($link, $sql2) or exit("Sql Error668".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error968".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
 $nop=$sql_row2['nop']; 
@@ -248,14 +248,14 @@ $operatorssum=$operatorssum+$nop;
 $offstha=0; 
 $offsthb=0; 
 
-$sql2="select sum(dtime) as \"offstha\" from $bai_pro.down_log where shift=\"A\" and date between \"$date\" and \"$edate\" and mod_no=$mod"; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql2="select sum(dtime) as \"offstha\" from $bai_pro.down_log where shift=\"A\" and date between \"$date\" and \"$edate\" and mod_no=$mod"; 
+// mysqli_query($link, $sql2) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error989".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-while($sql_row2=mysqli_fetch_array($sql_result2)) 
-{ 
-$offstha=$sql_row2['offstha']; 
-} 
+// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+// { 
+// $offstha=$sql_row2['offstha']; 
+// } 
 
 if($offstha==NULL) 
 { 
@@ -263,14 +263,14 @@ $offstha=0;
 } 
 $offstha_sum=$offstha_sum+$offstha; 
 
-$sql2="select sum(dtime) as \"offsthb\" from $bai_pro.down_log where shift=\"B\" and date between \"$date\" and \"$edate\" and mod_no=$mod"; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql2="select sum(dtime) as \"offsthb\" from $bai_pro.down_log where shift=\"B\" and date between \"$date\" and \"$edate\" and mod_no=$mod"; 
+// mysqli_query($link, $sql2) or exit("Sql Errormn".mysqli_error($GLOBALS["___mysqli_ston"])); 
+// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Errorhfg".mysqli_error($GLOBALS["___mysqli_ston"])); 
 
-while($sql_row2=mysqli_fetch_array($sql_result2)) 
-{ 
-$offsthb=$sql_row2['offsthb']; 
-} 
+// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+// { 
+// $offsthb=$sql_row2['offsthb']; 
+// } 
 
 if($offsthb==NULL) 
 { 
@@ -324,9 +324,9 @@ $peff_a_total=0;
 $peff_b_total=0; 
 
 
-$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $grand_rep where section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\""; 
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"A\" and plant_code='$plantcode'";  
+mysqli_query($link, $sql2) or exit("Sql Error1111".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Erroraaaaa".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
 $atotal=$sql_row2['act_out']; 
@@ -340,9 +340,9 @@ $ppro_a=$sql_row2['plan_out'];
 $effa=($stha/$pclha)*100; 
 } 
 
-$sql2="select  sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $grand_rep where section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\"";
-mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql2="select  sum(act_out) as \"act_out\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_clh) as \"plan_clh\", sum(plan_sth) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where section in ($sec_code) and date between \"$date\" and \"$edate\" and shift=\"B\" and plant_code='$plantcode'";
+mysqli_query($link, $sql2) or exit("Sql Errorccccccc".mysqli_error($GLOBALS["___mysqli_ston"])); 
+$sql_result2=mysqli_query($link, $sql2) or exit("Sql Errorcccccc".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 { 
 $btotal=$sql_row2['act_out']; 
