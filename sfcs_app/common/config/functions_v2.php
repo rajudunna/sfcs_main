@@ -1228,7 +1228,7 @@ function getDocketInformation($docket_no, $plant_code) {
     $remark3 = '';
     $remark4 = '';
     $ratio_cg_id = '';
-
+    
     $schedules = [];
     // get the docket info
     $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
@@ -1239,7 +1239,7 @@ function getDocketInformation($docket_no, $plant_code) {
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
-        WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
+        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
@@ -1307,7 +1307,7 @@ function getDocketInformation($docket_no, $plant_code) {
     }
 
     $docket_quantity = $size_ratio_sum * $plies;
-
+ 
     // get the marker requierement
     $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
     FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
