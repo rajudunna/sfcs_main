@@ -561,7 +561,7 @@ td,th
 				die;
 		}
 	}
-	
+	echo $start_time_exact."--".$end_time_exact."<br>";
 	$sections=explode(",", $_POST['section']);
     
 	$hoursa_shift=0;
@@ -681,7 +681,7 @@ td,th
 	{
 		if($hour_filter=='All') 
 		{ 
-			$sql="SELECT * FROM bai_pro3.tbl_plant_timings WHERE end_time <= '$end_time_exact' ORDER BY start_time";
+			$sql="SELECT * FROM bai_pro3.tbl_plant_timings WHERE start_time>'$start_time_exact' AND end_time <= '$end_time_exact' ORDER BY start_time";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -695,7 +695,7 @@ td,th
 		{      
 			$hour_filter_array=explode("$", $_POST['hour_filter']);
 			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where start_time='".$hour_filter_array[0]."' and end_time='".$hour_filter_array[1]."'";
-			//echo $sql."<br>";
+			echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
