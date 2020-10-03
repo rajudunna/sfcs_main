@@ -47,18 +47,24 @@
 				}
 			}
 
-			$get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,GROUP_CONCAT(DISTINCT CONCAT(bar.barcode,'-',bar.quantity)) as bun_num,COUNT(bun.bundle_number) AS cnt FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id LEFT JOIN $pts.barcode bar ON bar.external_ref_id = bun.jm_job_bundle_id WHERE jg.plant_code = '$plantcode' AND jg.job_group=3 AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number,bun.size";
+			$get_job_details = "SELECT jg.jm_jg_header_id,jg.job_number as job_number,bun.fg_color as color,sum(bun.quantity) as qty,bun.size as size,COUNT(bun.bundle_number) AS cnt,GROUP_CONCAT(DISTINCT(bun.jm_job_bundle_id)) AS jm_job_bundle_id FROM $pps.jm_jg_header jg LEFT JOIN $pps.jm_job_bundles bun ON bun.jm_jg_header_id = jg.jm_jg_header_id WHERE jg.plant_code = '$plantcode' AND jg.job_group=3 AND jg.jm_job_header IN ('".implode("','" , $jm_job_header_id)."') AND jg.is_active=1 GROUP BY jg.job_number,bun.size";
 			// echo $get_job_details;
 			$get_job_details_result=mysqli_query($link_new, $get_job_details) or exit("$get_job_details".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if($get_job_details_result>0){
+				$i= 0;
 				while($get_job_details_row=mysqli_fetch_array($get_job_details_result))
 				{
 					$input_job_no_random_array[] = $get_job_details_row['job_number'];
-					$bun_num[$get_job_details_row['job_number']] = $get_job_details_row['bun_num'];
-					$job_size[$get_job_details_row['job_number']] = $get_job_details_row['size'];
-					$job_qty[$get_job_details_row['job_number']] = $get_job_details_row['qty'];
-					$job_color[$get_job_details_row['job_number']] = $get_job_details_row['color'];
-					$bun_count[$get_job_details_row['job_number']] = $get_job_details_row['cnt'];
+					$jm_job_bundle_id[$get_job_details_row['job_number']][] = $get_job_details_row['jm_job_bundle_id'];
+					$job_size1[$get_job_details_row['job_number']][] = $get_job_details_row['size'];
+					$job_color1[$get_job_details_row['job_number']][] = $get_job_details_row['color'];
+					if($i==0){
+						$job_qty[$get_job_details_row['job_number']] = 0;
+						$bun_count[$get_job_details_row['job_number']] = 0;	
+					}
+					$job_qty[$get_job_details_row['job_number']] += $get_job_details_row['qty'];
+					$bun_count[$get_job_details_row['job_number']] += $get_job_details_row['cnt'];
+					$i++;
 				}
 			}
 			$order_div= '-';
@@ -810,8 +816,13 @@
 
 					<!-- Loop for Sewing Jobs in Docket -->
 					<?php
+						$input_job_no_random_array = array_unique($input_job_no_random_array);
 						foreach ($input_job_no_random_array as $key => $value)
 						{
+							$job_size[$value] = implode(",", array_unique($job_size1[$value]));
+
+							$job_color[$value] = implode(",", array_unique($job_color1[$value]));
+
 							if($bun_count[$value] > 0) {
 
 								// $display_sewing_job = get_sewing_job_prefix_inp('prefix','brandix_bts.tbl_sewing_job_prefix',$key,$value,$link);
@@ -873,12 +884,11 @@
 										$rooo = ceil(count($val)/3);
 									echo "
 									<tr height=20 style='height:15.0pt'>
-										<td height=20 rowspan=$rooo class=xl656065 style='height:15.0pt'>".$sno."</td>
-										<td colspan=4 rowspan=$rooo class=xl686065 style='text-align:left; border-right:.5pt solid black;border-left:none'>".$job_color[$value]."</td>
-										<td class=xl666065 rowspan=$rooo>".$job_size[$value]."</td>
-										<td class=xl666065 rowspan=$rooo >".$job_qty[$value]."</td>
-										<td class=xl666065 rowspan=$rooo >".$bun_count[$value]."</td>
-										";
+										<td height=20 rowspan=$rooo class=xl656065 style='height:15.0pt'>".$sno."</td>";
+									echo "<td colspan=4 rowspan=$rooo class=xl686065 style='text-align:left; border-right:.5pt solid black;border-left:none'>".$job_color[$value]."</td>";
+									echo "<td class=xl666065 rowspan=$rooo>".$job_size[$value]."</td>";
+									echo "<td class=xl666065 rowspan=$rooo >".$job_qty[$value]."</td>";
+									echo "<td class=xl666065 rowspan=$rooo >".$bun_count[$value]."</td>";
 										// <td class=xl646065 colspan=2 rowspan=$rooo >".$location."</td>
 										// for ($i=0; $i < count($val); $i+=3)
 										// {
@@ -902,10 +912,25 @@
 										// 	}
 										// 	$counter++;
 										// }
-										echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none'>";
-										echo $bun_num[$value];
-										echo "</td>";
+										// var_dump($jm_job_bundle_id[$value]);
+
+										$bun_ids = implode(",", array_unique($jm_job_bundle_id[$value]));
+										$bun_id = str_replace(",","','",$bun_ids);
+										// var_dump($bun_id);
+										$get_barcode_details="SELECT GROUP_CONCAT(DISTINCT CONCAT(barcode,'-',quantity)) as bun_num FROM $pts.barcode WHERE external_ref_id in ('$bun_id') AND plant_code='$plantcode'";
+										// echo $get_barcode_details;
+										$get_barcode_details_result=mysqli_query($link_new, $get_barcode_details) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+										$get_barcode_details_result_num=mysqli_num_rows($get_barcode_details_result);
+										if($jm_job_header_id_result_num>0){
+											while($get_barcode_details_result_row=mysqli_fetch_array($get_barcode_details_result))
+											{
+												$bun_num[] = $get_barcode_details_result_row['bun_num'];
+											}
+										}
+										$bun_num = implode(",", array_unique($bun_num));
+										echo "<td colspan=7 class=xl686065 style='border-right:.5pt solid black;border-left:none;'>".$bun_num."</td>";
 									echo "</tr>";
+									unset($bun_num);
 										$sno++;
 										$total_bundle_qty = $total_bundle_qty+$job_qty[$value];
 										$total_bundles = $total_bundles+$bun_count[$value];
@@ -920,7 +945,6 @@
 									</tr>
 								";
 								unset($input_module);
-								
 							}
 							//unset($bundle_loc);
 						}
