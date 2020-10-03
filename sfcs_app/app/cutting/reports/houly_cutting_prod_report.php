@@ -85,7 +85,7 @@ if(isset($_POST['submit']))
 					FROM $pps.lp_lay lp 
 					LEFT JOIN $pps.lp_lay_attribute lpa ON lp.lp_lay_id=lpa.lp_lay_id 
 					WHERE lp.workstation_id='$workstation_id' AND lp.is_active=1 AND 
-					DATE(lpa.created_at)='2020-09-07' AND TIME(lpa.created_at) BETWEEN TIME('".($val-1).":00:00') AND TIME('".$val.":00:00')";
+					DATE(lpa.created_at)='$from_date' AND TIME(lpa.created_at) BETWEEN TIME('".($val-1).":00:00') AND TIME('".$val.":00:00')";
 					$LayAttributesResult=mysqli_query($link_new, $qryLayAttributes) or exit("Error getting attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$attributessNum=mysqli_num_rows($LayAttributesResult);
 					if($attributessNum>0){			

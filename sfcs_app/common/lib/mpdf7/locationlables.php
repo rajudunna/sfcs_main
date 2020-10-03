@@ -1,11 +1,12 @@
 <?php
-$plant_code = $_SESSION['plantCode'];
 // Increase max_execution_time. If a large pdf fails, increase it even more.
 ini_set('max_execution_time', 240);
 // Increase this for old PHP versions (like 5.3.3). If a large pdf fails, increase it even more.
 ini_set('pcre.backtrack_limit', 10000000);
 	include("../../config/config.php");
 	include("../../config/functions.php");
+	include("../../config/server_urls.php");
+	$plant_code = $_SESSION['plantCode'];
 	require_once 'vendor/autoload.php';
 	$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8','format' => [50, 80],'orientation' => 'L']);
 ?>
@@ -81,8 +82,11 @@ $html.='</body></html>';
 
 //==============================================================
 //==============================================================
-
+$locationlabels = "$PDF_SERVER_IP/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/".$plant_code."_locationlabels.pdf";
 $mpdf->WriteHTML($html); 
-$mpdf->Output();
+error_reporting(E_ALL);
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_locationlabels.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$locationlabels."';</script>";
 //exit();
 ?>
