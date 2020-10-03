@@ -853,7 +853,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                         /**insert records into jobs_movement_track*/
-                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$items[1]."', 'No Module' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
+                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$task_id."', 'No Module' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
                         mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
                     }    
 
