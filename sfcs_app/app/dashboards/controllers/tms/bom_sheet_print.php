@@ -3,6 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/lib/mpdf7/vendor/autolo
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/rest_api_calls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php'); 
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php'); 
 
 
 $body = "<style>
@@ -497,7 +498,11 @@ $mpdf->setFooter('<br/><table style="width:100%;border-style: none;">
     </tr>
     </tbody>
 </table>');
+$bom_sheet = "$PDF_SERVER_IP/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/".$plant_code."_tms_bom_sheet.pdf";
 $mpdf->WriteHTML($body);
-$mpdf->Output();
+error_reporting(E_ALL);
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_tms_bom_sheet.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$bom_sheet."';</script>";
 exit();
 ?>
