@@ -4,7 +4,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plantCode=$_SESSION['plantCode'];
-$plantCode="AIP";
 ?>
 
 <html>
@@ -212,7 +211,6 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
 		}
 
 		$workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' $sectionAppend and is_active=1";
-		//echo $workstationsQuery;
         $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
         if(mysqli_num_rows($workstationsQueryResult)>0){
             $workstations= [];
@@ -242,7 +240,7 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId,$sdate,$ed
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+		$jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
@@ -277,7 +275,7 @@ if(isset($_POST['submit']))
 		$workstationsArray=getWorkstationsForSectionId($plantCode,$section);
 		foreach($workstationsArray as $workStation)
 		{
-			$jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$workStation['workstationId']);
+			$jobsArray = getJobsForWorkstationIdTypeSewing($plantCode,$workStation['workstationId'],$sdate,$edate);
 			if(sizeof($jobsArray)>0)
 				{
 					foreach($jobsArray as $job)     
@@ -315,7 +313,7 @@ if(isset($_POST['submit']))
 				}
 		}
 		
-		if(count($originalBarcode)>0)
+		if(sizeof($originalBarcode)>0)
 		{
 			echo "<div>";
 			echo "<div  class ='table-responsive'>";
@@ -328,7 +326,7 @@ if(isset($_POST['submit']))
 					$to=$ii+1;
 					$toHour=$to.":00:00";
 					$time_display=$fromHour."-".$toHour;
-					$qryGettransactions="SELECT * FROM $pts.transaction_log WHERE IN plant_code='$plantCode' AND operation='$maxOperation' AND bundleNumber IN ('".implode("','" , $originalBarcode)."') 
+					$qryGettransactions="SELECT * FROM $pts.transaction_log WHERE IN plant_code='$plantCode' AND operation='$maxOperation' AND barcode IN ('".implode("','" , $originalBarcode)."') 
 					AND shift='' AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$rows12['start_time']."') AND ('".$rows12['end_time']."') 
 					AND is_active=1 GROUP BY shift,docketnumber,style,size,sewingjobnumber, ORDER BY style,shift,sewingjobnumber*1
 					";
@@ -342,11 +340,11 @@ if(isset($_POST['submit']))
 							$schedule=$sql_row['schedule'];
 							$color=$sql_row['color'];
 							$size=$sql_row['size'];
-							$good_qty=$sql_row['good_qty'];
+							$good_qty=$sql_row['good_quantity'];
 							$sewingjobnumber=$sql_row['sewingjobnumber'];
 							$docketnumber=$sql_row['docketnumber'];
 							$cutnumber=$sql_row['cutnumber'];
-							$workstation_id=$sql_row['workstation_id'];
+							$workstation_id=$sql_row['resource_id'];
 							$createDate=$sql_row['created_at'];
 							$shift=$sql_row['shift'];
 							

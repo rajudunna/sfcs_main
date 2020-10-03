@@ -1,9 +1,9 @@
 <?php 
-    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0060",$username,1,$group_id_sfcs);
 $plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1264,6 +1264,63 @@ tags will be replaced.-->
 
 
 <?php
+
+/**functions to get info */
+
+/**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+function getSectionByDeptTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+		$sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plantCode."' and dept.plant_code='".$plantCode."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+        if(mysqli_num_rows($sectionsQueryResult)>0){
+            $sections = [];
+            while($row = mysqli_fetch_array($sectionsQueryResult)){
+                $sectionRecord = [];
+                $sectionRecord["sectionId"] = $row['section_id'];
+                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionName"] = $row["section_name"];
+                array_push($sections, $sectionRecord);
+            }
+            return $sections;
+        } else {
+            return "Sections not found";
+        }
+    } catch(Exception $error) {
+        throw $error;
+    }
+}
+
+/**
+ * Get shifts for a plant code
+ */
+function getShifts($plantCode) {
+    global $pms;
+    global $link_new;
+    try{
+        $shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1";
+        $shiftQueryResult = mysqli_query($link_new,$shiftsQuery) or exit('Problem in getting shifts');
+        if(mysqli_num_rows($shiftQueryResult)>0){
+            $shifts = [];
+            while($row = mysqli_fetch_array($shiftQueryResult)){
+                $shiftRecord = [];
+                $shiftRecord["shiftValue"] = $row['shift_code'];
+                $shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
+                array_push($shifts, $shiftRecord);
+            }
+            return $shifts;
+        } else {
+            return "Shifts not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+
 error_reporting(0);
 if(isset($_POST["submit"]))
 {
@@ -1328,35 +1385,49 @@ while($rows7123=mysqli_fetch_array($sql71256))
 	//echo "<td rowspan=2 class=xl6527942 width=64 style='width:48pt'>".$rows7["COUNT(DISTINCT DATE)"]."</td>";
 }
 
-$sql7=mysqli_query($link, "SELECT SUM(act_sth) as sah,sum(plan_sth) as psah FROM $pts.grand_rep  WHERE plant_code='$plantcode' and section in (1,2,3,4,5,6,7) and DATE=\"".$dat1."\"");
+/**getting sections wrt sewing department*/
+$departments=getSectionByDeptTypeSewing($plantCode);
+
+foreach($departments as $department)
+{	
+	$sec_list[]=$department['sectionName'];
+	$sectionId[]=$department['sectionId'];
+	$sec_array[]=$department["sectionId"];
+}
+$sectionIds = implode("','", $sec_list);
+$sec_list[]="Factory";
+$section_list="'".implode("','",$sec_list)."'";
+
+
+$sql7=mysqli_query($link, "SELECT SUM(act_sth) as sah,sum(plan_sth) as psah FROM $pts.grand_rep  WHERE plant_code='$plantcode' and section in ('$sectionIds') and DATE=\"".$dat1."\"");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$today_sah=$rows7["sah"];
 	$today_plan_sah=$rows7["psah"];
 }
+/**getting shifts based on plantcode*/
+$shifts_array=getShifts($plantCode);
+$shiftColspan=sizeof($shifts_array)+1;
+$headerColspan=7+sizeof($shifts_array);
 
-$sql_sec="select * from $bai_pro3.sections_db where sec_id > 0 and sec_id not in (".implode(",",$exp_sec).") order by sec_id+0";
-//echo $sql_sec."<br>";
-$result_sec=mysqli_query($link, $sql_sec) or die("Error=".$sql_sec."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($row_sec=mysqli_fetch_array($result_sec))
-{
-	$sec_array[]=$row_sec["sec_id"];
-	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$row_sec["sec_id"];
-	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($sql_row12=mysqli_fetch_array($result12))
-	{
-		$section_display_name=$sql_row12["section_display_name"];
-	}
-	$sec_list[]=$section_display_name;
-	$lable[]=$row_sec["sec_head"];
-	$pro_res_a[]=$row_sec["pro_res_a"];
-	$pro_res_b[]=$row_sec["pro_res_b"];
-	$ie_res_a[]=$row_sec["ie_res_a"];
-	$ie_res_b[]=$row_sec["ie_res_b"];
-}
-$sec_list[]="Factory";
-
-$section_list="'".implode("','",$sec_list)."'";
+// $sql_sec="select * from $bai_pro3.sections_db where sec_id > 0 and sec_id not in (".implode(",",$exp_sec).") order by sec_id+0";
+// $result_sec=mysqli_query($link, $sql_sec) or die("Error=".$sql_sec."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($row_sec=mysqli_fetch_array($result_sec))
+// {
+// 	$sec_array[]=$row_sec["sec_id"];
+// 	$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$row_sec["sec_id"];
+// 	$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 	while($sql_row12=mysqli_fetch_array($result12))
+// 	{
+// 		$section_display_name=$sql_row12["section_display_name"];
+// 	}
+// 	$sec_list[]=$section_display_name;
+// 	$lable[]=$row_sec["sec_head"];
+// 	$pro_res_a[]=$row_sec["pro_res_a"];
+// 	$pro_res_b[]=$row_sec["pro_res_b"];
+// 	$ie_res_a[]=$row_sec["ie_res_a"];
+// 	$ie_res_b[]=$row_sec["ie_res_b"];
+// }
 
 //echo sizeof($date1);	
 echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
@@ -1413,7 +1484,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;background: #1F497D;color:white;border:.5pt solid windowtext'>Section HOD</td>";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$sec_list[$i]."</td>";
+  		echo "<td colspan=".$headerColspan." class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$sec_list[$i]."</td>";
   }
   echo "<td colspan=10 rowspan=3 class=xl9313441 width=520 style='width:390pt;background: gray;color:white;border:.5pt solid windowtext;'>Factory</td>
  </tr>
@@ -1421,9 +1492,17 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
  <tr height=21 style='height:15.75pt'>
   <td colspan=2 height=21 class=xl10113441 style='height:15.75pt;background: #1F497D;color:white;border:.5pt solid windowtext'>Section Work
   Study</td>";
+
   for($i=0;$i<sizeof($sec_array);$i++)
-  {
-  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B) / (Shift - general)</td>";
+  {	
+
+		  echo "<td colspan=".$headerColspan." class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>";
+		  //.$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B) / (Shift - general)
+		  foreach($shifts_array as $shift)
+			{
+				echo "(Shift - ".$shift['shiftValue']." )";
+			}
+		  echo "</td>";
   }
   echo "
  </tr>
@@ -1433,7 +1512,15 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
   ";
   for($i=0;$i<sizeof($sec_array);$i++)
   {
-  		echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B) / (Shift - general)</td>";
+		  // echo "<td colspan=10 class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>".$pro_res_a[$i]."(Shift - A) / ".$pro_res_b[$i]."(Shift - B) / (Shift - general)</td>";
+		  
+		  echo "<td colspan=".$headerColspan." class=xl9313441 style='border-left:none;background: gray;color:white;text-align: center;border:.5pt solid windowtext;'>";
+		  //.$ie_res_a[$i]."(Shift - A) / ".$ie_res_b[$i]."(Shift - B) / (Shift - general)
+		  foreach($shifts_array as $shift)
+			{
+				echo "(Shift - ".$shift['shiftValue']." )";
+			}
+		  echo "</td>";
   }
   echo "
  </tr>
@@ -1444,7 +1531,7 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
 	  echo   "
 	  <td rowspan=2 class=xl9913441 style='border-top:none;background: #4F6228;color:white;border:.5pt solid windowtext;'><span
 	  style='mso-spacerun:yes'> </span>PLAN SAH</td>
-	  <td colspan=4 class=xl9913441 style='border-left:none;background: #4F6228;color:white;border:.5pt solid windowtext;'>ACTUAL SAH</td>
+	  <td colspan=".$shiftColspan." class=xl9913441 style='border-left:none;background: #4F6228;color:white;border:.5pt solid windowtext;'>ACTUAL SAH</td>
 	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;border:.5pt solid windowtext;'>Actual
 	  %</td>
 	  <td rowspan=2 class=xl9613441 width=64 style='border-top:none;width:48pt;background: #4F6228;color:white;border:.5pt solid windowtext;'>EFF %</td>
@@ -1460,46 +1547,72 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
  	
   for($h=0;$h<sizeof($sec_array)+1;$h++)
   {	
-  echo "<td height=21 class=xl9913441 style='height:15.75pt;border-top:none;
-  border-left:none;    background: #4F6228;color:white;border:.5pt solid windowtext;'>A</td>
-  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>B</td>
-  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>General</td>
-  <td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>Total</td>";
+	//   echo "<td height=21 class=xl9913441 style='height:15.75pt;border-top:none;
+	//   border-left:none;    background: #4F6228;color:white;border:.5pt solid windowtext;'>A</td>";
+	//   echo "<td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>B</td>";
+	//   echo "<td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>General</td>";
+	//   echo "<td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>Total</td>";
+
+	foreach($shifts_array as $shift)
+		{
+			echo "<td height=21 class=xl9913441 style='height:15.75pt;border-top:none;border-left:none;    background: #4F6228;color:white;border:.5pt solid windowtext;'>".$shift['shiftValue']."</td>";
+		}
+			echo "<td class=xl9913441 style='border-top:none;border-left:none; background: #4F6228;color:white;border:.5pt solid windowtext;'>Total</td>";
   }
  echo "</tr>";
 
  $plan_sah=0;
- $plan_sah_a=0;
- $plan_sah_b=0;
- $plan_sah_general=0; 
+ //$plan_sah_a=0;
+ //$plan_sah_b=0;
+ //$plan_sah_general=0;
+ foreach($shifts_array as $shift)
+	{
+		$plan_sah_.$shift=0;
+		$act_sah_.$shift=0;
+	} 
  $act_sah=0;
- $act_sah_a=0;
- $act_sah_b=0;
- $act_sah_general=0;
+//  $act_sah_a=0;
+//  $act_sah_b=0;
+//  $act_sah_general=0;
  $plan_clh=0;
  $plan_sah_sec=0;
- $plan_sah_sec_a=0;
- $plan_sah_sec_general=0;
- $plan_sah_sec_b=0;
+//  $plan_sah_sec_a=0;
+//  $plan_sah_sec_general=0;
+//  $plan_sah_sec_b=0;
  $act_sah_sec=0;
- $act_sah_sec_a=0;
- $act_sah_sec_b=0;
- $act_sah_sec_general=0;
+ foreach($shifts_array as $shift)
+	{
+		$act_sah_sec_.$shift=0;
+		$plan_sah_sec_.$shift=0;
+	}
+//  $act_sah_sec_a=0;
+//  $act_sah_sec_b=0;
+//  $act_sah_sec_general=0;
  $plan_clh_sec=0;
  $plan_sah_fac=0;
- $plan_sah_fac_a=0;
- $plan_sah_fac_b=0;
- $plan_sah_fac_general=0;
+//  $plan_sah_fac_a=0;
+//  $plan_sah_fac_b=0;
+//  $plan_sah_fac_general=0;
  $act_sah_fac=0;
- $act_sah_fac_a=0;
- $act_sah_fac_b=0;
- $act_sah_fac_general=0;
+ foreach($shifts_array as $shift)
+	{
+		$act_sah_fac_.$shift=0;
+		$plan_sah_fac_.$shift=0;
+	}
+//  $act_sah_fac_a=0;
+//  $act_sah_fac_b=0;
+//  $act_sah_fac_general=0;
  $plan_clh_fac=0;
  $total_plan_sah_fac=0;
  $total_act_sah_fac=0;
- $total_act_sah_fac_a=0;
- $total_act_sah_fac_b=0;
- $total_act_sah_fac_general=0;
+ foreach($shifts_array as $shift)
+	{
+		$total_act_sah_fac_.$shift=0;
+		//$plan_sah_fac_.$shift=0;
+	}
+//  $total_act_sah_fac_a=0;
+//  $total_act_sah_fac_b=0;
+//  $total_act_sah_fac_general=0;
  $total_plan_clh_fac=0;
  $int_sah_loss=array();
  $ext_sah_loss=array();
@@ -1580,254 +1693,306 @@ while($row_ms_today=mysql_fetch_array($result_ms_today))
 $sql_dat=mysqli_query($link, "select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$dat\" and \"$dat1\" order by date");
 while($row=mysqli_fetch_array($sql_dat))
 {
-$date = $row['date']; 
-$weekday = date('l', strtotime($date));
-echo "<tr height=21 style='height:15.75pt'>
-<td height=21 class=xl10313441 style='height:15.75pt;border-top:none;background: #1F497D;color:white;border:.5pt solid windowtext;'>".$weekday."</td>
-<td class=xl10413441 style='border-top:none;border-left:none;background: #1F497D;color:white;border:.5pt solid windowtext;'>".$date."</td>";
+	$date = $row['date']; 
+	$weekday = date('l', strtotime($date));
+	echo "<tr height=21 style='height:15.75pt'>
+	<td height=21 class=xl10313441 style='height:15.75pt;border-top:none;background: #1F497D;color:white;border:.5pt solid windowtext;'>".$weekday."</td>
+	<td class=xl10413441 style='border-top:none;border-left:none;background: #1F497D;color:white;border:.5pt solid windowtext;'>".$date."</td>";
 	
-//echo implode(",",$sec_array);
-for($i=0;$i<sizeof($sec_array);$i++)
-{
-	 $sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");	 
-      while($rows=mysqli_fetch_array($sql))
-	  {
-			$plan_sah=$plan_sah+round($rows["plan"],$decimal_factor);
-			$act_sah=$act_sah+round($rows["act"],$decimal_factor);
-			$plan_clh=$plan_clh+round($rows["clh"],$decimal_factor);
-			if($rows["shift"] == "A")
-			{
-				$act_sah_a=$act_sah_a+round($rows["act"],$decimal_factor);
-				$plan_sah_a=$plan_sah_a+round($rows["plan"],$decimal_factor);
-			}
-			else if($rows["shift"] == "B")
-			{
-				$act_sah_b=$act_sah_b+round($rows["act"],$decimal_factor);
-				$plan_sah_b=$plan_sah_b+round($rows["plan"],$decimal_factor);
-			}
-			else if($rows["shift"] == "general")
-			{
-				$act_sah_general=$act_sah_general+round($rows["act"],$decimal_factor);
-				$plan_sah_general=$plan_sah_general+round($rows["plan"],$decimal_factor);
-			}
-			else
-			{
-				echo " ";
-			}
-	  }
-	  if(!in_array($sec_array[$i],$exp_sec))	  
-	  {
-		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general,$decimal_factor)."</td>";
-		  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_b,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_general,$decimal_factor)."</td>";
-		  echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a+$act_sah_b+$act_sah_general,$decimal_factor)."</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/div_by_zero($plan_sah,1))*100,1)."%</td>";
-		  echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($act_sah_a+$act_sah_b+$act_sah_general)/div_by_zero($plan_clh,1))*100,1)."%</td>";
-		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
-		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
-		  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
-	  }
-	 
-	  $sql1="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
-	  $result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-	  while($row1=mysqli_fetch_array($result1))
-	  {
-	  		 $mod_no=$row1["mod_no"];
-			 $dtime=$row1["dtime"]/60;
-			 $shift=$row1["shift"];
-			 $plan_eff_down=round($row1["plan_eff"],0);
-			 if($plan_eff_down > 0)
-			 {
-			 	$sql2="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
-				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				 while($row2=mysqli_fetch_array($result2))
-				 {
-				 	$plan_eff=$row2["plan_eff"];
-				 } 
-			 }
-			 else
-			 {
-			 	 $sql2="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
-				 $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				 while($row2=mysqli_fetch_array($result2))
-				 {
-				 	$plan_eff=$row2["plan_eff"];
-				 } 
-				 if($plan_eff ==0)
-				 {
-				 	$sql2="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
-		//echo $sql2;
-					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row2=mysqli_fetch_array($sql_result2))
-					{
-						$max_date=$sql_row2["max_date"];
-						$sql21="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
-						//echo $sql2;
-						$sql_result21=mysqli_query($link, $sql21) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row21=mysqli_fetch_array($sql_result21))
-						{
-							$plan_eff=$sql_row21["plan_eff"];
-							//echo "<td>".$plan_eff."%</td>";
-						}
-					}	
-				 }
-			 }
-			 
-			 
-			 $ext_sah_loss_total=$ext_sah_loss_total+($dtime*$plan_eff/100);
-	  }
-	  if(!in_array($sec_array[$i],$exp_sec))	
-	  {
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($ext_sah_loss_total,2)."</td>";
-	  }
-	  $total_ext_sah=$total_ext_sah+round($ext_sah_loss_total,2);	 
-	  
-	  $sql1x="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=1 and remarks=\"Open capacity\"";
-	  //echo $sql1x."<br>";
-	  $result1x=mysqli_query($link, $sql1x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-	  while($row1x=mysqli_fetch_array($result1x))
-	  {
-	  		 $mod_nox=$row1x["mod_no"];
-			 $dtimex=$row1x["dtime"]/60;
-			 $shiftx=$row1x["shift"];
-			 $plan_eff_downx=round($row1x["plan_eff"],0);
-			 if($plan_eff_downx > 0)
-			 {
-			 	$sql2x="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" and remarks=\"Open capacity\"";
-				 //echo $sql2x."<br>";
-				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				 while($row2x=mysqli_fetch_array($result2x))
-				 {
-				 	$plan_effx=$row2x["plan_eff"];
-				 } 
-			 }
-			 else
-			 {
-			 	 $sql2x="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
-				 //echo $sql2x."<br>";
-				 $result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				 while($row2x=mysqli_fetch_array($result2x))
-				 {
-				 	$plan_effx=$row2x["plan_eff"];
-				 } 
-				 if($plan_effx ==0)
-				 {
-				 	$sql2x="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
-					//echo $sql2."<br>";
-					$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row2x=mysqli_fetch_array($sql_result2x))
-					{
-						$max_datex=$sql_row2x["max_date"];
-						$sql21x="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
-						//echo $sql2;
-						$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row21x=mysqli_fetch_array($sql_result21x))
-						{
-							$plan_effx=$sql_row21x["plan_eff"];
-							//echo "<td>".$plan_eff."%</td>";
-						}
-					}	
-				 }
-			 }
-			 
-			 
-			 $ext_sah_loss_totalx=$ext_sah_loss_totalx+($dtimex*$plan_effx/100);
-			 //echo $ext_sah_loss_totalx."<br>";
-	  }
-	  
-	  //echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total,2)."</td>";
-	  $total_ext_sahx=$total_ext_sahx+round($ext_sah_loss_totalx,2);	  
-	  
-	  $sql11="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=0 order by mod_no,shift";
-	  //echo $sql11."<br>";
-	  $result11=mysqli_query($link, $sql11) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-	  while($row11=mysqli_fetch_array($result11))
-	  {
-	  	$mod_no1=$row11["mod_no"];
-		$dtime1=$row11["dtime"]/60;
-		$shift1=$row11["shift"];
-		$plan_eff1=$row11["plan_eff"];
-		if($plan_eff1 == 0)
+	//echo implode(",",$sec_array);
+	for($i=0;$i<sizeof($sec_array);$i++)
+	{
+		$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");
+		$totalPlanSAH=0;
+		$totalActSAH=0;	 
+		while($rows=mysqli_fetch_array($sql))
 		{
-			$sql21="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
-			//echo $sql21."<br>";
-			$result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row21=mysqli_fetch_array($result21))
-			{
-				$plan_eff1=$row21["plan_eff"];//echo "Mod =".$mod_no1."-".$plan_eff1;
-			} 
+				$plan_sah=$plan_sah+round($rows["plan"],$decimal_factor);
+				$act_sah=$act_sah+round($rows["act"],$decimal_factor);
+				$plan_clh=$plan_clh+round($rows["clh"],$decimal_factor);
+				if(sizeof($shifts_array)>0){
+					foreach($shifts_array as $shift)
+					{
+						$shift=$shift['shiftValue'];
+						if($rows["shift"] == $shift){
+							$act_sah_.$shift=$act_sah_.$shift.+round($rows["act"],$decimal_factor);
+							$plan_sah_.$shift=$plan_sah_.$shift.+round($rows["plan"],$decimal_factor);
+						} 
+							
+					}
+				}else
+				{
+					echo " ";
+				}
+				$totalPlanSAH=$totalPlanSAH+round($rows["plan"],$decimal_factor);
+				$totalActSAH=$totalActSAH+round($rows["act"],$decimal_factor);
+				
+				// if($rows["shift"] == "A")
+				// {
+				// 	$act_sah_a=$act_sah_a+round($rows["act"],$decimal_factor);
+				// 	$plan_sah_a=$plan_sah_a+round($rows["plan"],$decimal_factor);
+				// }
+				// else if($rows["shift"] == "B")
+				// {
+				// 	$act_sah_b=$act_sah_b+round($rows["act"],$decimal_factor);
+				// 	$plan_sah_b=$plan_sah_b+round($rows["plan"],$decimal_factor);
+				// }
+				// else if($rows["shift"] == "general")
+				// {
+				// 	$act_sah_general=$act_sah_general+round($rows["act"],$decimal_factor);
+				// 	$plan_sah_general=$plan_sah_general+round($rows["plan"],$decimal_factor);
+				// }
+				// else
+				// {
+				// 	echo " ";
+				// }
+		}
+		if(!in_array($sec_array[$i],$exp_sec))	  
+		{
+			echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($totalPlanSAH,$decimal_factor)."</td>";
+			
+			//   echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_a,$decimal_factor)."</td>";
+			//   echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_b,$decimal_factor)."</td>";
+			//   echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_general,$decimal_factor)."</td>";
+				foreach($shifts_array as $shift)
+				{	
+					$shift=$shift['shiftValue'];
+					echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_.$shift,$decimal_factor)."</td>";
+				}
+			
+			echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($totalActSAH,$decimal_factor)."</td>";
+			echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($totalActSAH)/div_by_zero($plan_sah,1))*100,1)."%</td>";
+			echo "<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round((($totalActSAH)/div_by_zero($plan_clh,1))*100,1)."%</td>";
+			//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
+			//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
+			//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 		}
 		
-	    $int_sah_loss_total=$int_sah_loss_total+($dtime1*$plan_eff1/100);
-	  }
-	  if(!in_array($sec_array[$i],$exp_sec))	
-	  {
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($int_sah_loss_total,2)."</td>";
-	  echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general-($act_sah_a+$act_sah_b+$act_sah_general)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
-	  }
-	  $total_int_sah=$total_int_sah+round($int_sah_loss_total,2);	  
-	  
-	  $plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $act_sah_general=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0; $plan_sah_general=0;
-	  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
-	  //echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
-}
+		// $sql1="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=1 and remarks!=\"Open capacity\"";
+		// $result1=mysqli_query($link, $sql1) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($row1=mysqli_fetch_array($result1))
+		// {
+		// 		$mod_no=$row1["mod_no"];
+		// 		$dtime=$row1["dtime"]/60;
+		// 		$shift=$row1["shift"];
+		// 		$plan_eff_down=round($row1["plan_eff"],0);
+		// 		if($plan_eff_down > 0)
+		// 		{
+		// 			$sql2="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
+		// 			$result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			while($row2=mysqli_fetch_array($result2))
+		// 			{
+		// 				$plan_eff=$row2["plan_eff"];
+		// 			} 
+		// 		}
+		// 		else
+		// 		{
+		// 			$sql2="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no."\" and shift=\"".$shift."\" ";
+		// 			$result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			while($row2=mysqli_fetch_array($result2))
+		// 			{
+		// 				$plan_eff=$row2["plan_eff"];
+		// 			} 
+		// 			if($plan_eff ==0)
+		// 			{
+		// 				$sql2="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+		// 	//echo $sql2;
+		// 				$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 				while($sql_row2=mysqli_fetch_array($sql_result2))
+		// 				{
+		// 					$max_date=$sql_row2["max_date"];
+		// 					$sql21="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date."\"  and mod_no=\"$mod_no\" and shift=\"$shift\"";
+		// 					//echo $sql2;
+		// 					$sql_result21=mysqli_query($link, $sql21) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 					while($sql_row21=mysqli_fetch_array($sql_result21))
+		// 					{
+		// 						$plan_eff=$sql_row21["plan_eff"];
+		// 						//echo "<td>".$plan_eff."%</td>";
+		// 					}
+		// 				}	
+		// 			}
+		// 		}
+				
+				
+		// 		$ext_sah_loss_total=$ext_sah_loss_total+($dtime*$plan_eff/100);
+		// }
+		$ext_sah_loss_total=0;
+		if(!in_array($sec_array[$i],$exp_sec))	
+		{
+		echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($ext_sah_loss_total,2)."</td>";
+		}
+		$total_ext_sah=$total_ext_sah+round($ext_sah_loss_total,2);	 
+		
+		// $sql1x="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=1 and remarks=\"Open capacity\"";
+		// //echo $sql1x."<br>";
+		// $result1x=mysqli_query($link, $sql1x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($row1x=mysqli_fetch_array($result1x))
+		// {
+		// 		$mod_nox=$row1x["mod_no"];
+		// 		$dtimex=$row1x["dtime"]/60;
+		// 		$shiftx=$row1x["shift"];
+		// 		$plan_eff_downx=round($row1x["plan_eff"],0);
+		// 		if($plan_eff_downx > 0)
+		// 		{
+		// 			$sql2x="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" and remarks=\"Open capacity\"";
+		// 			//echo $sql2x."<br>";
+		// 			$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			while($row2x=mysqli_fetch_array($result2x))
+		// 			{
+		// 				$plan_effx=$row2x["plan_eff"];
+		// 			} 
+		// 		}
+		// 		else
+		// 		{
+		// 			$sql2x="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_nox."\" and shift=\"".$shiftx."\" ";
+		// 			//echo $sql2x."<br>";
+		// 			$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 			while($row2x=mysqli_fetch_array($result2x))
+		// 			{
+		// 				$plan_effx=$row2x["plan_eff"];
+		// 			} 
+		// 			if($plan_effx ==0)
+		// 			{
+		// 				$sql2x="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$row["date"]."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+		// 				//echo $sql2."<br>";
+		// 				$sql_result2x=mysqli_query($link, $sql2x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 				while($sql_row2x=mysqli_fetch_array($sql_result2x))
+		// 				{
+		// 					$max_datex=$sql_row2x["max_date"];
+		// 					$sql21x="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_datex."\"  and mod_no=\"$mod_nox\" and shift=\"$shiftx\"";
+		// 					//echo $sql2;
+		// 					$sql_result21x=mysqli_query($link, $sql21x) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 					while($sql_row21x=mysqli_fetch_array($sql_result21x))
+		// 					{
+		// 						$plan_effx=$sql_row21x["plan_eff"];
+		// 						//echo "<td>".$plan_eff."%</td>";
+		// 					}
+		// 				}	
+		// 			}
+		// 		}
+				
+				
+		// 		$ext_sah_loss_totalx=$ext_sah_loss_totalx+($dtimex*$plan_effx/100);
+		// 		//echo $ext_sah_loss_totalx."<br>";
+		// }
+		$ext_sah_loss_totalx=0;
+		//echo "<td class=xl10813441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total,2)."</td>";
+		$total_ext_sahx=$total_ext_sahx+round($ext_sah_loss_totalx,2);	  
+		
+		// $sql11="select mod_no,dtime,shift,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and source=0 order by mod_no,shift";
+		// //echo $sql11."<br>";
+		// $result11=mysqli_query($link, $sql11) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($row11=mysqli_fetch_array($result11))
+		// {
+		// 	$mod_no1=$row11["mod_no"];
+		// 	$dtime1=$row11["dtime"]/60;
+		// 	$shift1=$row11["shift"];
+		// 	$plan_eff1=$row11["plan_eff"];
+		// 	if($plan_eff1 == 0)
+		// 	{
+		// 		$sql21="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i]."\" and date=\"".$row["date"]."\" and mod_no=\"".$mod_no1."\" and shift=\"".$shift1."\" ";
+		// 		//echo $sql21."<br>";
+		// 		$result21=mysqli_query($link, $sql21) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 		while($row21=mysqli_fetch_array($result21))
+		// 		{
+		// 			$plan_eff1=$row21["plan_eff"];//echo "Mod =".$mod_no1."-".$plan_eff1;
+		// 		} 
+		// 	}
+			
+		// 	$int_sah_loss_total=$int_sah_loss_total+($dtime1*$plan_eff1/100);
+		// }
+		$int_sah_loss_total=0;
+		if(!in_array($sec_array[$i],$exp_sec))	
+		{
+		echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($int_sah_loss_total,2)."</td>";
+		echo "<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_a+$plan_sah_b+$plan_sah_general-($act_sah_a+$act_sah_b+$act_sah_general)-$ext_sah_loss_total-$int_sah_loss_total,2)."</td>";
+		}
+		$total_int_sah=$total_int_sah+round($int_sah_loss_total,2);	  
+		
+		$plan_sah=0; $act_sah=0; $plan_clh=0; $act_sah_a=0; $act_sah_b=0; $act_sah_general=0; $int_sah_loss_total=0; $ext_sah_loss_total=0; $ext_sah_loss_totalx=0; $plan_sah_a=0; $plan_sah_b=0; $plan_sah_general=0;
+		//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
+		//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
+	}
 
- $sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
-  while($rows=mysqli_fetch_array($sql))
-  {
+	$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
+	$totalPlanSAH=0;
+	$totalActSAH=0;
+	while($rows=mysqli_fetch_array($sql))
+	{
 		$plan_sah_sec=$plan_sah_sec+round($rows["plan"],$decimal_factor);
 		$act_sah_sec=$act_sah_sec+round($rows["act"],$decimal_factor);
 		$plan_clh_sec=$plan_clh_sec+round($rows["clh"],$decimal_factor);
-		if($rows["shift"] == "A")
-		{
-			$act_sah_sec_a=$act_sah_sec_a+round($rows["act"],$decimal_factor);
-			$plan_sah_sec_a=$plan_sah_sec_a+round($rows["plan"],$decimal_factor);
-		}
-		else if($rows["shift"] == "B")
-		{
-			$act_sah_sec_b=$act_sah_sec_b+round($rows["act"],$decimal_factor);
-			$plan_sah_sec_b=$plan_sah_sec_b+round($rows["plan"],$decimal_factor);
-		}
-		else if($rows["shift"] == "general")
-		{
-			$act_sah_sec_general=$act_sah_sec_general+round($rows["act"],$decimal_factor);
-			$plan_sah_sec_general=$plan_sah_sec_general+round($rows["plan"],$decimal_factor);
-		}
-		else
+		if(sizeof($shifts_array)>0){
+			foreach($shifts_array as $shift)
+			{
+				$shift=$shift['shiftValue'];
+				if($rows["shift"] == $shift){
+					$act_sah_sec_.$shift=$act_sah_sec_.$shift.+round($rows["act"],$decimal_factor);
+					$plan_sah_sec_.$shift=$plan_sah_sec_.$shift.+round($rows["plan"],$decimal_factor);
+				} 
+					
+			}
+		}else
 		{
 			echo " ";
 		}
-  }	  
+
+		$totalPlanSAHSec=$totalPlanSAH+round($rows["plan"],$decimal_factor);
+		$totalActSAHSec=$totalActSAH+round($rows["act"],$decimal_factor);
+		// if($rows["shift"] == "A")
+		// {
+		// 	$act_sah_sec_a=$act_sah_sec_a+round($rows["act"],$decimal_factor);
+		// 	$plan_sah_sec_a=$plan_sah_sec_a+round($rows["plan"],$decimal_factor);
+		// }
+		// else if($rows["shift"] == "B")
+		// {
+		// 	$act_sah_sec_b=$act_sah_sec_b+round($rows["act"],$decimal_factor);
+		// 	$plan_sah_sec_b=$plan_sah_sec_b+round($rows["plan"],$decimal_factor);
+		// }
+		// else if($rows["shift"] == "general")
+		// {
+		// 	$act_sah_sec_general=$act_sah_sec_general+round($rows["act"],$decimal_factor);
+		// 	$plan_sah_sec_general=$plan_sah_sec_general+round($rows["plan"],$decimal_factor);
+		// }
+		// else
+		// {
+		// 	echo " ";
+		// }
+	}	  
                       
-$total_sah_first_tot= $plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general-$act_sah_sec-($total_ext_sah+$total_ext_sahx)-$total_int_sah+$total_ext_sahx; 
-if($total_sah_first_tot>0)
-{
+	$total_sah_first_tot= $totalPlanSAHSec-$act_sah_sec-($total_ext_sah+$total_ext_sahx)-$total_int_sah+$total_ext_sahx; 
+	if($total_sah_first_tot>0)
+	{
+		
+	}
+	else
+	{
+		$total_sah_first_tot=0;
+	}
+
+	$grandtotal_prod_loss=$grandtotal_prod_loss+$total_sah_first_tot;
+
+	//echo "individual sum=".$total_sah_first_tot."<br/>";
+
+	echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($totalPlanSAHSec,$decimal_factor)."</td>";
+	/*echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_a,$decimal_factor)."</td>
+	<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_b,$decimal_factor)."</td>
+	<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_general,$decimal_factor)."</td>";*/
+	foreach($shifts_array as $shift)
+		{
+			echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_.$shift,$decimal_factor)."</td>";
+		}
 	
-}
-else
-{
-	$total_sah_first_tot=0;
-}
+	echo "<td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec,$decimal_factor)."</td>
+	<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_sah_sec,1))*100,1)."%</td>
+	<td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_clh_sec,1))*100,1)."%</td>
+	<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
+	<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_int_sah,2)."</td>
+	<td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_sah_first_tot,2)."</td>";
+	$today_plan_sah_x=$plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general; 
+	$plan_sah_sec=0; $act_sah_sec_a=0; $act_sah_sec_b=0; $act_sah_sec_general=0; $act_sah_sec=0;$total_ext_sah=0;$total_ext_sahx=0;$total_int_sah=0;$plan_clh_sec=0;$plan_sah_sec_a=0;$plan_sah_sec_b=0;$plan_sah_sec_general=0;
 
-$grandtotal_prod_loss=$grandtotal_prod_loss+$total_sah_first_tot;
-
-//echo "individual sum=".$total_sah_first_tot."<br/>";
-
-  echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general,$decimal_factor)."</td>
-  <td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_a,$decimal_factor)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_b,$decimal_factor)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec_general,$decimal_factor)."</td>
-  <td class=xl10613441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_sec,$decimal_factor)."</td>
-  <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_sah_sec,1))*100,1)."%</td>
-  <td class=xl10713441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round(($act_sah_sec/div_by_zero($plan_clh_sec,1))*100,1)."%</td>
-  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_ext_sah+$total_ext_sahx,2)."</td>
-  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_int_sah,2)."</td>
-  <td class=xl10813441 style='border-top:none;border-left:none;background: #EBF1DE;border:.5pt solid windowtext;'>".round($total_sah_first_tot,2)."</td>";
-$today_plan_sah_x=$plan_sah_sec_a+$plan_sah_sec_b+$plan_sah_sec_general; 
- $plan_sah_sec=0; $act_sah_sec_a=0; $act_sah_sec_b=0; $act_sah_sec_general=0; $act_sah_sec=0;$total_ext_sah=0;$total_ext_sahx=0;$total_int_sah=0;$plan_clh_sec=0;$plan_sah_sec_a=0;$plan_sah_sec_b=0;$plan_sah_sec_general=0;
-
-echo "</tr>";	 
+	echo "</tr>";	 
 } 
 
 $eff_array=array();
@@ -1843,26 +2008,43 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
 		$plan_sah_fac=$plan_sah_fac+round($rows["plan"],$decimal_factor);
 		//echo $plan_sah_fac;
 		$act_sah_fac=$act_sah_fac+$rows["act"];
-		$plan_clh_fac=$plan_clh_fac+$rows["clh"];	
-		if($rows["shift"] == "A")
-		{
-			$act_sah_fac_a=$act_sah_fac_a+$rows["act"];
-			$plan_sah_fac_a=$plan_sah_fac_a+round($rows["plan"],$decimal_factor);
-		}
-		else if($rows["shift"] == "B")
-		{
-			$act_sah_fac_b=$act_sah_fac_b+$rows["act"];
-			$plan_sah_fac_b=$plan_sah_fac_b+round($rows["plan"],$decimal_factor);
-		}
-		else if($rows["shift"] == "general")
-		{
-			$act_sah_fac_general=$act_sah_fac_general+$rows["act"];
-			$plan_sah_fac_general=$plan_sah_fac_general+round($rows["plan"],$decimal_factor);
-		}
-		else
+		$plan_clh_fac=$plan_clh_fac+$rows["clh"];
+		if(sizeof($shifts_array)>0){
+			foreach($shifts_array as $shift)
+			{
+				$shift=$shift['shiftValue'];
+				if($rows["shift"] == $shift){
+					$act_sah_fac_.$shift=$act_sah_fac_.$shift.+round($rows["act"],$decimal_factor);
+					$plan_sah_fac_.$shift=$plan_sah_fac_.$shift.+round($rows["plan"],$decimal_factor);
+				} 
+					
+			}
+		}else
 		{
 			echo " ";
 		}
+
+		$totalPlanSAHfac=$totalPlanSAH+round($rows["plan"],$decimal_factor);
+		$totalActSAHfac=$totalActSAH+round($rows["act"],$decimal_factor);	
+		// if($rows["shift"] == "A")
+		// {
+		// 	$act_sah_fac_a=$act_sah_fac_a+$rows["act"];
+		// 	$plan_sah_fac_a=$plan_sah_fac_a+round($rows["plan"],$decimal_factor);
+		// }
+		// else if($rows["shift"] == "B")
+		// {
+		// 	$act_sah_fac_b=$act_sah_fac_b+$rows["act"];
+		// 	$plan_sah_fac_b=$plan_sah_fac_b+round($rows["plan"],$decimal_factor);
+		// }
+		// else if($rows["shift"] == "general")
+		// {
+		// 	$act_sah_fac_general=$act_sah_fac_general+$rows["act"];
+		// 	$plan_sah_fac_general=$plan_sah_fac_general+round($rows["plan"],$decimal_factor);
+		// }
+		// else
+		// {
+		// 	echo " ";
+		// }
   }
   
   
@@ -1870,69 +2052,75 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   {
   $plan[]=$plan_sah_fac;  
   $eff_array[]=round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1);
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($plan_sah_fac_a+$plan_sah_fac_b+$plan_sah_fac_general,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_a,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_b,$decimal_factor)."</td>";
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_general,$decimal_factor)."</td>";
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($totalPlanSAHfac,$decimal_factor)."</td>";
+//   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_a,$decimal_factor)."</td>";
+//   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_b,$decimal_factor)."</td>";
+//   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac_general,$decimal_factor)."</td>";
+foreach($shifts_array as $shift)
+		{
+			echo "<td class=xl10513441 style='border-top:none;border-left:none;    background: #EBF1DE;border:.5pt solid windowtext;'>".number_format($act_sah_fac_.$shift,$decimal_factor)."</td>";
+		}
   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($act_sah_fac,$decimal_factor)."</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($act_sah_fac/div_by_zero($plan_sah_fac,1))*100,1)."%</td>";
   echo "<td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($act_sah_fac/div_by_zero($plan_clh_fac,1))*100,1)."%</td>";
   }
-  $sql13="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
- // echo $sql13;
-  $result13=mysqli_query($link, $sql13) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-  while($row13=mysqli_fetch_array($result13))
-  {
-  		 $mod_no3=$row13["mod_no"];
-		 $dtime3=$row13["dtime"]/60;
-		 $shift3=$row13["shift"];
-		 $dates3=$row13["date"];
-		 $plan_eff_down1=round($row13["plan_eff"],0);
-		 if($plan_eff_down1 > 0)
-		 {
-		 	$sql23="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";
-			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			 while($row23=mysqli_fetch_array($result23))
-			 {
-			 	$plan_eff3=$row23["plan_eff"];
-			 } 
-		 }
-		 else
-		 {
-		 	 $sql23="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
-			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			 while($row23=mysqli_fetch_array($result23))
-			 {
-			 	$plan_eff3=$row23["plan_eff"];
-			 } 
-			 if($plan_eff3 ==0)
-			 {
-			 	$sql23="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
-	//echo $sql2;
-				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row23=mysqli_fetch_array($sql_result23))
-				{
-					$max_date1=$sql_row23["max_date"];
-					$sql213="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
-					//echo $sql2;
-					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row213=mysqli_fetch_array($sql_result213))
-					{
-						$plan_eff3=$sql_row213["plan_eff"];
-						//echo "<td>".$plan_eff3."%</td>";
-					}
-				}	
-			 }
-		 }
-		 /*$sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
-		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
-		 while($row23=mysql_fetch_array($result23))
-		 {
-		 	$plan_eff3=$row23["plan_eff"];
-		 } */
+  
+//   $sql13="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks!=\"Open capacity\"";
+//  // echo $sql13;
+//   $result13=mysqli_query($link, $sql13) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//   while($row13=mysqli_fetch_array($result13))
+//   {
+//   		 $mod_no3=$row13["mod_no"];
+// 		 $dtime3=$row13["dtime"]/60;
+// 		 $shift3=$row13["shift"];
+// 		 $dates3=$row13["date"];
+// 		 $plan_eff_down1=round($row13["plan_eff"],0);
+// 		 if($plan_eff_down1 > 0)
+// 		 {
+// 		 	$sql23="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";
+// 			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			 while($row23=mysqli_fetch_array($result23))
+// 			 {
+// 			 	$plan_eff3=$row23["plan_eff"];
+// 			 } 
+// 		 }
+// 		 else
+// 		 {
+// 		 	 $sql23="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	//echo $sql23."<br>";	
+// 			 $result23=mysqli_query($link, $sql23) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			 while($row23=mysqli_fetch_array($result23))
+// 			 {
+// 			 	$plan_eff3=$row23["plan_eff"];
+// 			 } 
+// 			 if($plan_eff3 ==0)
+// 			 {
+// 			 	$sql23="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+// 	//echo $sql2;
+// 				$sql_result23=mysqli_query($link, $sql23) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 				while($sql_row23=mysqli_fetch_array($sql_result23))
+// 				{
+// 					$max_date1=$sql_row23["max_date"];
+// 					$sql213="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1."\"  and mod_no=\"$mod_no3\" and shift=\"$shift3\"";
+// 					//echo $sql2;
+// 					$sql_result213=mysqli_query($link, $sql213) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 					while($sql_row213=mysqli_fetch_array($sql_result213))
+// 					{
+// 						$plan_eff3=$sql_row213["plan_eff"];
+// 						//echo "<td>".$plan_eff3."%</td>";
+// 					}
+// 				}	
+// 			 }
+// 		 }
+// 		 /*$sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
+// 		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
+// 		 while($row23=mysql_fetch_array($result23))
+// 		 {
+// 		 	$plan_eff3=$row23["plan_eff"];
+// 		 } */
 		 
-		 $ext_sah_loss_total1=$ext_sah_loss_total1+($dtime3*$plan_eff3/100);
-  }
+// 		 $ext_sah_loss_total1=$ext_sah_loss_total1+($dtime3*$plan_eff3/100);
+//   }
+  $ext_sah_loss_total1=0;
   if(!in_array($sec_array[$i2],$exp_sec))	  
   {
   echo "<td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;border:.5pt solid windowtext;'>".round($ext_sah_loss_total1,2)."</td>";
@@ -1943,91 +2131,89 @@ for($i2=0;$i2<sizeof($sec_array);$i2++)
   
   
   
- $sql13s="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks=\"Open capacity\" order by mod_no,shift";
- // echo $sql13;
-  $result13s=mysqli_query($link, $sql13s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-  while($row13s=mysqli_fetch_array($result13s))
-  {
-  		 $mod_no3s=$row13s["mod_no"];
-		 $dtime3s=$row13s["dtime"]/60;
-		 $shift3s=$row13s["shift"];
-		 $dates3s=$row13s["date"];
-		 $plan_eff_down1s=round($row13s["plan_eff"],0);
-		 if($plan_eff_down1s > 0)
-		 {
-		 	$sql23s="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and remarks=\"Open capacity\" and shift=\"".$shift3s."\" ";
-			//echo $sql23s."<br>";
-			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			 while($row23s=mysqli_fetch_array($result23s))
-			 {
-			 	$plan_eff3s=$row23s["plan_eff"];
-			 } 
-		 }
-		 else
-		 {
-		 	 $sql23s="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
-			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-			 while($row23s=mysqli_fetch_array($result23s))
-			 {
-			 	$plan_eff3s=$row23s["plan_eff"];
-			 } 
-			 if($plan_eff3s == 0)
-			 {
-			 	$sql23s="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
-				//echo $sql2;
-				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row23s=mysqli_fetch_array($sql_result23s))
-				{
-					$max_date1s=$sql_row23s["max_date"];
-					$sql213s="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
-					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row213s=mysqli_fetch_array($sql_result213s))
-					{
-						$plan_eff3s=$sql_row213s["plan_eff"];
-						//echo "<td>".$plan_eff3."%</td>";
-					}
-				}	
-			 }
-		 }
-		/* $sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
-		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
-		 while($row23=mysql_fetch_array($result23))
-		 {
-		 	$plan_eff3=$row23["plan_eff"];
-		 } */
+//  $sql13s="select mod_no,dtime,shift,date,plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=1 and remarks=\"Open capacity\" order by mod_no,shift";
+//  // echo $sql13;
+//   $result13s=mysqli_query($link, $sql13s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//   while($row13s=mysqli_fetch_array($result13s))
+//   {
+//   		 $mod_no3s=$row13s["mod_no"];
+// 		 $dtime3s=$row13s["dtime"]/60;
+// 		 $shift3s=$row13s["shift"];
+// 		 $dates3s=$row13s["date"];
+// 		 $plan_eff_down1s=round($row13s["plan_eff"],0);
+// 		 if($plan_eff_down1s > 0)
+// 		 {
+// 		 	$sql23s="select plan_eff from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and remarks=\"Open capacity\" and shift=\"".$shift3s."\" ";
+// 			//echo $sql23s."<br>";
+// 			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			 while($row23s=mysqli_fetch_array($result23s))
+// 			 {
+// 			 	$plan_eff3s=$row23s["plan_eff"];
+// 			 } 
+// 		 }
+// 		 else
+// 		 {
+// 		 	 $sql23s="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates3s."\" and mod_no=\"".$mod_no3s."\" and shift=\"".$shift3s."\" ";	//echo $sql23s."<br>";	
+// 			 $result23s=mysqli_query($link, $sql23s) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 			 while($row23s=mysqli_fetch_array($result23s))
+// 			 {
+// 			 	$plan_eff3s=$row23s["plan_eff"];
+// 			 } 
+// 			 if($plan_eff3s == 0)
+// 			 {
+// 			 	$sql23s="SELECT MAX(DATE) as max_date FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE <= \"".$dates3s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";
+// 				//echo $sql2;
+// 				$sql_result23s=mysqli_query($link, $sql23s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 				while($sql_row23s=mysqli_fetch_array($sql_result23s))
+// 				{
+// 					$max_date1s=$sql_row23s["max_date"];
+// 					$sql213s="SELECT plan_eff FROM $pts.pro_plan WHERE plant_code='$plantcode' and plan_eff > 0 AND DATE=\"".$max_date1s."\"  and mod_no=\"$mod_no3s\" and shift=\"$shift3s\"";		//echo $sql2;
+// 					$sql_result213s=mysqli_query($link, $sql213s) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 					while($sql_row213s=mysqli_fetch_array($sql_result213s))
+// 					{
+// 						$plan_eff3s=$sql_row213s["plan_eff"];
+// 						//echo "<td>".$plan_eff3."%</td>";
+// 					}
+// 				}	
+// 			 }
+// 		 }
+// 		/* $sql23="select plan_eff from $bai_pro.pro_plan where sec_no=\"".$i2."\" and date=\"".$dates3."\" and mod_no=\"".$mod_no3."\" and shift=\"".$shift3."\" ";	 //echo $sql23;	
+// 		 $result23=mysql_query($sql23,$link) or die("Error = ".mysql_error());
+// 		 while($row23=mysql_fetch_array($result23))
+// 		 {
+// 		 	$plan_eff3=$row23["plan_eff"];
+// 		 } */
 		 
-		 $ext_sah_loss_total1s=$ext_sah_loss_total1s+($dtime3s*$plan_eff3s/100);
-		 //echo $ext_sah_loss_total1s."-".$dtime3s."-".$plan_eff3s."-".$mod_no3s."-".$shift3s."-".$dates3s."<br>";
-  }
-  
+// 		 $ext_sah_loss_total1s=$ext_sah_loss_total1s+($dtime3s*$plan_eff3s/100);
+// 		 //echo $ext_sah_loss_total1s."-".$dtime3s."-".$plan_eff3s."-".$mod_no3s."-".$shift3s."-".$dates3s."<br>";
+//   }
+  $ext_sah_loss_total1s=0;
   //echo "<td class=xl9713441 style='border-top:none;border-left:none'>".round($ext_sah_loss_total1,2)."</td>";
   //$ext_sah_array[]=$ext_sah_loss_total1s;
   $total_ext_sah1s=$total_ext_sah1s+round($ext_sah_loss_total1s,2);
-  //echo "sah = ".$total_ext_sah1s;
+  //echo "sah = ".$total_ext_sah1s; 
   
-  
-  
-  
-  $sql113="select mod_no,dtime,shift,date from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=0 order by date,mod_no,shift";
-  $result113=mysqli_query($link, $sql113) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-  $plan_eff13=0;
-  while($row113=mysqli_fetch_array($result113))
-  {
-  		 $mod_no13=$row113["mod_no"];
-		 $dtime13=$row113["dtime"]/60;
-		 $shift13=$row113["shift"];
-		 $dates13=$row113["date"];
-		 $sql213="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
-		 //echo $sql213."-".$dtime13."<br>";
-		 $result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		 while($row213=mysqli_fetch_array($result213))
-		 {
-		 	$plan_eff13=$row213["plan_eff"];
-		 } 
+//   $sql113="select mod_no,dtime,shift,date from $bai_pro.down_log where section=\"".$sec_array[$i2]."\" and DATE between \"".$dat."\" and \"".$dat1."\" and source=0 order by date,mod_no,shift";
+//   $result113=mysqli_query($link, $sql113) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+//   $plan_eff13=0;
+//   while($row113=mysqli_fetch_array($result113))
+//   {
+//   		 $mod_no13=$row113["mod_no"];
+// 		 $dtime13=$row113["dtime"]/60;
+// 		 $shift13=$row113["shift"];
+// 		 $dates13=$row113["date"];
+// 		 $sql213="select plan_eff from $pts.pro_plan where plant_code='$plantcode' and sec_no=\"".$sec_array[$i2]."\" and date=\"".$dates13."\" and mod_no=\"".$mod_no13."\" and shift=\"".$shift13."\" ";
+// 		 //echo $sql213."-".$dtime13."<br>";
+// 		 $result213=mysqli_query($link, $sql213) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+// 		 while($row213=mysqli_fetch_array($result213))
+// 		 {
+// 		 	$plan_eff13=$row213["plan_eff"];
+// 		 } 
 		 
-		 $int_sah_loss_total1=$int_sah_loss_total1+($dtime13*$plan_eff13/100);
-//		 $int_sah_array[]=$int_sah_loss_total1;
-  }
+// 		 $int_sah_loss_total1=$int_sah_loss_total1+($dtime13*$plan_eff13/100);
+// //		 $int_sah_array[]=$int_sah_loss_total1;
+//   }
+  $int_sah_loss_total1=0;
   if(!in_array($sec_array[$i2],$exp_sec))		  
   {
  
@@ -2058,22 +2244,37 @@ while($rows=mysqli_fetch_array($sql))
 	$total_plan_sah_fac=$total_plan_sah_fac+round($rows["plan"],$decimal_factor);
 	$total_act_sah_fac=$total_act_sah_fac+$rows["act"];
 	$total_plan_clh_fac=$total_plan_clh_fac+$rows["clh"];
-	if($rows["shift"] == "A")
-	{
-		$total_act_sah_fac_a=$total_act_sah_fac_a+$rows["act"];
-	}
-	else if($rows["shift"] == "B")
-	{
-		$total_act_sah_fac_b=$total_act_sah_fac_b+$rows["act"];
-	}
-	else if($rows["shift"] == "general")
-	{
-		$total_act_sah_fac_general=$total_act_sah_fac_general+$rows["act"];
-	}
-	else
+	
+	if(sizeof($shifts_array)>0){
+		foreach($shifts_array as $shift)
+		{
+			$shift=$shift['shiftValue'];
+			if($rows["shift"] == $shift){
+				$total_act_sah_fac_.$shift=$total_act_sah_fac_.$shift.+round($rows["act"],$decimal_factor);
+			} 
+				
+		}
+	}else
 	{
 		echo " ";
 	}
+	
+	// if($rows["shift"] == "A")
+	// {
+	// 	$total_act_sah_fac_a=$total_act_sah_fac_a+$rows["act"];
+	// }
+	// else if($rows["shift"] == "B")
+	// {
+	// 	$total_act_sah_fac_b=$total_act_sah_fac_b+$rows["act"];
+	// }
+	// else if($rows["shift"] == "general")
+	// {
+	// 	$total_act_sah_fac_general=$total_act_sah_fac_general+$rows["act"];
+	// }
+	// else
+	// {
+	// 	echo " ";
+	// }
 } 
 
 $total_act_sah=$total_act_sah_fac;
@@ -2085,11 +2286,16 @@ $total_prod_loss=0;
 //echo "new total grand sum=".$grandtotal_prod_loss."<br/>";
 $total_prod_loss=$grandtotal_prod_loss;
 
-  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_plan_sah_fac,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_a,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_b,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_general,$decimal_factor)."</td>
-  <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac,$decimal_factor)."</td>
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_plan_sah_fac,$decimal_factor)."</td>";
+//   echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_a,$decimal_factor)."</td>
+//   <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_b,$decimal_factor)."</td>
+//   <td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_general,$decimal_factor)."</td>";
+	foreach($shifts_array as $shift)
+		{
+			$shift=$shift['shiftValue'];
+			echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac_.$shift,$decimal_factor)."</td>";
+		}
+  echo "<td class=xl9713441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".number_format($total_act_sah_fac,$decimal_factor)."</td>
   <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($total_act_sah_fac/div_by_zero($total_plan_sah_fac,1))*100,1)."%</td>
   <td class=xl9813441 style='border-top:none;border-left:none;background: #00B050;border:.5pt solid windowtext;'>".round(($total_act_sah_fac/div_by_zero($total_plan_clh_fac,1))*100,1)."%</td>
   <td class=xl9713441 style='border-top:none;border-left:none;    background: #00B050;border:.5pt solid windowtext;'>".round($total_ext_sah1+$total_ext_sah1s,2)."</td>

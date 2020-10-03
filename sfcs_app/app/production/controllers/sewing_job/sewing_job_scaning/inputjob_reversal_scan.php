@@ -26,6 +26,7 @@
 	{
 		echo "<h1 style='color:red;'>Please Wait a while !!!</h1>";
 	}
+	$username=$_SESSION['userName'];
 ?>
 <body id='main'> 
 	<div class="panel panel-primary"> 

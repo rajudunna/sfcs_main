@@ -2,30 +2,30 @@
 /**
  * Get Setions for department type 'SEWING' and plant code
  */
-function getSectionByDeptTypeSewing($plant_code){
-    global $pms;
-    global $link_new;
-    try{
-        $departmentType = DepartmentTypeEnum::SEWING;
-        $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plant_code."' and dept.plant_code='".$plant_code."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
-        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
-        if(mysqli_num_rows($sectionsQueryResult)>0){
-            $sections = [];
-            while($row = mysqli_fetch_array($sectionsQueryResult)){
-                $sectionRecord = [];
-                $sectionRecord["sectionId"] = $row['section_id'];
-                $sectionRecord["sectionCode"] = $row["section_code"];
-                $sectionRecord["sectionName"] = $row["section_name"];
-                array_push($sections, $sectionRecord);
-            }
-            return $sections;
-        } else {
-            return "Sections not found";
-        }
-    } catch(Exception $e) {
-        throw $error;
-    }
-}
+// function getSectionByDeptTypeSewing($plant_code){
+//     global $pms;
+//     global $link_new;
+//     try{
+//         $departmentType = DepartmentTypeEnum::SEWING;
+//         $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plant_code."' and dept.plant_code='".$plant_code."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+//         $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+//         if(mysqli_num_rows($sectionsQueryResult)>0){
+//             $sections = [];
+//             while($row = mysqli_fetch_array($sectionsQueryResult)){
+//                 $sectionRecord = [];
+//                 $sectionRecord["sectionId"] = $row['section_id'];
+//                 $sectionRecord["sectionCode"] = $row["section_code"];
+//                 $sectionRecord["sectionName"] = $row["section_name"];
+//                 array_push($sections, $sectionRecord);
+//             }
+//             return $sections;
+//         } else {
+//             return "Sections not found";
+//         }
+//     } catch(Exception $e) {
+//         throw $error;
+//     }
+// }
 
 /**
  * get workstations for plant code and section id

@@ -1,7 +1,8 @@
 <?php
     // $url = getFullURLLevel($_GET['r'],'config/config.php',1,'');
     include("../../config/config.php");
-    include("../../config/functions.php");
+	include("../../config/functions.php");
+	include("../../config/server_urls.php");
     require_once 'vendor/autoload.php';
     // echo __DIR__ . '\vendor\autoload.php';
     // die();
@@ -242,8 +243,12 @@ $html.='</body></html>';
 //include("../../mpdf7/mpdf.php");
 //$mpdf= new \mPDF('',array(101.6,50.8),0,'',3,0,0,0,0,0,'P');
 // echo $html;
-$mpdf->WriteHTML($html); 
-$mpdf->Output();
+$rm_labels = "$PDF_SERVER_IP/sfcs_app/common/lib/mpdf7/vendor/mpdf/mpdf/".$plant_code."_rm_labels.pdf";
+$mpdf->WriteHTML($html);
+error_reporting(E_ALL); 
+$filename='./vendor/mpdf/mpdf/'.$plant_code.'_rm_labels.pdf';
+$mpdf->Output($filename,'F');
+echo "<script>window.location.href =  '".$rm_labels."';</script>";
 
 
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'mpdf.php',1,'R'));
