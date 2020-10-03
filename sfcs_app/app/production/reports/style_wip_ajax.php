@@ -95,7 +95,7 @@ if($_GET['some'] == 'bundle_no')
 			</thead>
 			<tbody>";
 
-		$qryGetoperation="SELECT operation,goodqty,rejectedqty FROM $pts.transaction_log WHERE bundlenumber='' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
+		$qryGetoperation="SELECT operation,good_quantity,rejected_quantity FROM $pts.transaction_log WHERE bundlenumber='$bundle_number' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
 		$bcd_get_result =$link_new->query($qryGetoperation);
 		//echo $bcd_data_query.'<br/>';
 		while ($row3 = $bcd_get_result->fetch_assoc())

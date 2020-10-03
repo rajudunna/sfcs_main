@@ -115,7 +115,7 @@ if($reptype == 1) {
                     $main_result = [];
                     
                     //get style and color operations
-                    $get_details="SELECT schedule,color,mpo FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
+                    $get_details="SELECT schedule,color FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
                     $result1 = $link->query($get_details);
                     while($row1 = $result1->fetch_assoc())
                     {
