@@ -1331,7 +1331,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
 
         var fabricReturnedObject = new Object();
         fabricReturnedObject.attributeName='FABRICRETURNED';
-        fabricReturnedObject.attributeValue=$('#returned_to').val();
+        fabricReturnedObject.attributeValue=$('#fab_returned').val();
         fabricAttributes.push(fabricReturnedObject);
 
         var damagesObject = new Object();
