@@ -853,7 +853,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                             $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                         /**insert records into jobs_movement_track*/
-                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$items[1]."', 'No Module' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
+                        $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$task_id."', 'No Module' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
                         mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
                     }    
 
@@ -1614,5 +1614,24 @@ function getSectionByDeptTypeSewing($plantCode){
 function getMasterPoSequence($master_po_serial,$plant_code){
     $leading_zeros = sprintf('%010d', $master_po_serial);
     return  $plant_code ."-".$leading_zeros;
+}
+
+/**
+ * gets the rejections for the given department
+ */
+function getRejectionReasons($dept_type) {
+    global $link_new;
+    global $mdm;
+    $reasons = [];
+    $reasons_query = "SELECT reason_id, internal_reason_code, internal_reason_description from $mdm.reasons where department_type = '$dept_type' and is_active=1";
+    $reasons_result = mysqli_query($link_new, $reasons_query);
+    while($row = mysqli_fetch_array($reasons_result)) {
+        $reasons[] = array(
+            'reason_id'=>$row['reason_id'],
+            'internal_reason_code'=>$row['internal_reason_code'],
+            'internal_reason_description'=>$row['internal_reason_description'],
+        );
+    }
+    return $reasons;
 }
 ?>

@@ -48,15 +48,17 @@ if(isset($_POST['submit']))
 	
 	$sdate=$_POST['sdate'];
 
-echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
 
-$sql="select from_module,to_module,count(bundle_number) as bundle_count,created_user,date(created_at) as created_date from $pts.module_bundle_track where plant_code='$plantcode' and date(created_at) = '$sdate' group by from_module,to_module";
+
+$sql="select * from $tms.bundle_transfer_log where plant_code='$plantcode' and date(created_at) = '$sdate' order by created_at";
 // echo $sql."<br>";
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $x=0;
 if(mysqli_num_rows($result) > 0)
 {
+	echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
+	
 	while($row=mysqli_fetch_array($result))
 	{
 		$from_module=$row['from_module'];
