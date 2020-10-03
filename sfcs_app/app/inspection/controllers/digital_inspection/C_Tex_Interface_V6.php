@@ -1736,8 +1736,6 @@ table
 </div> -->
 
 
-
-
 <?php
     $plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
@@ -2959,7 +2957,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plant_code' and  tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$new_tid=mysqli_insert_id($link);  
-					$sql22="update wms.store_in set barcode_number='".$plantcode."-".$new_tid."' where plant_code='$plant_code' and  tid=".$new_tid;
+					$sql22="update wms.store_in set barcode_number='".$plant_code."-".$new_tid."' where plant_code='$plant_code' and  tid=".$new_tid;
 					mysqli_query($link, $sql22) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				  $qty_rec=$ele_t_length[$i]-$partial_rej_qty[$i];
 				  $sql1="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", qty_rec=\"".$qty_rec."\",shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_status=0,partial_appr_qty=0,roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\"$add_query where plant_code='$plant_code' and  tid=".$ele_tid[$i];
@@ -2977,7 +2975,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 	$url = getURL(getBASE($_GET['r'])['base'].'/c_tex_interface_v6.php')['url'];
 	echo "<script type='text/javascript'>";
 	echo "setTimeout('Redirect()',0);";
-	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."';";
+	echo "var url='".$url."&batch_no=".$lot_no_new."&lot_ref=".$lot_ref."&parent_id=".$main_id."&plant_code=$plant_code&username=$username';";
 	echo "function Redirect(){location.href=url;}</script>";	
 }
 ?>
