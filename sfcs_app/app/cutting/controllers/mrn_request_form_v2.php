@@ -649,8 +649,8 @@ $(document).ready(function(){
 						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
 						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
 						LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
-						LEFT JOIN $pps.`jm_product_logical_bundle` jplb ON jplb.jm_ppb_id=jcbd.jm_ppb_id
-						LEFT JOIN $pps.`jm_pplb_mo_qty` jpmq ON jpmq.jm_pplb_id=jplb.jm_pplb_id
+						LEFT JOIN $pps.`jm_product_logical_bundle` jplb ON jplb.jm_cut_bundle_detail_id=jcbd.jm_cut_bundle_detail_id
+						LEFT JOIN $pps.`jm_pplb_mo_qty` jpmq ON jpmq.jm_product_logical_bundle_id=jplb.jm_product_logical_bundle_id
 						WHERE jc.cut_number=$inp_4";
 					
 						$sql_result=mysqli_query($link, $sql) or die(exception($sql));
