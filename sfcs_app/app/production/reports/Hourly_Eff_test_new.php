@@ -695,7 +695,6 @@ td,th
 		{      
 			$hour_filter_array=explode("$", $_POST['hour_filter']);
 			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where start_time='".$hour_filter_array[0]."' and end_time='".$hour_filter_array[1]."'";
-			echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
