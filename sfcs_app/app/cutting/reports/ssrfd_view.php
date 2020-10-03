@@ -329,7 +329,7 @@ if(isset($_POST['submit']))
 		$order_qty=$row['quantity'];
 	}
 	//To get excess qty
-	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND master_po_order_qty_type='EXTRA_SHIPMENT' GROUP BY size";
+	$sql1="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND mp_qty_type='EXTRA_SHIPMENT' GROUP BY size";
 	$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($sql_result1))
 	{

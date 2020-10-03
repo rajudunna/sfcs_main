@@ -1,0 +1,16 @@
+{
+    "data":{
+        "style":"SCN14291","fgColors":["090RIE-BLUE SHADOW"],"schedules":["650846"],
+        "sizeQuantities":[
+            {"inputJobQty":30,"eligibleQty":15,"rejectedQty":0,"cumilativeReportedQty":15,"resourceId":"cuttable1","fgColor":"090RIE-BLUE SHADOW",
+                "size":"M","docketNo":["96","95","97"],"operationWiseQuantity":[{"operationCode":"100","quantity":15},{"operationCode":"130","quantity":15}]},
+            {"inputJobQty":30,"eligibleQty":13,"rejectedQty":0,"cumilativeReportedQty":17,"resourceId":"cuttable1","fgColor":"090RIE-BLUE SHADOW",
+                "size":"S","docketNo":["96","95","97"],"operationWiseQuantity":[{"operationCode":"100","quantity":17},{"operationCode":"130","quantity":17}]},
+            {"inputJobQty":30,"eligibleQty":10,"rejectedQty":0,"cumilativeReportedQty":20,"resourceId":"cuttable1","fgColor":"090RIE-BLUE SHADOW",
+                "size":"L","docketNo":["96","95","97"],"operationWiseQuantity":[{"operationCode":"100","quantity":20},{"operationCode":"130","quantity":20}]}
+        ]
+    },
+    "status":true,
+    "intlCode":16083,
+    "internalMessage":"Sewing job retrieved successfully"
+}
