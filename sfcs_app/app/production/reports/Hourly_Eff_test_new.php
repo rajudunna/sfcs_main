@@ -496,7 +496,7 @@ td,th
 				}
 				if($current_date == $date)
 				{
-					if($start_check<$current_hr)
+					if($start_check>$current_hr)
 					{
 						echo "<h2>Selected Shift still not started.</h2><br>";					
 						echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
