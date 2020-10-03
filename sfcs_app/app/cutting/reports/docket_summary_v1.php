@@ -69,43 +69,45 @@ $username=$_SESSION['userName'];
 			/**
 			 * getting task headers based on planned date from task header
 			 */
-			$headersArray=array();
-			$qrytaskHeader="SELECT task_header_id FROM $tms.task_header WHERE plant_code='$plantcode' AND resource_id IS NOT NULL AND task_type='$taskType' AND DATE(planned_date_time) BETWEEN '$sdate' AND '$edate'";
-			$qrytaskHeaderResult=mysqli_query($link_new, $qrytaskHeader) or exit("Sql Error at getting taskHeaders".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $taskHeaderNum=mysqli_num_rows($qrytaskHeaderResult);
-            if($taskHeaderNum>0){
-                while($taskHeader_row=mysqli_fetch_array($qrytaskHeaderResult))
-                {
-                    $headersArray[]=$taskHeader_row['task_header_id']; 
-                }
-			}
-			$taskHeaders = implode("','", $headersArray);
+			// $headersArray=array();
+			// $qrytaskHeader="SELECT task_header_id FROM $tms.task_header WHERE plant_code='$plantcode' AND resource_id IS NOT NULL AND task_type='$taskType' AND DATE(updated_at) BETWEEN '$sdate' AND '$edate'";
+			// $qrytaskHeaderResult=mysqli_query($link_new, $qrytaskHeader) or exit("Sql Error at getting taskHeaders".mysqli_error($GLOBALS["___mysqli_ston"]));
+            // $taskHeaderNum=mysqli_num_rows($qrytaskHeaderResult);
+            // if($taskHeaderNum>0){
+            //     while($taskHeader_row=mysqli_fetch_array($qrytaskHeaderResult))
+            //     {
+            //         $headersArray[]=$taskHeader_row['task_header_id']; 
+            //     }
+			// }
+			// $taskHeaders = implode("','", $headersArray);
 
 			/**
 			 * getting task jobs wrt  task headers
 			 */
-			$taskJObsArray=array();
-			$taskType=TaskTypeEnum::DOCKET;
-			$qrytaskJobs="SELECT task_job_reference FROM $tms.task_jobs WHERE plant_code='$plantcode' AND task_type='$taskType' AND task_header_id IN ('$taskHeaders')";
-			$qrytaskJobsResult=mysqli_query($link_new, $qrytaskJobs) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
-            $taskJobsNum=mysqli_num_rows($qrytaskJobsResult);
-            if($taskJobsNum>0){
-                while($taskJobsRow=mysqli_fetch_array($qrytaskJobsResult))
-                {
-                    $taskJObsArray[]=$taskJobsRow['task_job_reference']; 
-                }
-			}
-			$taskJobs = implode("','", $taskJObsArray);
+			// $taskJObsArray=array();
+			// $taskType=TaskTypeEnum::DOCKET;
+			// $qrytaskJobs="SELECT task_header_id FROM $tms.task_jobs WHERE plant_code='$plantcode' AND task_type='$taskType' AND task_header_id IN ('$taskHeaders')";
+			// $qrytaskJobsResult=mysqli_query($link_new, $qrytaskJobs) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
+            // $taskJobsNum=mysqli_num_rows($qrytaskJobsResult);
+            // if($taskJobsNum>0){
+            //     while($taskJobsRow=mysqli_fetch_array($qrytaskJobsResult))
+            //     {
+            //         $taskJObsArray[]=$taskJobsRow['task_header_id']; 
+            //     }
+			// }
+			// $taskJobs = implode("','", $taskJObsArray);
 
 			/**
 			 * getting dockets wrt taskjobs
 			 */
-			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time 
+			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.fg_color,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number 
 			FROM $pps.jm_docket_lines docLine 
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
+			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
 			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
 			LEFT JOIN $pps.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.jm_docket_line_id
-			WHERE docLine.plant_code='$plantcode' AND docLine.jm_docket_id IN ('$taskJobs')";
+			WHERE docLine.plant_code='$plantcode' AND DATE(docLine.created_at) BETWEEN '$sdate' AND '$edate'";
+			//echo $qrydocketLines;
 			$docketLinesResult=mysqli_query($link_new, $qrydocketLines) or exit("Sql Error at getting taskJobs".mysqli_error($GLOBALS["___mysqli_ston"]));
             $docketLinesNum=mysqli_num_rows($docketLinesResult);
 			if ($docketLinesNum > 0) {
@@ -135,23 +137,34 @@ $username=$_SESSION['userName'];
 					$fabric_saving = $taskJobsRow['fabric_saving'];
 					$act_cut_status = $taskJobsRow['lay_status'];
 					$fab_ready_time = $taskJobsRow['fab_ready_time'];
+					$fg_color = $taskJobsRow['fg_color'];
+					$pcutno = $taskJobsRow['cut_number'];
+					$po_number = $taskJobsRow['po_number'];
 					
-					/**getting style,colr attributes using taskjob id */
-					$job_detail_attributes = [];
-					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$jm_docket_id."' and plant_code='$plantCode'";
-					$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
-					while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
-						$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
+					//To get schedule,color
+					$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+					WHERE po_number='$po_number' AND mp_sub_mo_qty.plant_code='$plantcode'";
+					$qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row=mysqli_fetch_array($qry_get_sch_col_result))
+					{
+						$schedule[]=$row['schedule'];
+						$color[]=$row['color'];
 					}
-						$order_style_no = $job_detail_attributes[$sewing_job_attributes['style']];
-						$order_del_no = $job_detail_attributes[$sewing_job_attributes['schedule']];
-						$order_col_des = $job_detail_attributes[$sewing_job_attributes['color']];
-						$pcutno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+					$order_col_des=array_unique($color);
+					//To get style
+					$qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $order_col_des)."') and mp_color_detail.plant_code='$plantcode'";
+					$qry_get_style_result=mysqli_query($link_new, $qry_get_style) or exit("Sql Error at qry_get_style".mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row1=mysqli_fetch_array($qry_get_style_result))
+					{
+						$style[]=$row1['style'];
+					}    
+					$order_style_no=array_unique($style);
+					$order_del_no=array_unique($schedule);
 					
 					/**
 					 * getting print_status,fabric_status info 
 					 */
-					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantCode'";
+					$qryrequestedDockets="SELECT print_status,fabric_status,updated_user,created_at FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantcode'";
 					$requestedDocketsResult=mysqli_query($link_new, $qryrequestedDockets) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$requestedDockets=mysqli_num_rows($requestedDocketsResult);
 					if($requestedDockets>0){
@@ -167,7 +180,7 @@ $username=$_SESSION['userName'];
 					/**
 					 * getting fabric priorities 
 					 */
-					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantCode'";
+					$qryfabricPriorities="SELECT created_user,created_at,req_time,issued_time FROM $pps.fabric_prorities WHERE jm_docket_line_id='$jm_docket_line_id' AND plant_code='$plantcode'";
 					$fabricPrioritiesResult=mysqli_query($link_new, $qryfabricPriorities) or exit("Sql Error at getting requested Dockets".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$fabricPriorities=mysqli_num_rows($fabricPrioritiesResult);
 					if($fabricPriorities>0){
@@ -212,9 +225,9 @@ $username=$_SESSION['userName'];
 						$issued_time = "NULL";
 					}
 					echo "<tr style=\"color: #000000\">";
-					echo "<td>$order_style_no</td>";
-					echo "<td>$order_del_no</td>";
-					echo "<td>$order_col_des</td>";
+					echo "<td>".implode(',', $order_style_no)."</td>";
+					echo "<td>".implode(',', $order_del_no)."</td>";
+					echo "<td>".implode(',', $order_col_des)."</td>";
 					echo "<td>$category</td>";
 					echo "<td>$doc_no</td>";
 					echo "<td>" . ($material_requirement_orig + $extra) . "</td>";
@@ -238,6 +251,9 @@ $username=$_SESSION['userName'];
 					echo "<td>$docket_printed_person</td>";
 					echo "<td>$act_cut_status</td>";
 					echo "</tr>";
+					unset($schedule);
+					unset($color);
+					unset($style);
 				}
 				echo "</table></div>";
 			
