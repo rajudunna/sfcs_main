@@ -130,13 +130,13 @@ if(isset($_POST['submit']))
 
 	if(sizeof($workstations)>0){
 				/** validation for selected month plan available or not */
-			$qry_monthly_plan="SELECT monthly_pp_up_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
+			$qry_monthly_plan="SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
 			$monthly_plan_result=mysqli_query($link_new, $qry_monthly_plan) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$monthly_plan_num=mysqli_num_rows($monthly_plan_result);
 			if($monthly_plan_num>0){
 				while($monthly_plan_row=mysqli_fetch_array($monthly_plan_result))
 				{
-					$monthly_pp_up_log_id=$monthly_plan_row['monthly_pp_up_log_id'];
+					$monthly_production_plan_upload_log_id=$monthly_plan_row['monthly_production_plan_upload_log_id'];
 				}
 		?>			
 		<form method="POST" action="#" onsubmit="return check_tot()"> 
@@ -162,14 +162,14 @@ if(isset($_POST['submit']))
 			foreach($workstations as $work_id=>$work_des)
 			{
 				$mod_names[]=$work_des;
-				$getPlannedQty="SELECT pp_log_id,planned_qty AS qty FROM $pps.monthly_production_plan WHERE monthly_pp_up_log_id='$monthly_pp_up_log_id' AND planned_date='$today' AND row_name='$work_des'";
+				$getPlannedQty="SELECT monthly_production_plan_id,planned_qty AS qty FROM $pps.monthly_production_plan WHERE monthly_production_plan_upload_log_id='$monthly_production_plan_upload_log_id' AND planned_date='$today' AND row_name='$work_des'";
 				$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
 				if($getPlannedQty_num>0){
 					while($workstations_row=mysqli_fetch_array($getPlannedQty_result))
 					{
 						$frv[$work_des]=$workstations_row['qty'];
-						$frv_id[$work_des]=$workstations_row['pp_log_id'];
+						$frv_id[$work_des]=$workstations_row['monthly_production_plan_id'];
 					}
 				}
 				else 

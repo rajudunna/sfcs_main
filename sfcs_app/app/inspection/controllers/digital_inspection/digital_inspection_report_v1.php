@@ -493,7 +493,7 @@ $username = $_GET['username'];
 		  // }
 	      echo "<script>swal('Proceed to Color Contunity Report','Successfully','success')</script>";
 	      $url = getFullURLLevel($_GET['r'], 'c_tex_interface_v6.php', 0, 'N') ;
-	       echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code&username=$username'</script>";
+	       echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
 	     // echo "<script>location.href = '" . $url . "&batch_no=".urlencode($batch)."&lot_ref=".urlencode($lot)."&parent_id=$parent_id'</script>";
       }
     }	

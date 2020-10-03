@@ -79,7 +79,7 @@ if(isset($_POST['submit']))
 	$sql_docket = "SELECT DISTINCT dl.jm_docket_line_id, dl.`docket_line_number` FROM $pps.`jm_docket_lines` dl
 	LEFT JOIN $pps.`jm_docket_bundle` db ON db.`jm_docket_line_id` = dl.`jm_docket_line_id`
 	LEFT JOIN $pps.`jm_docket_logical_bundle` dlb ON dlb.`jm_docket_bundle_id` = db.`jm_docket_bundle_id`
-	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_pplb_id` = dlb.`jm_pplb_id`
+	LEFT JOIN $pps.`jm_product_logical_bundle` plb ON plb.`jm_product_logical_bundle_id` = dlb.`jm_product_logical_bundle_id`
 	WHERE plb.`feature_value` = '$schedule'";
 	$sql_result_sql_docket=mysqli_query($link,$sql_docket) or exit("Sql Error15".mysqli_error());
 	while($sql_row_docket=mysqli_fetch_array($sql_result_sql_docket))
@@ -121,8 +121,8 @@ echo "<table id=\"table1\" border=1 class='table table-bordered'>";
 echo "<tr><th>Date</th><th>Module</th><th>Section</th><th>Shift</th><th>User Style</th><th>Movex Style</th><th>Schedule</th><th>Color</th><th>Qty</th><th>SMV</th><th>NOP</th>";
 $sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM $pps.`jm_aplb` aplb
 LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON
-aplb.`jm_pplb_id` = pplb.`jm_pplb_id`
-LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+aplb.`jm_product_logical_bundle_id` = pplb.`jm_product_logical_bundle_id`
+LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_cut_bundle_detail_id` = ppb.jm_cut_bundle_detail_id
 WHERE  pplb.`feature_value` = '$schedule' GROUP BY aplb.`fg_color`, aplb.`size`,ppb.`bundle_type`";
 mysqli_query($link_new,$sql) or exit("Sql Error4".mysqli_error());
 $sql_result=mysqli_query($link_new,$sql) or exit("Sql Error6".mysqli_error());

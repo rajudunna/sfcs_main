@@ -603,7 +603,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				$z_feature=$sql_row7['z_feature'];
 
 			}
-			$sql8="select sum(quantity) as quantity from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color,size,master_po_details_id";
+			$sql8="select sum(quantity) as quantity from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' and master_po_order_qty_type='ORIGINAL_QUANTITY' group by schedule,color,size,master_po_details_id";
 			//echo "<br>2=".$sql8."<br>";
 			$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row8=mysqli_fetch_array($sql_result8))
@@ -612,7 +612,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 
 			}
-			$sql9="select sum(quantity) as quantity from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' and mp_qty_type='EXTRA_SHIPMENT' group by schedule,color,size,master_po_details_id";
+			$sql9="select sum(quantity) as quantity from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' and master_po_order_qty_type='EXTRA_SHIPMENT' group by schedule,color,size,master_po_details_id";
 			//echo "<br>2=".$sql8."<br>";
 			$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row9=mysqli_fetch_array($sql_result9))
