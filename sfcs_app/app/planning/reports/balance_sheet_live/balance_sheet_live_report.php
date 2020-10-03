@@ -387,7 +387,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                             $months_where_condition.="'".$monthyeararra['month']."',";
                         }
                         $plannedQtyQuery="SELECT SUM(planned_qty) as planned_qty FROM $pps.`monthly_production_plan` WHERE product_code='".$style_code."' AND 
-                        monthly_production_plan_upload_log_id IN (SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE month IN (".rtrim($months_where_condition, ',').") AND plant_code='".$plantcode."') 
+                        monthly_pp_up_log_id IN (SELECT monthly_pp_up_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE month IN (".rtrim($months_where_condition, ',').") AND plant_code='".$plantcode."') 
                         AND planned_date BETWEEN '".$week_array1["week_start"]."' AND '".$week_array1["week_end"]."'";
                         $sql_result2 = mysqli_query($link, $plannedQtyQuery) or exit("Sql Error in planned Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         while ($sql_row2 = mysqli_fetch_array($sql_result2)) {
@@ -415,11 +415,11 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                                 $sql_result2 = mysqli_query($link, $sql_jm_docket) or exit("Sql Error2 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                 while ($sql_row2 = mysqli_fetch_array($sql_result2)) {
                                     $sql_cg="SELECT component_group_id, ratio_id FROM $pps.lp_ratio_component_group 
-                                    JOIN $pps.jm_dockets ON lp_ratio_component_group.`ratio_wise_component_group_id`=jm_dockets.`ratio_comp_group_id`
+                                    JOIN $pps.jm_dockets ON lp_ratio_component_group.`lp_ratio_cg_id`=jm_dockets.`ratio_comp_group_id`
                                     WHERE jm_dockets.`jm_docket_id`='".$sql_row2['jm_docket_id']."'";
                                      $sql_result3 = mysqli_query($link, $sql_cg) or exit("Sql Error3 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                      while ($sql_row3 = mysqli_fetch_array($sql_result3)) {
-                                        $sql_isMainCg="SELECT is_main_comp_group FROM `lp_component_group` WHERE master_po_component_group_id = '".$sql_row3['component_group_id']."' where is_main_comp_group='1'";
+                                        $sql_isMainCg="SELECT is_main_comp_group FROM `lp_component_group` WHERE lp_cg_id = '".$sql_row3['component_group_id']."' where is_main_comp_group='1'";
                                         $sql_result4 = mysqli_query($link, $sql_isMainCg) or exit("Sql Error4 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result4)){
                                            $sql_ratio_sum="SELECT SUM(size_ratio) as ratio_qty FROM lp_ratio_size WHERE ratio_id = '".$sql_row3['ratio_id']."'";
@@ -569,7 +569,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                             $months_where_condition.="'".$monthyeararra['month']."',";
                         }
                         $plannedQtyQuery="SELECT count(row_name) as module_count FROM $pps.`monthly_production_plan` WHERE product_code='".$style_code."' AND 
-                        monthly_production_plan_upload_log_id IN (SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE month IN (".rtrim($months_where_condition, ',').") AND plant_code='".$plantcode."') 
+                        monthly_pp_up_log_id IN (SELECT monthly_pp_up_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE month IN (".rtrim($months_where_condition, ',').") AND plant_code='".$plantcode."') 
                         AND planned_date BETWEEN '".$week_array1["week_start"]."' AND '".$week_array1["week_end"]."'";
                         $sql_result2 = mysqli_query($link, $plannedQtyQuery) or exit("Sql Error in planned Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                         while ($sql_row2 = mysqli_fetch_array($sql_result2)) {
