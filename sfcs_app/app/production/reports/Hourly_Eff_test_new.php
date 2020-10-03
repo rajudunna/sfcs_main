@@ -517,7 +517,7 @@ td,th
 		$teams=explode(",",$team);
 		$team = "'".str_replace(",","','",$team)."'"; 
 		$sql_hr="select MIN(start_time*1)AS vals,MAX(end_time*1) AS vals2 from $bai_pro.pro_atten_hours where date='$date' and shift in ($team)";
-		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z52".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
 			while($sql_row_hr12=mysqli_fetch_array($sql_result_hr)) 
@@ -527,7 +527,7 @@ td,th
 
 				// Exact Start time
 				$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr12['vals']."'";
-				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error1--122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row3212=mysqli_fetch_array($sql_result3212)) 
 				{
 					$start_time_exact=$sql_row3212['val'];
@@ -588,8 +588,8 @@ td,th
 		//if current date == given date start 
 		if($current_date == $date)
 		{
-			$sql_hr="select min(start_time) as start_time from $bai_pro.pro_atten_hours where date='$date' shift ='".$shift."'";
-			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql_hr="select min(start_time) as start_time from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5--".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
 			{ 
 				$start_time=$sql_row_hr['start_time'];
