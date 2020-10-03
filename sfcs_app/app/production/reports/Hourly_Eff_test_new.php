@@ -561,7 +561,6 @@ td,th
 				die;
 		}
 	}
-	echo $start_time_exact."--".$end_time_exact."<br>";
 	$sections=explode(",", $_POST['section']);
     
 	$hoursa_shift=0;
@@ -588,10 +587,12 @@ td,th
 		//if current date == given date start 
 		if($current_date == $date)
 		{
-			$sql_hr="select min(start_time) as start_time from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
+			$sql_hr="select start_time,end_time from $bai_pro.pro_atten_hours where date='$date' and shift ='".$shift."'";
 			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5--".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
 			{ 
+				$start_time=$sql_row_hr['start_time'];
+				$end_time=$sql_row_hr['end_time'];
 				$start_time=$sql_row_hr['start_time'];
 				$sql3212="SELECT start_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$sql_row_hr['start_time']."'";
 				$sql_result3212=mysqli_query($link, $sql3212) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -599,8 +600,15 @@ td,th
 				{
 					$start_time_exact1=$sql_row3212['val'];
 				}
-				// Exact End time
-				$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$current_hr."'";
+				
+				if($current_hr<$end_time)
+				{
+					$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$current_hr."'";
+				}
+				else
+				{
+					$sql32121="SELECT end_time as val FROM $bai_pro3.tbl_plant_timings where time_value='".$end_time."'";
+				}	
 				$sql_result32121=mysqli_query($link, $sql32121) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row32121=mysqli_fetch_array($sql_result32121)) 
 				{
@@ -693,6 +701,7 @@ td,th
 		} 
 		else 
 		{      
+			$hoursa_shift=1;
 			$hour_filter_array=explode("$", $_POST['hour_filter']);
 			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where start_time='".$hour_filter_array[0]."' and end_time='".$hour_filter_array[1]."'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
