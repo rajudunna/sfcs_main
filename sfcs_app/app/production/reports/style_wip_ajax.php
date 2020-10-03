@@ -162,214 +162,159 @@ if($_GET['some'] == 'bundle_no')
 		   	$table_data .= "</tr>";		  
 			echo $table_data."</tbody></table>";
 }
-// else
-// {
-// 	//Style Wip Report Code
-// 	$counter = 0;
-// 	$style = $_GET['style'];
-// 	$schedule = $_GET['schedule'];
-// 	$color = $_GET['color'];
-// 	$size_get = $_GET['size'];
-// 	if($schedule == 'all')
-// 	{
-// 		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' GROUP BY operation_code ORDER BY operation_order*1";			
-// 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' group by schedule,color";
-// 	}
-// 	else if ($schedule == 'all' && $color != 'all')
-// 	{
-// 		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' AND color='$color' GROUP BY operation_code ORDER BY operation_order*1";
-// 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and color ='$color' group by schedule";                  
-// 	}
-// 	else if ($schedule != 'all' && $color == 'all')
-// 	{
-// 		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' GROUP BY operation_code ORDER BY operation_order*1";
-// 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' group by color";                  
-// 	}
-// 	else
-// 	{	
-// 		$get_operations= "SELECT operation_code FROM brandix_bts.tbl_style_ops_master WHERE style='$style' AND color='$color' GROUP BY operation_code ORDER BY operation_order*1";
-// 		$bcd_root_query = "SELECT * from $brandix_bts.bundle_creation_data where style='$style' and schedule ='$schedule' and color='$color'";
-// 		if($_GET['size']!='')
-// 		{
-// 		   $bcd_root_query =  $bcd_root_query.' group by size_title';  
-// 		}
-// 		else
-// 		{
-// 			$bcd_root_query =  $bcd_root_query.' limit 1';
-// 		}
-// 	}	
-// 	//echo $get_operations."<bR>";
-// 	$result1 = $link->query($get_operations);
-// 	while($row2 = $result1->fetch_assoc())
-// 	{
-// 		$operation_code1[] = $row2['operation_code'];		
-// 	}
-// 	$opertions = implode(',',$operation_code1);
+else
+{
+	//Style Wip Report Code
+	$counter = 0;
+	$style = $_GET['style'];
+	$schedule = $_GET['schedule'];
+	$color = $_GET['color'];
+	$size_get = $_GET['size'];
+	$plant_code = $_GET['plant'];
+
+
+	if($schedule == 'all')
+	{
+		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code'";			
+		$main_query = "where style='$style' AND plant_code='$plant_code' group by schedule,color";
+	}
+	else if ($schedule == 'all' && $color != 'all')
+	{
+		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND color='$color' AND plant_code='$plant_code'";
+		$main_query = "where style='$style' and color ='$color' AND plant_code='$plant_code' group by schedule";                  
+	}
+	else if ($schedule != 'all' && $color == 'all')
+	{
+		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' and schedule ='$schedule' AND plant_code='$plant_code'";
+		$main_query = "where style='$style' and schedule ='$schedule' AND plant_code='$plant_code' group by color";                  
+	}
+	else
+	{	
+		$get_subpos= "SELECT distinct sub_po as sub_po FROM $pts.transaction_log WHERE style='$style' AND color='$color' AND plant_code='$plant_code'";
+		$main_query = " where style='$style' and schedule ='$schedule' and color='$color' AND plant_code='$plant_code'";
+		if($_GET['size']!='')
+		{
+		   $main_query =  $main_query.' group by size';  
+		}
+		else
+		{
+			$main_query =  $main_query.' limit 1';
+		}
+	}
+	$result1 = $link->query($get_subpos);
+	while($row2 = $result1->fetch_assoc())
+	{
+		$subpos[] = $row2['sub_po'];		
+	}
+
+	$subpo_ids = "'" . implode( "','", $subpos) . "'";
 	
-// 	$get_ops_query = "SELECT operation_name,operation_code FROM $brandix_bts.tbl_orders_ops_ref where operation_code in ($opertions) and display_operations='yes'";
-// 	//echo $get_ops_query;
-// 	$ops_query_result=$link->query($get_ops_query);
-// 	while ($row1 = $ops_query_result->fetch_assoc())
-// 	{
-// 		$ops_get_code[$row1['operation_code']] = $row1['operation_name'];
-// 		$operation_code[]=$row1['operation_code'];
-// 	}
+	$get_fg_id="SELECT DISTINCT finished_good_id AS finished_good_id  FROM $pts.`finished_good` WHERE sub_po IN ($subpo_ids);";
+	$result2 = $link->query($get_fg_id);
+	while($row3 = $result2->fetch_assoc())
+	{
+		$finished_good_ids[] = $row3['finished_good_id'];		
+	}
 
-// 	$bcd_data_query .= " and operation_id in ($opertions)";
-// 	$col_span = count($ops_get_code);
-// 	$table_data = "<table id='excel_table' class = 'col-sm-12 table-bordered table-striped table-condensed cf'>
-// 	<thead class='cf'>
-// 	<tr>
-// 	   <th rowspan=2>S.NO</th>
-// 	   <th rowspan=2>Schedule</th>
-// 	   <th rowspan=2>Color</th>";
-// 	if($size_get != '')
-// 	{
-// 		$table_data .="<th rowspan=2>Size</th>";
-// 	}
+	$fg_ids = "'" . implode( "','", $finished_good_ids) . "'";
 
-// 	$table_data .="
-// 	   <th rowspan=2>Order Qty</th>
-// 	   <th colspan = ".($col_span*2)." style=text-align:center>Operation Reported Qty</th>
-// 	   <th colspan = $col_span style=text-align:center>Wip</th>
-// 	</tr>
-// 	<tr>";				
-// 	foreach ($operation_code as $op_code) 
-// 	{
-// 		if(strlen($ops_get_code[$op_code]) > 0){
-// 			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
-// 			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
-// 		}
-// 	}		
-// 	foreach ($operation_code as $op_code) 
-// 	{
-// 		if(strlen($ops_get_code[$op_code]) > 0)
-// 			$table_data .= "<th>$ops_get_code[$op_code]</th>";
-// 	}
-// 	$table_data .= "</tr></thead><tbody>";
-// 	if($_GET['size']!='' && ($color == 'all' || $schedule == 'all') )
-// 	{
-// 		   $bcd_root_query =  $bcd_root_query.',size_title';  
-// 	}
-// 	foreach($sizes_array as $size)
-// 	{
-// 		$sum.= $size." + ";
-// 		$asum.= "order_s_".$size." + ";
-// 	}
-// 	$asum_str = rtrim($asum,' + ');
-// 	$bcd_root_result = mysqli_query($link,$bcd_root_query);
-// 	while($row_main = mysqli_fetch_array($bcd_root_result))
-// 	{			
-// 		$style = $row_main['style'];
-// 		$schedule = $row_main['schedule'];
-// 		$color = $row_main['color'];
-// 		$size = $row_main['size_title'];
-// 		$size_code =  $row_main['size_id'];
-// 		// $cpk_main_qty = 0;
-// 		foreach ($operation_code as $key => $value) 
-//         {
-// 			$wip[$value] = 0;
-// 			$bcd_rec[$value] =0;
-// 			$bcd_rej[$value] =0;
-//         }		
-			
-// 		$bcd_data_query = "SELECT COALESCE(SUM(recevied_qty),0) as recevied,operation_id,COALESCE(sum(rejected_qty),0) as rejection from $brandix_bts.bundle_creation_data_temp where style='$style' and schedule ='$schedule' and color='$color'";
-// 		if($_GET['size'] != '')
-// 		{			  
-// 			$bcd_data_query .= " and size_title='$size' group by operation_id";
-// 			$get_size_title = "SELECT order_quantity FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
-// 			WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color' AND ch.size_title='$size' limit 1";
-// 			//echo $get_size_title."<br>";
-// 			$get_size_title_result =$link->query($get_size_title);
-// 			while ($row110 = $get_size_title_result->fetch_assoc())
-// 			{
-// 				$order_qty = $row110['order_quantity'];
-// 			}
+	$get_fg_operation="SELECT DISTINCT operation_code AS operation_code  FROM $pts.`fg_operation` WHERE finished_good_id IN ($fg_ids);";
+	$result3 = $link->query($get_fg_operation);
+	while($row4 = $result3->fetch_assoc())
+	{
+		$operation_codes[] = $row4['operation_code'];		
+	}
+	$operation_codes_no = implode(',',$operation_codes);
+	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE operation_code IN ($operation_codes_no) AND sequence=1 AND plant_code=$plant_code and is_active = 1 ORDER BY priority ASC";
+	$result4 = $link->query($operation_mapping);
+	while($row5 = $result4->fetch_assoc())
+	{
+		$operation_ids[] = $row5['operation_code'];
+		$ops_get_code[$row5['operation_code']] = $row5['operation_name'];	
+	}
+	$col_span = count($operation_ids);
+	$table_data = "<table id='excel_table' class = 'col-sm-12 table-bordered table-striped table-condensed cf'>
+	<thead class='cf'>
+	<tr>
+	   <th rowspan=2>S.NO</th>
+	   <th rowspan=2>Schedule</th>
+	   <th rowspan=2>Color</th>";
+	if($size_get != '')
+	{
+		$table_data .="<th rowspan=2>Size</th>";
+	}
 
-// 		}
-// 		else{
-		   
-// 			$bcd_data_query .= " group by operation_id";
-// 			$get_size_title = "SELECT sum(order_quantity) as order_qty FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
-// 			WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color'";
-// 			//echo $get_size_title."<br>";
-// 			$get_size_title_result =$link->query($get_size_title);
-// 			while ($row110 = $get_size_title_result->fetch_assoc())
-// 			{
-// 				$order_qty = $row110['order_qty'];
-// 			}
-// 		}
-		
-// 		$bcd_get_result =$link->query($bcd_data_query);
-// 		while ($row3 = $bcd_get_result->fetch_assoc())
-// 		{
-// 			$bcd_rec[$row3['operation_id']] = $row3['recevied'];
-// 			$bcd_rej[$row3['operation_id']] = $row3['rejection'];
-// 		}
+	$table_data .="
+	   <th rowspan=2>Order Qty</th>
+	   <th colspan = ".($col_span*2)." style=text-align:center>Operation Reported Qty</th>
+	   <th colspan = $col_span style=text-align:center>Wip</th>
+	</tr>
+	<tr>";		
+	$op_string_data='';		
+	foreach ($operation_ids as $op_code) 
+	{
+		if(strlen($ops_get_code[$op_code]) > 0){
+			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
+			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
+			$op_string_data .=",IF(sum(operation=$op_code,good_quantity,0) as 'good_'.$op_code),IF(sum(operation=$op_code,rejected_quantity,0) as 'rej_'.$op_code)";
+		}
+	}		
+	foreach ($operation_ids as $op_code) 
+	{
+		if(strlen($ops_get_code[$op_code]) > 0)
+			$table_data .= "<th>$ops_get_code[$op_code]</th>";
+	}
+	$table_data .= "</tr></thead><tbody>";
 
-// 		$counter++;
-// 		$table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
-// 		if($size_get != '')
-// 		{
-// 		   $table_data .="<td>$size</td>";
-// 		}
-// 		$table_data .="<td>$order_qty</td>";
+	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log $main_query";
+	$sql_trans_result = mysqli_query($link,$sql_trans);
+	while($row_main = mysqli_fetch_array($sql_trans_result))
+	{			
+		$style = $row_main['style'];
+		$schedule = $row_main['schedule'];
+		$color = $row_main['color'];
+		$size = $row_main['size'];
+		$barcodes = $row_main['barcodes'];
 
-// 		foreach ($operation_code as $key => $value) 
-// 		{
-// 			if(strlen($ops_get_code[$value]) > 0){
+		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
+
+		$order_qty_qry = "select sum(quantity) from $pps.barcode where barcode IN ($barcode_list) ";
+		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
+		$order_qty=0;
+
+		while($row_main_qty = mysqli_fetch_array($sql_order_qty_result))
+		{	
+			$order_qty = $row_main_qty['quantity'];
+		}
+		$counter++;
+		$table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
+		if($size_get != '')
+		{
+		   $table_data .="<td>$size</td>";
+		}
+		$table_data .="<td>$order_qty</td>";
+
+		foreach ($operation_ids as $key => $value) 
+		{
+			if(strlen($ops_get_code[$value]) > 0){
 					
-// 				   $table_data .= "<td>".$bcd_rec[$value]."</td>";
-// 				   $table_data .= "<td>".$bcd_rej[$value]."</td>";
-// 			}
-// 		} 
-// 		$ii=1;
-// 		foreach ($operation_code as $key => $value) 
-// 		{ 
-// 			if($ii==1)
-// 			{
-// 				$diff = $order_qty -($bcd_rec[$value]+$bcd_rej[$value]); 
-// 				if($diff < 0)  
-// 				{
-// 					$diff = 0;
-// 				}
-// 				$wip[$value] = $diff;
-// 			}
-// 			else
-// 			{	
-// 				$ops_seq_check = "select id,ops_sequence,operation_order from $brandix_bts.tbl_style_ops_master where style='$style' and color = '$color' and operation_code='$value'";
-// 				$result_ops_seq_check = $link->query($ops_seq_check);
-// 				while($row = $result_ops_seq_check->fetch_assoc()) 
-// 				{
-// 					$ops_seq = $row['ops_sequence'];
-// 					$seq_id = $row['id'];
-// 					$ops_order = $row['operation_order'];
-// 				}
-// 				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM brandix_bts.tbl_style_ops_master tsm 
-// 				LEFT JOIN brandix_bts.tbl_orders_ops_ref tor ON tor.operation_code=tsm.operation_code WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order' GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order) desc limit 1";
-// 				$result_post_ops_check = $link->query($post_ops_check);
-// 				$row = mysqli_fetch_array($result_post_ops_check);
-// 				$pre_op_code = $row['operation_code'];
-// 				// echo $post_ops_check."-<br>";
-// 				// echo $pre_op_code."--<br>";
-// 				$diff= $bcd_rec[$pre_op_code] - ($bcd_rec[$value]+$bcd_rej[$value]);
-
-// 				if($diff < 0)  
-// 				{
-// 					$diff = 0;
-// 				}
-// 				$wip[$value] = $diff;
-// 			}
-// 			if(strlen($ops_get_code[$value]) > 0)
-// 			$table_data .= "<td>".$wip[$value]."</td>";
-// 			$ii++;
-// 		} 
-// 		$table_data .= "</tr>";
-// 		unset($bcd_rec);
-// 		unset($bcd_rej);
-// 		unset($cpk_main_qty);
-// 	}
-// 	echo $table_data."</tbody></table>";
-// }
+				$table_data .= "<td>".$row_main['good_'.$key]."</td>";
+				$table_data .= "<td>".$row_main['rej_'.$key]."</td>";
+			}
+		} 
+		foreach ($operation_ids as $key => $value) 
+		{
+			if(strlen($ops_get_code[$value]) > 0){
+				$wip=$order_qty-($row_main['good_'.$key]+$row_main['rej_'.$key]);
+				if($wip <0){
+					$wip=0;
+				}	
+				$table_data .= "<td>".$wip."</td>";
+			}
+		} 
+		$table_data .= "</tr>";
+	}
+	echo $table_data."</tbody></table>";
+}
 
 ?>

@@ -32,163 +32,59 @@
 	$main_data = [];
 	$pre_op_code = 0;
 	//To get default Operations
-    $get_operations_workflow= "SELECT tsm.operation_code AS operation_code,tor.operation_name AS operation_name FROM $brandix_bts.default_operation_workflow tsm 
-	LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tsm.operation_code=tor.operation_code WHERE tor.display_operations='yes' 
-	GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order)";
-	$result1 = $link->query($get_operations_workflow);
-    $op_count = mysqli_num_rows($result1);
-    if($op_count>0)
-    {
-        while($row3 = $result1->fetch_assoc())
-        {
-            $operation_code[] = $row3['operation_code'];
-			$opertion_names[] = ['op_name'=>$row3['operation_name'],'op_code'=>$row3['operation_code']];
-            $ops_get_code[$row3['operation_code']] = $row3['operation_name'];
-        }
-    }
-	
-	$operation_codes_str = implode(',',$operation_code);
-    //To get operation names
-    $get_ops_query = "SELECT operation_code FROM $brandix_bts.tbl_style_ops_master where operation_code not in ($operation_codes_str) group by operation_code";
-	$ops_query_result=$link->query($get_ops_query);
-    $op_count1 = mysqli_num_rows($ops_query_result);
-    if($op_count1 >0)
-    {       
-        while ($row4 = $ops_query_result->fetch_assoc())
-        {
-            $get_operations_workflow1= "SELECT operation_name as operation_name FROM $brandix_bts.tbl_orders_ops_ref where operation_code=".$row4['operation_code']." and display_operations='yes'";
-			$result1 = $link->query($get_operations_workflow1);
-			$op_count12 = mysqli_num_rows($result1);
-			if($op_count12 >0)
-			{ 
-				while($row31 = $result1->fetch_assoc())
-				{
-					$operation_code[] = $row4['operation_code'];
-					$opertion_names[] = ['op_name'=>$row31['operation_name'],'op_code'=>$row4['operation_code']];
-					$ops_get_code[$row4['operation_code']] = $row31['operation_name'];
-				}
-			}			
-        }
-    }
-	$today=date("Y-m-d");
-	$get_style_wip_data="select style,schedule,color,size FROM $pps.open_style_wip where style<>'' and status='open' and plant_code='$plant_code' group by style,schedule,color,size";
-	//echo $get_style_wip_data."<br>";
-	$get_style_data_result =$link->query($get_style_wip_data);
-	while ($row1 = $get_style_data_result->fetch_assoc())
+	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE  sequence=1 AND plant_code=$plant_code and is_active = 1 ORDER BY priority ASC";
+	$result1 = $link->query($operation_mapping);
+	while($row5 = $result1->fetch_assoc())
 	{
-		$style = $row1['style'];
-		$schedule = $row1['schedule'];
-		$color = $row1['color'];
-		$size = $row1['size'];
-		//$operation[] = $row1['operation_code'];
-        $get_size_title = "SELECT order_quantity FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
-		WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color' AND ch.size_title='$size' limit 1";
-		//echo $get_size_title."<br>";
-        $get_size_title_result =$link->query($get_size_title);
-		while ($row110 = $get_size_title_result->fetch_assoc())
-		{
-			$order_qty = $row110['order_quantity']; 
-		}
-		//To get Order Qty
-        $get_order_qty="select co_no from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
-		//echo $get_order_qty."<br>";
-        $get_order_result =$link->query($get_order_qty);
-        while ($row5 = $get_order_result->fetch_assoc())
-        {
-			$cono = $row5['co_no'];
-        }
-		
-        foreach ($operation_code as $key => $value) 
-        {
-          $main_good_qty[$value] = 0;
-          $main_rejected_qty[$value] = 0;
-          $bcd_good_qty1[$value] = 0;
-          $bcd_rejected_qty1[$value] = 0;
-          $bcd_rec[$value] =0;
-          $bcd_rej[$value] =0;
-        }
-        $single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono,'orderqty'=>$order_qty];
-        //$operations = implode(',',$operation);	
-		
-        $get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $pps.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' and plant_code='$plant_code' group by operation_code";
-		//echo $get_qty_data."<br>";
-        $get_qty_result =$link->query($get_qty_data);
-        while ($row2 = $get_qty_result->fetch_assoc())
-        {
-            $main_good_qty[$row2['operation_code']] = $row2['good_qty'];
-            $main_rejected_qty[$row2['operation_code']] = $row2['rejected_qty'];
-        }
-        
-        $get_temp_data ="select COALESCE(SUM(recevied_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_id From $brandix_bts.bundle_creation_data_temp Where style='$style' and schedule='$schedule' and color='$color' and size_title='$size' and date(date_time) = '$today' group by operation_id";
-		//echo $get_temp_data."<br>";
-        $get_temp_data_result =$link->query($get_temp_data);
-        while ($row = $get_temp_data_result->fetch_assoc())
-        {
-            $bcd_good_qty1[$row['operation_id']] = $row['good_qty'];
-            $bcd_rejected_qty1[$row['operation_id']] = $row['rejected_qty'];
-        }
+		$op_code = $row5['operation_code']
+		$operation_ids[] = $op_code;
+		$ops_get_code[$row5['operation_code']] = $row5['operation_name'];	
+		$opertion_names[] = ['op_name'=>$row31['operation_name'],'op_code'=>$row4['operation_code']];
+		$op_string_data .=",IF(sum(operation=$op_code,good_quantity,0) as 'good_'.$op_code),IF(sum(operation=$op_code,rejected_quantity,0) as 'rej_'.$op_code)";
+	}
+	$op_count = count($operation_ids);
 
-		//To get default Operations for WIP
-		$get_operations_workflow_wip="SELECT tsm.operation_code AS operation_code,tsm.operation_order AS operation_order FROM $brandix_bts.tbl_style_ops_master tsm 
-		LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order)";
-		//echo $get_operations_workflow_wip."<bR>";
-		$result123 = $link->query($get_operations_workflow_wip);
-		$op_count1 = mysqli_num_rows($result123);
-		if($op_count1>0)
-		{
-			while($row345 = $result123->fetch_assoc())
-			{
-				$operation_code1[] = $row345['operation_code'];
-				$ops_order1[$row345['operation_code']] = $row345['operation_order'];
-			}
+	$today=date("Y-m-d"); 
+	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log  group by style, schedule, color";
+	$sql_trans_result = mysqli_query($link,$sql_trans);
+	while($row_main = mysqli_fetch_array($sql_trans_result))
+	{			
+		$style = $row_main['style'];
+		$schedule = $row_main['schedule'];
+		$color = $row_main['color'];
+		$size = $row_main['size'];
+		$barcodes = $row_main['barcodes'];
+		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
+
+		$order_qty_qry = "select sum(quantity) from $pps.barcode where barcode IN ($barcode_list) ";
+		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
+		$order_qty=0;
+
+		while($row_main_qty = mysqli_fetch_array($sql_order_qty_result))
+		{	
+			$order_qty = $row_main_qty['quantity'];
 		}
-		$i=1;		
-		foreach ($operation_code1 as $key => $value) 
-		{
-			$diff = 0;
-			$good = 0;
-			$bad = 0;
-			$pre_qty = 0;
-			$good=$main_good_qty[$value]+$bcd_good_qty1[$value];
-			$bad=$main_rejected_qty[$value]+$bcd_rejected_qty1[$value];
-			if($i == 1)
-			{
-				$diff = $order_qty -($good+$bad);
-				if($diff < 0)
-				{
-					$diff = 0;
-				}			
+
+		$single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size, 'orderqty'=>$order_qty];
+
+		foreach($operation_ids as $op_key => $op_value){
+			$wip_quantity_val=$order_qty-($row_main['good_'.$op_value]+$row_main['rej_'.$op_value]);
+			if($wip_quantity_val < 0){
+				$wip_quantity_val=0;
 			}
-			else
-			{   
-				$post_ops_check = "SELECT tsm.operation_code AS operation_code FROM $brandix_bts.tbl_style_ops_master tsm 
-				LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style='$style' AND color='$color' AND tor.display_operations='yes' AND CAST(tsm.operation_order AS CHAR) < '$ops_order1[$value]' GROUP BY tsm.operation_code ORDER BY LENGTH(tsm.operation_order) DESC limit 1";
-				$result_post_ops_check = $link->query($post_ops_check);
-				$row8 = mysqli_fetch_array($result_post_ops_check);
-				$pre_op_code = $row8['operation_code'];
-				$pre_qty = $main_good_qty[$pre_op_code]+$bcd_good_qty1[$pre_op_code];
-				$diff = $pre_qty - ($good+$bad);
-				if($diff < 0)  
-				{
-					$diff = 0;
-				}
-			}
-			if(strlen($ops_get_code[$value]) <> '')
-			{
-				$single_data['good'.$value] = $good;
-				$single_data['rej'.$value] = $bad;
-				$single_data['wip'.$value]= $diff;
-			}
-			$i++;
+			$single_data['good'.$value] = $row_main['good_'.$op_value];
+			$single_data['rej'.$value] = $row_main['rej_'.$op_value];
+			$single_data['wip'.$value]= $wip_quantity_val;
 		}
-		$i=0;
+
 		array_push($main_data,$single_data);
-		unset($operation_code1);
+	// 	unset($operation_code1);
 		unset($single_data);
-		unset($main_good_qty);
-		unset($main_rejected_qty);
-		unset($bcd_good_qty1);
-		unset($bcd_rejected_qty1);
+	// 	unset($main_good_qty);
+	// 	unset($main_rejected_qty);
+	// 	unset($bcd_good_qty1);
+	// 	unset($bcd_rejected_qty1);
+
 	}
 	$result['main_data'] = $main_data;
 	$result['operations'] = $opertion_names;
