@@ -681,7 +681,7 @@ td,th
 	{
 		if($hour_filter=='All') 
 		{ 
-			$sql="SELECT * FROM bai_pro3.tbl_plant_timings WHERE start_time>'$start_time_exact' AND end_time <= '$end_time_exact' ORDER BY start_time";
+			$sql="SELECT * FROM bai_pro3.tbl_plant_timings WHERE start_time>='$start_time_exact' AND end_time <= '$end_time_exact' ORDER BY start_time";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
