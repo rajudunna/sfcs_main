@@ -32,11 +32,31 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
     $ips_data.="<td class=\"bottom\"><strong><a href=\"javascript:void(0)\" title=\"WIP : $wip\"><font class=\"fontnn\" color=black >$workstationCode</font></a></strong></td><td>";
     
     $getJobDetails = getJobsForWorkstationIdTypeSewing($plantCode,$workstationID, $priorityLimit);
-    foreach($getJobDetails as $jobKey =>$jobRecord)
+    // foreach($getJobDetails as $jobKey =>$jobRecord)
+    $count = 0;
+    for ($i=0; $i < sizeOf($getJobDetails); $i++) 
     {
+        if($count  === (int)$priorityLimit){
+            break;
+        }
+        
+        $jobRecord = $getJobDetails[$i];
         $taskJobId = $jobRecord['taskJobId'];
         $id="yash";
         $y=0;
+
+        $qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$taskJobId' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
+        $qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
+            $input_ops_code = $row3['operation_code'];
+            $input = $row3['good_quantity'];
+            $rejection = $row3['rejected_quantity'];
+            $carton_qty=$row3["original_quantity"];
+            $balance = $carton_qty - ($input+$rejection);
+        }
+        if($balance > 0)
+        {
+            $count++;
         $sql="SELECT task_job_id as input_job_no_random_ref,trim_status FROM $tms.job_trims WHERE task_job_id='$taskJobId' and plant_code='$plantCode'";
         $result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
         while($row=mysqli_fetch_array($result))
@@ -64,16 +84,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
         $type_of_sewing = $job_detail_attributes[$sewing_job_attributes['remarks']];
         $co_no = $job_detail_attributes[$sewing_job_attributes['conumber']];
         $cut_job_no = $job_detail_attributes[$sewing_job_attributes['CUTJOBNO']];
-        $qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$taskJobId' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
-        $qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
-        while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
-            $input_ops_code = $row3['operation_code'];
-            $input = $row3['good_quantity'];
-            $rejection = $row3['rejected_quantity'];
-            $carton_qty=$row3["original_quantity"];
-            $balance = $carton_qty - ($input+$rejection);
-        }
-        if($balance > 0){
+        
             $scanning_query12="SELECT operation_name FROM `$pms`.`operation_mapping` WHERE operation_code = '$input_ops_code' AND plant_code = '$plantCode'";
             $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row123=mysqli_fetch_array($scanning_result12))
