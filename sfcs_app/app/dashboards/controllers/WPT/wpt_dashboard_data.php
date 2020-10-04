@@ -256,7 +256,7 @@ if($section){
                 $docketLineIds = [];
                 if(sizeof($uniqueDockets) > 0) {
                     // get dockets which are main component group
-                    $jmDocketLineIdsQuery = "select doclines.jm_docket_line_id from $pps.jm_docket_lines as doclines left join $pps.jm_dockets as docs on doclines.jm_docket_id = docs.jm_docket_id left join $pps.lp_ratio_component_group as ratiocompgroups on docs.ratio_comp_group_id = ratiocompgroups.ratio_wise_component_group_id left join $pps.lp_component_group as cg on ratiocompgroups.component_group_id = cg.master_po_component_group_id where doclines.docket_line_number IN ('".implode("','" , $uniqueDockets)."') and doclines.plant_code='".$plantCode."' and cg.is_main_component_group = 1";
+                    $jmDocketLineIdsQuery = "select doclines.jm_docket_line_id from $pps.jm_docket_lines as doclines left join $pps.jm_dockets as docs on doclines.jm_docket_id = docs.jm_docket_id left join $pps.lp_ratio_component_group as ratiocompgroups on docs.ratio_comp_group_id = ratiocompgroups.lp_ratio_cg_id left join $pps.lp_component_group as cg on ratiocompgroups.component_group_id = cg.lp_cg_id where doclines.docket_line_number IN ('".implode("','" , $uniqueDockets)."') and doclines.plant_code='".$plantCode."' and cg.is_main_component_group = 1";
                     $docketLineIdsResult = mysqli_query($link_new,$jmDocketLineIdsQuery) or exit('Problem in getting docket ids');
                     if(mysqli_num_rows($docketLineIdsResult)>0){
                         while($row = mysqli_fetch_array($docketLineIdsResult)){
@@ -375,7 +375,7 @@ if($section){
                                 // Get Schedules for Po Number
                                 $poNumber = $attributeData[TaskAttributeNamesEnum::PONUMBER];
                                
-                                $schedulesQuery = "SELECT GROUP_CONCAT(DISTINCT mpo.schedule) AS schedules FROM $pps.`mp_mo_qty` AS mpo LEFT JOIN $pps.`mp_sub_mo_qty` AS mspo ON mpo.`master_po_details_mo_quantity_id` = mspo.`master_po_details_mo_quantity_id` WHERE mspo.po_number = '".$poNumber."' and mspo.plant_code='".$plantCode."'";
+                                $schedulesQuery = "SELECT GROUP_CONCAT(DISTINCT mpo.schedule) AS schedules FROM $pps.`mp_mo_qty` AS mpo LEFT JOIN $pps.`mp_sub_mo_qty` AS mspo ON mpo.`mp_mo_qty_id` = mspo.`mp_mo_qty_id` WHERE mspo.po_number = '".$poNumber."' and mspo.plant_code='".$plantCode."'";
                                 $schedulesResult = mysqli_query($link_new,$schedulesQuery) or exit('Problem in getting schedules');
                                 $row = mysqli_fetch_assoc($schedulesResult);
                                 $schedules = $row['schedules'];

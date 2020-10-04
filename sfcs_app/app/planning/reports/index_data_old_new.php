@@ -165,18 +165,18 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$po_number1="'".implode("','",$po_number1)."'";
-	$po_del="select master_po_details_mo_quantity_id from $pps.mp_sub_mo_qty where po_number in($po_number1) and plant_code='$plant_code'";
+	$po_del="select mp_mo_qty_id from $pps.mp_sub_mo_qty where po_number in($po_number1) and plant_code='$plant_code'";
 	//echo $po_del."<br>";
 	$po_sql_result=mysqli_query($link, $po_del) or exit("Sql Error31 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows1=mysqli_num_rows($po_sql_result);
 	while($sql_row4=mysqli_fetch_array($po_sql_result))
 	{
-		$master_po_details_mo_quantity_id[]=$sql_row4["master_po_details_mo_quantity_id"];
+		$mp_mo_qty_id []=$sql_row4["mp_mo_qty_id "];
 		
 		
 	}
-	$master_po_details_mo_quantity_id="'".implode("','",$master_po_details_mo_quantity_id)."'";
-	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where master_po_details_mo_quantity_id in ($master_po_details_mo_quantity_id) and plant_code='$plant_code'";
+	$mp_mo_qty_id="'".implode("','",$mp_mo_qty_id)."'";
+	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where mp_mo_qty_id in ($mp_mo_qty_id) and plant_code='$plant_code'";
 	//echo $po_del_num."<br>";
 	$po_sql_result45=mysqli_query($link, $po_del_num) or exit("Sql Error32 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows45=mysqli_num_rows($po_sql_result45);
@@ -187,7 +187,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$master_po_details_id="'".implode("','",$master_po_details_id)."'";
-	$po_del1="select size,schedule,color,master_po_details_mo_quantity_id,sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and master_po_order_qty_type='ORIGINAL_QUANTITY' group by size,schedule,color ";
+	$po_del1="select size,schedule,color,mp_mo_qty_id,sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and mp_qty_type='ORIGINAL_QUANTITY' group by size,schedule,color";
 	//echo $po_del1."<br>";
 	$po_sql_result1=mysqli_query($link, $po_del1) or exit("Sql Error33 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows2=mysqli_num_rows($po_sql_result1);
@@ -197,7 +197,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		$size=$sql_row5["size"];
 		$schedule=$sql_row5["schedule"];
 		$color=$sql_row5["color"];
-		$master_po_details_mo_quantity_id2=$sql_row5["master_po_details_mo_quantity_id"];
+		$mp_mo_qty_id2=$sql_row5["mp_mo_qty_id"];
 		$quantity=$sql_row5["quantity"];
 		$master_po_details_id1=$sql_row5["master_po_details_id"];
 		$po_style="select style from $pps.mp_color_detail where plant_code='$plant_code' and master_po_details_id='$master_po_details_id1'";
@@ -461,7 +461,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			
 			$ext_qty=$total_qty-$total;	
 			
-			$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and master_po_order_qty_type='EXTRA_SHIPMENT' group by size,schedule,color ";
+			$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and mp_qty_type='EXTRA_SHIPMENT' group by size,schedule,color ";
 			$extra_ship_qty_result4=mysqli_query($link, $extra_ship_qty) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $total_rows=mysqli_num_rows($sql_result4);
 			while($sql_row000111 = mysqli_fetch_array($extra_ship_qty_result4))
