@@ -16,7 +16,7 @@ Ticket #516359.
  <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0059",$username,1,$group_id_sfcs);
 $final_rep9 = getFullURL($_GET["r"],"final_rep9.php","N");
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
@@ -52,21 +52,21 @@ function verify(){
 						<label>Select Unit:</label><br>
 						<input type="hidden" name="section" value="0"/>  
 						<select name="section" class="form-control">
-							<?php
-							 $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+						<?php
+							 $sql2="select section_id,section_name from $pms.sections order by section_id"; 
 									
-							 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+							 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							 while($sql_row2=mysqli_fetch_array($sql_result2)) 
 							 { 
-								 if($_POST['section']==$sql_row2['sec_name']) 
+								 if($_POST['section']==$sql_row2['section_id']) 
 								 { 
-									 echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name']."</option>"; 
-									 $sections_list[]=$sql_row2['sec_name'];
+									 echo "<option value=\"".$sql_row2['section_id']."\" selected>".$sql_row2['section_name']."</option>"; 
+									 $sections_list[]=$sql_row2['section_id'];
 								 } 
 								 else 
 								 { 
-									 echo "<option value=\"".$sql_row2['sec_name']."\">".$sql_row2['section_display_name']."</option>"; 
-									 $sections_list[]=$sql_row2['sec_name'];
+									 echo "<option value=\"".$sql_row2['section_id']."\">".$sql_row2['section_name']."</option>"; 
+									 $sections_list[]=$sql_row2['section_id'];
 								 } 
 							 } 
 							 if($_POST['section']==implode(",",$sections_list)) 
@@ -82,34 +82,43 @@ function verify(){
 					</div>
 					<div class="col-md-2">
 						<?php
-						$buyer_array=array("LIDL","VS","MS","LBI");
-						$buyer_names=array("LIDL","VS","M&S","LBI");
+						// $buyer_array=array("LIDL","VS","MS","LBI");
+						// $buyer_names=array("LIDL","VS","M&S","LBI");
 						?>
 						<label for="select_buyer">Select Buyer: </label><br>
 						<select name="buyer" class="form-control">
-						<option value="ALL" selected="ALL">ALL</option>
+						<option value="ALL">ALL</option>
 
 							<?php
-								$sql3="select GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
+								$sql3="select buyer_desc FROM $oms.oms_mo_details GROUP BY buyer_desc ORDER BY buyer_desc";
 								//echo $sql3;
 								mysqli_query($link, $sql3) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error31".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
 								{
-									if($sql_row3['buyer_name']==$_POST['buyer']){ 
+									if($sql_row3['buyer_desc']==$_POST['buyer']){ 
 								?>
-									<option value="<?=$sql_row3['buyer_name']?>" selected><?=$sql_row3['buyer_div']?></option>
+									<option value="<?=$sql_row3['buyer_desc']?>" selected><?=$sql_row3['buyer_desc']?></option>
+									
 								<?php
+								 $buyer_list[]=$sql_row3['buyer_desc'];
 									}
 								else {
 								?>
-									<option value="<?=$sql_row3['buyer_name']?>" ><?=$sql_row3['buyer_div']?></option>
+									<option value="<?=$sql_row3['buyer_desc']?>" ><?=$sql_row3['buyer_desc']?></option>
 								<?php
+								 $buyer_list[]=$sql_row3['buyer_desc'];
 								}
 								}
+								
+							
 								?>
 						</select> 
 					</div>
+					</div>
+					<div class="row">
+					<input type="hidden" value="<?php echo $plantcode; ?>" name="plantcode" id="plantcode"/>
+					<input type="hidden" value="<?php echo $username; ?>" name="username" id="username"/>
 					<div class='col-sm-1'>
 						<br/><input type="submit" name="submit" onclick='return verify()' value="Show" class="btn btn-primary">
 					</div>
@@ -120,21 +129,22 @@ function verify(){
 			</form>
 
 <?php
-
 if(isset($_POST['submit']))
 {
 	$dat=$_POST['dat'];
 	$edat=$_POST['edat'];
-	$section=$_POST['section'];
+	$section1=$_POST['section'];
 	$buyer=$_POST['buyer'];
-
-	$sql2="select * from $bai_pro3.sections_master WHERE sec_name in (\"".$_POST['section']."\")"; 
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$plantcode=$_POST['plantcode'];
+	$username=$_POST['username'];
+	$section = "'" . str_replace(",", "','", $section1) . "'";
+	$sql2="select * from $pms.sections WHERE section_id in ($section) and plant_code='$plantcode'"; 
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	if(mysqli_num_rows($sql_result2)==1)
 	{
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$report_heading=$sql_row2['section_display_name'];
+			$report_heading=$sql_row2['section_name'];
 		}
 	}
 	else
@@ -142,6 +152,7 @@ if(isset($_POST['submit']))
 		$report_heading="Factory";
 	}
 	$table_temp="";
+	
 	$table_temp.='<style id="Daily_Efficiency_Report_26424_Styles">
 	<!--table
 	{mso-displayed-decimal-separator:"\.";
@@ -2944,12 +2955,13 @@ if(isset($_POST['submit']))
 	$sec_temp=$_POST['section'];
 	// echo $sec_temp;
 	$sec_data=array();
-	$sec_data=explode(",",$_POST['section']);
+	$sec_data=explode(",",$section);
 	$sec_check="";
 	$date=$_POST['dat'];
 	$edate=$_POST['edat'];
 	$buyer_name=$_POST['buyer'];
-
+	$plantcode=$_POST['plantcode'];
+	$username=$_POST['username'];
 	if($edate < "2012-03-01")
 	{
 		echo "<script>alert('Error');</script>";
@@ -2959,18 +2971,18 @@ if(isset($_POST['submit']))
 	$table_name2="bai_quality_log";
 
 	//to fasten system
-	if($table_name=="$bai_log_buf")
-	{
-		$sql="truncate $bai_pro.bai_log_buf_temp";
-		mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if($table_name=="$bai_log_buf")
+	// {
+	// 	$sql="truncate $bai_pro.bai_log_buf_temp";
+	// 	mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$sql="insert into $bai_pro.bai_log_buf_temp select * from $pts.bai_log_buf where plant_code='$plantcode' and bac_date 
-			  between \"$date\" and \"$edate\"";
-			  //echo $sql;
-		mysqli_query($link, $sql) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// 	$sql="insert into $bai_pro.bai_log_buf_temp select * from $pts.bai_log_buf where plant_code='$plantcode' and bac_date 
+	// 		  between \"$date\" and \"$edate\"";
+	// 		  //echo $sql;
+	// 	mysqli_query($link, $sql) or exit("Sql Error45".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-		$table_name="$bai_pro.bai_log_buf_temp";
-	}
+	// 	$table_name="$bai_pro.bai_log_buf_temp";
+	// }
 //to fasten system
 
 
@@ -2978,14 +2990,14 @@ if(isset($_POST['submit']))
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'grand_eff_for_daily.php',0,'R'));
 //to fasten system
 
-	$sql="truncate $pts.grand_rep_temp";
-	mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// $sql="truncate $pts.grand_rep_temp";
+	// mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$sql="insert into $pts.grand_rep_temp select * from $pts.grand_rep where plant_code='$plantcode' and date between \"".$_POST['dat']."\" and \"".$_POST['edat']."\"";
+	// $sql="insert into $pts.grand_rep_temp select * from $pts.grand_rep where plant_code='$plantcode' and date between \"".$_POST['dat']."\" and \"".$_POST['edat']."\"";
 
-	mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-	$grand_rep="$pts.grand_rep_temp";
+	// $grand_rep="$pts.grand_rep_temp";
 
 //to fasten system
 	$total_nop=0;
@@ -2997,7 +3009,10 @@ if(isset($_POST['submit']))
 	{
 		$date=$_POST['dat'];
 		$edate=$_POST['edat'];
+		$plantcode=$_POST['plantcode'];
+		$username=$_POST['username'];
 		$sec=$sec_data[$u];
+
 		// echo $sec;
 		$h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21);
 		$h2=array(6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24);
@@ -3048,21 +3063,20 @@ if(isset($_POST['submit']))
 
 		if($buyer_name == "ALL")
 		{
-			$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
+			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" order by module*1";
 			//echo $sql1;
 			//echo "Hello";
 		}
 		else
 		{
-			$sql="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer like \"%".$buyer_name."%\" order by module*1";
+			$sql55="select distinct module from $pts.grand_rep where plant_code='$plantcode' and section in(".$sec.") and date between \"$date\" and \"$edate\" and buyer = '$buyer_name' order by module*1";
 			// echo $sql;
 		}
-		//echo $sql;
-		//$sql="select distinct mod_no from pro_mod where mod_sec in(".$sec.") and mod_date between \"$date\" and \"$edate\" and buyer=\"".$buyer_name."\" order by mod_no";
-		mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		//echo mysqli_num_rows($sql_result);
-		while($sql_row=mysqli_fetch_array($sql_result))
+
+	
+		mysqli_query($link, $sql55) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result11=mysqli_query($link, $sql55) or exit("Sql Error121".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row=mysqli_fetch_array($sql_result11))
 		{
 			$mod=$sql_row['module'];
 			/* GRAND REP INCLUDE */
@@ -3088,23 +3102,28 @@ if(isset($_POST['submit']))
 			$pstha_mod_total=0;
 			$psthb_mod_total=0;
 			$section_array=array();
-
-			$sqlx="select * from $bai_pro3.sections_master where sec_name in ($sec_temp)";
-			// echo $sqlx."<br>";
-			mysqli_query($link, $sqlx) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql66="select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_id='$mod'";
+			mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_resultx11=mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
+			{
+				$mod_name=$sql_rowx11['workstation_code'];
+			}
+			$sqlx="select * from $pms.sections where section_id in ($section) and plant_code='$plantcode'";
+			mysqli_query($link, $sqlx) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
-				$section_array[]=$sql_rowx['sec_name'];
+				$section_array[]=$sql_rowx['section_id'];
 			}
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select sum(act_out) as \"act_out\",ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
+				$sql2="select sum(act_out) as \"act_out\",ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"A\"";
 			}
 			else
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\"";	
 			}
               //echo $sql2;
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3124,11 +3143,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" group by date";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"A\" group by date";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date";	
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"A\" and buyer like \"%".$buyer_name."%\" group by date";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3139,11 +3158,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\",sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\",sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"B\"";
 			}
 			else
 			{
-				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
+				$sql2="select sum(act_out) as \"act_out\", ROUND(sum(act_sth),$decimal_factor) as \"act_sth\", ROUND(sum(act_clh),$decimal_factor) as \"act_clh\", ROUND(sum(plan_clh),$decimal_factor) as \"plan_clh\", ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\", sum(plan_out) as \"plan_out\"  from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\"";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3163,11 +3182,11 @@ if(isset($_POST['submit']))
 
 			if($buyer_name == "ALL")
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" group by date";
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"B\" group by date";
 			}
 			else
 			{
-				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date";	
+				$sql2="select ROUND(sum(plan_sth),$decimal_factor) as \"plan_sth\" from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\" and shift=\"B\" and buyer like \"%".$buyer_name."%\" group by date";	
 			}
 			mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -3177,7 +3196,7 @@ if(isset($_POST['submit']))
 			}
 
 			$max=0;
-			$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep where plant_code='$plantcode' and module=$mod and date between \"$date\" and \"$edate\"";
+			$sql2="select smv,nop,styles, SUBSTRING_INDEX(max_style,'^',-1) as style_no, buyer, days, act_out from $pts.grand_rep where plant_code='$plantcode' and module='$mod' and date between \"$date\" and \"$edate\"";
 			mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3205,17 +3224,25 @@ if(isset($_POST['submit']))
 				$age=$sql_row2['days'];
 			}
 
-			$sql13="select fix_nop as nop,act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and date between \"$date\" and \"$edate\" ";
+			$sql13="select nop,act_clh as hrs from $pts.grand_rep where module='$mod' and date between \"$date\" and \"$edate\" ";
 			$result13=mysqli_query($link, $sql13) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row13=mysqli_fetch_array($result13))
 			{
 				$nop=$sql_row13["nop"];
-				//$act_hrs=$sql_row13["hrs"];	
+				$act_hrs=$sql_row13["hrs"];	
 			}
 						
 			//$act_clock_hrs=$act_clock_hrs+$act_hrs*($avail_A+$avail_B-$absent_A-$absent_B));
 
-			$sql2="select avg(plan_eff) as \"plan_eff\" from $bai_pro.pro_plan where mod_no=$mod and date between \"$date\" and \"$edate\" and shift=\"A\"";
+			$query = "select workstation_description from $pms.workstation where plant_code='$plantcode' and workstation_id = '".$mod."' AND is_active=1";
+			$query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($des_row=mysqli_fetch_array($query_result))
+			{
+			  $workstation_description = $des_row['workstation_description'];
+			}		
+			//$act_clock_hrs=$act_clock_hrs+$act_hrs*($avail_A+$avail_B-$absent_A-$absent_B));
+
+			$sql2="select avg(planned_eff) as plan_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE row_name='$workstation_description' AND planned_date between \"$date\" and \"$edate\" AND plant_code='$plantcode'";
 			mysqli_query($link, $sql2) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3223,13 +3250,13 @@ if(isset($_POST['submit']))
 				$peff_a_new=$sql_row2['plan_eff'];
 			}
 
-			$sql2="select avg(plan_eff) as \"plan_eff\" from $bai_pro.pro_plan where mod_no=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
-			mysqli_query($link, $sql2) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$peff_b_new=$sql_row2['plan_eff'];
-			}
+			// $sql2="select avg(plan_eff) as \"plan_eff\" from $bai_pro.pro_plan where mod_no=$mod and date between \"$date\" and \"$edate\" and shift=\"B\"";
+			// mysqli_query($link, $sql2) or exit("Sql Error15".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error16".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row2=mysqli_fetch_array($sql_result2))
+			// {
+			// 	$peff_b_new=$sql_row2['plan_eff'];
+			// }
 
 
 			$chk_date=$edate;
@@ -3243,20 +3270,19 @@ if(isset($_POST['submit']))
 				//echo $sql22."<br>";
 				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rows=mysqli_num_rows($sql_result22);
-				if($rows == 0)
-				{
-					//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
-					$sql2="SELECT MAX(bac_date) as max_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
-					// echo $sql2."<br>";
-					$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($sql_row2=mysqli_fetch_array($sql_result2))
-					{
-						$chk_date=$sql_row2["max_date"];
-					}
-				}
-			
-				$sql21="select * from $pts.bai_log_buf where plant_code='$plantcode' and bac_style=\"".$styledb_no."\" and bac_no=\"".$mod."\" and bac_date=\"$chk_date\"";
-				// echo $sql21."<br>";
+				// if($rows == 0)
+				// {
+				// 	//$chk_date=date("Y-m-d",strtotime("-2 day",strtotime($chk_date)));	
+				// 	$sql2="SELECT MAX(bac_date) as max_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_qty > 0 AND bac_date <= \"".$chk_date."\"";
+				// 	// echo $sql2."<br>";
+				// 	$sql_result2=mysqli_query($link, $sql2) or die("Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// 	while($sql_row2=mysqli_fetch_array($sql_result2))
+				// 	{
+				// 		$chk_date=$sql_row2["max_date"];
+				// 	}
+				// }
+				$sql21="select * from $pts.grand_rep where plant_code='$plantcode' and styles=\"".$styledb_no."\" and module=\"".$mod."\" and DATE=\"$chk_date\"";
+				//echo $sql21."<br>";
 				mysqli_query($link, $sql21) or exit("Sql Error17".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error18".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$rowsx=mysqli_num_rows($sql_result21);
@@ -3273,7 +3299,7 @@ if(isset($_POST['submit']))
 				$grand_total_nop=$grand_total_nop+$nop;
 				$table_temp="<tr height=21 style='mso-height-source:userset;height:15.75pt'>
 				<td height=21 class=xl8326424 style='height:15.75pt'>
-				<a href='".$final_rep9."&module=".$mod."&date=".$date."'>$mod</a>
+				<a href='".$final_rep9."&module=".$mod."&date=".$date."&plantcode=".$plantcode."&username=".$username."'>$mod_name</a>
 				</td>
 				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$buyerdb</td>
 				<td class=xl8426424 style='width:100px;word-wrap:break-word;'>$styledb</td>
@@ -3296,7 +3322,7 @@ if(isset($_POST['submit']))
 				{
 					$date_range[]=$sql_row2['date'];
 				}
-				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlA="select sum(present+jumper) as \"avail_A\",sum(absent) as \"absent_A\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"A\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultA=mysqli_query($link, $sqlA) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowA=mysqli_fetch_array($sql_resultA))
 				{
@@ -3310,7 +3336,7 @@ if(isset($_POST['submit']))
 					$absent_A=$absent_A+$sql_rowA['absent_A'];
 					$absent_A_fix=$sql_rowA['absent_A'];
 				}
-				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module=$mod and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
+				$sqlB="select sum(present+jumper) as \"avail_B\",sum(absent) as \"absent_B\" from $pts.pro_attendance where plant_code='$plantcode' and module='$mod' and shift=\"B\" and  date in (\"".implode('","',$date_range)."\")";
 				$sql_resultB=mysqli_query($link, $sqlB) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowB=mysqli_fetch_array($sql_resultB))
 				{
@@ -3327,7 +3353,7 @@ if(isset($_POST['submit']))
 				}
 
 
-				$sql132="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"A\" and date between \"$date\" and \"$edate\" ";
+				$sql132="select act_clh as hrs from $pts.grand_rep where module='$mod' and shift=\"A\" and date between \"$date\" and \"$edate\" ";
 				//echo $sql132."<br>";
 				$result132=mysqli_query($link, $sql132) or exit("Sql Error145".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row132=mysqli_fetch_array($result132))
@@ -3336,7 +3362,7 @@ if(isset($_POST['submit']))
 					//echo $act_hrsa."-".($sql_row2['avail_A']-$sql_row2['absent_A'])."<br>";	
 				}
 
-				$sql133="select act_hours as hrs from $bai_pro.pro_plan where mod_no=$mod and shift=\"B\" and date between \"$date\" and \"$edate\" ";
+				$sql133="select act_clh as hrs from $pts.grand_rep where module='$mod' and shift=\"B\" and date between \"$date\" and \"$edate\" ";
 				//echo $sql133."<br>";
 				$result133=mysqli_query($link, $sql133) or exit("Sql Error146".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row133=mysqli_fetch_array($result133))
@@ -3361,7 +3387,7 @@ if(isset($_POST['submit']))
 					$table.=$table_temp;
 				}
 
-				$sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module=$mod and date between \"$date\" and \"$edate\"";
+				$sql2="select avg(rew_A) as \"rew_A\", avg(rew_B) as \"rew_B\", sum(auf_A) as \"auf_A\", sum(auf_B) as \"auf_B\" from $bai_pro.pro_quality where module='$mod' and date between \"$date\" and \"$edate\"";
 				mysqli_query($link, $sql2) or exit("Sql Error147".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error20".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -3406,15 +3432,15 @@ if(isset($_POST['submit']))
 				$remarks_a="";
 				$remarks_b="";
 
-				$sql2="select sum(dtime) as \"offstha\", remarks from $bai_pro.down_log where shift=\"A\" and date between \"$date\" and \"$edate\" and mod_no=$mod and remarks!=\"".strtolower("Open capacity")."\"";
-				mysqli_query($link, $sql2) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql2="select sum(dtime) as \"offstha\", remarks from $bai_pro.down_log where shift=\"A\" and date between \"$date\" and \"$edate\" and mod_no=$mod and remarks!=\"".strtolower("Open capacity")."\"";
+				// mysqli_query($link, $sql2) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-				while($sql_row2=mysqli_fetch_array($sql_result2))
-				{
-					$offstha=$sql_row2['offstha'];
-					$remarks_a=$sql_row2['remarks'];
-				}
+				// while($sql_row2=mysqli_fetch_array($sql_result2))
+				// {
+				// 	$offstha=$sql_row2['offstha'];
+				// 	$remarks_a=$sql_row2['remarks'];
+				// }
 
 				if($offstha==NULL)
 				{
@@ -3422,15 +3448,15 @@ if(isset($_POST['submit']))
 				}
 				$offstha_sum=$offstha_sum+$offstha;
 
-				$sql2="select sum(dtime) as \"offsthb\",remarks from $bai_pro.down_log where shift=\"B\" and date between \"$date\" and \"$edate\" and mod_no=$mod and remarks!=\"".strtolower("Open capacity")."\"";
-				mysqli_query($link, $sql2) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql2="select sum(dtime) as \"offsthb\",remarks from $bai_pro.down_log where shift=\"B\" and date between \"$date\" and \"$edate\" and mod_no=$mod and remarks!=\"".strtolower("Open capacity")."\"";
+				// mysqli_query($link, $sql2) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error24".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-				while($sql_row2=mysqli_fetch_array($sql_result2))
-				{
-					$offsthb=$sql_row2['offsthb'];
-					$remarks_b=$sql_row2['remarks'];
-				}
+				// while($sql_row2=mysqli_fetch_array($sql_result2))
+				// {
+				// 	$offsthb=$sql_row2['offsthb'];
+				// 	$remarks_b=$sql_row2['remarks'];
+				// }
 
 				if($offsthb==NULL)
 				{
@@ -3737,12 +3763,12 @@ if(isset($_POST['submit']))
 
 			$total=$atotal+$btotal;
 
-			$sql2="select * from $bai_pro3.sections_master where sec_name in ($sec)";
+			$sql2="select * from $pms.sections where section_id in ($sec) and plant_code='$plantcode'";
 			mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
-				$head_name=$sql_row2['section_display_name'];
+				$head_name=$sql_row2['section_name'];
 			}
 
 			$table_temp="<tr height=22 style='mso-height-source:userset;height:16.5pt;'>";
