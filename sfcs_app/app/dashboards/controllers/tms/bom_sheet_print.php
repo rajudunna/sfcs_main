@@ -76,7 +76,7 @@ if(count($colors)>0){
         {
            $jm_jg_header_id=$header_row['jm_jg_header_id'];
         }    
-        $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
+        $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
         $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
         $colorrows = mysqli_num_rows($sql_result);
         while($row=mysqli_fetch_array($sql_result))
@@ -138,7 +138,7 @@ if(count($colors)>0){
             {
                 $jm_jg_header_id=$header_row['jm_jg_header_id'];
             }    
-            $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size,jm_job_bundles.fg_color as fg_color FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
+            $sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size,jm_job_bundles.fg_color as fg_color FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND jm_job_bundles.plant_code='$plant_code' group by size";
             $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
             //echo mysqli_num_rows($sql_result)."<br>";
             if(mysqli_num_rows($sql_result) > 0){

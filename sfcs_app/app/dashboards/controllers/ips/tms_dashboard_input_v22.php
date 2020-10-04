@@ -1,7 +1,13 @@
 <?php
-
-     
-    $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_job.php');
+    //==================== IPS Dashboard ========================
+    /* ==========================================================
+                      Created By: Chandu
+    Input & output: get section details and send ajax call to server and display it in sections div
+    Created at: 19-09-2018
+    Updated at: 21-09-2018 
+    ============================================================ */
+    
+    $ui_url1 ='?r='.base64_encode('/sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php');
     $v_r = explode('/',base64_decode($_GET['r']));
     array_pop($v_r);
     $url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/ips_dashboard.php";
@@ -137,7 +143,7 @@ function ajax_calls(value,sec_name,sync_type){
 
 
 function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation_code,sidemenu,plantcode,username){
-  url = '<?= $ui_url1 ?>'+'&dashboard_reporting=1&job_type=<?= $departmentType ?>e&style='+style+'&schedule='+schedule+'&plant_code='+plantcode+'&username='+username+'&module='+module+'&job_no='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift='+$('#shift').val();
+  url = '<?= $ui_url1 ?>'+'&style='+style+'&schedule='+schedule+'&plant_code='+plantcode+'&username='+username+'&module='+module+'&input_job_no_random_ref='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift=';
   PopupCenter(url, 'myPop1',800,600);
 }
 function PopupCenter(pageURL, title,w,h) {

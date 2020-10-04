@@ -10,6 +10,10 @@
 		include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 		$url = getFullURLLevel($_GET['r'],'style_wip.php',0,'R');
 		$url1 = getFullURLLevel($_GET['r'],'style_wip_ajax.php',0,'R');
+		$plantCode = $_SESSION['plantCode'];
+		$url = $url.'?plant='.$plantCode;
+		$url1 = $url1.'?plant='.$plantCode;
+
 		
 	?>
 	<link rel="stylesheet" type="text/css" href="../common/css/boot_css/bootstrap.css">
@@ -111,7 +115,7 @@
         var style = $(this).val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style,
+			url: '<?= $url ?>&style='+style,
 			dataType: "json",
 			success: function (response) {	
                 $('select[name="schedule"]').append('<option value=all>ALL</option>'); 
@@ -139,7 +143,7 @@
         var style = $('#style').val();
 	    $.ajax({
 			type: "POST",
-			url: '<?= $url ?>?style='+style+'&schedule='+schedule,
+			url: '<?= $url ?>&style='+style+'&schedule='+schedule,
 			dataType: "json",
 			success: function (response) {		
 				 $('select[name="color"]').append('<option value=all>ALL</option>'); 
@@ -180,7 +184,7 @@
           }
 	      $.ajax({
 				type: "GET",
-				url: '<?= $url1 ?>?style='+style +'&schedule='+schedule +'&color='+color +'&size='+size,
+				url: '<?= $url1 ?>&style='+style +'&schedule='+schedule +'&color='+color +'&size='+size,
 				success: function(response) 
 				{
 					$('#dynamic_table1').show();

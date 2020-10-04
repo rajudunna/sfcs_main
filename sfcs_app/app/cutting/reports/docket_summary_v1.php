@@ -194,7 +194,7 @@ $username=$_SESSION['userName'];
 					}
 
 					// get the rm sku, fabric catrgory
-					$fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where lp_cg_id = '$cg_id' ";
+					$fabric_info_query = "SELECT fabric_category, material_item_code FROM $pps.lp_component_group where master_po_component_group_id = '$cg_id' ";
 					$fabric_info_result=mysqli_query($link_new, $fabric_info_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row = mysqli_fetch_array($fabric_info_result))
 					{
