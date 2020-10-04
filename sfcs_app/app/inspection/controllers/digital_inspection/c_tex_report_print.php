@@ -21,7 +21,8 @@ include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
- ?>
+
+?>
 
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"

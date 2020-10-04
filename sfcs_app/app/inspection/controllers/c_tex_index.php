@@ -112,7 +112,7 @@ if(isset($_POST['put']))
 
 		echo "<script type='text/javascript'>";
 		echo "setTimeout('Redirect()',0);";
-		echo "var url='".$url."&batch_no=".urlencode($lot_no)."&lot_ref=".urlencode($lot_ref)."';";
+		echo "var url='".$url."&batch_no=".urlencode($lot_no)."&lot_ref=".urlencode($lot_ref)."&plant_code=$plant_code&username=$username';";
 		echo "function Redirect(){location.href=url;}</script>";
 
 	}
@@ -164,7 +164,7 @@ if(isset($_POST['submit1']))
 
 			echo "<script type='text/javascript'>";
 			echo "setTimeout('Redirect()',0);";
-			echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."';";
+			echo "var url='".$url."&batch_no=".urlencode($batch_no)."&lot_ref=".urlencode($lot_no1)."&plant_code=$plant_code&username=$username';";
 
 			echo "function Redirect(){location.href=url;}</script>";
 		}
