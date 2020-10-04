@@ -1793,15 +1793,15 @@ function printpr()
   <td class=xl914118>Cut No :</td>
   <td colspan=2 class=xl1214118>
   N/A
-  <!---<?php 
-  // if($remarks=="Normal") { 
-	// echo chr($color_code).leading_zeros($cutno, 3); 
-  // }elseif(strtolower($remarks)=="recut"){ 
-	// echo "R".leading_zeros($cutno, 3);
-  // }elseif($remarks=="Pilot"){ 
-	// echo "Pilot";
-  // }
-  ?>--->
+ <?php 
+ $query1="select customer_order_no from $oms.oms_mo_details where plant_code='$plant_code' and schedule in(\"".implode('","',$schedule)."\") group by customer_order_no";
+ $sql_result = mysqli_query($link_new,$query1);
+ while($sql_row=mysqli_fetch_array($sql_result))
+ {
+	$customer_order_no[] = $sql_row['customer_order_no'];
+ } 
+ $cono=implode('","',$customer_order_no);
+  ?>
   </td>
   <td class=xl924118>Date:</td>
   <td class=xl944118><?php echo $created_at; ?></td>
@@ -1846,7 +1846,7 @@ function printpr()
  <tr class=xl654118 height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl654118 style='height:15.0pt'></td>
   <td class=xl934118>CO :</td>
-  <td colspan=4 class=xl1194118 style='border-right:.5pt solid black'><?php echo $pono; ?></td>
+  <td colspan=4 class=xl1194118 style='border-right:.5pt solid black'><?php echo $cono; ?></td>
   <td class=xl974118></td>
   <td colspan=2 class=xl934118>Fab Direction :</td>
   <td colspan=5 class=xl1104118 >N/A</td>
@@ -2125,26 +2125,44 @@ function printpr()
 
 $doc=4;
 $doc_ype="binding";
-if($jm_docket_line_id!='' && $doc_ype!='' && $plant_code!=''){
-	$result_docketinfo=getDocketInfo($jm_docket_line_id,$doc_ype,$plant_code);
-	$roll_det =$result_docketinfo['roll_det'];
-	$width_det =$result_docketinfo['width_det'];
-	$leng_det =$result_docketinfo['leng_det'];
-	$batch_det =$result_docketinfo['batch_det'];
-	$shade_det =$result_docketinfo['shade_det'];
-	$location_det =$result_docketinfo['location_det'];
-	$invoice_no =$result_docketinfo['invoice_no'];
-	$locan_det =$result_docketinfo['locan_det'];
-	$lot_det =$result_docketinfo['lot_det'];
-	$roll_id =$result_docketinfo['roll_id'];
-	$ctex_len =$result_docketinfo['ctex_len'];
-	$tkt_len =$result_docketinfo['tkt_len'];
-	$ctex_width =$result_docketinfo['ctex_width'];
-	$tkt_width =$result_docketinfo['tkt_width'];
-	$item_name =$result_docketinfo['item_name'];
-}
-
-  
+// if($jm_docket_line_id!='' && $doc_ype!='' && $plant_code!=''){
+// 	$result_docketinfo=getDocketInfo($jm_docket_line_id,$doc_ype,$plant_code);
+// 	$roll_det =$result_docketinfo['roll_det'];
+// 	$width_det =$result_docketinfo['width_det'];
+// 	$leng_det =$result_docketinfo['leng_det'];
+// 	$batch_det =$result_docketinfo['batch_det'];
+// 	$shade_det =$result_docketinfo['shade_det'];
+// 	$location_det =$result_docketinfo['location_det'];
+// 	$invoice_no =$result_docketinfo['invoice_no'];
+// 	$locan_det =$result_docketinfo['locan_det'];
+// 	$lot_det =$result_docketinfo['lot_det'];
+// 	$roll_id =$result_docketinfo['roll_id'];
+// 	$ctex_len =$result_docketinfo['ctex_len'];
+// 	$tkt_len =$result_docketinfo['tkt_len'];
+// 	$ctex_width =$result_docketinfo['ctex_width'];
+// 	$tkt_width =$result_docketinfo['tkt_width'];
+// 	$item_name =$result_docketinfo['item_name'];
+// }
+$query2="select fabric_cad_allocation.roll_id,fabric_cad_allocation.roll_width,fabric_cad_allocation.plies,fabric_cad_allocation.allocated_qty,fabric_cad_allocation.shade,store_in.ref2,store_in.shrinkage_width,store_in.qty_allocated,store_in.ref4,store_in.ref1,store_in.lot_no,store_in.tid,store_in.ref5,store_in.qty_rec,store_in.ref3,store_in.ref6,sticker_report.item,sticker_report.batch_no,sticker_report.inv_no from $wms.fabric_cad_allocation left join $wms.store_in on store_in.tid=fabric_cad_allocation.roll_id left join $wms.sticker_report on store_in.lot_no=sticker_report.lot_no where doc_no='$jm_docket_line_id'";
+$query2_result = mysqli_query($link_new,$query2);
+while($sql_row=mysqli_fetch_array($query2_result))
+{
+	$roll_det[]=$sql_row['ref2'];
+                $width_det[]=round($sql_row['shrinkage_width'],2);
+                $leng_det[]=$sql_row['allocated_qty'];
+                $batch_det[]=trim($sql_row['batch_no']);
+                $shade_det[]=$sql_row['ref4'];
+                $location_det[]=$sql_row['ref1'];
+                $invoice_no[]=$sql_row['inv_no'];
+                $locan_det[]=$sql_row['ref1'];
+                $lot_det[]=$sql_row['lot_no'];
+                $roll_id[]=$sql_row['tid'];
+                $ctex_len[]=$sql_row['ref5'];
+                $tkt_len[]=$sql_row['qty_rec'];
+                $ctex_width[]=$sql_row['ref3'];
+                $tkt_width[]=$sql_row['ref6'];
+                $item_name[] = $sql_row['item'];
+} 
   //echo ($bind_con>0)?"Binding/Rib Quantity: $bind_con YDS":"";
    if(sizeof($batch_det) > 0)
    {

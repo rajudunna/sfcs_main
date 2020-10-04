@@ -580,7 +580,7 @@ if(isset($_POST['allocate_new']))
 					
 					}	
                     $row_id_new1 = 'B'.$row_id_new;
-					$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$row_id_new1."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
+					$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,plant_code,created_user,updated_at) values('".$jm_docket_line_id."','".$tid_ref[$j]."','".$width_ref[$j]."','binding',".$issued_ref[$j].",'2','".$plant_code."','".$username."',NOW())";
 					
 					//Uncheck this					
 					mysqli_query($link, $sql) or exit("Sql Error43: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -595,7 +595,7 @@ if(isset($_POST['allocate_new']))
 					$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,plan_lot_ref,plant_code,created_user,created_at) values('$uuid1','".$jm_docket_line_id."',\"".$lot_db[$j]."\",'".$plant_code."','".$username."','NOW()')";
 					mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql111="select * from $wms.fabric_cad_allocation where doc_no='".$row_id_new1."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+					$sql111="select * from $wms.fabric_cad_allocation where doc_no='".$jm_docket_line_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0)
