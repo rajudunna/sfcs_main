@@ -111,6 +111,32 @@ zoom:75%;
 
 					}
 
+					/**
+						 * Get shifts for a plant code
+						 */
+						function getShifts($plantCode){
+							global $pms;
+							global $link_new;
+							try{
+								$shiftsQuery = "select shift_id,shift_code,shift_description from $pms.shifts where plant_code='".$plantCode."' and is_active=1";
+								$shiftQueryResult = mysqli_query($link_new,$shiftsQuery) or exit('Problem in getting shifts');
+								if(mysqli_num_rows($shiftQueryResult)>0){
+									$shifts = [];
+									while($row = mysqli_fetch_array($shiftQueryResult)){
+										$shiftRecord = [];
+										$shiftRecord["shiftValue"] = $row['shift_code'];
+										$shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
+										array_push($shifts, $shiftRecord);
+									}
+									return $shifts;
+								} else {
+									return "Shifts not found";
+								}
+							} catch(Exception $e) {
+								throw $e;
+							}
+						}
+
 				?>
 				<div class="row">
 					<?php $calurl = getFullURL($_GET['r'],'cal.gif','R');?>
@@ -126,34 +152,36 @@ zoom:75%;
 						$date=$_POST['date'];
 						$date1=$_POST['date1'];
 
+						
 						$exist_count=0;
-						$sql2="select bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\"";
-						//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
-						$sql_result2=mysqli_query($link, $sql2);
-						$exist_count=mysqli_num_rows($sql_result2);
+						// $sql2="select bac_date from $pts.bai_log_buf where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\"";
+						// //mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
+						// $sql_result2=mysqli_query($link, $sql2);
+						// $exist_count=mysqli_num_rows($sql_result2);
 
-						$bai_log_table_name="$pts.bai_log";
-						if($exist_count>0)
-						{
-							$bai_log_table_name=" $pts.bai_log_buf ";
-						}
-						else
-						{
-							$bai_log_table_name=" $pts.bai_log ";
-						}
+						// $bai_log_table_name="$pts.bai_log";
+						// if($exist_count>0)
+						// {
+						// 	$bai_log_table_name=" $pts.bai_log_buf ";
+						// }
+						// else
+						// {
+						// 	$bai_log_table_name=" $pts.bai_log ";
+						// }
 						//echo "length :".strlen($date);
 						echo "<div class='col-md-3'>";
 							echo "Select Style: <select name=\"styles[]\" size=3 multiple class='form-control'>";
 							// if(strlen($date)>0)
 							// {
 								//TEMP TABLE
-								$new_tbl_name2=trim($bai_log_table_name).$username.date("His");
-								$sql="CREATE TEMPORARY TABLE $new_tbl_name2  as (select * from $bai_log_table_name where plant_code='$plantcode' and bac_date between '$date' and '$date1')";
+								// $new_tbl_name2=trim($bai_log_table_name).$username.date("His");
+								// $sql="CREATE TEMPORARY TABLE $new_tbl_name2  as (select * from $bai_log_table_name where plant_code='$plantcode' and bac_date between '$date' and '$date1')";
 								
-								mysqli_query($link, $sql);
-								$bai_log_table_name2=$new_tbl_name2;
+								// mysqli_query($link, $sql);
+								// $bai_log_table_name2=$new_tbl_name2;
 								
-								$sql2="select distinct bac_style from ".$bai_log_table_name2." where bac_date between \"$date\" and \"$date1\" order by bac_style";
+								//$sql2="select distinct bac_style from ".$bai_log_table_name2." where bac_date between \"$date\" and \"$date1\" order by bac_style";
+								$sql2="SELECT DISTINCT style as bac_style FROM $pts.transaction_log WHERE DATE(created_at) BETWEEN \"$date\" AND \"$date1\" ORDER BY style";
 								//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 								//echo "<option value=\"".$sql_row2['bac_style']."\" selected>".$sql2."-".$host."</option>";
 								$sql_result2=mysqli_query($link, $sql2);
@@ -163,19 +191,19 @@ zoom:75%;
 								}
 								
 								//DROP TEMP TABLE
-								$sql="DROP TABLE $new_tbl_name2";
-								mysqli_query($link, $sql);
+								// $sql="DROP TABLE $new_tbl_name2";
+								// mysqli_query($link, $sql);
 							// }
 							echo "</select>";
 						echo "</div>";
- 
+						$shifts_array=getShifts($plantCode);
 						echo "<div class='col-md-3'>";
 							echo "Select Team: <select name=\"team\" class='form-control'>";
 							?>
 						<option value=<?php echo implode(",",$shifts_array); ?>>All</option>
                                     <?php 
-                                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-                                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
+                                        foreach($shifts_array as $shift) {?>
+                                            <option  <?php echo 'value="'.$shift['shiftValue'].'"'; if($team==$shift['shiftValue']){ echo "selected";}   ?>><?php echo $shift['shiftLabel'] ?></option>
                                         <?php }
 									?>
 									<?php
@@ -229,10 +257,10 @@ zoom:75%;
 
 
 				//TEMP TABLE
-				$new_tbl_name=trim($bai_log_table_name).$username.date("His");
-				$sql="CREATE TEMPORARY TABLE $new_tbl_name  as (select * from $bai_log_table_name where plant_code='$plantcode' and bac_date between '$date' and '$date1')";
-				mysqli_query($link, $sql) or exit("Sql Error3 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$bai_log_table_name=$new_tbl_name;
+				// $new_tbl_name=trim($bai_log_table_name).$username.date("His");
+				// $sql="CREATE TEMPORARY TABLE $new_tbl_name  as (select * from $bai_log_table_name where plant_code='$plantcode' and bac_date between '$date' and '$date1')";
+				// mysqli_query($link, $sql) or exit("Sql Error3 $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $bai_log_table_name=$new_tbl_name;
 
 				/* Function BEGINING */
 				function TimeCvt ($time, $format)   {
@@ -361,7 +389,9 @@ zoom:75%;
 
 				$i=0;
 				$h=array();
-				$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_shift in ($team) order by hour(bac_lastup)*1";
+				//$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_shift in ($team) order by hour(bac_lastup)*1";
+				$sql="SELECT DISTINCT(HOUR(created_at)) AS 'time' FROM $pts.transaction_log WHERE plant_code='$plantcode' AND 
+				DATE(bac_date) BETWEEN '$date' AND '$date1' AND shift IN ($team) ORDER BY HOUR(created_at)*1";
 				// echo $sql."<br>";
 				//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -402,12 +432,18 @@ zoom:75%;
 				{
 					$style=$styles[$i];
 					$module_count=0;
-					$sql2="select distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_no";
+					//$sql2="select distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_no";
+					$sql2="SELECT DISTINCT(resource_id) AS module FROM $pts.transaction_log WHERE plant_code='$plantcode' AND 
+					DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' AND shift IN ($team) ORDER BY resource_id";
 					//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-					$module_count=mysqli_num_rows($sql_result2); 
-					//echo $module_count."<br/>";
-
+					$module_count=mysqli_num_rows($sql_result2);
+					$resource_id=array(); 
+					while($sql_row=mysqli_fetch_array($sql2))
+					{
+						$resource_id=$sql_row['module'];
+					}
+					$resources = implode("','", $resource_id);
 					$style_check=0;
 
 
@@ -428,7 +464,8 @@ zoom:75%;
 						$row_bg_col=1;	
 					}
 					
-					$sql="select distinct(bac_sec) as \"section\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_sec";
+					//$sql="select distinct(bac_sec) as \"section\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_sec";
+					$sql="SELECT DISTINCT(section_id) as section FROM $pms.workstation WHERE plant_code='$plantcode'  AND workstation_id IN ('$resources') AND is_active=1";
 					//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -436,7 +473,8 @@ zoom:75%;
 						$section=$sql_row['section'];
 						$row_count++;
 
-						$sql2="select distinct distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team) order by bac_no";
+						//$sql2="select distinct distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team) order by bac_no";
+						$sql2="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE plant_code='$plantcode' AND section_id='$section' AND is_active=1";
 						//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$section_count=mysqli_num_rows($sql_result2); 
@@ -446,6 +484,14 @@ zoom:75%;
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
 							$module=$sql_row2['module'];
+
+							/**getting work station name by workstaion id */
+							$qryWorkStation="SELECT workstation_code FROM $pms.workstation WHERE workstation_id='$module' AND plant_code='$plantcode' AND is_active=1";
+							$resultWorkStation=mysqli_query($link, $qryWorkStation) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($sql_row12=mysqli_fetch_array($resultWorkStation))
+							{
+								$workstation_code=$sql_row12["workstation_code"];
+							}
 							
 							echo "<tr bgcolor=\"$bg_color1\">";
 									
@@ -458,24 +504,27 @@ zoom:75%;
 							if($section_check==0)
 							{
 
-								$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+								//$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
+								$sql12="SELECT section_nmae FROM $pms.sections WHERE section_id='$section' AND plant_code='$plantcode' AND is_active=1";
 								$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row12=mysqli_fetch_array($result12))
 								{
-									$section_display_name=$sql_row12["section_display_name"];
+									$section_display_name=$sql_row12["section_nmae"];
 								}
 
 								echo "<td rowspan=$section_count>$section_display_name</td>";
 								$section_check=1;
 							}
 							
-							echo "<td>$module</td>";
+							echo "<td>$workstation_code</td>";
 							
 							$module_sum=0;
 							for ($j=0;$j<sizeof($headers);$j++)
 							{
 								$qty=0;
-								$sql3="select sum(bac_qty) as \"qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_no=$module and bac_shift in ($team) and Hour(bac_lastup)=".$headers[$j];
+								//$sql3="select sum(bac_qty) as \"qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_no=$module and bac_shift in ($team) and Hour(bac_lastup)=".$headers[$j];
+								$sql3="SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) AND HOUR(created_at)='$headers[$j]' GROUP BY operation ORDER BY ASC  0,1";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -490,7 +539,9 @@ zoom:75%;
 							
 							//NEW
 								$sec_qty=0;
-								$sql3="select sum(bac_qty) as \"sec_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team)";
+								//$sql3="select sum(bac_qty) as \"sec_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team)";
+								$sql3="SELECT sum(good_quantity) AS sec_qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY ASC  0,1";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -508,7 +559,9 @@ zoom:75%;
 							
 							//NEW
 								$style_qty=0;
-								$sql3="select sum(bac_qty) as \"style_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team)";
+								//$sql3="select sum(bac_qty) as \"style_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team)";
+								$sql3="SELECT sum(good_quantity) AS style_qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY ASC  0,1";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -538,8 +591,8 @@ zoom:75%;
 
 				// END
 				//DROP TEMP TABLE
-				$sql="DROP TABLE $new_tbl_name";
-				mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $sql="DROP TABLE $new_tbl_name";
+				// mysqli_query($link, $sql) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				}
 
