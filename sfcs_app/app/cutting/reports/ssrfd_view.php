@@ -321,7 +321,7 @@ if(isset($_POST['submit']))
 	$excess_size_code=array();
 	//To get sizes and qty
 	
-	$sql="SELECT SUM(quantity) AS quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND master_po_order_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
+	$sql="SELECT quantity,size FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plant_code' AND master_po_order_qty_type='ORIGINAL_QUANTITY' GROUP BY size";
 	$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($sql_result))
 	{
@@ -343,6 +343,7 @@ if(isset($_POST['submit']))
 	{
 		$total_order_qty=$row2['quantity'];
 	}
+
 	
 	//OrderConsumption
 	//To get wastage and consumption
@@ -369,6 +370,7 @@ if(isset($_POST['submit']))
 	}
 
 	$order_consumption=(($mo_qty*$consumption*$wastage)/100);
+
 	$lay_id=array();
 	$tot_cutable_qty=0;
 	//Actual Consumption
@@ -380,24 +382,35 @@ if(isset($_POST['submit']))
 		$lay_id[]=$row5['lp_lay_id'];
 		
 		$result_docket_qty=getDocketInformation($docket_no,$plant_code);
-		$get_docket_qty=$result_docket_qty['$docket_quantity'];
+		$get_docket_qty=$result_docket_qty['docket_quantity'];
 
 		$tot_cutable_qty +=$get_docket_qty;
 	}
 	//To get fabric attributes
-	$fabric_attributes=array();
-	$qrt_get_attributes="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
-	$sql_result6=mysqli_query($link, $qrt_get_attributes) or die("Error".$qrt_get_attributes.mysqli_error($GLOBALS["___mysqli_ston"]));
-	while($row6=mysqli_fetch_array($sql_result6))
-	{
-		$fabric_attributes[$row6['attribute_name']] = $row6['attribute_value'];
+	// $fabric_attributes=array();
+	// $qrt_get_attributes="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
+	// $sql_result6=mysqli_query($link, $qrt_get_attributes) or die("Error".$qrt_get_attributes.mysqli_error($GLOBALS["___mysqli_ston"]));
+	// while($row6=mysqli_fetch_array($sql_result6))
+	// {
+	// 	$fabric_attributes[$row6['attribute_name']] = $row6['attribute_value'];
+	// }
+	
+	// $fabric_recevied=  $fabric_attributes[$fabric_lay_attributes['fabricrecevied']];
+	// $fabric_returned=  $fabric_attributes[$fabric_lay_attributes['fabricreturned']];
+	// $shortages=  $fabric_attributes[$fabric_lay_attributes['shortages']];
+	// $damages=  $fabric_attributes[$fabric_lay_attributes['damages']];
+	// $endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
+	// $joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
+	$qrt_get_attributes="SELECT SUM(IF(attribute_name='FABRICRECEIVED', attribute_VALUE, 0)) AS FABRICRECEIVED,SUM(IF(attribute_name='FABRICRETURNED', attribute_VALUE, 0)) AS FABRICRETURNED,SUM(IF(attribute_name='SHORTAGES', attribute_VALUE, 0)) AS SHORTAGES,SUM(IF(attribute_name='DAMAGES', attribute_VALUE, 0)) AS DAMAGES,SUM(IF(attribute_name='END-BITS', attribute_VALUE, 0)) AS ENDBITS,SUM(IF(attribute_name='JOINTS', attribute_VALUE, 0)) AS JOINTS FROM $pps.lp_lay_attribute WHERE lp_lay_id in ('".implode("','" , $lay_id)."') and plant_code='$plant_code'";
+	$sql_result6 = mysqli_query($link_new, $qrt_get_attributes) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+	while ($row2 = mysqli_fetch_array($sql_result6)) {
+		$fabric_recevied = $row2['FABRICRECEIVED'];
+		$fabric_returned = $row2['FABRICRETURNED'];
+		$shortages = $row2['SHORTAGES'];
+		$damages = $row2['DAMAGES'];
+		$endbits = $row2['ENDBITS'];
+		$joints = $row2['JOINTS'];
 	}
-	$fabric_recevied=  $fabric_attributes[$fabric_lay_attributes['fabricrecevied']];
-	$fabric_returned=  $fabric_attributes[$fabric_lay_attributes['fabricreturned']];
-	$shortages=  $fabric_attributes[$fabric_lay_attributes['shortages']];
-	$damages=  $fabric_attributes[$fabric_lay_attributes['damages']];
-	$endbits=  $fabric_attributes[$fabric_lay_attributes['endbits']];
-	$joints=  $fabric_attributes[$fabric_lay_attributes['joints']];
 	
 	//CAD Consumption Caliculation
 	$cad_consumption=(($tot_cutable_qty*$consumption*$wastage)/100);
@@ -520,6 +533,7 @@ if(isset($_POST['submit']))
 
 
 <?php 
+//<th>Input Status</th>
 	echo "<div class='col-sm-12' style='overflow-x:scroll'>
 	<table class='table table-sm table-bordered table-responsive'>
 	<tr class='info'>
@@ -527,7 +541,6 @@ if(isset($_POST['submit']))
 	<th>Cut No</th>
 	<th>Total</th>
 	<th>Cut Status</th>
-	<th>Input Status</th>
 	<th>Docket Requested</th>
 	<th>Fabric Received</th>
 	<th>Fabric Returned</th>
@@ -555,10 +568,11 @@ if(isset($_POST['submit']))
 
 			//To get docket_details
 			$result_docket_qty=getDocketInformation($docket_no,$plant_code);
-			$get_docket_qty=$result_docket_qty['$docket_quantity'];
-			$get_cut_no=$result_docket_qty['$cut_no'];
+			$get_docket_qty=$result_docket_qty['docket_quantity'];
+			$get_cut_no=$result_docket_qty['cut_no'];
 			$doc_req=$total_order_qty*$consumption;
-			
+
+
 			//To get fabric attributes
 			$fabricattributes=array();
 			$qrt_get_attributes1="SELECT * FROM $pps.lp_lay_attribute WHERE lp_lay_id= '$lay_id' and plant_code='$plant_code'";
@@ -586,7 +600,7 @@ if(isset($_POST['submit']))
 			echo "<td>$get_cut_no</td>";
 			echo "<td>$get_docket_qty</td>";
 			echo "<td>$cut_status</td>";
-			echo "<td>$cut_status</td>";
+			// echo "<td>$cut_status</td>";
 			echo "<td>".($doc_req+round($doc_req*0.01,2))."</td>";
 			echo "<td>$fabric_recevied1</td>";
 			echo "<td>$fabric_returned1</td>";

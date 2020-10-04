@@ -96,7 +96,22 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
     $rejection_reasons[$row['reason_code'].'-'.$row['m3_reason_code']] = $row['reason_desc'];
 }
 
+//Check whether fabric requested or not
+$get_docket_id="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='".$doc_no."' and plant_code='$plantcode'";
+$get_docket_id_result = mysqli_query($link,$get_docket_id); 
+while($id_row = mysqli_fetch_array($get_docket_id_result)){
+   $jm_docket_line_id = $id_row['jm_docket_line_id'];
 
+   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id=' $jm_docket_line_id' and plant_code='$plantcode'";
+   $check_fabric_status_result = mysqli_query($link,$check_fabric_status);
+   $sql_num=mysqli_num_rows($check_fabric_status_result);
+   if($sql_num > 0)
+   {
+    while($row_fabric = mysqli_fetch_array($check_fabric_status_result)){
+       $fabric_status=$row_fabric['fabric_status'];
+    }
+   } 
+}    
 
 ?>
 
@@ -1189,6 +1204,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         var fab_req     = Number($('#fab_required').val());
         var error_message = '';
         var user = '<?php echo $username;?>';
+        var plantcode = '<?php echo $plantcode;?>';
+        var fabric = '<?php echo $fabric_status;?>';
         
         //Screen Validations
         if(c_plies == 0 && full_reporting_flag == '1'){
@@ -1216,6 +1233,11 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         
         if(shift == null || cut_table == null || team_leader == null){
             swal('warning','Please Select Shift , Cut Table , Team Leader ,Bundle Location','warning');
+            return false;
+        }
+
+         if(fabric !=5){
+            swal('warning','Fabric Was Not Requested','warning');
             return false;
         }
        
@@ -1286,6 +1308,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         reportData.docketNumber = $('#r_doc_no').text();
         reportData.shift = $('#shift').val();
         reportData.workStationId = $('#cut_table').val();
+        reportData.plantcode = '<?php echo $plantcode;?>';
+        reportData.username = '<?php echo $username;?>';
         if($("#full_reported").is(':checked'))
         {
             reportData.fullyReported = true;
@@ -1302,32 +1326,32 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var fabricReceivedObject = new Object();
         fabricReceivedObject.attributeName='FABRICRECEIVED';
-        fabricReceivedObject.attributeValue='10';
+        fabricReceivedObject.attributeValue=$('#fab_received').val();
         fabricAttributes.push(fabricReceivedObject);
 
         var fabricReturnedObject = new Object();
         fabricReturnedObject.attributeName='FABRICRETURNED';
-        fabricReturnedObject.attributeValue='10';
+        fabricReturnedObject.attributeValue=$('#fab_returned').val();
         fabricAttributes.push(fabricReturnedObject);
 
         var damagesObject = new Object();
         damagesObject.attributeName='DAMAGES';
-        damagesObject.attributeValue='10';
+        damagesObject.attributeValue=$('#damages').val();
         fabricAttributes.push(damagesObject);
 
         var JointsObject = new Object();
         JointsObject.attributeName='JOINTS';
-        JointsObject.attributeValue='10';
+        JointsObject.attributeValue=$('#joints').val();
         fabricAttributes.push(JointsObject);
 
         var endbitsObject = new Object();
         endbitsObject.attributeName='END-BITS';
-        endbitsObject.attributeValue='10';
+        endbitsObject.attributeValue=$('#endbits').val();
         fabricAttributes.push(endbitsObject);
 
         var shortagesObject = new Object();
         shortagesObject.attributeName='SHORTAGES';
-        shortagesObject.attributeValue='10';
+        shortagesObject.attributeValue=$('#shortages').val();
         fabricAttributes.push(shortagesObject);
         reportData.fabricAttributes = fabricAttributes;
         console.log(reportData);
