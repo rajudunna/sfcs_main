@@ -42,7 +42,6 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 		$result2x=mysqli_query($link, $sql2x) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$rows2=mysqli_num_rows($result2x);	
 	}	
-	
 	$get_url = getFullURL($_GET['r'],'fabric_requisition.php',0,'R');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
@@ -159,9 +158,15 @@ function GetSelectedItem()
 <tr><th>Marker</th><th>Style</th><th>Schedule</th><th>Color</th><th>Job No</th><th>Category</th><th>Item Code</th><th>Docket No</th><th>Requirment</th><th>Reference</th><th>Length</th><th>Shrinkage</th><th>Width</th></tr>
 <?php
 
-	
-	if($doc_no!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+$sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($row111x11=mysqli_fetch_array($sql_result11x11))
+{
+	$docket_line_number=$row111x11["docket_line_number"];
+
+}
+	if($docket_line_number!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_line_number,$plant_code);
 		$style =$result_docketinfo['style'];
 		$colorx =$result_docketinfo['fg_color'];
 		$cut_no =$result_docketinfo['cut_no'];
