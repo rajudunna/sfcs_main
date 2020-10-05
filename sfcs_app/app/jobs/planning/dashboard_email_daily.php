@@ -76,11 +76,11 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$tot_rework=0;
 	$act_out_check=0;
 	$sec_ids=array();
-	$sql1="select sec_id from $bai_pro3.sections_db where sec_id > 0 order by sec_id+0";
+	$sql1="select section_id from $pms.sections where section_id > 0 order by section_id+0";
 	$result1=mysqli_query($link, $sql1) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
-		$sec_ids[]=$row1["sec_id"];
+		$sec_ids[]=$row1["section_id"];
 	}
 	
 	for($i=0;$i<sizeof($sec_ids);$i++)
@@ -253,20 +253,20 @@ $headers .= "From: ".$header_name." <".$header_mail.">". "\r\n";
 
 // Mail it
 
-$sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH_Run\",\"".date("Y-m-d H:i:s")."\")";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-if($sql_result)
-{
-	print('Live SAH Run Inserted successfully')."\n";
-}
+// $sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH_Run\",\"".date("Y-m-d H:i:s")."\")";
+// $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+// if($sql_result)
+// {
+	// print('Live SAH Run Inserted successfully')."\n";
+// }
 
 	if($act_out_check>0)
 	{
 		a:
 		if(mail($to, $subject, $message, $headers))
 		{
-			$sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH\",\"".date("Y-m-d H:i:s")."\")";
-			mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// $sql="insert into $bai_ict.report_alert_track(report,date) values (\"Live_SAH\",\"".date("Y-m-d H:i:s")."\")";
+			// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 			print("Live SAH Inserted And mail sent successfully")."\n";
 		
