@@ -1502,7 +1502,7 @@ if($status_sew=='open')
 					$reported_qty = $recevied_bundle_qty + $rejected_bundle_qty;
 					if($b_send_qty == $reported_qty)
 					{
-						$bundle_status = 1;
+						$bundle_status = 5;
 						$status_update_query = "UPDATE $brandix_bts.bundle_creation_data SET `bundle_qty_status`= '".$bundle_status."' where bundle_number =$b_tid[$key] and operation_id = ".$b_op_id;
 						$status_result_query = $link->query($status_update_query) or exit('query error in updating status');
 
