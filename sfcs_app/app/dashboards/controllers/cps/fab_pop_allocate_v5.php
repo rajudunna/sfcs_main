@@ -1036,8 +1036,15 @@ if(isset($_POST['allocate']))
 			// 	$shrinkaage='N/A';
 			// 	$pur_width='N/A';
 			// }
-			if($doc_ref!='' && $plant_code!=''){
-				$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+			$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_ref'";
+			$sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row111x11=mysqli_fetch_array($sql_result11x11))
+			{
+			$docket_line_no=$row111x11["docket_line_number"];
+
+			}  
+			if($docket_line_no!='' && $plant_code!=''){
+				$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
 				$style =$result_docketinfo['style'];
 				$colorx =$result_docketinfo['fg_color'];
 				$length =$result_docketinfo['length'];
