@@ -71,8 +71,7 @@ $dat1=$_POST["dat2"];
 </form>";
 
 $addon_headings="";
-$sql2="SELECT section_id as section_id,GROUP_CONCAT(DISTINCT workstation_code ORDER BY workstation_code*1) AS sec_mods FROM $pms.workstation group by section_id";
-
+$sql2="SELECT section_id as section_id,GROUP_CONCAT(DISTINCT workstation_code ORDER BY workstation_code*1) AS sec_mods FROM $pms.workstation where plant_code='$plantcode' group by section_id";
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -86,9 +85,10 @@ $sql2="SELECT section_id as section_id,GROUP_CONCAT(DISTINCT workstation_code OR
 		$addon_headings.="<th>SEC-".$section_name."<br/>Pending PCS</th>";	
 		$addon_headings.="<th>SEC-".$section_name."<br/>Lost Value</th>";	
 	}
-
-$week_del="select schedule,planned_delivery_date,po_number from $oms.oms_mo_details where plant_code='$plant_code' and planned_delivery_date between \"$dat\" and \"$dat1\"  GROUP BY schedule";
-// echo $week_del."<br>";
+$dat=date('Ymd', strtotime($dat));
+$dat1=date('Ymd', strtotime($dat1));
+$week_del="select schedule,planned_delivery_date,po_number from $oms.oms_mo_details where plant_code='$plantcode' and planned_delivery_date between \"$dat\" and \"$dat1\"  GROUP BY schedule";
+ //echo $week_del."<br>";
 $sql_result=mysqli_query($link,$week_del) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
 // if($count_rows > 0){
