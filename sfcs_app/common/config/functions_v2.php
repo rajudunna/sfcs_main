@@ -1238,13 +1238,8 @@ function getDocketInformation($docket_no, $plant_code) {
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-<<<<<<< HEAD
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
-        WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
-=======
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
         WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
->>>>>>> SFCS1.5
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
