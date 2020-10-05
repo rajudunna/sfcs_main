@@ -1228,7 +1228,7 @@ function getDocketInformation($docket_no, $plant_code) {
     $remark3 = '';
     $remark4 = '';
     $ratio_cg_id = '';
-
+    
     $schedules = [];
     // get the docket info
     $docket_info_query = "SELECT doc_line.plies, doc_line.fg_color,doc_line.docket_line_number,
@@ -1238,8 +1238,13 @@ function getDocketInformation($docket_no, $plant_code) {
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
+<<<<<<< HEAD
         LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
         WHERE doc_line.plant_code = '$plant_code' AND doc_line.jm_docket_line_id='$docket_no' AND doc_line.is_active=true";
+=======
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
+        WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
+>>>>>>> SFCS1.5
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  
     while($row = mysqli_fetch_array($docket_info_result))
@@ -1307,7 +1312,7 @@ function getDocketInformation($docket_no, $plant_code) {
     }
 
     $docket_quantity = $size_ratio_sum * $plies;
-
+ 
     // get the marker requierement
     $markers_query="SELECT `length`,`width`,`efficiency`,`marker_version`,`marker_version_id`,`marker_type_name`,`pattern_version`,`perimeter`,`remark1`,`remark2`,`remark3`,`remark4`,`shrinkage`
     FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plant_code'";
@@ -1447,9 +1452,9 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
         $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
-        if ($limit) {
-            $jobsQuery .= " limit 0,$limit";
-        }
+        // if ($limit) {
+        //     $jobsQuery .= " limit 0,$limit";
+        // }
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
@@ -1615,4 +1620,25 @@ function getMasterPoSequence($master_po_serial,$plant_code){
     $leading_zeros = sprintf('%010d', $master_po_serial);
     return  $plant_code ."-".$leading_zeros;
 }
+
+/**
+ * gets the rejections for the given department
+ */
+function getRejectionReasons($dept_type) {
+    global $link_new;
+    global $mdm;
+    $reasons = [];
+    $reasons_query = "SELECT reason_id, internal_reason_code, internal_reason_description from $mdm.reasons where department_type = '$dept_type' and is_active=1";
+    $reasons_result = mysqli_query($link_new, $reasons_query);
+    while($row = mysqli_fetch_array($reasons_result)) {
+        $reasons[] = array(
+            'reason_id'=>$row['reason_id'],
+            'internal_reason_code'=>$row['internal_reason_code'],
+            'internal_reason_description'=>$row['internal_reason_description'],
+        );
+    }
+    return $reasons;
+}
+
+
 ?>

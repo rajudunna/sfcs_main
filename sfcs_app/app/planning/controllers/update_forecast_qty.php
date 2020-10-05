@@ -123,8 +123,8 @@ if(isset($_POST['submit']))
 	$split_date=explode("-",$today);
 	$year=$split_date[0];
 	$month=$split_date[1];
-	$department_type="Forecast";
-	$reason_type="Forecast";
+	$department_type="SEWING";
+	$reason_type="SEWING";
 	$result_worksation_id=getWorkstations($department_type,$plantcode);
 	$workstations=$result_worksation_id['workstation'];
 

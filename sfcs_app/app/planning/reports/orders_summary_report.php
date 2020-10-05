@@ -49,9 +49,9 @@ if(isset($_POST['filter']))
 	$colorgroup=$_POST['colorgroup'];
 		
 	$cut_operation=15;
-	$sew_in=100;
-	$sew_out=130;
-	$fg=200;
+	$sew_in_op=100;
+	$sew_out_op=130;
+	$fg_op=200;
 	$operation_code_array=[15,100,130,200];
 
 
@@ -66,7 +66,7 @@ if(isset($_POST['filter']))
 	echo '<form action="'.getFullURL($_GET['r'],'export_excel.php','R').'" method ="post" > 
 	<input type="hidden" name="csv_text" id="csv_text">
 	<input type="hidden" name="csvname" id="csvname" value="Order Summary Report">
-	<input type="submit" class="btn btn-info" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
+	<input type="submit" class="btn btn-info exportexcelbtn" id="expexc" name="expexc" value="Export to Excel" onclick="getCSVData()">
 	</form>';
 	echo "<br><div class='table-responsive'><table id='example1' name='example1' class ='table table-bordered table-striped'>";
 	echo "<tr class='tblheading'>
@@ -82,7 +82,6 @@ if(isset($_POST['filter']))
 	<th>Status</th>
 	</tr>";
 	
-	// echo $sql."<br/>";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -90,8 +89,9 @@ if(isset($_POST['filter']))
 		$schedule=$sql_row['schedule'];
 		$order_date=$sql_row['planned_cut_date'];
 		$sql1="SELECT * FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
-		// echo $sql1."<br/>";
+
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// echo mysqli_num_rows($sql_result1);
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$row_count++;
@@ -125,7 +125,7 @@ if(isset($_POST['filter']))
 				$operation_codes = "'" . implode( "','", $operation_code_array) . "'";
 
 
-				$sql4="SELECT SUM(IF(operation_code=$cut_operation,1,0)) AS cut_qty,SUM(IF(operation_code=$sew_in,1,0)) AS sew_in,SUM(IF(operation_code=$sew_out,1,0)) AS sew_out,SUM(IF(operation_code=$fg,1,0)) AS fg FROM $pts.fg_operation WHERE finished_good_id IN ($finished_good_ids) AND operation_code IN ($operation_codes) AND required_components=completed_components";
+				$sql4="SELECT SUM(IF(operation_code=$cut_operation,1,0)) AS cut_qty,SUM(IF(operation_code=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation_code=$sew_out_op,1,0)) AS sew_out,SUM(IF(operation_code=$fg_op,1,0)) AS fg FROM $pts.fg_operation WHERE finished_good_id IN ($finished_good_ids) AND operation_code IN ($operation_codes) AND required_components=completed_components";
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row4=mysqli_fetch_array($sql_result4))
 				{
@@ -136,14 +136,14 @@ if(isset($_POST['filter']))
 				}
 			}
 			$status="RM";
-			if($order_qty<=$cut_qty){
+			if($order_qty<=$cut_qty || $cut_qty >0){
 				$status="Cutting";
 			}
-			if($order_qty<=$sew_in || $order_qty<=$sew_out){
+			if($order_qty<=$sew_in || $order_qty<=$sew_out || $sew_out >0 || $sew_in >0){
 				$status="Sewing";
 			}
 			
-			if($order_qty<=$fg){
+			if($order_qty<=$fg || $fg >0){
 				$status="FG";
 			}
 			
@@ -269,5 +269,9 @@ table{
 	margin-top : 10px;
 	margin-left : 0px;
 	margin-bottom:15pt;
+}
+
+.exportexcelbtn {
+	margin-top:15px;
 }
 </style>
