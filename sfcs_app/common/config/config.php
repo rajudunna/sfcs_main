@@ -67,7 +67,7 @@ $rms_request_time = $conf1->get('rms_request_time');
 //User access code
 $server_soft=$_SERVER['SERVER_SOFTWARE'];
 // FG Warehouse code
-$plant_wh_code=$conf1->get('fg-wh-code');
+$plant_fg_code=$conf1->get('fg-wh-code');
 
 //get plant details and adress
 $plant_head=$conf1->get('plant_head');

@@ -51,6 +51,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',4,'R'));
 ?>
 <?php
+
 	if(!isset($_POST['reconfirm']))
 	{
 		$sql="SELECT * from $bai_pro3.pac_stat where fg_status='fail'";
@@ -135,7 +136,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 					"confirmedDeliveryDate" : "'.$order_date.'"
 				}
 				]';	
-				$post_carton_response = $obj->postCartonInfo($carton_info, $plant_wh_code, $carton_id);
+				$post_carton_response = $obj->postCartonInfo($carton_info, $plant_fg_code, $carton_id);
 				$decoded = json_decode($post_carton_response,true);
 				//die();
 				if($decoded['api_status'] == 'fail') {
