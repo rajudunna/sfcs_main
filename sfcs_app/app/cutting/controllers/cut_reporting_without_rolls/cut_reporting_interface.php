@@ -1236,10 +1236,10 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
             return false;
         }
 
-         if(fabric !=5){
-            swal('warning','Fabric Was Not Requested','warning');
-            return false;
-        }
+        //  if(fabric !=5){
+        //     swal('warning','Fabric Was Not Requested','warning');
+        //     return false;
+        // }
        
         if(ret_to > 0){
             if(returned_to == null){
