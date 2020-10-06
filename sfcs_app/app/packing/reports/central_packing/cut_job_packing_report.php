@@ -188,14 +188,14 @@ $username = $_SESSION['userName'];
 			        $sub_po_number[]=$sub_po_query_result_result_row['po_number']; 
 				}
 				$sub_po="'".implode("','",$sub_po_number)."'";
-				$logical_bundle_query="select fg_color,feature_value,jm_cut_bundle_detail_id,jm_product_logical_bundle_id,jm_cut_job_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_cut_job_id"; 
+				$logical_bundle_query="select fg_color,feature_value,jm_pplb_id,jm_product_logical_bundle_id,jm_cut_job_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_cut_job_id"; 
 				$logical_bundle_query_result=mysqli_query($link, $logical_bundle_query) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($logical_bundle_query_result_row=mysqli_fetch_array($logical_bundle_query_result)) 
 			    { 
 					$color=$logical_bundle_query_result_row['fg_color']; 
 					$schedule=$logical_bundle_query_result_row['feature_value']; 
-					$jm_cut_bundle_detail_id=$logical_bundle_query_result_row['jm_cut_bundle_detail_id'];
-					$jm_cut_bundle_detail_id1[]=$logical_bundle_query_result_row['jm_cut_bundle_detail_id'];
+					$jm_cut_bundle_detail_id=$logical_bundle_query_result_row['jm_pplb_id'];
+					$jm_cut_bundle_detail_id1[]=$logical_bundle_query_result_row['jm_pplb_id'];
 					// $jm_product_logical_bundle_id=$logical_bundle_query_result_row['jm_product_logical_bundle_id'];
 					$jm_cut_job_id=$logical_bundle_query_result_row['jm_cut_job_id'];
 
