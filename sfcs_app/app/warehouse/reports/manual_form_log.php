@@ -11,7 +11,7 @@
 	//$view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
 	$main_url=getFullURL($_GET['r'],'manual_form_log.php','R');
-	$has_permission=haspermission($_GET['r']);
+	// $has_permission=haspermission($_GET['r']);
 	$plant_code = $_SESSION['plantCode'];
 	//$plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];

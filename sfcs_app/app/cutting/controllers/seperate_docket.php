@@ -1,6 +1,6 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	$has_permission=haspermission($_GET['r']);
+	//$has_permission=haspermission($_GET['r']);
     $per = 'No';
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];

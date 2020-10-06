@@ -1,7 +1,7 @@
 <?php
 	include("../".getFullURL($_GET['r'], "header.php", 'R'));
 	include("../".getFullURL($_GET['r'], "head.php", 'R')); 
-	$permission = haspermission($_GET['r']);
+	// $permission = haspermission($_GET['r']);
 	//define a maxim size for the uploaded images
 	define ("MAX_SIZE","10000000");
 	// define the width and height for the thumbnail
@@ -75,10 +75,10 @@
 
 ?>
 <?php 
-	if(!in_array($edit,$permission))
-	{
-		header("location:maintenance.php");
-	}
+	// if(!in_array($edit,$permission))
+	// {
+	// 	header("location:maintenance.php");
+	// }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -168,14 +168,14 @@
 				<td></td>
 				<td width="80">
 				<?php
-					if(in_array($edit,$permission))
-					{
+					// if(in_array($edit,$permission))
+					// {
 						echo '<input name="upload" type="submit" class="box" id="upload" value="Upload"></td>';
-					}
-					else
-					{
-						echo "You are not authorized to edit";	
-					}
+					// }
+					// else
+					// {
+					// 	echo "You are not authorized to edit";	
+					// }
 				?>
 				</tr>
 			</table>

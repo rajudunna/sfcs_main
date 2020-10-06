@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 
 
-$has_permission=haspermission($_GET['r']); 
+//$has_permission=haspermission($_GET['r']); 
 
 if($fabric_validation_for_cut_report == 'yes')
     $FABRIC_VALIDATION = 1;

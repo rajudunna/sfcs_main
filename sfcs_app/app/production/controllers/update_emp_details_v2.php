@@ -4,7 +4,7 @@
 <?php 
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-    $has_permission=haspermission($_GET['r']);
+    // $has_permission=haspermission($_GET['r']);
 	$team=$_POST['team'];
 	$date=$_POST['dat'];
 	$shift_start=$_POST['shift_start'];
