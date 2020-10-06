@@ -34,7 +34,7 @@ $username=$_SESSION['userName'];
 <div class="panel-heading">Fabric Inspection Summary Report</div>
 <div class="panel-body">
 <div class="form-group">
-<form name="test" id="test" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+<form name="test" id="test" method="post" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 
 From Date: <input type="text" data-toggle='datepicker' class="form-control" name="fdate" id="fdate" style="width: 180px;  display: inline-block;" size="8" value="<?php  if(isset($_POST['fdate'])) { echo $_POST['fdate']; } else { echo date("Y-m-d"); } ?>" >
  
@@ -109,44 +109,44 @@ if(isset($_POST['submit']))
 		</form>';
 
 		// /echo "<form name='report'>";
-		echo "<div class='table-responsive'>";
-		echo "<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
-		echo "<tr class='headings'>";
-		echo "<th class='column-title'>Report ID</th>";
-		echo "<th>Buyer</th>";
-		echo "<th>Fabric Description</th>";
-		echo "<th>Batch No</th>";
-		echo "<th>Item Code</th>";
-		echo "<th>Lot No</th>";
-		echo "<th>Supplier</th>";
-		echo "<th>Colour</th>";
-		echo "<th>Qty In ($fab_uom)</th>";
-		echo "<th>PTS</th>";
-		echo "<th>Package</th>";
-		echo "<th>PO No</th>";
-		echo "<th>Qty Inspected</th>";
-		echo "<th>Fallout</th>";
-		echo "<th>Act GSM</th>";
-		echo "<th>GRN Date</th>";
-		echo "<th>Pct Inspected</th>";
-		echo "<th>Skewness</th>";
-		echo "<th>Purchase Width</th>";
-		echo "<th>No of Rolls</th>";
-		echo "<th>Length Shortage %</th>";
-		echo "<th>Actual Width</th>";
-		echo "<th>Category</th>";
-		echo "<th>Fabric Way</th>";
-		echo "<th>Residual Shink L</th>";
-		echo "<th>Residual Shink W</th>";
-		echo "<th>Invoice</th>";
-		echo "<th>No. Rolls</th>";
-		echo "<th>Ticket Length</th>";
-		echo "<th>C-Tex Length</th>";
-		echo "<th>Length Shortage</th>";
-		echo "<th>Ticket Width(Avg)</th>";
-		echo "<th>C-Tex Width(Avg)</th>";
-		echo "<th>Width Shortage</th>";
-		echo "</tr></thead><tbody>";
+		$table="<div class='table-responsive'>";
+		$table .="<table id='table1' class = 'table table-striped jambo_table bulk_action table-bordered'><thead>";
+		$table .="<tr class='headings'>";
+		$table .="<th class='column-title'>Report ID</th>";
+		$table .="<th>Buyer</th>";
+		$table .="<th>Fabric Description</th>";
+		$table .="<th>Batch No</th>";
+		$table .="<th>Item Code</th>";
+		$table .="<th>Lot No</th>";
+		$table .="<th>Supplier</th>";
+		$table .="<th>Colour</th>";
+		$table .="<th>Qty In ($fab_uom)</th>";
+		$table .="<th>PTS</th>";
+		$table .="<th>Package</th>";
+		$table .="<th>PO No</th>";
+		$table .="<th>Qty Inspected</th>";
+		$table .="<th>Fallout</th>";
+		$table .="<th>Act GSM</th>";
+		$table .="<th>GRN Date</th>";
+		$table .="<th>Pct Inspected</th>";
+		$table .="<th>Skewness</th>";
+		$table .="<th>Purchase Width</th>";
+		$table .="<th>No of Rolls</th>";
+		$table .="<th>Length Shortage %</th>";
+		$table .="<th>Actual Width</th>";
+		$table .="<th>Category</th>";
+		$table .="<th>Fabric Way</th>";
+		$table .="<th>Residual Shink L</th>";
+		$table .="<th>Residual Shink W</th>";
+		$table .="<th>Invoice</th>";
+		$table .="<th>No. Rolls</th>";
+		$table .="<th>Ticket Length</th>";
+		$table .="<th>C-Tex Length</th>";
+		$table .="<th>Length Shortage</th>";
+		$table .="<th>Ticket Width(Avg)</th>";
+		$table .="<th>C-Tex Width(Avg)</th>";
+		$table .="<th>Width Shortage</th>";
+		$table .="</tr></thead><tbody>";
 
 		//var_dump(mysqli_fetch_array($sql_resultx));
 		while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -293,13 +293,13 @@ if(isset($_POST['submit']))
 							$category="GF";
 						}
 					
-						echo "<tr>";      
-						echo "<td><a href=\"\" onclick=\"Popup=window.open('".getFullURL($_GET['r'],'c_tex_report_print_v2.php','R')."?lot_no=$batch_no&lot_ref=$lot_ref_batch"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">".$code."</a></td>"; 
-						echo "<td>".$buyer."</td>"; 
-						echo "<td>".$item_name."</td>"; 
-						echo "<td>".$batch_no."</td>"; 
-						echo "<td>".$item."</td>"; 
-						echo "<td>".$lot_ref_batch."</td>"; 
+						$table .= "<tr>";      
+						$table .= "<td><a href=\"\" onclick=\"Popup=window.open('".getFullURL($_GET['r'],'c_tex_report_print_v2.php','R')."?lot_no=$batch_no&lot_ref=$lot_ref_batch"."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\">".$code."</a></td>"; 
+						$table .= "<td>".$buyer."</td>"; 
+						$table .= "<td>".$item_name."</td>"; 
+						$table .= "<td>".$batch_no."</td>"; 
+						$table .= "<td>".$item."</td>"; 
+						$table .= "<td>".$lot_ref_batch."</td>"; 
 
 						$check=0;
 						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM $bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
@@ -319,99 +319,100 @@ if(isset($_POST['submit']))
 						
 
 						if($check == 0){
-							echo "<td></td>";
+							$table .= "<td></td>";
 						}else
 						{
-							echo "<td>".$supplier."</td>";
+							$table .= "<td>".$supplier."</td>";
 						}
 
-						echo "<td>".$item_desc."</td>"; 
-						echo "<td>".$rec_qty."</td>"; 
-						echo "<td>".$pts."</td>"; 
-						echo "<td>".$pkg_no."</td>"; 
-						echo "<td>".$po_no."</td>"; 
-						echo "<td>".$qty_insp."</td>"; 
-						echo "<td>".$fallout."</td>"; 
-						echo "<td>".$act_gsm."</td>"; 
-						echo "<td>".$grn_date."</td>"; 
+						$table .= "<td>".$item_desc."</td>"; 
+						$table .= "<td>".$rec_qty."</td>"; 
+						$table .= "<td>".$pts."</td>"; 
+						$table .= "<td>".$pkg_no."</td>"; 
+						$table .= "<td>".$po_no."</td>"; 
+						$table .= "<td>".$qty_insp."</td>"; 
+						$table .= "<td>".$fallout."</td>"; 
+						$table .= "<td>".$act_gsm."</td>"; 
+						$table .= "<td>".$grn_date."</td>"; 
 						
 						if($rec_qty>0) { 
-							echo "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; 
+							$table .= "<td>".round(($qty_insp/$rec_qty)*100,2)."%"."</td>"; 
 						} else {
-							 echo "<td></td>"; 
+							 $table .= "<td></td>"; 
 							} 
 							
-						echo "<td>".$skew."</td>"; 
-						echo "<td>".$pur_width."</td>"; 
-						echo "<td>".$total_rolls."</td>"; 
+						$table .= "<td>".$skew."</td>"; 
+						$table .= "<td>".$pur_width."</td>"; 
+						$table .= "<td>".$total_rolls."</td>"; 
 						if($rec_qty>0) {
-							 echo "<td>".round((($ctex_sum-$rec_qty)/$rec_qty)*100,2)."%"."</td>"; 
+							 $table .= "<td>".round((($ctex_sum-$rec_qty)/$rec_qty)*100,2)."%"."</td>"; 
 							} else { 
-								echo "<td></td>";
+								$table .= "<td></td>";
 							 }   
-						echo "<td>".$act_width."</td>"; 
-						echo "<td>".$category."</td>"; 
+						$table .= "<td>".$act_width."</td>"; 
+						$table .= "<td>".$category."</td>"; 
 
 						if($gmt_way==1)
 						{
-							echo "<td>"."N/A"."</td>";
+							$table .= "<td>"."N/A"."</td>";
 						}
 
 						if($gmt_way==2)
 						{
-							echo "<td>"."One Way"."</td>";
+							$table .= "<td>"."One Way"."</td>";
 						}
 
 						if($gmt_way==3)
 						{
-							echo "<td>"."Two Way"."</td>";
+							$table .= "<td>"."Two Way"."</td>";
 						}
 
 						if($gmt_way=="" or $gmt_way==0)
 						{
-							echo "<td>".""."</td>";
+							$table .= "<td>".""."</td>";
 						}
 				
-						echo "<td>".$shrink_l."</td>"; 
-						echo "<td>".$shrink_w."</td>"; 
-						echo "<td>".$inv_no."</td>"; 
-						echo "<td>".$num_rows."</td>";
-						echo "<td>".$rec_qty."</td>";
-						echo "<td>".$ctex_sum."</td>"; 
-						echo "<td>".round(($ctex_sum-$rec_qty),2)."</td>";
-						echo "<td>".$avg_t_width."</td>"; 
-						echo "<td>".$avg_c_width."</td>"; 
-						echo "<td>".round(($avg_c_width-$avg_t_width),2)."</td>";
+						$table .= "<td>".$shrink_l."</td>"; 
+						$table .= "<td>".$shrink_w."</td>"; 
+						$table .= "<td>".$inv_no."</td>"; 
+						$table .= "<td>".$num_rows."</td>";
+						$table .= "<td>".$rec_qty."</td>";
+						$table .= "<td>".$ctex_sum."</td>"; 
+						$table .= "<td>".round(($ctex_sum-$rec_qty),2)."</td>";
+						$table .= "<td>".$avg_t_width."</td>"; 
+						$table .= "<td>".$avg_c_width."</td>"; 
+						$table .= "<td>".round(($avg_c_width-$avg_t_width),2)."</td>";
 
 						// if($status==0)
 						// {
 						// 	if($username==$super_user)
 						// 	{
-						// 	echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";	
+						// 	$table .= "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";	
 						// 	}
 						// 	else
 						// 	{
 						// 		if(strtolower(substr($buyer,0,1))=="v" and $username==$vs_auth)
 						// 		{
-						// 			echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
+						// 			$table .= "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
 						// 		}
 						// 		else
 						// 		{
 						// 			if(strtolower(substr($buyer,0,1))=="m" and $username==$mns_auth)
 						// 			{
-						// 				echo "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
+						// 				$table .= "<td><div id='txtHint$track_id'><a href='#' onclick=\"update('$track_id','$log_date');\">Update</a></div></td>";
 						// 			}
 						// 		}
 						// 	}
 						// }
-						echo "</tr>"; 
+						$table .= "</tr>"; 
 					}	
 				}																																																																							
 			}
 			
 		}
-		echo "</tbody></table></div>";
-		echo "</form></div>";
+		$table .= "</tbody></table></div>";
+		echo $table;
+		echo "</div>";
 	}else{
 		echo "<script>sweetAlert('No Data Found','','warning');</script>";
 	}
@@ -426,11 +427,6 @@ if(isset($_POST['submit']))
 </div>
 <script language="javascript" type="text/javascript">
 	var table3Filters = {
-	// col_1: "select",
-	// col_3: "select",
-	// col_4: "select",
-	// col_7: "select",
-	// col_21: "select",
 	col_23: "select",
 	sort_select: true,
 	display_all_text: "Display all"
