@@ -13,11 +13,11 @@ set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 //access for authorised user to transfer the input 
-$auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);//1 
+//$auth_users=user_acl("SFCS_0203",$username,7,$group_id_sfcs);//1 
 //access for power user to remove the input
-$auth_cut_users=user_acl("SFCS_0203",$username,22,$group_id_sfcs); //2
+//$auth_cut_users=user_acl("SFCS_0203",$username,22,$group_id_sfcs); //2
 //access for super user to report the sample room for cut panel input
-$auth_users_for_sample_cut_input=user_acl("SFCS_0203",$username,33,$group_id_sfcs);//3
+//$auth_users_for_sample_cut_input=user_acl("SFCS_0203",$username,33,$group_id_sfcs);//3
 ?>
 
 

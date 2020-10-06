@@ -4,7 +4,7 @@ include("header1.php");
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/user_acl_v1.php"); 
 include($_SERVER['DOCUMENT_ROOT']."/sfcs/server/group_def.php");
-$view_access=user_acl("SFCS_0041",$username,1,$group_id_sfcs);
+//$view_access=user_acl("SFCS_0041",$username,1,$group_id_sfcs);
 ?>
 <head>
 <title>Extra Shipment Details</title>
