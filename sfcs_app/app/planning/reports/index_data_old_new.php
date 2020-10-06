@@ -71,24 +71,19 @@ $dat1=$_POST["dat2"];
 </form>";
 
 $addon_headings="";
-$sql2="SELECT section_id as section_id,GROUP_CONCAT(DISTINCT workstation_code ORDER BY workstation_code*1) AS sec_mods FROM $pms.workstation group by section_id";
-
+$sql2="SELECT section_id,section_name FROM $pms.sections where plant_code='$plant_code'";
 	$sql_result2=mysqli_query($link,$sql2) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
 		$section=$sql_row2['section_id'];
-		$sql3="SELECT section_name FROM $pms.sections where plant_code='$plant_code' and section_id='$section'";
-		$sql_result3=mysqli_query($link,$sql3) or exit("$sql3".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row3=mysqli_fetch_array($sql_result3))
-		{
-			$section_name=$sql_row3['section_name'];
-		}
-		$addon_headings.="<th>SEC-".$section_name."<br/>Pending PCS</th>";	
-		$addon_headings.="<th>SEC-".$section_name."<br/>Lost Value</th>";	
+		$section_name=$sql_row2['section_name'];
+		$addon_headings.="<th>".$section_name."<br/>Pending PCS</th>";	
+		$addon_headings.="<th>".$section_name."<br/>Lost Value</th>";	
 	}
-
+$dat=date('Ymd', strtotime($dat));
+$dat1=date('Ymd', strtotime($dat1));
 $week_del="select schedule,planned_delivery_date,po_number from $oms.oms_mo_details where plant_code='$plant_code' and planned_delivery_date between \"$dat\" and \"$dat1\"  GROUP BY schedule";
-// echo $week_del."<br>";
+ //echo $week_del."<br>";
 $sql_result=mysqli_query($link,$week_del) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $count_rows=mysqli_num_rows($sql_result);
 // if($count_rows > 0){
@@ -115,7 +110,7 @@ $count_rows=mysqli_num_rows($sql_result);
 	<th rowspan=2>Total FOB <br>For Extrashipment</th>
 	<th rowspan=2>Status</th>
 	<th colspan=".((mysqli_num_rows($sql_result2)*2)+2).">Production Balances</th>
-	<th colspan=2>Shipment Balances</th>
+	
 	</tr>
 	<tr>
 	<th>Size</th><th>Total Quantity</th><th>YY</th><th>Yards</th><th>YY</th><th>Yards</th><th>%</th><th>Yards</th><th>Size</th><th>Total Quantity</th><th>Size</th><th>Total Quantity</th>";
@@ -123,8 +118,8 @@ $count_rows=mysqli_num_rows($sql_result);
 		echo "$addon_headings<th>Total Production<br/>Pendings</th>";
 		echo "<th>Lost Value</th>";
 		
-		echo "<th>Total Shipment<br/>Pendings</th>";
-		echo "<th>Lost Value</th>";
+		// echo "<th>Total Shipment<br/>Pendings</th>";
+		// echo "<th>Lost Value</th>";
 			
 	echo " </tr></thead>";
 	$x=0;
@@ -165,18 +160,18 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$po_number1="'".implode("','",$po_number1)."'";
-	$po_del="select mp_mo_qty_id from $pps.mp_sub_mo_qty where po_number in($po_number1) and plant_code='$plant_code'";
+	$po_del="select master_po_details_mo_quantity_id from $pps.mp_sub_mo_qty where po_number in($po_number1) and plant_code='$plant_code'";
 	//echo $po_del."<br>";
 	$po_sql_result=mysqli_query($link, $po_del) or exit("Sql Error31 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows1=mysqli_num_rows($po_sql_result);
 	while($sql_row4=mysqli_fetch_array($po_sql_result))
 	{
-		$mp_mo_qty_id []=$sql_row4["mp_mo_qty_id "];
+		$master_po_details_mo_quantity_id[]=$sql_row4["master_po_details_mo_quantity_id"];
 		
 		
 	}
-	$mp_mo_qty_id="'".implode("','",$mp_mo_qty_id)."'";
-	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where mp_mo_qty_id in ($mp_mo_qty_id) and plant_code='$plant_code'";
+	$master_po_details_mo_quantity_id="'".implode("','",$master_po_details_mo_quantity_id)."'";
+	$po_del_num="select master_po_details_id from $pps.mp_mo_qty where master_po_details_mo_quantity_id in ($master_po_details_mo_quantity_id) and plant_code='$plant_code'";
 	//echo $po_del_num."<br>";
 	$po_sql_result45=mysqli_query($link, $po_del_num) or exit("Sql Error32 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows45=mysqli_num_rows($po_sql_result45);
@@ -187,7 +182,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		
 	}
 	$master_po_details_id="'".implode("','",$master_po_details_id)."'";
-	$po_del1="select size,schedule,color,mp_mo_qty_id,sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and mp_qty_type='ORIGINAL_QUANTITY' group by size,schedule,color";
+	$po_del1="select size,schedule,color,master_po_details_mo_quantity_id,sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and master_po_order_qty_type='ORIGINAL_QUANTITY' group by size,schedule,color ";
 	//echo $po_del1."<br>";
 	$po_sql_result1=mysqli_query($link, $po_del1) or exit("Sql Error33 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows2=mysqli_num_rows($po_sql_result1);
@@ -197,7 +192,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		$size=$sql_row5["size"];
 		$schedule=$sql_row5["schedule"];
 		$color=$sql_row5["color"];
-		$mp_mo_qty_id2=$sql_row5["mp_mo_qty_id"];
+		$master_po_details_mo_quantity_id2=$sql_row5["master_po_details_mo_quantity_id"];
 		$quantity=$sql_row5["quantity"];
 		$master_po_details_id1=$sql_row5["master_po_details_id"];
 		$po_style="select style from $pps.mp_color_detail where plant_code='$plant_code' and master_po_details_id='$master_po_details_id1'";
@@ -461,7 +456,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			
 			$ext_qty=$total_qty-$total;	
 			
-			$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and mp_qty_type='EXTRA_SHIPMENT' group by size,schedule,color ";
+			$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where plant_code='$plant_code' and master_po_details_id in ($master_po_details_id) and master_po_order_qty_type='EXTRA_SHIPMENT' group by size,schedule,color ";
 			$extra_ship_qty_result4=mysqli_query($link, $extra_ship_qty) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $total_rows=mysqli_num_rows($sql_result4);
 			while($sql_row000111 = mysqli_fetch_array($extra_ship_qty_result4))
@@ -484,7 +479,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			//M3 shipment quantity
 			// if(($rowspan_for_shipqty-$key001) == $rowspan_for_shipqty)
 			// {
-				$sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE plant_code='$plantcode' and sch_no=\"$sch\"";
+				$sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE plant_code='$plant_code' and sch_no=\"$sch\"";
 				// echo $sql5."<br>";
 				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$total_rows1=mysqli_num_rows($sql_result5);
@@ -505,13 +500,13 @@ $count_rows=mysqli_num_rows($sql_result);
 				$fob=$sql_row2["fob_price_per_piece"];		
 			}	
 			
-			echo "<td style=\"background:$id;\">".$fob."$</td>";
+			echo "<td style=\"background:$id;\">0</td>";
 			
 			$cost=$extra_qty*$fob;
 			
 			$cost1[]=$ext_qty*$fob;
 			
-			echo "<td style=\"background:$id;\">".$cost."$</td>";
+			echo "<td style=\"background:$id;\">".$cost."</td>";
 			
 			$total_cost=$total_cost+$cost;
 			
@@ -557,18 +552,116 @@ $count_rows=mysqli_num_rows($sql_result);
 				{
 					echo "<td style=\"background:$id1;\">Short Ship</td>";
 				}
+			}else{
+				echo"<td></td>";
 			}	
 			echo $total;
 			
 			$prod_balances=0;
+			
+
+			$sql21="SELECT jm_job_header_id FROM $pps.jm_job_header where plant_code='$plant_code' and po_number in($po_number1)";
+			// echo $sql21;
+			$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql2_num1=mysqli_num_rows($sql_result21);
+			while($sql_row21=mysqli_fetch_array($sql_result21))
+			{
+				$jm_job_header_id[]=$sql_row21['jm_job_header_id'];
+
+			}
+			$jm_job_header_id1="'".implode("','",$jm_job_header_id)."'";
+			$sql211="SELECT jm_jg_header_id FROM $pps.jm_jg_header where plant_code='$plant_code' and jm_job_header in($jm_job_header_id1)";
+			$sql_result211=mysqli_query($link, $sql211) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql2_num11=mysqli_num_rows($sql_result211);
+			while($sql_row211=mysqli_fetch_array($sql_result211))
+			{
+				$jm_jg_header_id[]=$sql_row211['jm_jg_header_id'];
+
+			}
+			$jm_jg_header_id1="'".implode("','",$jm_jg_header_id)."'";
+
+			$sql2111="SELECT task_jobs_id,task_header_id FROM $tms.task_jobs where plant_code='$plant_code' and task_job_reference in($jm_jg_header_id1)";
+			
+			$sql_result2111=mysqli_query($link, $sql2111) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql2_num111=mysqli_num_rows($sql_result2111);
+			while($sql_row2111=mysqli_fetch_array($sql_result2111))
+			{
+				// $task_jobs_id[]=$sql_row2111['task_jobs_id'];
+				$task_header_id[]=$sql_row2111['task_header_id'];
+
+			}
+			// $task_jobs_id1="'".implode("','",$task_jobs_id)."'";
+			$task_header_id1="'".implode("','",$task_header_id)."'";
+
+
 			// $sql2="select * from $bai_pro3.sections_db where sec_id>0";
-			$sql2="SELECT GROUP_CONCAT(DISTINCT workstation_code ORDER BY workstation_code*1) AS sec_mods FROM $pms.workstation where plant_code='$plant_code'";
+			$sql2="SELECT section_id FROM $pms.sections where plant_code='$plant_code'";
+			
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql2_num=mysqli_num_rows($sql_result2);
 			while($sql_row2=mysqli_fetch_array($sql_result2))
 			{
-				$sec_mods=$sql_row2['sec_mods'];
+				$sec_id=$sql_row2['section_id'];
+
+				$sql23="SELECT workstation_id FROM $pms.workstation where plant_code='$plant_code' and section_id='$sec_id'";
+				$sql_result23=mysqli_query($link, $sql23) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql2_num33=mysqli_num_rows($sql_result23);
+				while($sql_row23=mysqli_fetch_array($sql_result23))
+			{
+				$workstation_id[]=$sql_row23['workstation_id'];
+			}
+			$workstationid="'".implode("','",$workstation_id)."'";
+			$sql233="SELECT task_header_id FROM $tms.task_header where plant_code='$plant_code' and resource_id in($workstationid) and task_status='INPROGRESS' and task_type='SEWINGJOB' and task_header_id in($task_header_id1)";
+			//  echo 	$sql233;
+				$sql_result233=mysqli_query($link, $sql233) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql2_num333=mysqli_num_rows($sql_result233);
+
+				while($sql_row233=mysqli_fetch_array($sql_result233))
+			{
+				$task_headerid=$sql_row233['task_header_id'];
+
 				
+
+				$sql24="SELECT task_jobs_id FROM $tms.task_jobs where plant_code='$plant_code' and task_header_id ='$task_headerid'";
+				// echo 	$sql233;
+					$sql_result24=mysqli_query($link, $sql24) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql2_num24=mysqli_num_rows($sql_result24);
+					while($sql_row24=mysqli_fetch_array($sql_result24))
+					{
+						$task_jobsid=$sql_row24['task_jobs_id'];
+					}
+				
+					
+					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id ='$task_jobsid' AND plant_code='$plant_code'";
+					$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
+					
+						while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+							$minGoodQty=$minOperationResultRow['good_quantity'];
+						}
+					
+
+					/**
+					 * get MAX operation wrt jobs based on operation seq
+					 */
+					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
+					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_jobsid' AND plant_code='$plant_code'";
+					$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+					
+						while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+							$maxGoodQty=$maxOperationResultRow['good_quantity'];
+							$maxRejQty=$maxOperationResultRow['rejected_quantity'];
+						}
+					
+					
+					$balance=$minGoodQty-($maxGoodQty+$maxRejQty);
+				}		
+
+			
+			echo "<td style=\"background:$id;\">".$balance."</td>";
+			//  echo "<td style=\"background:$id;\">".round(($sql_row2xy['balance']*$fob),2)."$</td>";
+			echo "<td style=\"background:$id;\"></td>";
+				
+			 $prod_balances+=$balance;
 				// $sql2xy="select sum(balance) as balance from (select sum((ims_qty-ims_pro_qty)) as balance from bai_pro3.ims_log where ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB') union select sum((ims_qty-ims_pro_qty)) as balance from $pms.ims_log_backup where plant_code='$plantcode' and ims_schedule=\"$sch\" and ims_mod_no in ($sec_mods) and ims_remarks not in ('EXCESS','SAMPLE','EMB')) as t";
 				// // echo $sql2xy;
 				// $sql_result2xy=mysqli_query($link, $sql2xy) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -583,8 +676,8 @@ $count_rows=mysqli_num_rows($sql_result);
 					
 			}	
 			
-			// echo "<td style=\"background:$id;\">$prod_balances</td>";
-			// echo "<td style=\"background:$id;\">".round(($prod_balances*$fob),2)."$</td>";
+			echo "<td style=\"background:$id;\">$prod_balances</td>";
+			echo "<td style=\"background:$id;\">".round(($prod_balances*$fob),2)."</td>";
 			
 			// echo "<td style=\"background:$id;\">".($total_qty-$ship_total)."</td>";
 			// echo "<td style=\"background:$id;\">".round(($total_qty-$ship_total)*$fob,2)."$</td>";
@@ -593,7 +686,7 @@ $count_rows=mysqli_num_rows($sql_result);
 		}
 		
 	//	}
-	echo "<tr><td colspan=\"22\"></td><th>".$total_cost."$</th></tr>";
+	echo "<tr><td colspan=\"22\"></td><th>".$total_cost."</th></tr>";
 	echo "</table>";
 // }else{
 // 	echo "<div class='alert alert-info' align=\"center\">Selected period Don't have any schedules to shipment</div>";
