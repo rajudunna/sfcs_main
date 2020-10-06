@@ -22,11 +22,12 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
     $sub_po=$_POST["sub_po"];
     $plantcode=$_POST["plantcode"];
    
-    $qry_toget_sub_order="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$sub_po'";
+    $qry_toget_sub_order="SELECT po_description,master_po_number FROM $pps.mp_sub_order WHERE po_number='$sub_po'";
     // echo $qry_toget_sub_order;
     $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
     $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
@@ -34,6 +35,7 @@
         while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
         {
             $sub_po_description=$toget_sub_order_row["po_description"];
+            $master_po_number=$toget_sub_order_row["master_po_number"];
         }
     }
             
@@ -216,6 +218,26 @@
                 echo "<td height=20 style='height:15.0pt'>".$qty."</td>";
                 $cum_qty += $qty;
             }
+            $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style in ('$styles') AND color in ('$colors') AND master_po_number='$master_po_number' AND plant_code='$plantcode' AND is_active=1";
+            $version_id_result=mysqli_query($link_new, $get_operations_version_id) or exit("Sql Error at get_operations_version_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row14=mysqli_fetch_array($version_id_result))
+            {
+                $operations_version_id = $row14['operations_version_id'];
+            }
+            //Function to get operations for style,color
+            $result_mrn_operation=getJobOpertions($style,$color,$plantcode,$operations_version_id);
+            $operations=$result_mrn_operation;
+            $category=DepartmentTypeEnum::SEWING;
+            foreach($operations as $key =>$ops){
+                if($ops['operationCategory'] == $category)
+                {
+                    $operation_code[]= $ops['operationCode'];
+                    $ops_get_code[$ops['operationCode']] = $ops['operationName'];
+                }
+                
+            }
+          
+
             echo "<td height=20 style='height:15.0pt'>".$cum_qty."</td>";
             $final_total += $cum_qty;
             echo "<td>";
@@ -231,13 +253,9 @@
                 echo "<th>$ops_get_code[$op_code]</th>";
             }
             echo "</tr>";
-            $get_ops_query = "SELECT tsm.operation_code AS operation_code, tor.operation_name as operation_name FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style IN ('$styles') AND tor.display_operations='yes' and tor.category='sewing' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
-            $ops_query_result=$link->query($get_ops_query);
-            while ($row2 = $ops_query_result->fetch_assoc())
-            {
-                $operation_code[]= $row2['operation_code'];
-                $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
-            }
+            
+
+
             $col_span = count($ops_get_code);
             $tot_input=0;
             $tot_outout=0;
@@ -252,7 +270,6 @@
                 $get_io_qty = "SELECT SUM(IF(operation = $input_ops,good_quantity,0)) AS input,
                 SUM(IF(operation = $out_put_ops,good_quantity,0)) AS output FROM $pts.`transaction_log` WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                 // echo $get_io_qty;
-                // die();
                 mysqli_query($link_new,$get_io_qty) or exit("Sql Error70".mysqli_error());
                 $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
                 while($row7 = mysqli_fetch_array($get_io_qty_result))
