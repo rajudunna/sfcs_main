@@ -41,7 +41,7 @@
                     $mp_mo_details_id = implode("','", $mp_mo_details_id);
                     
                     //qry to get po_numbers wrt master po details qty id
-                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE master_po_details_mo_quantity_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
+                    $qry_MpSubMoQty="SELECT po_number FROM $pps.mp_sub_mo_qty WHERE mp_mo_qty_id IN ('$mp_mo_details_id') AND plant_code='$plant_code'";
                     $MpSubMoQty_result=mysqli_query($link_new, $qry_MpSubMoQty) or exit("Sql Error at mp_color_detail".mysqli_error($GLOBALS["___mysqli_ston"]));
                     $MpSubMoQty_num=mysqli_num_rows($MpSubMoQty_result);
                     if($MpSubMoQty_num>0){
