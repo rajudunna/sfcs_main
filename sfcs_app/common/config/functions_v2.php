@@ -155,7 +155,7 @@ function getRatioComponentGroup($ratio_comp_group_id,$plant_code){
     $material_item_code='';
     $master_po_details_id='';
     $master_po_details_id='';
-    $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE ratio_wise_component_group_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
+    $qry_ratio_component_group="SELECT ratio_id,component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id='$ratio_comp_group_id' AND plant_code='$plant_code'";
     //echo "</br> Qryratio".$qry_ratio_component_group;
     $ratio_component_group_result=mysqli_query($link_new, $qry_ratio_component_group) or exit("Sql Errorat_ratio_component_group".mysqli_error($GLOBALS["___mysqli_ston"]));
         $ratio_component_group_num=mysqli_num_rows($ratio_component_group_result);
@@ -1238,7 +1238,7 @@ function getDocketInformation($docket_no, $plant_code) {
         FROM $pps.jm_docket_lines doc_line 
         LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id
         LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
+        LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
         WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number='$docket_no' AND doc_line.is_active=true";
     $docket_info_result=mysqli_query($link_new, $docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
  

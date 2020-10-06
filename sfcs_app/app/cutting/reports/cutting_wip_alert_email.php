@@ -234,7 +234,7 @@ foreach($departments as $department)    //section Loop -start
 			$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
 			LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id 
 			WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status != 'OPEN' AND jdl.plant_code='$plantCode'";	
 			$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
@@ -318,7 +318,7 @@ foreach($departments as $department)    //section Loop -start
 							$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
 							LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
 							LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-							LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+							LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id 
 							WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
 							$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
 							$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    
@@ -436,7 +436,7 @@ foreach($departments as $department)    //section Loop -start
 					$qrylpLay="SELECT sum(l.plies) as plies,GROUP_CONCAT(CONCAT('''', ratio_cg.ratio_id, '''' ))AS ratio_id FROM $pps.jm_docket_lines jdl 
 					LEFT JOIN $pps.lp_lay l ON jdl.jm_docket_line_id=l.jm_docket_line_id
 					LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = jdl.jm_docket_id
-					LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id 
+					LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id 
 					WHERE jdl.docket_line_number IN (".$dokcetno.") AND l.cut_report_status = 'OPEN' AND jdl.plant_code='$plantCode'";	
 					$qrylpLayResult=mysqli_query($link_new, $qrylpLay) or exit("$qrylpLay".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$qrylpLayNum=mysqli_num_rows($qrylpLayResult);    

@@ -104,7 +104,7 @@ $username=$_SESSION['userName'];
 			FROM $pps.jm_docket_lines docLine 
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
 			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
-			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id
+			LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id
 			LEFT JOIN $pps.log_rm_ready_in_pool l ON docLine.jm_docket_id=l.jm_docket_line_id
 			WHERE docLine.plant_code='$plantcode' AND DATE(docLine.created_at) BETWEEN '$sdate' AND '$edate'";
 			//echo $qrydocketLines;
