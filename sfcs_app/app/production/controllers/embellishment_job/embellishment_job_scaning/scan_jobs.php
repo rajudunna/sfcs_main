@@ -7,7 +7,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',5,'R'));
-	$has_permission=haspermission($_GET['r']);
+	// $has_permission=haspermission($_GET['r']);
 	$url = getFullURL($_GET['r'],'pre_emb_job_scanning.php','N');
 	if ($_GET['type'] =='embellishment')
 	{

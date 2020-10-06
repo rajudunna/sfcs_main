@@ -3,9 +3,12 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));; 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'], "common/config/group_def.php", 3, "R"));
-$view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
-$aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
-$permission = haspermission($_GET['r']);
+//$view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
+//$aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
+// $permission = haspermission($_GET['r']);
+// $view_access=user_acl("SFCS_0036",$username,1,$group_id_sfcs);
+// $aut_users=user_acl("SFCS_0036",$username,7,$group_id_sfcs);
+//$permission = haspermission($_GET['r']);
 $plantcode=$_SESSION['plantCode'];
 ?>
 
@@ -46,10 +49,10 @@ function thirdbox()
 			$username=strtolower($username_list[1]);
 
 			$author_id_db=array("kirang");
-			if(in_array($authorized,$permission))
-			{
+			// if(in_array($authorized,$permission))
+			// {
 				//echo '| <strong><a href="cut_to_ship3.php">Current Week Process</a></strong> | <strong> <a href="cut_to_ship33.php">Previous Week Process</a> </strong>';
-			}
+			// }
 			?>
 			<?php
 			if(isset($_POST['filter2']))
@@ -1034,13 +1037,13 @@ echo "</tr>";
 					echo"</td>";
 					echo "<td>".$already_reported."</td>";
 					$disable_btn = false;	
-					if(!in_array($authorized,$permission)){
+					// if(!in_array($authorized,$permission)){
 						$disable_btn = true;
 						$check="readonly=\"true\"";
 						$value=$act_fca_new-$already_reported;
-					}else{
-						$value=$order_qtys[$i]-$already_reported;
-					}
+					// }else{
+					// 	$value=$order_qtys[$i]-$already_reported;
+					// }
 					echo "<td><input type=\"number\" name=\"report_qty[]\" value=\"$value\" $check onkeyup=\"if(this.value>$value || this.value<0 || (event.which)==189 || (event.which)==187  ){ this.value=$value; sweetAlert('Please enter correct value.','','warning'); }\"></td>";
 					//echo "<td>".$rejected."</td>";
 					//echo "<td>".$sample_room_new."</td>";

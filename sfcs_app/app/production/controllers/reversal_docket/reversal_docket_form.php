@@ -3,7 +3,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11; IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
 <?php
     $url = include(getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
-    $has_permission=haspermission($_GET['r']); 
+    // $has_permission=haspermission($_GET['r']); 
     include(getFullURLLevel($_GET['r'],'/common/config/m3Updations.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
     //hardcode for temp purpose

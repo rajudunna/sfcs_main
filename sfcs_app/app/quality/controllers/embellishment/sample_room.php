@@ -12,7 +12,7 @@ user names taken from the database level
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/m3_bulk_or_proc.php',4,'R'));
-$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
+//$View_access=user_acl("SFCS_0145",$username,1,$group_id_sfcs);
 ?>
 <?php
 

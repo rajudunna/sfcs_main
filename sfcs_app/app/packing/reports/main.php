@@ -5,7 +5,7 @@
 
 <?php 
     $table_filter = getFullURLLevel($_GET['r'],'common/js/TableFilter/tablefilter.js',3,'R');
-    $view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
+   //$view_access = user_acl("SFCS_0033",$username,1,$group_id_sfcs); 
     $image_path = getFullURLLevel($_GET['r'],'common/images/actual',1,'R').'/'; 
 	$plantcode=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];

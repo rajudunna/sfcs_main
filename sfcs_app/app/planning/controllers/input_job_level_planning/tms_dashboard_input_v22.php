@@ -297,7 +297,7 @@ border: 1px solid black;
 
 <?php
 $double_modules=array();
-$has_perm=haspermission($_GET['r']);
+// $has_perm=haspermission($_GET['r']);
 //$username_list=explode('\\',$_SERVER['REMOTE_USER']);
 //$username=strtolower($username_list[1]);
 // $username="sfcsproject1";
@@ -840,8 +840,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					
 					$title=str_pad("Style:".$style,50)."\n".str_pad("Schedule:".$schedule,50)."\n".str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total_Qty:".$carton_qty,50)."\n".str_pad("Cut Job No:".implode(", ",$club_c_code),50);
 						$ui_url=getFullURLLevel($_GET['r'],'input_status_update_input.php',0,'R');		
-						if(in_array($authorizeLevel_1,$has_perm))
-						{
+						// if(in_array($authorizeLevel_1,$has_perm))
+						// {
 							if($id=="blue" or $id=="yellow")
 							{
 								echo "<div id=\"S$schedule\" style=\"float:left;\">
@@ -855,12 +855,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 							{
 								echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no_random_ref&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
 							}
-						}
-						else
-						{
-							echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
+						// }
+						// else
+						// {
+						// 	echo "<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" title=\"$title\" ><a href=\"#\" ><font style=\"color:black;\">$letter$ft_status</font></a></div></div></div>";
 
-						}
+						// }
 						
 					$y++;
 						
@@ -868,24 +868,24 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			for($j=$y+1;$j<=4;$j++)
 			{
-				if(in_array($authorizeLevel_2,$has_perm))
-				{
+				// if(in_array($authorizeLevel_2,$has_perm))
+				// {
 					
 					$urll = getFullURLLevel($_GET["r"],'cut_jobs_loading.php',0,'N');
 					// echo $urll;
 					echo "<div id=\"\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\"><a href=\"javascript:void(0)\" onclick=\"Popup=window.open('".$urll."','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1200,height=800, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"font-size:15px;color:#000000;\"></font></a></div></div></div>";
 
-				}
-				else
-				{
-					echo "<div id=\"\" style=\"float:left;\">
-							<div id=\"$input_job_no_random_ref\" style=\"float:left;\">
-								<div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\">
-								</div>
-							</div>
-						</div>";
+				// }
+				// else
+				// {
+				// 	echo "<div id=\"\" style=\"float:left;\">
+				// 			<div id=\"$input_job_no_random_ref\" style=\"float:left;\">
+				// 				<div id=\"$input_job_no_random_ref\" class=\"white\" style=\"font-size:12px; text-align:center; color:white\">
+				// 				</div>
+				// 			</div>
+				// 		</div>";
 
-				}
+				// }
 			}
 				// Ticket #663887 dispaly the buyer name of module at the end of boxes
 				$sqly="select buyer_div from $bai_pro3.plan_modules where module_id=$module";
@@ -914,12 +914,12 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo '</div>';
 	}	
 }
-if((in_array($authorizeLevel_2,$has_perm)))
-	{
-		echo "<script>";
-		echo "blink_new_priority('".implode(",",$blink_docs)."');";
-		echo "</script>";
-	}
+// if((in_array($authorizeLevel_2,$has_perm)))
+// 	{
+// 		echo "<script>";
+// 		echo "blink_new_priority('".implode(",",$blink_docs)."');";
+// 		echo "</script>";
+// 	}
 ?>
 </div>
 <div class='col-sm-12'> 

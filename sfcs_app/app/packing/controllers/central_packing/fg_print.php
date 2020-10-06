@@ -25,7 +25,7 @@
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/header_scripts.php',2,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/menu_content.php',2,'R')); 
-    $has_permission=haspermission($_GET['r']);
+    // $has_permission=haspermission($_GET['r']);
 	
 	error_reporting(0);
 ?>

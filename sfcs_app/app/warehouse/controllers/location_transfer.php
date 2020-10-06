@@ -25,7 +25,7 @@
 	//0 for 
 	//1 for lock
 	//2 for completed
-	$has_permission = haspermission($_GET['r']);
+	// $has_permission = haspermission($_GET['r']);
 	$plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
 ?>
@@ -207,51 +207,51 @@ try
 			case "Elastic":
 			{
 				echo "<th>Transfer Qty (MTR)</th><th>New Location</th><th>Remarks</th></tr>";	
-				if(!in_array($view,$has_permission))
-				{
-					$url = getFullURL($_GET[r],'restrict.php','N');
-					header("Location: ".$url);
-				}		
+				// if(!in_array($view,$has_permission))
+				// {
+				// 	$url = getFullURL($_GET[r],'restrict.php','N');
+				// 	header("Location: ".$url);
+				// }		
 				break;
 			}
 			case "Lace":
 			{
 				echo "<th>Transfer Qty ($fab_uom)</th><th>New Location</th><th>Remarks</th></tr>";
-				if(!in_array($view,$has_permission))
-				{
-					$url = getFullURL($_GET[r],'restrict.php','N');
-					header("Location: ".$url);
-				}
+				// if(!in_array($view,$has_permission))
+				// {
+				// 	$url = getFullURL($_GET[r],'restrict.php','N');
+				// 	header("Location: ".$url);
+				// }
 				break;
 			}
 			case "Fabric":
 			{
 				echo "<th>Transfer Qty (YARDS)</th><th>New Location</th><th>Remarks</th></tr>";
-				if(!in_array($view,$has_permission))
-				{
-					$url = getFullURL($_GET[r],'restrict.php','N');
-					header("Location: ".$url);
-				}
+				// if(!in_array($view,$has_permission))
+				// {
+				// 	$url = getFullURL($_GET[r],'restrict.php','N');
+				// 	header("Location: ".$url);
+				// }
 				break;
 			}
 			case "Thread":
 			{
 				echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-				if(!in_array($view,$has_permission))
-				{
-					$url = getFullURL($_GET[r],'restrict.php','N');
-					header("Location: ".$url);
-				}
+				// if(!in_array($view,$has_permission))
+				// {
+				// 	$url = getFullURL($_GET[r],'restrict.php','N');
+				// 	header("Location: ".$url);
+				// }
 				break;
 			}
 			default:
 			{
 				echo "<th>Transfer Qty (CON) </th><th>New Location</th><th>Remarks</th></tr>";
-				if(!in_array($view,$has_permission))
-				{
-					$url = getFullURL($_GET[r],'restrict.php','N');
-					header("Location: ".$url);
-				}
+				// if(!in_array($view,$has_permission))
+				// {
+				// 	$url = getFullURL($_GET[r],'restrict.php','N');
+				// 	header("Location: ".$url);
+				// }
 				break;
 			}
 		}
