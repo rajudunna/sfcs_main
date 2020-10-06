@@ -137,6 +137,8 @@ if(isset($_POST['formSubmit']))
                                 if ($row['cut_report_status'] == 'OPEN' && $row['lay_plies'] > 0) {
                                     echo "<td><button type='button'class='btn btn-danger'  onclick='reverseLay(".$id.")'>Reverse Lay</button></td>";
                                     echo "<td><button type='button'class='btn btn-primary' id='reportcut' onclick='reportCut(".$id.")'>Report Cut</button></td>";
+                                    echo "<td><button type='button'class='btn btn-warning' id='addRejections' onclick='addRejections($id)'>Add Rejection</button></td>";
+                                    echo "<td><button type='button'class='btn btn-warning' id='addRejections' onclick='addRejections($id)'>Cancel Rejection</button></td>";
                                 } else {
                                     echo "<td><button type='button'class='btn btn-danger disabled'>Reverse Lay</button></td>";
                                     echo "<td><button type='button'class='btn btn-primary disabled'>Report Cut</button></td>";
@@ -189,7 +191,7 @@ if(isset($_GET['sidemenu'])){
           }
           .right_col{
           	width: 100% !important;
-    margin-left: 0 !important;
+            margin-left: 0 !important;
           }
 	</style>";
 }
