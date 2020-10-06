@@ -188,7 +188,7 @@ $username = $_SESSION['userName'];
 			        $sub_po_number[]=$sub_po_query_result_result_row['po_number']; 
 				}
 				$sub_po="'".implode("','",$sub_po_number)."'";
-				$logical_bundle_query="select fg_color,feature_value,jm_pplb_id,jm_product_logical_bundle_id,jm_cut_job_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_cut_job_id"; 
+				$logical_bundle_query="select fg_color,feature_value,jm_pplb_id,jm_pplb_id,jm_cut_job_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_cut_job_id"; 
 				$logical_bundle_query_result=mysqli_query($link, $logical_bundle_query) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($logical_bundle_query_result_row=mysqli_fetch_array($logical_bundle_query_result)) 
 			    { 
@@ -199,17 +199,17 @@ $username = $_SESSION['userName'];
 					// $jm_product_logical_bundle_id=$logical_bundle_query_result_row['jm_product_logical_bundle_id'];
 					$jm_cut_job_id=$logical_bundle_query_result_row['jm_cut_job_id'];
 
-					$query4="select size,jm_product_logical_bundle_id FROM $pps.jm_product_logical_bundle WHERE fg_color='$color' and feature_value='$schedule' and jm_cut_job_id='$jm_cut_job_id' and plant_code='$plant_code'";
+					$query4="select size,jm_pplb_id FROM $pps.jm_product_logical_bundle WHERE fg_color='$color' and feature_value='$schedule' and jm_cut_job_id='$jm_cut_job_id' and plant_code='$plant_code'";
 					$query4_result=mysqli_query($link, $query4) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row=mysqli_fetch_array($query4_result)) 
 					{ 
 						$size_array[]=$query4_result_row['size']; 
-						$jm_product_logical_bundle_id1[]=$query4_result_row['jm_product_logical_bundle_id']; 
+						$jm_product_logical_bundle_id1[]=$query4_result_row['jm_pplb_id']; 
 					}
 					$jm_product_logical_bundle_id="'".implode("','",$jm_product_logical_bundle_id1)."'";
 					//$size_array[]=$logical_bundle_query_result_row['size'];
 
-					$query1="select jm_jg_header_id FROM $pps.jm_job_bundles WHERE jm_product_logical_bundle_id in($jm_product_logical_bundle_id) and plant_code='$plant_code'";
+					$query1="select jm_jg_header_id FROM $pps.jm_job_bundles WHERE jm_pplb_id in($jm_product_logical_bundle_id) and plant_code='$plant_code'";
 					$query1_result=mysqli_query($link, $query1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query1_result_row=mysqli_fetch_array($query1_result)) 
 					{ 

@@ -90,7 +90,7 @@ $table_flag = false;
 			$jm_pplb_id=$get_jplbid_row['jm_pplb_id'];
 			
 			//getting jm_job_bundle_id
-			$get_jjbid_qry="SELECT jm_job_bundle_id FROM $pps.`jm_job_bundles` WHERE plant_code='$plantcode' AND jm_product_logical_bundle_id='$jm_pplb_id'";
+			$get_jjbid_qry="SELECT jm_job_bundle_id FROM $pps.`jm_job_bundles` WHERE plant_code='$plantcode' AND jm_pplb_id='$jm_pplb_id'";
 			$get_jjbid_qry_result=mysqli_query($link, $get_jjbid_qry) or die ("sql error getting details from jm_job_bundles".$sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($get_jjbid_row=mysqli_fetch_array($get_jjbid_qry_result))
 			{
