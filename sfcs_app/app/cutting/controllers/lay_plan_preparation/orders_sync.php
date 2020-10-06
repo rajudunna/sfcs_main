@@ -30,12 +30,16 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				<div class="ajax-loader" id="loading-image">
 				    <center><img src='<?= getFullURLLevel($_GET['r'],'common/images/ajax-loader.gif',2,'R'); ?>' class="img-responsive" style="padding-top: 250px"/></center>
 </div>
-<?php
+<?php 
 	  $order_tid=order_tid_decode($_GET['order_tid']);
 	  $get_order_tid = $_GET['order_tid'];
 	  $color=color_decode($_GET['color']);
 	  $style=style_decode($_GET['style']);
 	  $schedule=$_GET['schedule'];
+	  // $test=0;
+	  // $test=$_GET['test'];
+	  // if($test==11){
+		  //die();
 	$sql="SELECT * FROM $bai_pro3.bai_orders_db_confirm as bai_orders_db_confirm LEFT JOIN $bai_pro3.plandoc_stat_log as plandoc_stat_log ON plandoc_stat_log.order_tid=bai_orders_db_confirm.order_tid WHERE bai_orders_db_confirm.$order_joins_not_in AND bai_orders_db_confirm.order_tid='".$order_tid."' and bai_orders_db_confirm.order_del_no='".$schedule."' and bai_orders_db_confirm.order_col_des='".$color."' GROUP BY bai_orders_db_confirm.order_col_des";
 	//HAVING plan_quantity>=confirm_order_quantity"; //this will validate whether layplan has > order quantity or not
 	$result=mysqli_query($link, $sql) or ("Sql error777".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -149,7 +153,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			}
 			if($layplan_id1==0)
 			{
-				$insertLayPlanQuery="INSERT INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module','$request_time','$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
+				$insertLayPlanQuery="INSERT INTO $brandix_bts.tbl_cut_master(doc_num,ref_order_num,cut_num,cut_status,planned_module,request_time,issued_time,planned_plies,actual_plies,plan_date,style_id,product_schedule,cat_ref,cuttable_ref,mk_ref,col_code) VALUES	('$doc_num',$order_id,$cut_num,'$cut_status','$planned_module',NOW(),'$issued_time',$planned_plies,$actual_plies,'$plan_date',$style_id,'$product_schedule',$cat_ref,$cuttable_ref,$mk_ref,$col_code)";
 				// echo $insertLayPlanQuery."</br>";
 				$result8=mysqli_query($link, $insertLayPlanQuery) or ("Sql error999".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$inserted_id_query = "select id from $brandix_bts.tbl_cut_master where doc_num='".$doc_num."'";
@@ -199,14 +203,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 			</script>";	
 	*/
     //Encoding color
+	  //}
     $main_color = color_encode($color);
     $main_style = style_encode($style);
+	$test_orderss=1;
     echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",0);
   		function Redirect() {
   			sweetAlert('Successfully Generated','','success');
-  			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule\";
-  			}
+  			location.href = \"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$main_color&style=$main_style&schedule=$schedule&test_orders=$test_orderss\";
+  		}
   		</script>";
+		
+
 ?>
 </div>
 </div>
