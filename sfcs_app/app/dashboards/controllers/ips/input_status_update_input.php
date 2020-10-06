@@ -6,7 +6,7 @@ $php_self = explode('/',$_SERVER['PHP_SELF']);
 //var_dump($php_self);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/input_status_update_input.php");
-$has_permission=haspermission($url_r);  
+//$has_permission=haspermission($url_r);  
 ?>
 <script type="text/javascript" src="sweetalert.min.js"></script>
 <script>	
@@ -38,7 +38,7 @@ $has_permission=haspermission($url_r);
 include("../../../../common/config/config.php");
 include("../../../../common/config/functions.php");
 error_reporting(0);
-$has_permission = haspermission($_GET['r']);
+//$has_permission = haspermission($_GET['r']);
 // $username_list=explode('\\',$_SERVER['REMOTE_USER']);
 // $username=strtolower($username_list[1]);
 $username="sfcsproject1";
@@ -290,24 +290,24 @@ else
 
 // Start  ---------  03-Nov-2014 -  Added by Chathurangad
 
-if(in_array($update,$has_permission))
-{
+// if(in_array($update,$has_permission))
+// {
 	echo "<h2>Line Input Update Status</h2>";
 	$textbox_disable="";
 	$dropdown_disable="disabled=\"disabled\"";
-}
-else if(in_array($view,$has_permission))
-{
-	echo "<h2>Line Input View Form</h2>";
-	$textbox_disable="disabled=\"disabled\"";
-	$dropdown_disable="disabled=\"disabled\"";
-}
-else
-{
-	header("Location:restrict.php");
-	$textbox_disable="";
-	$dropdown_disable="disabled=\"disabled\"";
-}
+// }
+// else if(in_array($view,$has_permission))
+// {
+// 	echo "<h2>Line Input View Form</h2>";
+// 	$textbox_disable="disabled=\"disabled\"";
+// 	$dropdown_disable="disabled=\"disabled\"";
+// }
+// else
+// {
+// 	header("Location:restrict.php");
+// 	$textbox_disable="";
+// 	$dropdown_disable="disabled=\"disabled\"";
+// }
 // End  ---------  03-Nov-2014 -  Added by Chathurangad
 
 echo "<h3>Style:$style / Schedule:$join_sch / Input Job#: J".leading_zeros($jobno,3)."</h3>";
@@ -330,8 +330,8 @@ $seq_no=echo_title("$bai_pro3.packing_summary_input","pac_seq_no","input_job_no_
  //echo "<br><a class='btn btn-info btn-sm' href=\"print_input_sheet_dest.php?schedule=$org_schs\" onclick=\"return popitup_new('print_input_sheet_dest.php?schedule=$org_schs')\">Print Input Job Sheet - Destination Wise</a><br>";
 
 // $production_review_sheet_users=array("chathurangad","beracut","nizzarm","sureshr","gayancha","kumuduv","gayanbu","udenim","samanthikaw","dulanjalik","ayomis","dinushag");
-if(in_array($authorized,$has_permission))
-{
+// if(in_array($authorized,$has_permission))
+// {
 	$sql11="SELECT order_col_des FROM $bai_pro3.bai_orders_db where order_del_no=\"$join_sch\"";
 	//echo $sql."<br>";	
     $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error898 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -340,7 +340,7 @@ if(in_array($authorized,$has_permission))
 	{		
 		$color= $sql_row11['order_col_des'];
 	}
-}
+// }
 
 echo "<br>";
 if($job_color_status=="blue")
@@ -349,8 +349,8 @@ if(true)
 	echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc')\">Job Sheet</a><br>";
 }
 // $production_reviewss_sheet_users=array("chathurangad","dinushapre","buddhikam");
-if(in_array($authorized,$has_permission))
-{
+// if(in_array($authorized,$has_permission))
+// {
 	$sql11="SELECT order_col_des FROM $bai_pro3.bai_orders_db where order_del_no=\"$join_sch\"";
 	//echo $sql."<br>";	
 	$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error898 $sql11".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -359,7 +359,7 @@ if(in_array($authorized,$has_permission))
 	{
 		$color= $sql_row11['order_col_des'];
 	}
-}
+// }
 //end test link -------------------------------------------------------	
 
 echo "<br>";
@@ -484,8 +484,8 @@ echo "<input type=\"hidden\" name=\"schedule\" value=\"$schedule\" />";
 echo "<input type=\"hidden\" name=\"jobno\" value=\"$jobno\" />";
 echo "<input type=\"hidden\" name=\"moduleno\" value=\"$module_no\" />";
 echo "<select name=\"status\" class=\"form-control\" $dropdown_disable>";
-if(in_array($authorized,$has_permission))
-{
+// if(in_array($authorized,$has_permission))
+// {
 		for($i=0;$i<sizeof($status);$i++)
 		{	
 			if($trims_statusx == $i)
@@ -501,26 +501,26 @@ if(in_array($authorized,$has_permission))
 		echo "</select>";
 		$pvalue=$_POST['status'];
 //		echo "pres value=".$pvalue;
-}
-else
-{
-		for($i=$t_status;$i<sizeof($status);$i++)
-		{	
-			if($trims_statusx == $i)
-			{
-				echo "<option value=\"$i\" selected>".$status[$i]."</option>";
-			}
-			else
-			{
-				echo "<option value=\"$i\">".$status[$i]."</option>";
-			}
-			//echo "sa =" .$sta."<br>";
-		}
-		echo "</select>";
-		$pvalue=$_POST['status'];
-//		echo "pres value=".$pvalue;
+// }
+// else
+// {
+// 		for($i=$t_status;$i<sizeof($status);$i++)
+// 		{	
+// 			if($trims_statusx == $i)
+// 			{
+// 				echo "<option value=\"$i\" selected>".$status[$i]."</option>";
+// 			}
+// 			else
+// 			{
+// 				echo "<option value=\"$i\">".$status[$i]."</option>";
+// 			}
+// 			//echo "sa =" .$sta."<br>";
+// 		}
+// 		echo "</select>";
+// 		$pvalue=$_POST['status'];
+// //		echo "pres value=".$pvalue;
 	
-}
+// }
 echo "</td>";
 ?>
 </div>
@@ -575,8 +575,8 @@ else
 {	//echo 'test';
 	echo "<br/><div style=\"Color:red;font-size:18px;text-weight:bold;\">Total No of JOBs in module: ".$module_no." are ".$no_of_ims_job."</div><br/>";
 	echo "<br/><div style=\"Color:red;font-size:16px;text-weight:bold;\">".$display_job_color_status."</div><br/>";
-	if(in_array($authorized,$has_permission))
-	{
+	// if(in_array($authorized,$has_permission))
+	// {
 		if($no_of_ims_job<4)
 		{
 			//if($checkCount>0)
@@ -601,38 +601,37 @@ else
 				echo '<td></td>';
 			}
 		}
-	}
-	else if(in_array($authorized,$has_permission))
-	{
+	// }
+	// else if(in_array($authorized,$has_permission))
+	// {
 		
-			if($checkCount>0)
-			//if(true)
-			{
-				if($job_color_status=="blue")
-				//if(true)
-				{
-					//echo '<td><input type="submit" name="submit" value="Submit" id="sub" /></td>';
-					?>
-			<td><input type="submit" name="submit" value="Submit" class="btn btn-primary" id="sub" onclick="document.getElementById('sub').style.display='none'; document.getElementById('msg').style.display='';"></td>
+	// 		if($checkCount>0)
+	// 		//if(true)
+	// 		{
+	// 			if($job_color_status=="blue")
+	// 			//if(true)
+	// 			{
+	// 				//echo '<td><input type="submit" name="submit" value="Submit" id="sub" /></td>';
+	// 				?>
+	// 		<td><input type="submit" name="submit" value="Submit" class="btn btn-primary" id="sub" onclick="document.getElementById('sub').style.display='none'; document.getElementById('msg').style.display='';"></td>
 			
-			<?php
-				}
-				else
-				{
-					echo '<td></td>';
-				}
-			}
-			else
-			{
-				echo '<td></td>';
-			}
+	// 		<?php
+	// 			}
+	// 			else
+	// 			{
+	// 				echo '<td></td>';
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			echo '<td></td>';
+	// 		}
 		
-	}
-	else
-	
-	{
-		echo '<td></td>';
-	}
+	// }
+	// else
+	// {
+	// 	echo '<td></td>';
+	// }
 	
 	
 }

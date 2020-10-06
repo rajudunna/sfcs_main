@@ -3,7 +3,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 	include(getFullURL($_GET['r'],'bundle_check_list_function.php','R'));
-	$has_permission=haspermission($_GET['r']);
+	//$has_permission=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
 	// $plantcode='Q01';
 	$username=$_SESSION['userName'];

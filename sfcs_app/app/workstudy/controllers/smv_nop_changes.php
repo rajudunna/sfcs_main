@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 $view_access=user_acl("SFCS_0165",$username,1,$group_id_sfcs);
 $auth_users=user_acl("SFCS_0165",$username,7,$group_id_sfcs);
-$has_permission = haspermission($_GET['r']);
+// $has_permission = haspermission($_GET['r']);
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
@@ -222,8 +222,8 @@ $username=$_SESSION['userName'];
 		$max_allowed_date=date("Y-m-d");
 		
 		// if(in_array($username,$auth_users))
-		if(in_array($authorized,$has_permission))
-		{
+		// if(in_array($authorized,$has_permission))
+		// {
 			echo '<div class="x_content">';
 			if($username=="kiran")
 			{
@@ -328,11 +328,11 @@ $username=$_SESSION['userName'];
 				</div>
 			</div>';
 			echo '</form></div>';
-		}
-		else
-		{
-			echo "<h2><font color=red>You are not authorised to use this interface.</font></h2>";
-		}
+		// }
+		// else
+		// {
+		// 	echo "<h2><font color=red>You are not authorised to use this interface.</font></h2>";
+		// }
 
 	?>
 	</div>
