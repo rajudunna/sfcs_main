@@ -18,15 +18,25 @@
 </script>
 <body onload="printpr1();">
 <?php
-    $username='Mounika';
+    // $username='Mounika';
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',3,'R'));
     $sub_po=$_POST["sub_po"];
     $plantcode=$_POST["plantcode"];
-    // echo $sub_po;
-    // echo $plantcode;
+   
+    $qry_toget_sub_order="SELECT po_description FROM $pps.mp_sub_order WHERE po_number='$sub_po'";
+    // echo $qry_toget_sub_order;
+    $toget_sub_order_result=mysqli_query($link_new, $qry_toget_sub_order) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_podescri_num=mysqli_num_rows($toget_sub_order_result);
+    if($toget_podescri_num>0){
+        while($toget_sub_order_row=mysqli_fetch_array($toget_sub_order_result))
+        {
+            $sub_po_description=$toget_sub_order_row["po_description"];
+        }
+    }
+            
 
     //Qry to fetch jm_job_header_id from jm_jobs_header
     $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$sub_po' AND plant_code='$plantcode' order by ref_id";
@@ -49,10 +59,10 @@
             $job_number[$get_job_details_row['jm_jg_header_id']] = $get_job_details_row['job_number'];
             $job_group[$get_job_details_row['jm_jg_header_id']] = $get_job_details_row['job_group'];
         }
-    }
+    } 
     $task_type=TaskAttributeNamesEnum::SEWINGJOBNO;
-    // var_dump($job_number);
-    // die();
+    $revert_url = getFullURL($_GET['r'],'job_summary_view.php','N');
+    echo "<button class='btn btn-sm btn-primary pull-right' onclick='location.href=\"$revert_url\"' ><< Click here to go Back</button>";
 
     if(sizeof($job_ids) > 0){
         
@@ -87,14 +97,15 @@
                 //get task jobs 
                 $sql_tms = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
                 // echo $sql_tms;
-                mysqli_query($link_new,$sql_tms) or exit("Sql Error7".mysqli_error());
+                mysqli_query($link_new,$sql_tms) or exit("Sql Error78".mysqli_error());
                 $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
                 while($sql_row_tms = mysqli_fetch_array($sql_result_tms))
                 {
                     $out_put_ops = $sql_row_tms['operation_code'];
                 }
                 $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
-                mysqli_query($link_new,$sql_tms_in) or exit("Sql Error7".mysqli_error());
+                // echo $sql_tms_in;
+                mysqli_query($link_new,$sql_tms_in) or exit("Sql Error79".mysqli_error());
                 $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
                 while($sql_row_tms_in = mysqli_fetch_array($sql_result_tms_in))
                 {
@@ -140,6 +151,10 @@
             if($key == 0){
                 echo "<div style='float:left'><table class='table table-bordered' style='font-size:11px;font-family:verdana;text-align:left;'>";
                 echo "<tr>";
+                echo "<td>PO Description :</td>";
+                echo "<td>$sub_po_description</td>";
+                echo "</tr>";
+                echo "<tr>";
                 echo "<td>Style :</td>";
                 echo "<td>$styles</td>";
                 echo "</tr>";
@@ -152,7 +167,6 @@
                 echo "<td>$colors</td>";
                 echo "</tr>";
                 echo "</table></div>";
-                
                 echo "<div class='col-md-12 table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
                 echo "<tr style='background-color:#286090;color:white;'>";
                 echo "<th>Style</th>";
@@ -207,15 +221,24 @@
             echo "<td>";
             echo "<div class='table-responsive'>";
             echo "<table class=\"table table-bordered\">
-            <tr><th  rowspan=2>Input Date</th><th  rowspan=2>Module#</th>
+            <tr><th rowspan=2>Input Date</th><th rowspan=2>Module#</th>
             <th rowspan=2>Color</th><th rowspan=2>Size</th>
             <th rowspan=2>Input Qty</th><th rowspan=2>Output Qty</th>
-            <th colspan=2 style=text-align:center>Rejected Qty</th></tr>";
+            <th colspan=$col_span style=text-align:center>Rejected Qty</th></tr>";
             echo "<tr>";
-            echo "<th>Sew In</th>";
-            echo "<th>Sew Out</th>";
-           
+            foreach ($operation_code as $op_code) 
+            {
+                echo "<th>$ops_get_code[$op_code]</th>";
+            }
             echo "</tr>";
+            $get_ops_query = "SELECT tsm.operation_code AS operation_code, tor.operation_name as operation_name FROM $brandix_bts.tbl_style_ops_master tsm LEFT JOIN $brandix_bts.tbl_orders_ops_ref tor ON tor.id=tsm.operation_name WHERE style IN ('$styles') AND tor.display_operations='yes' and tor.category='sewing' GROUP BY tsm.operation_code ORDER BY tsm.operation_order*1";
+            $ops_query_result=$link->query($get_ops_query);
+            while ($row2 = $ops_query_result->fetch_assoc())
+            {
+                $operation_code[]= $row2['operation_code'];
+                $ops_get_code[$row2['operation_code']] = $row2['operation_name'];
+            }
+            $col_span = count($ops_get_code);
             $tot_input=0;
             $tot_outout=0;
             $tot=0;
@@ -224,38 +247,44 @@
                 echo "<td>".$planned_date."</td>";
                 echo "<td>".$workstation_code."</td>";
                 echo "<td>".$colors."</td>";
-                
-                $get_io_qty = "SELECT SUM(IF(operation_code = $input_ops,good_quantity,0)) AS input,
-                SUM(IF(operation_code = $out_put_ops,good_quantity,0)) AS output FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'";
+                $input_qty = 0;
+                $output_qty = 0;
+                $get_io_qty = "SELECT SUM(IF(operation = $input_ops,good_quantity,0)) AS input,
+                SUM(IF(operation = $out_put_ops,good_quantity,0)) AS output FROM $pts.`transaction_log` WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
                 // echo $get_io_qty;
-                mysqli_query($link_new,$get_io_qty) or exit("Sql Error7".mysqli_error());
+                // die();
+                mysqli_query($link_new,$get_io_qty) or exit("Sql Error70".mysqli_error());
                 $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
                 while($row7 = mysqli_fetch_array($get_io_qty_result))
                 {
                     $input_qty = $row7['input'];
                     $output_qty = $row7['output'];
                 }
-                $get_io_qty = "SELECT SUM(IF(operation_code = $input_ops,rejected_quantity,0)) AS input,
-                SUM(IF(operation_code = $out_put_ops,rejected_quantity,0)) AS output FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'";
-                // echo $get_io_qty;
-                mysqli_query($link_new,$get_io_qty) or exit("Sql Error7".mysqli_error());
-                $get_io_qty_result=mysqli_query($link_new,$get_io_qty) or exit("Sql Error5".mysqli_error());
-                while($row7 = mysqli_fetch_array($get_io_qty_result))
-                {
-                    $sew_in_qty = $row7['input'];
-                    $sew_out_qty = $row7['output'];
-                }
+                
+                
                 echo "<td>".$siz."</td>";
                 echo "<td>".$input_qty."</td>";
                 echo "<td>".$output_qty."</td>";
-                echo "<td>".$sew_in_qty."</td>";
-                echo "<td>".$sew_out_qty."</td>";
+                if(count($operation_code) > 0) {
+                    foreach ($operation_code as $op_code) 
+                    {
+                        $get_details="SELECT sum(if(operation_id=".$op_code.",rejected_quantity,0)) as rejected_qty FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') AND size = '$siz' AND parent_job ='$job_number[$job_id]' and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+                        $result5 = $link->query($get_details);
+                        while($row5 = $result5->fetch_assoc())
+                        {
+                            echo "<td>".$row5['rejected_qty']."</td>";
+                            $tot += $row5['rejected_qty'];
+                        }
+                    }
+                } else {
+                    echo "<td>0</td>";
+                }
+                
                 echo "</tr>";
                 $tot_input += $input_qty;
                 $tot_outout += $output_qty;
-                $tot += $sew_in_qty;
             }
-            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=2 style=\"background-color:#ff8396;color:white\">$tot</td></tr>";
+            echo "<tr><td colspan=4 style=\"background-color:#ff8396;\"> </td><td style=\"background-color:#ff8396;color:white\">$tot_input</td><td style=\"background-color:#ff8396;color:white\">$tot_outout</td><td colspan=$col_span style=\"background-color:#ff8396;color:white\">$tot</td></tr>";
 
             echo "</tbody>";
             echo "</table>";
@@ -269,11 +298,58 @@
                 echo "<th style=\"border-top:1px solid #000;border-bottom:1px dotted #000;font-size:14px;\">".$size_total[$s]."</th>";
             }
             echo "<th  style=\"border-top:1px solid #000;border-bottom:1px dotted #000;\">$final_total</th>";
-            echo "<th></th>";
-            echo "</tr>";
+            echo "<th>";
             unset($cutjobno);
         }
+        //To get Total order qty
+        $total_order_qty=0;
+        $get_order_qty="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE in ('$schedules') AND color in ('$colors') AND plant_code='$plantcode'";
+        $sql_result3=mysqli_query($link, $get_order_qty) or die("Error".$get_order_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row3=mysqli_fetch_array($sql_result3))
+        {
+            $total_order_qty=$row3['quantity'];
+        }
+        //To get cutting operation
+        $category=OperationCategory::CUTTING;
+        $Qry_get_cut_ops="SELECT operation_code FROM $pms.`operation_mapping` WHERE operation_name='$category' AND plant_code='$plantcode' AND is_active=1";
+        $result4 = $link->query($Qry_get_cut_ops);
+        while($row4 = $result4->fetch_assoc())
+        {
+            $cut_operation=$row4['operation_code'];
+        }
+        $cut_recevied_quantity = 0;
+        $cut_report_details="SELECT sum(if(operation=".$cut_operation.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$cut_operation and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $result6 = $link->query($cut_report_details);
+        while($row6 = $result6->fetch_assoc())
+        {
+            $cut_recevied_quantity += $row6['good_quantity'];
+        }
+
+        $tot_in = 0;
+        $tot_in_details="SELECT sum(if(operation=".$input_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$input_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $result7 = $link->query($tot_in_details);
+        while($row7 = $result7->fetch_assoc())
+        {
+            $tot_in += $row7['good_quantity'];
+        }
+
+        $tot_out = 0;
+        $tot_out_details="SELECT sum(if(operation=".$out_put_ops.",good_quantity,0)) as good_quantity FROM $pts.transaction_log WHERE style in ('$styles') AND schedule=('$schedules') AND color= ('$colors') and operation=$out_put_ops and plant_code='$plantcode' AND is_active=1 GROUP BY size";
+        $result8 = $link->query($tot_out_details);
+        while($row8 = $result8->fetch_assoc())
+        {
+            $tot_out += $row8['good_quantity'];
+        }
+        $balance = $cut_recevied_quantity - $tot_in;
+        $tot_balance = $tot_in - $tot_out;
+        echo "<table class='table table-bordered'><tr style='background-color:#286090;color:white;'><th>Order Quantity</th><th>Cut Reported Quantity</th><th>Total Sewing IN</th><th>Total Sewing OUT</th><th>Balance to Sewing In</th><th>Balance to Sewing Out</th></tr>";
+        echo "<tr><th>$total_order_qty</th><th>$cut_recevied_quantity</th><th>$tot_in</th><th>$tot_out</th><th>$balance</th><th>$tot_balance</th></tr>";
+        echo "</table>";
+        echo "</th>";
+        echo "</tr>";
         echo "</table></div>";
+    } else{
+        echo "<h3 style='color:red'>No Sewing Jobs Found!<h3>";
     }
     
     
