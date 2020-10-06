@@ -232,7 +232,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		echo "</tr>";
 		
 		
-		if($doc_nos!='' && $plant_code!=''){
+		if($docket_line_number!='' && $plant_code!=''){
 			$result_docketinfo=getDocketInformation($doc_nos,$plant_code);
 			$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 			
@@ -511,9 +511,10 @@ while($row2=mysqli_fetch_array($result2))
 {
 	$log=$row2["req_time"];
 	$doc_ref=$row2["jm_docket_line_id"];
+	$docket_line_no=$row2["docket_line_number"];
 	$log_split=explode(" ",$log);
-	if($doc_ref!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_ref,$plant_code);
+	if($docket_line_no!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
 		$style1 =$result_docketinfo['style'];
 		$colorx1 =$result_docketinfo['fg_color'];
 		$cut_nos =$result_docketinfo['cut_no'];
