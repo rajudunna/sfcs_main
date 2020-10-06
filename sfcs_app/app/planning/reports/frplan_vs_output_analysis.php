@@ -191,7 +191,7 @@ function getDaysInBetween($start, $end)
 
 				for ($i = 0; $i < sizeof($dates_between); $i++) {
 					// Get Planned quantity for selected date and workstation
-					$sql_get_planned_qty = "SELECT sum(planned_qty) as planned_qty FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where row_name = '" . $workstationCode . "' AND  product_code IN ('" . $style . "') AND plant_code = '" . $plantcode . "' and planned_date ='" . $dates_between[$i] . "'";
+					$sql_get_planned_qty = "SELECT sum(planned_qty) as planned_qty FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.pp_log_id where row_name = '" . $workstationCode . "' AND  product_code IN ('" . $style . "') AND plant_code = '" . $plantcode . "' and planned_date ='" . $dates_between[$i] . "'";
 					$res_planned_qty = mysqli_query($link, $sql_get_planned_qty);
 					$row_planned_qty = mysqli_fetch_row($res_planned_qty);
 					$planned_qty = $row_planned_qty[0] ? $row_planned_qty[0] : 0;

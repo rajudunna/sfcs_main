@@ -275,7 +275,7 @@ foreach($departments as $department)    //section Loop -start
 
 					/**getting plan quantity from monthly and */
 					$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN $pps.monthly_production_plan p 
-					ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+					ON pl.monthly_pp_up_log_id=p.pp_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
 					$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Error getting planned qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$plannedNum=mysqli_num_rows($plannedResult);
 					if($plannedNum>0){
@@ -421,7 +421,7 @@ foreach($departments as $department)    //section Loop -start
 
 				/**getting plan quantity from monthly and */
 				$qryPlannedQty="SELECT p.planned_qty FROM $pps.monthly_production_plan_upload_log pl LEFT JOIN $pps.monthly_production_plan p 
-				ON pl.monthly_production_plan_upload_log_id=p.monthly_production_plan_upload_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
+				ON pl.monthly_pp_up_log_id=p.pp_log_id WHERE pl.plant_code='$plantCode' AND DATE(p.planned_date)='$date2'";
 				$plannedResult=mysqli_query($link_new, $qryPlannedQty) or exit("Error While getting planned qty ".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$plannedNum=mysqli_num_rows($plannedResult);
 				if($plannedNum>0){
