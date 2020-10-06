@@ -403,7 +403,6 @@ function getBulkSchedules($get_style,$plantcode){
     return array(
         'bulk_schedule' => $bulk_schedule
     );
-
 }
 
 /*
@@ -1134,24 +1133,24 @@ function getPlannedJobs($work_id,$tasktype,$plantcode){
    * @param:doc_no,plant_code
    * @return:savings
    * */
-function fn_savings_per_cal($doc_no,$plant_code){
-        //using this function  we can get ratio component group id
-        if($doc_no!='' && $$plant_code!=''){
-            $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
-            $ratio_comp_group_id=$result_getdata_jm_dockets['ratio_comp_group_id'];
-        }
+// function fn_savings_per_cal($doc_no,$plant_code){
+//         //using this function  we can get ratio component group id
+//         if($doc_no!='' && $$plant_code!=''){
+//             $result_getdata_jm_dockets=getdata_jm_dockets($doc_no,$plant_code);
+//             $ratio_comp_group_id=$result_getdata_jm_dockets['ratio_comp_group_id'];
+//         }
         
-        if($ratio_comp_group_id!='' && $plant_code!=''){
-            $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
-            $savings=$result_getdata_ratio_component_group['fabric_saving'];
-        }
+//         if($ratio_comp_group_id!='' && $plant_code!=''){
+//             $result_getdata_ratio_component_group=getdata_ratio_component_group($ratio_comp_group_id,$plant_code);
+//             $savings=$result_getdata_ratio_component_group['fabric_saving'];
+//         }
 
-        return array(
-            'savings' => $savings
-        );
+//         return array(
+//             'savings' => $savings
+//         );
 
 
-}
+// }
 
 /**Function to get po description from mp sub order
 @param:sub_po,plantcode
@@ -1506,6 +1505,8 @@ function getStyleColorSchedule($ponumber,$plantcode){
 function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     global $link_new;
     global $pps;
+    global $pts;
+    global $tms;
     $out_put_results = [];
     $sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM $pps.`jm_aplb` aplb
     LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON

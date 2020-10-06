@@ -6,9 +6,15 @@ $url = getFullURL($_GET['r'],'scan_job.php','N');
 
 $plant_code = $_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$configuration_bundle_print_array = [0=>'Bundle Level',1=>'Sewing Job Level'];
+$configuration_bundle_print_array = [0=>'Bundle Level',1=>'Job Level'];
 // the job_type is OperationCategory enum 
 $job_type = $_GET['job_type'];
+if($job_type == OperationCategory::EMBELLISHMENT){
+    $lable = 'Embellishment';
+} else {
+    $lable = 'Sewing';
+}
+$configuration_bundle_print_array = [0=> $lable.' Bundle Level',1=> $lable.' Job Level'];
 
 if ($job_type !== OperationCategory::SEWING && $job_type !== OperationCategory::EMBELLISHMENT) {
     echo "<div style='color: red' class='col-sm-12'>Only Sewing or Embellishement job types are allowed </div>";
@@ -18,7 +24,7 @@ if ($job_type !== OperationCategory::SEWING && $job_type !== OperationCategory::
 ?>
 <form method ='POST' action='<?= $url ?>&manual_reporting=1'>
 	<div class="panel panel-primary">
-		<div class="panel-heading"><strong>Input Job Scanning</strong></div>
+		<div class="panel-heading"><strong><?= $lable; ?> Job Scanning</strong></div>
 		<div class="panel-body">
 			<div class="row">
 				<div class="col-md-2">

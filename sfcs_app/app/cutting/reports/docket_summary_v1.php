@@ -100,7 +100,7 @@ $username=$_SESSION['userName'];
 			/**
 			 * getting dockets wrt taskjobs
 			 */
-			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.fg_color,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number 
+			$qrydocketLines="SELECT docLine.jm_docket_line_id,docLine.fg_color,docLine.docket_line_number,docLine.is_binding,docLine.jm_docket_id,ratio_cg.component_group_id as cg_id,docLine.plies, ratio_cg.ratio_id,ratio_cg.fabric_saving,docLine.lay_status,l.date_n_time AS fab_ready_time,cut.cut_number,cut.po_number ,doc.ratio_comp_group_id
 			FROM $pps.jm_docket_lines docLine 
 			LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = docLine.jm_docket_id
 			LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id
@@ -140,6 +140,19 @@ $username=$_SESSION['userName'];
 					$fg_color = $taskJobsRow['fg_color'];
 					$pcutno = $taskJobsRow['cut_number'];
 					$po_number = $taskJobsRow['po_number'];
+					$ratio_comp_group_id = $taskJobsRow['ratio_comp_group_id'];
+
+					$qry_lp_markers="SELECT length FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
+					$lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$lp_markers_num=mysqli_num_rows($lp_markers_result);
+					if($lp_markers_num>0){
+						while($sql_row1=mysqli_fetch_array($lp_markers_result))
+						{
+							$length = $sql_row1['length'];
+						}
+					}else{
+						$length=0;
+					}
 					
 					//To get schedule,color
 					$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
@@ -152,7 +165,8 @@ $username=$_SESSION['userName'];
 					}
 					$order_col_des=array_unique($color);
 					//To get style
-					$qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $order_col_des)."') and mp_color_detail.plant_code='$plantcode'";
+					$qry_get_style="SELECT style FROM $pps.`mp_mo_qty` LEFT JOIN $pps.`mp_color_detail` ON mp_color_detail.`master_po_details_id`=mp_mo_qty.`master_po_details_id` WHERE mp_mo_qty.color in ('".implode("','" , $order_col_des)."') and mp_mo_qty.schedule in ('".implode("','" , $schedule)."') and mp_color_detail.plant_code='$plantcode'";
+					//echo "</br>Qry :".implode(',', array_unique($schedule)).$qry_get_style;
 					$qry_get_style_result=mysqli_query($link_new, $qry_get_style) or exit("Sql Error at qry_get_style".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($row1=mysqli_fetch_array($qry_get_style_result))
 					{
@@ -203,15 +217,15 @@ $username=$_SESSION['userName'];
 					}
 					
 					// get the docket qty
-					$size_ratio_sum = 0;
-					$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
-					$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-					while($row = mysqli_fetch_array($size_ratios_result))
-					{
-						$size_ratio_sum += $row['size_ratio'];
-					}
-
-					$material_requirement_orig = ($size_ratio_sum * $plies);
+					// $size_ratio_sum = 0;
+					// $size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
+					// $size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// while($row = mysqli_fetch_array($size_ratios_result))
+					// {
+					// 	$size_ratio_sum += $row['size_ratio'];
+					// }
+					//echo "</br>Size : ".$size_ratio_sum."- plies".$plies;
+					$material_requirement_orig = ($length * $plies);
 				
 					$extra = 0; {
 						$extra = round(($material_requirement_orig * $fabric_saving), 2);

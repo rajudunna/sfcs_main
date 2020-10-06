@@ -14,7 +14,7 @@
 	} else {
 		$value = 'not_authorized';
 	}
-	
+
     echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
     $dashboardRepFlag = 0;
     $menuRepFlag = 0;
@@ -43,7 +43,7 @@
         $dashboardRepFlag = 1;
         $scan_label = 'Sewing Job Number';
         $scan_mode = 1;
-    }
+	}
     // var url = "sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/responses/res.json";
     if($job_type == OperationCategory::SEWING) {
         if($scan_mode == 0) {
@@ -292,7 +292,7 @@
     var operation_id = '<?= $operation_code ?>';
     var plant_code = '<?= $plant_code ?>';
     var username = '<?= $username ?>';
-    var shift = '<? $shift ?>';
+    var shift = '<?= $shift ?>';
     var barcode_generation = <?= $scan_mode ?>;
 
 	$(document).ready(function() {

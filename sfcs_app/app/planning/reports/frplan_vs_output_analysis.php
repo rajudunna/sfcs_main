@@ -144,7 +144,7 @@ function getDaysInBetween($start, $end)
 			$table .= "<h2>Daily FR Plan Achievement Report</h2><table border=1>";
 
 			echo "<tr class='tblheading'>";
-			$table .= "<tr>";
+			$table .= "<tr style='background-color: #29759C; color: #fff;'>";
 			echo "<th>Module</th>";
 			$table .= "<th>Module</th>";
 			// echo "<th>Buyer Division</th>";

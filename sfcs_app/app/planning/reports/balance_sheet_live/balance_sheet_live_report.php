@@ -208,7 +208,7 @@ function getStylePonumbersDropDownData($fromDate, $toDate, $plantCode, $buyer_di
 	<div class='panel panel-primary'>
 		<div class='panel-heading'>Balance Sheet (Live) - Week: <?php echo date("W") + 1; ?></div>
 		<div class='panel-body'>
-			<form name="balanceSheetForm" id="balanceSheetForm" action="index.php?r=<?php echo $_GET['r']; ?>" method="post">
+			<form name="balanceSheetForm" id="balanceSheetForm" action="index-no-navi.php.php?r=<?php echo $_GET['r']; ?>" method="post">
 				<div class="row">
 					<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 					<div class="col-md-2">

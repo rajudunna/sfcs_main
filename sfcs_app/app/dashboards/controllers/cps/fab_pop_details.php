@@ -364,9 +364,15 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	// if(strtolower($sql_row1['remarks']) == 'recut')
 	// 	$appender = 'R';
     // else	
-   
-    if($doc_no!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+	$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+	$sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x11=mysqli_fetch_array($sql_result11x11))
+	{
+	  $docket_line_no=$row111x11["docket_line_number"];
+
+	}  
+    if($docket_line_no!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
 		$style =$result_docketinfo['style'];
 		$colorx =$result_docketinfo['fg_color'];
 		$cut_no =$result_docketinfo['cut_no'];
@@ -527,8 +533,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	if($style_flag==0)
 	{
         $docno_lot=$sql_row1['jm_docket_line_id'];
-        if($doc_no!='' && $plant_code!=''){
-            $result_docketinfo=getDocketInformation($doc_no,$plant_code);
+        if($docket_line_no!='' && $plant_code!=''){
+            $result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
             $style =$result_docketinfo['style'];
             
         }
@@ -595,8 +601,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 }
 // 		// if($row007['mk_ref_id']>0)
 // 		// {	 
-    if($doc_no!='' && $plant_code!=''){
-                $result_docketinfo=getDocketInformation($doc_no,$plant_code);
+    if($docket_line_no!='' && $plant_code!=''){
+                $result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
                 $style =$result_docketinfo['style']; 
                 $marker_version_id =$result_docketinfo['marker_version_id'];  
     }
@@ -641,8 +647,8 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	// }else{
 	// 	$material_requirement_orig=$sql_row1['material_req']-$binding_consumption_qty;
 	// }
-    if($doc_no!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+    if($docket_line_no!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
 		$style =$result_docketinfo['style'];
 		$colorx =$result_docketinfo['fg_color'];
 		$cut_no =$result_docketinfo['cut_no'];
