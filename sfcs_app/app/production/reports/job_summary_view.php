@@ -5,8 +5,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-// $plantcode='AIP';
-
+// $plantcode='Q01';
 ?>
 
 <style>

@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 
 
-$has_permission=haspermission($_GET['r']); 
+//$has_permission=haspermission($_GET['r']); 
 
 if($fabric_validation_for_cut_report == 'yes')
     $FABRIC_VALIDATION = 1;
@@ -1236,10 +1236,10 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
             return false;
         }
 
-         if(fabric !=5){
-            swal('warning','Fabric Was Not Requested','warning');
-            return false;
-        }
+        //  if(fabric !=5){
+        //     swal('warning','Fabric Was Not Requested','warning');
+        //     return false;
+        // }
        
         if(ret_to > 0){
             if(returned_to == null){

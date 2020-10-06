@@ -985,9 +985,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
     //   $input_temp=strtolower(chop($sql_row1['cut_inp_temp']));
     
       $doc_no=$sql_row1['jm_docket_line_id'];
-      if($doc_no!=" " && $plant_code!=' '){
+      $sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no'";
+      $sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+      while($row111x11=mysqli_fetch_array($sql_result11x11))
+      {
+        $docket_num=$row111x11["docket_line_number"];
+
+      }
+      if($docket_num!=" " && $plant_code!=' '){
         //this is function to get style,color,and cutjob
-        $result_jmdockets=getDocketInformation($doc_no,$plant_code);
+        $result_jmdockets=getDocketInformation($docket_num,$plant_code);
         $style =$result_jmdockets['style'];
         $fg_color =$result_jmdockets['fg_color'];
       }
@@ -1272,8 +1279,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       
       $fabric_required=0;
       $cat_yy=0;
-      if($doc_no!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+      if($docket_num!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_num,$plant_code);
 		$style =$result_docketinfo['style'];
 		$colorx =$result_docketinfo['fg_color'];
 		$cut_no =$result_docketinfo['cut_no'];
@@ -1355,8 +1362,8 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo "Allocated qty  : ".$allocated_qty."</br>";
     
       //getting requested qty 
-      if($doc_no!='' && $plant_code!=''){
-		$result_docketinfo=getDocketInformation($doc_no,$plant_code);
+      if($docket_num!='' && $plant_code!=''){
+		$result_docketinfo=getDocketInformation($docket_num,$plant_code);
 		
 		$req_qty =$result_docketinfo['requirement'];
 		

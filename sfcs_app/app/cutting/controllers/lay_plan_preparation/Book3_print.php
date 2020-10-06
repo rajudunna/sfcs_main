@@ -1740,7 +1740,7 @@ function printpr()
   <td colspan=2 style='border-right:1px solid black;font-size:20px;font-weight:bold;text-align:right' style='border-right:.5pt solid black'>Docket
   Number</td>
   <td colspan=3 class=xl1024118 style='border-right:.5pt solid black;
-  border-left:none'><?php echo $doc; ?></td>
+  border-left:none'><?php echo $doc_num; ?></td>
   <td class=xl654118></td>
  </tr>
  <tr class=xl654118 height=23 style='mso-height-source:userset;height:17.25pt'>

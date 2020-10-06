@@ -67,8 +67,8 @@ $sdate=$edate='20200714';
 
 $email_validate=0;
 $cut_operation=15;
-$sew_in=100;
-$sew_out=130;
+$sew_in_op=100;
+$sew_out_op=130;
 $operation_code_array=[15,100,130];
 
 
@@ -110,7 +110,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 			$color=$sql_row1['color'];
 			$master_po_details_id=$sql_row1['master_po_details_id'];
 			// var_dump($style,$color,$schedule,$po_number,"<br>");
-			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and master_po_order_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
+			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
 			// echo $sql2."<br/>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -135,7 +135,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 				$operation_codes = "'" . implode( "','", $operation_code_array) . "'";
 
 
-				$sql4="SELECT SUM(IF(operation_code=$cut_operation,1,0)) AS cut_qty,SUM(IF(operation_code=$sew_in,1,0)) AS sew_in,SUM(IF(operation_code=$sew_out,1,0)) AS sew_out FROM $pts.fg_operation WHERE finished_good_id IN ($finished_good_ids) AND operation_code IN ($operation_codes) AND required_components=completed_components";
+				$sql4="SELECT SUM(IF(operation_code=$cut_operation,1,0)) AS cut_qty,SUM(IF(operation_code=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation_code=$sew_out_op,1,0)) AS sew_out FROM $pts.fg_operation WHERE finished_good_id IN ($finished_good_ids) AND operation_code IN ($operation_codes) AND required_components=completed_components";
 				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row4=mysqli_fetch_array($sql_result4))
 				{

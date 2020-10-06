@@ -6,15 +6,15 @@
 	include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/enums.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/server_urls.php',5,'R'));
-	$has_permission=haspermission($_GET['r']);
+	// $has_permission=haspermission($_GET['r']);
 
 
-	if (in_array($override_sewing_limitation,$has_permission)) {
+	// if (in_array($override_sewing_limitation,$has_permission)) {
 		$value = 'authorized';
-	} else {
-		$value = 'not_authorized';
-	}
-	
+	// } else {
+	// 	$value = 'not_authorized';
+	// }
+
     echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
     $dashboardRepFlag = 0;
     $menuRepFlag = 0;
@@ -43,7 +43,7 @@
         $dashboardRepFlag = 1;
         $scan_label = 'Sewing Job Number';
         $scan_mode = 1;
-    }
+	}
     // var url = "sfcs_app/app/production/controllers/sewing_job/sewing_job_scaning/responses/res.json";
     if($job_type == OperationCategory::SEWING) {
         if($scan_mode == 0) {
@@ -292,7 +292,7 @@
     var operation_id = '<?= $operation_code ?>';
     var plant_code = '<?= $plant_code ?>';
     var username = '<?= $username ?>';
-    var shift = '<? $shift ?>';
+    var shift = '<?= $shift ?>';
     var barcode_generation = <?= $scan_mode ?>;
 
 	$(document).ready(function() {

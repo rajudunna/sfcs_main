@@ -335,7 +335,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 		$schedule = $getdetails['schedule_bulk'][0];
 		$color = $getdetails['color_bulk'][0];
 		if($ratio_comp_group_id!=''){
-			$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
+			$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
 			// echo $qry_lp_markers;
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);
@@ -535,7 +535,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		$color = $getdetails['color_bulk'][0];
 		
 		if($ratio_comp_group_id!=''){
-			$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
+			$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
 			// echo $qry_lp_markers;
             $lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
             $lp_markers_num=mysqli_num_rows($lp_markers_result);

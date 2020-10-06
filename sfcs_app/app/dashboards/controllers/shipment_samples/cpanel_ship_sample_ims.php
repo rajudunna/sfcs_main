@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',4,'R'));
-$view_access=user_acl("SFCS_0241",$username,1,$group_id_sfcs); 
+//$view_access=user_acl("SFCS_0241",$username,1,$group_id_sfcs); 
 set_time_limit(2000);
 
 

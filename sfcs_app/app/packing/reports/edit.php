@@ -6,7 +6,7 @@
 <?php
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$permission = haspermission($_GET['r']);
+// $permission = haspermission($_GET['r']);
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail
@@ -82,14 +82,14 @@ return $ext;
 <?php 
 
 
-if(!in_array($edit,$permission))
-{
+// if(!in_array($edit,$permission))
+// {
 	//header("location:maintenance.php");
 	//echo 'THE PAGE IS UNDER MAINTAINACE';
 	//die();
-	echo '<b><font color=red size=4>You do not have acces to view this page</font></b>';
-	exit();
-}
+	// echo '<b><font color=red size=4>You do not have acces to view this page</font></b>';
+	// exit();
+// }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -146,15 +146,15 @@ td{ color : #000}
 						<td colspan='2'>
 							<div class='col-sm-3'></div>
 						<?php
-						if(in_array($edit,$permission))
-						{
+						// if(in_array($edit,$permission))
+						// {
 
 							echo '<input name="upload" type="submit" class="btn btn-success btn-sm" id="upload" value="Upload"></td>';
-						}
-						else
-						{
-							echo "You are not authorized to edit";	
-						}
+						// }
+						// else
+						// {
+						// 	echo "You are not authorized to edit";	
+						// }
 
 						?>
 						</td>

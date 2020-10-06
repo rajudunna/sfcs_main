@@ -4,7 +4,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R') );  ?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R') );  ?>
 <?php
-	$view_access=user_acl("SFCS_0030",$username,1,$group_id_sfcs); 
+	//$view_access=user_acl("SFCS_0030",$username,1,$group_id_sfcs); 
 ?>
 <style>
 th,td{

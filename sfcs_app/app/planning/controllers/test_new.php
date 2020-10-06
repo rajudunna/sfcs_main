@@ -12,9 +12,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'functions.php',0,'R'));
 
-$view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
-$authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
-$super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
+// $view_access=user_acl("SFCS_0131",$username,1,$group_id_sfcs);
+// $authorized=user_acl("SFCS_0131",$username,7,$group_id_sfcs);
+// $super_user=user_acl("SFCS_0131",$username,49,$group_id_sfcs);
 
 //$authorized=array("baiict","muralim","duminduw","rajanaa","kirang","nalakasb","ambhigapathyc","kiranm","kirang","baiuser","bainet","srikanthb","kirang","rajithago");// for RMS Dashboard allocation
 //$super_user=array("muralim","duminduw","kirang","bainet","kirang","rajanaa","baiict","nalakasb","kirang");
