@@ -2,7 +2,7 @@
 include $_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/config/config.php', 3, 'R');
 include $_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/php/headers.php', 1, 'R');
 // include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$has_permission = haspermission($_GET['r']);
+// $has_permission = haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
@@ -47,9 +47,9 @@ $Page_Id = 'SFCS_0057';
 <div class="panel-body">
 <div class="form-group">
 	<?php
-if (in_array($authorized, $has_permission)) {
+// if (in_array($authorized, $has_permission)) {
     echo '<a class="btn btn-info btn-xs" href="' . getFullURLLevel($_GET["r"], "controllers/supplier_claim_request_form.php", 1, "N") . '">Request Form</a> | <a class="btn btn-info btn-xs" href="' . getFullURL($_GET["r"], "Supplier_Claim_Log_Form.php", "N") . '">Log</a> <hr>';
-}
+// }
 ?>
 <form  action="index-no-navi.php?r=<?php echo $_GET['r']; ?>" method="POST" name="test">
 <div class="row">
@@ -124,9 +124,9 @@ if (isset($_POST['show']) || isset($_GET['show'])) {
         $table .= "<table cellspacing=\"0\" id=\"table1\" class='table table-striped jambo_table bulk_action' border=1  >";
         $table .= "<tr class='headings'><th>Complaint No</th><th>Complaint Category</th><th>Report No</th><th>Product Category</th><th>Complaint Type</th><th>Request Date</th><th>Request User</th><th>Supplier Name</th><th>Buyer Name</th><th>Item Desc</th><th>Item Codes</th><th>Item Colors</th><th>Batch No</th><th>Invoice No</th><th>PO No</th><th>Lot#</th><th>Purchase Width</th><th>Actual Width</th><th>Purchase GSM</th><th>Actual GSM</th><th>Inspected Qty</th><th>Reject Roll Qty</th><th>Length Short Qty</th><th>Total Replacement Required</th><th>UOM</th><th>Complaint Remarks</th><th>Supplier Approved Date</th><th>Replacement Category</th><th>Supplier Remarks</th><th>Claim Note No</th></th><th>New Invoice No</th><th>Supplier Replace Approved Qty</th><th>Supplier Claim Approved Qty</th><th>Credit Note No</th><th>Complaint Status</th><th>Print</th><th>Mail Status</th>";
 
-        if (in_array($authorized, $has_permission)) {
+        // if (in_array($authorized, $has_permission)) {
             $table .= "<th>Controls</th>";
-        }
+        // }
 
         $table .= "</tr>";
         if ($count == 0) {
@@ -213,7 +213,7 @@ if (isset($_POST['show']) || isset($_GET['show'])) {
                 $table .= "<td>$supplier_remarks</td><td>$supplier_claim_no</td><td>$new_invoice_no</td>
 		<td>$supplier_replace_approved_qty</td><td>$supplier_claim_approved_qty</td><td>$supplier_claim_no</td>";
 
-                if (in_array($authorized, $has_permission)) {
+                // if (in_array($authorized, $has_permission)) {
                     if ($complaint_status == 0) {
                         $table .= "<td><a class='btn btn-xs btn-primary' href='" . getFullURLLevel($_GET['r'], 'controllers/supplier_claim_update_form.php', 1, 'N') . "&stat=$complaint_status&sno=$complaint_no'>Waiting</a></td>";
                     } else if ($complaint_status == 1) {
@@ -238,35 +238,35 @@ if (isset($_POST['show']) || isset($_GET['show'])) {
                     } else {
                         $table .= "<td>Sent</td>";
                     }
-                } else {
-                    if ($complaint_status == 0) {
-                        $table .= "<td>Waiting</td>";
-                    } else if ($complaint_status == 1) {
-                        $table .= "<td>Not Agreed</td>";
-                    } else if ($complaint_status == 2) {
-                        $table .= "<td>Hold</td>";
-                    } else if ($complaint_status == 3) {
-                        $table .= "<td>Agreed</td>";
-                    } else {
-                        $table .= "<td>Not Agreed</td>";
-                    }
+                // } else {
+                //     if ($complaint_status == 0) {
+                //         $table .= "<td>Waiting</td>";
+                //     } else if ($complaint_status == 1) {
+                //         $table .= "<td>Not Agreed</td>";
+                //     } else if ($complaint_status == 2) {
+                //         $table .= "<td>Hold</td>";
+                //     } else if ($complaint_status == 3) {
+                //         $table .= "<td>Agreed</td>";
+                //     } else {
+                //         $table .= "<td>Not Agreed</td>";
+                //     }
 
-                    $table .= "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
+                //     $table .= "<td><a class='btn btn-xs btn-primary' href=\"$url&sno=$complaint_no&status=2\" onclick=\"return popitup('$url&sno=$complaint_no&status=2')\" target=\"_blank\">Print</a></td>";
 
-                    if ($mail_status == 0) {
-                        $table .= "<td>Not Sent</td>";
-                    } else {
-                        $table .= "<td>Sent</td>";
-                    }
-                }
+                //     if ($mail_status == 0) {
+                //         $table .= "<td>Not Sent</td>";
+                //     } else {
+                //         $table .= "<td>Sent</td>";
+                //     }
+                // }
                 // $url1=getFullURL($_GET['r'],'status_update.php','N');
                 // $sHTML_Content .="<td bgcolor=\"$id\"><a href=\"url1&tid=$ref_id&&schedule=$schedule\" onclic=\"return popitup('$url1&tid=$ref_id&&schedule=$schedule')\">".$x."</a><input type=\"hidden\" name=\"rtid[]\" value=\"".$ref_id."\" /><input type=\"hidden\" name=\"tid[]\" value=\"".$ship_tid."\" /></td>";
-                if (in_array($delete, $has_permission)) {
+                // if (in_array($delete, $has_permission)) {
 
                     $url2 = getFullURL($_GET['r'], 'request_delete.php', 'N');
                     $url2 = $url2 . "&tid=$ref_no&&complaint_no=$complaint_no&sdate=$startdate&edate=$enddate&stat=$status&bat=$batch";
                     $table .= "<td><a id='delete_btn' class=\"btn btn-sm btn-danger confirm-submit\" href=\"$url2\" >Delete</a></td>";
-                }
+                // }
                 $table .= "</tr>";
             }
         }

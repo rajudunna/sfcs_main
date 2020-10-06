@@ -9,14 +9,14 @@
 ?>
 
 <?php
-$has_permission = haspermission($_GET['r']);
+// $has_permission = haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
-if(!(in_array($view,$has_permission)))
-{
-	header("Location:restrict.php");
-}
+// if(!(in_array($view,$has_permission)))
+// {
+// 	header("Location:restrict.php");
+// }
 
 ?>
 

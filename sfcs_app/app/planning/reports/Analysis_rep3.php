@@ -19,7 +19,7 @@ $username=$_SESSION['userName'];
 //$view_access=user_acl("SFCS_0039",$username,1,$group_id_sfcs); 
 //$authorized_users=user_acl("SFCS_0039",$username,7,$group_id_sfcs);
 
-$has_perm=haspermission($_GET['r']);
+// $has_perm=haspermission($_GET['r']);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -379,11 +379,11 @@ $year_add_query2=" and exfact_date between \"".$sdate."\" and \"".$edate."\" ";
 				</div>
 			</div>
 				<?php
-					if(in_array($authorized,$has_perm))
-					{
+					// if(in_array($authorized,$has_perm))
+					// {
 						//echo '<span id="msg" style="display:none;"><b><font color=\"blue\">Please Wait...</font></b></span>';
 						echo "<input class='btn btn-success' type=submit name=\"submit\" value=\"submit\" id=\"submit\" onClick='return check_style()' style='margin-top:22px;'>";
-					}
+					// }
 				?>
 
 	</div>					  

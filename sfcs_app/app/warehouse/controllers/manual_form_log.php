@@ -10,7 +10,7 @@
 	// include($_SERVER['DOCUMENT_ROOT'].'/'.$url); 
 	// $view_access=user_acl("SFCS_0158",$username,1,$group_id_sfcs);
 
-	$has_permission = haspermission($_GET['r']);
+	// $has_permission = haspermission($_GET['r']);
 ?>
 
 
@@ -179,16 +179,16 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		case 2:
 		{
 		
-			if(in_array($view,$has_permission))
+			// if(in_array($view,$has_permission))
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=2\">20 Approved</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=2\">Approved</a></td>";
 			}
-			else
-			{
-				// echo "<td>20 Approved</td>";
-				echo "<td>Approved</td>";
-			}
+			// else
+			// {
+			// 	// echo "<td>20 Approved</td>";
+			// 	echo "<td>Approved</td>";
+			// }
 			break;
 		}
 		case 3:
@@ -200,30 +200,30 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		case 4:
 		{
-			if(in_array($view,$has_permission))
+			// if(in_array($view,$has_permission))
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=4\">40 Manually Issued</a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=4\">Manually Issued</a></td>";
 			}
-			else
-			{
-				echo "<td>Manually Issued</td>";
-				// echo "<td>40 Manually Issued</td>";
-			}
+			// else
+			// {
+			// 	echo "<td>Manually Issued</td>";
+			// 	// echo "<td>40 Manually Issued</td>";
+			// }
 			break;
 		}
 		case 5:
 		{
-			if(in_array($view,$has_permission))
+			// if(in_array($view,$has_permission))
 			{
 				// echo "<td><a href=\"update_status.php?tid=$tid&check=5\">50 Sourcing Cleared </a></td>";
 				echo "<td><a href=\"update_status.php?tid=$tid&check=5\">Sourcing Cleared </a></td>";
 			}
-			else
-			{
-				echo "<td>Sourcing Cleared </td>";
-				// echo "<td>50 Sourcing Cleared </td>";
-			}
+			// else
+			// {
+			// 	echo "<td>Sourcing Cleared </td>";
+			// 	// echo "<td>50 Sourcing Cleared </td>";
+			// }
 			break;
 		}
 		case 6:
@@ -237,21 +237,21 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$sql_row['req_from']."</td>";
 	echo "<td>".$sql_row['app_by']."</td>";
 	
-	if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($view,$has_permission))
+	// if($sql_row['app_date']=="0000-00-00 00:00:00" and $sql_row['status']==1 and in_array($view,$has_permission))
 	{
 		echo "<td><a href=\"update_status.php?tid=$tid&check=1\">Update</a></td>";
 	}
-	else
-	{
-		if($sql_row['app_date']=="0000-00-00 00:00:00")
-		{
-			echo "<td>-</td>";
-		}
-		else
-		{
-			echo "<td>".$sql_row['app_date']."</td>";
-		}
-	}
+	// else
+	// {
+	// 	if($sql_row['app_date']=="0000-00-00 00:00:00")
+	// 	{
+	// 		echo "<td>-</td>";
+	// 	}
+	// 	else
+	// 	{
+	// 		echo "<td>".$sql_row['app_date']."</td>";
+	// 	}
+	// }
 	
 	echo "<td>".$sql_row['rand_track']."</td>";
 	

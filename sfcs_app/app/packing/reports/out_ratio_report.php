@@ -4,7 +4,7 @@
 
 <?php
 
-$view_access=user_acl("SFCS_0037",$username,1,$group_id_sfcs);
+//$view_access=user_acl("SFCS_0037",$username,1,$group_id_sfcs);
 $form_action = getFullURL($_GET['r'],'out_ratio_report_data.php','N');
 
 ?>

@@ -23,15 +23,15 @@
 	{
 		$gate_id=0;
 	}
-	$has_permission=haspermission($_GET['r']);
-    if (in_array($override_sewing_limitation,$has_permission))
-    {
+	// $has_permission=haspermission($_GET['r']);
+    // if (in_array($override_sewing_limitation,$has_permission))
+    // {
         $value = 'authorized';
-    } 
-    else
-    {
-        $value = 'not_authorized';
-    }
+    // } 
+    // else
+    // {
+    //     $value = 'not_authorized';
+    // }
 	$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
 ?>
 

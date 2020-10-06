@@ -4,7 +4,7 @@
     $sewing_job = $_GET['sewing_job'];
     include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
-    $has_permission=haspermission($_GET['r']);
+    // $has_permission=haspermission($_GET['r']);
 ?>
 
 	<script type="text/javascript">
