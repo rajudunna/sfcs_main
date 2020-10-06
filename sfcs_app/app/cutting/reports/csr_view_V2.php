@@ -249,7 +249,7 @@ function verify_date(){
 						$category_name=$sql_row4['component_name'];
 					}
 				$qry_mp_sub_mo_qty;
-				$qry_mp_mo_qty="SELECT jm_product_logical_bundle_id FROM $pps.jm_docket_logical_bundle WHERE `jm_docket_bundle_id`='$jm_docket_bundle_id' AND plant_code='$plantcode'";
+				$qry_mp_mo_qty="SELECT jm_pplb_id FROM $pps.jm_docket_logical_bundle WHERE `jm_docket_bundle_id`='$jm_docket_bundle_id' AND plant_code='$plantcode'";
                 $qry_mp_mo_qty_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Errorat 34_mp_mo_qty".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row5=mysqli_fetch_array($qry_mp_mo_qty_result))
 				{
