@@ -419,7 +419,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                                     WHERE jm_dockets.`jm_docket_id`='".$sql_row2['jm_docket_id']."'";
                                      $sql_result3 = mysqli_query($link, $sql_cg) or exit("Sql Error3 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                      while ($sql_row3 = mysqli_fetch_array($sql_result3)) {
-                                        $sql_isMainCg="SELECT is_main_comp_group FROM `lp_component_group` WHERE master_po_component_group_id = '".$sql_row3['component_group_id']."' where is_main_comp_group='1'";
+                                        $sql_isMainCg="SELECT is_main_comp_group FROM `lp_component_group` WHERE lp_cg_id = '".$sql_row3['component_group_id']."' where is_main_comp_group='1'";
                                         $sql_result4 = mysqli_query($link, $sql_isMainCg) or exit("Sql Error4 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result4)){
                                            $sql_ratio_sum="SELECT SUM(size_ratio) as ratio_qty FROM lp_ratio_size WHERE ratio_id = '".$sql_row3['ratio_id']."'";
