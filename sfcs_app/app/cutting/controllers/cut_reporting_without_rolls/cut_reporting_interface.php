@@ -1356,9 +1356,37 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.fabricAttributes = fabricAttributes;
         console.log(reportData);
         $('#wait_loader').css({'display':'block'});
+
+
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
                     data:  JSON.stringify(reportData),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -1389,7 +1417,10 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                         loadDetails(post_doc_no);
                     }
                     
-                });
+            });
+        }).fail(function (result) {
+            console.log(result);
+        });
         //clearRejections();
         
         //$('#wait_loader').css({'display':'none'});
