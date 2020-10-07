@@ -3,6 +3,7 @@
     $start_timestamp = microtime(true);
     $plantCode = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
+
 ?>
 <style>
 .green_back{
@@ -416,9 +417,9 @@ $.ajax
               $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
               foreach($shifts_array as $shift){
                 if($shifts == $shift){
-                  echo "<option value='".$shift['shiftValue']."' selected>'".$shift['shiftLabel']."'</option>";
+                  echo "<option value='".$shift['shiftValue']."' selected>".$shift['shiftLabel']."</option>";
                 }else{
-                  echo "<option value='".$shift['shiftValue']."' >'".$shift['shiftLabel']."'</option>";
+                  echo "<option value='".$shift['shiftValue']."' >".$shift['shiftLabel']."</option>";
                 }
               }
           ?>
