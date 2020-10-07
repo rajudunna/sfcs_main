@@ -69,7 +69,7 @@ $res_workstations = mysqli_query($link, $sql_workstations) or exit("sql workstat
 // $secs = explode(",", $sections);
 //print_r($secs);
 $i = 1;
-if (mysqli_num_rows($res_workstations) < 100) {
+if (mysqli_num_rows($res_workstations) > 0) {
 	echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
 	echo "<tr>";
 	echo "<th style=\"background-color:#29759C; color:white;\">Module</th>";

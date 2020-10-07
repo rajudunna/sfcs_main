@@ -93,9 +93,35 @@ $(document).ready(function()
                         "resourceId": tomodule,
                         "createdUser": '<?= $username ?>'
                     }
+        var bearer_token;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
+        $.ajax({
+                method: 'POST',
+                url: "<?php echo $KEY_LOCK_IP?>",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                xhrFields: { withCredentials: true },
+                contentType: "application/json; charset=utf-8",
+                transformRequest: function (Obj) {
+                    var str = [];
+                    for (var p in Obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                    return str.join("&");
+                },
+                data: creadentialObj
+        }).then(function (result) {
+        console.log(result);
+        bearer_token = result['access_token'];
         $.ajax({
             type: "POST",
             url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' +  bearer_token },
             data: data,
             success: function (res) {            
                 //console.log(res.data);
@@ -114,7 +140,10 @@ $(document).ready(function()
                 swal('Error in getting data');
                 $('#loading-image').hide();
             }
-        });
+        }); 
+        }).fail(function (result) {
+            console.log(result);
+        }) ;            
     }); 
 });
 
