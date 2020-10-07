@@ -657,7 +657,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
         $width =$result_docketinfo['width'];
         $cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['docket_quantity'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 		
@@ -683,7 +683,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	{
 		$marker_version1=$row111x11["marker_version_id"];
 	}
-	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and ratio_wise_component_group_id='$ratio_comp_group_id'";
+	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and lp_ratio_cg_id='$ratio_comp_group_id'";
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 	   echo "<td><SELECT name='marker_version'  id='marker_version'id='rejections_panel_btn'".$doc_no." style='height: 30px;' onchange=marker_edit()>";
 	
