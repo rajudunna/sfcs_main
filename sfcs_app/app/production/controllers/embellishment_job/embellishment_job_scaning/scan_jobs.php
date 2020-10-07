@@ -685,60 +685,147 @@ function check_pack()
 
 		$('#flag_validation').val(0);
 		$('#smart_btn_arear').hide();
+		
+		var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
-			type: "POST",
-			url: url1,
-			data:  JSON.stringify(reportData),
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			success: function (res) {  
-				if(res.status)
-				{
-					$('#dynamic_table1').html('');
-					$('#loading-image').hide();
-					document.getElementById('dynamic_table1').innerHTML = '';
-					document.getElementById('style_show').innerHTML = '';
-					document.getElementById('schedule_show').innerHTML = '';
-					document.getElementById('color_show').innerHTML = '';
-					document.getElementById('job_number').value = '';
-					document.getElementById('module_show').innerHTML = '';
-					document.getElementById('pre_data').innerHTML ='';
-					
-					swal('',res.internalMessage,'success');
-					
-					var data = res.data;
-					if(form_type == 'Sewing' ){
-						$('#pre_pre_data').show();
-						var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
-						if(barcode_generation == 0) {
-							table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
-						} else{
-							for(var z=0; z<data.length; z++){
-								if(data[z].reportedQuantity > 0) {
-									table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+			$.ajax({
+				type: "POST",
+				url: url1,
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+				data:  JSON.stringify(reportData),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (res) {  
+					if(res.status)
+					{
+						$('#dynamic_table1').html('');
+						$('#loading-image').hide();
+						document.getElementById('dynamic_table1').innerHTML = '';
+						document.getElementById('style_show').innerHTML = '';
+						document.getElementById('schedule_show').innerHTML = '';
+						document.getElementById('color_show').innerHTML = '';
+						document.getElementById('job_number').value = '';
+						document.getElementById('module_show').innerHTML = '';
+						document.getElementById('pre_data').innerHTML ='';
+						
+						swal('',res.internalMessage,'success');
+						
+						var data = res.data;
+						if(form_type == 'Sewing' ){
+							$('#pre_pre_data').show();
+							var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+							if(barcode_generation == 0) {
+								table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+							} else{
+								for(var z=0; z<data.length; z++){
+									if(data[z].reportedQuantity > 0) {
+										table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+									}
 								}
 							}
+							table_data += "</tbody></table></div></div></div>";
+							document.getElementById('pre_data').innerHTML = table_data;
 						}
-						table_data += "</tbody></table></div></div></div>";
-						document.getElementById('pre_data').innerHTML = table_data;
+						$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
+						$('.progress').hide();
+						$('#smart_btn_arear').show();
 					}
-					$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
-					$('.progress').hide();
-					$('#smart_btn_arear').show();
-				}
-				else
-				{
-					$('#smartbtn').attr('disabled', false);
+					else
+					{
+						$('#smartbtn').attr('disabled', false);
+						$('.submission').show();
+						swal('',res.internalMessage,'error');
+					}               
+				},
+				error: function(res){
 					$('.submission').show();
-					swal('',res.internalMessage,'error');
-				}               
-			},
-			error: function(res){
-				$('.submission').show();
-				$('#loading-image').hide(); 
-				swal('','Network error','error');
-			}
-		});
+					$('#loading-image').hide(); 
+					swal('','Network error','error');
+				}
+			});
+        }).fail(function (result) {
+            console.log(result);
+        });
+		
+		
+		
+		// $.ajax({
+		// 	type: "POST",
+		// 	url: url1,
+		// 	data:  JSON.stringify(reportData),
+		// 	contentType: "application/json; charset=utf-8",
+		// 	dataType: "json",
+		// 	success: function (res) {  
+		// 		if(res.status)
+		// 		{
+		// 			$('#dynamic_table1').html('');
+		// 			$('#loading-image').hide();
+		// 			document.getElementById('dynamic_table1').innerHTML = '';
+		// 			document.getElementById('style_show').innerHTML = '';
+		// 			document.getElementById('schedule_show').innerHTML = '';
+		// 			document.getElementById('color_show').innerHTML = '';
+		// 			document.getElementById('job_number').value = '';
+		// 			document.getElementById('module_show').innerHTML = '';
+		// 			document.getElementById('pre_data').innerHTML ='';
+					
+		// 			swal('',res.internalMessage,'success');
+					
+		// 			var data = res.data;
+		// 			if(form_type == 'Sewing' ){
+		// 				$('#pre_pre_data').show();
+		// 				var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+		// 				if(barcode_generation == 0) {
+		// 					table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+		// 				} else{
+		// 					for(var z=0; z<data.length; z++){
+		// 						if(data[z].reportedQuantity > 0) {
+		// 							table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+		// 						}
+		// 					}
+		// 				}
+		// 				table_data += "</tbody></table></div></div></div>";
+		// 				document.getElementById('pre_data').innerHTML = table_data;
+		// 			}
+		// 			$('.progress-bar').css('width', 100+'%').attr('aria-valuenow', 80);
+		// 			$('.progress').hide();
+		// 			$('#smart_btn_arear').show();
+		// 		}
+		// 		else
+		// 		{
+		// 			$('#smartbtn').attr('disabled', false);
+		// 			$('.submission').show();
+		// 			swal('',res.internalMessage,'error');
+		// 		}               
+		// 	},
+		// 	error: function(res){
+		// 		$('.submission').show();
+		// 		$('#loading-image').hide(); 
+		// 		swal('','Network error','error');
+		// 	}
+		// });
 		
 	}
 	

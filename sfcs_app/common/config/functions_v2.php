@@ -868,6 +868,17 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                     
                     }
 
+                    if($delivery_date_time!=''){
+                       
+                    }else{
+                        $delivery_date_time="0000-00-00 00:00:00";
+                    }
+                    if($sla!=''){
+
+                    }else{
+                        $sla=0;
+                    }
+
                     /**Insert new record in header for if new reource id alloacted with in cut job */
                     $Qry_insert_taskheader="INSERT INTO $tms.task_header (task_header_id,`task_type`,`task_ref`,`task_status`,`task_progress`,`resource_id`,`short_desc`,`priority`,`planned_date_time`,`delivery_date_time`,`sla`,`is_active`,`plant_code`,`created_user`,`updated_at`,`updated_user`,`version_flag`) VALUES ('".$uuid."','".$task_type."','".$task_ref."','".$taskStatus."','".$task_progress."','".$items[0]."','".$short_desc."','".$priority."','".$planned_date_time."','".$delivery_date_time."','".$sla."','".$is_active."','".$plant_code."','".$created_user."',NOW(),'".$updated_user."',1)";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_insert_taskheader) or exit("Sql Error at insert task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -890,13 +901,13 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         $insert_log_query="INSERT INTO $tms.jobs_movement_track (task_job_id,from_module, to_module,plant_code, created_user, updated_user) VALUES('".$task_id."', '".$resource_id."' ,'".$items[0]."' , '".$plantcode."','".$username."', '".$username."')";
                         mysqli_query($link_new, $insert_log_query) or die("Error while saving the track details1");
 
-                        $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode' AND is_active=1";
-                        $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
-                        {
-                           $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$task_id')";
-                            $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
-                        }
+                        // $qry_to_task_attributes="SELECT * FROM $tms.task_attributes WHERE task_header_id='$header_id' AND plant_code='$plantcode' AND is_active=1";
+                        // $Qry_task_attributes_result=mysqli_query($link_new, $qry_to_task_attributes) or exit("Sql Error at task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // while($task_attributes_row=mysqli_fetch_array($Qry_task_attributes_result))
+                        // {
+                        //    $insert_query="INSERT INTO $tms.task_attributes (attribute_name,attribute_value,plant_code,updated_at,task_header_id) values('".$task_attributes_row['attribute_name']."','".$task_attributes_row['attribute_value']."','$plantcode',NOW(),'$task_id')";
+                        //     $insert_query_result=mysqli_query($link_new, $insert_query) or exit("Sql Error at insert task_attributes".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        // }
                     }
                 }
             }
@@ -1477,8 +1488,9 @@ function getStyleColorSchedule($ponumber,$plantcode){
     $color=array();
     $schedule=array();
     //To get schedule,color
-    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
+    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
     WHERE po_number='$ponumber' AND mp_sub_mo_qty.plant_code='$plantcode'";
+    // echo $qry_get_sch_col;
     $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($qry_get_sch_col_result))
     {

@@ -87,21 +87,6 @@ th,td{
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 					
-					<?php
-					if($gate_id>0)
-					{
-						?>
-						<div class="col-sm-2 form-group" style="padding-top:20px;">
-						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
-						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plant_code=".$plantcode."&username=".$username."' >Finish</a>";
-						?>
-						</form>
-						</div> 
-						<br>					
-						<?php
-					}
-					?>
 					</div>
 				</div>
 				<div class="col-md-5">
@@ -141,6 +126,8 @@ $(document).ready(function()
 		}
 
 		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
+		var pass_id = $('#pass_id').val();
 		var bundet;
 		const data={
 						"barcode": barcode,
@@ -150,35 +137,84 @@ $(document).ready(function()
 						"shift": '<?=shift ?>',
 						"reportAsFullGood": true
 				    }
-		$.ajax({
-			type: "POST",
-			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
-			data: data,
-			success: function (res) {            
-				if(res.status)
-				{
-					
-					if(res)
+		var bearer_token;
+		const creadentialObj = {
+									grant_type: 'password',
+									client_id: 'pps-back-end',
+									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+									username: 'bhuvan',
+									password: 'bhuvan'
+								}
+        $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
+				type: "POST",
+				url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+				data: data,
+				success: function (res) {            
+					if(res.status)
 					{
-						tableConstruction(res);
+						if(pass_id>0)
+						{
+							var reportData = new Object(); 
+							reportData.bundleno=res.data.bundleBrcdNumber;
+							reportData.operationCode=res.data.operationCode;
+							reportData.style=res.data.style;
+							reportData.schedule=res.data.schedule;
+							reportData.fgColor=res.data.fgColor;
+							reportData.size=res.data.size;
+							reportData.actualQuantity=res.data.actualQuantity;
+							reportData.gate_id=pass_id;
+							reportData.plant_code=plant_code;
+							reportData.username=username;
+							
+							$.ajax({
+							type: "POST",
+							url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>
+							data:  JSON.stringify(reportData),
+							contentType: "application/json; charset=utf-8",
+							dataType: "json",
+							});
+						}
+						if(res)
+						{
+							tableConstruction(res);
+						}
+						else
+						{
+							$('#loading-image').hide();
+							swal('Error',' in getting data','error');
+						}
 					}
 					else
 					{
 						$('#loading-image').hide();
-						swal('Error',' in getting data','error');
-					}
-				}
-				else
-				{
+						swal(res.internalMessage,'','error');
+					}                       
+				},
+				error: function(res){
 					$('#loading-image').hide();
-					swal(res.internalMessage,'','error');
-				}                       
-			},
-			error: function(res){
-				$('#loading-image').hide();
-				swal('Error',' in getting data','error');
-			}
-		});
+					swal('Error',' in getting data','error');
+				}
+			}); 
+        }).fail(function (result) {
+            console.log(result);
+        }) ;			
 	});			
 });
 

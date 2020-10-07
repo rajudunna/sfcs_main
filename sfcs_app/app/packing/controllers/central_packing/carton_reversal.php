@@ -40,22 +40,66 @@ function cartonReversal(){
 	var username =document.getElementById("username").value;
 	var operation_id =document.getElementById("operation_id").value;
 	if (carton_id != '')
-			{
+			{	
+				var bearer_token;
+				const creadentialObj = {
+				grant_type: 'password',
+				client_id: 'pps-back-end',
+				client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+				username: 'bhuvan',
+				password: 'bhuvan'
+				}
 				$.ajax({
-					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
-					dataType: "json", 
-					type: "POST",
-					data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username},    
-					cache: false,
-					success: function (response) 
-					{
-						if(response.status){
-							swal('', response.internalMessage, 'success'); 
-						} else {
-							swal('', response.internalMessage, 'error');
-						} 
-					}
-				})
+					method: 'POST',
+					url: "<?php echo $KEY_LOCK_IP?>",
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					xhrFields: { withCredentials: true },
+					contentType: "application/json; charset=utf-8",
+					transformRequest: function (Obj) {
+						var str = [];
+						for (var p in Obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+						return str.join("&");
+					},
+					data: creadentialObj
+				}).then(function (result) {
+					console.log(result);
+					bearer_token = result['access_token'];
+					$.ajax({
+						url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
+						headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+						dataType: "json", 
+						type: "POST",
+						data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username},    
+						cache: false,
+						success: function (response) 
+						{
+							if(response.status){
+								swal('', response.internalMessage, 'success'); 
+							} else {
+								swal('', response.internalMessage, 'error');
+							} 
+						}
+					})
+				}).fail(function (result) {
+					console.log(result);
+				});
+				
+				// $.ajax({
+				// 	url: "<?php //echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
+				// 	dataType: "json", 
+				// 	type: "POST",
+				// 	data: {barcode:carton_id,operationCode:operation_id,plantCode:plant_code,createdUser:username},    
+				// 	cache: false,
+				// 	success: function (response) 
+				// 	{
+				// 		if(response.status){
+				// 			swal('', response.internalMessage, 'success'); 
+				// 		} else {
+				// 			swal('', response.internalMessage, 'error');
+				// 		} 
+				// 	}
+				// })
 			}
 
 }
