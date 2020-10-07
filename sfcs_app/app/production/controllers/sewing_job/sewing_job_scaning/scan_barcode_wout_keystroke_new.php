@@ -87,21 +87,6 @@ th,td{
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
 					
-					<?php
-					if($gate_id>0)
-					{
-						?>
-						<div class="col-sm-2 form-group" style="padding-top:20px;">
-						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
-						<?php
-							echo "<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&status=2&plant_code=".$plantcode."&username=".$username."' >Finish</a>";
-						?>
-						</form>
-						</div> 
-						<br>					
-						<?php
-					}
-					?>
 					</div>
 				</div>
 				<div class="col-md-5">
@@ -141,6 +126,8 @@ $(document).ready(function()
 		}
 
 		var plant_code = $('#plant_code').val();
+		var username = $('#username').val();
+		var pass_id = $('#pass_id').val();
 		var bundet;
 		const data={
 						"barcode": barcode,
@@ -157,7 +144,28 @@ $(document).ready(function()
 			success: function (res) {            
 				if(res.status)
 				{
-					
+					if(pass_id>0)
+					{
+						var reportData = new Object(); 
+						reportData.bundleno=res.data.bundleBrcdNumber;
+						reportData.operationCode=res.data.operationCode;
+						reportData.style=res.data.style;
+						reportData.schedule=res.data.schedule;
+						reportData.fgColor=res.data.fgColor;
+						reportData.size=res.data.size;
+						reportData.actualQuantity=res.data.actualQuantity;
+						reportData.gate_id=pass_id;
+						reportData.plant_code=plant_code;
+						reportData.username=username;
+						
+						$.ajax({
+						type: "POST",
+						url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>
+						data:  JSON.stringify(reportData),
+						contentType: "application/json; charset=utf-8",
+						dataType: "json",
+						});
+					}
 					if(res)
 					{
 						tableConstruction(res);
