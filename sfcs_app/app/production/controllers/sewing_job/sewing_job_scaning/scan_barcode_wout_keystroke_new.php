@@ -150,6 +150,7 @@ $(document).ready(function()
 						reportData.bundleno=res.data.bundleBrcdNumber;
 						reportData.operationCode=res.data.operationCode;
 						reportData.style=res.data.style;
+						reportData.schedule=res.data.schedule;
 						reportData.fgColor=res.data.fgColor;
 						reportData.size=res.data.size;
 						reportData.actualQuantity=res.data.actualQuantity;
