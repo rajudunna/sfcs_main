@@ -8,8 +8,8 @@ table, th, td {
 </style>
 	<title>Eligible Carton Report</title>
 	<?php
-		include(getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
-		include(getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
+		include(getFullURLLevel($_GET['r'],'common/config/config_ajax.php',4,'R'));
+		include(getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R'));
 		if(isset($_POST['vpo']))
 		{
 			$style = $_POST['style'];
@@ -23,6 +23,7 @@ table, th, td {
 		}
 		$plantcode=$_SESSION['plantCode'];
 		$username=$_SESSION['userName'];
+		$packing_operation = 200;
 	?>
 </head>
 <script>
@@ -48,12 +49,11 @@ table, th, td {
 				<select name="vpo" id="vpo" class="form-control" onchange="firstbox();" required="true">
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT vpo FROM $bai_pro3.bai_orders_db_confirm left join $bai_pro3.pac_stat on $bai_pro3.pac_stat.style=$bai_pro3.bai_orders_db_confirm.order_style_no WHERE vpo<>'' GROUP BY vpo";
+						$sql="SELECT vpo FROM $oms.oms_mo_details WHERE po_number<>'' and plant_code='$plantcode' GROUP BY vpo";
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							// echo $sql_row['vpo']."--".strlen(trim($sql_row['vpo']))."==".strcmp(trim($sql_row['vpo']),trim($vpo))."==".strlen(trim($vpo))."--".$vpo."</br>";
-							
 							if(trim($sql_row['vpo'])==trim($vpo))
 							{
 								echo "<option value=\"".$sql_row['vpo']."\" selected>".$sql_row['vpo']."</option>";
@@ -70,8 +70,15 @@ table, th, td {
 				<select name="style" id="style" class="form-control" onchange="secondbox();" required>
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT order_style_no as style FROM $bai_pro3.bai_orders_db_confirm left join $bai_pro3.pac_stat on $bai_pro3.pac_stat.style=$bai_pro3.bai_orders_db_confirm.order_style_no WHERE vpo='$vpo'and vpo<>'' GROUP BY order_style_no";
-						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
+						$sql="SELECT mo_number FROM $oms.oms_mo_details WHERE po_number<>'' and plant_code='$plantcode' and vpo='$vpo'";
+						$sql_result=mysqli_query($link, $sql) or exit("error while fetching mo numbers for vpo");
+						while($sql_row=mysqli_fetch_array($sql_result))
+						{							
+							$mo_no1[] = $sql_row['mo_number'];
+						}
+						$mos1 = implode(',', $mo_no1);
+						$sql="SELECT style FROM $oms.oms_products_info WHERE mo_number in ($mos1) GROUP BY style";
+						$sql_result=mysqli_query($link, $sql) or exit("error while fetching styles");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['style'])==str_replace(" ","",$style))
@@ -85,13 +92,20 @@ table, th, td {
 						}
 					?>
 				</select>
-				&nbsp;&nbsp;				
+				&nbsp;&nbsp;		
 				<label>Select Schedule: </label>
 				<select name="schedule" id="schedule" class="form-control" required="true">
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT order_del_no as schedule FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' and vpo='$vpo' GROUP BY order_del_no";
-						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
+						$sql="SELECT mo_number FROM $oms.oms_products_info WHERE style='$style'";
+						$sql_result=mysqli_query($link, $sql) or exit("error while fetching mo numbers for style");
+						while($sql_row=mysqli_fetch_array($sql_result))
+						{							
+							$mo_no2[] = $sql_row['mo_number'];
+						}
+						$mos2 = implode(',', $mo_no2);
+						$sql="SELECT schedule FROM $oms.oms_mo_details WHERE mo_number in($mos2) and po_number<>'' and plant_code='$plantcode' GROUP BY schedule";
+						$sql_result=mysqli_query($link, $sql) or exit("error while fetching schedules");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
 							if(str_replace(" ","",$sql_row['schedule'])==str_replace(" ","",$schedule))
@@ -110,7 +124,8 @@ table, th, td {
 			</form>
 			<?php
 				if (isset($_POST['submit']))
-				{
+				{					
+					$url2=getFullURLLevel($_GET['r'],'controllers/central_packing/barcode_carton.php',2,'R');
 					$vpo = $_POST['vpo'];
 					$style = $_POST['style'];
 					$schedule = $_POST['schedule'];					
@@ -126,195 +141,190 @@ table, th, td {
 					$eliminate=array();
 					$mo=array();
 					$mono=array();
-					$pack_meth_qry1="SELECT pac_seq_no FROM $bai_pro3.pac_stat WHERE style='$style' and schedule='$schedule' GROUP BY pac_seq_no ORDER BY pac_seq_no";
-					//echo $pack_meth_qry1;
-					$pack_meth_qty12=mysqli_query($link, $pack_meth_qry1) or exit("error while fetching pack methods1");
-					if (mysqli_num_rows($pack_meth_qty12) > 0)
+
+					$oms_mo_details_sql="SELECT mo_number FROM $oms.oms_mo_details WHERE po_number<>'' and schedule='$schedule' and plant_code='$plantcode'";
+					$oms_mo_details_sql_result=mysqli_query($link, $oms_mo_details_sql) or exit("error while fetching mo numbers for schedule");
+					while($sql_row=mysqli_fetch_array($oms_mo_details_sql_result))
+					{							
+						$mo_nos3[] = $sql_row['mo_number'];
+					}
+					$mos3 = implode(',', $mo_nos3);
+					$pm_mo_alloc_sql="SELECT pm_container_mo_alloc_id FROM $pps.pm_container_mo_alloc WHERE mo_number in ($mos3) and plant_code='$plantcode'";
+					$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack methods");
+					if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 					{
-						// All MO details
-						$mo_sql="SELECT * FROM $bai_pro3.mo_details WHERE schedule='$schedule'";
-						//echo $mo_sql."<br>";
-						$sql_result=mysqli_query($link, $mo_sql) or exit("error while fetching pack methods2");
-						while($row_result=mysqli_fetch_array($sql_result))
+						$pm_mo_alloc_sql="SELECT pmct.pm_packing_list_id, GROUP_CONCAT(pm_mo_alloc.mo_number) as mo_numbers, pmct.description FROM $pps.pm_container_mo_alloc as pm_mo_alloc left join $pps.pm_container_template as pmct on pm_mo_alloc.pm_container_template_id = pmct.pm_container_template_id WHERE pm_mo_alloc.mo_number in ($mos3) and pm_mo_alloc.plant_code='$plantcode' group by pmct.pm_packing_list_id";
+						$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack list");
+						if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 						{
-							$mo[]=$row_result['mo_no'];
-						}
-						//var_dump($mo)."<br>";
-						//echo implode(",",$mo)."<br>";
-						while($pack_result12=mysqli_fetch_array($pack_meth_qty12))
-						{ 									
-							// Eligible Quantity MO Wise
-							$mo_sql1="SELECT * FROM $pps.tbl_carton_ready WHERE plant_code='$plantcode' and mo_no in ('".implode("','",$mo)."')";
-							$sql_result23=mysqli_query($link, $mo_sql1) or exit("error while fetching pack methods3");
-							while($row_result23=mysqli_fetch_array($sql_result23))
+							while($row_result=mysqli_fetch_array($pm_mo_alloc_result))
 							{
-								if($row_result23['remaining_qty']>0)
-								{
-									$eligible[$row_result23['mo_no']]=$row_result23['remaining_qty'];
-								}
+								$packing_list_ids[]=$row_result['pm_packing_list_id'];
+								$packing_list_mos[$row_result['pm_packing_list_id']][] = $row_result['mo_numbers'];
+								$packing_methods[$row_result['pm_packing_list_id']]=$row_result['description'];
 							}
-							$pac_stat="SELECT pac_stat_id,carton_no,status as cart_status,group_concat(tid) as tids FROM $bai_pro3.packing_summary WHERE order_del_no='$schedule' and seq_no='".$pack_result12['pac_seq_no']."' group by pac_stat_id";
-							//echo $pac_stat."<bR>";
-							$label_concat='';
-							$pac_stat_result=mysqli_query($link, $pac_stat) or exit("error while fetching pack methods4");
-							while($row_result1=mysqli_fetch_array($pac_stat_result))
-							{
-								$status=0;
-								if($row_result1['cart_status']=='DONE')
+							foreach($packing_list_ids as $pack_list) {
+								$mo_numbers_str = $packing_list_mos[$pack_list][0];
+								$jm_pack_container_sql="SELECT jm_pack_container_id FROM $pps.jm_pack_container_line WHERE mo_number IN ($mo_numbers_str) AND plant_code='$plantcode'";
+								$jm_pack_container_result=mysqli_query($link, $jm_pack_container_sql) or exit("error while fetching pack containers");
+								if (mysqli_num_rows($jm_pack_container_result) > 0)
 								{
-									$complete_cart_no[]=$row_result1['carton_no'];
-									$cart_no[]=$row_result1['carton_no'];
-								}
-								else
-								{	
-									$mo_qty="SELECT mo_no,sum(bundle_quantity) as qty FROM $bai_pro3.mo_operation_quantites WHERE ref_no in (".$row_result1['tids'].")  and op_code='200' group by mo_no";
-									//echo $mo_qty."<br>";
-									$mo_qty_result=mysqli_query($link, $mo_qty) or exit("error while fetching pack methods6");
-									while($mo_qty_row=mysqli_fetch_array($mo_qty_result))
+									while($row_result=mysqli_fetch_array($jm_pack_container_result))
 									{
-										if(($eligible[$mo_qty_row['mo_no']]-$mo_qty_row['qty'])<0)
-										{
-											$status=1;
-										}
-										$eliminate[$mo_qty_row['mo_no']]=$mo_qty_row['qty'];	
-										$mono[]=$mo_qty_row['mo_no'];
+										$containerIds[]=$row_result['jm_pack_container_id'];
 									}
-									//echo $status."--Status--<br>";
-									//echo $row_result1['carton_no']."--Carton--<br>";
-									//echo $eliminate[$mo_qty_row['mo_no']]."<br>";
-									
-									if($status==0)
+									$container_ids = implode(',', $containerIds);
+									$container_ids = "'".str_replace(",","','",$container_ids)."'";
+									$barcode_type_packing = BarcodeType::PCRT;
+									$barcode_sql="SELECT barcode_id,quantity FROM $pts.`barcode` WHERE external_ref_id IN (
+									$container_ids) AND barcode_type= '$barcode_type_packing' AND plant_code = '$plantcode'";
+									$barcode_result=mysqli_query($link, $barcode_sql) or exit("error while fetching barcodes");
+									if (mysqli_num_rows($barcode_result) > 0)
 									{
-										for($i=0;$i<sizeof($mono);$i++)
+										while($row_result=mysqli_fetch_array($barcode_result))
 										{
-											//echo "Before---".$mono[$i]."-----".$eligible[$mono[$i]]."----".$eliminate[$mono[$i]]."<br>";
-											$eligible[$mono[$i]]=$eligible[$mono[$i]]-$eliminate[$mono[$i]];
-											//echo "After---".$eligible[$mono[$i]]."<br>";
-										}
-										$elgible_cart_no[]=$row_result1['carton_no'];
-										$label_concat .= $row_result1['carton_no'].",";
-										$elgible_cart_id[]=$row_result1['pac_stat_id'];
-										$cart_no[]=$row_result1['carton_no'];
-									}										
-								}
-								unset($eliminate);
-								unset($mono);
-							}
-							$label_concat=substr($label_concat,0,-1);
-							//echo $label_concat."<br>";											
-							//var_dump($elgible_cart_no);	
-							if(sizeof($cart_no)>0)
-							{												
-								$pac_stat3="SELECT * FROM $bai_pro3.pac_stat WHERE schedule='$schedule' and pac_seq_no='".$pack_result12['pac_seq_no']."' and carton_no not in (".implode(",",$cart_no).")";
-							}
-							else
-							{
-								$pac_stat3="SELECT * FROM $bai_pro3.pac_stat WHERE schedule='$schedule' and pac_seq_no='".$pack_result12['pac_seq_no']."'";
-							}
-							//echo $pac_stat3."<br>";
-							$pac_stat_result3=mysqli_query($link, $pac_stat3) or exit("error while fetching pack methods8");
-							if(mysqli_num_rows($pac_stat_result3)>0)
-							{
-								while($row_result3=mysqli_fetch_array($pac_stat_result3))
-								{
-									$pending_cart_no[]=$row_result3['carton_no'];
-								}
-							}									
-							$pack_meth_qry="SELECT pack_method,pack_description FROM bai_pro3.tbl_pack_ref LEFT JOIN bai_pro3.tbl_pack_size_ref ON bai_pro3.tbl_pack_ref.id=bai_pro3.tbl_pack_size_ref.parent_id WHERE bai_pro3.tbl_pack_size_ref.seq_no='".$pack_result12['pac_seq_no']."' AND bai_pro3.tbl_pack_ref.schedule='$schedule' LIMIT 1";
-							//echo $pack_meth_qry;
-							$pack_meth_qty=mysqli_query($link, $pack_meth_qry) or exit("error while fetching pack methods9");
-							while($pack_result1=mysqli_fetch_array($pack_meth_qty))
-							{
-								$pack_method=$pack_result1['pack_method'];
-								$pack_description=$pack_result1['pack_description'];
-							}
-							
-							//$url2=getFullURL($_GET['r'],'barcode_carton.php','R');
-							if ($label_concat == '' || $label_concat == null)
-							{
-								$hide = "style='display: none'";
-							}
-							else
-							{
-								$hide = '';
-							}
-							
-							$url2=getFullURLLevel($_GET['r'],'controllers/central_packing/barcode_carton.php',2,'R');
-							echo "<br>
-							<div class='col-md-12'>
-								<div class=\"panel panel-primary\">
-									<div class=\"panel-heading\">".$operation[$pack_method]." --- ".$pack_description."</div>
-									<div class=\"panel-body\">
-										<table class='table table-bordered'>
-											<thead>
-												<tr class='info'>
-													<th width=\"33%\">Completed Cartons</th>
-													<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank' $hide>Print All Cartons</a></th>
-													<th width=\"33%\">Pending Cartons</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>";
-													$k=0;
-													if(sizeof($complete_cart_no)>0)
+											$barcode_id = $row_result['barcode_id'];
+											$quantity = $row_result['quantity'];
+											$transaction_log_sql="SELECT sum(good_quantity+rejected_quantity) as reported_quantity  FROM $pts.`transaction_log` WHERE barcode_id = '$barcode_id' AND operation = '$packing_operation' AND plant_code = '$plantcode'";
+											$transaction_log_result=mysqli_query($link, $transaction_log_sql) or exit("error while fetching operations data for barcode");
+											if (mysqli_num_rows($transaction_log_result) > 0)
+											{
+												while($row_result=mysqli_fetch_array($transaction_log_result))
+												{
+													$reported_quantity = $row_result['reported_quantity'];
+												}
+											}
+											// completed cartons
+											if($quantity == $reported_quantity) {
+												$complete_cart_no[] = $barcode_id;
+											} else {
+												// eligible cartons
+												$fg_barcode_sql="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id ='$barcode_id' AND plant_code = '$plantcode'";
+												$fg_barcode_result=mysqli_query($link, $fg_barcode_sql) or exit("error while fetching fgs");
+												if (mysqli_num_rows($fg_barcode_result) > 0)
+												{
+													$comp_flag = true;
+													// get previous operation for packing for one fg
+													$singe_fg_id = mysqli_fetch_array($fg_prev_opr_result)[0]['finished_good_id'];
+													$fg_prev_opr_sql="SELECT previous_operation FROM $pts.`fg_operation` WHERE finished_good_id ='$singe_fg_id' AND operation_code='$packing_operation' AND plant_code = '$plantcode' ";
+													$fg_prev_opr_result=mysqli_query($link, $fg_prev_opr_sql) or exit("error while fetching fg operations");
+													if (mysqli_num_rows($fg_prev_opr_result) > 0)
 													{
-														for($j=0;$j<sizeof($complete_cart_no);$j++)
-														{	
-															if($k==10)
-															{
-																echo "<br>";
-																$k=0;
-															}															
-															echo "<a class='btn btn-success btn-xs'>".$complete_cart_no[$j]."</a>";
+														$pre_operation=mysqli_fetch_array($fg_prev_opr_result)[0]['previous_operation'];
+													}
+													
+													// check components equal or not
+													while($row_result=mysqli_fetch_array($fg_barcode_result))
+													{
+														$fg_id = $row_result['finished_good_id'];
+														$fg_opr_comp_sql="SELECT required_components,completed_components FROM $pts.`fg_operation` WHERE finished_good_id ='$fg_id' AND operation_code='$pre_operation' AND plant_code = '$plantcode' ";
+														$fg_opr_comp_result=mysqli_query($link, $fg_opr_comp_sql) or exit("error while fetching fg operation components");
+														if (mysqli_num_rows($fg_opr_comp_result) > 0)
+														{
+															$fg_comp_data =mysqli_fetch_array($fg_opr_comp_result)[0];
+															if($fg_comp_data['required_components'] != $fg_comp_data['completed_components']) {
+																$comp_flag = false;
+																break; 
+															}
 														}
 													}
-													echo"</td><td>";
-													$k=0;
-													if(sizeof($elgible_cart_no)>0)
+													// if true show it in eligible carton and false its pending carton
+													if($comp_flag) {
+														// eligible cartons
+														$elgible_cart_no[] = $barcode_id;
+														$label_concat .= $barcode_id.",";
+													} else {
+														// Pending cartons
+														$pending_cart_no[] = $barcode_id;
+													}
+													$label_concat=substr($label_concat,0,-1);
+
+													if ($label_concat == '' || $label_concat == null)
 													{
-														for($jj=0;$jj<sizeof($elgible_cart_no);$jj++)
-														{
-															if($k==10)
-															{
-																echo "<br>";
-																$k=0;
-															}	
-															echo "<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$elgible_cart_no[$jj]&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'>".$elgible_cart_no[$jj]."</a>";
-															$k++;
-														}
-													}																		
-													echo"</td><td>";
-													$k=0;
-													if(sizeof($pending_cart_no)>0)
+														$hide = "style='display: none'";
+													}
+													else
 													{
-														for($jjj=0;$jjj<sizeof($pending_cart_no);$jjj++)
+														$hide = '';
+													}
+												}
+											}											
+										}
+									}
+								}
+								echo "<br>
+								<div class='col-md-12'>
+									<div class=\"panel panel-primary\">
+										<div class=\"panel-heading\">".$packing_methods[$pack_list]."</div>
+										<div class=\"panel-body\">
+											<table class='table table-bordered'>
+												<thead>
+													<tr class='info'>
+														<th width=\"33%\">Completed Cartons</th>
+														<th width=\"33%\">Eligible Cartons</th>
+														<th width=\"33%\">Pending Cartons</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>";
+														//&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat' target='_blank' $hide>Print All Cartons</a>
+														$k=0;
+														if(sizeof($complete_cart_no)>0)
 														{
-															if($k==10)
-															{
-																echo "<br>";
-																$k=0;
+															for($j=0;$j<sizeof($complete_cart_no);$j++)
+															{	
+																if($k==10)
+																{
+																	echo "<br>";
+																	$k=0;
+																}															
+																echo "<a class='btn btn-success btn-xs'>".$complete_cart_no[$j]."</a>";
 															}
-															echo "<a class='btn btn-danger btn-xs'>".$pending_cart_no[$jjj]."</a>";
 														}
-													}														
-													echo"
-													</td>
-												</tr>
-											</tbody>
-										</table>
+														echo"</td><td>";
+														$k=0;
+														if(sizeof($elgible_cart_no)>0)
+														{
+															for($jj=0;$jj<sizeof($elgible_cart_no);$jj++)
+															{
+																if($k==10)
+																{
+																	echo "<br>";
+																	$k=0;
+																}	
+																//href='$url2?schedule=$schedule&carton_no=$elgible_cart_no[$jj]&seq_no=".$pack_result12['pac_seq_no']."' target='_blank'
+																echo "<a class='btn btn-warning btn-xs'>".$elgible_cart_no[$jj]."</a>";
+																$k++;
+															}
+														}																	
+														echo"</td><td>";
+														$k=0;
+														if(sizeof($pending_cart_no)>0)
+														{
+															for($jjj=0;$jjj<sizeof($pending_cart_no);$jjj++)
+															{
+																if($k==10)
+																{
+																	echo "<br>";
+																	$k=0;
+																}
+																echo "<a class='btn btn-danger btn-xs'>".$pending_cart_no[$jjj]."</a>";
+															}
+														}														
+														echo"
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
 									</div>
-								</div>
-							</div>";								
-							unset($eligible);
-							unset($cart_no);
-							unset($complete_cart_no);
-							unset($elgible_cart_no);
-							unset($elgible_cart_id);
-							unset($pending_cart_no);
-							unset($eliminate);
-							unset($mono);
-						}
+								</div>";
+								unset($complete_cart_no);
+								unset($elgible_cart_no);
+								unset($pending_cart_no);
+							}
+						}					
 					}
 					else
 					{
@@ -324,8 +334,7 @@ table, th, td {
 					echo "</div>
 				  </div>
 				  </div>";
-				  echo "</br>";
-												
+				  echo "</br>";					
 				}
 			?>
 		</div>
