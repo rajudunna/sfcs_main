@@ -13,8 +13,8 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
-$plant_code = $_session['plantCode'];
-$username =  $_session['userName'];
+$plant_code = $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];
 $style=$_POST['style'];
 $master_po=$_POST['mpo'];
 $style=$_GET['style'];
@@ -64,7 +64,7 @@ if($reptype == 1) {
                     <label for='style'>Master Po</label>
                     <?php
                     //geting style
-                    $sql="SELECT DISTINCT mpo FROM $pts.transaction_log where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
+                    $sql="SELECT DISTINCT(master_po_number) AS mpo FROM $pps.`mp_color_detail` where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='verify(event)'>";
     
