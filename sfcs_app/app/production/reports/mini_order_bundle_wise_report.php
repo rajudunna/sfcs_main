@@ -64,7 +64,7 @@ if($reptype == 1) {
                     <label for='style'>Master Po</label>
                     <?php
                     //geting style
-                    $sql="SELECTDISTINCT(master_po_number) AS mpo FROM $pps.`mp_color_detail` where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
+                    $sql="SELECT DISTINCT(master_po_number) AS mpo FROM $pps.`mp_color_detail` where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='verify(event)'>";
     
