@@ -214,6 +214,7 @@
 								<td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQty']+"</td>\
 								<td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 								$("#dynamic_table").append(markup1);
+								$('.smartbtn').attr('disabled', true);
 							}
 						} else {
 							sweetAlert(restrict_msg,'','error');
@@ -250,6 +251,8 @@
 		{
 			sweetAlert('','You are reversing more than Eligiblity.','error');
 			document.getElementById(rev).value = 0;
+		}else{
+			$('.smartbtn').attr('disabled', false);
 		}
 	}
 
@@ -270,49 +273,58 @@
 		
 	function check_pack()
 	{
-		$('#smartbtn').attr('disabled', 'disabled');
-		
+		$('.smartbtn').attr('disabled', 'disabled');
 		var count = document.getElementById('count_of_data').value;
-		var rejectReportData = new Object();
-		// reportData.sewingJobNo = $('#job_number').val();
-		rejectReportData.jobNo = $('#job_number').val();
-		rejectReportData.plantCode = $('#plant_code').val();
-		rejectReportData.shift = $('#shift_val').val();
-		rejectReportData.operationCode = $('#operation').val();
-		rejectReportData.createdUser = '<?= $username ?>';
-		var sizeQuantities = new Array();
+		var tot_qty=0;
 		for(var i=0; i<count; i++)
 		{
-			var sizeQuantitiesObject = new Object();
-			sizeQuantitiesObject.size = $('#'+i+'size').val();
-			sizeQuantitiesObject.module = $('#'+i+'module').val();
-			// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
-			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
-			sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
-			sizeQuantities.push(sizeQuantitiesObject);
+			let reportingQty = $('#'+i+'rever').val();
+			tot_qty += Number(reportingQty);
 		}
-		rejectReportData.sizeQuantities = sizeQuantities;
-		var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
-		$.ajax({
-			type: "POST",
-			url: seveSewJobReversalUrl,
-			data: rejectReportData,
-			success: function(res) 
+		if(tot_qty > 0) {
+			var rejectReportData = new Object();
+			// reportData.sewingJobNo = $('#job_number').val();
+			rejectReportData.jobNo = $('#job_number').val();
+			rejectReportData.plantCode = $('#plant_code').val();
+			rejectReportData.shift = $('#shift_val').val();
+			rejectReportData.operationCode = $('#operation').val();
+			rejectReportData.createdUser = '<?= $username ?>';
+			var sizeQuantities = new Array();
+			for(var i=0; i<count; i++)
 			{
-				console.log('response came');
-				if (res.status) {
-					swal('',res.internalMessage,'success');
-				} else {
-					swal('',res.internalMessage,'error');
-				}
-				location.reload();	
-			},
-			error: function(response){
-				swal('','Network Error','error');
+				var sizeQuantitiesObject = new Object();
+				sizeQuantitiesObject.size = $('#'+i+'size').val();
+				sizeQuantitiesObject.module = $('#'+i+'module').val();
+				// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+				sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
+				sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
+				sizeQuantities.push(sizeQuantitiesObject);
 			}
-		});
-		$('#smartbtn').attr('disabled', false);
-		$('.submissiaon').hide();
+			rejectReportData.sizeQuantities = sizeQuantities;
+			var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
+			$.ajax({
+				type: "POST",
+				url: seveSewJobReversalUrl,
+				data: rejectReportData,
+				success: function(res) 
+				{
+					console.log('response came');
+					if (res.status) {
+						swal('',res.internalMessage,'success');
+					} else {
+						swal('',res.internalMessage,'error');
+					}
+					location.reload();	
+				},
+				error: function(response){
+					swal('','Network Error','error');
+				}
+			});
+			$('.submissiaon').hide();
+		} else{
+			sweetAlert("Please enter atleast one size quantity","","warning");
+			$('.smartbtn').attr('disabled', 'disabled');
+		}
 	}
 
 </script>
