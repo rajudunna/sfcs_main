@@ -1784,15 +1784,40 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
     
     
     function loadDetails(doc_no){
-        var getData;
         const data={
                       "docketNumber": doc_no
-        
                   }
         $('#wait_loader').css({'display':'block'});
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                 type: "POST",
                 url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' +  bearer_token },
                 data: data,
                 success: function (res) {            
                     console.log(res.status);
@@ -2005,37 +2030,14 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                     swal('Error in getting docket');
                 }
             });
-           console.log(getData);
-            // var getData={
-            //     "docketNumber": "D123",
-            //     "componentGroup":"Compo Grp",
-            //     "category":"Body",
-            //     "style":"BCIDPG2526",
-            //     "fgColor":"Yark Yellow",
-            //     "schedules":"John",
-            //     "docketType":"Normal",
-            //     "quantity":"10",
-            //     "cutStatus":"Done",
-            //     "plannedPlies":"25",
-            //     "reportedPlies":"10",
-            //     "fabricRequired":"256",
-            //     "sizeRatios": [
-            //         {
-            //             "size": "S",
-            //             "ratio": "8"
-            //         },
-            //         {
-            //             "size": "M",
-            //             "ratio": "5"
-            //         },        
-            //         {
-            //             "size": "L",
-            //             "ratio": "3"
-            //         }
-            //         ],
-            // };
+        }).fail(function (result) {
+            console.log(result);
+        }) ;
+        
+        
+        console.log(bearer_token);
 
-            
+           console.log(getData);           
             GLOBAL_CALL = 0;        
     }
 
