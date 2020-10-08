@@ -172,7 +172,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$doc_mat =$result_docketinfo['docket_quantity'];
+		$doc_mat =$result_docketinfo['required_qty'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
@@ -279,10 +279,12 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 			<th>Time</th>
 			
 			<td>
-				<?php
+			<?php
+				date_default_timezone_set('Asia/Kolkata'); 
+
+				$dt2=date("Y-m-d H:i:s");
 
 					$hours=date("H");
-
 					$mints=date("i");
 					$hours=00;
 					$mints=0;
@@ -298,7 +300,8 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 						
 						for($k=0;$k<sizeof($mins);$k++)
 						{
-							if($l==date("H") and $mins[$k]>=date("i"))
+							
+							if($l==date("H") and $mins[$k]<=date("i"))
 							{
 								$selected="selected";
 							}
@@ -379,14 +382,17 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 				if(date("H:i:s") <= "23:59:59")
 				{
 					echo "<td><input type=\"checkbox\" onClick=\" document.apply['submit1'].disabled =(document.apply['submit1'].disabled)? false : true; GetSelectedItem();\" name=\"check\">
-					<input type=\"submit\" id=\"submit1\" name=\"submit1\" value=\"Submit\" class=\"btn btn-primary\" style=\"float: right;\" disabled></td>	";
+					<input type=\"submit\" id=\"submit1\" name=\"submit1\" value=\"Submit\" class=\"btn btn-primary\" style=\"float: right;\" onclick=\"document.getElementById('submit1').style.display='none'; document.getElementById('msg2').style.display='';\" disabled></td>	";
+
+				
 				}
+				
 				// else
 				// {
 				// 	echo "<td><H2>After 9'o Clock You Can't Raise The Fabric Request. If Any Concern Please Concant RM Warehouse Manager.</H2></td>";
 				// }	
 			}
-		
+			
 		?>	
 	  
 		</tr>
@@ -396,6 +402,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 <br/><br/>
 
 <?php
+echo '</br><span id="msg2" style="display:none; color:red;font-size:40px;">Please Wait...</span>';
 error_reporting(0);
 if(isset($_POST["submit1"]))
 {
@@ -520,7 +527,7 @@ while($row2=mysqli_fetch_array($result2))
 		$cut_nos =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$doc_mat =$result_docketinfo['requirement'];
+		$doc_mat =$result_docketinfo['required_qty'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
