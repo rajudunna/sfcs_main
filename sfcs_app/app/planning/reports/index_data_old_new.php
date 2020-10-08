@@ -150,7 +150,7 @@ $count_rows=mysqli_num_rows($sql_result);
 	
 
 	$mp_order="select po_number from $pps.mp_sub_order where plant_code='$plant_code' and master_po_number in ($po_number)";
-	// echo $po_del."<br>";
+	//  echo $mp_order."<br>";
 	$po_sql_result=mysqli_query($link, $mp_order) or exit("Sql Error36 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$count_rows1=mysqli_num_rows($po_sql_result);
 	while($sql_row4=mysqli_fetch_array($po_sql_result))
@@ -209,37 +209,47 @@ $count_rows=mysqli_num_rows($sql_result);
 			$buyer_desc=$sql_row111['buyer_desc'];
 		}
 
-		$get_purch_width1="select ratio_id from $pps.lp_ratio where plant_code='$plant_code' and po_number='$master_po_details_id1'";
-		$get_purch_width_sql_result1=mysqli_query($link, $get_purch_width1) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row11122=mysqli_fetch_array($get_purch_width_sql_result1)){
-			$ratio_id=$sql_row11122['ratio_id'];
-		}
-		$get_purch_width="select jm_cut_job_id from $pps.jm_cut_job where plant_code='$plant_code' and ratio_id='$ratio_id'";
-		$get_purch_width_sql_result=mysqli_query($link, $get_purch_width) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1112=mysqli_fetch_array($get_purch_width_sql_result)){
-			$jm_cut_job_id=$sql_row1112['jm_cut_job_id'];
+		// $get_purch_width1="select ratio_id from $pps.lp_ratio where plant_code='$plant_code' and po_number='$master_po_details_id1'";
+		// $get_purch_width_sql_result1=mysqli_query($link, $get_purch_width1) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row11122=mysqli_fetch_array($get_purch_width_sql_result1)){
+		// 	$ratio_id=$sql_row11122['ratio_id'];
+		// }
+		// $get_purch_width="select jm_cut_job_id from $pps.jm_cut_job where plant_code='$plant_code' and po_number in($po_number1)";
+		// $get_purch_width_sql_result=mysqli_query($link, $get_purch_width) or exit("Sql Error4 =".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row1112=mysqli_fetch_array($get_purch_width_sql_result)){
+		// 	$jm_cut_job_id[]=$sql_row1112['jm_cut_job_id'];
 			
-		}
+		// }
+		// $jm_cut_job_id1="'".implode("','",$jm_cut_job_id)."'";
+		// $get_marker_version="select jm_docket_id,marker_version_id from $pps.jm_dockets where plant_code='$plant_code' and jm_cut_job_id in ($jm_cut_job_id1)";
+		// $get_marker_version_result=mysqli_query($link, $get_marker_version) or exit("Sql Error43 =".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row111222=mysqli_fetch_array($get_marker_version_result)){
+		// 	$jm_docket_id=$sql_row111222['jm_docket_id'];
+		// 	$marker_version_no[]=$sql_row111222['marker_version_id'];
+		// }
+		// $marker_version_no1="'".implode("','",$marker_version_no)."'";
 
-		$get_marker_version="select jm_docket_id,marker_version_id from $pps.jm_dockets where plant_code='$plant_code' and jm_cut_job_id='$jm_cut_job_id'";
-		$get_marker_version_result=mysqli_query($link, $get_marker_version) or exit("Sql Error43 =".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row111222=mysqli_fetch_array($get_marker_version_result)){
-			$jm_docket_id=$sql_row111222['jm_docket_id'];
-			$marker_version_no=$sql_row111222['marker_version_id'];
-		}
-	
-
-		$get_marker_version11="select length from $pps.lp_markers where plant_code='$plant_code' and marker_version_id='$marker_version_no'";	
-		$get_marker_version_result11=mysqli_query($link, $get_marker_version11) or exit("Sql Error41 =".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row11122211=mysqli_fetch_array($get_marker_version_result11)){
-			$length=$sql_row11122211['length'];
-		}
+		// $get_marker_version11="select length from $pps.lp_markers where plant_code='$plant_code' and po_number in($po_number1)";	
+		// $get_marker_version_result11=mysqli_query($link, $get_marker_version11) or exit("Sql Error41 =".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row11122211=mysqli_fetch_array($get_marker_version_result11)){
+		// 	$length=$sql_row11122211['length'];
+			
+		// }
 
 
 		$get_mo_number="select mo_number from $oms.oms_mo_details where plant_code='$plant_code' and schedule='$schedule'";
 		$get_mo_number_result=mysqli_query($link, $get_mo_number) or exit("Sql Error41 =".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row1=mysqli_fetch_array($get_mo_number_result)){
 			$mo_number=$row1['mo_number'];
+		}
+
+		$sql="SELECT fabric_category,purchase_width,rm_sku FROM $pps.`mp_color_detail` LEFT JOIN $pps.`mp_fabric` ON mp_fabric.master_po_details_id=mp_color_detail.master_po_details_id WHERE style='$style' AND color='$color' and mp_fabric.plant_code='$plant_code'";
+		$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($row=mysqli_fetch_array($sql_result))
+		{
+			$category=$row['fabric_category'];
+			$length=$row['purchase_width'];
+			$rm_sku=$row['rm_sku'];
 		}
 
 		$get_consumption="select consumption from $oms.oms_mo_items where  mo_number='$mo_number'  AND operation_code='15'";
@@ -369,6 +379,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			// if(mysqli_num_rows($sql_result1) > 0){
 			// 	while($sql_row1=mysqli_fetch_array($sql_result1))
 			// 	{
+				
 					$cat_tid=$sql_row1["tid"];
 					echo "<td style=\"background:$id;\">".$length."</td>";
 					echo "<td style=\"background:$id;\">".$consumption."</td>"; 
@@ -479,15 +490,15 @@ $count_rows=mysqli_num_rows($sql_result);
 			//M3 shipment quantity
 			// if(($rowspan_for_shipqty-$key001) == $rowspan_for_shipqty)
 			// {
-				$sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE plant_code='$plant_code' and sch_no=\"$sch\"";
-				// echo $sql5."<br>";
-				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$total_rows1=mysqli_num_rows($sql_result5);
-				while($sql_row5=mysqli_fetch_array($sql_result5))
-				{
+				// $sql5="SELECT SUM(ship_qty) FROM $pps.style_status_summ WHERE plant_code='$plant_code' and sch_no=\"$sch\"";
+				// // echo $sql5."<br>";
+				// $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $total_rows1=mysqli_num_rows($sql_result5);
+				// while($sql_row5=mysqli_fetch_array($sql_result5))
+				// {
 			// 		$m3_total=$sql_row5["SUM(ship_qty)"];
-					echo "<td>".round($sql_row5["SUM(ship_qty)"],0)."</td>";
-				}
+					echo "<td></td>";
+				//}
 			
 			
 			echo "<td style=\"background:$id;\">".$extra_qty."</td>";
@@ -581,7 +592,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			$jm_jg_header_id1="'".implode("','",$jm_jg_header_id)."'";
 
 			$sql2111="SELECT task_jobs_id,task_header_id FROM $tms.task_jobs where plant_code='$plant_code' and task_job_reference in($jm_jg_header_id1)";
-			
+		// echo $sql2111;
 			$sql_result2111=mysqli_query($link, $sql2111) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql2_num111=mysqli_num_rows($sql_result2111);
 			while($sql_row2111=mysqli_fetch_array($sql_result2111))
@@ -612,7 +623,7 @@ $count_rows=mysqli_num_rows($sql_result);
 			}
 			$workstationid="'".implode("','",$workstation_id)."'";
 			$sql233="SELECT task_header_id FROM $tms.task_header where plant_code='$plant_code' and resource_id in($workstationid) and task_status='INPROGRESS' and task_type='SEWINGJOB' and task_header_id in($task_header_id1)";
-			//  echo 	$sql233;
+			//   echo 	$sql233;
 				$sql_result233=mysqli_query($link, $sql233) or exit("Sql Error111".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sql2_num333=mysqli_num_rows($sql_result233);
 
