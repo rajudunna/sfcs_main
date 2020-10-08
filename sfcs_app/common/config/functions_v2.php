@@ -952,11 +952,12 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     if($Qry_department_result_num>0){
         while($department_row=mysqli_fetch_array($Qry_department_result))
         {
-            $department_id=$department_row['department_id'];
+            $department_id[]=$department_row['department_id'];
         }
     }
+  
     /**Getting work station type against department*/
-    $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id='$department_id' AND plant_code='$plantcode' AND is_active=1";
+    $qry_workstation_type="SELECT workstation_type_id FROM $pms.workstation_type WHERE department_id IN ('".implode("','" , $department_id)."') AND plant_code='$plantcode' AND is_active=1";
     $workstation_type_result=mysqli_query($link_new, $qry_workstation_type) or exit("Sql Error at workstation type".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstationtype=array();
     $workstation_typet_num=mysqli_num_rows($workstation_type_result);
