@@ -1387,7 +1387,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                    data:  JSON.stringify(reportData),
+                    data:  reportData,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (res) {            
