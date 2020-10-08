@@ -85,7 +85,7 @@
 	</div>
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
-			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+			<form name= "smartform" method="post" id="smartform">
 				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
@@ -214,7 +214,6 @@
 								<td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQty']+"</td>\
 								<td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
 								$("#dynamic_table").append(markup1);
-								$('.smartbtn').attr('disabled', true);
 							}
 						} else {
 							sweetAlert(restrict_msg,'','error');
@@ -251,8 +250,6 @@
 		{
 			sweetAlert('','You are reversing more than Eligiblity.','error');
 			document.getElementById(rev).value = 0;
-		}else{
-			$('.smartbtn').attr('disabled', false);
 		}
 	}
 
@@ -273,7 +270,7 @@
 		
 	function check_pack()
 	{
-		$('.smartbtn').attr('disabled', 'disabled');
+		$('.smartbtn').hide();
 		var count = document.getElementById('count_of_data').value;
 		var tot_qty=0;
 		for(var i=0; i<count; i++)
@@ -318,12 +315,13 @@
 				},
 				error: function(response){
 					swal('','Network Error','error');
+					$('.smartbtn').show();
 				}
 			});
 			$('.submissiaon').hide();
 		} else{
 			sweetAlert("Please enter atleast one size quantity","","warning");
-			$('.smartbtn').attr('disabled', 'disabled');
+			$('.smartbtn').show();
 		}
 	}
 
