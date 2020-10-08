@@ -4,6 +4,7 @@ $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 
 
 $has_permission=haspermission($_GET['r']); 
@@ -51,11 +52,14 @@ if(isset($_GET['doc_no'])){
     while($row_doc = mysqli_fetch_array($sql_result121)){
         $doc_no = $row_doc['docket_line_number'];
     }
-    $cut_table = $_GET['cut_table'];
+    // $cut_table = $_GET['module'];
+    $cut_table = $_GET['module'];
     //$doc_no = $_GET['doc_no'];
     echo "<script>
         $(document).ready(function(){
             $('#doc_no').val($doc_no);
+            $('#cut_table option[value=$cut_table]').attr('selected','selected');
+            console.log('$cut_table');
             loadDetails($doc_no);
         });
     </script>";
@@ -71,11 +75,10 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$department="Cutting";
-$department_type="Cutting";
+
+$department_type=DepartmentTypeEnum::CUTTING;
 $result_worksation_id=getWorkstations($department_type,$plantcode);
 $workstations=$result_worksation_id['workstation'];
-
 
 $location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
@@ -129,8 +132,8 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         <div class='col-sm-1 pull-right'>
         
         <?php  
-            if($cut_table != '')
-                echo "<a href='$cut_table_url' class='btn btn-xs btn-warning' > << Go Back </a>";
+            // if($cut_table != '')
+            //     echo "<a href='$cut_table_url' class='btn btn-xs btn-warning' > << Go Back </a>";
         ?>
         </div>
         <br/><br/>
