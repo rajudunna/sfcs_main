@@ -136,7 +136,6 @@ if(isset($_POST['submit']))
 	$dates_result = mysqli_query($link, $dates_query) or exit("Problem in retrieving dates ". $dates_query );
 
 	while($row = mysqli_fetch_array($dates_result)) {
-	{
 		$curr_date = $row['planned_date'];
 
 		echo "<tr class='tblheading'>";
@@ -171,7 +170,6 @@ if(isset($_POST['submit']))
 				GROUP BY product_code, planned_date ";
 			$plant_qty_result = mysqli_query($link, $plan_qty_query) or exit("Plan qty query error". $plan_qty_query);
 			while($plan_row = mysqli_fetch_array($plant_qty_result)) {
-			{
 				$planned_qty += $plan_row['planned_qty'];
 				$section = $plan_row['group'];
 				$style = $plan_row['product_code'];
@@ -229,8 +227,3 @@ if(isset($_POST['submit']))
 <script>
 	$('#export_excel').html($('#div-1a'));
 </script>
-
-
-	
-
-
