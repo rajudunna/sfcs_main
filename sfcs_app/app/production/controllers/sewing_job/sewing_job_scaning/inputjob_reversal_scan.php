@@ -85,7 +85,7 @@
 	</div>
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
-			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+			<form name= "smartform" method="post" id="smartform">
 				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
@@ -298,76 +298,87 @@
 		
 	function check_pack()
 	{
-		$('#smartbtn').attr('disabled', 'disabled');
+		$('.smartbtn').hide();
 		
 		var count = document.getElementById('count_of_data').value;
-		var rejectReportData = new Object();
-		// reportData.sewingJobNo = $('#job_number').val();
-		rejectReportData.jobNo = $('#job_number').val();
-		rejectReportData.plantCode = $('#plant_code').val();
-		rejectReportData.shift = $('#shift_val').val();
-		rejectReportData.operationCode = $('#operation').val();
-		rejectReportData.createdUser = '<?= $username ?>';
-		var sizeQuantities = new Array();
+		var tot_qty=0;
 		for(var i=0; i<count; i++)
 		{
-			var sizeQuantitiesObject = new Object();
-			sizeQuantitiesObject.size = $('#'+i+'size').val();
-			sizeQuantitiesObject.module = $('#'+i+'module').val();
-			// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
-			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
-			sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
-			sizeQuantities.push(sizeQuantitiesObject);
+			let reportingQty = $('#'+i+'rever').val();
+			tot_qty += Number(reportingQty);
 		}
-		rejectReportData.sizeQuantities = sizeQuantities;
-		var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
-		var bearer_token;
-        const creadentialObj = {
-								grant_type: 'password',
-								client_id: 'pps-back-end',
-								client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-								username: 'bhuvan',
-								password: 'bhuvan'
-								}
-        $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-				type: "POST",
-				url: seveSewJobReversalUrl,
-				data: rejectReportData,
-				success: function(res) 
-				{
-					console.log('response came');
-					if (res.status) {
-						swal('',res.internalMessage,'success');
-					} else {
-						swal('',res.internalMessage,'error');
-					}
-					location.reload();	
+		if(tot_qty > 0) {
+			var rejectReportData = new Object();
+			// reportData.sewingJobNo = $('#job_number').val();
+			rejectReportData.jobNo = $('#job_number').val();
+			rejectReportData.plantCode = $('#plant_code').val();
+			rejectReportData.shift = $('#shift_val').val();
+			rejectReportData.operationCode = $('#operation').val();
+			rejectReportData.createdUser = '<?= $username ?>';
+			var sizeQuantities = new Array();
+			for(var i=0; i<count; i++)
+			{
+				var sizeQuantitiesObject = new Object();
+				sizeQuantitiesObject.size = $('#'+i+'size').val();
+				sizeQuantitiesObject.module = $('#'+i+'module').val();
+				// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+				sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
+				sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
+				sizeQuantities.push(sizeQuantitiesObject);
+			}
+			rejectReportData.sizeQuantities = sizeQuantities;
+			var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
+			var bearer_token;
+			const creadentialObj = {
+									grant_type: 'password',
+									client_id: 'pps-back-end',
+									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+									username: 'bhuvan',
+									password: 'bhuvan'
+									}
+			$.ajax({
+				method: 'POST',
+				url: "<?php echo $KEY_LOCK_IP?>",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				xhrFields: { withCredentials: true },
+				contentType: "application/json; charset=utf-8",
+				transformRequest: function (Obj) {
+					var str = [];
+					for (var p in Obj)
+						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+					return str.join("&");
 				},
-				error: function(response){
-					swal('','Network Error','error');
-				}
-			}); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
-		$('#smartbtn').attr('disabled', false);
-		$('.submissiaon').hide();
+				data: creadentialObj
+			}).then(function (result) {
+				console.log(result);
+				bearer_token = result['access_token'];
+				$.ajax({
+					type: "POST",
+					url: seveSewJobReversalUrl,
+					data: rejectReportData,
+					success: function(res) 
+					{
+						console.log('response came');
+						if (res.status) {
+							swal('',res.internalMessage,'success');
+						} else {
+							swal('',res.internalMessage,'error');
+						}
+						location.reload();	
+					},
+					error: function(response){
+						swal('','Network Error','error');
+						$('.smartbtn').show();
+					}
+				}); 
+			}).fail(function (result) {
+				console.log(result);
+			}) ;
+			$('.submission').hide();
+		} else {
+			sweetAlert("Please enter atleast one size quantity","","warning");
+			$('.smartbtn').show();
+		}
 	}
 
 </script>
