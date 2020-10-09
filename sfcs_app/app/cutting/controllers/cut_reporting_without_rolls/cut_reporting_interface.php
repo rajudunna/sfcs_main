@@ -1308,7 +1308,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.docketNumber = $('#r_doc_no').text();
         reportData.shift = $('#shift').val();
         reportData.workStationId = $('#cut_table').val();
-        reportData.plantcode = '<?php echo $plantcode;?>';
+        reportData.plantCode = '<?php echo $plantcode;?>';
         reportData.username = '<?php echo $username;?>';
         if($("#full_reported").is(':checked'))
         {
