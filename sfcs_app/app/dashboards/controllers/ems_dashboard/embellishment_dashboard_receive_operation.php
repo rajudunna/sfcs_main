@@ -498,11 +498,11 @@ foreach ($workstations as $emb_key => $emb_value) {
   echo '</div>';
 }
 
-if ((in_array($authorized, $has_permission))) {
+// if ((in_array($authorized, $has_permission))) {
   echo "<script>";
   echo "blink_new_priority('" . implode(",", $blink_docs) . "');";
   echo "</script>";
-}
+// }
 ?>
 
 <div style="clear: both;"> </div>
