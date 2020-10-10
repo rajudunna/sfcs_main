@@ -185,8 +185,8 @@ $(document).ready(function()
 							
 							$.ajax({
 							type: "POST",
-							url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>
-							data:  JSON.stringify(reportData),
+							url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>",
+							data:  reportData,
 							contentType: "application/json; charset=utf-8",
 							dataType: "json",
 							});
