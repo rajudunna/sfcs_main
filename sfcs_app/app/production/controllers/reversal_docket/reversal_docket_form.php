@@ -250,7 +250,7 @@ function reportCut(id) {
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                    data:  JSON.stringify(reportData),
+                    data:  reportData,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (res) {            
@@ -319,7 +319,7 @@ function deleteCut(id) {
             type: "POST",
             url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-            data:  JSON.stringify(reportData),
+            data:  reportData,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (res) {            

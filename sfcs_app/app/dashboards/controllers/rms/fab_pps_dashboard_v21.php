@@ -26,7 +26,7 @@
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
-    $has_permission=haspermission($url_r); 
+    //$has_permission=haspermission($url_r); 
 
     if(!in_array($authorized,$has_permission))
     {
