@@ -1488,9 +1488,8 @@ function getStyleColorSchedule($ponumber,$plantcode){
     $color=array();
     $schedule=array();
     //To get schedule,color
-    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+    $qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
     WHERE po_number='$ponumber' AND mp_sub_mo_qty.plant_code='$plantcode'";
-    // echo $qry_get_sch_col;
     $qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($qry_get_sch_col_result))
     {
