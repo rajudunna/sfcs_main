@@ -16,8 +16,8 @@
                 $sj_number = $_GET['sewing_job'];
                 $plant_code = $_GET['plant_code'];
                 $schedule = $_GET['schedule'];
-                $po_number = $_GET['po_number'];
-                
+                $po_number = htmlspecialchars_decode($_GET['po_number']);
+
                 $link = getFullURL($_GET['r'],'input_job_split.php','N');
                 echo "<input type='text' id='schedule' class='btn btn-success' value=$schedule  readonly> >> ";
                 echo "<input type='text' id='po_number' class='btn btn-warning' value=$po_number  readonly> >> ";
@@ -101,6 +101,7 @@ $(document).ready(function() {
 });
 
 function sendResponse(){
+    $('#split_btn').attr('disabled', 'disabled');
     var sj_number = $('#sj_number').val();
     var slectedList = new Array();
     if($('input:checkbox[name=split]:checked').length > 0){
@@ -110,6 +111,7 @@ function sendResponse(){
             slectedList.push($(this).val());
         });
     } else {
+        $('#split_btn').attr('disabled', false);
         sweetAlert('Please select atleast One Bundle');
     }
     var outputObj = { "sewingJobNumber": sj_number, "bundleNo":slectedList, "plantCode": '<?= $plant_code ?>', "createdUser": '<?= $username ?>' };
