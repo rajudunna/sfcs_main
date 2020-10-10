@@ -1312,7 +1312,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.shift = $('#shift').val();
         reportData.workStationId = $('#cut_table').val();
         reportData.plantCode = '<?php echo $plantcode;?>';
-        reportData.username = '<?php echo $username;?>';
+        reportData.createdUser = '<?php echo $username;?>';
         if($("#full_reported").is(':checked'))
         {
             reportData.fullyReported = true;
