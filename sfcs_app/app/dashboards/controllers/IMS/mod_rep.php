@@ -17,7 +17,7 @@
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
-    $has_permission=haspermission($url_r);
+    //$has_permission=haspermission($url_r);
     error_reporting(0);
     $ref_no=time();
     //echo $ref_no;

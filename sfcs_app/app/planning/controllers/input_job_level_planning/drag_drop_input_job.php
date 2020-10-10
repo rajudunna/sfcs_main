@@ -7,7 +7,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $module_limit=14;
 $plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
-
 ?>
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 
@@ -712,9 +711,25 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 				$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
 				$job_number=$result_planned_jobs['job_number'];
 				$task_header_id=$result_planned_jobs['task_header_id'];
-				   		            
+				$prevjmjobHeader="";  		            
 		        foreach($job_number as $jm_sew_id=>$sew_num)
 		        {
+					/**getting jm_jg_header*/
+					$qryJmjobHeader="SELECT jm_job_header FROM $pps.jm_jg_header WHERE job_number='$sew_num' AND plant_code='$plant_code' AND is_active=1";
+					$jmjobHeaderresult = mysqli_query($link_new, $qryJmjobHeader) or exit("Sql Error at getting jm_jg_header" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					while ($jobHeaderRow = mysqli_fetch_array($jmjobHeaderresult)) {
+						$jmjobHeader = $jobHeaderRow['jm_job_header'];
+					}
+					if($prevjmjobHeader!=$jmjobHeader){
+							$qryJmjgHeader="SELECT job_header_type FROM $pps.jm_job_header WHERE jm_job_header_id='$jmjobHeader' AND plant_code='$plant_code' AND is_active=1";
+							$JmjgHeaderResult = mysqli_query($link_new, $qryJmjgHeader) or exit("Sql Error at getting jm_jg_header" . mysqli_error($GLOBALS["___mysqli_ston"]));
+							while ($jmjgHeaderRow = mysqli_fetch_array($JmjgHeaderResult)){
+								$job_header_type = $jmjgHeaderRow['job_header_type'];
+							}
+					}
+
+					$prevjmjobHeader=$jmjobHeader;
+					
 					//To get taskjobs_id
 					$task_jobs_id = [];
 					$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
@@ -722,6 +737,8 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 						$task_jobs_id[] = $row21['task_jobs_id'];
 					}
+
+
                     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 					$job_detail_attributes = [];
 					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
@@ -734,6 +751,27 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					$style1 = $job_detail_attributes[$sewing_job_attributes['style']];
 					$color1 = $job_detail_attributes[$sewing_job_attributes['color']]; 
 					$schedule1 = $job_detail_attributes[$sewing_job_attributes['schedule']];
+					$docketno = $job_detail_attributes[$sewing_job_attributes['docketno']];
+					//echo "</br>Dokcet".$docketno;
+
+					/**getting docket line id's */
+					$jm_docket_line_id=array();
+					$qrydocketLinesIDs="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number IN ($docketno) AND plant_code='$plant_code' AND is_active=1";
+					$toget_qty_qry_result=mysqli_query($link_new, $qrydocketLinesIDs) or exit("Sql Error at toget_style_sch".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$getRows=mysqli_num_rows($toget_qty_qry_result);
+					if($getRows>0){
+						while($docketRow=mysqli_fetch_array($toget_qty_qry_result))
+						{
+						   $jm_docket_line_id[] = $docketRow['jm_docket_line_id'];
+						}
+					}
+					//echo implode("','" , $jm_docket_line_id);
+					/**getting fabric req or not */
+					$get_fab_req_details="SELECT fabric_prorities_id FROM $pps.fabric_prorities WHERE jm_docket_line_id IN ('".implode("','" , $jm_docket_line_id)."') AND plant_code='$plant_code' AND is_active=1";
+					//echo $get_fab_req_details;
+					$get_fab_req_result=mysqli_query($link_new, $get_fab_req_details) or exit("getting fabric details".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$resulted_rows = mysqli_num_rows($get_fab_req_result);
+
 
 					//to get qty from jm job lines
 					$toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
@@ -747,18 +785,72 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					}
 			
 					$id="#33AADD"; //default existing color
-												
+					$borderColor=" ";			
 					if($style==$style1 and $color==$color1)
 					{
-						$id="red";
+						if($job_header_type!='Normal'){
+							if($resulted_rows>0){
+								/**same color and color if fabric requested for excess/sample*/
+								$bgColor="green";
+								$colorCode="white";
+								$id="black";
+								$borderColor="border: 4px solid yellow;";
+							}else{
+								/**same style color if fabric not requested for excess/sample*/
+								$bgColor="white";
+								$colorCode="red";
+								$id="black";
+								$borderColor="border: 4px solid yellow;";
+							}
+						}else{
+							if($resulted_rows>0){
+								/**same style color if fabric requested for jobs*/
+								$bgColor="green";
+								$colorCode="white";
+							}else{
+								/**same style color if fabric requested for jobs*/
+								$bgColor="red";
+								$colorCode="black";
+							}
+						}
+						
+						// //$id="red";
+						// $bgColor="green";
+						// $colorCode="white";
+						// $id="black";
+						// if($resulted_rows<=0){
+						// 	$bgColor="red";
+						// 	$colorCode="black";
+						// 	$id="black";
+						// }
+
+						// if($job_header_type!='Normal'){
+						// }else{
+						// 	if($resulted_rows<=0){
+						// 	$bgColor="red";
+						// 	$colorCode="black";
+						// 	$id="black";
+						// }
+						// }
 					}
 					else
-					{
-						$id="#008080";
+					{	
+						//$id="#008080";
+						if($job_header_type!='Normal'){
+							$bgColor="yellow";
+							$colorCode="red";
+						}else{
+							$bgColor="white";
+							$colorCode="red";
+							$id="red";
+						}
+
 					}
 					$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$sew_qty,50);
 
-					echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>';  
+					echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$bgColor.';  color:'.$colorCode.';'.$borderColor.'" title="'.$title.'"><strong>'.$sew_num.'</strong></li>'; 
+					unset($job_detail_attributes); 
+					unset($jm_docket_line_id); 
 		        }
 		        echo "</ul>";
 		       echo "</div>";

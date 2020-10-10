@@ -290,6 +290,7 @@ function tableConstruction(jobsInfo){
     if(jobsInfo)
     {
         $('#dynamic_table1').html('');
+        $('#dynamic_table').html('');
         for(var i=0;i<jobsInfo.length;i++)
         {
             var hidden_class='';
@@ -307,31 +308,16 @@ function tableConstruction(jobsInfo){
 			} else {
 				markup1 += "<td><input type='checkbox' id='club' name='club[]' value="+jobsInfo[i].jobNumbers+"></td></tr>";
 			}
-			
-			
             $("#dynamic_table").append(markup1);
             $("#dynamic_table").hide();
-
 		}
-		var table3Filters = {
-				sort_select: true,
-				display_all_text: "Display all",
-				loader: true,
-				loader_text: "Filtering data...",
-				sort_select: true,
-				exact_match: false,
-				rows_counter: true,
-				btn_reset: true,
-				paging: true,
-				paging_length: 10,
-				col_4: null,
-			}
-			setFilterGrid("dynamic_table",table3Filters);
+		
     }
     var markup99 = "</tbody></table></div></div></div>";
-    $("#dynamic_table").append(markup99);
+	$("#dynamic_table").append(markup99);
 	$('#loading-image').hide();
     $("#dynamic_table").show();
+    $("#dynamic_table").DataTable();
     $('#schedule').val('');
     
     
@@ -342,7 +328,6 @@ function showdet(btn,inpjob,schedule)
 	var inputjob=inpjob;
 	var schedule=schedule;
 	var plant_code = $('#plant_code').val();
-	
 	window.open('/sfcs_app/app/production/controllers/sewing_job/small_popup_new.php?schedule='+schedule+'&inputjob='+inputjob+'&plantcode='+plant_code+'_blank');
 }
 

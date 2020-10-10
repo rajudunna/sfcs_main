@@ -684,7 +684,9 @@
 				$.ajax({
 					type: "POST",
 					url: '<?= $job_publish_url ?>',
-					data:  JSON.stringify(reportData),
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Bearer ' +  bearer_token },
+					data:  reportData,
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
 					success: function (res) {            
