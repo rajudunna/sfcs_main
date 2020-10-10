@@ -1,7 +1,7 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
-	$plant_code='AIP';
+	$plantcode=$_SESSION['plantCode'];
 	if (isset($_POST['selected_date'])) {
 		$selected_date = $_POST['selected_date'];
 	} else {
@@ -97,7 +97,7 @@
 
 					$time_display_sah = array();	$plan_sah = array();	$act_sah = array();
 
-					$plan_sah_qry="SELECT round(SUM(plan_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+					$plan_sah_qry="SELECT round(SUM(planned_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 					// echo $plan_sah_qry;
 					$plan_sah_result=mysqli_query($link,$plan_sah_qry);
 					while ($plan_row = mysqli_fetch_array($plan_sah_result))
@@ -179,6 +179,15 @@
 						$end_time = $row['plant_end_time'];
 						//$time_display = $row['time_display'].' '.$row['day_part'];
 					}
+					$from       = $start_time;
+					$to         = $end_time;
+					
+					$total      = strtotime($to) - strtotime($from);
+					$hours      = floor($total / 60 / 60);
+					$minutes    = round((($total - ($hours * 60 * 60)) / 60));
+					
+					$total_hours=$hours+$minutes/60;
+					
 					
 					echo '
 					<div class="panel panel-primary">
@@ -241,7 +250,7 @@
 																	}
 																	
 																	// $plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='$section' and mod_no='$team1' ";
-																	$plan_pcs_qry12="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='127' and mod_no='$team1' ";
+																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1' ";
 																	//echo $plan_pcs_qry12.';<br>';
 																	$plan_pcs_result12=mysqli_query($link,$plan_pcs_qry12);
 																
@@ -288,7 +297,7 @@
 															$style = $res1['style'];
 															$act_pcs_fact1 = $res1['qty'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -426,7 +435,7 @@
 																		$style = $res1['style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT SUM(plan_pro) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='127' and mod_no='$team1'";
+																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1'";
 																	//  echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -470,7 +479,7 @@
 															$act_pcs_fact2 = $res1['qty'];
 															$style = $res1['style'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))
