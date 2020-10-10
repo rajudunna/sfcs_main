@@ -1,60 +1,42 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="X-UA-Compatible" content="IE=11; IE=9; IE=8; IE=7; IE=6; IE=5; IE=EDGE" />
+
 <?php
     $url = include(getFullURLLevel($_GET['r'],'/common/config/config.php',4,'R'));
     // $has_permission=haspermission($_GET['r']); 
     include(getFullURLLevel($_GET['r'],'/common/config/m3Updations.php',4,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
-    //hardcode for temp purpose
-    // $operation_code = 15;
-    // $access_report = $operation_code.'-G';
-    // $access_qry=" select * from $central_administration_sfcs.rbac_permission where permission_name = '$access_report' and status='active'";
-    // $result = $link->query($access_qry);
-    // if($result->num_rows > 0){
-    //     if (in_array($$access_report,$has_permission))
-    //     {
-    //         $good_report = '';
-    //     }
-    //     else
-    //     {
-    //         $good_report = 'readonly';
-    //     }
         
-    // } else {
-    //     $good_report = '';
-    // }
-
+    $plantcode=$_SESSION['plantCode'];
+    $username=$_SESSION['userName'];
     $good_report = '';
    
 ?>
 
-<style>
-            /* #loading-image {
-              border: 16px solid #f3f3f3;
-              border-radius: 50%;
-              border-top: 16px solid #3498db;
-              width: 120px;
-              height: 120px;
-              margin-left: 40%;
-              -webkit-animation: spin 2s linear infinite; /* Safari */
-              animation: spin 2s linear infinite;
-            }
+    <style>
+                /* #loading-image {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                width: 120px;
+                height: 120px;
+                margin-left: 40%;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+                }
 
-            /* Safari */
-            @-webkit-keyframes spin {
-              0% { -webkit-transform: rotate(0deg); }
-              100% { -webkit-transform: rotate(360deg); }
-            }
+                /* Safari */
+                @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+                }
 
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            #delete_reversal_docket{
-                margin-top:3pt;
-            } */
-        </style>
+                @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+                }
+                #delete_reversal_docket{
+                    margin-top:3pt;
+                } */
+    </style>
 <body>
 <div class="panel panel-primary"> 
     <div class="panel-heading">Cutting Reversal</div>
@@ -157,6 +139,7 @@ if(isset($_POST['formSubmit']))
         echo "<script>sweetAlert('UnAuthorized','You are not allowed to reverse.','warning');</script>";
     }
 }
+
 if(isset($_POST['reversesubmit']))
 {
    $reverseRollIds = $_POST['roll_ids'];
@@ -177,8 +160,7 @@ if(isset($_POST['reversesubmit']))
    $updateDocketQty = "UPDATE $pps.jm_docket_lines set lay_status = 'OPEN' where jm_docket_line_id = '$docket_number'";
    mysqli_query($link, $updateDocketQty) or exit("updateQry".mysqli_error($GLOBALS["___mysqli_ston"]));
    $url = '?r='.$_GET['r'].'&sidemenu=false';
-   echo "<script>sweetAlert('Lay Reversed Successfully!!!','','success');
-   window.location = '".$url."'</script>"; 
+   echo "<script> sweetAlert('Lay Reversed Successfully!!!','','success'); setTimeout(window.location = '$url', 2000); </script>"; 
 }
 ?>
 <?php
@@ -220,8 +202,8 @@ function reportCut(id) {
     $('#reportcut').hide();
     var reportData = new Object();
     reportData.layId = id;
-    reportData.createdUser = '';
-    reportData.plantCode = '';
+    reportData.createdUser = '<?= $username ?>';
+    reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
         const creadentialObj = {
         grant_type: 'password',
@@ -261,7 +243,7 @@ function reportCut(id) {
                             $('#post_post').hide();
                             $('#reportcut').show();
                             sweetAlert('Cut Reported Successfully!!!','','success');
-                            window.location = " <?='?r='.$_GET['r'] ?>";
+                            setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                         }
                         else
                         {
@@ -276,7 +258,7 @@ function reportCut(id) {
                         // console.log(response);
                         swal('Error in Reporting Cut');
                         $('#post_post').hide();
-                            $('#reportcut').show();
+                        $('#reportcut').show();
                     }
                 }); 
         }).fail(function (result) {
@@ -289,8 +271,8 @@ function deleteCut(id) {
     $('#deletecut').hide();
     var reportData = new Object();
     reportData.layId = id;
-    reportData.createdUser = '';
-    reportData.plantCode = '';
+    reportData.createdUser = '<?= $username ?>';
+    reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
     const creadentialObj = {
     grant_type: 'password',
@@ -330,7 +312,7 @@ function deleteCut(id) {
                     $('#post_post').hide();
                     $('#deletecut').show();
                     sweetAlert('Cut deleted Successfully!!!','','success');
-                    window.location = " <?='?r='.$_GET['r'] ?>";
+                    setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                 }
                 else
                 {
