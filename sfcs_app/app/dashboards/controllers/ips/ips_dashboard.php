@@ -85,6 +85,12 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
         $co_no = $job_detail_attributes[$sewing_job_attributes['conumber']];
         $cut_job_no = $job_detail_attributes[$sewing_job_attributes['CUTJOBNO']];
         
+            $get_jm_jg_header_id="SELECT jm_jg_header_id FROM `$pps`.`jm_jg_header` WHERE job_number = '$input_job_no' AND plant_code = '$plantCode'";
+            $get_jm_jg_header_id_res=mysqli_query($link, $get_jm_jg_header_id)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row123=mysqli_fetch_array($get_jm_jg_header_id_res))
+            {
+                $jm_sew_id=$row123['jm_jg_header_id'];
+            }
             $scanning_query12="SELECT operation_name FROM `$pms`.`operation_mapping` WHERE operation_code = '$input_ops_code' AND plant_code = '$plantCode'";
             $scanning_result12=mysqli_query($link, $scanning_query12)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
             while($sql_row123=mysqli_fetch_array($scanning_result12))
@@ -127,7 +133,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
             else
             {
                 $tstatus='Status Not update';
-            }   
+            }
             $get_color = $order_col;    
             //hardcode
             $display_prefix1 = 'J'; // currently no prefix table in v2.0 after integration should change
@@ -304,7 +310,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                             {
                                 $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
                                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
                                         </div>
                                     </div>
                                 </div>";
@@ -325,7 +331,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                             {
                                 $ips_data.="<div id=\"S$schedule\" style=\"float:left;\">
                                     <div id=\"SJ$input_job_no\" style=\"float:left;\">
-                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
+                                        <div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=auto, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a>
                                         </div>
                                     </div>
                                 </div>";
@@ -335,7 +341,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     else
                     {
                         
-                        $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&job_status=$id','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
+                        $ips_data.="<div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$input_job_no\" style=\"float:left;\"><div id=\"$input_job_no_random_ref\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id;$add_css.$rejection_border\" title=\"$title\" ><a href=\"$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info\" onclick=\"Popup=window.open('$ui_url?jobno=$input_job_no&style=$style&schedule=$schedule&module=$module&section=$section&doc_no=$input_job_no&plant_code=$plantCode&username=$username&jm_jg_header_id=$jm_sew_id&color=$color_info','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><font style=\"color:black;\"></font></a></div></div></div>";
                     }
                     $y++;   
                 } 
