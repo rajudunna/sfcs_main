@@ -267,22 +267,22 @@ if(isset($_POST['submit']) && $reptype == 1)
 {
 	$sql = "SELECT lpl.lp_lay_id,lpl.workstation_id,lpl.shift,DATE(lpl.created_at) AS date1,lrfc.fabric_category,
 	jdl.docket_line_number,jcj.cut_number,sum(jcbd.quantity) as pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,lpl.po_number,lrfc.fabric_category,jd.ratio_comp_group_id,lrfc.ratio_id 
-	FROM $pps`lp_lay` lpl 
-	LEFT JOIN `lp_ratio` lp ON lp.po_number = lpl.po_number
-	LEFT JOIN `lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN `jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
-	LEFT JOIN `jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
-	LEFT JOIN `jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN `jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN `jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
-	LEFT JOIN `jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
-	LEFT JOIN `jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
+	FROM $pps.`lp_lay` lpl 
+	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
+	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
+	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
+	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
+	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
 	GROUP BY lpl.lp_lay_id";
-	
 	// echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error d".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
+
 	echo '<div id="export"  class="pull-right">
 			<form action="'.$excel_form_action.'" method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
@@ -365,7 +365,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			}
 
 			if($ratio_comp_group_id!=''){
-				$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
+				$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
 				// echo $qry_lp_markers;
 				$lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$lp_markers_num=mysqli_num_rows($lp_markers_result);
@@ -520,21 +520,20 @@ if(isset($_POST['submit']) && $reptype==2)
 { 
    
 	$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jcb.quantity) AS pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id 
-	FROM $pps`lp_lay` lpl 
-	LEFT JOIN `lp_ratio` lp ON lp.po_number = lpl.po_number
-	LEFT JOIN `lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
-	LEFT JOIN `jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
-	LEFT JOIN `jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
-	LEFT JOIN `jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN `jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
-	LEFT JOIN `jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
-	LEFT JOIN `jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
-	LEFT JOIN `jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
+	FROM $pps.`lp_lay` lpl 
+	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
+	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
+	LEFT JOIN $pps.`jm_docket_lines` jdl ON jdl.jm_docket_line_id = lpl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_bundle` jdb ON jdb.jm_docket_line_id = jdl.jm_docket_line_id
+	LEFT JOIN $pps.`jm_docket_logical_bundle` jdlb ON jdlb.jm_docket_bundle_id = jdb.jm_docket_bundle_id
+	LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_bundle_id = jdb.jm_docket_bundle_id
+	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
+	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
+	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
 	GROUP BY  lpl.workstation_id";
-	// echo $sql;
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
-$sql_num_check=mysqli_num_rows($sql_result);
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_num_check=mysqli_num_rows($sql_result);
 
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
 	echo "<h5>Summary Report</h5>";
@@ -575,7 +574,7 @@ $sql_num_check=mysqli_num_rows($sql_result);
 				}
 	
 				if($ratio_comp_group_id!=''){
-					$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `ratio_wise_component_group_id` in ('".implode("','" , $ratio_comp_group_id)."') AND default_marker_version=1 AND `plant_code`='$plantcode'";
+					$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id` in ('".implode("','" , $ratio_comp_group_id)."') AND default_marker_version=1 AND `plant_code`='$plantcode'";
 					// echo $qry_lp_markers;
 					$lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$lp_markers_num=mysqli_num_rows($lp_markers_result);

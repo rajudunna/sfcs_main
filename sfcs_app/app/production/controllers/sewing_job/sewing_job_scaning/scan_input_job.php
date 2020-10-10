@@ -5,7 +5,7 @@
     $plant_code = $plant_code;
 ?>
 <div class="panel panel-primary " id="inputjob_scanning">
-    <div class="panel-heading">Input Job Scanning</div>
+    <div class="panel-heading">Sewing Job Reversal</div>
     <div class="panel-body">
    
         <div class="row">

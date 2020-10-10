@@ -85,7 +85,7 @@
 	</div>
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
-			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+			<form name= "smartform" method="post" id="smartform">
 				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
@@ -208,42 +208,26 @@
 						success: function (response) {
 							if(response['status'])
 							{
-								$('#loading-image').hide();
-								var data = response['data'];
-								var s_no=0;
-								var btn = '<div class="pull-right"><input type="button" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="check_pack();"><input type="hidden" id="count_of_data" value='+data['sizeQuantities'].length+'></div>';
-								$("#dynamic_table1").append(btn);
-								var markup = "<table class = 'table table-bordered' id='dynamic_table'>\
-								<tbody><thead><tr class='info'><th>S.No</th><th>Style</th><th>Color</th><th>Module</th><th>Size</th>\
-								<th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-								$("#dynamic_table1").append(markup);
-								$("#dynamic_table1").append(btn);
-								for(var i=0;i<data['sizeQuantities'].length;i++)
-								{
-									s_no++;
-									var markup1 = "<tr>\
-									<input type='hidden' name='operation_id' value='"+data['sizeQuantities'][i]['operationCode']+"'>\
-									<input type='hidden' name='remarks' value='"+data['sizeQuantities'][i]['status']+"'>\
-									<input type='hidden' id='"+i+"fgColor' name='color[]' value='"+data['sizeQuantities'][i]['fgColor']+"'>\
-									<input type='hidden' id='"+i+"size' name='size[]' value='"+data['sizeQuantities'][i]['size']+"'>\
-									<input type='hidden' name='size_id[]' value='"+data['sizeQuantities'][i]['size']+"'>\
-									<input type='hidden' name='input_job_no_random' value='"+job_no+"'>\
-									<input type='hidden' name='style' value='"+data['style']+"'>\
-									<input type='hidden' name='color[]' value='"+data['fgColors']+"'>\
-									<input type='hidden' name='module[]' value='"+data['sizeQuantities'][i]['resourceId']+"'>\
-									<input type='hidden' name='rep_qty[]' value='"+data['sizeQuantities'][i]['cumilativeReportedQty']+"'>\
-									<td>"+s_no+"</td><td>"+data.style+"</td>\
-									<td>"+data['sizeQuantities'][i]['fgColor']+"</td><td>"+data['sizeQuantities'][i]['resourceId']+"</td>\
-									<td>"+data['sizeQuantities'][i]['size']+"</td><td>"+data['sizeQuantities'][i]['inputJobQty']+"</td>\
-									<td>"+data['sizeQuantities'][i]['cumilativeReportedQty']+"</td>\
-									<td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQty']+"</td>\
-									<td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
-									$("#dynamic_table").append(markup1);
-								}
-							} else {
-								sweetAlert(restrict_msg,'','error');
-								$('#dynamic_table1').html('No Data Found');
-								$('#loading-image').hide();
+								s_no++;
+								var markup1 = "<tr>\
+								<input type='hidden' name='operation_id' value='"+data['sizeQuantities'][i]['operationCode']+"'>\
+								<input type='hidden' name='remarks' value='"+data['sizeQuantities'][i]['status']+"'>\
+								<input type='hidden' id='"+i+"fgColor' name='color[]' value='"+data['sizeQuantities'][i]['fgColor']+"'>\
+								<input type='hidden' id='"+i+"size' name='size[]' value='"+data['sizeQuantities'][i]['size']+"'>\
+								<input type='hidden' name='size_id[]' value='"+data['sizeQuantities'][i]['size']+"'>\
+								<input type='hidden' name='input_job_no_random' value='"+job_no+"'>\
+								<input type='hidden' name='style' value='"+data['style']+"'>\
+								<input type='hidden' name='color[]' value='"+data['fgColors']+"'>\
+								<input type='hidden' name='module[]' value='"+data['sizeQuantities'][i]['resourceId']+"'>\
+								<input type='hidden' name='rep_qty[]' value='"+data['sizeQuantities'][i]['cumilativeReportedQty']+"'>\
+								<td>"+s_no+"</td><td>"+data.style+"</td>\
+								<td>"+data['sizeQuantities'][i]['fgColor']+"</td><td>"+data['sizeQuantities'][i]['resourceId']+"</td>\
+								<td>"+data['sizeQuantities'][i]['size']+"</td><td>"+data['sizeQuantities'][i]['inputJobQty']+"</td>\
+								<td>"+data['sizeQuantities'][i]['cumilativeReportedQty']+"</td>\
+								<td id='"+i+"repor'>"+data['sizeQuantities'][i]['eligibleQty']+"</td>\
+								<td><input class='form-control integer' onkeyup='validateQty(event,this)' name='reversalval[]' value='0' id='"+i+"rever' onchange = 'validation("+i+")'></td></tr>";
+								$("#dynamic_table").append(markup1);
+								$('.smartbtn').attr('disabled', true);
 							}
 						}
 					});
@@ -278,6 +262,8 @@
 		{
 			sweetAlert('','You are reversing more than Eligiblity.','error');
 			document.getElementById(rev).value = 0;
+		}else{
+			$('.smartbtn').attr('disabled', false);
 		}
 	}
 
@@ -298,76 +284,87 @@
 		
 	function check_pack()
 	{
-		$('#smartbtn').attr('disabled', 'disabled');
+		$('.smartbtn').hide();
 		
 		var count = document.getElementById('count_of_data').value;
-		var rejectReportData = new Object();
-		// reportData.sewingJobNo = $('#job_number').val();
-		rejectReportData.jobNo = $('#job_number').val();
-		rejectReportData.plantCode = $('#plant_code').val();
-		rejectReportData.shift = $('#shift_val').val();
-		rejectReportData.operationCode = $('#operation').val();
-		rejectReportData.createdUser = '<?= $username ?>';
-		var sizeQuantities = new Array();
+		var tot_qty=0;
 		for(var i=0; i<count; i++)
 		{
-			var sizeQuantitiesObject = new Object();
-			sizeQuantitiesObject.size = $('#'+i+'size').val();
-			sizeQuantitiesObject.module = $('#'+i+'module').val();
-			// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
-			sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
-			sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
-			sizeQuantities.push(sizeQuantitiesObject);
+			let reportingQty = $('#'+i+'rever').val();
+			tot_qty += Number(reportingQty);
 		}
-		rejectReportData.sizeQuantities = sizeQuantities;
-		var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
-		var bearer_token;
-        const creadentialObj = {
-								grant_type: 'password',
-								client_id: 'pps-back-end',
-								client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-								username: 'bhuvan',
-								password: 'bhuvan'
-								}
-        $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-				type: "POST",
-				url: seveSewJobReversalUrl,
-				data: rejectReportData,
-				success: function(res) 
-				{
-					console.log('response came');
-					if (res.status) {
-						swal('',res.internalMessage,'success');
-					} else {
-						swal('',res.internalMessage,'error');
-					}
-					location.reload();	
+		if(tot_qty > 0) {
+			var rejectReportData = new Object();
+			// reportData.sewingJobNo = $('#job_number').val();
+			rejectReportData.jobNo = $('#job_number').val();
+			rejectReportData.plantCode = $('#plant_code').val();
+			rejectReportData.shift = $('#shift_val').val();
+			rejectReportData.operationCode = $('#operation').val();
+			rejectReportData.createdUser = '<?= $username ?>';
+			var sizeQuantities = new Array();
+			for(var i=0; i<count; i++)
+			{
+				var sizeQuantitiesObject = new Object();
+				sizeQuantitiesObject.size = $('#'+i+'size').val();
+				sizeQuantitiesObject.module = $('#'+i+'module').val();
+				// sizeQuantitiesObject.fgColor =$('#mapped_color').val();
+				sizeQuantitiesObject.fgColor =$('#'+i+'fgColor').val();
+				sizeQuantitiesObject.reportedQty = $('#'+i+'rever').val();
+				sizeQuantities.push(sizeQuantitiesObject);
+			}
+			rejectReportData.sizeQuantities = sizeQuantities;
+			var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
+			var bearer_token;
+			const creadentialObj = {
+									grant_type: 'password',
+									client_id: 'pps-back-end',
+									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+									username: 'bhuvan',
+									password: 'bhuvan'
+									}
+			$.ajax({
+				method: 'POST',
+				url: "<?php echo $KEY_LOCK_IP?>",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				xhrFields: { withCredentials: true },
+				contentType: "application/json; charset=utf-8",
+				transformRequest: function (Obj) {
+					var str = [];
+					for (var p in Obj)
+						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+					return str.join("&");
 				},
-				error: function(response){
-					swal('','Network Error','error');
-				}
-			}); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
-		$('#smartbtn').attr('disabled', false);
-		$('.submissiaon').hide();
+				data: creadentialObj
+			}).then(function (result) {
+				console.log(result);
+				bearer_token = result['access_token'];
+				$.ajax({
+					type: "POST",
+					url: seveSewJobReversalUrl,
+					data: rejectReportData,
+					success: function(res) 
+					{
+						console.log('response came');
+						if (res.status) {
+							swal('',res.internalMessage,'success');
+						} else {
+							swal('',res.internalMessage,'error');
+						}
+						location.reload();	
+					},
+					error: function(response){
+						swal('','Network Error','error');
+						$('.smartbtn').show();
+					}
+				}); 
+			}).fail(function (result) {
+				console.log(result);
+			}) ;
+			$('.submission').hide();
+		} else {
+			sweetAlert("Please enter atleast one size quantity","","warning");
+			$('.smartbtn').show();
+		}
 	}
 
 </script>

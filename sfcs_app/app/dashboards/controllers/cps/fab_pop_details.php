@@ -657,7 +657,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
         $width =$result_docketinfo['width'];
         $cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['docket_quantity'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 		

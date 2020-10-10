@@ -46,9 +46,9 @@ $('div[rel=tooltip]').mouseover(function(e) {
   //e.pageY + 0.5 * e.view.parent.pageYOffset
   $('#tooltip').css('top',$(this).offset.top-$(window).scrollTop());
   $('#tooltip').css('left',$(this).offset.left - 255 );
-   $('#tooltip').css('margin-left','135px' );
+   $('#tooltip').css('margin-left','250px' );
    $('#tooltip').css('text-align','left' );
-   $('#tooltip').css('margin-top','10px' );
+   $('#tooltip').css('margin-top','25px' );
    $('#tooltip').css('position', 'absolute' );
    $('#tooltip').css('z-index', '999999' );
 }).mouseout(function() {
@@ -119,7 +119,7 @@ position:absolute;
 z-index:9999;
 color:#fff;
 font-size:12px;
-width:450px;
+width:500px;
 pointer-events: none; 
 
 }
@@ -137,7 +137,7 @@ padding:5px 5px 5px 15px;
 }
 
 #tooltip .tipFooter {
- height:8px;
+ height:4px;
  /*background:url('<?= getFullURL($_GET['r'],'common/images/tipFooter.gif',2,'R');?>') no-repeat;*/
 }
 
@@ -243,14 +243,17 @@ function blink_new(x)
 
 function blink_new3(x)
 {
-  // alert(x);
-
-  $("div[id='S"+x+"']").each(function() {
+  
+  obj="S"+x;
+  if(obj.length>=7){
+  $("div[id*='"+obj+"']").each(function() {
   
   $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
   }); 
   
   
+}
+
 }
 
 
@@ -1286,7 +1289,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['docket_quantity'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
     $width =$result_docketinfo['width'];
