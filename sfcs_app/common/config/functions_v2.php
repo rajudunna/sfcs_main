@@ -1679,5 +1679,97 @@ function getRejectionReasons($dept_type) {
     return $reasons;
 }
 
+  /** function to get jobs which are unplanned sewing jobs
+   * @param:po,task_type,plant_code
+   * @return:jobs
+   * */
+  function getUnplannedSewingJobs($sub_po,$cutno,$plantcode){
+    global $link_new;
+    global $pps;
+    global $tms;
+    global $TaskTypeEnum;
+    global $TaskAttributeNamesEnum;
+    
+    $tasktype=TaskTypeEnum::SEWINGJOB;
+    $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
+    $cut_job_enum=TaskAttributeNamesEnum::CUTJOBNO;
+  
+    $jm_job_header_id=array();
+    $task_header_id=array();
+    $job_number=array();
+   
+     //Qry to fetch jm_job_header_id from jm_jobs_header
+    $get_jm_job_header_id="SELECT jm_job_header_id FROM $pps.jm_job_header WHERE po_number='$sub_po' AND plant_code='$plantcode' AND is_active=1";
+    $jm_job_header_id_result=mysqli_query($link_new, $get_jm_job_header_id) or exit("Sql Error at get_jm_job_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $jm_job_header_id_result_num=mysqli_num_rows($jm_job_header_id_result);
+    if($jm_job_header_id_result_num>0){
+        while($jm_job_header_id_row=mysqli_fetch_array($jm_job_header_id_result))
+        {
+            $jm_job_header_id[]=$jm_job_header_id_row['jm_job_header_id'];
+        }
+    }
+    //Qry to check sewing job planned or not
+    $check_job_status="SELECT task_header_id FROM $tms.task_header WHERE task_ref in ('".implode("','" , $jm_job_header_id)."') AND plant_code='$plantcode' AND task_type='$tasktype' AND (resource_id IS NULL OR  resource_id='') AND is_active=1";
+    $job_status_result=mysqli_query($link_new, $check_job_status) or exit("Sql Error at check_job_status".mysqli_error($GLOBALS["___mysqli_ston"]));    
+    $job_status_num=mysqli_num_rows($job_status_result);
+    if($job_status_num>0){
+      while($task_header_id_row=mysqli_fetch_array($job_status_result))
+        {
+            $task_header_id[]=$task_header_id_row['task_header_id'];
+        }
+    }
+    if($cutno == 'All')
+    {
+       //Qry to fetch taskrefrence from task_job  
+        $qry_toget_taskrefrence="SELECT task_job_reference FROM $tms.task_jobs WHERE task_type='$tasktype' AND plant_code='$plantcode' AND task_header_id IN ('".implode("','" , $task_header_id)."') AND is_active=1";
+        // echo $qry_toget_taskrefrence;
+        $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+        $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
+        if($toget_taskrefrence_num>0){
+            while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
+            {  
+              $task_refrence[]=$toget_taskrefrence_row['task_job_reference'];
+            }
+        }
+    } 
+    else
+    {
+       //get taskjobids
+       $qry_toget_jobids="SELECT task_jobs_id FROM $tms.task_attributes WHERE plant_code='$plantcode' AND attribute_name='$cut_job_enum' AND attribute_value='$cutno' AND is_active=1";
+       $toget_jobids_result=mysqli_query($link_new, $qry_toget_jobids) or exit("Sql Error at qry_toget_jobids".mysqli_error($GLOBALS["___mysqli_ston"]));
+       while($toget_jobids_row=mysqli_fetch_array($toget_jobids_result))
+       {
+          $taskjobids[]=$toget_jobids_row['task_jobs_id'];
+       }
+       //Qry to fetch taskrefrence from task_job  
+       $qry_toget_taskrefrence="SELECT task_job_reference FROM $tms.task_jobs WHERE task_type='$tasktype' AND plant_code='$plantcode' AND task_header_id IN ('".implode("','" , $task_header_id)."') AND task_jobs_id IN ('".implode("','" , $taskjobids)."') AND is_active=1";
+       // echo $qry_toget_taskrefrence;
+       $toget_taskrefrence_result=mysqli_query($link_new, $qry_toget_taskrefrence) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+       $toget_taskrefrence_num=mysqli_num_rows($toget_taskrefrence_result);
+       if($toget_taskrefrence_num>0){
+           while($toget_taskrefrence_row=mysqli_fetch_array($toget_taskrefrence_result))
+           {  
+             $task_refrence[]=$toget_taskrefrence_row['task_job_reference'];
+           }
+       }
+
+    }    
+      
+    //Qry to get sewing jobs from jm_jobs_header
+    $qry_toget_sewing_jobs="SELECT job_number,jm_jg_header_id FROM $pps.jm_jg_header WHERE job_group_type='$job_group_type' AND plant_code='$plantcode' AND jm_jg_header_id  IN('".implode("','" , $task_refrence)."') AND is_active=1";
+    //echo $qry_toget_sewing_jobs;
+    $toget_sewing_jobs_result=mysqli_query($link_new, $qry_toget_sewing_jobs) or exit("Sql Error at toget_task_job".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $toget_sewing_jobs_num=mysqli_num_rows($toget_sewing_jobs_result);
+    if($toget_sewing_jobs_num>0){
+        while($toget_sewing_jobs_row=mysqli_fetch_array($toget_sewing_jobs_result))
+        {
+           $job_number[$toget_sewing_jobs_row['job_number']]=$toget_sewing_jobs_row['jm_jg_header_id']; 
+        }
+    }
+    
+    return array(
+        'job_number' => $job_number
+    );
+}
 
 ?>
