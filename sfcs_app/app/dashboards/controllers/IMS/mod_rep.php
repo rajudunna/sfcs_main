@@ -318,7 +318,7 @@ $(document).ready(function(){
                     success: function (res) {
                         if(res.status)
                         {
-                            swal('','Sewing Job Transfered Successfully','success')
+                            swal('','Bundles Transfered Successfully','success')
                             setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                             
                         }
