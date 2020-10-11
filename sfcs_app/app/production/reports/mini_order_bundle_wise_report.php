@@ -10,7 +10,7 @@ function firstbox()
 function secondbox()
 {
 	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_bundle_wise_report.php','N'); ?>';
-	window.location.href =url1+"&style="+document.input.style.value+"&mpo="+document.test.mpo.value;
+	window.location.href =url1+"&style="+document.input.style.value+"&mpo="+document.input.mpo.value;
 }
 </script>
 <?php 
@@ -111,7 +111,8 @@ if($reptype == 1) {
         <br/>
         <div class="row">
             <?php
-                if($style !='' && $reptype !='' && $master_po !=''){
+            echo $master_po;
+                if($style !='' && $reptype !=''){
        
                     $operation_code = [];	
                     $operations_yes = [];
@@ -123,6 +124,7 @@ if($reptype == 1) {
                     
                     //get style and color operations
                     $get_details="SELECT schedule,color FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
+                    echo $get_details;
                     $result1 = $link->query($get_details);
                     while($row1 = $result1->fetch_assoc())
                     {
