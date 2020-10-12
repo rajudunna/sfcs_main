@@ -130,7 +130,7 @@
 					if (!response['workstation_id'] || !response['sew_job_type'] || !response['workstaiton_desc']) {
 						swal('','Sewing job info not found', 'error');
 					}
-					if (!response['operations']) {
+					if (response['operations'].length == 0) {
 						swal('','No operations found for the sewing job', 'error');
 					}
 					if(response['workstation_id']){
