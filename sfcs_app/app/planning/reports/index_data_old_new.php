@@ -503,13 +503,13 @@ $count_rows=mysqli_num_rows($sql_result);
 			
 			echo "<td style=\"background:$id;\">".$extra_qty."</td>";
 			
-			$sql2="select distinct(fob_price_per_piece) from $bai_pro4.shipment_plan_ref where schedule_no=\"$sch\"";
-			// echo $sql2;
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$fob=$sql_row2["fob_price_per_piece"];		
-			}	
+			// $sql2="select distinct(fob_price_per_piece) from $bai_pro4.shipment_plan_ref where schedule_no=\"$sch\"";
+			// // echo $sql2;
+			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row2=mysqli_fetch_array($sql_result2))
+			// {
+			// 	$fob=$sql_row2["fob_price_per_piece"];		
+			// }	
 			
 			echo "<td style=\"background:$id;\">0</td>";
 			
