@@ -321,7 +321,7 @@ if(isset($_GET['tid']))
 	
 		if($operation_id == $ims_code)
 		{
-			$checking_qry_ims_dashboard = "SELECT * FROM `$bai_pro3`.`ims_log` WHERE input_job_rand_no_ref = '$input_job_no'";
+			$checking_qry_ims_dashboard = "SELECT * FROM `$bai_pro3`.`ims_log` WHERE pac_tid= $bundle_no_ref ";
             $result_checking_qry_ims_dashboard = $link->query($checking_qry_ims_dashboard);
             if(mysqli_num_rows($result_checking_qry_ims_dashboard) == 0)
             {
