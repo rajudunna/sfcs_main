@@ -11,12 +11,12 @@
 	if(isset($_POST['plant_code']))
 	{
 		$plantcode=$_POST['plant_code'];
-		$username=$_POST['username'];
+		$userName=$_POST['username'];
 	}
 	else
 	{
 		$plantcode=$_GET['plant_code'];
-		$username=$_GET['username'];	
+		$userName=$_GET['username'];	
 	}
 	
 	if($gate_id=='')
@@ -154,7 +154,7 @@ $(document).ready(function()
 			data: creadentialObj
 		}).then(function (result) {
 			var plant_code = $('#plant_code').val();
-        	var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>'};
+        	var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>', "createdUser": '<?= $userName?>'};
 			bearer_token = result['access_token'];
 			$.ajax({
 				type: "POST",
