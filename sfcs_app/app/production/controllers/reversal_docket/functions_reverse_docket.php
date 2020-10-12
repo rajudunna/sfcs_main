@@ -10,8 +10,7 @@ if(isset($_GET['lay_id']))
 function getLayDetails($lay_id)
 {
     include("../../../../common/config/config_ajax.php");
-    $get_lay_details = "
-    SELECT lp_roll_id,lay_sequence,roll_no, roll.plies AS roll_plies, lay.jm_docket_line_id  FROM $pps.lp_lay lay LEFT JOIN $pps.`lp_roll` roll ON roll.lp_lay_id = lay.lp_lay_id    
+    $get_lay_details = " SELECT lp_roll_id,lay_sequence,roll_no, roll.plies AS roll_plies, lay.jm_docket_line_id  FROM $pps.lp_lay lay LEFT JOIN $pps.`lp_roll` roll ON roll.lp_lay_id = lay.lp_lay_id    
     WHERE lay.lp_lay_id = '$lay_id' ORDER BY roll.lay_sequence";
     $docketLineDetails = mysqli_query($link,$get_lay_details);
     $table_data =  "<div class='row'>

@@ -28,7 +28,7 @@
 	}
 
 	$bai_log_qry="SELECT * FROM $pts.transaction_log WHERE plant_code='$plantcode' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(updated_at) BETWEEN '$start_time' AND '$end_time'";
-	//  echo $bai_log_qry.';<br>';
+	//   echo $bai_log_qry.';<br>';
 	$bai_log_result=mysqli_query($link,$bai_log_qry);
 
 ?>
@@ -65,11 +65,12 @@
 								$qty = $res1['good_quantity'];
 								$user = $res1['created_user'];
 								$shift = $res1['shift'];
+								$barcode = $res1['barcode'];
 								$temp = explode('-', $ims_pro_ref);
 
 								echo "
 									<tr>
-										<td>".$temp[0]."</td>
+										<td>".$barcode."</td>
 										<td>$workstation_code</td>
 										<td>$qty</td>
 										<td>$user</td>
