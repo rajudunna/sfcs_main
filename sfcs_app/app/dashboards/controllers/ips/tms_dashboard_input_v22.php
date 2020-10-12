@@ -27,9 +27,13 @@
               echo "</div>
               <div class='col-sm-3'>
                 Shift :<select class='form-control' id='shift' name='shift' required>
-                    <option value=''>Select</option>";
-                    foreach($shifts_array as $shift){
-                      echo "<option value='$shift'>$shift</option>";
+                  <option value=''>Select Shift</option>";
+                  $shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
+                  $shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+                  while($shift_row = mysqli_fetch_array($shift_sql_res))
+                  {
+                      $shift_code=$shift_row['shift_code'];
+                      echo "<option value='".$shift_code."' >".$shift_code."</option>"; 
                   }
               echo "</select></div>";
               echo '<div class="col-sm-3">Priorities:
@@ -106,7 +110,7 @@ function ajax_calls(value,sec_name,sync_type){
         if(sync_type){
           var ind = sec_id_ar.indexOf(r_data.sec);
           if(sec_id_ar[ind+1]){
-            ajax_calls(sec_id_ar[ind+1],true);
+            ajax_calls(sec_id_ar[ind+1],sec_name_ar[ind+1],true);
           }
         }
       }catch(err){
@@ -116,7 +120,7 @@ function ajax_calls(value,sec_name,sync_type){
           if(sync_type){
             var ind = sec_id_ar.indexOf(value);
             if(sec_id_ar[ind+1]){
-              ajax_calls(sec_id_ar[ind+1],true);
+              ajax_calls(sec_id_ar[ind+1],sec_name_ar[ind+1],true);
             }
           }
         }
@@ -127,7 +131,7 @@ function ajax_calls(value,sec_name,sync_type){
       $('#sec-load-'+value).css('display','none');
         var ind = sec_id_ar.indexOf(value);
         if(sec_id_ar[ind+1]){
-          ajax_calls(sec_id_ar[ind+1],true);
+          ajax_calls(sec_id_ar[ind+1],sec_name_ar[ind+1],true);
         }
       }else{
 
@@ -137,7 +141,8 @@ function ajax_calls(value,sec_name,sync_type){
 
 
 function viewPopupCenter(style,schedule,module,input_job_no_random_ref,operation_code,sidemenu,plantcode,username){
-  url = '<?= $ui_url1 ?>'+'&dashboard_reporting=1&job_type=<?= $departmentType ?>e&style='+style+'&schedule='+schedule+'&plant_code='+plantcode+'&username='+username+'&module='+module+'&job_no='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift='+$('#shift').val();
+  url = '<?= $ui_url1 ?>'+'&dashboard_reporting=1&job_type=<?= $departmentType ?>&style='+style+'&schedule='+schedule+'&plant_code='+plantcode+'&username='+username+'&module='+module+'&job_no='+input_job_no_random_ref+'&operation_id='+operation_code+'&sidemenu='+sidemenu+'&shift='+$('#shift').val();
+ 
   PopupCenter(url, 'myPop1',800,600);
 }
 function PopupCenter(pageURL, title,w,h) {
@@ -149,7 +154,7 @@ function PopupCenter(pageURL, title,w,h) {
       swal('Please Select Shift First','','error');
       return false;
     }else{
-      var append_params= shift+'&plant_code='+plant_code;
+      var append_params= '&plant_code='+plant_code;
       pageURL+=append_params;
     }
  

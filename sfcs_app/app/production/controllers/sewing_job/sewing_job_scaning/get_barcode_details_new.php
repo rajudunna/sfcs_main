@@ -9,7 +9,7 @@
     $shift = $_POST['shift'];
     $gate_id = $_POST['gate_id'];
     $user_permission = $_POST['auth'];
-    $has_permission = json_decode($_POST['has_permission'],true);
+    //$has_permission = json_decode($_POST['has_permission'],true);
     $b_shift = $shift;
     $plantcode=$_SESSION['plantCode'];
     $username=$_SESSION['userName'];

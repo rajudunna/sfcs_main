@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$has_permission = haspermission($_GET['r']);
+// $has_permission = haspermission($_GET['r']);
 $plantcode=$_SESSION['plantCode'];
 ?>
 
@@ -184,14 +184,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 }
 
 // if(in_array($username,$auth_users))
-if(in_array($authorized,$has_permission))
-{
+// if(in_array($authorized,$has_permission))
+// {
 	echo '<input type="text" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" >'; 
-}
-else
-{
-	echo '<input type="text" class="form-control" name="date" readonly value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\');" >'; 
-}
+// }
+// else
+// {
+// 	echo '<input type="text" class="form-control" name="date" readonly value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\');" >'; 
+// }
 
 ?>
 </div>

@@ -3,15 +3,15 @@
 	include(getFullURLLevel($_GET['r'],'/common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'/common/config/server_urls.php',5,'R'));
 
-	$has_permission=haspermission($_GET['r']);
-	if (in_array($override_sewing_limitation,$has_permission))
-	{
+	// $has_permission=haspermission($_GET['r']);
+	// if (in_array($override_sewing_limitation,$has_permission))
+	// {
 		$value = 'authorized';
-	}
-	else
-	{
-		$value = 'not_authorized';
-	}
+	// }
+	// else
+	// {
+	// 	$value = 'not_authorized';
+	// }
 	echo '<input type="hidden" name="user_permission" id="user_permission" value="'.$value.'">';
 	//API related data
 	// $plant_code = $global_facility_code;
@@ -85,7 +85,7 @@
 	</div>
 	<div class='panel panel-primary'>
 			<div class='panel-heading'>Job Data</div>
-			<form action="index.php?r=<?php echo $_GET['r']?>" name= "smartform" method="post" id="smartform">
+			<form name= "smartform" method="post" id="smartform">
 				<input type='hidden' value='<?= $shift ?>' id='shift_val' name='shift_val'>
 				<div class='panel-body' id="dynamic_table_panel">	
 						<div id ="dynamic_table1">
@@ -176,24 +176,37 @@
 				var getReversalJobInfoUrl = '<?= $PTS_SERVER_IP.'/fg-retrieving/getJobDetailsForSewingJobReversal' ?>';
 				var reverseObj = {sewingJobNo: job_no, plantCode: '<?= $plant_code ?>', operationCode: operation};
 				// var reverseObj = [job_no,plant_code,ops,module1];
+				var bearer_token;
+				const creadentialObj = {
+										grant_type: 'password',
+										client_id: 'pps-back-end',
+										client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+										username: 'bhuvan',
+										password: 'bhuvan'
+										}
 				$.ajax({
-					type: "POST",
-					url: getReversalJobInfoUrl,
-					data: reverseObj,
-					success: function (response) {
-						if(response['status'])
-						{
-							$('#loading-image').hide();
-							var data = response['data'];
-							var s_no=0;
-							var btn = '<div class="pull-right"><input type="button" class="btn btn-primary disable-btn smartbtn submission" value="Submit" name="formSubmit" id="smartbtn" onclick="check_pack();"><input type="hidden" id="count_of_data" value='+data['sizeQuantities'].length+'></div>';
-							$("#dynamic_table1").append(btn);
-							var markup = "<table class = 'table table-bordered' id='dynamic_table'>\
-							<tbody><thead><tr class='info'><th>S.No</th><th>Style</th><th>Color</th><th>Module</th><th>Size</th>\
-							<th>Sewing Job Qty</th><th>Reported Quantity</th><th>Eligible to reverse</th><th>Reversing Quantity</th></tr></thead><tbody>";
-							$("#dynamic_table1").append(markup);
-							$("#dynamic_table1").append(btn);
-							for(var i=0;i<data['sizeQuantities'].length;i++)
+					method: 'POST',
+					url: "<?php echo $KEY_LOCK_IP?>",
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					xhrFields: { withCredentials: true },
+					contentType: "application/json; charset=utf-8",
+					transformRequest: function (Obj) {
+						var str = [];
+						for (var p in Obj)
+							str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+						return str.join("&");
+					},
+					data: creadentialObj
+				}).then(function (result) {
+					console.log(result);
+					bearer_token = result['access_token'];
+					$.ajax({
+						type: "POST",
+						url: getReversalJobInfoUrl,
+						headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+						data: reverseObj,
+						success: function (response) {
+							if(response['status'])
 							{
 								s_no++;
 								var markup1 = "<tr>\
@@ -216,13 +229,11 @@
 								$("#dynamic_table").append(markup1);
 								$('.smartbtn').attr('disabled', true);
 							}
-						} else {
-							sweetAlert(restrict_msg,'','error');
-							$('#dynamic_table1').html('No Data Found');
-							$('#loading-image').hide();
 						}
-					}
-				});
+					});
+				}).fail(function (result) {
+					console.log(result);
+				}) ;
 			}
 		});
 	});
@@ -273,7 +284,8 @@
 		
 	function check_pack()
 	{
-		$('.smartbtn').attr('disabled', 'disabled');
+		$('.smartbtn').hide();
+		
 		var count = document.getElementById('count_of_data').value;
 		var tot_qty=0;
 		for(var i=0; i<count; i++)
@@ -302,28 +314,56 @@
 			}
 			rejectReportData.sizeQuantities = sizeQuantities;
 			var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
+			var bearer_token;
+			const creadentialObj = {
+									grant_type: 'password',
+									client_id: 'pps-back-end',
+									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+									username: 'bhuvan',
+									password: 'bhuvan'
+									}
 			$.ajax({
-				type: "POST",
-				url: seveSewJobReversalUrl,
-				data: rejectReportData,
-				success: function(res) 
-				{
-					console.log('response came');
-					if (res.status) {
-						swal('',res.internalMessage,'success');
-					} else {
-						swal('',res.internalMessage,'error');
-					}
-					location.reload();	
+				method: 'POST',
+				url: "<?php echo $KEY_LOCK_IP?>",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+				xhrFields: { withCredentials: true },
+				contentType: "application/json; charset=utf-8",
+				transformRequest: function (Obj) {
+					var str = [];
+					for (var p in Obj)
+						str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+					return str.join("&");
 				},
-				error: function(response){
-					swal('','Network Error','error');
-				}
-			});
-			$('.submissiaon').hide();
-		} else{
+				data: creadentialObj
+			}).then(function (result) {
+				console.log(result);
+				bearer_token = result['access_token'];
+				$.ajax({
+					type: "POST",
+					url: seveSewJobReversalUrl,
+					data: rejectReportData,
+					success: function(res) 
+					{
+						console.log('response came');
+						if (res.status) {
+							swal('',res.internalMessage,'success');
+						} else {
+							swal('',res.internalMessage,'error');
+						}
+						location.reload();	
+					},
+					error: function(response){
+						swal('','Network Error','error');
+						$('.smartbtn').show();
+					}
+				}); 
+			}).fail(function (result) {
+				console.log(result);
+			}) ;
+			$('.submission').hide();
+		} else {
 			sweetAlert("Please enter atleast one size quantity","","warning");
-			$('.smartbtn').attr('disabled', 'disabled');
+			$('.smartbtn').show();
 		}
 	}
 

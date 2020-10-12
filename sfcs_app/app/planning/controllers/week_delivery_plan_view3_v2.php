@@ -28,7 +28,7 @@ Description: We can view and update Planning, Packing Remarks of production.
 
 ?>
 <?php
-$has_perm=haspermission($_GET['r']);
+// $has_perm=haspermission($_GET['r']);
 $plantcode=$_SESSION['plantCode'];
 set_time_limit(9000);
 $start_date_w=time();
@@ -1067,46 +1067,46 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			
 			$highlight=" bgcolor=\"".$color_code_ref1."\" ";
 
-		if(in_array($authorizeLevel_1,$has_perm))
-		{
+		// if(in_array($authorizeLevel_1,$has_perm))
+		// {
 			
-			//$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
-			$edit_rem="<td><input type=\"text\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"B\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		}
-		else
-		{
+		// 	//$edit_rem="<td class=\"editable\" rel=\"B$edit_ref\">".$remarks[1]."</td>";
+		// 	$edit_rem="<td><input type=\"text\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"B\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
+		// }
+		// else
+		// {
 			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
 			$edit_rem="<td $highlight>".$remarks[1]."</td>";
-		}
+		// }
 
 
-		if(!(in_array($authorizeLevel_2,$has_perm)))
-		{
-			$edit_rem2="<td $highlight>".$remarks[2]."</td>";
-		}
-		else
-		{
+		// if(!(in_array($authorizeLevel_2,$has_perm)))
+		// {
+		// 	$edit_rem2="<td $highlight>".$remarks[2]."</td>";
+		// }
+		// else
+		// {
 			//$edit_rem="<td $highlight>".$remarks[1]."</td>";
 			//$edit_rem2="<td class=\"editable\" rel=\"C$edit_ref\">".$remarks[2]."</td>";
 			$edit_rem2="<td><input type=\"text\" name=\"C[]\" value=\"".$remarks[2]."\">";
 			$edit_rem2.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"A[]\" value=\"".$remarks[0]."\"><input type=\"hidden\" name=\"code[]\" value=\"C\"><input type=\"hidden\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>";
-		}
+		// }
 
-		if(!(in_array($authorizeLevel_3,$has_perm)))
-		{
-			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
-			$reason_ref2="";
-			$sql_res2="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
-			//echo $sql_res1."<br>";
-			$sql_result_res2=mysqli_query($link, $sql_res2) or exit("Sql Error".$sql_res2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row_res2=mysqli_fetch_array($sql_result_res2))
-			{
-				$reason_ref2=$sql_row_res2["reason"];		
-			}
-			$edit_rem3="".$reason_ref2."";
-		}
-		else
-		{
+		// if(!(in_array($authorizeLevel_3,$has_perm)))
+		// {
+		// 	//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
+		// 	$reason_ref2="";
+		// 	$sql_res2="select * from $bai_pro4.weekly_cap_reasons where sno=\"".$remarks[0]."\"";
+		// 	//echo $sql_res1."<br>";
+		// 	$sql_result_res2=mysqli_query($link, $sql_res2) or exit("Sql Error".$sql_res2."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// 	while($sql_row_res2=mysqli_fetch_array($sql_result_res2))
+		// 	{
+		// 		$reason_ref2=$sql_row_res2["reason"];		
+		// 	}
+		// 	$edit_rem3="".$reason_ref2."";
+		// }
+		// else
+		// {
 			//$edit_rem3="<input type=\"text\" name=\"A[]\" value=\"".$remarks[0]."\">";
 			//CR#930 //Displaying the Reasons List to Users for selecting the appropriate reason of the schedule.
 			$edit_rem3="<select name=\"A[]\">";
@@ -1130,7 +1130,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$edit_rem3.="</select>";
 			$edit_rem3.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"code[]\" value=\"A\">";
 			$rev_ex_factory_date="<input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\">";
-		}
+		// }
 		//Restricted Editing for Packing Team
 
 			if(!isset($_POST['custom']))

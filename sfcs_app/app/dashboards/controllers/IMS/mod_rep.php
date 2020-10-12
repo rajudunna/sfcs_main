@@ -17,7 +17,7 @@
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
-    $has_permission=haspermission($url_r);
+    //$has_permission=haspermission($url_r);
     error_reporting(0);
     $ref_no=time();
     //echo $ref_no;
@@ -311,30 +311,58 @@ $(document).ready(function(){
                                 "resourceId": '<?= $module ?>',
                                 "createdUser": '<?= $user_name ?>'
                             }
+                            var bearer_token;
+                const creadentialObj = {
+                grant_type: 'password',
+                client_id: 'pps-back-end',
+                client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+                username: 'bhuvan',
+                password: 'bhuvan'
+                }
                 $.ajax({
-                    type: "POST",
-                    url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
-                    data: data,
-                    success: function (res) {
-                        if(res.status)
-                        {
-                            swal('','Bundles Transfered Successfully','success')
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                            
-                        }
-                        else
-                        {
-                            swal('',res.internalMessage,'error');
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                        }                       
-                        //$('#loading-image').hide();
+                    method: 'POST',
+                    url: "<?php echo $KEY_LOCK_IP?>",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    xhrFields: { withCredentials: true },
+                    contentType: "application/json; charset=utf-8",
+                    transformRequest: function (Obj) {
+                        var str = [];
+                        for (var p in Obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                        return str.join("&");
                     },
-                    error: function(res){
-                        swal('Error in getting data');
-                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                        //$('#loading-image').hide();
-                    }
-                });
+                    data: creadentialObj
+                }).then(function (result) {
+                    console.log(result);
+                    bearer_token = result['access_token'];
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                        data: data,
+                        success: function (res) {
+                            if(res.status)
+                            {
+                                swal('','Bundle Transfered Successfully','success')
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                                
+                            }
+                            else
+                            {
+                                swal('',res.internalMessage,'error');
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            }                       
+                            //$('#loading-image').hide();
+                        },
+                        error: function(res){
+                            swal('Error in getting data');
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            //$('#loading-image').hide();
+                        }
+                    });
+                }).fail(function (result) {
+                    console.log(result);
+                }) ;
    });
 
 });

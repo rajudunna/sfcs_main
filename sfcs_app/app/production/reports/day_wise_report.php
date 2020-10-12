@@ -203,7 +203,7 @@ function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
 										for ($jjj=0; $jjj< count($operation_codes); $jjj++) 
 										{
 											//To get SMV
-											$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE style='".$style[$i]."' AND color='$color[$i]' AND plant_code='$plant_code' AND is_active=1";
+											$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE style='".$style[$i]."' AND color='$color[$i]' AND plant_code='$plant_code' AND is_active=1";
 											$query_result1=mysqli_query($link_new, $get_smv) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
 											while($smv_row=mysqli_fetch_array($query_result1))
 											{

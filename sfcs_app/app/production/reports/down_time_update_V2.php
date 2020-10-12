@@ -1,6 +1,6 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-	$has_perm=haspermission($_GET['r']);
+	// $has_perm=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
 /*
 $username_list=explode('\\',$_SERVER['REMOTE_USER']);
@@ -207,14 +207,14 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$max_allowed_date=$sql_row['bac_date'];
 }
 
-if(in_array($authorized, $has_perm))
-{
-	echo '<input type="text" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" >'; 
-}
-else
-{
+// if(in_array($authorized, $has_perm))
+// {
+// 	echo '<input type="text" class="form-control" name="date" value="'.date("Y-m-d").'" size="10" >'; 
+// }
+// else
+// {
 	echo '<input type="text" class="form-control" name="date" readonly value="'.date("Y-m-d").'" size="10" onchange="check_date(this.value,\''.$max_allowed_date.'\',\''.date("Y-m-d").'\');" >'; 
-}
+// }
 
 ?>
 </div>

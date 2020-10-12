@@ -26,7 +26,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 
 <head>
 	<meta http-equiv="refresh" content="120">
-	<title>Hourly Production Report- Section Wise</title>
+	<title>Hourly Production Report- Section Wise New</title>
 	<style>
 		.text-right {
 			text-align: right;
@@ -72,7 +72,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 				if (isset($_GET['submit'])) {
 					// Get plant start time and end time 
 					$plantTimingsQuery = "SELECT plant_start_time,plant_end_time FROm $pms.plant where plant_code = '" . $plantCode . "'";
-					$plantTimingResult = mysqli_query($link, $plantTimingsQuery);
+					$plantTimingResult = mysqli_query($link, $plantTimingsQuery) or exit("sql Error plant-". mysqli_error($link));
 					$rowData = mysqli_fetch_row($plantTimingResult);
 					$startTime = strtotime($rowData[0]); // Plant start time
 					$endTime = strtotime($rowData[1]); // Plant end time							 
@@ -141,10 +141,10 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$ttlActEff = 0;
 										$ttlBalPcs = 0;
 										$ttlForeCastHitRate = 0;
-										$groupedSecQry = "SELECT distinct monthly_production_plan.group FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
+										$groupedSecQry = "SELECT distinct monthly_production_plan.group FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.pp_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 										$res_groupedSecQry = mysqli_query($link, $groupedSecQry);
 										while ($row_groupedSecQry = mysqli_fetch_array($res_groupedSecQry)) {
-											$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_production_plan_upload_log_id = monthly_production_plan.monthly_production_plan_upload_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and monthly_production_plan.group = '".$row_groupedSecQry['group']."' ";
+											$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.pp_log_id where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and monthly_production_plan.group = '".$row_groupedSecQry['group']."' ";
 											$res = mysqli_query($link, $sql);
 											$ttlActNop_sec = 0;
 											$ttlFrPlanQty_sec = 0;
@@ -167,19 +167,19 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 											while ($row = mysqli_fetch_array($res)) {
 												// ============ Get Workstation id =======================//
 												$workstationIdQuery  = "SELECT workstation_id FROM $pms.workstation WHERE workstation_code = '" . $row['row_name'] . "' and plant_code = '". $plantCode ."'";
-												$workstationResult = mysqli_query($link, $workstationIdQuery);
+												$workstationResult = mysqli_query($link, $workstationIdQuery) or exit("sql Error workstation-". mysqli_error($link));
 												$workstationRow = mysqli_fetch_row(($workstationResult));
 												$workstationId = $workstationRow[0];
 												
 												//============== Get No of operators ============================//
 												$sqlNOP = "SELECT sum(present+jumper) as act_nop FROM $pps.pro_attendance WHERE date='$frdate' and module='$workstationId'";
-												$nopResult = mysqli_query($link, $sqlNOP);
+												$nopResult = mysqli_query($link, $sqlNOP) or exit("sql Error attendance-". mysqli_error($link));
 												$rowNOP = mysqli_fetch_row($nopResult);
 												$actNop = $rowNOP[0];
 												// =============== Get fore cast quantity ===========================//
 												$sqlForecastQty = "SELECT qty FROM $pps.line_forecast where date='$frdate' AND module='$workstationId'";
 												//    echo $sql4."</br>";
-												$resForecastQty = mysqli_query($link, $sqlForecastQty);
+												$resForecastQty = mysqli_query($link, $sqlForecastQty) or exit("sql Error line forecast-". mysqli_error($link));
 												$rowForecastQty = mysqli_fetch_row($resForecastQty);
 												$forecastQty = $rowForecastQty[0];
 												// Target PCS per hour = forecast quantity / hours
@@ -227,7 +227,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 
 														//============== Get reported quantity ==========================//
 														$sqlReportedQty = "SELECT sum(good_quantity) as quantity FROM $pts.transaction_log WHERE resource_id='" . $workstationId . "' AND created_at BETWEEN '" . $hourStartWithDate . "' AND '" . $hourEndWithDate . "' AND plant_code ='".$plantCode."' AND operation='130'";
-														$resultQty = mysqli_query($link, $sqlReportedQty);
+														$resultQty = mysqli_query($link, $sqlReportedQty) or exit("sql Error transaction log-". mysqli_error($link));
 														$rowQty = mysqli_fetch_row($resultQty);
 														$goodQty = $rowQty[0];
 														// display quantity based on conditions
@@ -261,7 +261,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 																$breakResons = array(20, 21, 22);
 																// Get distinct reason id's form hourlly downtime for every hour
 																$sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																$resReasons = mysqli_query($link, $sqlReasons);
+																$resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));
 																$k = 0;
 																while ($rowsReason = mysqli_fetch_array($resReasons)) {
 																	$reasons[$k] = $rowsReason['reason_id'];
@@ -281,7 +281,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 																// Get reason count for hour
 																$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
 																// echo $sql6_2.'<br><br>';
-																$resReasonsCount = mysqli_query($link, $sqlReasonsCount);
+																$resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));;
 																$rowCount = mysqli_fetch_row($resReasonsCount);
 																if ($rowCount[0] > 0) {
 																	$displayQty = 0;
@@ -296,7 +296,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 																$breakResons = array(20, 21, 22);
 																// Get distinct reason id's form hourlly downtime for every hour
 																$sqlReasons = "SELECT distinct(reason_id) FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
-																$resReasons = mysqli_query($link, $sqlReasons);
+																$resReasons = mysqli_query($link, $sqlReasons) or exit("sql Error hourly down time-". mysqli_error($link));;
 																$k = 0;
 																while ($rowsReason = mysqli_fetch_array($resReasons)) {
 																	$reasons[$k] = $rowsReason['reason_id'];
@@ -316,7 +316,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 																// Get reason count for hour
 																$sqlReasonsCount = "SELECT count(reason_id) as reasons_count FROM $pps.hourly_downtime WHERE DATE='$frdate' AND time BETWEEN TIME('" . $start . "') AND TIME('" . $end . "') AND team='$workstationId' AND plant_code='$plantCode' ";
 																// echo $sql6_2.'<br><br>';
-																$resReasonsCount = mysqli_query($link, $sqlReasonsCount);
+																$resReasonsCount = mysqli_query($link, $sqlReasonsCount) or exit("sql Error hourly down time-". mysqli_error($link));
 																$rowCount = mysqli_fetch_row($resReasonsCount);
 																if ($rowCount[0] > 0) {
 																	$displayQty = $goodQty;

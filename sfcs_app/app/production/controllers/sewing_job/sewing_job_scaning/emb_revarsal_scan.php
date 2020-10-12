@@ -10,15 +10,15 @@
 		$gate_id=0;
 	}
 	//echo $gate_id."--".$op_code."--".$shift."<br>";
-    $has_permission=haspermission($_GET['r']);
-    if (in_array($override_sewing_limitation,$has_permission))
-    {
+    // $has_permission=haspermission($_GET['r']);
+    // if (in_array($override_sewing_limitation,$has_permission))
+    // {
         $value = 'authorized';
-    } 
-    else
-    {
-        $value = 'not_authorized';
-	}
+    // } 
+    // else
+    // {
+    //     $value = 'not_authorized';
+	// }
 	
 ?>
 

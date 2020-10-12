@@ -86,7 +86,7 @@
 	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
 	$plant_code = $_session['plantCode'];
 	$username =  $_session['userName'];
-	$has_permission=haspermission($_GET['r']);
+	// $has_permission=haspermission($_GET['r']);
     $main_url=getFullURL($_GET['r'],'sewing_job_create_mrn.php','R');
 
 	$get_style=$_GET['style'];
