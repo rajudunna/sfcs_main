@@ -176,9 +176,15 @@ if(isset($_GET['val']))
             if($input_selection=='bundle_wise'){
                 $bundlenum_header="<th rowspan=2>Bundle No</th>";
                 $report_header="BundleWise";
+                $bundleselected="selected";
+                $jobselected=" ";
+
             }else{
                 $bundlenum_header="";
                 $report_header="Sewing Job Wise";
+                $bundleselected=" ";
+                $jobselected="selected";
+
             }
             
         }
@@ -186,6 +192,9 @@ if(isset($_GET['val']))
         {
             $bundlenum_header="<th rowspan=2>Bundle No</th>";
             $report_header="BundleWise";
+            $bundleselected="selected";
+            $jobselected=" ";
+
         }
 
         $section=$_GET['section'];
@@ -210,8 +219,8 @@ if(isset($_GET['val']))
                             <div class='form-inline'>
                                 <form method='post'>
                                     <select name='input_selection' id='input_selection' class=\"form-control\">
-                                        <option value='bundle_wise' selected>Bundle Wise</option>
-                                        <option value='input_wise'>Sewing Job Wise</option>
+                                    <option value='bundle_wise'  ".$bundleselected.">Bundle Wise</option>
+                                    <option value='input_wise' ".$jobselected.">Sewing Job Wise</option>
                                     </select>
                             </div></div>
                         </td>";
