@@ -89,7 +89,7 @@ table, th, td {
 				<select name="schedule" id="schedule" class="form-control" required="true">
 					<option value="">Please Select</option>
 					<?php
-						$sql="SELECT order_del_no as schedule FROM $bai_pro3.bai_orders_db_confirm WHERE order_style_no='$style' and vpo='$vpo' GROUP BY order_del_no";
+						$sql="SELECT order_del_no as schedule FROM $bai_pro3.bai_orders_db_confirm WHERE vpo='$vpo' and order_style_no='$style' GROUP BY order_del_no";
 						$sql_result=mysqli_query($link, $sql) or exit("error while fetching VPO numbers");
 						while($sql_row=mysqli_fetch_array($sql_result))
 						{
@@ -131,7 +131,7 @@ table, th, td {
 					if (mysqli_num_rows($pack_meth_qty12) > 0)
 					{
 						// All MO details
-						$mo_sql="SELECT * FROM $bai_pro3.mo_details WHERE schedule='$schedule'";
+						$mo_sql="SELECT mo_no FROM $bai_pro3.mo_details WHERE schedule='$schedule'";
 						//echo $mo_sql."<br>";
 						$sql_result=mysqli_query($link, $mo_sql) or exit("error while fetching pack methods2");
 						while($row_result=mysqli_fetch_array($sql_result))
@@ -143,7 +143,7 @@ table, th, td {
 						while($pack_result12=mysqli_fetch_array($pack_meth_qty12))
 						{ 									
 							// Eligible Quantity MO Wise
-							$mo_sql1="SELECT * FROM $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo)."')";
+							$mo_sql1="SELECT mo_no,remaining_qty FROM $bai_pro3.tbl_carton_ready WHERE mo_no in ('".implode("','",$mo)."')";
 							$sql_result23=mysqli_query($link, $mo_sql1) or exit("error while fetching pack methods3");
 							while($row_result23=mysqli_fetch_array($sql_result23))
 							{
@@ -247,9 +247,11 @@ table, th, td {
 										<table class='table table-bordered'>
 											<thead>
 												<tr class='info'>
-													<th width=\"33%\">Completed Cartons</th>
-													<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank' $hide>Print All Cartons</a></th>
-													<th width=\"33%\">Pending Cartons</th>
+													<th width=\"33%\">Completed Cartons</th>";
+													// echo "<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank' $hide>Print All Cartons</a></th>";
+													echo "<th><form action='$url2' method='POST'>Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<input type='hidden' name='schedule' value='$schedule'><input type='hidden' name='carton_no' value='$label_concat'><input type='hidden' name='seq_no' value='".$pack_result12['pac_seq_no']."'>
+														<button type='submit' class='btn btn-warning btn-xs' target='_blank' $hide>Print All Cartons</button>
+													</form></th><th width=\"33%\">Pending Cartons</th>
 												</tr>
 											</thead>
 											<tbody>
