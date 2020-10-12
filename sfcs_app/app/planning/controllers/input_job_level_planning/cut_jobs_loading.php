@@ -282,6 +282,10 @@ if($get_schedule!='' && $plant_code!=''){
 	echo "<div class='col-sm-3'><label>Select Cut: </label>";  
 	echo "<select style='min-width:100%' name=\"cutno\" onchange=\"sixthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
+				if($get_sub_po!='')
+				{
+				echo "<option value=\"All\" selected>All</option>";	
+				}
 				foreach ($cut_number as $key=>$cut_no_val) {
 					if(str_replace(" ","",$cut_no_val)==str_replace(" ","",$cutno)) 
 					{ 

@@ -4,7 +4,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_dashboard.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',4,'R')); 
-$module_limit=14;
+// $module_limit=14;
 $plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
 ?>
@@ -652,12 +652,12 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 			<p>Jobs</p>		
 		<ul id="allItems">		
 		<?php
-			/*To get jobs from getUnplannedJobs
-			@params : sub_po,plantcode,tasktype
+			/*To get jobs from getUnplannedSewingJobs
+			@params : sub_po,plantcode,cutno
 			@returns : job number
 			*/
 			$tasktype = TaskTypeEnum::SEWINGJOB;
-			$result_sew_jobs=getUnplannedJobs($sub_po,$tasktype,$plant_code);
+			$result_sew_jobs=getUnplannedSewingJobs($sub_po,$cutno,$plant_code);
 			$sewjobs=$result_sew_jobs['job_number'];
 			foreach($sewjobs as $sew_num=>$jm_sew_id){
 				$check="blue";
