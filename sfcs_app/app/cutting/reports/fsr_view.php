@@ -93,13 +93,21 @@ if(isset($_POST['submit'])) {
 				 $workstation_type_id[] =$sql_rowx1['workstation_type_id'];
 			}
 			$workstation_type_id = implode("','",$workstation_type_id);
+			$workstation_id = array();
+			$sqlyy="SELECT section_id FROM $pms.workstation where workstation_type_id in ('$workstation_type_id') and plant_code='$plantcode'";
+			$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowy=mysqli_fetch_array($sql_resulty))
+			{
+				$section_id[]=$sql_rowy['section_id'];
+			}
+			$section_id = implode("','",$section_id);
 			?>
 			<div class='col-md-2'>
 				<label>Section: </label>
 				<select name="section" class="select2_single form-control">
 				<option value='All' <?php if($section=="All"){ echo "selected"; } ?> >All</option>
 				<?php 
-				$sqly="SELECT workstation_id,workstation_description FROM $pms.workstation where workstation_type_id in ('$workstation_type_id') and plant_code='$plantcode'";
+				$sqly="SELECT section_id as workstation_id,section_name as workstation_description FROM $pms.sections where section_id in ('$section_id') and plant_code='$plantcode'";
 				$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($sql_resulty))
 				{
@@ -200,14 +208,30 @@ if(isset($_POST['submit']))
 	$section=$_POST['section'];
 	if($section=='All')
 	{	
-		$sec_list="'".implode("','",$workstation_id1)."'";
+		$workstation_id_new = array();
+		$sec_lists="'".implode("','",$workstation_id1)."'";
+		$sqlyy="SELECT workstation_id FROM $pms.workstation where section_id in ($sec_lists) and plant_code='$plantcode'";
+		$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowy=mysqli_fetch_array($sql_resulty))
+		{
+			$workstation_id_new[]=$sql_rowy['workstation_id'];
+		}
+		$sec_list="'".implode("','",$workstation_id_new)."'";
 		$all_sec_names='';
 		foreach($workstation_id1 as $wsid){
 			$all_sec_names .='"'.$workstation_description1[$wsid].'",';
 		}
 		$all_sec_names = rtrim($all_sec_names, ',');
 	}else{
-		$sec_list='"'.str_replace(",",'","',$section).'"';
+		$sec_lists='"'.str_replace(",",'","',$section).'"';
+		$workstation_id_new = array();
+		$sqlyy="SELECT workstation_id FROM $pms.workstation where section_id in ($sec_lists) and plant_code='$plantcode'";
+		$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_rowy=mysqli_fetch_array($sql_resulty))
+		{
+			$workstation_id_new[]=$sql_rowy['workstation_id'];
+		}
+		$sec_list="'".implode("','",$workstation_id_new)."'";
 		$all_sec_names = '"'.$workstation_description1[$section].'"';
 	}
 	$shift=$_POST['shift'];
@@ -256,7 +280,6 @@ if(isset($_POST['submit']))
 			</div>
 		</div>
 	</div>
-
 <?php
  }
 ?>
@@ -267,7 +290,7 @@ $reptype = $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype == 1)
 {
 	$sql = "SELECT lpl.lp_lay_id,lpl.workstation_id,lpl.shift,DATE(lpl.created_at) AS date1,lrfc.fabric_category,
-	jdl.docket_line_number,jcj.cut_number,sum(jcbd.quantity) as pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,lpl.po_number,lrfc.fabric_category,jd.ratio_comp_group_id,lrfc.ratio_id 
+	jdl.docket_line_number,jcj.cut_number,jdlb.quantity,jdl.plies,lpl.po_number,lrfc.fabric_category
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
@@ -280,7 +303,6 @@ if(isset($_POST['submit']) && $reptype == 1)
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
 	GROUP BY lpl.lp_lay_id";
-	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -331,52 +353,29 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$doc_no=$sql_row['docket_line_number'];
 			$date=$sql_row['date1'];
 			$act_shift=$sql_row['shift'];
-			// $act_section=$sql_row['workstation_description'];
 			$po_number=$sql_row['po_number'];
 			$workstation_id=$sql_row['workstation_id'];
+			$sqlyy="SELECT sc.section_name FROM $pms.workstation LEFT JOIN $pms.`sections` sc ON sc.`section_id`=workstation.`section_id` where workstation_id = '$workstation_id' and sc.plant_code='$plantcode'";
+			$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_rowy=mysqli_fetch_array($sql_resulty))
+			{
+				$act_section=$sql_rowy['section_name'];
+			}
 			$category=$sql_row['fabric_category'];
 			$cut_number=$sql_row['cut_number'];
 			$act_total = $sql_row['quantity'];
 			$plies = $sql_row['plies'];
 			$lay_id = $sql_row['lp_lay_id'];
 			$ratio_comp_group_id = $sql_row['ratio_comp_group_id'];
-			$ratio_id = $sql_row['ratio_id'];
 			// echo $po_number;
 			$getdetails = getStyleColorSchedule($po_number,$plantcode);
 			$style = $getdetails['style_bulk'][0];
 			$schedule = $getdetails['schedule_bulk'][0];
 			$color = $getdetails['color_bulk'][0];
 			
-			// get the docket qty
-			$size_ratio_sum = 0;
-			$size_ratios_query = "SELECT size, size_ratio FROM $pps.lp_ratio_size WHERE ratio_id = '$ratio_id' ";
-			$size_ratios_result=mysqli_query($link_new, $size_ratios_query) or exit("Sql fabric_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row = mysqli_fetch_array($size_ratios_result))
-			{
-				$size_ratio_sum += $row['size_ratio'];
-			}
-		
-			$docket_quantity = $size_ratio_sum * $plies;
-
-			$Qry_get_order_consumption="SELECT workstation_description from $pms.`workstation` WHERE workstation_id='$workstation_id'";
-			$sql_result3=mysqli_query($link, $Qry_get_order_consumption) or die("Error".$Qry_get_order_consumption.mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($row3=mysqli_fetch_array($sql_result3))
-			{
-				$act_section=$row3['workstation_description'];
-			}
-
-			if($ratio_comp_group_id!=''){
-				$qry_lp_markers="SELECT `length` FROM $pps.`lp_markers` WHERE `lp_ratio_cg_id`='$ratio_comp_group_id' AND default_marker_version=1 AND `plant_code`='$plantcode'";
-				// echo $qry_lp_markers;
-				$lp_markers_result=mysqli_query($link_new, $qry_lp_markers) or exit("Sql Errorat_lp_markers".mysqli_error($GLOBALS["___mysqli_ston"]));
-				$lp_markers_num=mysqli_num_rows($lp_markers_result);
-				if($lp_markers_num>0){
-					while($sql_row1=mysqli_fetch_array($lp_markers_result))
-					{
-						$mk_length = $sql_row1['length'];
-					}
-				}
-			}
+			$result_docketinfo=getDocketInformation($doc_no,$plantcode);
+			$docket_quantity =$result_docketinfo['docket_quantity'];
+			$mk_length =$result_docketinfo['length'];
 
 			$req_qty=0;
 			$issued_qty=0;
@@ -416,7 +415,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			$endbits=  $fabricattributes[$fabric_lay_attributes['endbits']];
 			$joints=  $fabricattributes[$fabric_lay_attributes['joints']];
 			$net_util= $fab_rec - $fab_ret - $damages - $shortages;
-			$act_con=round((($fab_rec - $fab_ret)/$act_total));
+			$act_con=round((($fab_rec - $fab_ret)/$docket_quantity));
 			$net_con=round($net_util/$docket_quantity,4);
 			//To get Total order qty
 			$sql2="SELECT SUM(quantity) AS quantity FROM $pps.`mp_mo_qty` WHERE SCHEDULE='$schedule' AND color='$color' AND plant_code='$plantcode'";
@@ -476,7 +475,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			echo "<td class=xl6618241 style='border-top:none'>$date</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_shift</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_section</td>";
-			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".leading_zeros($doc_no,9)."</td>";
+			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".$doc_no."</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$style</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$schedule</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none;word-wrap: break-word;'>$color</td>";
@@ -532,10 +531,10 @@ if(isset($_POST['submit']) && $reptype==2)
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
-	GROUP BY  lpl.workstation_id";
+	GROUP BY lpl.workstation_id";
+	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
-
 	echo "<div class='col-sm-12' style='overflow-x:scroll;overflow-y:scroll;max-height:600px;'>";
 	echo "<h5>Summary Report</h5>";
 	echo "<table class='table table-bordered table-responsive' id='report'>";	
@@ -567,11 +566,11 @@ if(isset($_POST['submit']) && $reptype==2)
 				$workstation_id = $sql_row['workstation_id'];
 				$ratio_comp_group_id = $sql_row['ratio_comp_group_id'];
 				
-				$Qry_get_order_consumption="SELECT workstation_description from $pms.`workstation` WHERE workstation_id='$workstation_id'";
-				$sql_result3=mysqli_query($link, $Qry_get_order_consumption) or die("Error".$Qry_get_order_consumption.mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($row3=mysqli_fetch_array($sql_result3))
+				$sqlyy="SELECT sc.section_name FROM $pms.workstation LEFT JOIN $pms.`sections` sc ON sc.`section_id`=workstation.`section_id` where workstation_id = '$workstation_id' and sc.plant_code='$plantcode'";
+				$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($sql_rowy=mysqli_fetch_array($sql_resulty))
 				{
-					$act_section=$row3['workstation_description'];
+					$act_section=$sql_rowy['section_name'];
 				}
 	
 				if($ratio_comp_group_id!=''){
