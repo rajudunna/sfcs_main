@@ -228,32 +228,60 @@ $(document).ready(function()
 		var username = $('#username').val();
 		var subpo = $('#sub_po').val();
 		var inputObj = {"poNumber":subpo, "plantCode":plant_code};
+		var bearer_token;
+        const creadentialObj = {
+									grant_type: 'password',
+									client_id: 'pps-back-end',
+									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+									username: 'bhuvan',
+									password: 'bhuvan'
+								}
         $.ajax({
-            type: "POST",
-            url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobDetailsByPo' ?>',
-			data: inputObj,
-            success: function(response) 
-            {
-				if (response.status) {
-					var jobsInfo = response;
-					if(jobsInfo.data.length > 0){
-						tableConstruction(jobsInfo.data);
-						$('#submit').show();
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
+				type: "POST",
+				url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobDetailsByPo' ?>',
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+				data: inputObj,
+				success: function(response) 
+				{
+					if (response.status) {
+						var jobsInfo = response;
+						if(jobsInfo.data.length > 0){
+							tableConstruction(jobsInfo.data);
+							$('#submit').show();
+						} else {
+							$('#loading-image').hide();
+							swal('','No Jobs found for this Sub Po', 'error');
+							return;
+						}
 					} else {
 						$('#loading-image').hide();
-						swal('','No Jobs found for this Sub Po', 'error');
+						swal('',response.internalMessage, 'error');
 						return;
 					}
-				} else {
+				}, error: function() {
 					$('#loading-image').hide();
-					swal('',response.internalMessage, 'error');
-					return;
+					swal('','Unable to get jobs for the production order',error);
 				}
-            }, error: function() {
-				$('#loading-image').hide();
-				swal('','Unable to get jobs for the production order',error);
-			}
-        });
+			}); 
+        }).fail(function (result) {
+            console.log(result);
+        }) ;
 	});
 });
 
@@ -309,7 +337,31 @@ $(document).ready(function()
 	$('#submit').on('click', function(){
 		$('#loading-image').show();
 		var numberOfChecked = $('input:checkbox:checked').length;
-		if(numberOfChecked > 1) {
+		var bearer_token;
+		const creadentialObj = {
+		grant_type: 'password',
+		client_id: 'pps-back-end',
+		client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+		username: 'bhuvan',
+		password: 'bhuvan'
+		}
+		$.ajax({
+			method: 'POST',
+			url: "<?php echo $KEY_LOCK_IP?>",
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			xhrFields: { withCredentials: true },
+			contentType: "application/json; charset=utf-8",
+			transformRequest: function (Obj) {
+				var str = [];
+				for (var p in Obj)
+					str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+				return str.join("&");
+			},
+			data: creadentialObj
+		}).then(function (result) {
+			console.log(result);
+			bearer_token = result['access_token'];
+			if(numberOfChecked > 1) {
 			var jobIds = [];
 			$('input[type="checkbox"]').each((key, element) => {
 				if (element.checked) {
@@ -323,6 +375,7 @@ $(document).ready(function()
 			$.ajax({
 				type: "POST",
 				url: "<?= $PPS_SERVER_IP ?>/jobs-generation/JobClubbing",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
 				data: inputObj,
 				success: function(response) 
 				{
@@ -341,6 +394,9 @@ $(document).ready(function()
 			$('#loading-image').hide();
 			swal('','Please Select More than One Sewing Job to Club','error');
 		}
+		}).fail(function (result) {
+			console.log(result);
+		}) ;
 	});
 });		
 </script>	

@@ -18,23 +18,22 @@
 	$selected_date = $_GET['date'];
 	$selected_hour = $_GET['hour'];
 
-	$plant_timings_query="SELECT * FROM $bai_pro3.tbl_plant_timings where time_value = '$selected_hour'";
-	// echo $plant_timings_query;
+	$plant_timings_query="SELECT * FROM $pms.plant where plant_code='$plantcode'";
 	$plant_timings_result11=mysqli_query($link,$plant_timings_query);
 	while ($row = mysqli_fetch_array($plant_timings_result11))
 	{
-		$start_time = $row['start_time'];
-		$end_time = $row['end_time'];
-		$time_display = $row['time_display'].' '.$row['day_part'];
+		$start_time = $row['plant_start_time'];
+		$end_time = $row['plant_end_time'];
+		// $time_display = $row['time_display'].' '.$row['day_part'];
 	}
 
-	$bai_log_qry="SELECT * FROM $pts.bai_log WHERE plant_code='$plantcode' and bac_date='$selected_date' AND TIME(bac_lastup) BETWEEN '$start_time' AND '$end_time'";
-	// echo $bai_log_qry.';<br>';
+	$bai_log_qry="SELECT * FROM $pts.transaction_log WHERE plant_code='$plantcode' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(updated_at) BETWEEN '$start_time' AND '$end_time'";
+	//   echo $bai_log_qry.';<br>';
 	$bai_log_result=mysqli_query($link,$bai_log_qry);
 
 ?>
 <div class="panel panel-primary">
-	<div class="panel-heading">Scanned Bundles in <?= $time_display; ?> </div>
+	<div class="panel-heading">Scanned Bundles </div>
 	<div class="panel-body">
 		<?php
 			if (mysqli_num_rows($bai_log_result) > 0) {
@@ -52,17 +51,27 @@
 						<tbody>';
 							while($res1=mysqli_fetch_array($bai_log_result))
 							{
-								$ims_pro_ref = $res1['ims_pro_ref'];
-								$module = $res1['bac_no'];
-								$qty = $res1['bac_Qty'];
-								$user = $res1['loguser'];
-								$shift = $res1['bac_shift'];
+								$ims_pro_ref = $res1['bundle_number'];
+								$module = $res1['resource_id'];
+								$module_qry="SELECT workstation_code FROM $pms.workstation WHERE plant_code='$plantcode' and workstation_id='$module '";
+								//  echo $module_qry.';<br>';
+								$module_qry_result=mysqli_query($link,$module_qry);
+								while($res11=mysqli_fetch_array($module_qry_result))
+							{
+								$workstation_code = $res11['workstation_code'];
+
+							}
+
+								$qty = $res1['good_quantity'];
+								$user = $res1['created_user'];
+								$shift = $res1['shift'];
+								$barcode = $res1['barcode'];
 								$temp = explode('-', $ims_pro_ref);
 
 								echo "
 									<tr>
-										<td>".$temp[0]."</td>
-										<td>$module</td>
+										<td>".$barcode."</td>
+										<td>$workstation_code</td>
 										<td>$qty</td>
 										<td>$user</td>
 										<td>$shift</td>

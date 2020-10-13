@@ -5,7 +5,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'session_track.php',0,'R') );    ?>
 
 <?
-	$view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs); 
+	//$view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs); 
 ?>
 
 

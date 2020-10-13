@@ -9,7 +9,7 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/global_error_function.php");
 $main_url=getFullURL($_GET['r'],'update_status.php','R');
-$has_permission=haspermission($_GET['r']);
+// $has_permission=haspermission($_GET['r']);
 $tid=$_GET['tid'];
 $check=$_GET['check'];
 $plant_code=$_GET['plant_code'];

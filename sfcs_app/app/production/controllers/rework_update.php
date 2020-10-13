@@ -2,7 +2,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
  
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-    $has_permission=haspermission($_GET['r']);
+    // $has_permission=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
 
 	$workstudy_limit="23.59";
@@ -280,10 +280,10 @@ function second_box(){
 		 <!-- <input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 		<div class="col-sm-2"><?php 
 			
-			if(in_array($authorized,$has_permission))
-			{
+			// if(in_array($authorized,$has_permission))
+			// {
 				echo "Date: <input type='text' data-toggle='datepicker' id='sdate' class='form-control' name='date' value='".$sdate."' onchange='check_date();' autocomplete='off'>"; 
-			}
+			// }
 		echo "</div>";
 		?>	 -->	
 	<div class="col-sm-2">
@@ -517,11 +517,11 @@ if (isset($_POST['submit11']))
 				      $('#option').css('display','none');
 			      });</script>";
 		}else{
-			if(in_array($authorized,$has_permission))
-			{
+			// if(in_array($authorized,$has_permission))
+			// {
 				echo '<input type="checkbox" name="option"  id="option" onclick="javascript:enableButton();">Enable';
 				echo '<input type="submit" name="update" class="btn btn-primary" id="update" value="Update" onclick="javascript:button_disable();" onclick="">';
-			}
+			// }
 		}
 	?>
 

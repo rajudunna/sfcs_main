@@ -1,7 +1,7 @@
 <?php
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config.php");
 	include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/functions.php");
-	$plant_code=$_SESSION['plantCode'];
+	$plantcode=$_SESSION['plantCode'];
 	if (isset($_POST['selected_date'])) {
 		$selected_date = $_POST['selected_date'];
 	} else {
@@ -71,7 +71,7 @@
 							}
 						}
 					?>
-				</select>
+				</select>			
 				<input type="hidden" id="plantCode" name="plantCode" value="<?php echo $plant_code; ?>" >
 				&nbsp;&nbsp;
 				<input type="submit" name="show" id="show" value="Get Data" class="btn btn-success">
@@ -79,7 +79,7 @@
 			<br>
 			<?php
 				if (isset($_POST['show']))
-				{
+				{					
 					$url2 = getFullURLLevel($_GET['r'],'bundle_report.php',0,'N');
 					$selected_date = $_POST['selected_date'];
 					$selected_hour = $_POST['selected_hour'];
@@ -97,7 +97,7 @@
 
 					$time_display_sah = array();	$plan_sah = array();	$act_sah = array();
 
-					$plan_sah_qry="SELECT round(SUM(plan_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+					$plan_sah_qry="SELECT round(SUM(planned_sah)/".$tot_plant_working_hrs.") as plan_sah FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 					// echo $plan_sah_qry;
 					$plan_sah_result=mysqli_query($link,$plan_sah_qry);
 					while ($plan_row = mysqli_fetch_array($plan_sah_result))
@@ -123,7 +123,7 @@
 						$tNow = $tStart;
 					}
 						
-					// while($tNow <= $tEnd){
+					 while($tNow <= $tEnd){
 						for($tNow=$tStart;$tNow <= $tEnd;$tNow++){
 						$tNow1 = strtotime('+60 minutes',$tNow);
 						$time_display_sah1=date("H:i",$tNow1);
@@ -132,8 +132,8 @@
 						 
 						
 					}	
+				}
 				
-
 					// $get_style="SELECT external_ref_id FROM $pts.transaction_log WHERE plant_code='$plantcode' and updated_at='$selected_date' and TIME(updated_at) BETWEEN '".$timing['plant_start_time']."' AND '".$timing['plant_end_time']."'";
 					// $act_sah_result1=mysqli_query($link,$get_style);
 					// while ($act_row1 = mysqli_fetch_array($act_sah_result1))
@@ -143,11 +143,20 @@
 					// }
 
 						// $act_sah_qry="SELECT SUM((bac_Qty*smv)/60) AS SAH FROM $pts.bai_log WHERE plant_code='$plantcode' and bac_date='$selected_date' and TIME(bac_lastup) BETWEEN '".$timing['plant_start_time']."' AND '".$timing['plant_end_time']."'";
-						$act_sah_qry="SELECT sum(good_quantity) as qty FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' and TIME(created_at) BETWEEN '".$timing['plant_start_time']."' AND '".$timing['plant_end_time']."'";
+						$act_sah_qry="SELECT sum(good_quantity) as qty,style,color FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' and TIME(created_at) BETWEEN '".$timing['plant_start_time']."' AND '".$timing['plant_end_time']."'";
 						//  echo $act_sah_qry.';<br>';
 						$act_sah_result=mysqli_query($link,$act_sah_qry);
 						while ($act_row = mysqli_fetch_array($act_sah_result))
 						{
+							$style=$act_row['style'];
+							$color=$act_row['color'];
+							 $style_query="SELECT sum(smv) as smv FROM $pps.monthly_production_plan where plant_code = '$plant_code' and product_code='$style' and colour='$color'";
+							 $style_query_result=mysqli_query($link,$style_query);
+								while ($style_row = mysqli_fetch_array($style_query_result))
+								{
+									$smv=$style_row['smv'];
+
+								}
 							if ($act_row['qty'] > 0) {
 								$act_sah[] = ($act_row['qty']*$smv)/60;
 
@@ -156,10 +165,9 @@
 							}
 						}
 					
-					$x_axis_display="'".implode("','",$time_display_sah)."'";
+					$x_axis_display="".implode(",",$time_display_sah)."";
 					$y_axis_plan_display="".implode(",",$plan_sah)."";
 					$y_axis_act_display="".implode(",",$act_sah)."";
-
 
 					// echo $selected_date.' == '.$selected_hour.' == '.$selected_section.'<br><br>';
 					$plant_timings_query="SELECT * FROM $pms.plant where plant_code = '$plant_code'";
@@ -171,6 +179,15 @@
 						$end_time = $row['plant_end_time'];
 						//$time_display = $row['time_display'].' '.$row['day_part'];
 					}
+					$from       = $start_time;
+					$to         = $end_time;
+					
+					$total      = strtotime($to) - strtotime($from);
+					$hours      = floor($total / 60 / 60);
+					$minutes    = round((($total - ($hours * 60 * 60)) / 60));
+					
+					$total_hours=$hours+$minutes/60;
+					
 					
 					echo '
 					<div class="panel panel-primary">
@@ -221,19 +238,19 @@
 																	// $bai_log_qry="SELECT GROUP_CONCAT(DISTINCT bac_style) as bac_style, SUM(bac_Qty) as qty FROM $pts.bai_log WHERE plant_code='$plantcode' and bac_sec='$section' AND bac_no='$team1' AND bac_date='$selected_date' AND TIME(bac_lastup) BETWEEN '$start_time' AND '$end_time' and plant_code='$plant_code'";
 
 																	
-																	$bai_log_qry1="SELECT SUM(good_quantity) as qty FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(created_at) BETWEEN '$start_time' AND '$end_time' ";
+																	$bai_log_qry1="SELECT SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date' AND TIME(created_at) BETWEEN '$start_time' AND '$end_time' ";
 																	
 																	// echo $bai_log_qry1;
 																	$bai_log_result1=mysqli_query($link,$bai_log_qry1);
 																	while($res1=mysqli_fetch_array($bai_log_result1))
 																	{
 																		
-																		
+																		$style = $res1['style'];
 																		$act_pcs = $res1['qty'];
 																	}
 																	
 																	// $plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='$section' and mod_no='$team1' ";
-																	$plan_pcs_qry12="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='127' and mod_no='$team1' ";
+																	$plan_pcs_qry12="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1' ";
 																	//echo $plan_pcs_qry12.';<br>';
 																	$plan_pcs_result12=mysqli_query($link,$plan_pcs_qry12);
 																
@@ -272,14 +289,15 @@
 															$acheivement_array[] = $acheivement_tot;
 														}
 														$section_array[] = 'Factory';
-														$bai_log_qry="SELECT SUM(good_quantity) as qty FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'  AND TIME(created_at) BETWEEN '$start_time' AND '$end_time'";
+														$bai_log_qry="SELECT SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'  AND TIME(created_at) BETWEEN '$start_time' AND '$end_time'";
 														 //echo $bai_log_qry.';<br>';
 														$bai_log_result=mysqli_query($link,$bai_log_qry);
 														while($res1=mysqli_fetch_array($bai_log_result))
 														{
+															$style = $res1['style'];
 															$act_pcs_fact1 = $res1['qty'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -409,15 +427,15 @@
 																{
 																	$team = $row['workstation_code'];
 																	$team1 = $row['workstation_id'];
-																	$bai_log_qry="SELECT  SUM(good_quantity) as qty FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'";
+																	$bai_log_qry="SELECT  SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code'  AND resource_id='$team1' AND DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'";
 																	 //echo $bai_log_qry.';<br>';
 																	$bai_log_result=mysqli_query($link,$bai_log_qry);
 																	while($res1=mysqli_fetch_array($bai_log_result))
 																	{
-																		//$style = $res1['bac_style'];
+																		$style = $res1['style'];
 																		$act_pcs = $res1['qty'];
 																	}
-																	$plan_pcs_qry="SELECT SUM(plan_pro) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date' and sec_no='127' and mod_no='$team1'";
+																	$plan_pcs_qry="SELECT SUM(planned_qty/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date' and row_name='$team1'";
 																	//  echo $plan_pcs_qry.';<br>';
 																	$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 																	while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -453,14 +471,15 @@
 																</tr>";
 														}
 
-														$bai_log_qry="SELECT SUM(good_quantity) as qty FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'";
+														$bai_log_qry="SELECT SUM(good_quantity) as qty,style FROM $pts.transaction_log WHERE plant_code='$plant_code' and DATE_FORMAT(created_at,'%Y-%m-%d')='$selected_date'";
 														// echo $bai_log_qry.';<br>';
 														$bai_log_result=mysqli_query($link,$bai_log_qry);
 														while($res1=mysqli_fetch_array($bai_log_result))
 														{
 															$act_pcs_fact2 = $res1['qty'];
+															$style = $res1['style'];
 														}
-														$plan_pcs_qry="SELECT round(SUM(plan_pro)/SUM(act_hours)) as PlanPcs FROM $pts.pro_plan WHERE plant_code='$plant_code' and DATE='$selected_date'";
+														$plan_pcs_qry="SELECT round(SUM(planned_qty)/".$total_hours.") as PlanPcs FROM $pps.monthly_production_plan WHERE plant_code='$plant_code' and planned_date='$selected_date'";
 														// echo $plan_pcs_qry.';<br>';
 														$plan_pcs_result=mysqli_query($link,$plan_pcs_qry);
 														while($res12=mysqli_fetch_array($plan_pcs_result))
@@ -490,6 +509,16 @@
 									<div class="panel-heading text-center">Hourly SAH Graph for '.$selected_date.'</div>
 											<div class="panel-body">
 												<div id = "sah_container" style = "height: 400px; width:auto;"></div>';
+												while($tNow <= $tEnd){
+													$tNow1 = strtotime('+60 minutes',$tNow);
+													$time_display_sah1=date("H:i",$tNow1);
+													$time_display_sah[]=date("H:i",$tNow)."-".$time_display_sah1;
+													$tNow = strtotime('+60 minutes',$tNow);
+											
+												}
+												$x_axis_display="'".implode("','",$time_display_sah)."'";
+												
+										
 												echo"<script language = \"JavaScript\">
 												
 												         $(document).ready(function() {
@@ -499,6 +528,7 @@
 												            var subtitle = {
 												            	text: '".$selected_date."'
 															};
+															
 												            var xAxis = {
 												               categories: [".$x_axis_display."],
 												               title: {

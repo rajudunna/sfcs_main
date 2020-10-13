@@ -144,7 +144,7 @@ if(isset($_POST['submit']))
 		}
 
 		//To get nop,plan_eff,planned_qty
-		$get_planned_details="SELECT sum(planned_qty) as plan_qty,planned_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE row_name='$workstation_description' AND planned_date='".$sql_row['bac_date']."' AND plant_code='$plant_code' AND is_active=1";
+		$get_planned_details="SELECT sum(planned_qty) as plan_qty,planned_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE row_name='$workstation_description' AND planned_date='".$sql_row['bac_date']."' AND plant_code='$plant_code' AND is_active=1";
 		$get_planned_details_result=mysqli_query($link_new, $get_planned_details) or exit("Sql Error at get_planned_details_result".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($planned_row=mysqli_fetch_array($get_planned_details_result))
 		{
@@ -157,7 +157,7 @@ if(isset($_POST['submit']))
 		//caliculation for plan_out
 		$plan_out=round($plan_qty/$act_hrs,0);
 		//To get SMV
-		$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE style='".$sql_row['style']."' AND color='$color' AND plant_code='$plant_code'
+		$get_smv="SELECT smv FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE style='".$sql_row['style']."' AND color='$color' AND plant_code='$plant_code'
 		AND is_active=1";
 		$query_result1=mysqli_query($link_new, $get_smv) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($smv_row=mysqli_fetch_array($query_result1))

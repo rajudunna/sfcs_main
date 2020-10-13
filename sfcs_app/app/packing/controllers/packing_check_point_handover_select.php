@@ -7,7 +7,7 @@
 //Date:2016-02-08/kirang/SR#64304318/Added Error mail function to the error part of sql queries 
 //Date:2016-02-12/kirang/SR#64304318/Added an array to Store the result of packing pending schedules and giving this as input in creating of temp tables. which reduce the query response time and avoid sql errors.
 
-$view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs); 
+//$view_access=user_acl("SFCS_0116",$username,1,$group_id_sfcs); 
 ?>
 
 <style>

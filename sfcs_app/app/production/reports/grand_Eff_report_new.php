@@ -83,7 +83,7 @@ if(isset($_POST['submit']))
 			echo "<td>$shift</td>"; 
 				
 			$sql="SELECT SUM(planned_qty) AS planned_qty,SUM(planned_sah) AS planned_sah,SUM(planned_eff) AS planned_eff,SUM(smv) as smv FROM $pps.`monthly_production_plan` mpl
-			LEFT JOIN $pps.`monthly_production_plan_upload_log` mppu ON mppu.monthly_production_plan_upload_log_id=mpl.monthly_production_plan_upload_log_id
+			LEFT JOIN $pps.`monthly_production_plan_upload_log` mppu ON mppu.monthly_pp_up_log_id=mpl.pp_log_id
 			WHERE mppu.plant_code='$plantcode' AND date(mpl.planned_date) BETWEEN \"$sdate\" and \"$edate\""; 
 			// echo $sql."<br/>"; 
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error79".mysqli_error($GLOBALS["___mysqli_ston"])); 

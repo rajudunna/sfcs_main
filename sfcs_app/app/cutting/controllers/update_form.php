@@ -1,5 +1,5 @@
 <?php
-$has_permission=haspermission($_GET['r']);
+//$has_permission=haspermission($_GET['r']);
 
 ?>
 <!-- <script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script> -->
@@ -243,10 +243,10 @@ switch($level)
 			$check=$authorizeLevel_2;
 		}
 		
-		if(!in_array($check,$has_permission))
-		{
+		// if(!in_array($check,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Approve/Reject Form</center></h3>";
 		break;
 	}
@@ -273,30 +273,30 @@ switch($level)
 			$checks=$authorizeLevel_2;
 		}
 		
-		if(!in_array($checks,$has_permission))
-		{
+		// if(!in_array($checks,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Update Form</center></h3>";
 		break;
 	}
 	case 4:
 	{
 		//$tmp=$username."@brandix.com";
-		if(!in_array($authorizeLevel_3,$has_permission))
-		{
+		// if(!in_array($authorizeLevel_3,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Update Form</center></h3>";
 		break;
 	}
 	case 5:
 	{
 		//$tmp=$username."@brandix.com";
-		if(!in_array($authorizeLevel_4,$has_permission))
-		{
+		// if(!in_array($authorizeLevel_4,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>Material Issue Form</center></h3>";
 		break;
 	}

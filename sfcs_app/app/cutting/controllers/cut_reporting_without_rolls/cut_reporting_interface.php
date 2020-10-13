@@ -7,7 +7,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 
 
-$has_permission=haspermission($_GET['r']); 
+//$has_permission=haspermission($_GET['r']); 
 
 if($fabric_validation_for_cut_report == 'yes')
     $FABRIC_VALIDATION = 1;
@@ -1311,8 +1311,8 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.docketNumber = $('#r_doc_no').text();
         reportData.shift = $('#shift').val();
         reportData.workStationId = $('#cut_table').val();
-        reportData.plantcode = '<?php echo $plantcode;?>';
-        reportData.username = '<?php echo $username;?>';
+        reportData.plantCode = '<?php echo $plantcode;?>';
+        reportData.createdUser = '<?php echo $username;?>';
         if($("#full_reported").is(':checked'))
         {
             reportData.fullyReported = true;
@@ -1359,10 +1359,38 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.fabricAttributes = fabricAttributes;
         console.log(reportData);
         $('#wait_loader').css({'display':'block'});
+
+
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
-                    data:  JSON.stringify(reportData),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                    data:  reportData,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (res) {            
@@ -1392,7 +1420,10 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                         loadDetails(post_doc_no);
                     }
                     
-                });
+            });
+        }).fail(function (result) {
+            console.log(result);
+        });
         //clearRejections();
         
         //$('#wait_loader').css({'display':'none'});
@@ -1787,15 +1818,40 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
     
     
     function loadDetails(doc_no){
-        var getData;
         const data={
                       "docketNumber": doc_no
-        
                   }
         $('#wait_loader').css({'display':'block'});
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                 type: "POST",
                 url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' +  bearer_token },
                 data: data,
                 success: function (res) {            
                     console.log(res.status);
@@ -2008,37 +2064,14 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                     swal('Error in getting docket');
                 }
             });
-           console.log(getData);
-            // var getData={
-            //     "docketNumber": "D123",
-            //     "componentGroup":"Compo Grp",
-            //     "category":"Body",
-            //     "style":"BCIDPG2526",
-            //     "fgColor":"Yark Yellow",
-            //     "schedules":"John",
-            //     "docketType":"Normal",
-            //     "quantity":"10",
-            //     "cutStatus":"Done",
-            //     "plannedPlies":"25",
-            //     "reportedPlies":"10",
-            //     "fabricRequired":"256",
-            //     "sizeRatios": [
-            //         {
-            //             "size": "S",
-            //             "ratio": "8"
-            //         },
-            //         {
-            //             "size": "M",
-            //             "ratio": "5"
-            //         },        
-            //         {
-            //             "size": "L",
-            //             "ratio": "3"
-            //         }
-            //         ],
-            // };
+        }).fail(function (result) {
+            console.log(result);
+        }) ;
+        
+        
+        console.log(bearer_token);
 
-            
+           console.log(getData);           
             GLOBAL_CALL = 0;        
     }
 

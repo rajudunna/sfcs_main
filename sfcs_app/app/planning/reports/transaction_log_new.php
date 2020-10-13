@@ -350,7 +350,7 @@ if(isset($_POST['submit']))
 							
 							/**getting smv and nop form monthly upload*/
 							$qryMonthlyupload="SELECT mp.smv AS smv,mp.capacity_factor FROM $pps.monthly_production_plan_upload_log ml LEFT JOIN monthly_production_plan mp 
-							ON ml.monthly_production_plan_upload_log_id=mp.monthly_production_plan_upload_log_id WHERE ml.plant_code='$plantCode' AND 
+							ON ml.monthly_pp_up_log_id=mp.pp_log_id WHERE ml.plant_code='$plantCode' AND 
 							DATE(mp.planned_date)='$createDate' AND mp.product_code='$style' AND mp.colour='$color'";
 							$monthlyResult=mysqli_query($link, $qryMonthlyupload) or exit("Error while getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($monthlyRow=mysqli_fetch_array($monthlyResult))

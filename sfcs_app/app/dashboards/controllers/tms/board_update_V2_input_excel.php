@@ -87,7 +87,7 @@ include('functions_tms.php');
 				  $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
 				  $sewingjobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']]; 
 				  $cono = $job_detail_attributes[$sewing_job_attributes['cono']];  
-				  $doc_no_ref = $job_detail_attributes[$sewing_job_attributes['docketno']];  
+				  $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];  
 				  
 				  //to get qty from jm job lines
 				  $toget_qty_qry="SELECT sum(quantity) as qty from $pps.jm_job_bundles where jm_jg_header_id ='$jm_sew_id' and plant_code='$plant_code'";
@@ -107,8 +107,16 @@ include('functions_tms.php');
 					   $input_trims_status=$row2['trim_status'];
 					}
 					
+					//getting jm_docket_line_id
+					$get_line_qry="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_no'";
+					$get_line_qry_result = mysqli_query($link_new, $get_line_qry) or exit("Sql Error getting dockline" . mysqli_error($GLOBALS["___mysqli_ston"]));
+					while ($row_line = mysqli_fetch_array($get_line_qry_result)) 
+					{
+						$doc_no_ref=$row_line['jm_docket_line_id'];
+					}
+					
 					//qry to get fabric status
-				  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE doc_no ='$doc_no_ref' and plant_code='".$plant_code."'";
+				  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id ='$doc_no_ref' and plant_code='".$plant_code."'";
 				  $get_fabric_status_result = mysqli_query($link_new, $get_fabric_status) or exit("Sql Error at get_fabric_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row_stat = mysqli_fetch_array($get_fabric_status_result)) 
 					{
@@ -129,7 +137,7 @@ include('functions_tms.php');
 							$rem="Available";
 							if(sizeof($num_docs) > 0)
 							{
-								$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+								$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 								//echo $sql1x1."<br>";
 								$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error7".mysqli_error());
 								if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -172,7 +180,7 @@ include('functions_tms.php');
 						{
 							if(sizeof($num_docs) > 0)
 							{
-								$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+								$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 								//echo $sql1x1."<br>";
 								$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9".mysqli_error());
 								if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -195,7 +203,7 @@ include('functions_tms.php');
 						}
 					}
 					
-					$sql11x="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and plant_code='$plant_code'";
+					$sql11x="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and plant_code='$plant_code'";
 					//echo $sql11x."<br>";
 					$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9".mysqli_error());
 					if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
@@ -204,21 +212,14 @@ include('functions_tms.php');
 						$id="D-Green";	
 					} 
 					
-					$sql1x1="select * from $pps.fabric_priorities where doc_ref in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+					$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 					//echo $sql1x1."<br>";
 					$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error10".mysqli_error());
 					if(mysqli_num_rows($sql_result1x1)==$num_docs)
 					{
 						$id="Yellow";
 					}
-					//echo $num_docs."<br>";
-					$sql11x1="select * from $bai_pro3.plandoc_stat_log where doc_no in ('$doc_no_ref_input') and act_cut_status=\"DONE\"";
-					//echo $sql11x1."<br>";
-					$sql_result11x1=mysqli_query($link,$sql11x1) or exit("Sql Error11".mysqli_error());
-					if(mysqli_num_rows($sql_result11x1)==$num_docs and $id=="Yellow")
-					{
-						$id="Blue";
-					} 
+					
 					
 								
 					if($trim_status == TrimStatusEnum::OPEN)

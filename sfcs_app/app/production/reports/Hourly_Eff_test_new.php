@@ -301,10 +301,9 @@ td,th
                     <!--<div id="page_heading"><h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3><span style="float: right"><b>?</b>&nbsp;</span></div>--> 
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
-						// include("../../../common/config/config.php");
-						include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-                    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
-                        error_reporting(0);
+						error_reporting(0);						
+						include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+						include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
                         $style_break=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
                         $hour_filter=$_POST['hour_filter']; 
@@ -330,21 +329,22 @@ td,th
                             <div class="col-md-2">
                                 <label for="section">Select Section: </label>
                                 <?php
+									$departmentType = DepartmentTypeEnum::SEWING;
                                     echo "<select name=\"section\" id='section' class=\"form-control\" >"; 
-                                    $sql2="select * from $bai_pro3.sections_master order by sec_id"; 
+									$sql2="select sec.section_id,sec.section_name from $pms.sections as sec left join $pms.departments as dep on sec.department_id = dep.department_id where dep.department_type='".$departmentType."' and sec.plant_code= '".$plantcode."'"; 
 									
-                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Section Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
-                                        if($sections_string==$sql_row2['sec_name']) 
+                                        if($sections_string==$sql_row2['section_id']) 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\" selected>".$sql_row2['section_display_name']."</option>"; 
-											$sections_list[]=$sql_row2['sec_name'];
+                                            echo "<option value=\"".$sql_row2['section_id']."\" selected>".$sql_row2['section_name']."</option>"; 
+											$sections_list[]=$sql_row2['section_id'];
                                         } 
                                         else 
                                         { 
-                                            echo "<option value=\"".$sql_row2['sec_name']."\">".$sql_row2['section_display_name']."</option>"; 
-											$sections_list[]=$sql_row2['sec_name'];
+                                            echo "<option value=\"".$sql_row2['section_id']."\">".$sql_row2['section_name']."</option>"; 
+											$sections_list[]=$sql_row2['section_id'];
                                         } 
                                     } 
 									if($sections_string==implode(",",$sections_list)) 
@@ -360,60 +360,67 @@ td,th
                             </div>
                             <div class="col-md-2">
                                 <label for="team">Select Team: </label>
+								<?php
+									$shifts	= [];								
+									$sql2="select shift_code,shift_description from $pms.shifts where plant_code= '".$plantcode."'";
+                                    $sql_result2=mysqli_query($link, $sql2) or exit("Sql shift Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                    while($sql_row2=mysqli_fetch_array($sql_result2)) 
+                                    { 
+										$shift_list['shiftCode']=$sql_row2['shift_code'];
+										$shift_list['shiftDesc']=$sql_row2['shift_description']; 
+										array_push($shifts, $shift_list);  
+										$shift_codes[] = $sql_row2['shift_code'];                                     
+									} 
+                                ?>
                                 <select name="team" id="team" class="form-control"> 
-								<option value=<?php echo implode(",",$shifts_array); ?>>All</option>
-                                    <?php 
-                                        for ($i=0; $i < sizeof($shifts_array); $i++) {?>
-                                            <option  <?php echo 'value="'.$shifts_array[$i].'"'; if($team==$shifts_array[$i]){ echo "selected";}   ?>><?php echo $shifts_array[$i] ?></option>
-                                        <?php }
+								<option value=<?php echo implode(",",$shift_codes); ?>>All</option>
+									<?php 
+										foreach($shifts as $shift){
+											if($team==$shift['shiftCode']) {
+												echo "<option value='".$shift['shiftCode']."' selected>".$shift['shiftDesc']."</option>";
+											} else {
+												echo "<option value='". $shift['shiftCode']."'>".$shift['shiftDesc']."</option>";
+											}
+										}
                                     ?>
                                 </select>
                             </div> 
                             <div class="col-md-2">
                                <label for="hour_filter" valign="top">Select Hour: </label>
-                               <?php
-                                    echo "<select name=\"hour_filter\" id='hour_filter' class=\"form-control\" >";
-                                    
-                                    
-
-                                    $sql22="SELECT GROUP_CONCAT(CONCAT(start_time,'$',end_time)) AS intervala,GROUP_CONCAT(time_value) AS time_display FROM $bai_pro3.tbl_plant_timings"; 
-									
-                                    $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                    $sql_row22=mysqli_fetch_array($sql_result22);
-                                    $hours_list=$sql_row22['intervala'];
-                                    $hours_list_dispaly=$sql_row22['time_display'];
-                                    $hours_list_array=explode(",",$hours_list);
-                                    $hours_list_dispaly_array=explode(",",$hours_list_dispaly);
-                                    
-                                    if($hour_filter=='All'){
-                                        echo "<option value=\"All\" selected>All</option>";
-                                        $headers=array();
-                                        foreach($hours_list_array as $key => $hours_list_ss){
-                                            $headers[$key]=$hours_list_dispaly_array[$key];
-                                        }
-                                    }else{
-                                        echo "<option value=\"All\">All</option>";
-                                    }
-                                   
-                                    // echo "<option value=\"".$hour_filter."\">selected</option>";
-                                    foreach($hours_list_array as $key => $hours_list_ss){
-                                        if($hours_list_ss==$hour_filter){
-                                            $headers=array();
-                                            echo "<option value=\"".$hours_list_ss."\" selected>".$hours_list_dispaly_array[$key]."</option>"; 
-                                            $headers[0]=$hours_list_dispaly_array[$key];
-                                        }else{
-                                        //$headers[$key]=$hours_list_dispaly_array[$key]."-".$hours_list_dispaly_array[$key+1];
-                                            echo "<option value=\"".$hours_list_ss."\">".$hours_list_dispaly_array[$key]."</option>"; 
-                                        }
-                                       
-                                        
-                                    }  
-                                   
+                               <?php                                    
+									$sql22="SELECT TIMESTAMPDIFF(HOUR,plant_start_time,plant_end_time) AS hours,plant_start_time,plant_end_time  FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1"; 							
+									$sql_result22=mysqli_query($link, $sql22) or exit("Sql Time Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+									if(mysqli_num_rows($sql_result22)>0){
+										while($timingRows=mysqli_fetch_array($sql_result22))
+										{
+											$workingHours=$timingRows['hours'];
+											$plant_start_time=$timingRows['plant_start_time'];
+											$plant_end_time=$timingRows['plant_end_time'];
+										}
+									}									
+                                    $startHour= explode(':', $plant_start_time);
+									$endHour= explode(':', $plant_end_time);
+									echo "<select name=\"hour_filter\" id='hour_filter' class=\"form-control\" >";
+									if($hour_filter == 'All') {
+										echo "<option value=\"All\" selected>All</option>";
+									} else {
+										echo "<option value=\"All\">All</option>";
+									}
+									for($i=$startHour[0];$i<=$endHour[0];$i++)
+									{	
+										$startingHour=str_pad($i, 2, '0', STR_PAD_LEFT);
+										if($hour_filter==$i)
+										{
+								
+											echo "<option value=\"".$startingHour."\" selected>".$startingHour."</option>";
+										}
+										else
+										{
+											echo "<option value=\"".$startingHour."\" >".$startingHour."</option>";
+										}		
+									}
                                     echo "</select>"; 
-                                   // echo $sql; 
-                                ?>
-                                     	
-                                   
+                                ?>  
                                 </select>
                             </div> 
                             <div class="col-md-2">
@@ -434,8 +441,8 @@ td,th
                                 ?> 
                             </div>
                     </form> 
-<!--form ending for taking the inputs -->
- <!--Giff Loader image  code starting -->                   
+				<!--form ending for taking the inputs -->
+				<!--Giff Loader image  code starting -->                   
             <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
                         <img src="<?= getFullURLLevel($_GET['r'],'common/images/pleasewait.gif',1,'R') ?>"> 
                         <script> 
@@ -456,13 +463,12 @@ td,th
                         <br/><br/> 
                         <span id="timer" style="font-size:15px;"></span> 
                     </div>  </div> 
- <!--Giff Loader image  code ending -->  
  <?php
  //after submitting the data
  if(isset($_POST['submit']))
  {
     $date=$_POST['dat'];//date of the input 
-    $sections_group=$sections_string=$_POST['section'];//sections
+	$sections_group=$sections_string=$_POST['section'];//sections	
     $team=$_POST['team'];//team
 	//echo explode(",",$team)."<bR>";
     $hour_filter=$_POST['hour_filter'];//slected hour  
@@ -473,9 +479,9 @@ td,th
 	$current_date=date('Y-m-d');
 	if(sizeof(explode(",",$team))==1)
 	{
-		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$team."'";
-		//echo $sql_hr."<br>";
-		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$team."'";
+		// echo $sql_hr."<br>";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
 			while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -493,13 +499,13 @@ td,th
 	}
 	else
 	{
-		$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date'";
-		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date'";
+		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-2 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
 		{
-			$sql_hr12="SELECT MIN(time_value*1)AS vals,MAX(time_value*1) AS vals2 FROM $bai_pro3.tbl_plant_timings";
+			$sql_hr12="SELECT plant_start_time as vals,plant_end_time as vals2  FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1";
 			//echo $sql_hr12."<br>";
-			$sql_result_hr12=mysqli_query($link, $sql_hr12) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result_hr12=mysqli_query($link, $sql_hr12) or exit("Sql Plant-1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row_hr12=mysqli_fetch_array($sql_result_hr12)) 
 			{
 				$start_check=$sql_row_hr12['vals'];
@@ -513,40 +519,44 @@ td,th
 				die;
 		}
 	}
-	
 	if($current_date<>$date)
     {
-		$sql32="SELECT MAX(time_value*1) as val FROM $bai_pro3.tbl_plant_timings";
+		$sql32="SELECT plant_end_time as val FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1";
 		//echo $sql."<br>";
-		$sql_result32=mysqli_query($link, $sql32) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql_result32=mysqli_query($link, $sql32) or exit("Sql Plant-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row32=mysqli_fetch_array($sql_result32)) 
 		{
-			$current_hr=$sql_row32['val'];
-		}			
-    }
+			$current_hr=explode(':', $sql_row32['val'])[0];
+		}		
+	}
     if($hour_filter=='All') 
     { 
 		$time_query=""; 
-		$sql="SELECT MIN(start_time) AS start_time,MAX(end_time) AS end_time FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr."";
-		//echo $sql."<br>";
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql="SELECT plant_start_time AS start_time,plant_end_time AS end_time FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1 and HOUR(plant_end_time)<=$current_hr";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row=mysqli_fetch_array($sql_result)) 
 		{				
-			$time_query=" AND TIME(log_time) BETWEEN ('".$sql_row['start_time']."') and ('".$sql_row['end_time']."')"; 		
+			$time_query=" AND TIME(created_at) BETWEEN ('".$sql_row['start_time']."') and ('".$sql_row['end_time']."')"; 		
 		}		
     } 
     else 
     {	
 		$hour_filter_array=explode("$", $_POST['hour_filter']);
-		$time_query=" AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
+		$sql="SELECT Hour(plant_end_time) as plant_end_time  FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1";
+		$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($sql_row=mysqli_fetch_array($sql_result)) 
+		{				
+			$end_time = $sql_row['plant_end_time'];
+		}		
+		$time_query=" AND TIME(created_at) BETWEEN ('".$hour_filter_array[0]."') and ('".$end_time."')"; 
     }
     $sections=explode(",", $_POST['section']);
     $teams=explode(",",$team);
     $team = "'".str_replace(",","','",$team)."'"; 
     $work_hrs=0;
-    $sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
+    $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
     // echo $sql_hr."<br>";
-    $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     if(mysqli_num_rows($sql_result_hr) >0)
     {
         while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -574,8 +584,8 @@ td,th
         $hour_dur=0;
         for($i=0;$i<sizeof($teams);$i++)
         {
-            $sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
-			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+            $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             if(mysqli_num_rows($sql_result_hr) >0)
             {
                 while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -592,8 +602,8 @@ td,th
             }
             else
             {
-                $sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
-                $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+                $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
                 { 
                     $start_time=$sql_row_hr['start_time'];
@@ -619,28 +629,8 @@ td,th
     else
     {
         $hoursa_shift=$work_hours;
-    }
-	//creation of temp tables start 
-	$pro_mod="temp_pool_db.".$username.date("YmdHis")."_"."pro_mod"; 
-	$pro_plan="temp_pool_db.".$username.date("YmdHis")."_"."pro_plan"; 
-	$grand_rep="temp_pool_db.".$username.date("YmdHis")."_"."grand_rep"; 
-	$pro_style="temp_pool_db.".$username.date("YmdHis")."_"."pro_style"; 
-	$table_name="temp_pool_db.".$username.date("YmdHis")."_"."bai_log"; 
-
-	$sql="create TEMPORARY table ".$pro_mod." ENGINE = MyISAM select * from bai_pro3.module_master where status='Active'"; 
-	$sql_result1=mysqli_query($link, $sql) or exit("Sql Error1z1".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	$sql="create TEMPORARY table ".$pro_plan." ENGINE = MyISAM select * from bai_pro.pro_plan where date='".$date."'"; 
-	$sql_result2=mysqli_query($link, $sql) or exit("Sql Error1z2".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	$sql="create TEMPORARY table ".$grand_rep." ENGINE = MyISAM select * from bai_pro.grand_rep where date='".$date."'"; 
-	$sql_result3=mysqli_query($link, $sql) or exit("Sql Error1z3".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	$sql="create TEMPORARY table ".$pro_style." ENGINE = MyISAM select * from bai_pro.pro_style where date='".$date."'"; 
-	$sql_result4=mysqli_query($link, $sql) or exit("Sql Error1z4".mysqli_error($GLOBALS["___mysqli_ston"])); 
-
-	$sql="create TEMPORARY table ".$table_name." ENGINE = MyISAM select * from bai_pro.bai_log where bac_date='".$date."'"; 
-	$sql_result5=mysqli_query($link, $sql) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	}	
+	
 	//creation of temp tables end
 	//$style_break  $hourly_break  
 	/* sections table mandatory for all scenarios */  
@@ -651,16 +641,15 @@ td,th
 	
     echo "<div class=\"maincontentof\"><table class='table table-bordered' id=\"table_format_first\">";
     echo "<tr><th style='background-color:#29759C;color:white;'>Section#</th><th style='background-color:#29759C;color:white;'>Module#</th><th style='background-color:#29759C;color:white;'>NOP</th><th style='background-color:#29759C;color:white;'>Style DB</th><th style='background-color:#29759C;color:white;'>Schedule</th>";
-	
     if($hourly_break==1)
 	{
 		if($hour_filter=='All') 
 		{ 
 			// $time_query="";
 			// $current_hr=11;
-			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where time_value<=".$current_hr." and time_value BETWEEN $start_check and $end_check";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and HOUR(plant_end_time) BETWEEN $start_check and $end_check";
+			echo $sql."<br>";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
 				$hr[] = $sql_row['time_value'];
@@ -672,15 +661,20 @@ td,th
 		else 
 		{      
 			$hour_filter_array=explode("$", $_POST['hour_filter']);
+			$sql="SELECT Hour(plant_end_time) as plant_end_time  FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-6 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row=mysqli_fetch_array($sql_result)) 
+			{				
+				$end_time = $sql_row['plant_end_time'];
+			}
 			//$time_query="AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
-			$sql="SELECT * FROM $bai_pro3.tbl_plant_timings where start_time='".$hour_filter_array[0]."' and end_time='".$hour_filter_array[1]."'";
-			//echo $sql."<br>";
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql="SELECT * FROM $pms.plant where plant_code='$plantcode' and HOUR(plant_start_time)='".$hour_filter_array[0]."' and HOUR(plant_end_time)<='".$end_time."'";
+			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
-				$hr[] = $sql_row['time_value'];
-				$hr_start[] = $sql_row['start_time'];
-				$hr_end[] = $sql_row['end_time'];										
+				$hr[] = explode(':', $sql_row['plant_end_time']);;
+				$hr_start[] = $sql_row['plant_start_time'];
+				$hr_end[] = $sql_row['plant_end_time'];										
 			}
 		}
 		for($i=0;$i<sizeof($hr);$i++) 
@@ -704,20 +698,21 @@ td,th
 		$sum_total=array();
 		$pstha_sum_total=$pclha_sum_total=$hoursa_shift_sum_total=$ppro_a_total_sum_total=$clha_total_sum_total=
 		$plan_sah_hr_total_sum_total=$plan_pro_sum=0;
+		
 for ($j=0;$j<sizeof($sections);$j++) 
 { 
-    $sec=$sections[$j];
+	$sec=$sections[$j];
     $sec_head=""; 
-    $sql="select section_head,section_display_name from $bai_pro3.sections_master where sec_name=$sec";                  
-    $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql="select us.first_name,sec.section_name from $pms.sections as sec left join $pms.user as us on sec.user_id=us.user_id where section_id='$sec'";                  
+    $sql_result=mysqli_query($link, $sql) or exit("Sql Section-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row=mysqli_fetch_array($sql_result)) 
     { 
-        $sec_head=$sql_row['section_head'];
-        $section_name=$sql_row['section_display_name']; 
-    } 
+        $sec_head=$sql_row['first_name'];
+        $section_name=$sql_row['section_name']; 
+	} 
     // $sql="select mod_style, mod_no from $pro_mod where mod_sec=$sec and mod_date=\"$date\" order by mod_no*1";  
-	$sql="select 0 as mod_style,module_name as mod_no FROM $bai_pro3.module_master WHERE section=$sec and status='Active' order by module_name*1";      
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
+	$sql="select 0 as mod_style,workstation_id as mod_no FROM $pms.workstation WHERE section_id='$sec' and is_active=1 order by workstation_id*1";      
+	$sql_result=mysqli_query($link, $sql) or exit("Sql workstation-1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));  
    $peff_a_total=0; 
    $peff_g_total=0; 
    $ppro_a_total=0; 
@@ -737,56 +732,62 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{ 
 		$mod=$sql_row['mod_no']; 
 		$style=$sql_row['mod_style']; 
-		$delno=$sql_row['delivery']; 
 		$deldb=""; 
-		$sql2="select distinct delivery from $table_name where bac_shift in ($team) and bac_date=\"$date\" and bac_no=$mod $time_query";                              
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select distinct schedule from $pts.transaction_log where shift in ($team) and date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode' $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";        
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$deldb=$deldb." ".$sql_row2['delivery']; 
+			$deldb=$deldb." ".$sql_row2['schedule']; 
 		} 
 		$styledb=""; 
 		$stylecount=0; 
-		$sql2="select count(distinct bac_style) as \"count\" from $table_name where  bac_shift in ($team) and bac_date=\"$date\" 
-		and bac_no=$mod  $time_query";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select count(distinct style) as \"count\" from $pts.transaction_log where  shift in ($team) and Date(created_at)=\"$date\" 
+		and resource_id=$mod and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 		$stylecount=$sql_row2['count']; 
 		} 
 		if($stylecount>1) 
 		{ 
-			$sql2="select distinct bac_style from $table_name where  bac_shift in ($team) and bac_date=\"$date\" and bac_no=$mod  $time_query";               
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql2="select distinct style from $pts.transaction_log where  shift in ($team) and Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";               
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
-				$styledb=$styledb.$sql_row2['bac_style']."/"; 
+				$styledb=$styledb.$sql_row2['style']."/"; 
 			} 
 			$styledb=substr_replace($styledb ,"",-1); 
 		} 
 		else 
 		{ 
-			$sql2="select distinct bac_style from $table_name where  bac_shift in ($team) and bac_date=\"$date\" and bac_no=$mod  $time_query"; 
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql2="select distinct style from$pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
-				$styledb=$styledb.$sql_row2['bac_style']; 
+				$styledb=$styledb.$sql_row2['style']; 
 			} 
 		} 
 		echo "<tr><td>".$section_name."</td><td>".$mod."</td>";
 		$max=0; 
-		$sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name 
-		where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style"; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
+		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			if($sql_row2['qty']>=$max) 
 			{ 
-				$couple=$sql_row2['couple']; 
-				$style_code_new=$sql_row2['bac_style']; 
+				// $couple=$sql_row2['couple']; 
+				$style_code_new=$sql_row2['style'];
+				$schedule=$sql_row2['schedule'];
+				$color=$sql_row2['color']; 
 				$max=$sql_row2['qty']; 
-				$smv=$sql_row2['smv']; 
-				$nop=$sql_row2['nop']; 
+				$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+				where product_code=\"$style_code_new\" and order_code=$schedule and colour='$color' and plant_code='$plantcode'"; 
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row5=mysqli_fetch_array($sql_result5)){
+					$smv=$sql_row5['smv']; 
+					$nop=$sql_row5['capacity_factor']; 
+				} 
 			} 
 		} 
 		$nop=0; 
@@ -803,10 +804,10 @@ for ($j=0;$j<sizeof($sections);$j++)
 		for($k=0;$k<sizeof($teams);$k++)
 		{
 			$shift=$teams[$k];
-			$sql_nop="select (present+jumper) as avail,absent from $pts.pro_attendance 
+			$sql_nop="select (present+jumper) as avail,absent from $pms.pro_attendance 
 			where plant_code='$plantcode' and date=\"$date\" and module=\"$mod\" and shift=\"$shift\""; 
 			// echo $sql_nop."<br>";
-			$sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Error-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql pro-attd-1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result_nop) > 0) 
 			{ 
 				while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
@@ -823,10 +824,9 @@ for ($j=0;$j<sizeof($sections);$j++)
             //if current date == given date start 
 			if($current_date == $date)
 			{
-				$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' 
-				and  $current_hr between start_time and end_time";
+				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
 				// echo $sql_hr."<br>";
-				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
 				{
 					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -843,10 +843,9 @@ for ($j=0;$j<sizeof($sections);$j++)
 				}
 				else
 				{
-					$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."'
-					 and $current_hr > end_time";
+					$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and $current_hr > end_time";
 					// echo $sql_hr."<br>";
-					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
 					{ 
 						$start_time=$sql_row_hr['start_time'];
@@ -872,9 +871,9 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{
 		  //if current date != given date start
 				$work_hrs=0;
-				$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
+				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
 				// echo $sql_hr."<br>";
-				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
 				{
 					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -902,13 +901,18 @@ for ($j=0;$j<sizeof($sections);$j++)
             $clha_shift=$clha_shift+$aaa;
 		}
 		//teams based looping end 
-		$sqlx="select * from $pro_plan where mod_no=$mod and date=\"$date\" and shift in ($team)"; 
-		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sqlx="select * from $pps.monthly_production_plan where row_name='".$mod."' and date=\"$date\" and plant_code='$plantcode"; 
+		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql monthy-prod-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
 		{ 
-			$couple=$sql_rowx['couple']; 
-			$fix_nop=$sql_rowx['fix_nop']; 
-		} 
+			//$couple=$sql_rowx['couple']; 
+			if(count($teams)>1){
+				$fix_nop=$sql_rowx['capacity_factor'];
+			} else {
+				$fix_nop=$sql_rowx['capacity_factor']/count($teams);
+			}			
+			 
+		}
 		if(($couple-1)==0) 
 		{ 
 			$couple=""; 
@@ -921,7 +925,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$max=0; 
 		$sql2="select smv,nop, styles, buyer, days, act_out from $grand_rep where  shift in ($team) and 
 		module=$mod and date=\"".$date."\" "; //echo $sql2; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql grand rep-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			if($sql_row2['act_out']>$max) 
@@ -934,23 +938,23 @@ for ($j=0;$j<sizeof($sections);$j++)
 				$smv=$sql_row2['smv'];//$nop=round($sql_row2['nop'],0); 
 			} 
 		} 
-		$sqlx="select nop$couple as \"nop\", smv$couple as \"smv\" from $pro_style 
-		where style=\"$style_code_new\" and date=\"$date\"";//echo $sqlx."<br/>"; 
-		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
-        { //$smv=$sql_rowx['smv']; 
-           $style_col=$sql_rowx['nop']; 
-        } 
+		// $sqlx="select nop$couple as \"nop\", smv$couple as \"smv\" from $pro_style 
+		// where style=\"$style_code_new\" and date=\"$date\"";//echo $sqlx."<br/>"; 
+		// $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		// while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
+        // { //$smv=$sql_rowx['smv']; 
+        //    $style_col=$sql_rowx['nop']; 
+        // } 
         echo "<td>".$nop_shift."</td>";  
         echo "<td>".$styledb."</td>";  
         echo "<td>".$deldb."</td>"; 
         $gtotal=0; 
         $atotal=0; 
         $psth=0; 
-        $sql_sth="select sum(plan_sth) as psth from $pts.grand_rep where plant_code='$plantcode' and date=\"$date\"
+        $sql_sth="select sum(plan_sth) as psth from $grand_rep where plant_code='$plantcode' and date=\"$date\"
          and module=$mod and shift in ($team)"; 
         //echo $sql_sth."<br>"; 
-        $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql grand rep-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
         while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 
         { 
             $psth_array[]=$sql_rowx["psth"]; 
@@ -961,8 +965,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		{ 
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod  AND TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_shift in ($team)"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod  AND TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and shift in ($team) and plant_code ='$plantcode' GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -6 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{					
 					$sum=$sql_row2['sum']; 
@@ -982,9 +986,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		//headers based loop for times date end
 		//total and hours  start
-		$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_no=$mod 
-		and  bac_shift in ($team) $time_query";          
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod and shift in ($team) and plant_code='$plantcode' $time_query  GROUP BY operation ORDER BY operation DESC LIMIT 0,1";          
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			$sum=$sql_row2['sum']; 
@@ -1001,31 +1004,43 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$atotal=$sum; 
 		$stha=0; 
 		$effa=0; 
-		$sql2="select sum(bac_Qty) as \"total\",smv, sum((bac_qty*smv)/60) as \"stha\" from $table_name 
-		where bac_date=\"$date\" and bac_shift in ($team) and bac_no=$mod $time_query group by bac_no"; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod 
+		and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY resource_id,operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -8 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			$total22=$sql_row2['total']; 
-			$smv_sth=$sql_row2['smv']; 
-			$stha=$sql_row2['stha']; //$stha=$total22*$smv_sth/60; 
+			$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+			where product_code='".$sql_row2['style']."' and order_code=".$sql_row2['schedule']." and colour='".$sql_row2['color']."' and plant_code='$plantcode'"; 
+			$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row5=mysqli_fetch_array($sql_result5)){
+				$smv_sth=$sql_row5['smv']; 
+			}
+			$stha=($total22*$smv_sth)/60;
 		} 
 		$check=0; 
 		$total=0;
 		$max=0; 
-		$sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name 
-		where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style";//echo $sql2; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
+		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plant_code' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -9 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			if($sql_row2['qty']>=$max) 
-			{ 
-				$couple=$sql_row2['couple']; 
-				$style_code_new=$sql_row2['bac_style']; 
+			{  
+				// $couple=$sql_row2['couple']; 
+				$style_code_new=$sql_row2['style'];
+				$schedule=$sql_row2['schedule'];
+				$color=$sql_row2['color']; 
 				$max=$sql_row2['qty']; 
-				$smv=$sql_row2['smv']; //$nop=$sql_row2['nop']; 
+				$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+				where product_code=\"$style_code_new\" and order_code=$schedule and colour='$color' and plant_code='$plantcode'"; 
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row5=mysqli_fetch_array($sql_result5)){
+					$smv=$sql_row5['smv']; 
+				}
 			} 
-		}
+		} 
 		if($clha_shift>0) 
 		{ 
 		 $effa=$stha/$clha_shift; 
@@ -1034,8 +1049,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		/* PLAN EFF, PRO */ 
 		$peff_a=0; 
 		$ppro_a=0;
-		$sql2="select avg(plan_eff) as \"plan_eff\", sum(plan_pro) as \"plan_pro\" from $pro_plan where date=\"$date\" and shift in ($team) and mod_no=$mod";          
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select avg(planned_eff) as \"plan_eff\", sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name=$mod and plant_code='$plantcode'";          
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			$peff_a=$sql_row2['plan_eff']; 
@@ -1158,9 +1173,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 	$atotal=0;
     for($i=0; $i<sizeof($hr); $i++) 
 	{ 
-		$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query 
-		and bac_sec=$sec and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where shift in ($team) and plant_code='$plant_code' and Date(created_at)=\"$date\" $time_query and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -10 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			$sum=$sql_row2['sum']; 
@@ -1176,9 +1190,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 			}
 		} 
 	} 
-    $sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and 
-    bac_sec=$sec and  bac_shift in ($team) $time_query"; 
-    $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+    $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where shift in ($team) and plant_code='$plant_code' and Date(created_at)=\"$date\" $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+    $sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -11 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row2=mysqli_fetch_array($sql_result2)) 
      { 
         $sum=$sql_row2['sum']; 
@@ -1192,42 +1205,65 @@ for ($j=0;$j<sizeof($sections);$j++)
       $smv=0; 
       //$phours=7.5; 
       $peff_a_total=0; 
-      $sql="select module_name as mod_no from $pro_mod where section=$sec"; 
-      $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+      $sql="select workstation_id as mod_no from $pms.workstation where section_id='$sec'"; 
+      $sql_result=mysqli_query($link, $sql) or exit("Sql Plant-8 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
       while($sql_row=mysqli_fetch_array($sql_result)) 
       { 
-          $mod=$sql_row['mod_no']; 
-          $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";          
-          $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-          while($sql_row2=mysqli_fetch_array($sql_result2)) 
-           { 
-              $phours=$sql_row2['act_hours']; 
-            }
+		  $mod=$sql_row['mod_no'];
+		  $sql22="SELECT TIMESTAMPDIFF(HOUR,plant_start_time,plant_end_time) AS hours FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1"; 							
+			$sql_result22=mysqli_query($link, $sql22) or exit("Sql Plant-9 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			if(mysqli_num_rows($sql_result22)>0){
+				while($timingRows=mysqli_fetch_array($sql_result22))
+				{
+					$phours=$timingRows['hours'];
+				}
+			}	 
+        //   $sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";          
+        //   $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        //   while($sql_row2=mysqli_fetch_array($sql_result2)) 
+        //    { 
+        //       $phours=$sql_row2['act_hours']; 
+        //     }
             //A-Plan 
-            $max=0; 
-           $sql2="select bac_style, couple,nop,smv, sum(bac_qty) as \"qty\" from $table_name 
-           where bac_date=\"$date\" and bac_no=$mod and  bac_shift in ($team) $time_query group by bac_style";//echo $sql2;          
-           $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-            while($sql_row2=mysqli_fetch_array($sql_result2)) 
-              { 
-                if($sql_row2['qty']>=$max) 
-                { 
-                    $couple=$sql_row2['couple']; 
-                    $style_code_new=$sql_row2['bac_style']; 
-                    $max=$sql_row2['qty']; 
-                    $smv=$sql_row2['smv']; 
-                    $nop=$sql_row2['nop']; 
-                    } 
-               } 
-               $sql2="select plan_pro,act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";          
-               $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-               while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                 { 
-                   $plan_pro=$sql_row2['plan_pro']; 
-                   $phours=$sql_row2['act_hours']; 
-                  }
-                 $pclha=$pclha+($phours*$nop); 
-                 $pstha=$pstha+($plan_pro*$smv)/60;//echo ($phours*$nop)."<br/>"; 
+			$max=0; 
+			$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
+			where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -12 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row2=mysqli_fetch_array($sql_result2)) 
+			{ 
+				if($sql_row2['qty']>=$max) 
+				{  
+					// $couple=$sql_row2['couple']; 
+					$style_code_new=$sql_row2['style'];
+					$schedule=$sql_row2['schedule'];
+					$color=$sql_row2['color']; 
+					$max=$sql_row2['qty']; 
+					$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+					where product_code=\"$style_code_new\" and order_code=$schedule and colour='$color' and plant_code='$plantcode'"; 
+					$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-6 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row5=mysqli_fetch_array($sql_result5)){
+						$smv=$sql_row5['smv']; 
+						$nop=$sql_row2['capacity_factor']; 
+					}
+				} 
+			}       
+			$sql2="select sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name=$mod and plant_code='$plantcode'";          
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			while($sql_row2=mysqli_fetch_array($sql_result2)) 
+			{ 
+				$plan_pro=$sql_row2['plan_pro']; 
+				$sql22="SELECT TIMESTAMPDIFF(HOUR,plant_start_time,plant_end_time) AS hours FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1"; 							
+				$sql_result22=mysqli_query($link, $sql22) or exit("Sql Plant-10 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				if(mysqli_num_rows($sql_result22)>0){
+					while($timingRows=mysqli_fetch_array($sql_result22))
+					{
+						$phours=$timingRows['hours'];
+					}
+				}
+				$ppro_a=$sql_row2['plan_pro']; 
+			}
+			$pclha=$pclha+($phours*$nop); 
+			$pstha=$pstha+($plan_pro*$smv)/60;//echo ($phours*$nop)."<br/>"; 
 	} 
 	/* 20100226 hourly break total*/ 
     //  echo "<td rowspan=4>".$atotal."</td>"; 
@@ -1330,8 +1366,16 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{
 		$var_val=1;
 	}	
-	$sql2="select sum(bac_qty) as sum from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and  bac_shift in ($team)"; 
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	// get modules for the sections
+	$sql="select workstation_id as mod_no from $pms.workstation where section_id='$sec'"; 
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-11 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	while($sql_row=mysqli_fetch_array($sql_result)) 
+	{		
+		$workstations[]=$sql_row['workstation_id'];
+	} 
+	$resourceIds = implode(",",$workstations);
+	$sql2="select sum(good_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in($resourceIds) and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -13 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
 		$sum_total_final=$sql_row2['sum']; 
@@ -1404,9 +1448,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{
 		for($i=0; $i<sizeof($hr); $i++) 
 		{ 
-			$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" 
-			and bac_sec in ($sections_group)  and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 11". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql2="select sum(good_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in($resourceIds) and plant_code='$plantcode' and  shift in ($team) and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -14 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
 				$sum=$sql_row2['sum']; 
@@ -1423,9 +1466,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 	}
 	$sum=0;
-	$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" 
-	and bac_sec in ($sections_group)  $time_query and bac_shift in ($team)";      
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error 22". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql2="select sum(good_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in($resourceIds) and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";      
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -15 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
 		$sum=$sql_row2['sum']; 
@@ -1439,45 +1481,60 @@ for ($j=0;$j<sizeof($sections);$j++)
 	$smv=0; 
 	//$phours=7.5; 
 	$peff_a_total=0; 
-	$sql="select module_name as mod_no from $pro_mod where section in ($sections_group)";      
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql="select workstation_id as mod_no from $pms.workstation where section_id in ($sections_group)";      
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-12 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
 		$mod=$sql_row['mod_no']; 
+		$sql22="SELECT TIMESTAMPDIFF(HOUR,plant_start_time,plant_end_time) AS hours FROM $pms.plant WHERE plant_code='$plantcode' AND is_active=1"; 							
+		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Plant-13 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		if(mysqli_num_rows($sql_result22)>0){
+			while($timingRows=mysqli_fetch_array($sql_result22))
+			{
+				$phours=$timingRows['hours'];
+			}
+		}
 		//A-Plan 
-		$sql2="select act_hours from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team)";          
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_row2=mysqli_fetch_array($sql_result2)) 
-		{ 
-			$phours=$sql_row2['act_hours']; 
-		} 
+		// $sql2="select act_hours from $pps. where date=\"$date\" and mod_no=$mod and shift in ($team)";          
+		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+		// { 
+		// 	$phours=$sql_row2['act_hours']; 
+		// } 
 		$max=0; 
-		$sql2="select bac_style, couple,smv,nop, sum(bac_qty) as \"qty\" from $table_name where bac_date=\"$date\" and bac_no=$mod $time_query and bac_shift in ($team) group by bac_style"; 
-		//echo $sql2;         
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
+		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -16 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			if($sql_row2['qty']>=$max) 
 			{ 
-				$couple=$sql_row2['couple']; 
-				$style_code_new=$sql_row2['bac_style']; 
+				// $couple=$sql_row2['couple']; 
+				$style_code_new=$sql_row2['style'];
+				$schedule=$sql_row2['schedule'];
+				$color=$sql_row2['color']; 
 				$max=$sql_row2['qty']; 
-				$smv=$sql_row2['smv']; 
-				$nop=$sql_row2['nop']; 
+				$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+				where product_code=\"$style_code_new\" and order_code=$schedule and colour='$color' and plant_code='$plantcode'"; 
+				$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-8 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				while($sql_row5=mysqli_fetch_array($sql_result5)){
+					$smv=$sql_row5['smv']; 
+					$nop=$sql_row5['capacity_factor']; 
+				} 
 			} 
 		} 
-		$sql2="select plan_pro from $pro_plan where date=\"$date\" and mod_no=$mod and shift in ($team) ";          
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql2="select planned_qty from $pps.monthly_production_plan where planned_date=\"$date\" and row_no=$mod";          
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-9 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
-			$plan_pro=$sql_row2['plan_pro']; 
+			$plan_pro=$sql_row2['planned_qty']; 
 		}
 		$pclha=$pclha+($phours*$nop); 
 		$pstha=$pstha+($plan_pro*$smv)/60; 
 	} 
 	$peffresulta=0; 
-	$sql21="select avg(plan_eff) as eff from $pro_plan where sec_no in ($sections_group) and date=\"$date\" and shift in ($team)";      
-	$sql_result21=mysqli_query($link, $sql21) or exit("Sql Error 33 ". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql21="select avg(planned_eff) as eff from $pps.monthly_production_plan where group in ($sections_group) and planned_date=\"$date\"";      
+	$sql_result21=mysqli_query($link, $sql21) or exit("Sql monthy-prod-10 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row21=mysqli_fetch_array($sql_result21)) 
 	{
 		$peffresulta=$sql_row21['eff'];
@@ -1587,12 +1644,26 @@ for ($j=0;$j<sizeof($sections);$j++)
 			for($i=0; $i<sizeof($hr); $i++) 
 			{
 				$sth=0; 
-				$sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+				and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -17 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
-					$sth=$sql_row2['sth']; 
-				} 
+					$total22=$sql_row2['total']; 
+					$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+					where product_code='".$sql_row2['style']."' and order_code=".$sql_row2['schedule']." and colour='".$sql_row2['color']."' and plant_code='$plantcode'"; 
+					$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-11 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row5=mysqli_fetch_array($sql_result5)){
+						$smv_sth=$sql_row5['smv']; 
+					}
+					$sth=($total22*$smv_sth)/60;
+				}
+				// $sql2="select sum((bac_qty*smv)/60) as \"sth\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')";
+				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+				// { 
+				// 	$sth=$sql_row2['sth']; 
+				// } 
 				$total_factory_summery .="<td style='background-color:white;color:black'>".round($sth,0)."</td>"; 
 			} 
         }
@@ -1605,15 +1676,30 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$eff=0; 
 				$minutes=60;
-				$sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+				and shift in ($team) and plant_code='$plantcode' and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -18 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
-					$eff=$sql_row2['eff']; 
-				} 
+					$total22=$sql_row2['total']; 
+					$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+					where product_code='".$sql_row2['style']."' and order_code=".$sql_row2['schedule']." and colour='".$sql_row2['color']."' and plant_code='$plantcode'"; 
+					$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-12 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($sql_row5=mysqli_fetch_array($sql_result5)){
+						$smv=$sql_row5['smv']; 
+						$nop=$sql_row5['capacity_factor']; 
+					}
+					$eff=($total22*$smv_sth)/($nop*$minutes)*100;
+				}
+				// $sql2="select sum((bac_qty*smv)/(nop*".$minutes.")*100) as \"eff\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
+				// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+				// { 
+				// 	$eff=$sql_row2['eff']; 
+				// } 
 				/* NEW20100219 */ 
-				$sql2="select count(distinct bac_no) as \"noofmodsb\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group)"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql2="select count(distinct resource_id) as \"noofmodsb\" from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" $time_query and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -19 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
 					$noofmodsb=$sql_row2['noofmodsb']; 
@@ -1640,17 +1726,17 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$sum=0; 
 				$count=0;
-				$sql2="select bac_qty from $table_name where bac_shift in ($team) and bac_date=\"$date\" and bac_sec in ($sections_group) $time_query and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql2="select good_quantity from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id in ($resourceids) $time_query and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -20 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
-					if($sql_row2['bac_qty']>0) 
+					if($sql_row2['good_quantity']>0) 
 					$count=$count+1; 
 				} 
 
-				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_shift in ($team) and bac_date=\"$date\" $time_query 
-				and bac_sec in ($sections_group) and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."')"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" $time_query 
+				and resource_id in ($resourceids) and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -21 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
 					$sum=$sql_row2['sum']; 
@@ -1698,19 +1784,26 @@ if($style_break==1)
 	$balancepcs=0; 
 	$exp_pcs_hr_total=0; 
 	$avgperhour2_sum=0; 
-	$exp_pcs_hr2_sum=0; 
-	$sql="select bac_style,smv,nop from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_shift in ($team) group by bac_style";      
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$exp_pcs_hr2_sum=0; 	
+	$sql="select style,schedule,color from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+	and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1";      
+	$sql_result=mysqli_query($link, $sql) or exit("Sql transaction log -22 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
-		$mod_style=$sql_row['bac_style']; 
-		$style_summery.="<tr><td>".$mod_style."</td>"; 
-		$style_summery.="<td>".$sql_row['smv']."</td>"; //to show smv based on m3 integration from system. 
-		$style_summery.="<td>".$sql_row2['nop']."</td>";			
+		$sql5="select smv,capacity_factor from $pps.monthly_production_plan 
+		where product_code='".$sql_row2['style']."' and order_code=".$sql_row2['schedule']." and colour='".$sql_row2['color']."' and plant_code='$plantcode'"; 
+		$sql_result5=mysqli_query($link, $sql5) or exit("Sql monthy-prod-14 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		while($sql_row5=mysqli_fetch_array($sql_result5)){
+			$smv=$sql_row5['smv']; 
+			$nop=$sql_row5['capacity_factor']; 
+			$style_summery.="<td>".$smv."</td>"; //to show smv based on m3 integration from system. 
+			$style_summery.="<td>".$nop."</td>";
+		}
+		$style_summery.="<tr><td>".$mod_style."</td>"; 			
 		$count=0; $total=0;
-		$sql2="select group_concat(distinct bac_no) as \"mods\",count(distinct bac_no) as \"count\",sum(bac_qty) as sum from $table_name where bac_date=\"$date\" $time_query and bac_sec in ($sections_group) and bac_style=\"$mod_style\" and bac_shift in ($team)"; 
+		$sql2="select group_concat(distinct resource_id) as \"mods\",count(distinct resource_id) as \"count\",sum(godd_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" $time_query and resource_id in ($resourceids) and style=\"$mod_style\" and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 		//echo $sql2."<br>";
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -23 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			$count=$sql_row2['count']; 
@@ -1724,9 +1817,9 @@ if($style_break==1)
 			$total=0;
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_style=\"$mod_style\" and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team)"; 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and style=\"$mod_style\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ($resourceids) and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				//echo $sql2."<BR>"; 
-				$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -24 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
 					$sum=$sql_row2['sum']; 
@@ -1751,11 +1844,11 @@ if($style_break==1)
 		// while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		// { 
 			//$mod_no=$sql_row2['mod_no']; 
-			$sql22="select plan_pro from $pro_plan where date=\"$date\" and mod_no in ($mod_no) and shift in ($team)"; 
-			$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql22="select planned_qty from $pps.monthly_production_plan where planned_date=\"$date\" and row_name in ($mod_no)"; 
+			$sql_result22=mysqli_query($link, $sql22) or exit("Sql monthy-prod-15 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row22=mysqli_fetch_array($sql_result22)) 
 			{ 
-				$plan_pcs=$plan_pcs+$sql_row22['plan_pro']; 
+				$plan_pcs=$plan_pcs+$sql_row22['planned_qty']; 
 			} 
 		// } 
 		$planpcsgrand=$planpcsgrand+$plan_pcs; 
@@ -1765,8 +1858,8 @@ if($style_break==1)
 		$avgperhour=0; 
 		$avgperhour2=0; 
 		$count2=0; 
-		$sql2="select count(distinct bac_no) as \"count\", sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$date\" and bac_sec in ($sections_group) and bac_style=\"$mod_style\"  and bac_shift in ($team) $time_query"; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql2="select count(distinct resource_id) as \"count\", sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id in ($resourceids) and style=\"$mod_style\"  and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -25 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
 			if(($hoursa_shift)>0) 
@@ -1853,9 +1946,9 @@ if($style_break==1)
 	{
 		for($i=0; $i<sizeof($hr); $i++) 
 		{ 
-			$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and TIME(log_time) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and bac_sec in ($sections_group) and bac_shift in ($team) $time_query";
+			$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ($resource_ids) and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 			//echo $sql2;           
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -26 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
 				$sum=$sql_row2['sum']; 
@@ -1876,8 +1969,8 @@ if($style_break==1)
 	{
 		$value=1;
 	}	
-	$sql2="select sum(bac_qty) as \"sum\" from $table_name where bac_date=\"$sdate\" and bac_sec in ($sections_group) and bac_shift in ($team) $time_query";
-	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and resource_id in ($resource_ids) and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+	$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -27 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
 		$total=$sql_row2['sum'];
