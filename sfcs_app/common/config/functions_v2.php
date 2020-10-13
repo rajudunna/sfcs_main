@@ -1679,6 +1679,25 @@ function getRejectionReasons($dept_type) {
     return $reasons;
 }
 
+/**
+ * to get shifts for the plant code
+ */
+function getShifts($plant_code){
+    global $link_new;
+    global $pms;
+    $shift_data=[];
+    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1";
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at shift details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $shifts_rows_num = mysqli_num_rows($sql_res);
+    if ($shifts_rows_num > 0) {
+        while ($shifts_row = mysqli_fetch_array($sql_res)) {
+            $shift_data[] = $shifts_row;
+        }
+    }
+    return array(
+        'shift_data' => $shift_data
+    );
+}
   /** function to get jobs which are unplanned sewing jobs
    * @param:po,task_type,plant_code
    * @return:jobs

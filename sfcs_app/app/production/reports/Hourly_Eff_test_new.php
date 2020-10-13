@@ -2,9 +2,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
 <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
 <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script>
+<!-- <script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
+<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script> -->
 
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/style.css',3,'R'); ?>" type="text/css" media="all" /> 
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 <style>
 body
@@ -435,9 +440,11 @@ td,th
                                     $team_ref=str_replace('"',"*",$team);                                    
                                 ?> 
                             </div>
-                    </form>                 
-            		<div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
-                        <img src="../common/images/pleasewait.gif"> 
+                    </form> 
+				<!--form ending for taking the inputs -->
+				<!--Giff Loader image  code starting -->                   
+            <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
+                        <img src="<?= getFullURLLevel($_GET['r'],'common/images/pleasewait.gif',1,'R') ?>"> 
                         <script> 
                             var count=30; 
                             var counter=setInterval(timer, 1000); //1000 will  run it every 1 second 

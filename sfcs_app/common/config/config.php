@@ -1,7 +1,7 @@
 <?php
 //Without LDAP , With LDAP Unblock LDAP Code
 //$username="sfcsproject1";
-// echo $_SERVER['DOCUMENT_ROOT'];
+
 error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
