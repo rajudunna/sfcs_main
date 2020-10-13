@@ -799,7 +799,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 								/**same style color if fabric not requested for excess/sample*/
 								$bgColor="white";
 								$colorCode="red";
-								$id="black";
+								$id="red";
 								$borderColor="border: 4px solid yellow;";
 							}
 						}else{
@@ -811,6 +811,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 								/**same style color if fabric requested for jobs*/
 								$bgColor="red";
 								$colorCode="black";
+								$id="red";
 							}
 						}
 						
@@ -842,7 +843,6 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 						}else{
 							$bgColor="white";
 							$colorCode="red";
-							$id="red";
 						}
 
 					}
