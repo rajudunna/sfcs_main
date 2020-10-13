@@ -2,9 +2,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
 <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
 <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script>
+<!-- <script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
+<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script> -->
 
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/style.css',3,'R'); ?>" type="text/css" media="all" /> 
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 <style>
 body
@@ -296,7 +301,9 @@ td,th
                     <!--<div id="page_heading"><h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3><span style="float: right"><b>?</b>&nbsp;</span></div>--> 
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
-                        include("../../../common/config/config.php");
+						// include("../../../common/config/config.php");
+						include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+                    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
                         error_reporting(0);
                         $style_break=$_POST['secstyles']; 
                         $sections_string=$_POST['section']; 
@@ -430,7 +437,7 @@ td,th
 <!--form ending for taking the inputs -->
  <!--Giff Loader image  code starting -->                   
             <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
-                        <img src="../common/images/pleasewait.gif"> 
+                        <img src="<?= getFullURLLevel($_GET['r'],'common/images/pleasewait.gif',1,'R') ?>"> 
                         <script> 
                             var count=30; 
                             var counter=setInterval(timer, 1000); //1000 will  run it every 1 second 
