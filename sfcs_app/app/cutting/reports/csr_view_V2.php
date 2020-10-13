@@ -56,10 +56,11 @@ function verify_date(){
 			// 	 $workstation_type_id=$sql_rowx1['workstation_type_id'];
 			// }
 			
-			$sqlx="select section_id,section_name from $pms.sections where plant_code='$plantcode'";
-			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$all_sec_query="SELECT GROUP_CONCAT('\"',section_id,'\"') as sec,sections.section_name,departments.department_type,departments.department_id from $pms.sections left join $pms.departments ON departments.department_id=sections.department_id where sections.plant_code='$plantcode' and departments.department_type='CUTTING'";
+			
+			// $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-				$all_sec_query = "SELECT GROUP_CONCAT('\"',section_id,'\"') as sec FROM $pms.sections where plant_code='$plantcode'";
+				// $all_sec_query = "SELECT GROUP_CONCAT('\"',section_id,'\"') as sec FROM $pms.sections where plant_code='$plantcode'";
 				$sec_result_all = mysqli_query($link,$all_sec_query) or exit('Unable to load sections all');
 				while($res1 = mysqli_fetch_array($sec_result_all)){
 					$all_secs = $res1['sec'];
@@ -75,8 +76,10 @@ function verify_date(){
 					}
 					?>
 					<?php
-						foreach($sql_resultx as $key=>$value){
-							echo "<option value='\"".$value['section_id']."\"'>".$value['section_name']."</option>";
+					$all_sec_query1="select sections.section_id,sections.section_name,departments.department_type,departments.department_id from $pms.sections left join $pms.departments ON departments.department_id=sections.department_id where sections.plant_code='$plantcode' and departments.department_type='CUTTING'";
+					$sec_result_all1 = mysqli_query($link,$all_sec_query1) or exit('Unable to load sections all');
+					while($res11 = mysqli_fetch_array($sec_result_all1)){
+							echo "<option value='\"".$res11['section_id']."\"'>".$res11['section_name']."</option>";
 						}
 					?>
 				</select>
