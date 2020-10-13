@@ -148,7 +148,8 @@ while($row1=mysql_fetch_array($sql1))
 		//echo "select distinct(styles) from $database.$table1 where section='$sec' AND module='".$secs[$i]."' and date between '$start' and '$end' order by module";
 
 		// Get Distinct Styles from transaction log
-		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+		//$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59' AND resource_id='".$workstation_id."'";
 
 		$res_get_styles = mysqli_query($link, $sql_get_styles) or exit("sql styles error - " . mysqli_error($link));
 		$style_count = mysqli_num_rows($res_get_styles);
