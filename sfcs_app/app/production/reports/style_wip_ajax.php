@@ -1,17 +1,33 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
-error_reporting(0);
+include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/enums.php");
+//error_reporting(0);
 if($_GET['some'] == 'bundle_no')
 {
 	     //Bundle Wise Report C
 		$bundle_number = $_GET['bundle'];
 		$plantCode = $_GET['plantCode'];
 
-		$qryGetBundleDetails="SELECT external_ref_id FROM $pts.barcode WHERE barcode='$bundle_number' AND plant_code='$plantCode' AND barcode_type='PSLB' AND is_active=1";
-		$bundleResult = $link_new->query($get_details);
+		$qryGetBundleDetails="SELECT external_ref_id,barcode_id FROM $pts.barcode WHERE barcode='$bundle_number' AND plant_code='$plantCode' AND barcode_type='PSLB' AND is_active=1";
+		$bundleResult = $link_new->query($qryGetBundleDetails);
 		while($bundleRow = $bundleResult->fetch_assoc())
 		{
 			$external_ref_id = $bundleRow['external_ref_id'];
+			$barcode_id = $bundleRow['barcode_id'];
+		}
+		/**getting parent barcode from parentbarcode */
+		$qryGetParentBarcode="SELECT parent_barcode FROM $pts.parent_barcode WHERE child_barcode='1a26e672-7036-4b4a-9637-3bb46f74171f' AND `parent_barcode_type`='PPLB' and plant_code='$plantCode' and is_active=1";
+		$parentBarcodeResult = $link_new->query($qryGetParentBarcode);
+		while($parentRow = $parentBarcodeResult->fetch_assoc())
+		{
+			$parent_barcode = $parentRow['parent_barcode'];
+		}
+		/**get planned bacrcode*/
+		$qryPlannedbarcode="SELECT barcode FROM $pts.barcode WHERE barcode_id='$parent_barcode' AND plant_code='$plantCode' AND is_active=1";
+		$plannedBUndleResult = $link_new->query($qryPlannedbarcode);
+		while($pplbRow = $plannedBUndleResult->fetch_assoc())
+		{
+			$barcodePPLB = $pplbRow['barcode'];
 		}
 
 		/**getting jm jg header id based on external ref id */
@@ -29,11 +45,11 @@ if($_GET['some'] == 'bundle_no')
 
 		/**getting style and schedule with  jm jg header id*/
 		if($jm_jg_header_id!=""){
-			$qrygetTaskjobs="SELECT task_job_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plantCode' AND is_active=1";
+			$qrygetTaskjobs="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_jg_header_id' AND plant_code='$plantCode' AND is_active=1";
 			$taskjobsResult = $link_new->query($qrygetTaskjobs);
 			while($jobRow = $taskjobsResult->fetch_assoc())
 			{
-				$task_job_id = $jobRow['task_job_id'];	
+				$task_job_id = $jobRow['task_jobs_id'];	
 
 			}
 			/**getting style and schedule from attributes */
@@ -64,7 +80,7 @@ if($_GET['some'] == 'bundle_no')
             }
 		}
 		
-		// echo $get_ops_query;
+		//var_dump($operations);
 		$col_span = count($operations);
 		$table_data = "
 		<table id='excel_table' class = 'table-bordered table-condensed'>
@@ -95,7 +111,7 @@ if($_GET['some'] == 'bundle_no')
 			</thead>
 			<tbody>";
 
-		$qryGetoperation="SELECT operation,good_quantity,rejected_quantity FROM $pts.transaction_log WHERE bundlenumber='$bundle_number' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
+		$qryGetoperation="SELECT operation,good_quantity,rejected_quantity FROM $pts.transaction_log WHERE parent_barcode='$barcodePPLB' AND style='$style' AND SCHEDULE='$schedule' AND color='$color' AND size='$size' AND plant_code='$plantCode' AND is_active=1 GROUP BY operation";
 		$bcd_get_result =$link_new->query($qryGetoperation);
 		//echo $bcd_data_query.'<br/>';
 		while ($row3 = $bcd_get_result->fetch_assoc())
