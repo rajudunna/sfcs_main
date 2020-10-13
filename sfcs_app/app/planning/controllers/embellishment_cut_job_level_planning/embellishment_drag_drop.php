@@ -119,7 +119,7 @@
 			/* Start main container CSS */
 			
 			div#dhtmlgoodies_mainContainer{	/* Right column DIV */
-				width:1200px; 
+				width:1000px; 
 				float:left;	
 			}
 			#dhtmlgoodies_mainContainer div{	/* Parent <div> of small boxes */

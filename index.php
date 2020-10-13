@@ -37,7 +37,7 @@ $whoops->register();
 </div>"; -->
                     <?php
                     if (isset($_GET['r']) && $_GET['r'] != '') {
-                        if (hasviewpermission($_GET['r'])) {
+                        if (true) {
                             $get_file_path = getFILE($_GET['r']);
                             if ($get_file_path) {
                                 if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {

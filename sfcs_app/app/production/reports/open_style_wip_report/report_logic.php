@@ -36,7 +36,7 @@
 	$result1 = $link->query($operation_mapping);
 	while($row5 = $result1->fetch_assoc())
 	{
-		$op_code = $row5['operation_code']
+		$op_code = $row5['operation_code'];
 		$operation_ids[] = $op_code;
 		$ops_get_code[$row5['operation_code']] = $row5['operation_name'];	
 		$opertion_names[] = ['op_name'=>$row31['operation_name'],'op_code'=>$row4['operation_code']];

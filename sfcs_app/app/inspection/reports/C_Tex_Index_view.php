@@ -46,7 +46,7 @@ $username=$_SESSION['userName'];
 <div class="panel-heading">Inspection Report</div>
 <div class="panel-body">
 
-<form method="post" name="input2" action="index.php?r=<?php echo $_GET['r']; ?>">
+<form method="post" name="input2" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 <div class="row">
 <div class="col-md-3">
 <label>Enter Batch No: </label>
