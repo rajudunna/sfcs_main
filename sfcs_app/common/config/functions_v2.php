@@ -756,7 +756,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                     $original_module=$resource_row['resource_id'];
                 }
                 /**update resource id tasks header with work sation id's*/
-                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN',task_progress='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**Update qry for priority */
@@ -833,7 +833,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 if(is_null($resource_id)){
                     /** */
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     /**Update qry for priority */
