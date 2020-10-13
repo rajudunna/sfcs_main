@@ -5,7 +5,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/' . getFullURLLevel($_GET['r'], 'common/co
 include $_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config_ajax.php";
 $plantcode = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
-$has_perm = haspermission($_GET['r']);
+// $has_perm = haspermission($_GET['r']);
 ?>
 <html>
 

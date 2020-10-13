@@ -6,9 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $dash=0;
 if (isset($_GET['dash'])) {
 	$dash=1;
@@ -657,7 +657,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$shrinkage =$result_docketinfo['shrinkage'];
         $width =$result_docketinfo['width'];
         $cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['docket_quantity'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
 		

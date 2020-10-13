@@ -4,77 +4,77 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
 $plant_code = $_SESSION['plantCode'];
 if(isset($_POST['submit'])) {
-	$edate=$_POST['dat2'];
-	$sdate=$_POST['dat1'];
-	$section=$_POST['section'];
+    $edate=$_POST['dat2'];
+    $sdate=$_POST['dat1'];
+    $section=$_POST['section'];
 }
 
 ?>
 
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript">
-	function verify_date() {
-		var val1 = $('#demo1').val();
-		var val2 = $('#demo2').val();
-		// d1 = new Date(val1);
-		// d2 = new Date(val2);
-		if(val1 > val2){
-			sweetAlert('Start Date Should  be less than End Date','','warning');
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+    function verify_date() {
+        var val1 = $('#demo1').val();
+        var val2 = $('#demo2').val();
+        // d1 = new Date(val1);
+        // d2 = new Date(val2);
+        if(val1 > val2){
+            sweetAlert('Start Date Should  be less than End Date','','warning');
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 	</script>
 	
 	<script type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/dropdowntabs.js',3,'R')?>"></script>
    	<link href="<?= getFullURLLevel($_GET['r'],'common/css/jsDatePick_ltr.min.css',1,'R') ?>" rel="stylesheet" type="text/css" />
     <link href="<?= getFullURL($_GET['r'],'common/css/ddcolortabs.css',3,'R') ?>" rel="stylesheet" type="text/css" />
-	<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
+    <link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 
 <div class="panel panel-primary">
-	<div class="panel-heading">Plan Achievement Report</div>
-	<div class="panel-body">
-		<div class="form-group">
-			<form method="POST" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
-			<?php
-				$sdate = $_POST['dat1'];
-				$edate = $_POST['dat2'];
-				$section = $_POST['section'];
-			?>
-			<div clas="row">
-				<div class="col-sm-3">
-					Start Date: <input type="text" id="demo1" data-toggle="datepicker" class="form-control"  name="dat1" value=<?php if($sdate!="") { echo $sdate; } else { echo date("Y-m-d"); } ?> >
-				</div>
-				<div class="col-sm-3">
-					End Date: <input type="text" id="demo2" data-toggle="datepicker" class="form-control"  name="dat2" value=<?php if($edate!="") { echo $edate; } else { echo date("Y-m-d"); } ?> >
-				</div>
-				<div class="col-sm-3">
-					Section:
-					<?php
-						$sections = getSections($plant_code)['section_data'];
-						echo "<select name=\"section\" class=\"form-control\" placeholder='Please select'>";
-						foreach($sections as $section_info) {
-							$section_code = $section_info['section_code']."-".$section_info['section_name'];
-							$section_id = $section_info['section_id'];
-							if ($section_id == $section) {
-								echo "<option value='$section_id' selected>$section_code</option>";
-							} else {
-								echo "<option value='$section_id'>$section_code</option>";
-							}
-						}
-						echo "</select>";	
-					?>
-					</div></br>
-					<div class="col-sm-3">
-						&nbsp;&nbsp;&nbsp;<input type="submit" name="submit" class="btn btn-info" value="submit" onclick="return verify_date()">
-					</div>
-				</div>
-			</form>
-		</div>
+    <div class="panel-heading">Plan Achievement Report</div>
+    <div class="panel-body">
+        <div class="form-group">
+            <form method="POST" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
+            <?php
+                $sdate = $_POST['dat1'];
+                $edate = $_POST['dat2'];
+                $section = $_POST['section'];
+            ?>
+            <div clas="row">
+                <div class="col-sm-3">
+                    Start Date: <input type="text" id="demo1" data-toggle="datepicker" class="form-control"  name="dat1" value=<?php if($sdate!="") { echo $sdate; } else { echo date("Y-m-d"); } ?> >
+                </div>
+                <div class="col-sm-3">
+                    End Date: <input type="text" id="demo2" data-toggle="datepicker" class="form-control"  name="dat2" value=<?php if($edate!="") { echo $edate; } else { echo date("Y-m-d"); } ?> >
+                </div>
+                <div class="col-sm-3">
+                    Section:
+                    <?php
+                        $sections = getSections($plant_code)['section_data'];
+                        echo "<select name=\"section\" class=\"form-control\" placeholder='Please select'>";
+                        foreach($sections as $section_info) {
+                            $section_code = $section_info['section_code']."-".$section_info['section_name'];
+                            $section_id = $section_info['section_id'];
+                            if ($section_id == $section) {
+                                echo "<option value='$section_id' selected>$section_code</option>";
+                            } else {
+                                echo "<option value='$section_id'>$section_code</option>";
+                            }
+                        }
+                        echo "</select>";   
+                    ?>
+                    </div></br>
+                    <div class="col-sm-3">
+                        &nbsp;&nbsp;&nbsp;<input type="submit" name="submit" class="btn btn-info" value="submit" onclick="return verify_date()">
+                    </div>
+                </div>
+            </form>
+        </div>
 <?php
 
 if(isset($_POST['submit']))
@@ -202,23 +202,23 @@ if(isset($_POST['submit']))
 	$table.="</table>";
  	echo "</div>";
  
-	echo "
-	<div id='div-1a'> 
-		<form  name='input' action= ".getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R')." method='post'>
-			<input type='hidden' name='table' value='$table'>
-			<input type='submit' name='submit1' value='Export to Excel' class='btn btn-info'>
-		</form>
-	</div>";
+    echo "
+    <div id='div-1a'> 
+        <form  name='input' action= ".getFullURL($_GET['r'],'plan_vs_output_analysis_excel.php','R')." method='post'>
+            <input type='hidden' name='table' value='$table'>
+            <input type='submit' name='submit1' value='Export to Excel' class='btn btn-info'>
+        </form>
+    </div>";
 }
 ?>
-	</div>
+    </div>
 </div>
 
 <?php ((is_null($___mysqli_res = mysqli_close($link))) ? false : $___mysqli_res); ?>
 <style>
-	th{
-		text-align:center;
-	}
+    th{
+        text-align:center;
+    }
 </style>
 <script>
 	$('#export_excel').html($('#div-1a'));

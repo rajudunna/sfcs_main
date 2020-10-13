@@ -3,7 +3,6 @@
 <?php  
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-	include(getFullURLLevel($_GET['r'],'common/config/global_error_function.php',4,'R'));
 	$main_url=getFullURL($_GET['r'],'gatepass.php','R');
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
@@ -27,12 +26,7 @@ function oper_display(){
 }
 
 </script>
-<?php
-function exception($sql_result)
-{
-	throw new Exception($sql_result);
-}
-?>
+
 </head>
 <body>
 <div class='panel panel-primary'>
@@ -84,15 +78,14 @@ function exception($sql_result)
                     
 					if(isset($_POST['submit']))
 					{
-						try
-						{						
+												
 							$shift=$_POST['shift'];
 							$operation=$_POST['operation'];
 							$operation_name=$_POST['operation'];
 							$plant_code=$_POST['plant_code'];
 							$username=$_POST['username'];
 							$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
-							$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
+							$sql_result1=mysqli_query($link, $sql1) or exit($sql1."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result1)>0)
 							{			
 								
@@ -110,23 +103,18 @@ function exception($sql_result)
 								if($_POST['operation']=='0')
 								{
 									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `username`,`plant_code`,`created_user`,`updated_user`,`created_at`,`updated_at`) VALUES ('".$shift."', '1', '".date("Y-m-d")."','".$username."','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
-									// $sql_result=mysqli_query($link, $sql) or die(exception($sql));
+									$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}
 								else
 								{
 									$sql="INSERT INTO $pps.`gatepass_table` (`shift`, `gatepass_status`, `date`, `operation`,`username`,`plant_code`,`created_user`,`updated_user`,`created_at`,`updated_at`) VALUES ('".$shift."', '1', '".date("Y-m-d")."', '".$operation."','".$username."','".$plant_code."','".$username."','".$username."',NOW(),NOW())";
-									// $sql_result=mysqli_query($link, $sql) or die(exception($sql));
+									$sql_result=mysqli_query($link, $sql) or exit($sql."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								}
 								$gate_id=mysqli_insert_id($link);
 								$url = getFullURLLEVEL($_GET['r'],'sewing_job/sewing_job_scaning/pre_bundle_level_scanning_without_ops_new.php',0,'N');
 								echo "<script>window.location = '$url&shift=$shift&opertion=$operation&id=$gate_id&plant_code=$plant_code&username=$username';</script>";		
 							}
-						}
-						catch(Exception $e) 
-						{
-						  $msg=$e->getMessage();
-						  log_statement('error',$msg,$main_url,__LINE__);
-						}
+						
 					}
 					?>
 	</div>	

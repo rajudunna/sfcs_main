@@ -4,6 +4,7 @@ $username=$_SESSION['userName'];
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 
 
 //$has_permission=haspermission($_GET['r']); 
@@ -51,11 +52,14 @@ if(isset($_GET['doc_no'])){
     while($row_doc = mysqli_fetch_array($sql_result121)){
         $doc_no = $row_doc['docket_line_number'];
     }
-    $cut_table = $_GET['cut_table'];
+    // $cut_table = $_GET['module'];
+    $cut_table = $_GET['module'];
     //$doc_no = $_GET['doc_no'];
     echo "<script>
         $(document).ready(function(){
             $('#doc_no').val($doc_no);
+            $('#cut_table option[value=$cut_table]').attr('selected','selected');
+            console.log('$cut_table');
             loadDetails($doc_no);
         });
     </script>";
@@ -71,11 +75,10 @@ $team_leaders = array();
 $locations = array();
 $rejection_reasons = array();
 
-$department="Cutting";
-$department_type="Cutting";
+
+$department_type=DepartmentTypeEnum::CUTTING;
 $result_worksation_id=getWorkstations($department_type,$plantcode);
 $workstations=$result_worksation_id['workstation'];
-
 
 $location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
@@ -129,8 +132,8 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         <div class='col-sm-1 pull-right'>
         
         <?php  
-            if($cut_table != '')
-                echo "<a href='$cut_table_url' class='btn btn-xs btn-warning' > << Go Back </a>";
+            // if($cut_table != '')
+            //     echo "<a href='$cut_table_url' class='btn btn-xs btn-warning' > << Go Back </a>";
         ?>
         </div>
         <br/><br/>
@@ -1308,8 +1311,8 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.docketNumber = $('#r_doc_no').text();
         reportData.shift = $('#shift').val();
         reportData.workStationId = $('#cut_table').val();
-        reportData.plantcode = '<?php echo $plantcode;?>';
-        reportData.username = '<?php echo $username;?>';
+        reportData.plantCode = '<?php echo $plantcode;?>';
+        reportData.createdUser = '<?php echo $username;?>';
         if($("#full_reported").is(':checked'))
         {
             reportData.fullyReported = true;
@@ -1356,10 +1359,38 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         reportData.fabricAttributes = fabricAttributes;
         console.log(reportData);
         $('#wait_loader').css({'display':'block'});
+
+
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
-                    data:  JSON.stringify(reportData),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                    data:  reportData,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (res) {            
@@ -1389,7 +1420,10 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                         loadDetails(post_doc_no);
                     }
                     
-                });
+            });
+        }).fail(function (result) {
+            console.log(result);
+        });
         //clearRejections();
         
         //$('#wait_loader').css({'display':'none'});
@@ -1784,15 +1818,40 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
     
     
     function loadDetails(doc_no){
-        var getData;
         const data={
                       "docketNumber": doc_no
-        
                   }
         $('#wait_loader').css({'display':'block'});
+        var bearer_token;
+        var getData;
+        const creadentialObj = {
+        grant_type: 'password',
+        client_id: 'pps-back-end',
+        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+        username: 'bhuvan',
+        password: 'bhuvan'
+        }
         $.ajax({
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
+            contentType: "application/json; charset=utf-8",
+            transformRequest: function (Obj) {
+                var str = [];
+                for (var p in Obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                return str.join("&");
+            },
+            data: creadentialObj
+        }).then(function (result) {
+            console.log(result);
+            bearer_token = result['access_token'];
+            $.ajax({
                 type: "POST",
                 url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Bearer ' +  bearer_token },
                 data: data,
                 success: function (res) {            
                     console.log(res.status);
@@ -2005,37 +2064,14 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
                     swal('Error in getting docket');
                 }
             });
-           console.log(getData);
-            // var getData={
-            //     "docketNumber": "D123",
-            //     "componentGroup":"Compo Grp",
-            //     "category":"Body",
-            //     "style":"BCIDPG2526",
-            //     "fgColor":"Yark Yellow",
-            //     "schedules":"John",
-            //     "docketType":"Normal",
-            //     "quantity":"10",
-            //     "cutStatus":"Done",
-            //     "plannedPlies":"25",
-            //     "reportedPlies":"10",
-            //     "fabricRequired":"256",
-            //     "sizeRatios": [
-            //         {
-            //             "size": "S",
-            //             "ratio": "8"
-            //         },
-            //         {
-            //             "size": "M",
-            //             "ratio": "5"
-            //         },        
-            //         {
-            //             "size": "L",
-            //             "ratio": "3"
-            //         }
-            //         ],
-            // };
+        }).fail(function (result) {
+            console.log(result);
+        }) ;
+        
+        
+        console.log(bearer_token);
 
-            
+           console.log(getData);           
             GLOBAL_CALL = 0;        
     }
 

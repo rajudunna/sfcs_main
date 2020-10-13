@@ -69,7 +69,7 @@ $res_workstations = mysqli_query($link, $sql_workstations) or exit("sql workstat
 // $secs = explode(",", $sections);
 //print_r($secs);
 $i = 1;
-if (mysqli_num_rows($res_workstations) < 100) {
+if (mysqli_num_rows($res_workstations) > 0) {
 	echo "<div class='table-responsive' style='max-height:600px;overflow-y:scroll;'><table class='table table-bordered'>";
 	echo "<tr>";
 	echo "<th style=\"background-color:#29759C; color:white;\">Module</th>";
@@ -152,7 +152,9 @@ if (mysqli_num_rows($res_workstations) < 100) {
 
 
 		// Get Distinct Styles from transaction log
-		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+		//$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+
+		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59' AND resource_id='".$workstation_id."'";
 		 
 		$res_get_styles = mysqli_query($link, $sql_get_styles) or exit("sql styles error - " . mysqli_error($link));
 		$style_count = mysqli_num_rows($res_get_styles);
@@ -184,7 +186,7 @@ if (mysqli_num_rows($res_workstations) < 100) {
 
 				if ($workstations_count > 0) {
 
-					$sql_smv_nop = "SELECT smv,capacity_factor FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log AS upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.pp_log_id WHERE  plant_code = '" . $plantcode . "'  AND planned_date ='" . $dates[$k] . "' AND `group`='" . $section_code . "' AND row_name='" . $workstation_code . "' limit 1";
+					$sql_smv_nop = "SELECT smv,capacity_factor FROM $pps.monthly_production_plan WHERE  plant_code = '" . $plantcode . "'  AND planned_date ='" . $dates[$k] . "' AND `group`='" . $section_code . "' AND row_name='" . $workstation_code . "' limit 1";
 					 
 					$res_smv_nop = mysqli_query($link, $sql_smv_nop) or exit("Sql smv nop error" . mysqli_errno($link));
 					$row_smv_nop = mysqli_fetch_row($res_smv_nop);

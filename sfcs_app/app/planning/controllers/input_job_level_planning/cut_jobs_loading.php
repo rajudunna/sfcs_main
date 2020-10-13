@@ -133,7 +133,7 @@ $cutno=$_GET['cutno'];
 //echo $style.$schedule.$color;
 ?>
 <div class="panel panel-primary">
-<div class="panel-heading"><strong>Input Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Input Job Sequence Move</a></div>
+<div class="panel-heading"><strong>Sewing Job Level Planning</strong><a href="<?= getFullURL($_GET['r'],'input_job_seq_move.php','N');?>" class="btn btn-success btn-xs pull-right" target="_blank">Sewing Job Sequence Move</a></div>
 <div class="panel-body">
 <div class="form-inline">
 <div class="form-group">
@@ -282,6 +282,10 @@ if($get_schedule!='' && $plant_code!=''){
 	echo "<div class='col-sm-3'><label>Select Cut: </label>";  
 	echo "<select style='min-width:100%' name=\"cutno\" onchange=\"sixthbox();\" class='form-control' >
 			<option value=\"NIL\" selected>NIL</option>";
+				if($get_sub_po!='')
+				{
+				echo "<option value=\"All\" selected>All</option>";	
+				}
 				foreach ($cut_number as $key=>$cut_no_val) {
 					if(str_replace(" ","",$cut_no_val)==str_replace(" ","",$cutno)) 
 					{ 
