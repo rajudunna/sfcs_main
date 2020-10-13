@@ -3,7 +3,6 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R')); 
 $plant_code = $_SESSION['plantCode'];
-
 if(isset($_POST['submit'])) {
 	$edate=$_POST['dat2'];
 	$sdate=$_POST['dat1'];
@@ -132,11 +131,10 @@ if(isset($_POST['submit']))
 
 	$dates_query = "SELECT DISTINCT planned_date FROM $pps.monthly_production_plan pml 
 	LEFT JOIN $pps.monthly_production_plan_upload_log pul ON pul.monthly_pp_up_log_id = pml.monthly_pp_up_log_id 
-	WHERE pml.planned_date BETWEEN '$sdate' AND '$edate' AND pul.plant_code = '$plant_code' ";
+	WHERE pml.planned_date BETWEEN '$sdate' AND '$edate' AND pul.plant_code = '$plant_code' ORDER BY planned_date DESC";
 	$dates_result = mysqli_query($link, $dates_query) or exit("Problem in retrieving dates ". $dates_query );
 
 	while($row = mysqli_fetch_array($dates_result)) {
-	{
 		$curr_date = $row['planned_date'];
 
 		echo "<tr class='tblheading'>";
@@ -149,29 +147,25 @@ if(isset($_POST['submit']))
 		// get the planned qty against each workstation and each data
 		$check=0;
 		foreach($modules as $workstation) {
-			if($check==0)
-			{
+			if($check==0) {
 				$bgcolor="#ffffaa";	
 				$check=1;
 			} else {
 				$bgcolor="#99ffee";
 				$check=0;
 			}
-
 			$workstatin_code = $workstation['workstationCode'];
-			$workstation_id = $workstation['workstation_id'];
+			$workstation_id = $workstation['workstationId'];
 			$planned_qty = 0;
 			$actual_qty = 0;
 			$styles = [];
 			$section = '';
 			// get the styles of the current workstation
-			$plan_qty_query = "SELECT row_name, `group`, planned_date, SUM(planned_qty) as planned_qty,colour, product_code FROM $pps.monthly_production_plan pml 
-				LEFT JOIN $pps.monthly_production_plan_upload_log pul ON pul.monthly_pp_up_log_id = pml.monthly_pp_up_log_id 
-				WHERE pml.planned_date = '$curr_date' AND pul.plant_code = '$plant_code' AND row_name = '$workstatin_code'
+			$plan_qty_query = "SELECT row_name, `group`, planned_date, SUM(planned_qty) as planned_qty,colour, product_code FROM $pps.monthly_production_plan pml
+				WHERE pml.planned_date = '$curr_date' AND pml.plant_code = '$plant_code' AND row_name = '$workstatin_code'
 				GROUP BY product_code, planned_date ";
 			$plant_qty_result = mysqli_query($link, $plan_qty_query) or exit("Plan qty query error". $plan_qty_query);
 			while($plan_row = mysqli_fetch_array($plant_qty_result)) {
-			{
 				$planned_qty += $plan_row['planned_qty'];
 				$section = $plan_row['group'];
 				$style = $plan_row['product_code'];
@@ -179,7 +173,7 @@ if(isset($_POST['submit']))
 				$actual_output = 0;
 				if ($styles) {
 					// get the total actual qty against to the style
-					$actual_output_query = "SELECT SUM(good_quantity) AS `output` FROM $pts.transaction_log WHERE plant_code='$plant_code' and style='$style' and DATE(created_at) = '$sdate' 
+					$actual_output_query = "SELECT SUM(good_quantity) AS `output` FROM $pts.transaction_log WHERE plant_code='$plant_code' and style='$style' and DATE(created_at) = '$curr_date' 
 					AND operation = '$IMS_OP' and resource_id='$workstation_id' ";
 					$actual_output_result = mysqli_query($link, $actual_output_query) or exit("Actual output qty query error");
 					while($act_output_row = mysqli_fetch_array($actual_output_result)) {
