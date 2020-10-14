@@ -14,7 +14,7 @@ if(isset($_POST['allocate']))
     $dash=$_POST['dashboard'];
     
 }
-// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 
 
 $php_self = explode('/',$_SERVER['HTTP_HOST']);
@@ -35,7 +35,7 @@ $url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOS
 	// $php_self = explode('/',$_SERVER['PHP_SELF']);
 	// array_pop($php_self);
 	// $url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
-	$has_permission=haspermission($url_r);
+	// $has_permission=haspermission($url_r);
 ?>
 	
 
