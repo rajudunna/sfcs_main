@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 
-// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $dash=0;
 if (isset($_GET['dash'])) {
 	$dash=1;
@@ -16,7 +16,7 @@ $php_self = explode('/',$_SERVER['HTTP_HOST']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/sfcs_app/app/cutting/controllers/seperate_docket.php");
 $url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
-$has_permission=haspermission($url_r); 
+// $has_permission=haspermission($url_r); 
 ?>
 <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>
 
