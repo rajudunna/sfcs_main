@@ -426,13 +426,13 @@ if(isset($_POST["submit1"]))
 		$uuid1=$uuid_row1['uuid'];
 	
 	}
-	// for($i=0;$i < count($ref);$i++ )
-	// {		
+	 for($i=0;$i < count($doc_nos);$i++ )
+	 {		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",'NOW()','$plant_code')";	
 		
-	//}
+	}
 	// var_dump($insert);
 	// die();
 	// $insert= substr_replace($insert, "", -1);

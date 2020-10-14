@@ -86,7 +86,8 @@ $username = $_SESSION['userName'];
 				<form name="test" action="<?php $_GET['r'] ?>" method="POST" class='form-inline'> 
 					<?php 
 						echo "VPO: <select name=\"vpo\" required onchange=\"firstbox();\" class='form-control'>"; 
-						$sql="select vpo from $oms.oms_mo_details where plant_code='$plant_code' and vpo!='' group by vpo order by vpo";     
+						$sql="	SELECT vpo FROM $oms.oms_mo_details WHERE po_number<>'' and plant_code='$plant_code' GROUP BY vpo "; 
+					   
 						$sql_result=mysqli_query($link, $sql) or exit("Error while getting vpo"); 
 						$sql_num_check=mysqli_num_rows($sql_result); 
 
@@ -104,7 +105,7 @@ $username = $_SESSION['userName'];
 						} 
 						echo "</select>"; 
 						
-						$sql1="select mo_number from $oms.oms_mo_details where vpo='".$vpo."' and plant_code='$plant_code'";     
+						$sql1="SELECT mo_number FROM $oms.oms_mo_details WHERE po_number<>'' and plant_code='$plant_code' and vpo='$vpo'";     
 				
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						while($sql_row1=mysqli_fetch_array($sql_result1)) 
@@ -178,7 +179,8 @@ $username = $_SESSION['userName'];
 				$po_num="'".implode("','",$po_number)."'";
 				
 			    //echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".substr(implode(",",$schedule),0,-1)."</b></span></h3><br/>"; 
-			    echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp Schedules: ".implode(",",array_unique($schedule1))."</b></span></h3><br/>"; 
+				echo "<h3><span class=\"label label-info\"><b>Style: ".$style." &nbsp&nbsp&nbsp&nbsp</b></span></h3>
+				</br> <p style='font-size:20px;'><span class=\"label label-info\"><b>Schedules: ".implode(",",array_unique($schedule1))."</b></span><br/></p>"; 
 			    // Cut Level
 				$cutnos=0; $size_array=array();
 				$sub_po_query="select po_number FROM $pps.mp_sub_order WHERE master_po_number IN($po_num) and plant_code='$plant_code'"; 
