@@ -71,7 +71,6 @@
             while ($row4 = mysqli_fetch_array($components_result)) {   
                 $components[] = $row4['component_name'];
             }
-            var_dump($components);
         }
     }
 ?>
@@ -569,7 +568,6 @@ function reportCut(id) {
             }
         });
     }
-        }
     let bearer_token;
     const creadentialObj = {
         grant_type: 'password',
@@ -591,45 +589,45 @@ function reportCut(id) {
                 return str.join("&");
             },
             data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-                    type: "POST",
-                    url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                    data:  reportData,
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (res) {            
-                        //console.log(res.data);
-                        console.log(res.status);
-                        if(res.status)
-                        {
-                            $('#post_post').hide();
-                            $('#reportcut').show();
-                            sweetAlert('Cut Reported Successfully!!!','','success');
-                            setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                        }
-                        else
-                        {
-                            $('#post_post').hide();
-                            $('#reportcut').show();
-                            swal(res.internalMessage);
-                        }                       
-                    },
-                    error: function(res){
-                        $('#loading-image').hide(); 
-                        // alert('failure');
-                        // console.log(response);
-                        swal('Error in Reporting Cut');
+    }).then(function (result) {
+        console.log(result);
+        bearer_token = result['access_token'];
+        $.ajax({
+                type: "POST",
+                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                data:  reportData,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {            
+                    //console.log(res.data);
+                    console.log(res.status);
+                    if(res.status)
+                    {
                         $('#post_post').hide();
                         $('#reportcut').show();
+                        sweetAlert('Cut Reported Successfully!!!','','success');
+                        setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                     }
-                }); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
+                    else
+                    {
+                        $('#post_post').hide();
+                        $('#reportcut').show();
+                        swal(res.internalMessage);
+                    }                       
+                },
+                error: function(res){
+                    $('#loading-image').hide(); 
+                    // alert('failure');
+                    // console.log(response);
+                    swal('Error in Reporting Cut');
+                    $('#post_post').hide();
+                    $('#reportcut').show();
+                }
+        }); 
+    }).fail(function (result) {
+        console.log(result);
+    });
 }
 
 function deleteCut(id) {
