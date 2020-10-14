@@ -59,14 +59,14 @@
             // get the mul factor of the docket
             $mul_factor_query = "SELECT multiplication_factor, lp_ratio_cg_id, component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id = '$ratio_cg_id' ";
             $mul_factor_result = mysqli_query($link, $mul_factor_query);
-            echo "$mul_factor_query";
+            // echo "$mul_factor_query";
             while ($row3 = mysqli_fetch_array($mul_factor_result)) {   
                 $mul_factor = $row3['multiplication_factor'];
                 $cg_id = $row3['component_group_id'];
             }
             // get the components involved in the docket
             $components_query = "SELECT component_name FROM $pps.lp_product_component WHERE component_group_id = '$cg_id' ";
-            echo $components_query;
+            // echo $components_query;
             $components_result = mysqli_query($link, $components_query);
             while ($row4 = mysqli_fetch_array($components_result)) {   
                 $components[] = $row4['component_name'];
