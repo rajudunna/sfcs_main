@@ -252,7 +252,7 @@ if(isset($_POST['formSubmit']))
                             $docket_id = $row['jm_docket_id'];
                             $lay_id = '"'.$row['lp_lay_id'].'"';
                             $plies = $row['lay_plies'];
-                            echo "<tr><td>$docket_number_post</td>";
+                            echo "<tr><td>$docket_number</td>";
                             echo "<td>$s_no</td>";
                             echo "<td>".$row['shift']."</td>";
                             echo "<td>".$row['docket_plies']."</td>";
@@ -569,6 +569,7 @@ function reportCut(id) {
             }
         });
     }
+        }
     let bearer_token;
     const creadentialObj = {
         grant_type: 'password',
@@ -578,9 +579,10 @@ function reportCut(id) {
         password: 'bhuvan'
     }
     $.ajax({
-            type: "POST",
-            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-            data:  JSON.stringify(reportData),
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
             contentType: "application/json; charset=utf-8",
             transformRequest: function (Obj) {
                 var str = [];
