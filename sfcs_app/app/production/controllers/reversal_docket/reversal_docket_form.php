@@ -59,14 +59,14 @@
             // get the mul factor of the docket
             $mul_factor_query = "SELECT multiplication_factor, lp_ratio_cg_id, component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id = '$ratio_cg_id' ";
             $mul_factor_result = mysqli_query($link, $mul_factor_query);
-            echo "$mul_factor_query";
+            // echo "$mul_factor_query";
             while ($row3 = mysqli_fetch_array($mul_factor_result)) {   
                 $mul_factor = $row3['multiplication_factor'];
                 $cg_id = $row3['component_group_id'];
             }
             // get the components involved in the docket
             $components_query = "SELECT component_name FROM $pps.lp_product_component WHERE component_group_id = '$cg_id' ";
-            echo $components_query;
+            // echo $components_query;
             $components_result = mysqli_query($link, $components_query);
             while ($row4 = mysqli_fetch_array($components_result)) {   
                 $components[] = $row4['component_name'];
@@ -252,7 +252,7 @@ if(isset($_POST['formSubmit']))
                             $docket_id = $row['jm_docket_id'];
                             $lay_id = '"'.$row['lp_lay_id'].'"';
                             $plies = $row['lay_plies'];
-                            echo "<tr><td>$docket_number_post</td>";
+                            echo "<tr><td>$docket_number</td>";
                             echo "<td>$s_no</td>";
                             echo "<td>".$row['shift']."</td>";
                             echo "<td>".$row['docket_plies']."</td>";
@@ -569,6 +569,7 @@ function reportCut(id) {
             }
         });
     }
+        }
     let bearer_token;
     const creadentialObj = {
         grant_type: 'password',
@@ -578,9 +579,10 @@ function reportCut(id) {
         password: 'bhuvan'
     }
     $.ajax({
-            type: "POST",
-            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-            data:  JSON.stringify(reportData),
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
             contentType: "application/json; charset=utf-8",
             transformRequest: function (Obj) {
                 var str = [];
