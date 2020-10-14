@@ -16,9 +16,8 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
-$plant_code = $_session['plantCode'];
-$username =  $_session['userName'];	
+$plant_code = $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];	
 function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
     global $tms;
     global $link_new;
@@ -182,12 +181,12 @@ function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
 									for ($jj=0; $jj< count($operation_codes); $jj++) 
 									{
 									
-										$query .= "sum(if(operation_id=".$operation_codes[$jj].",good_quantity,0)) as good_".$operation_codes[$jj].",sum(if(operation_id=".$operation_codes[$jj].",rejected_quantity,0)) as reject_".$operation_codes[$jj].",";
+										$query .= "sum(if(operation=".$operation_codes[$jj].",good_quantity,0)) as good_".$operation_codes[$jj].",sum(if(operation=".$operation_codes[$jj].",rejected_quantity,0)) as reject_".$operation_codes[$jj].",";
 									
 									}
 									$selectSQL = "SELECT DATE(created_at) as dates,resource_id,shift,style,schedule,color,$query size FROM 
 									$pts.`transaction_log` WHERE parent_barcode IN ('".implode("','" , $originalBarcode)."') AND created_at BETWEEN '".$sdate."' AND '".$edate."' AND plant_code='$plant_code' AND is_active=1 GROUP BY DATE(created_at),resource_id,shift,style,schedule,color,size";
-									//echo $selectSQL."<br>";
+									// echo $selectSQL."<br>";
 									//die();
 									$selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at retirieving the info");
 									while($row = mysqli_fetch_assoc( $selectRes ))
