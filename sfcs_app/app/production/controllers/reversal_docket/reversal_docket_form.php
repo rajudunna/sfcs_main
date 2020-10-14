@@ -59,19 +59,18 @@
             // get the mul factor of the docket
             $mul_factor_query = "SELECT multiplication_factor, lp_ratio_cg_id, component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id = '$ratio_cg_id' ";
             $mul_factor_result = mysqli_query($link, $mul_factor_query);
-            echo "$mul_factor_query";
+            // echo "$mul_factor_query";
             while ($row3 = mysqli_fetch_array($mul_factor_result)) {   
                 $mul_factor = $row3['multiplication_factor'];
                 $cg_id = $row3['component_group_id'];
             }
             // get the components involved in the docket
             $components_query = "SELECT component_name FROM $pps.lp_product_component WHERE component_group_id = '$cg_id' ";
-            echo $components_query;
+            // echo $components_query;
             $components_result = mysqli_query($link, $components_query);
             while ($row4 = mysqli_fetch_array($components_result)) {   
                 $components[] = $row4['component_name'];
             }
-            var_dump($components);
         }
     }
 ?>
@@ -252,7 +251,7 @@ if(isset($_POST['formSubmit']))
                             $docket_id = $row['jm_docket_id'];
                             $lay_id = '"'.$row['lp_lay_id'].'"';
                             $plies = $row['lay_plies'];
-                            echo "<tr><td>$docket_number_post</td>";
+                            echo "<tr><td>$docket_number</td>";
                             echo "<td>$s_no</td>";
                             echo "<td>".$row['shift']."</td>";
                             echo "<td>".$row['docket_plies']."</td>";
@@ -578,9 +577,10 @@ function reportCut(id) {
         password: 'bhuvan'
     }
     $.ajax({
-            type: "POST",
-            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-            data:  JSON.stringify(reportData),
+            method: 'POST',
+            url: "<?php echo $KEY_LOCK_IP?>",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            xhrFields: { withCredentials: true },
             contentType: "application/json; charset=utf-8",
             transformRequest: function (Obj) {
                 var str = [];
@@ -589,45 +589,45 @@ function reportCut(id) {
                 return str.join("&");
             },
             data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-                    type: "POST",
-                    url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                    data:  reportData,
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (res) {            
-                        //console.log(res.data);
-                        console.log(res.status);
-                        if(res.status)
-                        {
-                            $('#post_post').hide();
-                            $('#reportcut').show();
-                            sweetAlert('Cut Reported Successfully!!!','','success');
-                            setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                        }
-                        else
-                        {
-                            $('#post_post').hide();
-                            $('#reportcut').show();
-                            swal(res.internalMessage);
-                        }                       
-                    },
-                    error: function(res){
-                        $('#loading-image').hide(); 
-                        // alert('failure');
-                        // console.log(response);
-                        swal('Error in Reporting Cut');
+    }).then(function (result) {
+        console.log(result);
+        bearer_token = result['access_token'];
+        $.ajax({
+                type: "POST",
+                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                data:  reportData,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {            
+                    //console.log(res.data);
+                    console.log(res.status);
+                    if(res.status)
+                    {
                         $('#post_post').hide();
                         $('#reportcut').show();
+                        sweetAlert('Cut Reported Successfully!!!','','success');
+                        setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                     }
-                }); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;
+                    else
+                    {
+                        $('#post_post').hide();
+                        $('#reportcut').show();
+                        swal(res.internalMessage);
+                    }                       
+                },
+                error: function(res){
+                    $('#loading-image').hide(); 
+                    // alert('failure');
+                    // console.log(response);
+                    swal('Error in Reporting Cut');
+                    $('#post_post').hide();
+                    $('#reportcut').show();
+                }
+        }); 
+    }).fail(function (result) {
+        console.log(result);
+    });
 }
 
 function deleteCut(id) {

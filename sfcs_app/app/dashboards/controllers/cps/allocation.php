@@ -14,7 +14,7 @@ if(isset($_POST['allocate']))
     $dash=$_POST['dashboard'];
     
 }
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 
 
 $php_self = explode('/',$_SERVER['HTTP_HOST']);

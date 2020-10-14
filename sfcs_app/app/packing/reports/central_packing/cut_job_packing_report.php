@@ -188,7 +188,7 @@ $username = $_SESSION['userName'];
 			        $sub_po_number[]=$sub_po_query_result_result_row['po_number']; 
 				}
 				$sub_po="'".implode("','",$sub_po_number)."'";
-				$logical_bundle_query="select fg_color,feature_value,jm_pplb_id,jm_pplb_id,jm_cut_job_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_cut_job_id"; 
+				$logical_bundle_query="select fg_color,feature_value,jm_pplb_id,jm_pplb_id,jm_ppb_id FROM $pps.jm_product_logical_bundle WHERE po_number IN($sub_po) and plant_code='$plant_code' group by jm_ppb_id"; 
 				$logical_bundle_query_result=mysqli_query($link, $logical_bundle_query) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			    while($logical_bundle_query_result_row=mysqli_fetch_array($logical_bundle_query_result)) 
 			    { 
@@ -196,21 +196,55 @@ $username = $_SESSION['userName'];
 					$schedule=$logical_bundle_query_result_row['feature_value']; 
 					$jm_cut_bundle_detail_id=$logical_bundle_query_result_row['jm_pplb_id'];
 					$jm_cut_bundle_detail_id1[]=$logical_bundle_query_result_row['jm_pplb_id'];
+					$jm_ppb_id=$logical_bundle_query_result_row['jm_ppb_id'];
 					// $jm_product_logical_bundle_id=$logical_bundle_query_result_row['jm_product_logical_bundle_id'];
-					$jm_cut_job_id=$logical_bundle_query_result_row['jm_cut_job_id'];
 
-					$query4="select size,jm_pplb_id FROM $pps.jm_product_logical_bundle WHERE fg_color='$color' and feature_value='$schedule' and jm_cut_job_id='$jm_cut_job_id' and plant_code='$plant_code'";
-					$query4_result=mysqli_query($link, $query4) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					$query5="select jm_cut_bundle_id FROM $pps.jm_cut_bundle_details WHERE jm_ppb_id='$jm_ppb_id'  and plant_code='$plant_code'";
+				
+					$query4_result1=mysqli_query($link, $query5) or exit("Sql Error54".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($query4_result_row1=mysqli_fetch_array($query4_result1)) 
+					{ 
+						$jm_cut_bundle_id=$query4_result_row1['jm_cut_bundle_id']; 
+						
+					}
+				
+					$query6="select jm_cut_job_id FROM $pps.jm_cut_bundle WHERE jm_cut_bundle_id ='$jm_cut_bundle_id'  and plant_code='$plant_code'";
+					$query4_result11=mysqli_query($link, $query6) or exit("Sql Error51".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($query4_result_row11=mysqli_fetch_array($query4_result11)) 
+					{ 
+						$jm_cut_job_id=$query4_result_row11['jm_cut_job_id']; 
+						
+					}
+					
+					$query7="select cut_number FROM $pps.jm_cut_job WHERE jm_cut_job_id ='$jm_cut_job_id'  and plant_code='$plant_code'";
+					$query4_result111=mysqli_query($link, $query7) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+					while($query4_result_row111=mysqli_fetch_array($query4_result111)) 
+					{ 
+						$cut_number=$query4_result_row111['cut_number']; 
+						
+					}
+				
+
+					$query4="select size,jm_pplb_id,quantity FROM $pps.jm_product_logical_bundle WHERE fg_color='$color' and feature_value='$schedule' and jm_ppb_id='$jm_ppb_id' and plant_code='$plant_code' group by size";
+
+					$query4_result=mysqli_query($link, $query4) or exit("Sql Error52".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query4_result_row=mysqli_fetch_array($query4_result)) 
 					{ 
 						$size_array[]=$query4_result_row['size']; 
 						$jm_product_logical_bundle_id1[]=$query4_result_row['jm_pplb_id']; 
+						$quantity[]=$query4_result_row['quantity']; 
 					}
+					
+				
 					$jm_product_logical_bundle_id="'".implode("','",$jm_product_logical_bundle_id1)."'";
+
+
+				
 					//$size_array[]=$logical_bundle_query_result_row['size'];
 
 					$query1="select jm_jg_header_id FROM $pps.jm_job_bundles WHERE jm_pplb_id in($jm_product_logical_bundle_id) and plant_code='$plant_code'";
-					$query1_result=mysqli_query($link, $query1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+
+					$query1_result=mysqli_query($link, $query1) or exit("Sql Error53".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($query1_result_row=mysqli_fetch_array($query1_result)) 
 					{ 
 						$jm_jg_header_id1=$query1_result_row['jm_jg_header_id']; 
@@ -351,18 +385,43 @@ $username = $_SESSION['userName'];
 							{
 
 							  $task_jobs_id=$sql_row13['task_jobs_id'];
-							  $sql14="SELECT SUM(IF(operation_code = 100, good_quantity+rejected_quantity, 0)) AS qty,SUM(IF(operation_code = 130, good_quantity+rejected_quantity, 0)) AS sew_qty,original_quantity,sum(good_quantity+rejected_quantity) as total_qty from $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' "; 
+							//   $sql14="SELECT SUM(IF(operation_code = 100, good_quantity+rejected_quantity, 0)) AS qty,SUM(IF(operation_code = 130, good_quantity+rejected_quantity, 0)) AS sew_qty,original_quantity,sum(good_quantity+rejected_quantity) as total_qty from $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' "; 
+
+							$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+						
+							$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 							
-							  $result14=mysqli_query($link, $sql14) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row14=mysqli_fetch_array($result14)) 
-								{
-									$sewing_qty=$sql_row14['qty'];
-									$sewing_out_qty=$sql_row14['sew_qty'];
-									$original_quantity=$sql_row14['original_quantity'];
-									$total_qty=$sql_row14['total_qty'];
-
-
+								while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
+									$minGoodQty=$minOperationResultRow['good_quantity'];
 								}
+							
+
+					/**
+					 * get MAX operation wrt jobs based on operation seq
+					 */
+					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
+					sum(rejected_quantity) AS rejected_quantity,original_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+							$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
+							
+								while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
+									$maxGoodQty=$maxOperationResultRow['good_quantity'];
+									$maxRejQty=$maxOperationResultRow['rejected_quantity'];
+									$original_quantity=$maxOperationResultRow['original_quantity'];
+								}
+					
+					
+					$balance=$minGoodQty-($maxGoodQty+$maxRejQty);
+							
+							//   $result14=mysqli_query($link, $sql14) or die("Error-".$sql13."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// 	while($sql_row14=mysqli_fetch_array($result14)) 
+							// 	{
+							// 		$sewing_qty=$sql_row14['qty'];
+							// 		$sewing_out_qty=$sql_row14['sew_qty'];
+							// 		$original_quantity=$sql_row14['original_quantity'];
+							// 		$total_qty=$sql_row14['total_qty'];
+
+
+							// 	}
 							}
 
 
@@ -379,8 +438,8 @@ $username = $_SESSION['userName'];
 							for ($j=0; $j < sizeof($size_array); $j++) 
 							{  
 								//$pack_qty=$sew_job_pac[$sew_job_rand[$j]];
-								$in_qty=$sewing_qty;
-								$out_qty=$sewing_out_qty;
+								$in_qty=$minGoodQty;
+								$out_qty=$maxGoodQty+$maxRejQty;
 								//echo $sew_job_no[$j]."--".$job_qty[$sew_job_rand[$j]]."--".$in_qty."--".$out_qty."--".$pack_qty."<br>";
 								if($pack_qty=="")
 								{
@@ -415,7 +474,7 @@ $username = $_SESSION['userName'];
 								{
 									$bac_col='#ff3333';
 								}
-								echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:$bac_col;color:white;white-space: nowrap;'>Job# ".$sewing_job_number." </br> Qty# ".$total_qty." </br> Cut# ".$cut_number." </br> Col# ".$packing_method."</td>";
+								echo "<td width=\"7%\" height=20 style='height:15.0pt;background-color:$bac_col;color:white;white-space: nowrap;'>Job# ".$sewing_job_number." </br> Qty# ".$original_quantity." </br> Cut# ".$cut_number." </br> Col# ".$packing_method."</td>";
 							}
 							if($rows-sizeof($size_array)>0)
 							{
