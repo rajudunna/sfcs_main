@@ -153,7 +153,7 @@ table, th, td {
 					$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack methods");
 					if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 					{
-						$pm_mo_alloc_sql="SELECT pmct.pm_packing_list_id, GROUP_CONCAT(pm_mo_alloc.mo_number) as mo_numbers, pmct.description FROM $pps.pm_container_mo_alloc as pm_mo_alloc left join $pps.pm_container_template as pmct on pm_mo_alloc.pm_container_template_id = pmct.pm_container_template_id WHERE pm_mo_alloc.mo_number in ($mos3) and pm_mo_alloc.plant_code='$plantcode' group by pmct.pm_packing_list_id";
+						$pm_mo_alloc_sql="SELECT pmct.pm_packing_list_id, GROUP_CONCAT(pm_mo_alloc.mo_number) as mo_numbers, pmct.description FROM $pps.pm_container_mo_alloc as pm_mo_alloc left join $pps.pm_container_template as pmct on pm_mo_alloc.pm_ct_id = pmct.pm_ct_id WHERE pm_mo_alloc.mo_number in ($mos3) and pm_mo_alloc.plant_code='$plantcode' group by pmct.pm_packing_list_id";
 						$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack list");
 						if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 						{
@@ -176,16 +176,16 @@ table, th, td {
 									$container_ids = implode(',', $containerIds);
 									$container_ids = "'".str_replace(",","','",$container_ids)."'";
 									$barcode_type_packing = BarcodeType::PCRT;
-									$barcode_sql="SELECT barcode_id,quantity FROM $pts.`barcode` WHERE external_ref_id IN (
+									$barcode_sql="SELECT barcode,quantity FROM $pts.`barcode` WHERE external_ref_id IN (
 									$container_ids) AND barcode_type= '$barcode_type_packing' AND plant_code = '$plantcode'";
 									$barcode_result=mysqli_query($link, $barcode_sql) or exit("error while fetching barcodes");
 									if (mysqli_num_rows($barcode_result) > 0)
 									{
 										while($row_result=mysqli_fetch_array($barcode_result))
 										{
-											$barcode_id = $row_result['barcode_id'];
+											$barcode_id = $row_result['barcode'];
 											$quantity = $row_result['quantity'];
-											$transaction_log_sql="SELECT sum(good_quantity+rejected_quantity) as reported_quantity  FROM $pts.`transaction_log` WHERE barcode_id = '$barcode_id' AND operation = '$packing_operation' AND plant_code = '$plantcode'";
+											$transaction_log_sql="SELECT sum(good_quantity+rejected_quantity) as reported_quantity  FROM $pts.`transaction_log` WHERE barcode = '$barcode_id' AND operation = '$packing_operation' AND plant_code = '$plantcode'";
 											$transaction_log_result=mysqli_query($link, $transaction_log_sql) or exit("error while fetching operations data for barcode");
 											if (mysqli_num_rows($transaction_log_result) > 0)
 											{

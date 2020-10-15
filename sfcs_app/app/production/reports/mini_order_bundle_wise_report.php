@@ -139,18 +139,18 @@ if($reptype == 1) {
 					  $operations=$result_mrn_operation;
 
                     }
+                    //var_dump($operations);
                     $category=DepartmentTypeEnum::SEWING;
                     foreach($operations as $key =>$mpo_operations){
-                        if($key['operationCategory'] == $category)
+                        if($mpo_operations['operationCategory'] == $category)
                         {
-                            $operation_codes[]=$key['operationCode'];
-                            $operation_names[]=['op_name'=>$key['operationName'],'op_code'=>$key['operationCode']];
+                           // var_dump($mpo_operations);
+                            $operation_codes[]=$mpo_operations['operationCode'];
+                            $operation_names[]=['op_name'=>$mpo_operations['operationName'],'op_code'=>$mpo_operations['operationCode']];
                         }
                     }
-                    
-                    $main_result['columns'] = $opertion_names;
+                    $main_result['columns'] = $operation_names;
 
-                    
                     if(count($operation_codes)>0){
                         $operation_codes_no = implode(',',$operation_codes);
                         //columns Data
@@ -261,7 +261,7 @@ if($reptype == 1) {
 							<td><?=  $org_qty  ?></td> 
                             <?php
                                 //To get workstation description
-                                $query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$bundle_data[$value][0]['resource_id']'  AND is_active=1";
+                                $query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$bundle_data[$value][0]['resource_id']."'  AND is_active=1";
                                 $result3 = $link->query($query_get_workdes);
                                 while($des_row = $result3->fetch_assoc())
                                 {
@@ -306,7 +306,7 @@ if($reptype == 1) {
                                 <td><?= $size_values[$size_key][0]['job_number']  ?></td>
                                 <?php
                                 //To get taskjob_id
-                                $get_task_id="SELECT task_jobs_id FROM $tms.`task_attributes` WHERE attribute_value='$size_values[$size_key][0]['job_number']' AND plant_code='$plant_code'
+                                $get_task_id="SELECT task_jobs_id FROM $tms.`task_attributes` WHERE attribute_value='".$size_values[$size_key][0]['job_number']."' AND plant_code='$plant_code'
                                  AND is_active=1";
                                 $result4 = $link->query($get_task_id);
                                 while($task_row = $result4->fetch_assoc())

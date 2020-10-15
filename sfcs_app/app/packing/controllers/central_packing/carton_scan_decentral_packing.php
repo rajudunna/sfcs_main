@@ -14,7 +14,7 @@
 		$username = $_GET['username'];
 	?>
 	<link rel="stylesheet" type="text/css" href="../../common/css/bootstrap.css">
-	<script src="../../common/js/jquery.min.js"></script>
+	<script src="../../../../common/js/jquery_new.min.js"></script>
 	<script src="../../common/js/sweetalert.min.js"></script>
 	<script>
 		function focus_box()
