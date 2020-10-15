@@ -46,7 +46,7 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
 
-	$query = "select sla from $pms.departments where plant_code='$plant_code' and department_type='RM_WAREHOUSE'";
+	$query = "select sla from $pms.departments where plant_code='$plant_code' and department_type='RMWAREHOUSE'";
 	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($update_request_time)){
 		$rms_request_time = $row['sla'];
