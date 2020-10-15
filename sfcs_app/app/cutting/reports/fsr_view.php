@@ -212,6 +212,7 @@ if(isset($_POST['submit']))
 		$workstation_id_new = array();
 		$sec_lists="'".implode("','",$workstation_id1)."'";
 		$sqlyy="SELECT workstation_id FROM $pms.workstation where section_id in ($sec_lists) and plant_code='$plantcode'";
+		// echo $sqlyy;
 		$sql_resulty=mysqli_query($link, $sqlyy) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{
@@ -286,7 +287,7 @@ if(isset($_POST['submit']))
 		</div>
 		<div class="row">
 			<div class="col-sm-5">
-				<div class="col-sm-4 black"><b>Supervisor : </b></div>
+				<div class="col-sm-4 black"><b>Section : </b></div>
 				<div class="col-sm-8" style='word-wrap:break-word;'><code><?php echo $all_sec_names ?></code></div>
 			</div>
 		</div>
@@ -307,7 +308,7 @@ $reptype = $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype == 1)
 {
 	$sql = "SELECT lpl.lp_lay_id,lpl.workstation_id,lpl.shift,DATE(lpl.created_at) AS date1,lrfc.fabric_category,
-	jdl.docket_line_number,jcj.cut_number,jdlb.quantity,jdl.plies,lpl.po_number,lrfc.fabric_category
+	jdl.docket_line_number,jcj.cut_number,sum(jdlb.quantity) as quantity,jdl.plies,lpl.po_number,lrfc.fabric_category
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
@@ -319,7 +320,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
 	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
-	GROUP BY lpl.lp_lay_id";
+	GROUP BY lpl.lp_lay_id,jdl.docket_line_number";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
 	// echo $sql;
@@ -502,7 +503,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".($docket_quantity)."</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".$plies."</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".$mk_length."</td>";
-			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$act_total</td>";
+			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$docket_quantity</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>".($doc_req+round($doc_req*0.01,2))."</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$fab_rec</td>";
 			echo "<td class=xl6618241 style='border-top:none;border-left:none'>$fab_ret</td>";
