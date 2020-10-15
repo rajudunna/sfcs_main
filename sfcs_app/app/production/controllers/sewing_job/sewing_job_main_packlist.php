@@ -798,7 +798,7 @@
 					for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 					{						
 						//Excess Pieces Execution
-						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
+						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1"," order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						$sql12="SELECT * 
 								FROM $bai_pro3.tbl_docket_qty 
@@ -850,7 +850,7 @@
 					for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 					{					
 						//Excess Pieces Execution
-						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
+						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","  order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						$sql12="SELECT * 
 								FROM $bai_pro3.tbl_docket_qty 
@@ -1146,7 +1146,7 @@
 					$job_counter=1;
 					for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 					{
-						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
+						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1"," order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						//Excess Pieces Execution
 						$sql12="SELECT * 
@@ -1196,7 +1196,7 @@
 					$job_counter=1;	
 					for($kkk=0;$kkk<sizeof($docs_new_o);$kkk++)
 					{
-						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1","order_col_des in ('".str_replace(",","','",implode(",",$cols_tot_tmp))."') and  order_del_no",$schedule,$link);
+						$input_job_no= echo_title("$bai_pro3.packing_summary_input","MAX(CAST(input_job_no AS DECIMAL))+1"," order_del_no",$schedule,$link);
 						$rand=$schedule.date("ymd").$input_job_no;
 						//Excess Pieces Execution
 						$sql12="SELECT * 
