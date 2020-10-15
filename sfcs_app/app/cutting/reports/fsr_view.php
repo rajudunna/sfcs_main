@@ -129,13 +129,14 @@ if(isset($_POST['submit'])) {
 			</div>
 			<div class='col-sm-2'>
                 Shift :<select class='form-control' id='shift' name='shift' required>
-				<option value=''>Select</option>
+				<option value='All' <?php if($section=="All"){ echo "selected"; } ?> >All</option>
 				<?php
-					$shift_sql="SELECT shift_id,shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1";
+					$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=true";
 					$shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error 3".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($shift_row = mysqli_fetch_array($shift_sql_res))
 					{
 						$shifts=$shift_row['shift_code'];
+						$shifts1[]=$shift_row['shift_code'];
 						if($shift==$shifts) 
 						{
 							echo "<option value='".$shifts."' selected>".$shifts."</option>"; 
@@ -234,7 +235,23 @@ if(isset($_POST['submit']))
 		$sec_list="'".implode("','",$workstation_id_new)."'";
 		$all_sec_names = '"'.$workstation_description1[$section].'"';
 	}
-	$shift=$_POST['shift'];
+	$shift2=$_POST['shift'];
+	if($shift2=='All')
+	{
+		$shift='';
+		if(sizeof($shifts1) > 1){
+			foreach($shifts1 as $sh){
+				$shift .= '"'.$sh.'",';
+			}
+		}else{
+			foreach($shifts1 as $sh){
+				$shift .= '"'.$sh.'",';
+			}	
+		}
+		$shift = rtrim($shift, ',');
+	}else{
+		$shift = '"'.$shift2.'"';
+	}
 	$reptype=$_POST['reptype'];
 	$cat=$_POST['cat'];
 	if($cat=='All')
@@ -301,11 +318,11 @@ if(isset($_POST['submit']) && $reptype == 1)
 	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
-	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
+	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
 	GROUP BY lpl.lp_lay_id";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error dd".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_num_check=mysqli_num_rows($sql_result);
-
+	// echo $sql;
 	echo '<div id="export"  class="pull-right">
 			<form action="'.$excel_form_action.'" method ="post" > 
 				<input type="hidden" name="csv_text" id="csv_text">
@@ -518,8 +535,8 @@ if(isset($_POST['submit']) && $reptype == 1)
 $reptype == $_POST['reptype'];
 if(isset($_POST['submit']) && $reptype==2)
 { 
-   
-	$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jcb.quantity) AS pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id 
+
+$sql = "SELECT GROUP_CONCAT(distinct(lpl.lp_lay_id)) as lp_lay_id,GROUP_CONCAT(distinct(jcj.cut_number)) as cut_number,sum(jcb.quantity) AS pcs,sum(jdlb.quantity) as quantity,sum(jdl.plies) as plies,GROUP_CONCAT(distinct(lpl.po_number)) as po_number,GROUP_CONCAT(distinct(jd.ratio_comp_group_id)) as ratio_comp_group_id,lpl.workstation_id,GROUP_CONCAT(distinct(lpl.shift)) as shift 
 	FROM $pps.`lp_lay` lpl 
 	LEFT JOIN $pps.`lp_ratio` lp ON lp.po_number = lpl.po_number
 	LEFT JOIN $pps.`lp_ratio_fabric_category` lrfc ON lrfc.ratio_id = lp.ratio_id
@@ -530,7 +547,7 @@ if(isset($_POST['submit']) && $reptype==2)
 	LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id = jcb.jm_cut_bundle_id
 	LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id = jdl.jm_docket_id
 	LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.jm_cut_job_id = jd.jm_cut_job_id 
-	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift='$shift'
+	WHERE DATE(lpl.created_at) between \"$from_date\" and  \"$to_date\" and lpl.workstation_id IN ($sec_list) AND lrfc.fabric_category IN ($all_cats) AND lpl.shift in ($shift)
 	GROUP BY lpl.workstation_id";
 	// echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error 4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -546,7 +563,7 @@ if(isset($_POST['submit']) && $reptype==2)
 	echo "<th>Shortages</th>";
 	echo "<th>Joints</th>";
 	echo "<th>Endbits</th>";
-	echo "<th>ActualSaving</th>";
+	echo "<th>Actual Saving</th>";
 	echo "<th>Pct %</th>";
 	echo "<th>Net Saving</th>";
 	echo "<th>Pct %</th>";
@@ -556,7 +573,7 @@ if(isset($_POST['submit']) && $reptype==2)
 	if($sql_result_num > 0) {
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-				$shift_new=$shift;
+				$shift_new=$sql_row['shift'];
 				$po_number=$sql_row['po_number'];
 				$cut_number=$sql_row['cut_number'];
 				// $act_total = $sql_row['quantity'];
