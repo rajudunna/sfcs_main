@@ -187,7 +187,8 @@
                                             }
 
 
-                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where barcode_id IN ('".implode("','" , $child_barcode)."') GROUP BY operation";
+                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where barcode IN ('".implode("','" , $child_barcode)."') GROUP BY operation";
+                                            // echo $transactionsQry;
                                             $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             while($transactionRow=mysqli_fetch_array($transactionsResult)) {
                                                 // echo $transactionRow['good_quantity']."</br>";
@@ -341,6 +342,7 @@ $(document).ready(function(){
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
                         data: data,
                         success: function (res) {
+                            // console.log(res);
                             if(res.status)
                             {
                                 swal('','Bundle Transfered Successfully','success')

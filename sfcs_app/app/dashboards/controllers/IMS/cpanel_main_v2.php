@@ -570,8 +570,9 @@ $.ajax
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
                           $conumber = $job_detail_attributes[$sewing_job_attributes['cono']];
                           
+                          $departmentType = DepartmentTypeEnum::SEWING;
                           $sidemenu=true;
-                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
+                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_job.php',3,'N')."&dashboard_reporting=1&job_type=$departmentType&module=$module&job_no=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
                           ?>
                           <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                           Style No : <?php echo $style."<br/>"; ?>
