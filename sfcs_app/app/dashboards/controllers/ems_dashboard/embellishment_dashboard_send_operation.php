@@ -112,26 +112,30 @@ $hour = date("H.i");
   function
   blink_new3(x)
   {
-  $("div[id='S"
-  +
-  x
-  +
-  "']").each(function()
-  {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-  });
+    if(x.length >='6'){
+      $("div[id*='S"
+      +
+      x
+      +
+      "']").each(function()
+      {
+      $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+      });
+    }
   }
   function
   blink_new(x)
   {
-  $("div[id='D"
-  +
-  x
-  +
-  "']").each(function()
-  {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-  });
+    if(x.length >= 3){
+      $("div[id*='D"
+      +
+      x
+      +
+      "']").each(function()
+      {
+      $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+      });
+    }
   }
 </script>
 
@@ -314,6 +318,8 @@ if ($_GET['view'] == 3) {
   echo "<font color=yellow> - Cut View</font>";
 }
 echo "</font>";
+$shiftsData=getShifts($session_plant_code)['shift_data'];
+// var_dump($shiftsData);
 
 echo '<div class="panel panel-primary">';
 
@@ -329,11 +335,13 @@ echo '&nbsp;&nbsp;&nbsp;Shift:
   <select class="form-control" id="shift" name="shift">
   <option value="">Select</option>';
 $shifts = (isset($_GET['shift'])) ? $_GET['shift'] : '';
-foreach ($shifts_array as $shift) {
-  if ($shift == $shifts) {
-    echo "<option value='$shift' selected>$shift</option>";
+
+foreach ($shiftsData as $shift) {
+  $shift_code=$shift['shift_code'];
+  if ($shift_code == $shifts) {
+    echo "<option value='$shift_code' selected>$shift_code</option>";
   } else {
-    echo "<option value='$shift'>$shift</option>";
+    echo "<option value='$shift_code'>$shift_code</option>";
   }
 }
 echo '</select>   
@@ -345,32 +353,7 @@ echo '<div class="form-group">';
 echo 'Schedule Track: <input type="text" name="schedule" id="schedule" class="form-control" onkeyup="blink_new3(this.value)" size="10">';
 echo "</div>";
 
-// echo '<div class="form-group">';
-// echo '&nbsp;&nbsp;&nbsp;Buyer Division: 
-// <select name="view_div" id="view_div" class="form-control" onchange="redirect_view()">';
-// if ($_GET['view_div'] == "ALL") {
-//   echo '<option value="ALL" selected>All</option>';
-// } else {
-//   echo '<option value="ALL">All</option>';
-// }
-// echo "</div>";
-// echo "</div>";
 
-// $sqly = "SELECT GROUP_CONCAT(buyer_name) as buyer_name,buyer_code AS buyer_div FROM $bai_pro2.buyer_codes GROUP BY BUYER_CODE ORDER BY buyer_code";
-// $sql_resulty = mysqli_query($link, $sqly) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
-// while ($sql_rowy = mysqli_fetch_array($sql_resulty)) {
-//   $buyer_div = $sql_rowy['buyer_div'];
-//   $buyer_name = $sql_rowy['buyer_name'];
-
-//   if (urldecode($_GET["view_div"]) == "$buyer_name") {
-//     echo "<option value='" . $buyer_name . "' selected>" . $buyer_div . "</option>";
-//   } else {
-//     echo "<option value='" . $buyer_name . "' >" . $buyer_div . "</option>";
-//   }
-// }
-// echo '</select>';
-// echo '</div>';
-// echo '<br><br>';
 ?>
 <div>
     <div
@@ -447,8 +430,9 @@ foreach ($workstations as $emb_key => $emb_value) {
       $co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
       $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
       $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
-      $club_docs = $job_detail_attributes[$sewing_job_attributes['docketno']];
+      $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+    
 
 
       $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
@@ -480,12 +464,27 @@ foreach ($workstations as $emb_key => $emb_value) {
           $id = "red";
         }
 
+        $schedules_array=explode(',',$schedule);
+        $schedules_string=[];
+        foreach($schedules_array as $val){
+          $schedules_string[]='S'.$val;
+        }
+        $sch_string=implode(',',$schedules_string);
+
+        $dockets_array=explode(',',$doc_no);
+        $dockets_string=[];
+        foreach($dockets_array as $val){
+          $dockets_string[]='D'.$val;
+        }
+        $doc_string=implode(',',$dockets_string);
+
+
         $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
         $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$emb_job_no&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
-        $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
-
-        echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
+        $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($doc_no), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
+    
+        echo "<div id=\"$sch_string\" style=\"float:left;\"><div id='$doc_string' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
       }
     }
   }
