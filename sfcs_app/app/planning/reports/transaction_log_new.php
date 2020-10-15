@@ -86,7 +86,7 @@ function getShifts($plantCode){
 <div class="panel-heading">Production Status Report (Sewing Out)</div>
 <div class="panel-body">
 <div class="form-group">
-<form name="text" method="post" action="index.php?r=<?php echo $_GET['r']; ?>">
+<form name="text" method="post" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>">
 <div class="col-md-12">
 <div class="col-md-2">
 <label valign="top">Start: </label><input data-toggle="datepicker" class="form-control" type="text" id="demo1" name="sdate" value="<?php  if($sdate==""){ echo date("Y-m-d"); } else { echo $sdate; } ?>" size="10" required> 
