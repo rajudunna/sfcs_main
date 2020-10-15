@@ -4,9 +4,9 @@
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $dash=0;
 if (isset($_GET['dash'])) {
 	$dash=1;

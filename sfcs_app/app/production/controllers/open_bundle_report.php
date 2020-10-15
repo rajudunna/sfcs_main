@@ -216,7 +216,7 @@ function check_val()
                                                     }
                                              ?>
                                          <?php  
-                                                $openbundle_sql="SELECT bundle_number FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."' and operation IN ($opcodes) and plant_code='$plant_code' order BY bundle_number";
+                                                $openbundle_sql="SELECT parent_barcode FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."' and operation IN ($opcodes) and plant_code='$plant_code' order BY parent_barcode";
 												// echo $openbundle_sql;
 												$select_bundlenum=mysqli_query($link,$openbundle_sql) or exit($openbundle_sql."Error at something");
                                                 $operation_bundles=array();$bundle_qty_stats_bundles = array();
@@ -225,7 +225,7 @@ function check_val()
 													// {
 													// 	$bundle_qty_stats_bundles[] =  $row_2['bundle_number'];
 													// }									
-                                                    $operation_bundles[]=$row_2['bundle_number'];
+                                                    $operation_bundles[]=$row_2['parent_barcode'];
                                                 }
 												// $bundle_qty_stats_bundle_nums=implode(',',$bundle_qty_stats_bundles);
                                                 $bundle_nums=implode(',',$operation_bundles);
@@ -233,18 +233,20 @@ function check_val()
                                                 {
                                                     // if(sizeof($bundle_qty_stats_bundles)>0)
 													// {
-                                                        $selectSQL = "SELECT sewing_job_number,original_qty,bundle_number,size,color,rejected_quantity,good_quantity,operation FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."' AND operation IN ($opcodes) AND bundle_number IN ($bundle_nums) order by sewing_job_number*1,bundle_number";
+                                                       
+                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,rejected_quantity,good_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."' AND operation IN ($opcodes) AND parent_barcode IN ($bundle_nums) order by parent_barcode";
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
                                                         while( $row = mysqli_fetch_assoc( $selectRes ))
                                                         {                                                    
-                                                            $data_array_rec[$row['bundle_number']][$row['operation']] = $row['good_quantity'];
-                                                            $data_array_rej[$row['bundle_number']][$row['operation']] = $row['rejected_quantity'];
-                                                            $data_array_recut[$row['bundle_number']][$row['operation']] = $row['recut_in'];
-                                                            $data_array_col[$row['bundle_number']] = $row['color'];
-                                                            $data_array_size[$row['bundle_number']] = $row['size'];
-                                                            $data_array_input[$row['bundle_number']] = $row['sewing_job_number'];
-                                                            $tot_bundles[] = $row['bundle_number'];
-                                                            $data_array_qty[$row['bundle_number']] = $row['original_qty'];
+                                                            $data_array_rec[$row['parent_barcode']][$row['operation']] = $row['good_quantity'];
+                                                            $data_array_rej[$row['parent_barcode']][$row['operation']] = $row['rejected_quantity'];
+                                                            $data_array_recut[$row['parent_barcode']][$row['operation']] = $row['recut_in'];
+                                                            $data_array_col[$row['parent_barcode']] = $row['color'];
+                                                            $data_array_size[$row['parent_barcode']] = $row['size'];
+                                                            $data_array_input[$row['parent_barcode']] = $row['parent_job'];
+                                                            $tot_bundles[] = $row['parent_barcode'];
+                                                            
+                                                            // $data_array_qty[$row['parent_barcode']] = $row['original_qty'];
                                                         }
 													
 													//}
@@ -264,8 +266,16 @@ function check_val()
                                                         // }
                                                     $tot_bundles=array_values(array_unique($tot_bundles));
                                                     for($i=0;$i<sizeof($tot_bundles);$i++)
-                                                    {                                     
-                                                       echo "<tr><td>{$schedule}</td><td>{$data_array_input[$tot_bundles[$i]]}</td><td>{$data_array_col[$tot_bundles[$i]]}</td><td>{$data_array_size[$tot_bundles[$i]]}</td><td>{$data_array_qty[$tot_bundles[$i]]}</td>
+                                                    {  
+                                                        
+                                                        $quantity_query="select quantity from $pps.mp_mo_qty WHERE  schedule='".$schedule."' and color='".$data_array_col[$tot_bundles[$i]]."' and size='".$data_array_size[$tot_bundles[$i]]."' and mp_qty_type='ORIGINAL_QUANTITY'";
+                                                            
+                                                            $selectRes1=mysqli_query($link,$quantity_query) or exit($selectSQL."Error at something");
+                                                            while( $row1 = mysqli_fetch_assoc( $selectRes1 ))
+                                                            {    
+                                                                $order_quantity=$row1['quantity'];
+                                                            }
+                                                       echo "<tr><td>{$schedule}</td><td>{$data_array_input[$tot_bundles[$i]]}</td><td>{$data_array_col[$tot_bundles[$i]]}</td><td>{$data_array_size[$tot_bundles[$i]]}</td><td>$order_quantity</td>
                                                         <td>{$tot_bundles[$i]}</td>";
                                                         for ($ii=0; $ii< count($operation_codes); $ii++) 
                                                         {

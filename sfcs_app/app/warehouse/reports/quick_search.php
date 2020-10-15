@@ -36,7 +36,7 @@ $username=$_SESSION['userName'];
 		</form>
 		<hr>
 		<?php
-
+		$temp = 0;
 		if(isset($_POST['submit']) or isset($_GET['ref']))
 		{
 			if(isset($_POST['submit']))
@@ -60,10 +60,11 @@ $username=$_SESSION['userName'];
 			{		
 				echo "<tr><td><a href=\"$url&lot_no=".$sql_row1['lot_no']."\" class=\"btn btn-info btn-xs\">".$sql_row1['rec_no']."</a></td><td>".$sql_row1['item']."</td><td>".$sql_row1['item_name']."</td><td>".$sql_row1['item_desc']."</td><td>".$sql_row1['inv_no']."</td><td>".$sql_row1['po_no']."</td><td>".$sql_row1['rec_qty']."</td><td>".$sql_row1['lot_no']."</td><td>".$sql_row1['batch_no']."</td><td>".$sql_row1['product_group']."</td><td>".$sql_row1['uom']."</td><td>".$sql_row1['pkg_no']."</td><td>".$sql_row1['grn_date']."</td>";
 				echo "</tr>";
+				$temp += $sql_row1['rec_qty'];
 			}
 		echo '<tr>
 				<td colspan="6">Total:</td>
-				<td id="table1Tot1" style="background-color:#FFFFCC;"></td>
+				<td id="table1Tot1" style="background-color:#FFFFCC;">'.$temp.'</td>
 				<td colspan="5"></td>
 				</tr>';
 		echo "</table></div>";

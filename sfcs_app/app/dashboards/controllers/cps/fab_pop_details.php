@@ -6,9 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_dashboard.php');
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/user_acl_v1.php');
-include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/group_def.php');
 
-include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
+ include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $dash=0;
 if (isset($_GET['dash'])) {
 	$dash=1;
@@ -16,7 +16,7 @@ if (isset($_GET['dash'])) {
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/fab_pps_dashboard_v2.php");
-$has_permission=haspermission($url_r); 
+// $has_permission=haspermission($url_r); 
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 $ctd =array_slice($php_self, 0, -2);
 $get_url=implode('/',$ctd)."/Cut_table_dashboard/marker_length_popup.php";

@@ -152,7 +152,9 @@ if (mysqli_num_rows($res_workstations) > 0) {
 
 
 		// Get Distinct Styles from transaction log
-		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+		//$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59'";
+
+		$sql_get_styles = "SELECT DISTINCT(style) FROM $pts.transaction_log where plant_code='" . $plantcode . "' AND operation='130' AND created_at BETWEEN '" . $start . " 00:00:00' AND '" . $end  . " 23:59:59' AND resource_id='".$workstation_id."'";
 		 
 		$res_get_styles = mysqli_query($link, $sql_get_styles) or exit("sql styles error - " . mysqli_error($link));
 		$style_count = mysqli_num_rows($res_get_styles);
@@ -283,7 +285,7 @@ if (mysqli_num_rows($res_workstations) > 0) {
 
 				if ($weekday2 == "Saturday") {
 					// Get good quantity
-					$sql_good_qty_3 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$sql_good_qty_3 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$l] . " 00:00:00' AND '" . $dates[$l]  . " 23:59:59'";
 					$res_good_qty_3 = mysqli_query($link, $sql_good_qty_3) or exit("sql transactions error" . mysqli_errno($link));
 					$row_good_qty_3 = mysqli_fetch_row($res_good_qty_3);
 					$total_good_qty = $row_good_qty_3[0] ? $row_good_qty_3[0] : 0;
@@ -310,7 +312,7 @@ if (mysqli_num_rows($res_workstations) > 0) {
 					$limit = 0;
 				} else {
 
-					$sql_good_qty_4 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$k] . " 00:00:00' AND '" . $dates[$k]  . " 23:59:59'";
+					$sql_good_qty_4 = "SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE resource_id='" . $workstation_id . "' AND plant_code='" . $plantcode . "' AND operation='130' AND style='" . $style . "' AND created_at BETWEEN '" . $dates[$l] . " 00:00:00' AND '" . $dates[$l]  . " 23:59:59'";
 					$res_good_qty_4 = mysqli_query($link, $sql_good_qty_4) or exit("sql transactions error" . mysqli_errno($link));
 					$row_good_qty_4 = mysqli_fetch_row($res_good_qty_4);
 					$total_good_qty_4 = $row_good_qty_4[0] ? $row_good_qty_4[0] : 0;

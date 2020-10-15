@@ -2,9 +2,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
 <link rel="stylesheet" href="style.css" type="text/css" media="all" /> 
 <link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
-<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script>
+<!-- <script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/tablefilter.js"></script>
+<script language="javascript" type="text/javascript" src="../../../common/js/TableFilter_EN/actb.js"></script> -->
 
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/tablefilter.js',3,'R'); ?>"></script>
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/TableFilter_EN/actb.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/style.css',3,'R'); ?>" type="text/css" media="all" /> 
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 
 <style>
 body
@@ -435,9 +440,11 @@ td,th
                                     $team_ref=str_replace('"',"*",$team);                                    
                                 ?> 
                             </div>
-                    </form>                 
-            		<div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
-                        <img src="../common/images/pleasewait.gif"> 
+                    </form> 
+				<!--form ending for taking the inputs -->
+				<!--Giff Loader image  code starting -->                   
+            <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
+                        <img src="<?= getFullURLLevel($_GET['r'],'common/images/pleasewait.gif',1,'R') ?>"> 
                         <script> 
                             var count=30; 
                             var counter=setInterval(timer, 1000); //1000 will  run it every 1 second 
@@ -486,8 +493,8 @@ td,th
 		else
 		{
 			echo "<h2>Plant Timings Not Available,Please Update Plant Timings.</h2><br>";					
-			echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
-			die;
+			// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
+			 die();
 		}
 	}
 	else
@@ -508,8 +515,8 @@ td,th
 		else
 		{
 				echo "<h2>Plant Timings Not Available,Please Update Plant Timings.</h2><br>";					
-				echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
-				die;
+				// echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",800); function Redirect() {  location.href = '".$_SERVER['PHP_SELF']."'; }</script>";
+				die();
 		}
 	}
 	if($current_date<>$date)
@@ -640,8 +647,8 @@ td,th
 		{ 
 			// $time_query="";
 			// $current_hr=11;
-			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and HOUR(plant_end_time) BETWEEN $start_check and $end_check";
-			echo $sql."<br>";
+			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and HOUR(plant_end_time) BETWEEN '$start_check' and '$end_check'";
+			//echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -724,6 +731,13 @@ for ($j=0;$j<sizeof($sections);$j++)
     while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
 		$mod=$sql_row['mod_no']; 
+		//To get workstation code
+		$query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_id = '$mod' AND is_active=1";
+		$result3 = $link->query($query_get_workdes);
+		while($des_row = $result3->fetch_assoc())
+		{
+			$workstation_code = $des_row['workstation_code'];
+		}
 		$style=$sql_row['mod_style']; 
 		$deldb=""; 
 		$sql2="select distinct schedule from $pts.transaction_log where shift in ($team) and date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode' $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";        
@@ -735,7 +749,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$styledb=""; 
 		$stylecount=0; 
 		$sql2="select count(distinct style) as \"count\" from $pts.transaction_log where  shift in ($team) and Date(created_at)=\"$date\" 
-		and resource_id=$mod and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+		and resource_id='$mod' and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -753,17 +767,17 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		else 
 		{ 
-			$sql2="select distinct style from$pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+			$sql2="select distinct style from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode'  $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
 				$styledb=$styledb.$sql_row2['style']; 
 			} 
 		} 
-		echo "<tr><td>".$section_name."</td><td>".$mod."</td>";
+		echo "<tr><td>".$section_name."</td><td>".$workstation_code."</td>";
 		$max=0; 
 		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
-		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		where Date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -894,7 +908,7 @@ for ($j=0;$j<sizeof($sections);$j++)
             $clha_shift=$clha_shift+$aaa;
 		}
 		//teams based looping end 
-		$sqlx="select * from $pps.monthly_production_plan where row_name='".$mod."' and date=\"$date\" and plant_code='$plantcode"; 
+		$sqlx="select * from $pps.monthly_production_plan where row_name='".$workstation_code."' and planned_date=\"$date\" and plant_code='$plantcode'";
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql monthy-prod-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
 		{ 
@@ -916,21 +930,21 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		//NOP 
 		$max=0; 
-		$sql2="select smv,nop, styles, buyer, days, act_out from $grand_rep where  shift in ($team) and 
-		module=$mod and date=\"".$date."\" "; //echo $sql2; 
-		$sql_result2=mysqli_query($link, $sql2) or exit("Sql grand rep-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-		while($sql_row2=mysqli_fetch_array($sql_result2)) 
-		{ 
-			if($sql_row2['act_out']>$max) 
-			{ 
-			  $max=$sql_row2['act_out']; 
-			  $smv=$sql_row2['smv']; //$nop=round($sql_row2['nop'],0); 
-			}
-			else 
-			{ 
-				$smv=$sql_row2['smv'];//$nop=round($sql_row2['nop'],0); 
-			} 
-		} 
+		// $sql2="select smv,nop, styles, buyer, days, act_out from $grand_rep where  shift in ($team) and 
+		// module=$mod and date=\"".$date."\" "; //echo $sql2; 
+		// $sql_result2=mysqli_query($link, $sql2) or exit("Sql grand rep-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+		// while($sql_row2=mysqli_fetch_array($sql_result2)) 
+		// { 
+		// 	if($sql_row2['act_out']>$max) 
+		// 	{ 
+		// 	  $max=$sql_row2['act_out']; 
+		// 	  $smv=$sql_row2['smv']; //$nop=round($sql_row2['nop'],0); 
+		// 	}
+		// 	else 
+		// 	{ 
+		// 		$smv=$sql_row2['smv'];//$nop=round($sql_row2['nop'],0); 
+		// 	} 
+		// } 
 		// $sqlx="select nop$couple as \"nop\", smv$couple as \"smv\" from $pro_style 
 		// where style=\"$style_code_new\" and date=\"$date\"";//echo $sqlx."<br/>"; 
 		// $sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -944,15 +958,15 @@ for ($j=0;$j<sizeof($sections);$j++)
         $gtotal=0; 
         $atotal=0; 
         $psth=0; 
-        $sql_sth="select sum(plan_sth) as psth from $grand_rep where plant_code='$plantcode' and date=\"$date\"
-         and module=$mod and shift in ($team)"; 
-        //echo $sql_sth."<br>"; 
-        $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql grand rep-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
-        while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 
-        { 
-            $psth_array[]=$sql_rowx["psth"]; 
-            $psth=$sql_rowx["psth"]; //echo $psth."<br>"; 
-        } 
+        // $sql_sth="select sum(plan_sth) as psth from $grand_rep where plant_code='$plantcode' and date=\"$date\"
+        //  and module=$mod and shift in ($team)"; 
+        // //echo $sql_sth."<br>"; 
+        // $sql_result_sth=mysqli_query($link, $sql_sth) or exit("Sql grand rep-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
+        // while($sql_rowx=mysqli_fetch_array($sql_result_sth)) 
+        // { 
+        //     $psth_array[]=$sql_rowx["psth"]; 
+        //     $psth=$sql_rowx["psth"]; //echo $psth."<br>"; 
+        // } 
 		//headers based loop for times date
 		if($hourly_break==1)
 		{ 
@@ -979,7 +993,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		} 
 		//headers based loop for times date end
 		//total and hours  start
-		$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod and shift in ($team) and plant_code='$plantcode' $time_query  GROUP BY operation ORDER BY operation DESC LIMIT 0,1";          
+		$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id='$mod' and shift in ($team) and plant_code='$plantcode' $time_query  GROUP BY operation ORDER BY operation DESC LIMIT 0,1";          
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -997,7 +1011,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$atotal=$sum; 
 		$stha=0; 
 		$effa=0; 
-		$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod 
+		$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id='$mod' 
 		and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY resource_id,operation ORDER BY operation DESC LIMIT 0,1"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -8 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1015,7 +1029,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$total=0;
 		$max=0; 
 		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
-		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plant_code' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		where Date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plant_code' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -9 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1042,7 +1056,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		/* PLAN EFF, PRO */ 
 		$peff_a=0; 
 		$ppro_a=0;
-		$sql2="select avg(planned_eff) as \"plan_eff\", sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name=$mod and plant_code='$plantcode'";          
+		$sql2="select avg(planned_eff) as \"plan_eff\", sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name='$workstation_code' and plant_code='$plantcode'";          
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1220,7 +1234,7 @@ for ($j=0;$j<sizeof($sections);$j++)
             //A-Plan 
 			$max=0; 
 			$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
-			where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+			where Date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -12 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
@@ -1240,7 +1254,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 					}
 				} 
 			}       
-			$sql2="select sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name=$mod and plant_code='$plantcode'";          
+			$sql2="select sum(planned_qty) as \"plan_pro\" from $pps.monthly_production_plan where planned_date=\"$date\" and row_name='$workstation_code' and plant_code='$plantcode'";          
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
 			{ 
@@ -1366,8 +1380,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 	{		
 		$workstations[]=$sql_row['workstation_id'];
 	} 
-	$resourceIds = implode(",",$workstations);
-	$sql2="select sum(good_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in($resourceIds) and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+	$resourceIds = implode("','" , $workstations);
+	$sql2="select sum(good_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ('".$resourceIds."') and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -13 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
@@ -1474,8 +1488,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 	$smv=0; 
 	//$phours=7.5; 
 	$peff_a_total=0; 
-	$sql="select workstation_id as mod_no from $pms.workstation where section_id in ($sections_group)";      
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-12 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql="select workstation_id as mod_no from $pms.workstation where section_id in ('".$sections_group."')";      
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-12 Error". $sql.mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
 	{ 
 		$mod=$sql_row['mod_no']; 
@@ -1496,7 +1510,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		// } 
 		$max=0; 
 		$sql2="select style, schedule,color, sum(good_quantity) as \"qty\" from $pts.transaction_log 
-		where Date(created_at)=\"$date\" and resource_id=$mod and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
+		where Date(created_at)=\"$date\" and resource_id='$mod' and plant_code='$plantcode' and  shift in ($team) $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -16 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1516,7 +1530,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				} 
 			} 
 		} 
-		$sql2="select planned_qty from $pps.monthly_production_plan where planned_date=\"$date\" and row_no=$mod";          
+		$sql2="select planned_qty from $pps.monthly_production_plan where planned_date=\"$date\" and row_name='$workstation_code'";         
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql monthy-prod-9 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1526,8 +1540,8 @@ for ($j=0;$j<sizeof($sections);$j++)
 		$pstha=$pstha+($plan_pro*$smv)/60; 
 	} 
 	$peffresulta=0; 
-	$sql21="select avg(planned_eff) as eff from $pps.monthly_production_plan where group in ($sections_group) and planned_date=\"$date\"";      
-	$sql_result21=mysqli_query($link, $sql21) or exit("Sql monthy-prod-10 Error". $sql2.mysqli_error($GLOBALS["___mysqli_ston"])); 
+	$sql21="select avg(planned_eff) as eff from $pps.monthly_production_plan where `group` in ('".$sections_group."') and planned_date=\"$date\"";      
+	$sql_result21=mysqli_query($link, $sql21) or exit("Sql monthy-prod-10 Error". $sql21.mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row21=mysqli_fetch_array($sql_result21)) 
 	{
 		$peffresulta=$sql_row21['eff'];
@@ -1637,7 +1651,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			for($i=0; $i<sizeof($hr); $i++) 
 			{
 				$sth=0; 
-				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ('".$resourceids."') 
 				and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -17 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1669,7 +1683,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$eff=0; 
 				$minutes=60;
-				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+				$sql2="select style,schedule,color,sum(good_quantity) as \"total\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ('".$resourceids."') 
 				and shift in ($team) and plant_code='$plantcode' and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -18 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1719,7 +1733,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{ 
 				$sum=0; 
 				$count=0;
-				$sql2="select good_quantity from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id in ($resourceids) $time_query and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql2="select good_quantity from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" and resource_id in ('".$resourceids."') $time_query and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -20 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1728,7 +1742,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				} 
 
 				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where shift in ($team) and Date(created_at)=\"$date\" $time_query 
-				and resource_id in ($resourceids) and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				and resource_id in ('".$resourceids."') and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -21 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{ 
@@ -1778,7 +1792,7 @@ if($style_break==1)
 	$exp_pcs_hr_total=0; 
 	$avgperhour2_sum=0; 
 	$exp_pcs_hr2_sum=0; 	
-	$sql="select style,schedule,color from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ($resourceids) 
+	$sql="select style,schedule,color from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id in ('".$resourceids."') 
 	and shift in ($team) and plant_code='$plantcode' $time_query GROUP BY style,operation ORDER BY operation DESC LIMIT 0,1";      
 	$sql_result=mysqli_query($link, $sql) or exit("Sql transaction log -22 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row=mysqli_fetch_array($sql_result)) 
@@ -1794,7 +1808,7 @@ if($style_break==1)
 		}
 		$style_summery.="<tr><td>".$mod_style."</td>"; 			
 		$count=0; $total=0;
-		$sql2="select group_concat(distinct resource_id) as \"mods\",count(distinct resource_id) as \"count\",sum(godd_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" $time_query and resource_id in ($resourceids) and style=\"$mod_style\" and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql2="select group_concat(distinct resource_id) as \"mods\",count(distinct resource_id) as \"count\",sum(godd_quantity) as sum from $pts.transaction_log where Date(created_at)=\"$date\" $time_query and resource_id in ('".$resourceids."') and style=\"$mod_style\" and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 		//echo $sql2."<br>";
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -23 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1810,7 +1824,7 @@ if($style_break==1)
 			$total=0;
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and style=\"$mod_style\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ($resourceids) and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and style=\"$mod_style\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ('".$resourceids."') and shift in ($team)  GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				//echo $sql2."<BR>"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -24 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1851,7 +1865,7 @@ if($style_break==1)
 		$avgperhour=0; 
 		$avgperhour2=0; 
 		$count2=0; 
-		$sql2="select count(distinct resource_id) as \"count\", sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id in ($resourceids) and style=\"$mod_style\"  and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+		$sql2="select count(distinct resource_id) as \"count\", sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id in ('".$resourceids."') and style=\"$mod_style\"  and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 		$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -25 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row2=mysqli_fetch_array($sql_result2)) 
 		{ 
@@ -1939,7 +1953,7 @@ if($style_break==1)
 	{
 		for($i=0; $i<sizeof($hr); $i++) 
 		{ 
-			$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ($resource_ids) and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+			$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and resource_id in ('".$resource_ids."') and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 			//echo $sql2;           
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -26 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row2=mysqli_fetch_array($sql_result2)) 
@@ -1962,7 +1976,7 @@ if($style_break==1)
 	{
 		$value=1;
 	}	
-	$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and resource_id in ($resource_ids) and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+	$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$sdate\" and resource_id in ('".$resource_ids."') and shift in ($team) $time_query GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -27 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	while($sql_row2=mysqli_fetch_array($sql_result2)) 
 	{ 
