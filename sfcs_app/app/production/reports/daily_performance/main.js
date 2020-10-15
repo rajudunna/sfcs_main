@@ -45,7 +45,7 @@ class ReactApp extends React.Component {
         }else{
             value = this.currentDate;
         }
-        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value+'plant='+ this.plant_code;
+        let url = '/sfcs_app/app/production/reports/daily_performance/apicalls.php/getData?date='+value+'&plant='+ this.plant_code;
         axios.get(url, {
             responseType: 'json'
         }).then(response => {
