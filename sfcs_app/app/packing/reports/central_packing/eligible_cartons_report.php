@@ -149,7 +149,7 @@ table, th, td {
 						$mo_nos3[] = $sql_row['mo_number'];
 					}
 					$mos3 = implode(',', $mo_nos3);
-					$pm_mo_alloc_sql="SELECT pm_container_mo_alloc_id FROM $pps.pm_container_mo_alloc WHERE mo_number in ($mos3) and plant_code='$plantcode'";
+					$pm_mo_alloc_sql="SELECT pm_ct_mo_alloc_id FROM $pps.pm_container_mo_alloc WHERE mo_number in ($mos3) and plant_code='$plantcode'";
 					$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack methods");
 					if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 					{
