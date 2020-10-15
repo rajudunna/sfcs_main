@@ -79,6 +79,8 @@ if(isset($_POST['filter']))
 	<th>In</th>
 	<th>Out</th>
 	<th>FG</th>
+	<th>FCA</th>
+	<th>Shipped</th>
 	<th>Status</th>
 	</tr>";
 	
@@ -146,8 +148,9 @@ if(isset($_POST['filter']))
 			if($order_qty<=$fg || $fg >0){
 				$status="FG";
 			}
-			
-				
+		
+				$fca=0;
+				$shipped=0;
 				echo "<tr>";
 				echo "<td>".$order_date."</td>";
 				echo "<td>".$style."</td>";
@@ -158,6 +161,8 @@ if(isset($_POST['filter']))
 				echo "<td>".$sew_in."</td>";
 				echo "<td>".$sew_out."</td>";
 				echo "<td>".$fg."</td>";
+				echo "<td>".$fca."</td>";
+				echo "<td>".$shipped."</td>";
 				echo "<td>$status</td>";
 				echo "</tr>";
 		}
