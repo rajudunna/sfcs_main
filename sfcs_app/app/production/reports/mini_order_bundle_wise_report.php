@@ -20,8 +20,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_code = $_SESSION['plantCode'];
 $username =  $_SESSION['userName'];
-$style=$_POST['style'];
-$master_po=$_POST['mpo'];
+
 $style=$_GET['style'];
 $mpo=$_GET['mpo'];
 $reptype=$_POST['reptype'];
@@ -71,7 +70,6 @@ if($reptype == 1) {
                     <?php
                     //geting style
                     $sql="SELECT master_po_description,mp_order.master_po_number AS mpo FROM $pps.`mp_order` LEFT JOIN $pps.mp_color_detail ON mp_color_detail.`master_po_number` = mp_order.`master_po_number` where style = '$style' AND mp_order.plant_code='$plant_code' AND mp_order.is_active=1";
-                    //echo  $sql;	
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
                     echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='secondbox();' required>";
     
@@ -111,9 +109,9 @@ if($reptype == 1) {
         <br/>
         <div class="row">
             <?php
-            echo $master_po;
-                if($style !='' && $reptype !=''){
-       
+                if(isset($_POST['submit'])){
+                    $style=$_POST['style'];
+                    $master_po=$_POST['mpo'];
                     $operation_code = [];	
                     $operations_yes = [];
                     $operations_no = [];
@@ -124,7 +122,6 @@ if($reptype == 1) {
                     
                     //get style and color operations
                     $get_details="SELECT schedule,color FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
-                    echo $get_details;
                     $result1 = $link->query($get_details);
                     while($row1 = $result1->fetch_assoc())
                     {

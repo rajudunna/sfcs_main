@@ -186,7 +186,7 @@ if (mysqli_num_rows($res_workstations) > 0) {
 
 				if ($workstations_count > 0) {
 
-					$sql_smv_nop = "SELECT smv,capacity_factor FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log AS upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.pp_log_id WHERE  plant_code = '" . $plantcode . "'  AND planned_date ='" . $dates[$k] . "' AND `group`='" . $section_code . "' AND row_name='" . $workstation_code . "' limit 1";
+					$sql_smv_nop = "SELECT smv,capacity_factor FROM $pps.monthly_production_plan WHERE  plant_code = '" . $plantcode . "'  AND planned_date ='" . $dates[$k] . "' AND `group`='" . $section_code . "' AND row_name='" . $workstation_code . "' limit 1";
 					 
 					$res_smv_nop = mysqli_query($link, $sql_smv_nop) or exit("Sql smv nop error" . mysqli_errno($link));
 					$row_smv_nop = mysqli_fetch_row($res_smv_nop);

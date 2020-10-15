@@ -756,7 +756,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                     $original_module=$resource_row['resource_id'];
                 }
                 /**update resource id tasks header with work sation id's*/
-                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                $Qry_update_taskheader="UPDATE $tms.task_header SET resource_id =NULL,task_status='OPEN',task_progress='OPEN' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                 $Qry_taskjobs_result=mysqli_query($link_new, $Qry_update_taskheader) or exit("Sql Error at taskheader".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                 /**Update qry for priority */
@@ -833,7 +833,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 if(is_null($resource_id)){
                     /** */
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
                     
                     /**Update qry for priority */
@@ -1679,6 +1679,25 @@ function getRejectionReasons($dept_type) {
     return $reasons;
 }
 
+/**
+ * to get shifts for the plant code
+ */
+function getShifts($plant_code){
+    global $link_new;
+    global $pms;
+    $shift_data=[];
+    $query="select * from $pms.shifts where plant_code='$plant_code' and is_active=1";
+    $sql_res = mysqli_query($link_new, $query) or exit("Sql Error at shift details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+    $shifts_rows_num = mysqli_num_rows($sql_res);
+    if ($shifts_rows_num > 0) {
+        while ($shifts_row = mysqli_fetch_array($sql_res)) {
+            $shift_data[] = $shifts_row;
+        }
+    }
+    return array(
+        'shift_data' => $shift_data
+    );
+}
   /** function to get jobs which are unplanned sewing jobs
    * @param:po,task_type,plant_code
    * @return:jobs

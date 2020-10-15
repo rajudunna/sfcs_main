@@ -85,20 +85,21 @@ if(isset($_POST['submit'])) {
 				<input class='form-control' type="text" data-toggle="datepicker" id="edate" onchange="return verify_date();" name="to_date" size="8" value="<?php  if(isset($_POST['to_date'])) { echo $_POST['to_date']; } else { echo date("Y-m-d"); } ?>" />
 			</div>
 			<?php
+			$workstation_type_id = array();
 			$sqlxx="select workstation_type_id from $pms.workstation_type where plant_code='$plantcode' and workstation_type_description='Cutting'";
 			$sql_resultx1=mysqli_query($link, $sqlxx) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 			{
-				 $workstation_type_id=$sql_rowx1['workstation_type_id'];
+				 $workstation_type_id[] =$sql_rowx1['workstation_type_id'];
 			}
+			$workstation_type_id = implode("','",$workstation_type_id);
 			?>
 			<div class='col-md-2'>
 				<label>Section: </label>
 				<select name="section" class="select2_single form-control">
 				<option value='All' <?php if($section=="All"){ echo "selected"; } ?> >All</option>
 				<?php 
-				$sqly="SELECT workstation_id,workstation_description FROM $pms.workstation where plant_code='$plantcode'";
-				// echo $sqly;
+				$sqly="SELECT workstation_id,workstation_description FROM $pms.workstation where workstation_type_id in ('$workstation_type_id') and plant_code='$plantcode'";
 				$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error 1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowy=mysqli_fetch_array($sql_resulty))
 				{

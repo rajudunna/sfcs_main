@@ -683,15 +683,24 @@
 							        foreach($job_number as $jm_sew_id=>$sew_num)
 							        {
 										//To get taskjobs_id
-										$task_jobs_id = [];
 										$qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
 										$qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 										while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
-											$task_jobs_id[] = $row21['task_jobs_id'];
+											$task_jobs_id = $row21['task_jobs_id'];
+										}
+										$balance_qty=0;
+										//To check whether first operation of job scanned or not
+										$qry_toget_first_ops_qry = "SELECT original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
+										$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+										while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
+											$input_qty = $row3['good_quantity'];
+											$rejection_qty = $row3['rejected_quantity'];
+											$original_qty=$row3["original_quantity"];
+											$balance_qty = $original_qty - ($input_qty+$rejection_qty);
 										}
 										//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 										$job_detail_attributes = [];
-										$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id in ('".implode("','" , $task_jobs_id)."') and plant_code='$plant_code'";
+										$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_jobs_id' and plant_code='$plant_code'";
 										$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 										while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 									
@@ -724,8 +733,11 @@
 											$id="#008080";
 										}
 										$title=str_pad("Style:".$style1,30)."\n".str_pad("Schedule:".$schedule1,50)."\n".str_pad("Color:".$color1,50)."\n".str_pad("Job No:".$sew_num,50)."\n".str_pad("Qty:".$sew_qty,50);
-
-										echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>';  
+										
+										if($balance_qty > 0)
+										{
+											echo '<li id="'.$jm_sew_id.'" data-color="'.$id.'" style="background-color:'.$id.';  color:white;" title="'.$title.'"><strong>'.$sew_num.'</strong></li>'; 
+										} 
 							        } 
 								   echo "</ul>";
 								  echo "</div>";

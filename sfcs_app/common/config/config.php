@@ -1,7 +1,7 @@
 <?php
 //Without LDAP , With LDAP Unblock LDAP Code
 //$username="sfcsproject1";
-// echo $_SERVER['DOCUMENT_ROOT'];
+
 error_reporting(0);
 require_once($_SERVER['DOCUMENT_ROOT']."/configuration/API/confr.php");
 $conf1 = new confr($_SERVER['DOCUMENT_ROOT']."/configuration/API/saved_fields/fields.json");
@@ -265,3 +265,5 @@ $order_joins_in_1 ="order_joins='1'";
 
     // }
 //===================================================*/
+
+$sizes_order = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '32A', '32B', '32C', '32D', '32E', '32F', '32G', '32H'];

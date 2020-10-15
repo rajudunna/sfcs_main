@@ -46,11 +46,14 @@ $get_fabric_requisition = getFullURL($_GET['r'],'fabric_requisition.php','N');
 	$get_url1 = getFullURLLevel($_GET['r'],'marker_length_popup.php',0,'R');
 	
 
-	$query = "select * from $pms.tbl_fabric_request_time where plant_code='$plant_code'";
+	$query = "select sla from $pms.departments where plant_code='$plant_code' and department_type='RM_WAREHOUSE'";
 	$update_request_time=mysqli_query($link, $query) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($update_request_time)){
-		$rms_request_time = $row['request_time'];
+		$rms_request_time = $row['sla'];
 	}
+	  
+	
+
 //echo $doc_no;
 ?>
 
@@ -423,13 +426,13 @@ if(isset($_POST["submit1"]))
 		$uuid1=$uuid_row1['uuid'];
 	
 	}
-	for($i=0;$i < count($ref);$i++ )
-	{		
+	// for($i=0;$i < count($ref);$i++ )
+	// {		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",'NOW()','$plant_code')";	
 		
-	}
+	//}
 	// var_dump($insert);
 	// die();
 	// $insert= substr_replace($insert, "", -1);
