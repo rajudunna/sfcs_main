@@ -356,8 +356,8 @@ if(isset($_POST['submit']))
 					$to=$ii+1;
 					$toHour=$to.":00:00";
 					$time_display=$fromHour."-".$toHour;
-					$qryGettransactions="SELECT sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,created_at,shift FROM $pts.transaction_log WHERE plant_code='$plantCode' AND operation='$maxOperation' AND parent_barcode IN ('".implode("','" , $originalBarcode)."') $shiftValue AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$fromHour."') AND ('".$toHour."') 
-					AND is_active=1 GROUP BY shift,style,size ORDER BY style,shift,parent_barcode*1
+					$qryGettransactions="SELECT sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,DATE(created_at) as created_at,shift FROM $pts.transaction_log WHERE plant_code='$plantCode' AND operation='$maxOperation' AND parent_barcode IN ('".implode("','" , $originalBarcode)."') $shiftValue AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$fromHour."') AND ('".$toHour."') 
+					AND is_active=1 GROUP BY shift,style,size,parent_job ORDER BY style,shift,parent_job*1
 					";
 					//echo "</br>transaction : ".$qryGettransactions."</br>";
 					$transactionResult=mysqli_query($link, $qryGettransactions) or exit("Error while getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -421,15 +421,22 @@ if(isset($_POST['submit']))
 							}
 							
 							/**getting smv and nop form monthly upload*/
-							$qryMonthlyupload="SELECT mp.smv AS smv,mp.capacity_factor FROM $pps.monthly_production_plan_upload_log ml LEFT JOIN $pps.monthly_production_plan mp 
-							ON ml.monthly_pp_up_log_id=mp.pp_log_id WHERE ml.plant_code='$plantCode' AND 
-							DATE(mp.planned_date)='$createDate' AND mp.product_code='$style' AND mp.colour='$color'";
-							//echo "</br>monthly_production_plan_upload_log : ".$qryMonthlyupload."</br>";
+							// $qryMonthlyupload="SELECT mp.smv AS smv,mp.capacity_factor FROM $pps.monthly_production_plan_upload_log ml LEFT JOIN $pps.monthly_production_plan mp 
+							// ON ml.monthly_pp_up_log_id=mp.pp_log_id WHERE ml.plant_code='$plantCode' AND 
+							// DATE(mp.planned_date)='$createDate' AND mp.product_code='$style' AND mp.colour='$color'";
+							$qryMonthlyupload="SELECT smv,capacity_factor FROM $pps.monthly_production_plan WHERE DATE(planned_date)='$createDate' AND plant_code='$plantCode' AND product_code='$style' AND colour='$color'";
+							// echo "</br>monthly_production_plan_upload_log : ".$qryMonthlyupload."</br>";
 							$monthlyResult=mysqli_query($link, $qryMonthlyupload) or exit("Error while getting monthly production plan upload".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($monthlyRow=mysqli_fetch_array($monthlyResult))
+							if(mysqli_num_rows($monthlyResult)>0)
 							{
-								$smv=round($monthlyRow['smv'],3);	
-								$nop=$monthlyRow['capacity_factor'];
+								while($monthlyRow=mysqli_fetch_array($monthlyResult))
+								{
+									$smv=round($monthlyRow['smv'],3);	
+									$nop=$monthlyRow['capacity_factor'];
+								}
+							}else{
+									$smv=0;
+									$nop=0;
 							}							
 												
 							$bgcolor="";	
@@ -441,7 +448,7 @@ if(isset($_POST['submit']))
 							$sahs=round($good_qty*$smv/60,3);
 							
 								
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$workstation_code</td><td>".$section_name."-".$section_code."</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cut_number."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$good_qty."</td><td>".$sah[$sizes_val[$k]]."</td></tr>";
+							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$workstation_code</td><td>".$section_name."-".$section_code."</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cut_number."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$good_qty."</td><td>".$sahs."</td></tr>";
 							$total_qty=$total_qty+$good_qty;							
 							$total_qty_sah=$total_qty_sah+$sahs;												
 						}
