@@ -12,7 +12,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/input_status_update_input.php");
-$has_permission=haspermission($url_r); 
+// $has_permission=haspermission($url_r); 
 $isinput=$_GET['isinput'];
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
