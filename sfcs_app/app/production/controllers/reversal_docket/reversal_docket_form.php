@@ -244,7 +244,7 @@ if(isset($_POST['formSubmit']))
                             <th>Lay Plies</th>
                             <th>Reverse Lay</th>
                             <th>Report Cut</th>
-                            <th>Delete Cut</th>
+                            <th>Reverse Cut</th>
                         </thead>";
                         $s_no = 1;
                         while($row = mysqli_fetch_array($layInfo)){
