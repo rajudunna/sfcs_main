@@ -132,7 +132,7 @@ if(sizeof($get_sub_po)>0)
 	{
 		echo "<tr><td>".($i+1)."</td><td><input type=\"text\" size=\"30\" name=\"item[]\" id=\"item$i\" value=\"\" class='notallow'></td>";
 		
-		$reason_query="select internal_reason_description from $mdm.reasons where department_type='RM_WAREHOUSE'";
+		$reason_query="select internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'";
 		$sql_result11=mysqli_query($link, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_num_check=mysqli_num_rows($sql_result11);
 		
