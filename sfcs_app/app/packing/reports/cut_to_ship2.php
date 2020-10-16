@@ -3,11 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R')); 
 $plant_code=$_SESSION['plantCode'];     
-?>
-
-
-<?php 
-
     $current_week = getFullURL($_GET['r'],'current_week.html','R');
     $pre_week     = getFullURL($_GET['r'],'previous_week.html','R');
 ?>
