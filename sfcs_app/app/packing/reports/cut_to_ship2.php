@@ -36,7 +36,7 @@ function fourthbox()
 
 function fifthbox()
 {
-    window.location.href =url+"&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value;
+    window.location.href =url+"&style="+document.input.style.value+"&schedule="+document.input.schedule.value+"&color="+document.input.color.value+"&mpo="+document.input.mpo.value+"&sub_po="+document.input.sub_po.value;
 }
 </script>
 
@@ -53,7 +53,7 @@ if(isset($_POST['filter2']))
     $get_schedule=$_POST['schedule']; 
     $get_color=$_POST['color'];
     $get_mpo=$_POST['mpo'];
-    $get_sub_po=$POST['sub_po'];
+    $get_sub_po=$_POST['sub_po'];
 }
 else
 {
@@ -200,7 +200,8 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
     $schedule=$_POST['schedule']; 
     $color=$_POST['color'];
     $mpo=$_POST['mpo'];
-    $sub_po=$POST['sub_po'];
+    $sub_po=$_POST['sub_po'];
+    echo $sub_po;
     if ($style=='NIL' or $schedule=='NIL' or $color=='NIL' or $mpo=='NIL') {
         echo '<div class="alert alert-danger">
               <strong>Warning!</strong> Please Provide All Details
@@ -290,13 +291,14 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
                 $maxOperation=$maxOperationResultRow['operation_code'];
             }
         }
-        die();
+     
         //get style and color operations
-        $get_details="SELECT style,schedule,color,size,resource_id,sum(if(operation_id=".$minOperation.",good_quantity,0)) as input_quantity,sum(if(operation_id=".$maxOperation.",good_quantity,0)) as output_quantity,sum(if(operation_id=".$cut_operation.",good_quantity,0)) as cut_quantity,sum(if(operation_id=".$pack_operation.",good_quantity,0)) as fg_quantity,sum(rejected_quantity) as rejected_qty FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' AND plant_code='$plant_code' AND is_active=1 GROUP BY size";
+        $get_details="SELECT style,schedule,color,size,resource_id,sum(if(operation=".$minOperation.",good_quantity,0)) as input_quantity,sum(if(operation=".$maxOperation.",good_quantity,0)) as output_quantity,sum(if(operation=".$cut_operation.",good_quantity,0)) as cut_quantity,sum(if(operation=".$pack_operation.",good_quantity,0)) as fg_quantity,sum(rejected_quantity) as rejected_qty FROM $pts.transaction_log WHERE style='$style' AND schedule='$schedule' AND color='$color' AND plant_code='$plant_code' AND is_active=1 GROUP BY size";
+        
         $result5 = $link->query($get_details);
         while($row5 = $result5->fetch_assoc())
         {
-            $sizes=$row5['$row5'];
+            $sizes=$row5['size'];
             $input_quantity=$row5['input_quantity'];
             $output_quantity=$row5['output_quantity'];
 			$cut_quantity=$row5['cut_quantity'];
@@ -316,7 +318,21 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
 			{
 				$status='FG';
 			}
-              
+            
+            //To get workstation description
+            $query = "select section_id from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$row5['resource_id']."' AND is_active=1";
+            $query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($des_row=mysqli_fetch_array($query_result))
+            {
+              $section_id = $des_row['section_id'];
+            }
+            //To get section
+            $get_sections="SELECT section_name FROM $pms.sections WHERE section_id='$section_id' AND plant_code='$plant_code' AND is_active=1";
+            $sections_result=mysqli_query($link_new, $get_sections) or exit("Sql Error at get_sections".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($sec_row=mysqli_fetch_array($sections_result))
+            {
+              $section_name=$sec_row['section_name'];
+            }
             echo "<tr>";
             echo "<td>".$buyer_desc."</td>";
             echo "<td>".$status."</td>";
@@ -325,7 +341,7 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
             echo "<td>".$style."</td>";
             echo "<td>".$schedule."</td>";
             echo "<td>".$color."</td>";
-            echo "<td></td>";
+            echo "<td>".$section_name."</td>";
             echo "<td>".$sizes."</td>";
             echo "<td>".$total_order_qty."</td>";
             echo "<td>".$cut_quantity."</td>";
