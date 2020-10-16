@@ -3,11 +3,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R')); 
 $plant_code=$_SESSION['plantCode'];     
-?>
-
-
-<?php 
-
     $current_week = getFullURL($_GET['r'],'current_week.html','R');
     $pre_week     = getFullURL($_GET['r'],'previous_week.html','R');
 ?>
@@ -44,7 +39,7 @@ function fifthbox()
 <div class="panel-heading">Cut to Ship Analysis Report</div>
 <div class="panel-body">
 <form name="input" method="post" action="<?php getFullURL($_GET['r'],'cut_to_ship2.php','R'); ?>">
-<!-- <strong><a class="btn btn-info btn-xs" href="<?php echo $current_week; ?>" target="_blank">Current Week</a></strong> | <strong> <a class="btn btn-info btn-xs"  href="<?php echo $pre_week;?>" target="_blank">Previous Week</a> </strong> -->
+<strong><a class="btn btn-info btn-xs" href="<?php echo $current_week; ?>" target="_blank">Current Week</a></strong> | <strong> <a class="btn btn-info btn-xs"  href="<?php echo $pre_week;?>" target="_blank">Previous Week</a> </strong>
 
 <?php
 if(isset($_POST['filter2']))
