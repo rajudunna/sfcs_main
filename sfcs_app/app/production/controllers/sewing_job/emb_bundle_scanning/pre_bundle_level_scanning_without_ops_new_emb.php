@@ -28,8 +28,7 @@ $category="'EMBELLISHMENT'";
 <select class='form-control' name = 'shift' id = 'shift' required>
 	<option value="">Select Shift</option>
 	<?php 
-	$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plant_code' and is_active=1";
-	echo $shift_sql;
+	$shift_sql="SELECT shift_code FROM $pms.shifts where plant_code = '$plantcode' and is_active=1";
 	$shift_sql_res=mysqli_query($link, $shift_sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($shift_row = mysqli_fetch_array($shift_sql_res))
 	{
@@ -44,7 +43,7 @@ $category="'EMBELLISHMENT'";
 	<select class='form-control' name = 'operation_code'  id = 'operation' required>
 		<option value="">Select Operation</option>
 		<?php 
-		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plant_code' and is_active=1 and operation_category='EMBELLISHMENT'";
+		$sqly="SELECT operation_code,operation_name FROM $pms.operation_mapping where plant_code = '$plantcode' and is_active=1 and operation_category='EMBELLISHMENT'";
 		$sql_resulty=mysqli_query($link, $sqly) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowy=mysqli_fetch_array($sql_resulty))
 		{
@@ -55,6 +54,8 @@ $category="'EMBELLISHMENT'";
 		?>
 	</select>
 </div><br>
+<input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plantcode ?>'>		
+<input type='hidden' id='username' name='username' value='<?php echo $username ?>'>
 <input type="submit" id="continue" class="btn btn-success" value="CONTINUE">
 </div>
 </form>
