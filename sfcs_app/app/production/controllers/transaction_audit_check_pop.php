@@ -2,7 +2,8 @@
 <?php
 //Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
 //08-09-2016/removed user_acl in the page
-$plantcode=$_SESSION['plantCode'];
+// $plantcode=$_SESSION['plantCode'];
+$plantcode= 'Q01';
 ?>
 <html>
 <head>
@@ -123,6 +124,7 @@ FROM $pts.`transaction_log` trans
 WHERE  trans.schedule = '$schedule' AND trans.`barcode_type` = 'APLB' 
 AND operation = '130' GROUP BY style,color,DATE(trans.created_at),barcode,operation,resource_id,shift";
 $sql_result_sql_pts_trans_out=mysqli_query($link,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
+$tot1 = 0;
 while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
 {
 	$out_put_qty = $sql_row_pts_trans_out['good_qty'];
@@ -150,10 +152,11 @@ while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out)
 		if($plan_qry_num>0){
 			while($plan_qry_row=mysqli_fetch_array($plan_qry_result))
 			{
-				$nop = $plan_qry_row['workstation_code'];
+				$nop = $plan_qry_row['nop'];
 				$smv = $plan_qry_row['smv'];
 			}
 		}
+		$tot1 += $out_put_qty;
 		echo "<tr bgcolor=\"$bgcolor\">";
 		//echo "<td>$tid</td>";
 		echo "<td>$date</td>";
@@ -173,7 +176,7 @@ while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out)
 	}
 }
 $count_val = 0;	
-echo "<tr><td>Output Total:</td><td id=\"table1Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$tot1."
+echo "<tr><td colspan=\"8\">Output Total:</td><td id=\"table1Tot1\" style=\"background-color:#FFFFCC; color:red;\">".$tot1."
 </td></tr>";
 
 echo "</table>";
@@ -327,7 +330,7 @@ echo"</br>";
 // echo "</br>";
 
 // ?>
-// <script language="javascript" type="text/javascript">
+ <script language="javascript" type="text/javascript">
 // //<![CDATA[
 // 	//setFilterGrid( "table111" );
 // var fnsFilters = {
@@ -359,7 +362,7 @@ echo"</br>";
 // //]]>
 // </script>
 
-// <?php
+ <?php
 
 // echo "</table>";
 
