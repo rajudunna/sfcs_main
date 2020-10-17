@@ -2,8 +2,7 @@
 <?php
 //Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
 //08-09-2016/removed user_acl in the page
-// $plantcode=$_SESSION['plantCode'];
-$plantcode= 'Q01';
+$plantcode=$_SESSION['plantCode'];
 ?>
 <html>
 <head>
