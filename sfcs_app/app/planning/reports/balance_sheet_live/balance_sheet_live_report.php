@@ -208,7 +208,7 @@ function getStylePonumbersDropDownData($fromDate, $toDate, $plantCode, $buyer_di
 	<div class='panel panel-primary'>
 		<div class='panel-heading'>Balance Sheet (Live) - Week: <?php echo date("W") + 1; ?></div>
 		<div class='panel-body'>
-			<form name="balanceSheetForm" id="balanceSheetForm" action="index-no-navi.php.php?r=<?php echo $_GET['r']; ?>" method="post">
+			<form name="balanceSheetForm" id="balanceSheetForm" action="index-no-navi.php?r=<?php echo $_GET['r']; ?>" method="post">
 				<div class="row">
 					<input type="hidden" name="today" id="today" value="<?php echo date("Y-m-d"); ?>">
 					<div class="col-md-2">
@@ -320,7 +320,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                 while ($sql_row = mysqli_fetch_array($sql_result)) {
                     $week_code_ref = $sql_row['week_code'];
                     $week_code_ref1 = $sql_row['week_code'] + $r;
-                    $year_ref = $sql_row['year'];
+                    $year_ref = $sql_row['YEAR'];
                     if ($sql_row['week_code'] == 53) {
                         $week_code_ref1 = 1;
                         $r = 1;
@@ -354,7 +354,7 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                     $week_array = getStartAndEndDate($week_code[$i], $exfact_year[$i]);
                     $monday = date("Y-m-d", strtotime(get_week_date($week_code[$i], $exfact_year[$i])));
                     $monday_split = explode("-", $monday);
-
+                    
                     $table.='<td class=date>' . $week_array["friday"] . '</td>';
                 }
                 $table.='</tr>';
@@ -365,13 +365,17 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                      $style_id_arry= explode('$@',$style_id);
                     $style_Po_number_array=array($style_id_arry[1]=>$style_id_arry[0]);
                 }
+                $url=getFullURL($_GET['r'],'tabular_rep_pop.php','N');
                 foreach ($style_Po_number_array as $style_code => $po_number) {
                     $table.='<tr>';
                     $table.='<th>' . $style_code . '</th>';
                     for ($i = 0; $i < sizeof($week_code); $i++) {
                         for ($i = 0; $i < sizeof($week_code); $i++) {
                             $week_array = getStartAndEndDate($week_code[$i], $exfact_year[$i]);
-                            $table.="<td class=style><a href=\"$url&week_start=" . $week_array["week_start"] . "&week_end=" . $week_array["week_end"] . "&style_id=$style_code\" onclick=\"Popup=window.open(\"$url&week_start=" . $week_array["week_start"] . "&week_end=" . $week_array["week_end"] . "&style_id=$style_code','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><strong>POP</strong></center></a></td>";
+                            $table.="<td class=style>
+                            
+                            </td>";
+                            // <a href=\"$url&week_start=" . $week_array["week_start"] . "&week_end=" . $week_array["week_end"] . "&style_id=$style_code\" onclick=\"Popup=window.open(\"$url&week_start=" . $week_array["week_start"] . "&week_end=" . $week_array["week_end"] . "&style_id=$style_code','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\"><center><strong>POP</strong></center></a>
                         }
                     }
                     $table.='</tr>';
@@ -419,10 +423,10 @@ if ((isset($_GET['sdate']) && isset($_GET['edate']))||(isset($_POST['sdate'])&& 
                                     WHERE jm_dockets.`jm_docket_id`='".$sql_row2['jm_docket_id']."'";
                                      $sql_result3 = mysqli_query($link, $sql_cg) or exit("Sql Error3 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                      while ($sql_row3 = mysqli_fetch_array($sql_result3)) {
-                                        $sql_isMainCg="SELECT is_main_comp_group FROM `lp_component_group` WHERE lp_cg_id = '".$sql_row3['component_group_id']."' where is_main_comp_group='1'";
+                                        $sql_isMainCg="SELECT is_main_component_group FROM $pps.`lp_component_group` WHERE lp_cg_id = '".$sql_row3['component_group_id']."' AND is_main_component_group='1'";
                                         $sql_result4 = mysqli_query($link, $sql_isMainCg) or exit("Sql Error4 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                         if(mysqli_num_rows($sql_result4)){
-                                           $sql_ratio_sum="SELECT SUM(size_ratio) as ratio_qty FROM lp_ratio_size WHERE ratio_id = '".$sql_row3['ratio_id']."'";
+                                           $sql_ratio_sum="SELECT SUM(size_ratio) as ratio_qty FROM $pps.lp_ratio_size WHERE ratio_id = '".$sql_row3['ratio_id']."'";
                                          $sql_result5 = mysqli_query($link, $sql_ratio_sum) or exit("Sql Error5 in cut Qty" . mysqli_error($GLOBALS["___mysqli_ston"]));
                                          $sql_row5 = mysqli_fetch_array($sql_result5);
                                            $cutQty += $sql_row2['plies'] * $sql_row5['ratio_qty'];

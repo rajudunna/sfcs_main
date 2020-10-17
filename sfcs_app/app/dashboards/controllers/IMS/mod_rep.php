@@ -177,6 +177,12 @@
                                                 $parent_barcode=$PPLBRow['parent_barcode'];
                                             }
 
+                                            $pplbBrcdQuery = "SELECT barcode from $pts.barcode where barcode_id = '$parent_barcode' ";
+                                            $pplbBrcdResult = mysqli_query($link, $pplbBrcdQuery);
+                                            while ($pplbRow = mysqli_fetch_array($pplbBrcdResult)) {
+                                                $pplb_barcode = $pplbRow['barcode'];
+                                            }
+
                                             $child_barcode[]=$APLBRow['child_barcode'];
                                             $child_barcode=array();
                                             $qrygetParentBarcodeAPLB="SELECT child_barcode FROM $pts.parent_barcode WHERE parent_barcode='$parent_barcode' AND child_barcode_type='APLB' AND plant_code='$plantCode' AND is_active=1";
@@ -187,7 +193,7 @@
                                             }
 
 
-                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where barcode IN ('".implode("','" , $child_barcode)."') GROUP BY operation";
+                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where parent_barcode='$pplb_barcode' GROUP BY operation";
                                             // echo $transactionsQry;
                                             $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             while($transactionRow=mysqli_fetch_array($transactionsResult)) {
@@ -303,13 +309,14 @@ $(document).ready(function(){
 
                 }
             });
-            var module = '<?= $module?>';
+            var module = $('#module_ref').val();
             var plantCode = '<?= $plantCode?>';
+            var module1 = '<?= $module?>';
             var user_name = '<?= $user_name?>';
                 const data={
                                 "bundleNumber": bundles,
                                 "plantCode": '<?= $plantCode ?>',
-                                "resourceId": '<?= $module ?>',
+                                "resourceId": module,
                                 "createdUser": '<?= $user_name ?>'
                             }
                             var bearer_token;
@@ -346,19 +353,19 @@ $(document).ready(function(){
                             if(res.status)
                             {
                                 swal('','Bundle Transfered Successfully','success')
-                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                                 
                             }
                             else
                             {
                                 swal('',res.internalMessage,'error');
-                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                             }                       
                             //$('#loading-image').hide();
                         },
                         error: function(res){
                             swal('Error in getting data');
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
                             //$('#loading-image').hide();
                         }
                     });
