@@ -27,7 +27,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-$sql="select * from $bai_rm_pj1.inspection_supplier_db where product_code=\"Fabric\"";
+$sql="select * from $pms.inspection_supplier_db where product_code=\"Fabric\"";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("inspection_supplier_db Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
