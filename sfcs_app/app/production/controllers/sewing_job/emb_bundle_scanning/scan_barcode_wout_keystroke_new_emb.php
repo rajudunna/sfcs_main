@@ -128,7 +128,9 @@ $(document).ready(function()
 		else
 		{
 			var res = barcode.split('-');
+			var barcode = res[0];
 			var operation_id = res[1];
+			
 		}
 		
 		var bearer_token;

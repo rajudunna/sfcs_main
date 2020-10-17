@@ -115,8 +115,6 @@ function verify_date()
 		<!-- <input type='date' class="form-control" id='int' value="<?= $dattime; ?>" name='dat2' width=30 required> -->
 		<?php echo '<input type="text" data-toggle="datepicker" class="form-control" id="dat2" name="dat2" onchange="return verify_date();" value="'.$dattime.'">';  ?>
 	</div>
-	<div class="col-md-3"><label>Schedule </label><input type='text' class="form-control" id='sch'   
-	     name='sch' width=30  onchange="return pop_check()"></div>
 	<div class="col-md-2"><br/><input type="submit" id='btn'  class="btn btn-primary" value="View" name="submit" id='sub'></div>
 </div>	
 </form>
@@ -128,20 +126,17 @@ function verify_date()
 		$dat2=$_POST['dat2'];
 		$sch=$_POST['sch'];
 
-		if($sch=="")
-		{
-			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
-			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
-			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
-			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2'";
-		}
-		else if($sch !="")
-		{
-			$sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
-			LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
-			LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
-			WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2' AND fg.`schedule`='$sch'";
-		}
+		// if($sch=="")
+		// {
+			$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job'";
+		// }
+		// else if($sch !="")
+		// {
+			// $sql="SELECT tl.barcode_id as barcode_id,tl.parent_ext_ref_id as parent_ext_ref_id,tl.created_at as created_at FROM $pts.`transaction_log` tl
+			// LEFT JOIN $pts.`fg_barcode` fb ON fb.`barcode_id`=tl.`barcode_id`
+			// LEFT JOIN $pts.`finished_good` fg ON fg.`finished_good_id`=fb.`finished_good_id`
+			// WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2' AND fg.`schedule`='$sch'";
+		// }
 		// echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -162,9 +157,24 @@ function verify_date()
 					<?php
 					while($rows=mysqli_fetch_array($sql_result))
 					{
-						$barcode_id=$rows['barcode_id'];
-						$parent_ext_ref_id=$rows['parent_ext_ref_id'];
-						$date=$rows['created_at'];
+						$barcode=$sql_row['barcode'];
+						$parent_job=$sql_row['parent_job'];
+						$shift=$sql_row['shift'];
+						$date=$sql_row['date'];
+						//getting barcode id
+						$sql_barcode_qry="Select barcode_id from $pts.barocde where barcode='$barcode' AND plant_code='$plant_code'";
+						$sql_result_det=mysqli_query($link, $sql_barcode_qry) or exit("Sql Error getting barcode id".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_id=mysqli_fetch_array($sql_result_det))
+						{
+							$barcode_id=$sql_row_id['barcode_id'];
+						}
+						//getting parent_ext_ref_id
+						$sql_ext_ref_qry="select jm_jg_header_id from $pps.jm_jg_header where job_number='$parent_job' AND plant_code='$plant_code'";
+						$sql_result_data=mysqli_query($link, $sql_ext_ref_qry) or exit("Sql Error getting jm_jg_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row_ref=mysqli_fetch_array($sql_result_data))
+						{
+							$parent_ext_ref_id=$sql_row_ref['jm_jg_header_id'];
+						}
 						
 						//getting finished good id
 						$get_finshgood_qry="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id='$barcode_id' AND plant_code='$plant_code'";

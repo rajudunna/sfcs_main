@@ -149,11 +149,11 @@ table, th, td {
 						$mo_nos3[] = $sql_row['mo_number'];
 					}
 					$mos3 = implode(',', $mo_nos3);
-					$pm_mo_alloc_sql="SELECT pm_container_mo_alloc_id FROM $pps.pm_container_mo_alloc WHERE mo_number in ($mos3) and plant_code='$plantcode'";
+					$pm_mo_alloc_sql="SELECT pm_ct_mo_alloc_id FROM $pps.pm_container_mo_alloc WHERE mo_number in ($mos3) and plant_code='$plantcode'";
 					$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack methods");
 					if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 					{
-						$pm_mo_alloc_sql="SELECT pmct.pm_packing_list_id, GROUP_CONCAT(pm_mo_alloc.mo_number) as mo_numbers, pmct.description FROM $pps.pm_container_mo_alloc as pm_mo_alloc left join $pps.pm_container_template as pmct on pm_mo_alloc.pm_container_template_id = pmct.pm_container_template_id WHERE pm_mo_alloc.mo_number in ($mos3) and pm_mo_alloc.plant_code='$plantcode' group by pmct.pm_packing_list_id";
+						$pm_mo_alloc_sql="SELECT pmct.pm_packing_list_id, GROUP_CONCAT(pm_mo_alloc.mo_number) as mo_numbers, pmct.description FROM $pps.pm_container_mo_alloc as pm_mo_alloc left join $pps.pm_container_template as pmct on pm_mo_alloc.pm_ct_id = pmct.pm_ct_id WHERE pm_mo_alloc.mo_number in ($mos3) and pm_mo_alloc.plant_code='$plantcode' group by pmct.pm_packing_list_id";
 						$pm_mo_alloc_result=mysqli_query($link, $pm_mo_alloc_sql) or exit("error while fetching pack list");
 						if (mysqli_num_rows($pm_mo_alloc_result) > 0)
 						{
@@ -176,16 +176,17 @@ table, th, td {
 									$container_ids = implode(',', $containerIds);
 									$container_ids = "'".str_replace(",","','",$container_ids)."'";
 									$barcode_type_packing = BarcodeType::PCRT;
-									$barcode_sql="SELECT barcode_id,quantity FROM $pts.`barcode` WHERE external_ref_id IN (
+									$barcode_sql="SELECT barcode,quantity,external_ref_id FROM $pts.`barcode` WHERE external_ref_id IN (
 									$container_ids) AND barcode_type= '$barcode_type_packing' AND plant_code = '$plantcode'";
 									$barcode_result=mysqli_query($link, $barcode_sql) or exit("error while fetching barcodes");
 									if (mysqli_num_rows($barcode_result) > 0)
 									{
 										while($row_result=mysqli_fetch_array($barcode_result))
 										{
-											$barcode_id = $row_result['barcode_id'];
+											$barcode = $row_result['barcode'];
 											$quantity = $row_result['quantity'];
-											$transaction_log_sql="SELECT sum(good_quantity+rejected_quantity) as reported_quantity  FROM $pts.`transaction_log` WHERE barcode_id = '$barcode_id' AND operation = '$packing_operation' AND plant_code = '$plantcode'";
+											$external_ref_id = $row_result['external_ref_id'];
+											$transaction_log_sql="SELECT sum(good_quantity+rejected_quantity) as reported_quantity  FROM $pts.`transaction_log` WHERE barcode = '$barcode' AND operation = '$packing_operation' AND plant_code = '$plantcode'";
 											$transaction_log_result=mysqli_query($link, $transaction_log_sql) or exit("error while fetching operations data for barcode");
 											if (mysqli_num_rows($transaction_log_result) > 0)
 											{
@@ -196,21 +197,32 @@ table, th, td {
 											}
 											// completed cartons
 											if($quantity == $reported_quantity) {
-												$complete_cart_no[] = $barcode_id;
-											} else {
+												$complete_cart_no[] = $barcode;
+											} else {												
 												// eligible cartons
-												$fg_barcode_sql="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id ='$barcode_id' AND plant_code = '$plantcode'";
-												$fg_barcode_result=mysqli_query($link, $fg_barcode_sql) or exit("error while fetching fgs");
+												// get mo's for carton
+												$carton_mos_sql="SELECT mo_number FROM $pps.`jm_pack_container_line` WHERE jm_pack_container_id ='$external_ref_id' AND plant_code = '$plantcode'";
+												$carton_mos_result=mysqli_query($link, $carton_mos_sql) or exit("error while fetching carton level mos");
+												if (mysqli_num_rows($carton_mos_result) > 0)
+												{
+													while($row_result=mysqli_fetch_array($carton_mos_result))
+													{
+														$carton_mos[] = $row_result['mo_number'];
+													}
+												}
+												$carton_mo_string = '"'.implode('","', $carton_mos).'"';
+												$fg_id_sql="SELECT finished_good_id FROM $pts.`finished_good` WHERE mo_number in($carton_mo_string) AND plant_code = '$plantcode'";
+												$fg_barcode_result=mysqli_query($link, $fg_id_sql) or exit("error while fetching fgs");
 												if (mysqli_num_rows($fg_barcode_result) > 0)
 												{
 													$comp_flag = true;
 													// get previous operation for packing for one fg
-													$singe_fg_id = mysqli_fetch_array($fg_prev_opr_result)[0]['finished_good_id'];
+													$singe_fg_id = mysqli_fetch_array($fg_prev_opr_result)['finished_good_id'];
 													$fg_prev_opr_sql="SELECT previous_operation FROM $pts.`fg_operation` WHERE finished_good_id ='$singe_fg_id' AND operation_code='$packing_operation' AND plant_code = '$plantcode' ";
 													$fg_prev_opr_result=mysqli_query($link, $fg_prev_opr_sql) or exit("error while fetching fg operations");
 													if (mysqli_num_rows($fg_prev_opr_result) > 0)
 													{
-														$pre_operation=mysqli_fetch_array($fg_prev_opr_result)[0]['previous_operation'];
+														$pre_operation=mysqli_fetch_array($fg_prev_opr_result)['previous_operation'];
 													}
 													
 													// check components equal or not
@@ -231,11 +243,11 @@ table, th, td {
 													// if true show it in eligible carton and false its pending carton
 													if($comp_flag) {
 														// eligible cartons
-														$elgible_cart_no[] = $barcode_id;
-														$label_concat .= $barcode_id.",";
+														$elgible_cart_no[] = $barcode;
+														$label_concat .= $barcode.",";
 													} else {
 														// Pending cartons
-														$pending_cart_no[] = $barcode_id;
+														$pending_cart_no[] = $barcode;
 													}
 													$label_concat=substr($label_concat,0,-1);
 

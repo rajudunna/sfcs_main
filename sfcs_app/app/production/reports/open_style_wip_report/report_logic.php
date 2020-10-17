@@ -32,20 +32,22 @@
 	$main_data = [];
 	$pre_op_code = 0;
 	//To get default Operations
-	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE  sequence=1 AND plant_code=$plant_code and is_active = 1 ORDER BY priority ASC";
+	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE sequence=1 AND plant_code='$plant_code' and is_active = 1 ORDER BY priority ASC";
 	$result1 = $link->query($operation_mapping);
 	while($row5 = $result1->fetch_assoc())
 	{
 		$op_code = $row5['operation_code'];
 		$operation_ids[] = $op_code;
 		$ops_get_code[$row5['operation_code']] = $row5['operation_name'];	
-		$opertion_names[] = ['op_name'=>$row31['operation_name'],'op_code'=>$row4['operation_code']];
-		$op_string_data .=",IF(sum(operation=$op_code,good_quantity,0) as 'good_'.$op_code),IF(sum(operation=$op_code,rejected_quantity,0) as 'rej_'.$op_code)";
+		$opertion_names[] = ['op_name'=>$row5['operation_name'],'op_code'=>$row5['operation_code']];
+		$op_string_data .=",SUM(IF(operation=".$op_code.",good_quantity,0)) as good_".$op_code.",SUM(IF(operation=".$op_code.",rejected_quantity,0)) as rej_".$op_code;
 	}
+	
 	$op_count = count($operation_ids);
 
 	$today=date("Y-m-d"); 
-	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log  group by style, schedule, color";
+	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log where plant_code='$plant_code' group by style, schedule, color";
+	// echo $sql_trans;
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
 	{			
@@ -65,26 +67,26 @@
 			$order_qty = $row_main_qty['quantity'];
 		}
 
-		$single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size, 'orderqty'=>$order_qty];
+		$sql112="select customer_order_no from $oms.oms_mo_details where schedule=\"$schedule\" and plant_code=\"$plant_code\"";
+		$sql_result112=mysqli_query($link, $sql112) or exit("Sql Error3".$sql112."".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row112=mysqli_fetch_array($sql_result112))
+		{
+			$co_no=$sql_row112['customer_order_no'];
+		}
+
+		$single_data = ['style'=>$style,'cono'=>$co_no,'schedule'=>$schedule,'color'=>$color,'size'=>$size, 'orderqty'=>$order_qty];
 
 		foreach($operation_ids as $op_key => $op_value){
 			$wip_quantity_val=$order_qty-($row_main['good_'.$op_value]+$row_main['rej_'.$op_value]);
 			if($wip_quantity_val < 0){
 				$wip_quantity_val=0;
 			}
-			$single_data['good'.$value] = $row_main['good_'.$op_value];
-			$single_data['rej'.$value] = $row_main['rej_'.$op_value];
-			$single_data['wip'.$value]= $wip_quantity_val;
+			$single_data['good'.$op_value] = $row_main['good_'.$op_value];
+			$single_data['rej'.$op_value] = $row_main['rej_'.$op_value];
+			$single_data['wip'.$op_value]= $wip_quantity_val;
 		}
-
 		array_push($main_data,$single_data);
-	// 	unset($operation_code1);
 		unset($single_data);
-	// 	unset($main_good_qty);
-	// 	unset($main_rejected_qty);
-	// 	unset($bcd_good_qty1);
-	// 	unset($bcd_rejected_qty1);
-
 	}
 	$result['main_data'] = $main_data;
 	$result['operations'] = $opertion_names;

@@ -227,7 +227,8 @@ $(document).ready(function()
 		var plant_code = $('#plant_code').val();
 		var username = $('#username').val();
 		var subpo = $('#sub_po').val();
-		var inputObj = {"poNumber":subpo, "plantCode":plant_code};
+		var username="<?= $_SESSION['userName'] ;?>";
+		var inputObj = {"poNumber":subpo, "plantCode":plant_code, "userName":username};
 		var bearer_token;
         const creadentialObj = {
 									grant_type: 'password',
@@ -336,6 +337,8 @@ $(document).ready(function()
 {
 	$('#submit').on('click', function(){
 		$('#loading-image').show();
+		var table =  $('#dynamic_table').DataTable();
+		table.destroy()
 		var numberOfChecked = $('input:checkbox:checked').length;
 		var bearer_token;
 		const creadentialObj = {
@@ -369,9 +372,10 @@ $(document).ready(function()
 				}
 			});
 			var plant_code="<?= $_SESSION['plantCode'] ;?>";
+			var username="<?= $_SESSION['userName'] ;?>";
 			var schedule="<?= $_GET['schedule'] ;?>";
 			var checkarr = $('#myval').val();
-			var inputObj = {"jobNumbers":jobIds, "plantCode":plant_code};
+			var inputObj = {"jobNumbers":jobIds, "plantCode":plant_code, "createdUser":username};
 			$.ajax({
 				type: "POST",
 				url: "<?= $PPS_SERVER_IP ?>/jobs-generation/JobClubbing",
