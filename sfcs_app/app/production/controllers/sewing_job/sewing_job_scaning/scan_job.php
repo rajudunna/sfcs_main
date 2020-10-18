@@ -209,13 +209,14 @@
 						</select>
 					</div>
 					<div class='col-sm-4'>
-						<label for='component'>Component</label> 
-						<select class="form-control" palceholder='Please Select' name='component' id='component' style='width:100%'>
-							<option disabled selected>Please Select</option>
-							<option value='sleeve'>Sleeve</option>
-							<option value='pocket'>Pocket</option>
+						<label for='component_dropdown'>Component</label> 
+						<select class="form-control" palceholder='Please Select' name='component_dropdown' id='component_dropdown' style='width:100%'>
+							<!-- <option disabled selected>Please Select</option> -->
+							<!-- <option value='rsleeve'>R Sleeve</option>
+							<option value='lsleeve'>L Sleeve</option>
 							<option value='front'>Front</option>
 							<option value='back'>Back</option>
+							<option value='lpocket'>Pocket</option> -->
 						</select>
 					</div>
 					<div class='col-sm-2'>
@@ -225,7 +226,7 @@
 					<div class='col-sm-2'>
 						<label><br/></label>
 						<button class='form-control btn btn-sm btn-info'  style='width:100%'
-							onclick="pushRejReasonQty($('#rejection_code').val(), $('#rejection_code option:selected').text(), $('#component').val(), $('#component_rej_qty').val())">+ Add</button>
+							onclick="pushRejReasonQty($('#rejection_code').val(), $('#rejection_code option:selected').text(), $('#component_dropdown').val(), $('#component_rej_qty').val())">+ Add</button>
 					</div>
 				</div>
 				<div class='col-sm-12'>
@@ -390,6 +391,15 @@
 			var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return reportJob();"><input type="hidden" id="count_of_data" value='+data.sizeQuantities.length+'></div>';
 			$("#dynamic_table1").append(markup);
 			$("#dynamic_table1").append(btn);
+
+			$('#component_dropdown').html('');
+			$('#component_dropdown').append('<option disabled selected>Please Select</option>');
+			const components = data.components;
+			$('#component_dropdown').append();
+			for (const component of components) {
+				$('#component_dropdown').append(`<option value='${component}'>${component}</option>`);
+			}
+			
 
 			var op_codes=[];
 			$.each(data.sizeQuantities, function( index, operation ) {
