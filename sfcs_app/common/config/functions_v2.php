@@ -980,14 +980,14 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     }
     $workstations = implode("','", $workstationtype);
     /**Getting work stations against workstation type*/
-    $qry_workstations="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_type_id IN ('$workstations')";
+    $qry_workstations="SELECT workstation_id,workstation_code, workstation_description FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_type_id IN ('$workstations')";
     $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstation=array();
     $workstations_result_num=mysqli_num_rows($workstations_result);
     if($workstations_result_num>0){
         while($workstations_row=mysqli_fetch_array($workstations_result))
         {
-            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
+            $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_description'];
         }
     }
 
@@ -1551,73 +1551,77 @@ function getOpsWiseJobQtyInfo($schedule, $bundle_types) {
     global $pts;
     global $tms;
     $out_put_results = [];
-    $sql = "SELECT GROUP_CONCAT(CONCAT('''', aplb.`jm_aplb_id`, '''' )) AS aplbids, aplb.`fg_color`, aplb.`size`,ppb.`bundle_type` FROM $pps.`jm_aplb` aplb
-    LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON
-    aplb.`jm_pplb_id` = pplb.`jm_pplb_id`
-    LEFT JOIN $pps.`jm_cut_bundle_details` ppb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
-    WHERE  pplb.`feature_value` = '$schedule'
-    AND ppb.`bundle_type` IN ($bundle_types)
-    GROUP BY aplb.`fg_color`, aplb.`size`,ppb.`bundle_type`";
-    mysqli_query($link_new,$sql) or exit("Sql Error4".mysqli_error());
-    $sql_result=mysqli_query($link_new,$sql) or exit("Sql Error6".mysqli_error());
-    $count=mysqli_num_rows($sql_result);
-    while($sql_row=mysqli_fetch_array($sql_result))
-    {
-        $aplbIds = $sql_row["aplbids"];
-        $bundle_type = $sql_row["bundle_type"];
-        $fg_color = $sql_row["fg_color"];
-        $size = $sql_row["size"];
-        $sql_barcodes = "SELECT GROUP_CONCAT(CONCAT('''', trans.`parent_ext_ref_id`, '''' )) AS parent_ext_ref_id, resource_id FROM $pts.`transaction_log` trans 
-        LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
-        WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' GROUP BY trans.`resource_id`";
-        mysqli_query($link_new,$sql_barcodes) or exit("Sql Error7".mysqli_error());
-        $sql_result_barcodes=mysqli_query($link_new,$sql_barcodes) or exit("Sql Error5".mysqli_error());
-        $count_barcodes=mysqli_num_rows($sql_result_barcodes); 
-        while($sql_row_barcodes = mysqli_fetch_array($sql_result_barcodes))
-        {
-            $jg_header_ids = $sql_row_barcodes['parent_ext_ref_id'];
-            $resource_id = $sql_row_barcodes['resource_id'];
-            $sql_tms = "SELECT operation_code FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_job_transaction` trans ON trans.task_jobs_id = tj.task_jobs_id WHERE task_job_reference IN ($jg_header_ids) ORDER BY operation_seq  DESC LIMIT 0,1";
-            mysqli_query($link_new,$sql_tms) or exit("Sql Error7".mysqli_error());
-            $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
-            while($sql_row_tms = mysqli_fetch_array($sql_result_tms))
-            {
-                $out_put_ops = $sql_row_tms['operation_code'];
-            }
-            $sql_tms_in = "SELECT operation_code FROM $tms.`task_jobs` tj LEFT JOIN $tms.`task_job_transaction` trans ON trans.task_jobs_id = tj.task_jobs_id WHERE task_job_reference IN ($jg_header_ids) ORDER BY operation_seq  ASC LIMIT 0,1";
-            mysqli_query($link_new,$sql_tms_in) or exit("Sql Error7".mysqli_error());
-            $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
-            while($sql_row_tms_in = mysqli_fetch_array($sql_result_tms_in))
-            {
-                $input_ops = $sql_row_tms_in['operation_code'];
-            }
+    $resouce_ids = [];
+    $input_ops = 100;
+    $out_put_ops = 130;
+    $sql_resouce = "SELECT distinct resource_id FROM $pts.`transaction_log` trans 
+    WHERE trans.`barcode_type` = 'APLB' AND schedule = '$schedule'";
+    $sql_result_sql_resouce = mysqli_query($link_new,$sql_resouce) or exit("Sql Error5".mysqli_error());
+    while($sql_row_sql_result_sql_resouce = mysqli_fetch_array($sql_result_sql_resouce))
+    {   
+        $resource = $sql_row_sql_result_sql_resouce['resource_id'];
+        array_push($resouce_ids, $resource);
 
-            $sql_pts_trans = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
-            LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
-            WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' 
-            AND operation = '$input_ops' AND resource_id = '$resource_id' GROUP BY operation";
-            $sql_result_sql_pts_trans=mysqli_query($link_new,$sql_pts_trans) or exit("Sql Error5".mysqli_error());
-            while($sql_row_pts_trans = mysqli_fetch_array($sql_result_sql_pts_trans))
-            {
-                $input_qty = $sql_row_pts_trans['good_qty'];
-                $rejected_qty = $sql_row_pts_trans['rej_qty'];
+    }
+    $sql_plb = "SELECT distinct external_ref_id, parent_barcode FROM $pts.`transaction_log` trans 
+    left join $pts.barcode on barcode.barcode = trans.parent_barcode
+    WHERE trans.`barcode_type` = 'APLB' AND schedule = '$schedule'";
+    $sql_result_sql_sql_plb=mysqli_query($link_new,$sql_plb) or exit("Sql Error5".mysqli_error());
+    while($sql_row_sql_result_sql_sql_plb = mysqli_fetch_array($sql_result_sql_sql_plb))
+    {   
+        $pplb = $sql_row_sql_result_sql_sql_plb['external_ref_id'];
+        $pplb_barcode =  $sql_row_sql_result_sql_sql_plb['parent_barcode'];
+        $sql_bundle_type = "SELECT bundle_type, ppb.fg_color, ppb.size FROM $pps.`jm_cut_bundle_details` ppb LEFT JOIN $pps.`jm_product_logical_bundle` pplb ON pplb.`jm_ppb_id` = ppb.jm_ppb_id
+        WHERE pplb.jm_pplb_id = '$pplb'";
+        $sql_result_sql_bundle_type=mysqli_query($link_new,$sql_bundle_type) or exit("Sql Error5".mysqli_error());
+        while($sql_row_bundle_type = mysqli_fetch_array($sql_result_sql_bundle_type))
+        {   
+            $bundle_type = $sql_row_bundle_type['bundle_type'];
+            $fg_color = $sql_row_bundle_type['fg_color'];
+            $size = $sql_row_bundle_type['size'];
+            if (in_array($bundle_type, $bundle_types)) {
+                foreach($resouce_ids as $key => $resource_id) {
+                    $sql_pts_trans = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
+                    WHERE trans.parent_barcode = '$pplb_barcode'
+                    AND operation = '$input_ops' AND resource_id = '$resource_id'";
+                    $sql_result_sql_pts_trans=mysqli_query($link_new,$sql_pts_trans) or exit("Sql Error5".mysqli_error());
+                    while($sql_row_pts_trans = mysqli_fetch_array($sql_result_sql_pts_trans))
+                    {
+                        $input_qty = $sql_row_pts_trans['good_qty'];
+                        $rejected_qty = $sql_row_pts_trans['rej_qty'];
+                    }
+                    $sql_pts_trans_out = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
+                    WHERE trans.parent_barcode = '$pplb_barcode'
+                    AND operation = '$out_put_ops' AND resource_id = '$resource_id'";
+                    $sql_result_sql_pts_trans_out=mysqli_query($link_new,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
+                    if(mysqli_num_rows($sql_result_sql_pts_trans_out)>0) {
+                        while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
+                        {
+                            $out_put_qty = $sql_row_pts_trans_out['good_qty'];
+                            $rejected_qty += $sql_row_pts_trans_out['rej_qty'];
+                        }
+                    } else {
+                        $out_put_qty = 0;
+                        $rejected_qty = 0;
+                    }
+                    
+                    if ($out_put_results[$fg_color][$size][$resource_id]) {
+                        $pre_qty_res = $out_put_results[$fg_color][$size][$resource_id];
+                        $pre_input_qty = $pre_qty_res['input_qty'];
+                        $pre_output_qty = $pre_qty_res['output_qty'];
+                        // echo $pre_output_qty .'+'. $out_put_qty.'</br>';
+                        $pre_rej_qty = $pre_qty_res['rejected_qty'];
+                        $input_qty += $pre_input_qty;
+                        $out_put_qty += $pre_output_qty;
+                        $pre_rej_qty += $rejected_qty;
+                    }
+                    $out_put_results[$fg_color][$size][$resource_id] = array(
+                        'input_qty' => $input_qty,
+                        'output_qty' => $out_put_qty,
+                        'rejected_qty' => $rejected_qty,
+                    );
+                }
             }
-
-            $sql_pts_trans_out = "SELECT sum(good_quantity)as good_qty, sum(rejected_quantity)as rej_qty FROM $pts.`transaction_log` trans 
-            LEFT JOIN $pts.`barcode` barcode  ON barcode.`barcode_id` = trans.`barcode_id` 
-            WHERE barcode.`external_ref_id` IN ($aplbIds) AND barcode.`barcode_type` = 'APLB' 
-            AND operation = '$out_put_ops' AND resource_id = '$resource_id'	 GROUP BY operation";
-            $sql_result_sql_pts_trans_out=mysqli_query($link_new,$sql_pts_trans_out) or exit("Sql Error5".mysqli_error());
-            while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out))
-            {
-                $out_put_qty = $sql_row_pts_trans_out['good_qty'];
-                $rejected_qty += $sql_row_pts_trans_out['rej_qty'];
-            }
-            $out_put_results[$fg_color][$size][$resource_id] = array(
-                'input_qty' => $input_qty,
-                'output_qty' => $out_put_qty,
-                'rejected_qty' => $rejected_qty,
-            );
         }
     }
     return $out_put_results;

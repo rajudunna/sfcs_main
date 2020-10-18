@@ -645,7 +645,7 @@ function verify_date(){
 					// 	ECHO $sql11;
 					$sql11="SELECT component_name,docket_line_number,jm_docket_bundle.jm_docket_line_id FROM $pps.jm_docket_bundle LEFT JOIN $pps.jm_docket_lines ON 
 					jm_docket_bundle.jm_docket_line_id=jm_docket_lines.jm_docket_line_id 
-					WHERE jm_docket_lines.plant_code='AIP' AND jm_docket_lines.docket_line_number IN ($attribute_value) GROUP BY component_name";
+					WHERE jm_docket_lines.plant_code='$plantcode' AND jm_docket_lines.docket_line_number IN ($attribute_value) GROUP BY component_name";
 			   //mysqli_query($link, $sql2) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 			        $sql_result11=mysqli_query($link, $sql11) or exit("Sql Error222".mysqli_error($GLOBALS["___mysqli_ston"]));
 			    while($sql_row8=mysqli_fetch_array($sql_result11))

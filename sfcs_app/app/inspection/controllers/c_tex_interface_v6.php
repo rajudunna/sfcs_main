@@ -2549,23 +2549,98 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 {
 
 	$head_check=$_POST['head_check']; // Header Check
-	$act_gsm=$_POST['act_gsm'];
-	$pur_gsm=$_POST['pur_gsm'];
-	$pur_width=$_POST['pur_width'];
-	$act_width=$_POST['act_width'];
-	$sp_rem=$_POST['sp_rem'];
-	$qty_insp=$_POST['qty_insp'];
-	$gmt_way=$_POST['gmt_way'];
-	$pts=$_POST['pts'];
-	$fallout=$_POST['fallout'];
-	$skew=$_POST['skew'];
-	$skew_cat=$_POST['skew_cat'];
-	$shrink_l=$_POST['shrink_l'];
-	$shrink_w=$_POST['shrink_w'];
-	$supplier=$_POST['supplier'];
+	if($_POST['pur_gsm']!=''){
+		$pur_gsm=$_POST['pur_gsm'];
+	}else{
+		$pur_gsm=0;
+	}
+	if($_POST['consumption']!=''){
+		$consumption_ref=$_POST["consumption"];
+	}else{
+		$consumption_ref=0;
+	}
+
+	if($_POST['consumption']!=''){
+		$consumption_ref=$_POST["consumption"];
+	}else{
+		$consumption_ref=0;
+	}
+
+	if($_POST['pur_width']!=''){
+		$pur_width=$_POST["pur_width"];
+	}else{
+		$pur_width=0;
+	}
+
+	if($_POST['act_width']!=''){
+		$act_width=$_POST['act_width'];
+	}else{
+		$act_width=0;
+	}
+
+	if($_POST['sp_rem']!=''){
+		$sp_rem=$_POST['sp_rem'];
+	}else{
+		$sp_rem= " ";
+	}
+
+	if($_POST['qty_insp']!=''){
+		$qty_insp=$_POST['qty_insp'];
+	}else{
+		$qty_insp= 0;
+	}
+
+	if($_POST['gmt_way']!=''){
+		$gmt_way=$_POST['gmt_way'];
+	}else{
+		$gmt_way= 0;
+	}
+
+	if($_POST['pts']!=''){
+		$pts=$_POST['pts'];
+	}else{
+		$pts= 0;
+	}
+
+	if($_POST['fallout']!=''){
+		$fallout=$_POST['fallout'];
+	}else{
+		$fallout= 0;
+	}
+	
+	if($_POST['skew']!=''){
+		$skew=$_POST['skew'];
+	}else{
+		$skew= 0;
+	}
+
+	if($_POST['skew_cat']!=''){
+		$skew_cat=$_POST['skew_cat'];
+	}else{
+		$skew_cat= 0;
+	}
+
+	if($_POST['shrink_l']!=''){
+		$shrink_l=$_POST['shrink_l'];
+	}else{
+		$shrink_l= 0;
+	}
+
+	if($_POST['shrink_w']!=''){
+		$shrink_w=$_POST['shrink_w'];
+	}else{
+		$shrink_w= 0;
+	}
+
+	if($_POST['supplier']!=''){
+		$supplier=$_POST['supplier'];
+	}else{
+		$supplier= 0;
+	}
+	
+	
 	$lot_no_new=trim($_POST['lot_no']); //Batch Number
 	$lot_ref=$_POST['lot_ref'];	
-	$consumption_ref=$_POST["consumption"];
 	
 	if($head_check>0)
 	{
@@ -2573,7 +2648,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_check_res)==0)
 		{
-			$sql="insert into $wms.inspection_db(batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$lot_no_new\",'$plantcode','$username','NOW()','$username','NOW()')";
+			$sql="insert into $wms.inspection_db(batch_ref,plant_code,created_user,created_at,updated_user,updated_at) values (\"$lot_no_new\",'$plantcode','$username',NOW(),'$username',NOW())";
 			mysqli_query($link, $sql) or exit("Sql Error5=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}	
 			
@@ -2608,21 +2683,27 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
 		}
 		
+
+		if($act_gsm!=''){
+
+		}else{
+			$act_gsm=0;
+		}
 		$sql="update $wms.inspection_db set pur_gsm=\"$pur_gsm\",consumption=\"".$consumption_ref."\",act_gsm=\"$act_gsm\",pur_width=\"$pur_width\",act_width=\"$act_width\",sp_rem=\"$sp_rem\",qty_insp=\"$qty_insp\",gmt_way=\"$gmt_way\",pts=\"$pts\",fallout=\"$fallout\",skew=\"$skew\",skew_cat=\"$skew_cat\",shrink_l=\"$shrink_l\",shrink_w=\"$shrink_w\",supplier=\"$supplier\",updated_user= '".$username."',updated_at=NOW() where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
 		// echo "Upadte Qry :".$sql;
 		// exit;
-		mysqli_query($link, $sql) or exit("Sql Error8=".mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql) or exit("Error While updating inspection1".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 		
 	}
 	//Update status as 0 to save the Batch details and consider as pending batch at supplier performance report
 	$sql="update $wms.inspection_db set status=0,updated_user= '".$username."',updated_at=NOW() where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
-	mysqli_query($link, $sql) or exit("Sql Error7=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	mysqli_query($link, $sql) or exit("Sql Error7=".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(isset($_POST['confirm']))
 	{
 		$lot_no_new=trim($_POST['lot_no']); //Batch Number
 		//Update status as 1 to confirm the Batch details and the confirmed batch will consider as pass or fail at supplier performance report
 		$sql1="update $wms.inspection_db set status=1,updated_user= '".$username."',updated_at=NOW() where plant_code='$plantcode' and  batch_ref=\"$lot_no_new\"";
-		mysqli_query($link, $sql1) or exit("Sql Error8=".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+		mysqli_query($link, $sql1) or exit("Error While updating inspection3".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 	//Status will be 0 either reset or by default, if user update this form. (0- To track as not confirmed by super user and not communicated to front end teams.)
 	//Roll updation data
@@ -2652,9 +2733,19 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 		if($ele_check[$i]>0)
 		{
 			
-				$add_query=", ref4=\"".$ele_shade[$i]."\"";
-		
-			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
+			$add_query=", ref4=\"".$ele_shade[$i]."\"";
+			
+			if($partial_rej_qty[$i]!='' || $partial_rej_qty[$i]<=0){
+				$partial_rej_qty[$i]=0;
+			}
+
+			if($roll_joins[$i]!='' || $roll_joins[$i]<=0){
+				$roll_joins[$i]=0;
+			}
+
+			
+			if($partial_rej_qty[$i]>0 and $partial_rej_qty[$i]<$ele_t_length[$i] )
+			// when partial qty rejected then new row is inserted with rejected qty and remaning with approved qty updated
 			{
 				 $sql= "insert INTO $wms.store_in ( ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll, qty_rec,ref3,ref4, ref5, ref6, shrinkage_length, shrinkage_width,shrinkage_group,roll_joins, roll_status,partial_appr_qty,rejection_reason,ref_tid,plant_code,created_user,updated_user,updated_at)select ref1,lot_no, ref2, qty_issued, qty_ret, DATE, log_user, remarks, log_stamp, STATUS, allotment_status, qty_allocated, upload_file, m3_call_status, split_roll,\"".$partial_rej_qty[$i]."\",\"".$ele_c_width[$i]."\",\"".$ele_shade[$i]."\",\"".$ele_c_length[$i]."\",\"".$ele_t_width[$i]."\",\"".$shrinkage_length[$i]."\",\"".$shrinkage_width[$i]."\",\"".$shrinkage_group[$i]."\",\"".$roll_joins[$i]."\",1,0,\"".$rejection_reason[$i]."\", tid,'".$plant_code."','".$username."','".$username."',NOW()  FROM $wms.store_in WHERE plant_code='$plantcode' and  tid=".$ele_tid[$i];
 				   mysqli_query($link, $sql) or exit("Sql Error25=".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -2668,6 +2759,7 @@ if(isset($_POST['put']) || isset($_POST['confirm']))
 			else
 			{
 				$sql="update $wms.store_in set rejection_reason=\"".$rejection_reason[$i]."\", shrinkage_length=\"".$shrinkage_length[$i]."\",shrinkage_width=\"".$shrinkage_width[$i]."\",shrinkage_group=\"".$shrinkage_group[$i]."\",roll_remarks=\"".$roll_remarks[$i]."\", roll_status=\"".$roll_status_ref[$i]."\",partial_appr_qty=\"".$partial_rej_qty[$i]."\",roll_joins=\"".$roll_joins[$i]."\",ref5=\"".$ele_c_length[$i]."\", ref6=\"".$ele_t_width[$i]."\", ref3=\"".$ele_c_width[$i]."\", updated_user= '".$username."',updated_at=NOW() $add_query where plant_code='$plantcode' and  tid=".$ele_tid[$i];
+				echo $sql;
 				mysqli_query($link, $sql) or exit("Sql Error9=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			}
 		}

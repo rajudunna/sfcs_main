@@ -13,12 +13,14 @@ function exception($sql_result)
     $username=$_GET['username'];
 try
 {
-    $is_requested="SELECT doc_no FROM $wms.material_deallocation_track WHERE id=$id and plant_code='".$plant_code."'";
+	$is_requested="SELECT doc_no FROM $wms.material_deallocation_track WHERE id=$id and plant_code='".$plant_code."'";
+
     $is_requested_result=mysqli_query($link, $is_requested) or die(exception($is_requested));
     while($sql_row1=mysqli_fetch_array($is_requested_result))
     {
         $doc_no=$sql_row1['doc_no'];
-		$fab_qry1="SELECT fabric_status FROM $pps.requested_dockets WHERE doc_no=$doc_no and plant_code='".$plant_code."'";
+		$fab_qry1="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id='$doc_no' and plant_code='".$plant_code."'";
+
         $fab_qry_result1=mysqli_query($link, $fab_qry1) or die(exception($fab_qry1));
         if(mysqli_num_rows($fab_qry_result1)>0)
         {
@@ -30,13 +32,16 @@ try
 		
 		if($fstatus<5)
 		{
-			$fab_qry="SELECT allocated_qty,roll_id FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' plant_code='".$plant_code."'";
-			// echo $fab_qry."<br>";
+			$fab_qry="SELECT allocated_qty,roll_id FROM $wms.fabric_cad_allocation WHERE doc_no='$doc_no' and plant_code='".$plant_code."'";
+			//  echo $fab_qry."<br>";
 			$fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
-			if(mysqli_num_rows($fab_qry_result)>0)
+			$sql_num_check=mysqli_num_rows($fab_qry_result);
+			
+			if($sql_num_check>0)
 			{
 				while($sql_row1=mysqli_fetch_array($fab_qry_result))
 				{
+					
 					$allocated_qty=$sql_row1['allocated_qty'];
 					$roll_id=$sql_row1['roll_id'];
 											   
@@ -62,11 +67,11 @@ try
 				$delete_fab_result=mysqli_query($link, $delete_fab)or die(exception($delete_fab));
 
 				
-				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='',fabric_status=0,updated_user='$username',updated_at='NOW()' where doc_no=".$doc_no." and plant_code='".$plant_code."'";
-				$update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or die(exception($update_plan_qry));
+				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='',fabric_status=0,updated_user='$username',updated_at='NOW()' where jm_docket_line_id='".$doc_no."' and plant_code='".$plant_code."'";
+				// $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or die(exception($update_plan_qry));
 				
 				// $update_plan_qry_p="update $bai_pro3.plan_dashboard set fabric_status=0 where doc_no=".$doc_no;
-				// $update_plan_qry_fab_resultp=mysqli_query($link, $update_plan_qry_p) or exit("Sql Error51: update plan".mysqli_error($GLOBALS["___mysqli_ston"]));
+				 $update_plan_qry_fab_resultp=mysqli_query($link, $update_plan_qry) or exit("Sql Error51: update plan".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 				$username = getrbac_user()['uname'];
 				$approve_at = date("Y-m-d H:i:s");
