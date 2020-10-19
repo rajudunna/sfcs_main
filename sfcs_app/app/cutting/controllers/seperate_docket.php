@@ -1,5 +1,6 @@
 <?php
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/server_urls.php',3,'R'));
 	//$has_permission=haspermission($_GET['r']);
     $per = 'No';
     $plant_code = $_SESSION['plantCode'];
@@ -112,7 +113,8 @@ th{
                             <th></th>
                         </tr>
                         <?php   
-                                $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R'); 
+                                // $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R');
+                                // $path=$DOCKET_SERVER_IP."/printDocket/";
                              
                                 $query = "select id,style,schedule,color,tot_bindreq_qty,status from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
                                 $sql_result = mysqli_query($link_new,$query);
@@ -129,6 +131,16 @@ th{
                                     {
                                         $docket_number = $sql_row1['doc_no'];
                                     }
+                                    /**getting jm dockenline UUID wrt docket number */
+                                    $qryJmDocketLines="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='$docket_number' AND plant_code='$plant_code' AND is_active=1";
+                                    $jmDocketLinesresult = mysqli_query($link_new,$qryJmDocketLines);
+                                    while($sql_row1=mysqli_fetch_array($jmDocketLinesresult))
+                                    {
+                                        $jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+                                    }
+
+                                    $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_line_id;
+
                                     echo "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
                                     echo "<td>".$sql_row['style']."</td>";
                                     echo "<td>".$sql_row['schedule']."</td>";
@@ -137,7 +149,7 @@ th{
                                     // echo "<td>".$sql_row['tot_bindreq_qty']."</td>";
                                     echo "<td>".$sql_row['status']."</td>";
                                       
-                                    echo "<td><a href=\"$path?binding_id=$i&docket_number=$docket_number\" onclick=\"Popup1=window.open('$path?binding_id=$i&plant_code=$plant_code&username=$username&docket_number=$docket_number','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
+                                    echo "<td><a href=\"$path\" onclick=\"Popup1=window.open('$path','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\" class='btn btn-warning btn-xs'><i class='fa fa-print'></i>&nbsp;Print</a></td>";
                                     echo "</tr>";
                                 }
                                 if($index==0) {

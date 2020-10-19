@@ -212,13 +212,23 @@ td,th
                         $option1=$_POST['option1']; 
                         $team=$_POST['team']; 
                         $hour_filter=$_POST['hour_filter']; 
+                        $plantcode=$_SESSION['plantCode'];
+                        $username=$_SESSION['userName'];
+                        // $plantcode='AIP';
+                        $sql_plant="select * from $pms.plant where plant_code='$plantcode' and is_active = true";
+                        $sql_result_plnt=mysqli_query($link, $sql_plant) or exit("Sql Error Plants".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                        while($sql_row_plnt=mysqli_fetch_array($sql_result_plnt)) 
+                        { 
+
+                            $plant_start_time = $sql_row_plnt['plant_start_time'];
+                            $plant_end_time = $sql_row_plnt['plant_end_time'];
+
+                        }
                         $total_hours = $plant_end_time - $plant_start_time;
                         // echo $total_hours."<br>";
                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
                         $hour_start = $hour + 1;
-                        $plantcode=$_SESSION['plantCode'];
-                        $username=$_SESSION['userName'];
-                        // $plantcode='AIP';
+                        
                         $sections_data=getSections($plantcode);
                         $shifts_array=[];
                         $shifts_data=getShifts($plantcode)['shift_data'];
@@ -633,6 +643,8 @@ td,th
                                     foreach($workstation_data as $wk_data)
                                     { 
                                         $mod=$wk_data['workstation_id']; 
+                                        $modName=$wk_data['workstation_description']; 
+                                        // workstation_description
                                         $workstation_array[]=$mod;
                                         $deldb=""; 
                                         $sql2="select distinct style from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' $time_query";                              
@@ -676,7 +688,7 @@ td,th
     
     
     
-                                        if($option1==1){ echo "<tr><td>".$mod."</td>"; } 
+                                        if($option1==1){ echo "<tr><td>".$modName."</td>"; } 
                                         $max=0; 
                                         $couple=''; 
                                         $nop=0; 
@@ -1421,7 +1433,7 @@ td,th
                                         $total=0; 
                                         for($i=0; $i<sizeof($h1); $i++) 
                                         { 
-                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" $time_query and resource_id in ($workstation_ids) and style=\"$mod_style\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and shift in ($team)";                            
+                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" $time_query and resource_id in ($workstation_ids) and style=\"$mod_style\" and Hour(created_at) between $h1[$i] and $h2[$i] and shift in ($team)";                            
                                             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 

@@ -20,10 +20,10 @@ echo "<tr>
 <th>Sample Output</th>
 <th>Missing</th>
 </tr>";
-$order_qty_types = ['"ORIGINAL_QUANTITY"','"EXTRA_SHIPMENT"'];
-$org_qty_details = getOpsWiseJobQtyInfo($schedule ,implode(',',$order_qty_types));
-$order_qty_types_sample = ['"SAMPLE"'];
-$org_qty_details_sample = getOpsWiseJobQtyInfo($schedule ,implode(',',$order_qty_types_sample));
+$order_qty_types = ['ORIGINAL_QUANTITY','EXTRA_SHIPMENT'];
+$org_qty_details = getOpsWiseJobQtyInfo($schedule , $order_qty_types);
+$order_qty_types_sample = ['SAMPLE'];
+$org_qty_details_sample = getOpsWiseJobQtyInfo($schedule , $order_qty_types_sample);
 $total_input_qty1 = 0;
 $recut_qty1 = 0;
 $replaced_qty1 = 0;
