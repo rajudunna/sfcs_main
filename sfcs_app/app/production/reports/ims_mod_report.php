@@ -58,27 +58,37 @@ th{
 <div class="panel-body">
 
 <?php
-$from_module=$_GET['from_module'];
-$to_module=$_GET['to_module'];
-$created_date=$_GET['created_date'];
+$job_no_ref=$_GET['job_no_ref'];
+$created_at=$_GET['created_at'];
 $plantcode=$_GET['plantcode'];
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Barcode</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th></tr><thead>";
 
-$sql="select * from $pts.module_bundle_track where plant_code='$plantcode' and from_module = $from_module and to_module = $to_module and date(created_at) = '$created_date'";
+$sql="select * from $tms.bundle_transfer_log where plant_code='$plantcode' and job_no_ref = '$job_no_ref' and date(created_at) = '$created_at'";
+// echo $sql;
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $x=0;
 while($row=mysqli_fetch_array($result))
 {
 	$bundle_number=$row['bundle_number'];
-	$to_module=$row['to_module'];
+	$to_module=$row['to_resource'];
 	$quantity=$row['quantity'];
-	$job_no=$row['job_no'];
+	$job_no=$row['job_no_ref'];
 	$style=$row['style'];
 	$schedule=$row['schedule'];
 	$color=$row['color'];
 	$size=$row['size'];
 	$x++;
+
+	$query = "select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_id = '$to_module'";
+	$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+	$workstation_rows_num = mysqli_num_rows($sql_res);
+	if($workstation_rows_num > 0) {
+		while ($workstation_row = mysqli_fetch_array($sql_res)) {
+			$to_module_date = $workstation_row['workstation_code'];
+		}
+	}
+
 	echo "<tr>";
 	echo "<td>".$x."</td>";
 	echo "<td>".$bundle_number."</td>";
@@ -86,7 +96,7 @@ while($row=mysqli_fetch_array($result))
 	echo "<td>".$schedule."</td>";
 	echo "<td>".$job_no."</td>";
 	echo "<td>".$color."</td>";
-	echo "<td>".$to_module."</td>";
+	echo "<td>".$to_module_date."</td>";
 	echo "<td>".$bundle_number."</td>";
 	echo "<td>".$size."</td>";
 	echo "<td>".$quantity."</td>";

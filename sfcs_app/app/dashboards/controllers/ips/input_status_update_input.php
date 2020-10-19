@@ -12,7 +12,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/input_status_update_input.php");
-$has_permission=haspermission($url_r); 
+// $has_permission=haspermission($url_r); 
 $isinput=$_GET['isinput'];
 $plant_code=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
@@ -147,7 +147,7 @@ while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 }
 $cutjobno = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 $docket_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
-$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_product_logical_bundle_id`=jm_product_logical_bundle.jm_product_logical_bundle_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND  jm_job_bundles.plant_code='$plant_code' group by size";
+$sql="SELECT sum(jm_job_bundles.quantity) as quantity,jm_job_bundles.size as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE jm_jg_header_id='".$jm_jg_header_id."' AND feature_value='".$schedule."' AND jm_job_bundles.fg_color='".$color."' AND  jm_job_bundles.plant_code='$plant_code' group by size";
 $sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($sql_result))
 {

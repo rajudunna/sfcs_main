@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
-<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/sfcs_app/common/js/jquery_new.min.js"></script>
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -45,7 +45,7 @@ $(document).ready(function()
 		},
 		data: creadentialObj
 	}).then(function (result) {
-		console.log(result);
+		console.log(result+'res');
 		bearer_token = result['access_token'];
 		$.ajax({
 			type: "POST",

@@ -107,11 +107,11 @@ if(isset($_POST['submit']))
 	//getting barcode_id,shift,parent_ext_ref_id
 	If($to_shift == 'ALL')
 	{
-       $sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job'";
+       $sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_job_type in ('PSJ','PSEJ')";
 	}
 	else
 	{
-		$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND shift='$to_shift' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job' ";
+		$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND shift='$to_shift' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_job_type in ('PSJ','PSEJ')";
 	}	
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -121,7 +121,7 @@ if(isset($_POST['submit']))
 		$shift=$sql_row['shift'];
 		$date=$sql_row['date'];
 		//getting barcode id
-		$sql_barcode_qry="Select barcode_id from $pts.barocde where barcode='$barcode' AND plant_code='$plant_code'";
+		$sql_barcode_qry="Select barcode_id from $pts.barcode where barcode='$barcode' AND plant_code='$plant_code'";
 		$sql_result_det=mysqli_query($link, $sql_barcode_qry) or exit("Sql Error getting barcode id".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row_id=mysqli_fetch_array($sql_result_det))
 		{
