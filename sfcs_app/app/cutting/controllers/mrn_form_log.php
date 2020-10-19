@@ -8,7 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     array_pop($php_self);
     //$url_r = base64_encode(	implode('/',$php_self)."/mrn_form_log.php");
 	$url_r = $_GET['r'];
-	$has_permission=haspermission($url_r);
+	// $has_permission=haspermission($url_r);
 	$plant_code = $_SESSION['plantCode'];
     $user_name = $_SESSION['userName'];
 	error_reporting(0);
