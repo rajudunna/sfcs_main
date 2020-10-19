@@ -212,53 +212,54 @@ table, th, td {
 												}
 												$carton_mo_string = '"'.implode('","', $carton_mos).'"';
 												$fg_id_sql="SELECT finished_good_id FROM $pts.`finished_good` WHERE mo_number in($carton_mo_string) AND plant_code = '$plantcode'";
-												$fg_barcode_result=mysqli_query($link, $fg_id_sql) or exit("error while fetching fgs");
-												if (mysqli_num_rows($fg_barcode_result) > 0)
-												{
-													$comp_flag = true;
+												$fg_fg_id_result=mysqli_query($link, $fg_id_sql) or exit("error while fetching fgs");
+												if (mysqli_num_rows($fg_fg_id_result) > 0)
+												{													
 													// get previous operation for packing for one fg
-													$singe_fg_id = mysqli_fetch_array($fg_prev_opr_result)['finished_good_id'];
+													$singe_fg_id = mysqli_fetch_array($fg_fg_id_result)['finished_good_id'];
 													$fg_prev_opr_sql="SELECT previous_operation FROM $pts.`fg_operation` WHERE finished_good_id ='$singe_fg_id' AND operation_code='$packing_operation' AND plant_code = '$plantcode' ";
 													$fg_prev_opr_result=mysqli_query($link, $fg_prev_opr_sql) or exit("error while fetching fg operations");
 													if (mysqli_num_rows($fg_prev_opr_result) > 0)
 													{
 														$pre_operation=mysqli_fetch_array($fg_prev_opr_result)['previous_operation'];
 													}
-													
 													// check components equal or not
-													while($row_result=mysqli_fetch_array($fg_barcode_result))
+													while($row_result=mysqli_fetch_array($fg_fg_id_result))
 													{
 														$fg_id = $row_result['finished_good_id'];
 														$fg_opr_comp_sql="SELECT required_components,completed_components FROM $pts.`fg_operation` WHERE finished_good_id ='$fg_id' AND operation_code='$pre_operation' AND plant_code = '$plantcode' ";
+														//echo $fg_opr_comp_sql."</br>";
 														$fg_opr_comp_result=mysqli_query($link, $fg_opr_comp_sql) or exit("error while fetching fg operation components");
 														if (mysqli_num_rows($fg_opr_comp_result) > 0)
 														{
-															$fg_comp_data =mysqli_fetch_array($fg_opr_comp_result)[0];
+															$fg_comp_data =mysqli_fetch_array($fg_opr_comp_result);
 															if($fg_comp_data['required_components'] != $fg_comp_data['completed_components']) {
 																$comp_flag = false;
 																break; 
+															} else {			
+																$comp_flag = true;
 															}
 														}
 													}
-													// if true show it in eligible carton and false its pending carton
-													if($comp_flag) {
-														// eligible cartons
-														$elgible_cart_no[] = $barcode;
-														$label_concat .= $barcode.",";
-													} else {
-														// Pending cartons
-														$pending_cart_no[] = $barcode;
-													}
-													$label_concat=substr($label_concat,0,-1);
+												}
+												// if true show it in eligible carton and false its pending carton
+												if($comp_flag) {
+													// eligible cartons
+													$elgible_cart_no[] = $barcode;
+													$label_concat .= $barcode.",";
+												} else {
+													// Pending cartons
+													$pending_cart_no[] = $barcode;
+												}
+												$label_concat=substr($label_concat,0,-1);
 
-													if ($label_concat == '' || $label_concat == null)
-													{
-														$hide = "style='display: none'";
-													}
-													else
-													{
-														$hide = '';
-													}
+												if ($label_concat == '' || $label_concat == null)
+												{
+													$hide = "style='display: none'";
+												}
+												else
+												{
+													$hide = '';
 												}
 											}											
 										}
