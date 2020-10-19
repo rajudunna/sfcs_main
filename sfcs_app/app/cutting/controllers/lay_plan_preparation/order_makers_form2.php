@@ -62,7 +62,7 @@ Change Log:
 
 <?php	
 $tran_order_tid=$_GET['tran_order_tid'];
-$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+$sql="select order_col_des,order_style_no,order_del_no from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 

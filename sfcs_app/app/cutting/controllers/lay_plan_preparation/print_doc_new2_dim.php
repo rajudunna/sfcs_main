@@ -11,7 +11,7 @@ $user="Admin";
 $doc_no=$_GET['doc_no'];
 $cut_no=$_GET['cut_no'];
 
-$sql1="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
+$sql1="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -49,11 +49,11 @@ $sql_num_confirm=mysqli_num_rows($sql_result);
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+	$sql="select order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,old_order_s_xs,old_order_s_s,old_order_s_m,old_order_s_l,old_order_s_xl,old_order_s_xxl,old_order_s_xxxl,old_order_s_s06,old_order_s_s08,old_order_s_s10,old_order_s_s12,old_order_s_s14,old_order_s_s16,old_order_s_s18,old_order_s_s20,old_order_s_s22,old_order_s_s24,old_order_s_s26,old_order_s_s28,old_order_s_s30,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_s_s06,order_s_s08,order_s_s10,order_s_s12,order_s_s14,order_s_s16,order_s_s18,order_s_s20,order_s_s22,order_s_s24,order_s_s26,order_s_s28,order_s_s30,order_date from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	$sql="select order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,old_order_s_xs,old_order_s_s,old_order_s_m,old_order_s_l,old_order_s_xl,old_order_s_xxl,old_order_s_xxxl,old_order_s_s06,old_order_s_s08,old_order_s_s10,old_order_s_s12,old_order_s_s14,old_order_s_s16,old_order_s_s18,old_order_s_s20,old_order_s_s22,old_order_s_s24,old_order_s_s26,old_order_s_s28,old_order_s_s30,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_s_s06,order_s_s08,order_s_s10,order_s_s12,order_s_s14,order_s_s16,order_s_s18,order_s_s20,order_s_s22,order_s_s24,order_s_s26,order_s_s28,order_s_s30,order_date from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 }
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -92,7 +92,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$a_xxxl_tot=0;
 	$plies_tot=0;
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Pilot\" order by acutno";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,p_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Pilot\" order by acutno";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -152,7 +152,7 @@ if($input_excess_cut_as_full_input==1)
 }
 	
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Normal\" order by acutno";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,p_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Normal\" order by acutno";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -303,7 +303,7 @@ else
 $sql="insert into review_print_track (ref_tid, log_user) values (\"$order_tid\",\"$user\")";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+$sql1="select order_style_no,order_del_no,order_col_des,color_code from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -2413,7 +2413,7 @@ tags will be replaced.--><!-----------------------------><!--START OF OUTPUT FRO
  <tr height=20 style='mso-height-source:userset;height:15.0pt'>
   <td height=20 class=xl63666 style='height:15.0pt'></td>
   <td rowspan=2 class=xl110666 style='border-bottom:1.0pt solid black'>Hour<span
-  style='mso-spacerun:yes'> </span></td>
+  style='mso-spacerun:yes'>ï¿½</span></td>
   <td colspan=2 class=xl112666 style='border-right:.5pt solid black;border-left:
   none'>XS</td>
   <td colspan=2 class=xl112666 style='border-right:.5pt solid black;border-left:

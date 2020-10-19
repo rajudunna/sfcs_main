@@ -25,7 +25,7 @@ if(isset($_POST['update']))
 	$allocate_ref=$_POST['allocate_ref'];
 
 		$tran_order_tid=$_POST['tran_order_tid'];
-		$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+		$sql="select order_col_des,order_style_no,order_del_no,style_id,packing_method,title_size_s02,title_size_s03,title_size_s04,title_size_s05,title_size_s06,title_size_s07,title_size_s08,title_size_s09,title_size_s10,title_size_s11,title_size_s12,title_size_s13,title_size_s14,title_size_s15,title_size_s16,title_size_s17,title_size_s18,title_size_s19,title_size_s20,title_size_s21,title_size_s22,title_size_s23,title_size_s24,title_size_s25,title_size_s26,title_size_s27,title_size_s28,title_size_s29,title_size_s30,title_size_s31,title_size_s32,title_size_s33,title_size_s34,title_size_s35,title_size_s36,title_size_s37,title_size_s38,title_size_s39,title_size_s40,title_size_s41,title_size_s42,title_size_s43,title_size_s44,title_size_s45,title_size_s46,title_size_s47,title_size_s48,title_size_s49,title_size_s50,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 		// echo "<br/>Sql=".$sql;
 		// die();
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -145,7 +145,7 @@ if(isset($_POST['update']))
 				mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
 				
-				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+				$sql="select order_col_des,order_style_no,order_del_no,style_id from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{

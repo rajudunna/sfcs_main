@@ -184,7 +184,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
     $print_status=$sql_row['print_status']; 
     $plies=$sql_row['a_plies']; 
      
-    $sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\""; 
+    $sql33="select color_code from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\""; 
     mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     while($sql_row33=mysqli_fetch_array($sql_result33)) 
@@ -268,7 +268,7 @@ $fab_damages=0;
 $fab_shortages=0; 
 $fab_remarks=""; 
      
-$sql="select * from $bai_pro3.act_cut_status where doc_no='$doc_no'"; 
+$sql="select fab_received,fab_returned,damages,shortages,remarks from $bai_pro3.act_cut_status where doc_no='$doc_no'"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
 { 
@@ -379,7 +379,7 @@ $club_status=0;$a_plies_qty=0;
 
     echo "<tr><td>Date</td><td>:</td><td><input type=\"hidden\" name=\"date\" value=".date("Y-m-d").">".date("Y-m-d")."</td></tr>"; 
     //echo "<tr><td>Section</td><td>:</td><td><input type=\"text\" name=\"section\" value=\"0\"></td></tr>"; 
-    $table_q="SELECT * FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'"; 
+    $table_q="SELECT tbl_name,tbl_id FROM $bai_pro3.`tbl_cutting_table` WHERE STATUS='active'"; 
     $table_result=mysqli_query($link, $table_q) or exit("Error getting Table Details"); 
     while($tables=mysqli_fetch_array($table_result)) 
     { 
@@ -490,7 +490,7 @@ $club_status=0;$a_plies_qty=0;
         echo "</select></div></td></tr>"; 
     //} 
 
-    $team_query="SELECT * FROM $bai_pro3.tbl_leader_name";
+    $team_query="SELECT emp_name FROM $bai_pro3.tbl_leader_name";
     $team_result=mysqli_query($link, $team_query) or exit("Error getting Team Details");
     echo "<tr>
             <td>Team Leader</td><td>:</td>
@@ -670,7 +670,7 @@ $club_status=0;$a_plies_qty=0;
 <?php 
 $rollwisedata = array(); 
 $rolltabeldata = array();  
-$sql="select * from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no'"; 
+$sql="select roll_id,roll_width,doc_type,allocated_qty,tran_pin from $bai_rm_pj1.fabric_cad_allocation where doc_no='$doc_no'"; 
 //echo $sql."<br>"; 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 while($sql_row=mysqli_fetch_array($sql_result)) 
