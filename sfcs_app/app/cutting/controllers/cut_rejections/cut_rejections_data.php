@@ -92,7 +92,7 @@ if(mysqli_num_rows($doc_details_result)>0){
 
 $doc_no = $_GET['doc_no'];
 if($act_cut_status == 'DONE'){
-    $fab_details_query = "SELECT * from $bai_pro3.act_cut_status where doc_no=$doc_no";
+    $fab_details_query = "SELECT fab_received,fab_returned,shortages,damages,shift,section,date from $bai_pro3.act_cut_status where doc_no=$doc_no";
     $fab_details_result = mysqli_query($link,$fab_details_query);
     if(mysqli_num_rows($fab_details_result)>0){
         $fab_row = mysqli_fetch_array($fab_details_result);
