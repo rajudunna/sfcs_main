@@ -177,7 +177,7 @@ $old_order_total=0;
 $cut_total_qty=0;
 $issued_qty=0;
 $recut_issued_qty=0;
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=$schedule and order_col_des=\"$color\"";
+$sql="select order_style_no,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,old_order_s_xs,old_order_s_s,old_order_s_m,old_order_s_l,old_order_s_xl,old_order_s_xxl,old_order_s_xxxl,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50,order_tid,order_no,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no=$schedule and order_col_des=\"$color\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
@@ -193,7 +193,7 @@ if($old_order_total == 0)
 {
 	$old_order_total=$order_total_qty;
 }
-$sql="select * from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
+$sql="select compo_no,tid,catyy from $bai_pro3.cat_stat_log where order_tid like \"% $schedule$color%\" and category=\"$category\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row=mysqli_fetch_array($result))
 {
@@ -240,7 +240,7 @@ $result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["__
 $ratios_no_count=mysqli_num_rows($result);
 $docketnos[]=-1;
 $docketno[]=-1;
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
+$sql="select doc_no from $bai_pro3.plandoc_stat_log where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\" and fabric_status=\"5\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $cut_no_count=mysqli_num_rows($result);
 while($row=mysqli_fetch_array($result))
@@ -251,7 +251,7 @@ while($row=mysqli_fetch_array($result))
 
 $recut_docketnos[]=-1;
 $recut_docketno[]=-1;
-$sql="select * from $bai_pro3.recut_v2 where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
+$sql="select doc_no from $bai_pro3.recut_v2 where order_tid like \"% $schedule$color%\" and cat_ref=\"$cat_ref\"";
 $result=mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 //$cut_no_count=mysql_num_rows($result);
 while($row=mysqli_fetch_array($result))

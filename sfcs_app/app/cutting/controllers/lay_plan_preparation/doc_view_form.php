@@ -47,7 +47,7 @@ $date=date("Y-m-d", mktime(0,0,0,date("m") ,date("d"),date("Y")));
 // Review Sheets
 
 $rev_check="F";
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_id";
+$sql="select category,clubbing from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_id";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -155,7 +155,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_id order by acutno";
+$sql="select doc_no,acutno,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50,p_plies,remarks,print_status from $bai_pro3.plandoc_stat_log where order_tid=\"$tran_order_tid\" and cat_ref=$cat_id order by acutno";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 //echo "<a href=\"../main_interface.php?color=$color_back&style=$style_back&schedule=$schedule_back\">Click here to Go Back</a>";
@@ -260,7 +260,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$remarks=$sql_row['remarks'];
 	$print_status=$sql_row['print_status'];
 	
-$sql33="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+$sql33="select color_code from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result33=mysqli_query($link, $sql33) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row33=mysqli_fetch_array($sql_result33))

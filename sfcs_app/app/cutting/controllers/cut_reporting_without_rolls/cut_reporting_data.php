@@ -45,7 +45,7 @@ while($sql_rowx121=mysqli_fetch_array($get_shipment_details_res))
     $schedule=$sql_rowx121['schedule'];
 }
 $short_ship_status =0;
-$query_short_shipment = "select * from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
+$query_short_shipment = "select remove_type from bai_pro3.short_shipment_job_track where remove_type in('1','2') and style='".$style."' and schedule ='".$schedule."'";
 $shortship_res = mysqli_query($link,$query_short_shipment);
 $count_short_ship = mysqli_num_rows($shortship_res);
 if($count_short_ship >0) {
@@ -213,7 +213,7 @@ if($response_data['rej_pieces'] > 0){
 //The docket number below is always the main/parent docket
 $doc_no = $_GET['doc_no'];
 if($act_cut_status == 'DONE'){
-    $fab_details_query = "SELECT * from $bai_pro3.act_cut_status where doc_no=$doc_no";
+    $fab_details_query = "SELECT fab_received,fab_returned,shortages,joints_endbits,damages,shift,section,date from $bai_pro3.act_cut_status where doc_no=$doc_no";
     $fab_details_result = mysqli_query($link,$fab_details_query);
     if(mysqli_num_rows($fab_details_result)>0){
         $fab_row = mysqli_fetch_array($fab_details_result);

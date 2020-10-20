@@ -18,7 +18,7 @@ $username=$_SESSION['userName'];
 	$flag='';
 	if (isset($_GET['edit_id'])) {
 		$loc_id = $_GET['edit_id'];
-		$rec = "select * from $pms.locations where plant_code='$plantcode' and loc_id = $loc_id";
+		$rec = "select loc_name,capacity from $pms.locations where plant_code='$plantcode' and loc_id = $loc_id";
 		$recReply = mysqli_query( $link, $rec) or exit("Problem Fetching data from Database/".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row=mysqli_fetch_array($recReply))
 		{
@@ -209,7 +209,7 @@ $username=$_SESSION['userName'];
 				</thead>
 				<tbody >
 					<?php
-						$selectQuery = "SELECT * FROM $pms.locations where plant_code='$plantcode' order by loc_id desc";
+						$selectQuery = "SELECT loc_id,loc_name,capacity,filled_qty FROM $pms.locations where plant_code='$plantcode' order by loc_id desc";
 						$selectReply = mysqli_query( $link, $selectQuery) or exit("Problem Fetching data from Database/".mysqli_error($GLOBALS["___mysqli_ston"]));;
 						$locValues =array();
 						$resValues =array();

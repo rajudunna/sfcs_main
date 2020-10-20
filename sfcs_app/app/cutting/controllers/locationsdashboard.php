@@ -44,7 +44,7 @@ jQuery(document).ready(function($){
         $username=$_SESSION['userName'];
             error_reporting(0);             
             include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-                $sqlQuery = "SELECT * FROM $pms.locations where plant_code='$plantcode'";
+                $sqlQuery = "SELECT loc_id,loc_name,capacity,filled_qty FROM $pms.locations where plant_code='$plantcode'";
 				$sqlData = mysqli_query($link, $sqlQuery) or exit("Problem picking the locations from database/".mysqli_error($GLOBALS["___mysqli_ston"]));
                 $locationData = array();
                 $resultArray = array();
@@ -132,7 +132,7 @@ jQuery(document).ready(function($){
                                            
                                             while ($doc = mysqli_fetch_array($get_doc_result)) {
                                                 $doc_array['doc_no'] = $doc['doc_no'];
-                                                $SCSdetails = "SELECT * FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT  order_tid FROM $bai_pro3.plandoc_stat_log WHERE doc_no = ".$doc_array['doc_no'].")";
+                                                $SCSdetails = "SELECT order_style_no,order_del_no,order_col_des FROM $bai_pro3.bai_orders_db WHERE order_tid IN (SELECT  order_tid FROM $bai_pro3.plandoc_stat_log WHERE doc_no = ".$doc_array['doc_no'].")";
                                                 $SCSresult = mysqli_query($link, $SCSdetails) or exit("Error getting Style, Colour, Schedule details with docket number/".mysqli_error($GLOBALS["___mysqli_ston"]));
                                                 
                                                 $SCSarray = array();
