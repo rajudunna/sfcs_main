@@ -973,7 +973,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code' and (issued_time='0000-00-00 00:00:00' or issued_time is null)";
+    $requested_dockets="select jm_docket_line_id,req_time,log_time,fabric_status,plan_lot_ref,ft_status,bundle_location,order_style_no,order_del_no,order_col_des,total from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code' and (issued_time='0000-00-00 00:00:00' or issued_time is null)";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
