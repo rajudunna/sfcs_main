@@ -116,7 +116,8 @@
                                     $tr_color="white"; 
                                     $toggle=0; 
                                 } 
-                                  
+                                $count=0;
+
                                 foreach($jobsArray as $job)     
 					            {  
                                     $flag++;
@@ -244,7 +245,7 @@
                                                 <td>".$aging."</td>
                                                 <td>".($inputQty-($outputQty+$outputRejQty))."</td>
                                         </tr>";
-                                        
+                                        $count++;
                                         $inputQty=0;
                                         $outputQty=0;
                                         $outputRejQty=0;
@@ -253,6 +254,7 @@
                                 }
                                 
                             } 
+                            echo '<input type="hidden" value="'.$count.'" name="count" id="count">';
                                 
                         ?>
                     </table>
@@ -301,18 +303,21 @@
 <script>
 $(document).ready(function(){
        $('body').on('click','#submit',function(){
-        var bundles=[];
-            $('input[type=checkbox]').each(function (){
-                if(this.checked){
-                    //console.log($(this).val());
-                    bundles.push($(this).val())
+           if($('#count').val() == 1){
+            swal('Can Not Transfer','Module has only one bundle','error');
+           } else {
+                var bundles=[];
+                $('input[type=checkbox]').each(function (){
+                    if(this.checked){
+                        //console.log($(this).val());
+                        bundles.push($(this).val())
 
-                }
-            });
-            var module = $('#module_ref').val();
-            var plantCode = '<?= $plantCode?>';
-            var module1 = '<?= $module?>';
-            var user_name = '<?= $user_name?>';
+                    }
+                });
+                var module = $('#module_ref').val();
+                var plantCode = '<?= $plantCode?>';
+                var module1 = '<?= $module?>';
+                var user_name = '<?= $user_name?>';
                 const data={
                                 "bundleNumber": bundles,
                                 "plantCode": '<?= $plantCode ?>',
@@ -372,9 +377,9 @@ $(document).ready(function(){
                 }).fail(function (result) {
                     console.log(result);
                 }) ;
-   });
-
-});
+            }
+        });
+    });
 </script>
 <script language="javascript" type="text/javascript">
     var table2_Props =  {            
