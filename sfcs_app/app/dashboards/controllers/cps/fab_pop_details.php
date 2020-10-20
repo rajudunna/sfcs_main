@@ -348,7 +348,7 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$check_sql = "SELECT order_del_no from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$check_sql = "SELECT * from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 // if($check_sql_res_check >0){
 // 	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,acutno,order_tid,order_style_no,order_del_no,clubbing from $bai_pro3.cut_tbl_dash_doc_summ where doc_no=$doc_no";
 // }else{
@@ -511,7 +511,7 @@ echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>
 //    	$sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.doc_no=$doc_no and order_cat_doc_mk_mix.acutno=$cut_no_ref  and org_doc_no <=1";
 //    }
 // }
-$sql1="select jm_docket_line_id from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$sql1="select * from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -669,7 +669,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
     echo "<td>".$colorx.'-'.$docket_line_number."</td>";
     // echo "<td>".($marker)."</td>";
     
-	$maker_update="select plan_lot_ref,print_status from $pps.requested_dockets where jm_docket_line_id='".$doc_no."' and plant_code='$plant_code'";
+	$maker_update="select * from $pps.requested_dockets where jm_docket_line_id='".$doc_no."' and plant_code='$plant_code'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($maker_update_result)){
 		$plan_lot_ref = $row['plan_lot_ref'];

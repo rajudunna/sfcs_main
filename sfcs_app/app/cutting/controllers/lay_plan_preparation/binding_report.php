@@ -91,7 +91,7 @@ if($plantcode!=''){
 	$style=$result_mp_color_details['style'];
 }
 echo "<div class='row'>"; 
-echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
+echo "<div class='col-sm-2'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' required>"; 
 echo "<option value=\"\" selected>NIL</option>";
 foreach ($style as $style_value) {
 	if(str_replace(" ","",$style_value)==str_replace(" ","",$get_style)) 
@@ -109,7 +109,7 @@ if($get_style!=''&& $plantcode!=''){
 	$result_bulk_schedules=getBulkSchedules($get_style,$plantcode);
 	$bulk_schedule=$result_bulk_schedules['bulk_schedule'];
 }  
-echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
+echo "<div class='col-sm-2'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' required>";  
 echo "<option value=\"\" selected>NIL</option>";
 foreach ($bulk_schedule as $bulk_schedule_value) {
 	if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$get_schedule)) 
@@ -128,7 +128,7 @@ if($get_schedule!='' && $plantcode!=''){
 	$result_bulk_colors=getBulkColors($get_schedule,$plantcode);
 	$bulk_color=$result_bulk_colors['color_bulk'];
 }
-echo "<div class='col-sm-3'><label>Select Color: </label>";  
+echo "<div class='col-sm-2'><label>Select Color: </label>";  
 echo "<select name=\"color\" onchange=\"thirdbox();\" class='form-control' >
 		<option value=\"NIL\" selected>NIL</option>";
 			foreach ($bulk_color as $bulk_color_value) {
@@ -194,12 +194,12 @@ echo "</select></div>";
     echo "</br><div class='col-sm-3'>"; 
     if(sizeof($binding_dockets)>0)
     {
-	  echo "Binding Dockets Available:"."<font color=GREEN class='label label-success'>YES</font>";
+	  echo "<br/>Binding Dockets Available:"."<font color=GREEN class='label label-success'>YES</font>";
       echo "<input type=\"submit\" class=\"btn btn-primary\" value=\"Submit\" name=\"submit\" id='submit'>";
     }
     else
     {
-      echo "Binding Dockets Available: <font color=RED size=5>No</font>"; 
+      echo "<br/>Binding Dockets Available: <font color=RED size=5>No</font>"; 
     }		
 	echo "</div>";	
 echo "</div>"
@@ -250,7 +250,7 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 	echo "</div>";
 	
 	echo "<div class='col-sm-3'>
-	<b>PO : </b> <h4><span class='label label-info'>".$po_description."</span></h4>";
+	<b>Sub PO : </b> <h4><span class='label label-info'>".$po_description."</span></h4>";
 	echo "</div>";
 
 	echo "<table class='table table-bordered'>";
@@ -281,8 +281,8 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 			//$style=$resultDocketInfo['style'];
 			$fg_color=$resultDocketInfo['fg_color'];
 			//for thr particular docket required qty will calculate marker_length*plies
-			$finalbindingqty=$finalbindingqty+$material_required_qty;
 			$material_required_qty=$plies*$length;
+			$finalbindingqty+=$material_required_qty;
 
 			/*
 				function to get component group id and ratio id
@@ -347,9 +347,8 @@ if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['sche
 		echo "</tr>";
 	}
 	echo "<tr>";
-	echo "<td colspan=3 style='text-align: center;'> <b>Total :</b></td>";
+	echo "<td colspan=4 style='text-align: center;'> <b>Total :</b></td>";
 	//echo "<td>".round($totordqty,2)."</td>";
-	echo "<td></td>";
 	echo "<td>".round($finalbindingqty,2)."</td>";
 	echo "<td></td>";	
 	echo "</tr>";

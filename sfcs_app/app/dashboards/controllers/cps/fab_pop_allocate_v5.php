@@ -1112,7 +1112,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql123="select lot_no,inv_no,allotment_status,shade,shade_grp,balance,width,tid,shrinkage_group,shrinkage_width,shrinkage_length,ref2,ref1,roll_remarks,ref6,ref3,qty_rec,ref5,qty_ret,qty_issued,partial_appr_qty from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
+		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
 		$sql_result=mysqli_query($link, $sql123) or exit("Sql Error1245: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -1330,7 +1330,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT inv_no,grn_date,batch_no,item,lot_no,shade,shrinkage_group,shrinkage_width,shrinkage_length,ref2,ref1,ref6,ref3,qty_rec,ref5 FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
+							$sql_query ="SELECT * FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{

@@ -180,9 +180,15 @@ if(isset($_POST["submit"]))
 	echo "<div class='table-responsive col-md-12' style='max-height:600px;overflow-y:scroll'>";
 	echo "<table id=\"table1\" class=\"table table-bordered\" style='width:100%'>";
 	echo "<tr class='danger'><th>TID</th><th>Size</th><th>Status</th><th>Last Updated</th><th>Carton Reported Qty</th><th>Style</th><th>Schedule</th><th>Color</th></tr>";
+	$select_ops="select operation_code from $pms.operation_mapping where operation_category='Packing' and plant_code='$plant_code' and is_active=true order by priority ASC limit 1";
+	$result_ops=mysqli_query($link, $select_ops) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($sql_row_ops=mysqli_fetch_array($result_ops))
+	{
+		$ops_code=$sql_row_ops["operation_code"];
+	}
+
 	$packing_tid_list=array();
-	$sql="select barcode,size,updated_at,style,color,schedule,good_quantity from $pts.transaction_log where created_at between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and plant_code='$plant_code' order by created_at";
-	
+	$sql="select barcode,size,updated_at,style,color,schedule,good_quantity from $pts.transaction_log where created_at between \"".$sdate." ".$mtime."\" and \"".$edate." ".$aftime1."\" and operation=$ops_code and plant_code='$plant_code' order by created_at";
 	$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysqli_error());
 	if(mysqli_num_rows($sql_result))
 	{
@@ -190,16 +196,18 @@ if(isset($_POST["submit"]))
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 
-			$barcode=$sql_row['barcode'];
-			$size=$sql_row['size'];
-			$status='DONE';
-			$updated_at=$sql_row['updated_at'];
-			$style=$sql_row['style'];
-			$schedule=$sql_row['schedule'];
-			$color=$sql_row['color'];
 			$good_quantity=$sql_row['good_quantity'];
-
-			echo "<tr><td>".$barcode."</td><td>".$size."</td><td>".$status."</td><td>".$updated_at."</td><td>".$good_quantity."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td></tr>";
+			if($good_quantity != 0){
+				$barcode=$sql_row['barcode'];
+				$size=$sql_row['size'];
+				$status='DONE';
+				$updated_at=$sql_row['updated_at'];
+				$style=$sql_row['style'];
+				$schedule=$sql_row['schedule'];
+				$color=$sql_row['color'];
+	
+				echo "<tr><td>".$barcode."</td><td>".$size."</td><td>".$status."</td><td>".$updated_at."</td><td>".$good_quantity."</td><td>".$style."</td><td>".$schedule."</td><td>".$color."</td></tr>";
+			}
 		}
 		echo '<tr><th colspan=4 style="text-align:right">Total:</th><td id="table1Tot1" style="background-color:#FFFFCC; color:red;"></td><td colspan=3></td></tr>';
 		echo "</table>";
