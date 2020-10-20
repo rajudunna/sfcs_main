@@ -515,7 +515,7 @@ if(isset($_POST["submit1"]))
 echo "<h2>Already Requested Cut Jobs </h2>";
 echo "<div class='table-responsive'><table class=\"table table-bordered\" id=\"table1\" border=0 cellpadding=0 cellspacing=0>";
 echo "<tr><th>Module</th><th>Date</th><th>Time</th><th>Requested By</th><th>Style</th><th>Schedule</th><th>Color</th><th>Docket No</th><th>Job No</th><th>Fabric Status</th></tr>";
-$sql2="select * from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
+$sql2="select section_id,req_time,jm_docket_line_id,docket_line_number,work_station_id,created_user,issued_time from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where (fabric_prorities.created_user=\"".$username."\"  or fabric_prorities.req_time!='') and  fabric_prorities.plant_code='$plant_code'  order by fabric_prorities.section_id,fabric_prorities.req_time,fabric_prorities.work_station_id";
 $result2=mysqli_query($link, $sql2) or die("Error12 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row2=mysqli_fetch_array($result2))
 {
@@ -544,7 +544,7 @@ while($row2=mysqli_fetch_array($result2))
 		
 	}
 
-	$sql4="select * from $pms.workstation where workstation_id=\"".$row2["work_station_id"]."\" and plant_code='$plant_code'";
+	$sql4="select workstation_code from $pms.workstation where workstation_id=\"".$row2["work_station_id"]."\" and plant_code='$plant_code'";
 		$result4=mysqli_query($link, $sql4) or die("Error = 123".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row4=mysqli_fetch_array($result4))
 		{
