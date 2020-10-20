@@ -124,11 +124,10 @@ function verify_date()
 	{
 		$dat1=$_POST['dat1'];	
 		$dat2=$_POST['dat2'];
-		$sch=$_POST['sch'];
 
 		// if($sch=="")
 		// {
-			$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job'";
+			$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$dat1' AND '$dat2' AND parent_job_type IN ('PSJ','PSEJ')";
 		// }
 		// else if($sch !="")
 		// {
@@ -138,12 +137,12 @@ function verify_date()
 			// WHERE DATE(tl.`created_at`) BETWEEN '$dat1' AND '$dat2' AND fg.`schedule`='$sch'";
 		// }
 		// echo $sql;
-		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_result=mysqli_query($link, $sql) or exit("Error While Getting transaction log".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		if(mysqli_num_rows($sql_result)> 0)
 		{
 			?>
-			<?= "<div class='btn btn-success pull-right' style='font-weight:bold;color:WHITE;'><a href='$sawing_out_excel?sdate=$dat1&edate=$dat2&schedule=$sch'>Export to Excel</a></div>"; ?>
+			<?= "<div class='btn btn-success pull-right' style='font-weight:bold;color:WHITE;'><a href='$sawing_out_excel?sdate=$dat1&edate=$dat2'>Export to Excel</a></div>"; ?>
 			<div class="col-md-12 table-responsive" style="max-height:900px;overflow-y:scroll;">
 				<table id="table5" class="table table-bordered">
 					<tr>
@@ -155,15 +154,15 @@ function verify_date()
 						<th>Qty</th>
 					</tr>
 					<?php
-					while($rows=mysqli_fetch_array($sql_result))
+					while($sql_row=mysqli_fetch_array($sql_result))
 					{
 						$barcode=$sql_row['barcode'];
 						$parent_job=$sql_row['parent_job'];
 						$shift=$sql_row['shift'];
 						$date=$sql_row['date'];
 						//getting barcode id
-						$sql_barcode_qry="Select barcode_id from $pts.barocde where barcode='$barcode' AND plant_code='$plant_code'";
-						$sql_result_det=mysqli_query($link, $sql_barcode_qry) or exit("Sql Error getting barcode id".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_barcode_qry="Select barcode_id from $pts.barcode where barcode='$barcode' AND plant_code='$plant_code'";
+						$sql_result_det=mysqli_query($link, $sql_barcode_qry) or exit("Sql Error getting barcode id".$sql_barcode_qry.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row_id=mysqli_fetch_array($sql_result_det))
 						{
 							$barcode_id=$sql_row_id['barcode_id'];

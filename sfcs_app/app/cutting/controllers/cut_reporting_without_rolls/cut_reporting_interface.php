@@ -80,14 +80,14 @@ $department_type=DepartmentTypeEnum::CUTTING;
 $result_worksation_id=getWorkstations($department_type,$plantcode);
 $workstations=$result_worksation_id['workstation'];
 
-$location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
+$location_query="SELECT loc_name FROM $pms.locations where plant_code='$plantcode'";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
 while($row = mysqli_fetch_array($location_result))
 {
     $locations[] = $row['loc_name'];
 }
 
-$team_leaders_query = "SELECT * from $pms.tbl_leader_name where plant_code='$plantcode'";
+$team_leaders_query = "SELECT id,emp_name from $pms.tbl_leader_name where plant_code='$plantcode'";
 $team_leaders_result = mysqli_query($link,$team_leaders_query);
 while($row = mysqli_fetch_array($team_leaders_result)){
     $team_leaders[$row['id']] = $row['emp_name'];
@@ -105,7 +105,7 @@ $get_docket_id_result = mysqli_query($link,$get_docket_id);
 while($id_row = mysqli_fetch_array($get_docket_id_result)){
    $jm_docket_line_id = $id_row['jm_docket_line_id'];
 
-   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id=' $jm_docket_line_id' and plant_code='$plantcode'";
+   $check_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' and plant_code='$plantcode'";
    $check_fabric_status_result = mysqli_query($link,$check_fabric_status);
    $sql_num=mysqli_num_rows($check_fabric_status_result);
    if($sql_num > 0)
@@ -1208,7 +1208,7 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
         var error_message = '';
         var user = '<?php echo $username;?>';
         var plantcode = '<?php echo $plantcode;?>';
-        var fabric = '<?php echo $fabric_status;?>';
+        var fabric_val = '<?php echo $fabric_status;?>';
         
         //Screen Validations
         if(c_plies == 0 && full_reporting_flag == '1'){
@@ -1239,7 +1239,8 @@ while($id_row = mysqli_fetch_array($get_docket_id_result)){
             return false;
         }
 
-         if(fabric !=5){
+
+         if(fabric_val !=5){
             swal('warning','Fabric Was Not Requested','warning');
             return false;
         }

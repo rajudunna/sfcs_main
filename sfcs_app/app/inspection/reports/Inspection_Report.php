@@ -302,7 +302,7 @@ if(isset($_POST['submit']))
 						$table .= "<td>".$lot_ref_batch."</td>"; 
 
 						$check=0;
-						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM $bai_rm_pj1.inspection_supplier_db where seq_no=".$supplier;
+						$sql_supplier = "SELECT supplier_m3_code as supplier_name FROM $pms.inspection_supplier_db where seq_no=".$supplier;
 						$sql_result_supplier=mysqli_query($link, $sql_supplier) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result_supplier))
 						{

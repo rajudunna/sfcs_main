@@ -20,7 +20,7 @@ if(isset($_POST['update']))
 	$lock_status=$_POST['lock_status'];
 
 	$tran_order_tid=$_POST['tran_order_tid'];
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+	$sql="select order_col_des,order_style_no,order_del_no,style_id,packing_method,title_size_s02,title_size_s03,title_size_s04,title_size_s05,title_size_s06,title_size_s07,title_size_s08,title_size_s09,title_size_s10,title_size_s11,title_size_s12,title_size_s13,title_size_s14,title_size_s15,title_size_s16,title_size_s17,title_size_s18,title_size_s19,title_size_s20,title_size_s21,title_size_s22,title_size_s23,title_size_s24,title_size_s25,title_size_s26,title_size_s27,title_size_s28,title_size_s29,title_size_s30,title_size_s31,title_size_s32,title_size_s33,title_size_s34,title_size_s35,title_size_s36,title_size_s37,title_size_s38,title_size_s39,title_size_s40,title_size_s41,title_size_s42,title_size_s43,title_size_s44,title_size_s45,title_size_s46,title_size_s47,title_size_s48,title_size_s49,title_size_s50,title_flag from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 		//echo "<br/>Sql=".$sql;
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -130,7 +130,7 @@ if(isset($_POST['update']))
 					mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}
 				
-				$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
+				$sql="select order_col_des,order_style_no,order_del_no,style_id from $bai_pro3.bai_orders_db where order_tid=\"$tran_order_tid\"";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error145".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
@@ -142,7 +142,7 @@ if(isset($_POST['update']))
 				}
 				
 				$allo_c=array();
-				$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref";
+				$sql="select allocate_s01,allocate_s02,allocate_s03,allocate_s04,allocate_s05,allocate_s06,allocate_s07,allocate_s08,allocate_s09,allocate_s10,allocate_s11,allocate_s12,allocate_s13,allocate_s14,allocate_s15,allocate_s16,allocate_s17,allocate_s18,allocate_s19,allocate_s20,allocate_s21,allocate_s22,allocate_s23,allocate_s24,allocate_s25,allocate_s26,allocate_s27,allocate_s28,allocate_s29,allocate_s30,allocate_s31,allocate_s32,allocate_s33,allocate_s34,allocate_s35,allocate_s36,allocate_s37,allocate_s38,allocate_s39,allocate_s40,allocate_s41,allocate_s42,allocate_s43,allocate_s44,allocate_s45,allocate_s46,allocate_s47,allocate_s48,allocate_s49,allocate_s50 from $bai_pro3.allocate_stat_log where tid=$allocate_ref";
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error789".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{

@@ -160,8 +160,6 @@ size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $batch_no; } else { e
 <?php
 error_reporting(0);
 $batch=$_GET["batch"];
-$plant_code=$_GET["plantcode"];
-$username=$_GET["username"];
 $batch_temp = $batch;
 if($batch=="")
 {

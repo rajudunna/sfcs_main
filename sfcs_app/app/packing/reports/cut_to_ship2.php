@@ -196,7 +196,6 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
     $color=$_POST['color'];
     $mpo=$_POST['mpo'];
     $sub_po=$_POST['sub_po'];
-    echo $sub_po;
     if ($style=='NIL' or $schedule=='NIL' or $color=='NIL' or $mpo=='NIL') {
         echo '<div class="alert alert-danger">
               <strong>Warning!</strong> Please Provide All Details
@@ -342,8 +341,8 @@ if(isset($_POST['filter']) or isset($_POST['filter2']))
             echo "<td>".$cut_quantity."</td>";
             echo "<td>".$input_quantity."</td>";
             echo "<td>".$output_quantity."</td>";
-			echo "<td>".$rejected_qty."</td>";
-			echo "<td>".$fg_quantity."</td>";
+            echo "<td>".$fg_quantity."</td>";
+            echo "<td>".$rejected_qty."</td>";
             echo "<td>0</td>";
             echo "<td>0</td>";
             echo "<td>0</td>";

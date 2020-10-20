@@ -8,7 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
     array_pop($php_self);
     //$url_r = base64_encode(	implode('/',$php_self)."/mrn_form_log.php");
 	$url_r = $_GET['r'];
-	$has_permission=haspermission($url_r);
+	// $has_permission=haspermission($url_r);
 	$plant_code = $_SESSION['plantCode'];
     $user_name = $_SESSION['userName'];
 	error_reporting(0);
@@ -202,13 +202,13 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 
 						if($_GET['status_filter']==0)
 						{
-							$sql="select * from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and plant_code='".$plant_code."' order by status,req_date desc";
+							$sql="select rand_track_id,tid,color,req_date,style,schedule,product,item_code,item_desc,remarks,uom,avail_qty,issued_qty,reason_code,req_user,app_date,app_by,updated_date,updated_by,issued_date,issued_by,section,status,req_qty,unit_cost from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and plant_code='".$plant_code."' order by status,req_date desc";
 						}
 						else
 						{
 							
 
-						$sql="select * from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and plant_code='".$plant_code."' and status=".$_GET['status_filter']." order by status,req_date desc";
+						$sql="select rand_track_id,tid,color,req_date,style,schedule,product,item_code,item_desc,remarks,uom,avail_qty,issued_qty,reason_code,req_user,app_date,app_by,updated_date,updated_by,issued_date,issued_by,section,status,req_qty,unit_cost from $wms.mrn_track where month(req_date)=month(\"$date\") and year(req_date)=year(\"$date\") and plant_code='".$plant_code."' and status=".$_GET['status_filter']." order by status,req_date desc";
 						
 						}
 						//echo $sql;
@@ -237,7 +237,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; }
 							echo "<td>".$sql_row['item_code']."</td>";
 							echo "<td>".$sql_row['item_desc']."</td>";
 							$reason_code = $sql_row['reason_code'];
-							$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid = \"$reason_code\" and plant_code='".$plant_code."'";
+							$sql_reason = "SELECT reason_code,reason_desc FROM $wms.mrn_reason_db WHERE reason_tid = \"$reason_code\" and plant_code='".$plant_code."'";
 							$result_reason = mysqli_query($link,$sql_reason);
 							$reason_row = mysqli_fetch_assoc($result_reason);
 							echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";

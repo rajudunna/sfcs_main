@@ -19,7 +19,7 @@ else
 	$print_status="Original";
 }
 
-$sql="select * from $wms.mrn_track where tid=$mrn_id and plant_code='$plant_code'";
+$sql="select tid,style,schedule,color,section,item_code,item_desc,product,reason_code,rand_track_id,req_user,app_by,issued_by,req_qty,avail_qty,issued_qty,remarks from $wms.mrn_track where tid=$mrn_id and plant_code='$plant_code'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1810,7 +1810,7 @@ tags will be replaced.-->
   
 		
 	
-	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+	$sql1="select ref2 from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error121=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1825,7 +1825,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>LotNo</td>
   <?php
-  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+  	$sql1="select lot_no from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error122=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1839,7 +1839,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>LableId</td>
   <?php
-  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+  	$sql1="select tid from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error123=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1853,7 +1853,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Width</td>
   <?php
-  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+  	$sql1="select ref6,ref2 from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error124=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1890,7 +1890,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Batch</td>
   <?php
-    $sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+    $sql1="select lot_no from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	//echo $sql1."<br>";
 	$result1=mysqli_query($link, $sql1) or die("Error126=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
@@ -1911,7 +1911,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Shade</td>
   <?php
-  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+  	$sql1="select ref4 from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error128=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
@@ -1925,7 +1925,7 @@ tags will be replaced.-->
   <td class=xl1514212></td>
   <td colspan=2 class=xl8514212>Location</td>
    <?php
-  	$sql1="select * from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
+  	$sql1="select ref1 from $wms.store_in where tid in ($lable_ids) and plant_code='$plant_code'";
 	$result1=mysqli_query($link, $sql1) or die("Error129=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row1=mysqli_fetch_array($result1))
 	{
