@@ -7,7 +7,7 @@
 	$doc_id=$_GET['doc_id'];
 
 
-$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+$sql="select order_style_no,order_col_des,order_div,order_del_no,order_po_no,color_code,order_no,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_date from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -38,7 +38,7 @@ while($sql_row=mysql_fetch_array($sql_result))
 	$plan_log_time=$sql_row['log_time'];
 } */
 	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+$sql="select category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -78,7 +78,7 @@ while($sql_row=mysql_fetch_array($sql_result))
 
 <?php
 
-$sql="select * from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,acutno,p_plies,doc_no,date,mk_ref,print_status,remarks,plan_module,plan_lot_ref from $bai_pro3.recut_v2 where order_tid=\"$order_tid\" and cat_ref=$cat_ref and doc_no=$doc_id";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -111,7 +111,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$lot_ref=$sql_row['plan_lot_ref'];
 }
 
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$sql2="select mklength,remarks from $bai_pro3.maker_stat_log where tid=$mk_ref";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -2364,7 +2364,7 @@ $ctex_len=array();
 $tkt_len=array();
 $shade_det=array();
 
-$sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'";
+$sql="select ref2,roll_width,allocated_qty,batch_no,ref4,inv_no,ref1,lot_no,roll_id,plies,item,ref5,qty_rec from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='recut'";
 //echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
