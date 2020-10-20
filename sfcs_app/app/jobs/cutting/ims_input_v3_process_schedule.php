@@ -57,6 +57,7 @@ if($log_time==0 or $time_diff>1)
 		<?php 
 		$include_path=getenv('config_job_path');
 		include($include_path.'\sfcs_app\common\config\config_jobs.php');
+		include($include_path.'\sfcs_app\common\config\functions_v2.php');
 		// var_dump($shifts_array);
 			$plantcode=$_SESSION['plantCode'];
 			$teams=$shifts_array;
@@ -238,9 +239,8 @@ if($log_time==0 or $time_diff>1)
 
 				}
 			}
-
-				//echo $note;
-				//E:To avoid Duplicate Entry - 20150511 Kirang
+			//echo $note;
+			//E:To avoid Duplicate Entry - 20150511 Kirang
 			echo "END:".date("H:i:s");
 			$myFile = "ims_process_ses_track.php";
 			$fh = fopen($myFile, 'w') or die("can't open file");
