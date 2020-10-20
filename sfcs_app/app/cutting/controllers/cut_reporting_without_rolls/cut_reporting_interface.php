@@ -80,14 +80,14 @@ $department_type=DepartmentTypeEnum::CUTTING;
 $result_worksation_id=getWorkstations($department_type,$plantcode);
 $workstations=$result_worksation_id['workstation'];
 
-$location_query="SELECT * FROM $pms.locations where plant_code='$plantcode'";
+$location_query="SELECT loc_name FROM $pms.locations where plant_code='$plantcode'";
 $location_result=mysqli_query($link, $location_query) or exit('locations error');
 while($row = mysqli_fetch_array($location_result))
 {
     $locations[] = $row['loc_name'];
 }
 
-$team_leaders_query = "SELECT * from $pms.tbl_leader_name where plant_code='$plantcode'";
+$team_leaders_query = "SELECT id,emp_name from $pms.tbl_leader_name where plant_code='$plantcode'";
 $team_leaders_result = mysqli_query($link,$team_leaders_query);
 while($row = mysqli_fetch_array($team_leaders_result)){
     $team_leaders[$row['id']] = $row['emp_name'];

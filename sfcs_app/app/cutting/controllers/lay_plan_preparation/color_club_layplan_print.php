@@ -105,7 +105,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //For all other parameters
 	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+$sql="select tid,category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error());
 $sql_num_=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -127,7 +127,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 $purwidths = array();
 for($i=0;$i<sizeof($cat_db);$i++)
 {
-	$sql="select * from $bai_pro3.cat_stat_log where order_tid like \"%$schedule%\" and tid=$cat_db[$i]";
+	$sql="select purwidth from $bai_pro3.cat_stat_log where order_tid like \"%$schedule%\" and tid=$cat_db[$i]";
 	//mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error());
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error());
 	$sql_num_=mysqli_num_rows($sql_result);
@@ -184,7 +184,7 @@ for($i=0;$i<sizeof($cat_db);$i++)
 	}
 	
 	//Sample docket remarks updation
-	$sql="select * from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
+	$sql="select remarks from $bai_pro3.bai_orders_db_remarks where order_tid=\"$order_tid\"";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error());
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -1828,7 +1828,7 @@ tags will be replaced.-->
 	$a_tot[49]=0;
 $plies_tot=0;
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Pilot\"  order by acutno";
+$sql="select a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50,acutno,p_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Pilot\"  order by acutno";
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error());
 $sql_num_=mysqli_num_rows($sql_result);
@@ -1947,7 +1947,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plies_tot=$plies_tot+$plies;
 	for($l=0;$l<sizeof($color_codes);$l++)
 	{
-		$sql_1="select * from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Pilot\" and acutno=\"".$cutno."\"";
+		$sql_1="select p_plies from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Pilot\" and acutno=\"".$cutno."\"";
 		$sql_result_1=mysqli_query($sql_1,$link) or exit("Sql Error14".mysqli_error());
 		$sql_num_1=mysqli_num_rows($sql_result_1);
 		while($sql_row_1=mysqli_fetch_array($sql_result_1))
@@ -2159,7 +2159,7 @@ $a_tot[49]=0;
 	
 	
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\" order by acutno";
+$sql="select a_s01,a_s02,a_s03,a_s04,a_s05,a_s06,a_s07,a_s08,a_s09,a_s10,a_s11,a_s12,a_s13,a_s14,a_s15,a_s16,a_s17,a_s18,a_s19,a_s20,a_s21,a_s22,a_s23,a_s24,a_s25,a_s26,a_s27,a_s28,a_s29,a_s30,a_s31,a_s32,a_s33,a_s34,a_s35,a_s36,a_s37,a_s38,a_s39,a_s40,a_s41,a_s42,a_s43,a_s44,a_s45,a_s46,a_s47,a_s48,a_s49,a_s50,acutno,p_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\" order by acutno";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error());
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error14".mysqli_error());
 $sql_num_=mysqli_num_rows($sql_result);
@@ -2493,7 +2493,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	for($l=0;$l<sizeof($color_codes);$l++)
 	{
-		$sql_1="select * from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Normal\" and acutno=\"".$cutno."\"";
+		$sql_1="select p_plies from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Normal\" and acutno=\"".$cutno."\"";
 		//echo $sql_1."<br>";
 		$sql_result_1=mysqli_query($link,$sql_1) or exit("Sql Error14".mysqli_error());
 		$sql_num_1=mysqli_num_rows($sql_result_1);
@@ -2560,7 +2560,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 	for($l=0;$l<sizeof($color_codes);$l++)
 	{
-		$sql_1="select * from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Normal\" and acutno=\"".$cutno."\"";
+		$sql_1="select p_plies from $bai_pro3.plandoc_stat_log where cat_ref=\"".$cat_db[$l]."\" and remarks=\"Normal\" and acutno=\"".$cutno."\"";
 		//echo $sql_1."<br>";
 		$sql_result_1=mysqli_query($link,$sql_1) or exit("Sql Error14".mysqli_error());
 		$sql_num_1=mysqli_num_rows($sql_result_1);

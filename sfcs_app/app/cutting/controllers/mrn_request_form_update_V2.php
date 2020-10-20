@@ -34,7 +34,7 @@ if(isset($_POST['dataset']))
 		$cost=0;
 		$reason_id_db = array();
 		$reason_code_db = array();
-		$sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
+		$sql_reason="select reason_tid,reason_code,reason_desc from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
 		$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 		$count = mysqli_num_rows($sql_result);
 		

@@ -35,7 +35,7 @@ $mk_files=array();
 
 
 
-$sql="select * from bai_orders_db_confirm where order_tid=\"$order_tid\"";
+$sql="select order_del_no,title_flag,title_size_s06,title_size_s08,title_size_s10,title_size_s12,title_size_s14,title_size_s16,title_size_s18,title_size_s20,title_size_s22,title_size_s24,title_size_s26,title_size_s28,title_size_s30,title_flag, from bai_orders_db_confirm where order_tid=\"$order_tid\"";
 //echo $sql;
 $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 while($sql_row=mysql_fetch_array($sql_result))
@@ -67,7 +67,7 @@ while($sql_row=mysql_fetch_array($sql_result))
 $sizes=array("xs","s","m","l","xl","xxl","xxxl","$size06","$size08","$size10","$size12","$size14","$size16","$size18","$size20","$size22","$size24","$size26","$size28","$size30");
 
 
-$sql="select *,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
+$sql="select order_tid,order_del_no,order_col_des,col_des,compo_no,fab_des,gmtway,mklength,savings,material_req,p_plies,doc_no,color_code,date,plan_module,remarks,mk_file,p_xs,p_s,p_m,p_l,p_xl,p_xxl,p_xxxl,p_s06,p_s08,p_s10,p_s12,p_s14,p_s16,p_s18,p_s20,p_s22,p_s24,p_s26,p_s28,p_s30,mk_ref,allocate_ref,fn_savings_per_cal(DATE,cat_ref,order_del_no,order_col_des) as savings from order_cat_doc_mk_mix where clubbing=$clubbing and pcutno=$cut_no and category=\"$cat_title\" and order_del_no=$order_del_no and clubbing>0";
 //echo $sql;
 $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 while($sql_row=mysql_fetch_array($sql_result))
@@ -119,7 +119,7 @@ while($sql_row=mysql_fetch_array($sql_result))
 
 }
 
-$sql="select * from cat_stat_log where tid=$cat_ref";
+$sql="select category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des from cat_stat_log where tid=$cat_ref";
 mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $sql_result=mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 $sql_num_check=mysql_num_rows($sql_result);
@@ -151,7 +151,7 @@ $sql="select min(roll_width) as width from bai_rm_pj1.fabric_cad_allocation wher
 	}
 	$actwidth=$system_width;
 
-$sql22="select * from marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+$sql22="select marker_width,marker_length from marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 //echo $sql22;
 $sql_result22=mysql_query($sql22,$link) or exit("Sql Error".mysql_error());
 while($sql_row22=mysql_fetch_array($sql_result22))
@@ -160,7 +160,7 @@ while($sql_row22=mysql_fetch_array($sql_result22))
 	$act_mk_length=$sql_row22['marker_length'];
 }
 
-$sql22="select * from marker_ref_matrix where  cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
+$sql22="select marker_length from marker_ref_matrix where  cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
 $sql_result22=mysql_query($sql22,$link) or exit("Sql Error".mysql_error());
 while($sql_row22=mysql_fetch_array($sql_result22))
 {
