@@ -110,7 +110,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 	$module_db=array();
 	$section_db=array();
 	$author_db=array();
-	$sql="select * from $bai_pro3.sections_db where sec_id>0";
+	$sql="select sec_mods,sec_id,user_id,user_id2 from $bai_pro3.sections_db where sec_id>0";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
@@ -128,7 +128,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 
 	
 	
-	$sql="select * from $bai_pro3.qms_vs_recut where log_date between \"$sdate\" and \"$edate\"";
+	$sql="select qms_tid,doc_no,log_date,module,qms_style,qms_schedule,qms_color,qms_size,raised,act_cut_status,plan_module,actual,ref1,fabric_status from $bai_pro3.qms_vs_recut where log_date between \"$sdate\" and \"$edate\"";
 	
 	if($pch==1)
 	{
@@ -185,7 +185,7 @@ if(isset($_REQUEST['filter']) or isset($_GET['doc_no']))
 			echo "<td>".ims_sizes('',$sql_row['qms_schedule'],$sql_row['qms_style'],$sql_row['qms_color'],$sql_row['qms_size'],$link)."</td>";
 			echo "<td>".$sql_row['raised']."</td>";
 			
-			$sql="select * from $pps.recut_track where plant_code='$plantcode' and doc_no=$recut_doc_no and level=2";
+			$sql="select status,username from $pps.recut_track where plant_code='$plantcode' and doc_no=$recut_doc_no and level=2";
 			$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$count=mysqli_num_rows($result);
 			while($row=mysqli_fetch_array($result))

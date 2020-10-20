@@ -3,7 +3,7 @@ include("../../../common/config/config_ajax.php");
 $plantcode=$_SESSION['plantCode'];
 if(isset($_GET['date']))
 {
-    $query = "select * from $pps.binding_consumption where plant_code='".$plantcode."' and status='Close' and date(status_at)='".$_GET['date']."'";
+    $query = "select id,style,schedule,color,tot_bindreq_qty from $pps.binding_consumption where plant_code='".$plantcode."' and status='Close' and date(status_at)='".$_GET['date']."'";
     $sql_result = mysqli_query($link,$query);
 
     $response_table = '<tr>
@@ -18,7 +18,7 @@ if(isset($_GET['date']))
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $i = $sql_row['id'];
-        $docket_query = "select * from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plantcode."'";
+        $docket_query = "select doc_no from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plantcode."'";
                                     $docket_query_result = mysqli_query($link_new,$docket_query);
                                     while($sql_row1=mysqli_fetch_array($docket_query_result))
                                     {

@@ -437,11 +437,11 @@ echo "</tr>";
 
 if($level==3)
 {
-	$sql="select * from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5 and plant_code='".$plant_code."'";
+	$sql="select tid,req_date,style,schedule,color,product,item_desc,item_code,reason_code,req_qty,uom,avail_qty,req_user,section from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5 and plant_code='".$plant_code."'";
 }
 else
 {
-	$sql="select * from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and plant_code='".$plant_code."'";
+	$sql="select tid,req_date,style,schedule,color,product,item_desc,item_code,reason_code,req_qty,uom,avail_qty,req_user,section from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and plant_code='".$plant_code."'";
 }
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -468,7 +468,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$item_desc."</td>";
 	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
 	$reason_code = $sql_row['reason_code'];
-	$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code and plant_code='".$plant_code."'";
+	$sql_reason = "SELECT reason_code,reason_desc FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code and plant_code='".$plant_code."'";
 	$result_reason = mysqli_query($link,$sql_reason);
 	$reason_row = mysqli_fetch_assoc($result_reason);
 	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";

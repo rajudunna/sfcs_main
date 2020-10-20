@@ -67,7 +67,7 @@ th{
                         </thead>
                         <tbody>
                         <?php
-                            $query = "select * from $pps.binding_consumption where status='Open' and plant_code='".$plant_code."'";
+                            $query = "select id,style,schedule,color,tot_bindreq_qty from $pps.binding_consumption where status='Open' and plant_code='".$plant_code."'";
                             $sql_result = mysqli_query($link_new,$query);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
@@ -116,7 +116,7 @@ th{
                                 // $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R');
                                 // $path=$DOCKET_SERVER_IP."/printDocket/";
                              
-                                $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
+                                $query = "select id,style,schedule,color,tot_bindreq_qty,status from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
                                 $sql_result = mysqli_query($link_new,$query);
                                 $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -125,7 +125,7 @@ th{
                                     $i = $sql_row['id'];
                                     $index+=1;
 
-                                    $docket_query = "select * from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plant_code."'";
+                                    $docket_query = "select doc_no from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plant_code."'";
                                     $docket_query_result = mysqli_query($link_new,$docket_query);
                                     while($sql_row1=mysqli_fetch_array($docket_query_result))
                                     {
@@ -192,7 +192,7 @@ th{
         </div>
 
   <?php
-    $query = "select * from $pps.binding_consumption where plant_code='".$plant_code."'";
+    $query = "select id from $pps.binding_consumption where plant_code='".$plant_code."'";
     $sql_result = mysqli_query($link_new,$query) or exit('Cant  run');
     while($sql_row=mysqli_fetch_array($sql_result))
     {
@@ -204,7 +204,7 @@ th{
                     <button type='button' class='close'  id = 'cancel' data-dismiss='modal'>&times;</button>
                 </div>";
         echo "<div class='modal-body'>";
-                    $child_query = "select * from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$i."' and c.plant_code='".$plant_code."'";
+                    $child_query = "select style,schedule,color,compo_no,doc_no,category,cutno,bind_req_qty,bind_category,bind_req_qty from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$i."' and c.plant_code='".$plant_code."'";
                     $child_result = mysqli_query($link_new,$child_query);
                     // var_dump(mysqli_num_rows($child_result));
                     if(mysqli_num_rows($child_result) > 0){

@@ -349,7 +349,7 @@ if(isset($_POST['submit2']))
 	{
 		
 	
-	$sql="select * from $bai_pro3.plandoc_stat_log where doc_no=$docket_id";
+	$sql="select cat_ref,order_tid from $bai_pro3.plandoc_stat_log where doc_no=$docket_id";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -360,7 +360,7 @@ if(isset($_POST['submit2']))
 	
 	if($cat_ref>0)
 	{
-		$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+		$sql="select order_style_no,order_col_des,order_del_no,order_div,order_div from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 		
 		mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -472,7 +472,7 @@ if(isset($_POST['submit3']))
 	if($cid_id>0)
 	{
 	
-	$sql="select * from $bai_pro3.plandoc_stat_log where cat_ref=$cid_id";
+	$sql="select order_tid from $bai_pro3.plandoc_stat_log where cat_ref=$cid_id";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
@@ -480,7 +480,7 @@ if(isset($_POST['submit3']))
 		$order_tid=$sql_row['order_tid'];
 	}
 	
-	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	$sql="select order_style_no,order_col_des,order_del_no,order_div,order_div from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 	mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
