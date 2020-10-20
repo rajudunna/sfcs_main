@@ -4,46 +4,53 @@ $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');	
 
 set_time_limit(6000000);
-	
-$sql="SELECT WEEK(CONCAT(SUBSTR(Ex_Factory,-8,4),\"-\",SUBSTR(Ex_Factory,-4,2),\"-\",SUBSTR(Ex_Factory,-2,2))) AS WEEK_NO,CONCAT(SUBSTR(Ex_Factory,-8,4),'-',SUBSTR(Ex_Factory,-4,2),'-',SUBSTR(Ex_Factory,-2,2)) AS Ex_Factory_New,Customer_Order_No AS A,CO_Line_Status,MPO,CPO,Buyer,Product,Buyer_Division,Style_No,Schedule_No,Colour,Size,ZFeature,SUM(Order_Qty) as qty,Ex_Factory,MODE,Destination,Packing_Method,FOB_Price_per_piece,CM_Value,EMB_A,EMB_B,EMB_C,EMB_D,EMB_E,EMB_F,EMB_G,EMB_H FROM $m3_inputs.shipment_plan WHERE schedule_no > 0 GROUP BY Style_No,Schedule_No,Colour,Size,Ex_Factory,Destination";
-// echo $sql."<br>";
-$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row=mysqli_fetch_array($sql_result))
-{
-	$Style_No=str_pad($sql_row['Style_No'],"15"," ");
-	$Schedule_No=$sql_row['Schedule_No'];		
-	$Colour=str_pad($sql_row['Colour'],"30"," ");	
-	$Size=$sql_row['Size'];	
-	$Destination=$sql_row['Destination'];		
-	$Ex_Factory=$sql_row['Ex_Factory'];		
-	$Ex_Factory_New=$sql_row["Ex_Factory_New"];
-	$cpo=str_replace('"',"'",$sql_row["CPO"]);
-	$color=str_replace('"',"'",$sql_row["Colour"]);
-	$division=str_replace('"',"'",$sql_row["Buyer_Division"]);
-	$buyer=str_replace('"',"'",$sql_row["Buyer"]);
-	$product=str_replace('"',"'",$sql_row["Product"]);
-	$style=str_replace('"',"'",$sql_row["Style_No"]);
 
-    $sql_check="select ssc_code_week_plan from $bai_pro4.shipment_plan where ssc_code_week_plan='".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."'";
-	$sql_check_res=mysqli_query($link, $sql_check) or exit("Sql Error11212".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+//Getting from OMS regarding order information
+$sql_oms="SELECT CONCAT(SUBSTR(omd.planned_delivery_date,-8,4),'-',SUBSTR(omd.planned_delivery_date,-4,2),'-',SUBSTR(omd.planned_delivery_date,-2,2)) AS Ex_Factory_New,
+omd.customer_order_no ,omd.customer_order_line_no,omd.vpo,omd.cpo,omd.buyer_desc,omd.buyer_desc AS buyer_Division,opi.style,omd.schedule,opi.color_name,opi.size_name,opi.zfeature_name,
+SUM(omd.mo_quantity) AS qty,omd.planned_delivery_date,omd.destination,omd.packing_method FROM 
+$oms.oms_mo_details AS omd LEFT JOIN $oms.oms_products_info AS opi ON omd.mo_number=opi.mo_number
+GROUP BY opi.style,omd.SCHEDULE,opi.color_name,opi.size_name,omd.planned_delivery_date,omd.destination";
+
+$sql_oms_result=mysqli_query($link, $Getting) or exit("Error While getting information from OMS".mysqli_error($GLOBALS["___mysqli_ston"]));
+while($sql_row=mysqli_fetch_array($sql_oms_result))
+{
+	$Style_No=$sql_row['style'];
+	$Schedule_No=$sql_row['schedule'];		
+	$Colour=$sql_row['color_name'];	
+	$Size=$sql_row['size_name'];	
+	$Destination=$sql_row['destination'];		
+	$Ex_Factory=$sql_row['planned_delivery_date'];		
+	$Ex_Factory_New=$sql_row["Ex_Factory_New"];
+	$cpo=$sql_row["cpo"];
+	$color=$sql_row["color_name"];
+	$division=$sql_row["buyer_Division"];
+	$buyer=$sql_row["buyer"];
+	$product="";
+	$style=$sql_row["style"];
+	$week = $Ex_Factory_New->format("W");
+
+	//Verifying the data weather already availble in Shipment
+    $sql_check="select ssc_code_week_plan from $pps.shipment_plan where ssc_code_week_plan='".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."'";
+	$sql_check_res=mysqli_query($link, $sql_check) or exit("Checking weekly plan information".mysqli_error($GLOBALS["___mysqli_ston"]));
 	if(mysqli_num_rows($sql_check_res)==0)
 	{
-		$sql1="INSERT INTO $bai_pro4.shipment_plan(ssc_code_week_plan) value('".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."')";
-		mysqli_query($link, $sql1) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_insert="INSERT INTO $pps.shipment_plan(ssc_code_week_plan) value('".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."')";
+		mysqli_query($link, $sql_insert) or exit("Inserting weekly plan information".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}	
-	
-	$sql2="update $bai_pro4.shipment_plan set order_no=\"".$sql_row["A"]."\",delivery_no=\"".$sql_row["A"]."\",del_status=\"".$sql_row["CO_Line_Status"]."\",mpo=\"".$sql_row["MPO"]."\",cpo=\"".$cpo."\",buyer=\"".$buyer."\",product=\"".$product."\",buyer_division=\"".$division."\",style=\"".$style."\",schedule_no=\"".$sql_row["Schedule_No"]."\",color=\"".$color."\",size=\"".$sql_row["Size"]."\",z_feature=\"".$sql_row["ZFeature"]."\",ord_qty='".$sql_row["qty"]."',ex_factory_date='".$Ex_Factory_New."',MODE='".$sql_row["MODE"]."',destination=\"".$sql_row["Destination"]."\",packing_method=\"".$sql_row["Packing_Method"]."\",fob_price_per_piece='".$sql_row["FOB_Price_per_piece"]."',cm_value='".$sql_row["CM_Value"]."',week_code='".$sql_row["WEEK_NO"]."',order_embl_a='".$sql_row["EMB_A"]."',order_embl_b='".$sql_row["EMB_B"]."',order_embl_c='".$sql_row["EMB_C"]."',order_embl_d='".$sql_row["EMB_D"]."',order_embl_e='".$sql_row["EMB_E"]."',order_embl_f='".$sql_row["EMB_F"]."',order_embl_g='".$sql_row["EMB_G"]."',order_embl_h='".$sql_row["EMB_H"]."',ssc_code_new=\"".$Style_No.$Schedule_No.$Colour."\" where ssc_code_week_plan=\"".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."\"";
-	mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+	//Updating data to the Shipment
+	$update_sql="update $pps.shipment_plan set order_no=\"".$sql_row["customer_order_no"]."\",delivery_no=\"".$sql_row["customer_order_no"]."\",del_status=\"".$sql_row["CO_Line_Scustomer_order_line_notatus"]."\",mpo=\"".$sql_row["vpo"]."\",cpo=\"".$cpo."\",buyer=\"".$buyer."\",product=\"".$product."\",buyer_division=\"".$division."\",style=\"".$style."\",schedule_no=\"".$sql_row["schedule"]."\",color=\"".$color."\",size=\"".$Size."\",z_feature=\"".$sql_row["zfeature_name"]."\",ord_qty='".$sql_row["qty"]."',ex_factory_date='".$Ex_Factory_New."',destination=\"".$Destination."\",packing_method=\"".$sql_row["packing_method"]."\",fob_price_per_piece=0,week_code='".$week."'ssc_code_new=\"".$Style_No.$Schedule_No.$Colour."\" where ssc_code_week_plan=\"".$Style_No.$Schedule_No.$Colour."-".$Size."-".$Ex_Factory."-".$Destination."\"";
+	mysqli_query($link, $update_sql) or exit("Updating weekly plan information".mysqli_error($GLOBALS["___mysqli_ston"]));
 }
-$sql4="INSERT INTO $bai_pro4.week_delivery_plan(shipment_plan_id,size_code,rev_exfactory,original_order_qty,act_exfact) SELECT ship_tid,size,ex_factory_date,ord_qty,ex_factory_date FROM $bai_pro4.shipment_plan where ship_tid not in (select shipment_plan_id from $bai_pro4.week_delivery_plan)";
-// echo $sql4."<br><br>";
-$res=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-if($res){
-	print("Inserted into week_delivery_plan table successfully");
-}
+	//Updating data to the Weekly delivery
+	$sql_insert_week="INSERT INTO $pps.week_delivery_plan(shipment_plan_id,size_code,rev_exfactory,original_order_qty,act_exfact) SELECT ship_tid,size,ex_factory_date,ord_qty,ex_factory_date FROM $pps.shipment_plan where ship_tid not in (select shipment_plan_id from $pps.week_delivery_plan)";
+	$res=mysqli_query($link, $sql_insert_week) or exit("Inserted into week_delivery_plan table successfully".mysqli_error($GLOBALS["___mysqli_ston"]));
+	if($res){
+		print("Inserted into week_delivery_plan table successfully");
+	}
 
 $end_timestamp = microtime(true);
 $duration = $end_timestamp - $start_timestamp;
 print("Execution took ".$duration." milliseconds.");
 ?>
-<!-- <script language="javascript"> setTimeout("CloseWindow()",0); function CloseWindow(){ window.open('','_self',''); window.close(); } </script> -->
