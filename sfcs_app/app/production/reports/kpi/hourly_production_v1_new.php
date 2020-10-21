@@ -141,10 +141,10 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$ttlActEff = 0;
 										$ttlBalPcs = 0;
 										$ttlForeCastHitRate = 0;
-										$groupedSecQry = "SELECT distinct group FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
+										$groupedSecQry = "SELECT distinct monthly_production_plan.group FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  upload_log.plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 										$res_groupedSecQry = mysqli_query($link, $groupedSecQry);
 										while ($row_groupedSecQry = mysqli_fetch_array($res_groupedSecQry)) {
-											$sql = "SELECT * FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and group = '".$row_groupedSecQry['group']."' ";
+											$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  upload_log.plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and monthly_production_plan.group = '".$row_groupedSecQry['group']."'";
 											$res = mysqli_query($link, $sql);
 											$ttlActNop_sec = 0;
 											$ttlFrPlanQty_sec = 0;
@@ -172,7 +172,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 												$workstationId = $workstationRow[0];
 												
 												//============== Get No of operators ============================//
-												$sqlNOP = "SELECT sum(present+jumper) as act_nop FROM $pps.pro_attendance WHERE date='$frdate' and module='$workstationId'";
+												$sqlNOP = "SELECT sum(present+jumper) as act_nop FROM $pms.pro_attendance WHERE date='$frdate' and module='$workstationId'";
 												$nopResult = mysqli_query($link, $sqlNOP) or exit("sql Error attendance-". mysqli_error($link));
 												$rowNOP = mysqli_fetch_row($nopResult);
 												$actNop = $rowNOP[0];
