@@ -189,8 +189,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">Component Level Rejections</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+					<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span> -->
 					</button>
 				</div>
 				<div class="modal-body col-sm-12">
@@ -566,7 +566,7 @@
 		}
 		// push the record into the array of rejections 
 		const summaryRow = `<tr id='${lastIndexOfCurrSizeRejs+''+summaryRowKey}'><td>${component}</td><td>${rej_text}</td><td>${quantity}</td>
-				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger'> X </button></td>
+				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td>
 			</tr>`;
 		$('#rejection_summary_table_body').append(summaryRow);
 	}
@@ -699,7 +699,7 @@
 					data:  reportData,
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: function (res) {            
+					success: function (res) {
 						if(res.status){
 							$('#dynamic_table1').html('');
 							$('#loading-image').hide();
@@ -738,13 +738,13 @@
 
     function constructAndShowSJResponseTable(responseData) {
         const data = responseData;
-        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejected Qty</th></tr></thead><tbody>";
         if(barcode_generation == 0) {
-            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td><td>"+data.rejectedQuantity+"</td></tr>";
         } else{
             for(var z=0; z<data.length; z++){
-                if(data[z].reportedQuantity > 0) {
-                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+                if(data[z].reportedQuantity > 0 || data[z].rejectedQty > 0) {
+                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td><td>"+data[z].rejectedQty+"</td></tr>";
                 }
             }
         }

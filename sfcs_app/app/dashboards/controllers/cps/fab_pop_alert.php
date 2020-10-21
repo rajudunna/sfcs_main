@@ -13,7 +13,7 @@
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/fab_priority_dashboard.php");
-    $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index.php?r=".$url_r;
+    $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOST']."/index-no-navi.php?r=".$url_r;
 	echo "<script>setTimeout(\"Redirect()\",3000); function Redirect() {  location.href = '".$url."'; }</script>";
 ?>
 
