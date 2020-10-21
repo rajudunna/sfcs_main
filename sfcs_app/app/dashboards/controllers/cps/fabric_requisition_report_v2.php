@@ -141,11 +141,11 @@ $cat=$_POST["cat"];
 if($cat!=''){
 	if($cat==1)
 	{
-		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,doc_ref,issued_time,created_user,log_time from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00' and plant_code='$plant_code' order by req_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00' and plant_code='$plant_code' order by req_time";
 	}
 	if($cat==2)
 	{
-		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,doc_ref,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null or issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null or issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
 	}
 	//  echo $sql2;
 	echo "<hr/>";

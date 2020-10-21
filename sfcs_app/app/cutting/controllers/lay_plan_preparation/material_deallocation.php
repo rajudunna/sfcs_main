@@ -94,7 +94,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         </thead>
                         <?php
                             $doc_nos=array();    
-							$query = "select doc_no,id,doc_no,doc_no,qty,requested_by,requested_at from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
+							$query = "select doc_no,id,qty,requested_by,requested_at from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
 							
                             $sql_result = mysqli_query($link,$query) or die(exception($query));
                             // echo $query;
