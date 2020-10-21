@@ -1844,7 +1844,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //Added Backup Lots for visibility in Inspection Report
 
-$sql1="select tid,ref2,ref4,qty_rec,ref5,ref6,ref3,lot_no,roll_joins,partial_appr_qty,roll_status, from $wms.store_in_backup where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select tid,ref2,ref4,qty_rec,ref5,ref6,ref3,lot_no,roll_joins,partial_appr_qty,roll_status from $wms.store_in_backup where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 //echo $sql1."<br>";
 
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));
