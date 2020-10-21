@@ -110,7 +110,7 @@ $hour = date("H.i");
   function
   blink_new3(x)
   {
-    if(x.length >='6'){
+    if(x.length >=6){
       $("div[id*='S"
       +
       x
@@ -129,7 +129,7 @@ $hour = date("H.i");
   function
   blink_new(x)
   {
-    if(x.length >= 3){
+    if(x.length >= 1){
       $("div[id*='D"
       +
       x
