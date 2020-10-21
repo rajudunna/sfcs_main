@@ -99,7 +99,7 @@ $doc_no = $data['doc_no'];
             
         }else
         {
-            $checkdocket="SELECT * FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=".$doc_no;
+            $checkdocket="SELECT plan_lot_ref FROM $bai_pro3.`plandoc_stat_log` WHERE doc_no=".$doc_no;
             $checkdocketresult = mysqli_query($link,$checkdocket);
                 if(mysqli_num_rows($checkdocketresult) > 0)
                 {

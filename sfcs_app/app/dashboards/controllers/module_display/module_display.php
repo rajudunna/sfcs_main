@@ -127,7 +127,7 @@ elseif(isset($_GET['shift']))
 }
 
 $date_check=date("Y-m-d");
-$sql1="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='".$date_check."' and shift in ('".$shifts."') order by start_time";
+$sql1="select start_time,end_time from $pts.pro_atten_hours where plant_code='$plantcode' and date='".$date_check."' and shift in ('".$shifts."') order by start_time";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result1)>0)
 {

@@ -94,7 +94,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                         </thead>
                         <?php
                             $doc_nos=array();    
-							$query = "select * from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
+							$query = "select doc_no,id,qty,requested_by,requested_at from $wms.material_deallocation_track where status='Open' and plant_code='".$plant_code."'";
 							
                             $sql_result = mysqli_query($link,$query) or die(exception($query));
                             // echo $query;
@@ -163,7 +163,7 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                             </tr>
                         </thead>
                         <?php
-                            $query = "select * from $wms.material_deallocation_track where status<>'Open' and plant_code='".$plant_code."'";
+                            $query = "select id,doc_no,qty,requested_by,requested_at,approved_by,approved_at,status from $wms.material_deallocation_track where status<>'Open' and plant_code='".$plant_code."'";
                             $sql_result = mysqli_query($link,$query) or die(exception($query));
                             // echo $query;
                             $index=0;
@@ -210,7 +210,7 @@ if(isset($_POST['formSubmit']))
 			$jm_docket_line_id = $sql_row01['jm_docket_line_id'];
 		}
   
-        $fabric_status_qry="SELECT * FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' and plant_code='".$plant_code."'";
+        $fabric_status_qry="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id='$jm_docket_line_id' and plant_code='".$plant_code."'";
         //  echo $fabric_status_qry;
     
 		$fabric_status_qry_result=mysqli_query($link, $fabric_status_qry) or die(exception($fabric_status_qry));
@@ -233,7 +233,7 @@ if(isset($_POST['formSubmit']))
 
                     if(mysqli_num_rows($is_requested_result)==0)
                     {
-                        $fab_qry="SELECT * FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_line_id' and plant_code='".$plant_code."'";
+                        $fab_qry="SELECT allocated_qty FROM $wms.fabric_cad_allocation WHERE doc_no='$jm_docket_line_id' and plant_code='".$plant_code."'";
                         $fab_qry_result=mysqli_query($link, $fab_qry) or die(exception($fab_qry));
                         $allocated_qty=0;
                         while($sql_row1=mysqli_fetch_array($fab_qry_result))

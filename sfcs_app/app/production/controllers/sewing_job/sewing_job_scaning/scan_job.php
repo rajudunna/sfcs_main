@@ -189,8 +189,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">Component Level Rejections</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+					<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span> -->
 					</button>
 				</div>
 				<div class="modal-body col-sm-12">
@@ -209,13 +209,14 @@
 						</select>
 					</div>
 					<div class='col-sm-4'>
-						<label for='component'>Component</label> 
-						<select class="form-control" palceholder='Please Select' name='component' id='component' style='width:100%'>
-							<option disabled selected>Please Select</option>
-							<option value='sleeve'>Sleeve</option>
-							<option value='pocket'>Pocket</option>
+						<label for='component_dropdown'>Component</label> 
+						<select class="form-control" palceholder='Please Select' name='component_dropdown' id='component_dropdown' style='width:100%'>
+							<!-- <option disabled selected>Please Select</option> -->
+							<!-- <option value='rsleeve'>R Sleeve</option>
+							<option value='lsleeve'>L Sleeve</option>
 							<option value='front'>Front</option>
 							<option value='back'>Back</option>
+							<option value='lpocket'>Pocket</option> -->
 						</select>
 					</div>
 					<div class='col-sm-2'>
@@ -225,7 +226,7 @@
 					<div class='col-sm-2'>
 						<label><br/></label>
 						<button class='form-control btn btn-sm btn-info'  style='width:100%'
-							onclick="pushRejReasonQty($('#rejection_code').val(), $('#rejection_code option:selected').text(), $('#component').val(), $('#component_rej_qty').val())">+ Add</button>
+							onclick="pushRejReasonQty($('#rejection_code').val(), $('#rejection_code option:selected').text(), $('#component_dropdown').val(), $('#component_rej_qty').val())">+ Add</button>
 					</div>
 				</div>
 				<div class='col-sm-12'>
@@ -390,6 +391,15 @@
 			var btn = '<div class="pull-right" id="smart_btn_arear"><input type="button" class="btn btn-primary submission" value="Submit" name="formSubmit" id="smartbtn" onclick="return reportJob();"><input type="hidden" id="count_of_data" value='+data.sizeQuantities.length+'></div>';
 			$("#dynamic_table1").append(markup);
 			$("#dynamic_table1").append(btn);
+
+			$('#component_dropdown').html('');
+			$('#component_dropdown').append('<option disabled selected>Please Select</option>');
+			const components = data.components;
+			$('#component_dropdown').append();
+			for (const component of components) {
+				$('#component_dropdown').append(`<option value='${component}'>${component}</option>`);
+			}
+			
 
 			var op_codes=[];
 			$.each(data.sizeQuantities, function( index, operation ) {
@@ -556,7 +566,7 @@
 		}
 		// push the record into the array of rejections 
 		const summaryRow = `<tr id='${lastIndexOfCurrSizeRejs+''+summaryRowKey}'><td>${component}</td><td>${rej_text}</td><td>${quantity}</td>
-				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger'> X </button></td>
+				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td>
 			</tr>`;
 		$('#rejection_summary_table_body').append(summaryRow);
 	}
@@ -689,7 +699,7 @@
 					data:  reportData,
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: function (res) {            
+					success: function (res) {
 						if(res.status){
 							$('#dynamic_table1').html('');
 							$('#loading-image').hide();
@@ -728,13 +738,13 @@
 
     function constructAndShowSJResponseTable(responseData) {
         const data = responseData;
-        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejected Qty</th></tr></thead><tbody>";
         if(barcode_generation == 0) {
-            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td><td>"+data.rejectedQuantity+"</td></tr>";
         } else{
             for(var z=0; z<data.length; z++){
-                if(data[z].reportedQuantity > 0) {
-                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+                if(data[z].reportedQuantity > 0 || data[z].rejectedQty > 0) {
+                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td><td>"+data[z].rejectedQty+"</td></tr>";
                 }
             }
         }

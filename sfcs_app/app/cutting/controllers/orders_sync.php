@@ -31,7 +31,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		// $order_tid_cols[]=array();
 		// $order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_clubbing/schedule_split_bek.php", "0", "N");
-		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join' and order_del_no='$schedule'";
+		$sql1="SELECT order_tid,order_col_des,order_del_no FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join' and order_del_no='$schedule'";
     }	
     // Schedule Clubbing with in the Style
     else if($club_status=='2')
@@ -43,7 +43,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		// $order_tid_cols[]=array();
 		// $order_tid_schs[]=array();
 		$url_back = getFullURLLevel($_GET['r'], "schedule_club_style/mix_jobs.php", "0", "N");
-		$sql1="SELECT * FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join'";
+		$sql1="SELECT order_tid,order_col_des,order_del_no FROM $bai_pro3.bai_orders_db_confirm where order_joins='J$order_join'";
 	}		
 	$result1=mysqli_query($link, $sql1) or exit(message_sql());
 	while($ss=mysqli_fetch_array($result1))

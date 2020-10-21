@@ -178,7 +178,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 //echo $size6."<br/>".$flag;
 
 
-$sql="select * from $bai_pro3.plan_dashboard where doc_no='$doc_id'";
+$sql="select log_time from $bai_pro3.plan_dashboard where doc_no='$doc_id'";
 // mysqli_query($link, $sql) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -186,7 +186,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$plan_log_time=$sql_row['log_time'];
 }
 	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+$sql="select category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des  from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 // mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -371,7 +371,7 @@ $a_s50=$sql_row['a_s50'];
 	$actwidth=$system_width;
 	// $ctexlength=$sql_row1x['allocated_qty'];
 	
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$sql2="select mklength,remarks,cat_ref from $bai_pro3.maker_stat_log where tid=$mk_ref";
 	//echo $sql2;
 	// mysqli_query($link, $sql2) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error12".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -381,7 +381,7 @@ $a_s50=$sql_row['a_s50'];
 		$mklength=$sql_row2['mklength'];
 		$mk_file=$sql_row2['remarks'];
 		
-		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+		$sql22="select marker_width,marker_length from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
 		{
@@ -389,7 +389,7 @@ $a_s50=$sql_row['a_s50'];
 			$act_mk_length=$sql_row22['marker_length'];
 		}
 		
-		$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
+		$sql22="select marker_length from $bai_pro3.marker_ref_matrix where cat_ref=\"".$sql_row2['cat_ref']."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
 		//echo $sql22;
 		$sql_result22=mysqli_query($link, $sql22) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -3122,7 +3122,7 @@ if (mysqli_num_rows($child_dockets_result)>0)
 	    }
 	    echo $rem;
    }
- $sql="select * from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
+ $sql="select ref2,roll_width,allocated_qty,batch_no,ref4,inv_no,ref1,lot_no,roll_id,ref5,qty_rec,ref3,ref6, from $bai_rm_pj1.docket_ref where doc_no=$doc_id and doc_type='normal'  group by roll_id";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))

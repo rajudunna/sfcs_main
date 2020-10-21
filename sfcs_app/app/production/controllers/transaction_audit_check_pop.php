@@ -2,8 +2,8 @@
 <?php
 //Date 2013-11-25/Ticket#100078/ Added Carton Track and AOD details
 //08-09-2016/removed user_acl in the page
-// $plantcode=$_SESSION['plantCode'];
-$plantcode= 'Q01';
+$plantcode=$_SESSION['plantCode'];
+// $plantcode = 'Q01';
 ?>
 <html>
 <head>
@@ -156,7 +156,13 @@ while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out)
 				$smv = $plan_qry_row['smv'];
 			}
 		}
+
 		$tot1 += $out_put_qty;
+		$sqlNOP = "SELECT sum(present+jumper) as act_nop FROM $pms.pro_attendance WHERE date = '$date' and module='$workstation'";
+		$nopResult = mysqli_query($link, $sqlNOP) or exit("sql Error attendance-". mysqli_error($link));
+		$rowNOP = mysqli_fetch_row($nopResult);
+		$actNop = $rowNOP[0];
+		
 		echo "<tr bgcolor=\"$bgcolor\">";
 		//echo "<td>$tid</td>";
 		echo "<td>$date</td>";
@@ -171,7 +177,7 @@ while($sql_row_pts_trans_out = mysqli_fetch_array($sql_result_sql_pts_trans_out)
 		// echo "<td>$doc_no</td>";
 		echo "<td>$out_put_qty</td>";
 		echo "<td>".$smv."</td>";
-		echo "<td>".$nop."</td>";
+		echo "<td>".$actNop."</td>";
 		echo "</tr>";
 	}
 }
