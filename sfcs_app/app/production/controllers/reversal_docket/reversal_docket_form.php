@@ -266,9 +266,9 @@ if(isset($_POST['formSubmit']))
                                 echo "<td><button type='button'class='btn btn-primary disabled'>Report Cut</button></td>";
                             }
                             if ($row['cut_report_status'] == 'DONE') {
-                                echo "<td><button type='button'class='btn btn-danger' id = 'deletecut' onclick='deleteCut($lay_id)'>Delete Cut</button></td>";
+                                echo "<td><button type='button'class='btn btn-danger' id = 'deletecut' onclick='deleteCut($lay_id)'>Reverse Cut</button></td>";
                             } else {
-                                echo "<td><button type='button'class='btn btn-danger disabled'>Delete Cut</button></td>";
+                                echo "<td><button type='button'class='btn btn-danger disabled'>Reverse Cut</button></td>";
                             }
                             
                             $s_no++;
