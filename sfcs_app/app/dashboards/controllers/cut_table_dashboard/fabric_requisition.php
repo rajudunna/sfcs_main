@@ -191,6 +191,16 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		$schedule =$result_scheduleinfo['schedule'];
 		
 	}
+
+	$percentage_query="select percentage FROM $pps.mp_additional_qty where plant_code='$plant_code' and po_number='$po_number' and order_quantity_type='CUTTING_WASTAGE'";
+	$percentage_query_result=mysqli_query($link, $percentage_query) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x111=mysqli_fetch_array($percentage_query_result))
+	{
+		$percentage=$row111x111["percentage"];
+
+	}
+	$value=$doc_mat*($percentage/100);
+	$total_required_qty=$value+$doc_mat;
 	
 	$sql11x1="SELECT marker_version_id,marker_version FROM $pps.lp_markers where plant_code='$plant_code' and lp_ratio_cg_id='$ratio_comp_group_id'";
 	$sql_result11x1=mysqli_query($link, $sql11x1) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -220,7 +230,7 @@ while($row111x11=mysqli_fetch_array($sql_result11x11))
 		echo "<td>".$cat_refnce."</td>";
 		echo "<td>".$cat_compo."</td>";
 		echo "<td>".$docket_line_number."</td>";
-		echo "<td>".$doc_mat."</td>";
+		echo "<td>".$total_required_qty."</td>";
 		echo "<td><input type='hidden' name='doc_details[]' id='doc_details' value='".$doc_no."'> <input type='text' name='reference[]' value=''></td>";
 	
 					echo "<td>".$length."</td>";
@@ -430,7 +440,7 @@ if(isset($_POST["submit1"]))
 	 {		
 		// $insert="Update $pps.`requested_dockets` set reference='".$ref[$i]."',created_user='".$username."',updated_user='".$username."',updated_at=NOW() where doc_no='".$dockets[$i]."'";
 		// mysqli_query($link, $insert) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref."\",\"".$username."\",NOW(),'$plant_code')";	
+		$insert="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,reference,created_user,created_at,plant_code) values(\"".$uuid1."\",\"".$doc_nos."\",\"".$ref[$i]."\",\"".$username."\",NOW(),'$plant_code')";	
 		
 	}
 	// var_dump($insert);
