@@ -125,7 +125,7 @@ th{
                                     $i = $sql_row['id'];
                                     $index+=1;
 
-                                    $docket_query = "select doc_no from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plant_code."'";
+                                    $docket_query = "select * from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plant_code."'";
                                     $docket_query_result = mysqli_query($link_new,$docket_query);
                                     while($sql_row1=mysqli_fetch_array($docket_query_result))
                                     {
@@ -204,7 +204,7 @@ th{
                     <button type='button' class='close'  id = 'cancel' data-dismiss='modal'>&times;</button>
                 </div>";
         echo "<div class='modal-body'>";
-                    $child_query = "select style,schedule,color,compo_no,doc_no,category,cutno,bind_req_qty,bind_category,bind_req_qty from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$i."' and c.plant_code='".$plant_code."'";
+                    $child_query = "select * from $pps.binding_consumption_items as c LEFT JOIN $pps.binding_consumption p ON p.id=c.parent_id where c.parent_id='".$i."' and c.plant_code='".$plant_code."'";
                     $child_result = mysqli_query($link_new,$child_query);
                     // var_dump(mysqli_num_rows($child_result));
                     if(mysqli_num_rows($child_result) > 0){

@@ -348,7 +348,7 @@ echo "<th>Color</th>";
 echo "<th>Job No</th>";
 echo "</tr>";
 
-$check_sql = "SELECT order_del_no from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$check_sql = "SELECT * from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 // if($check_sql_res_check >0){
 // 	$sql1="SELECT order_style_no,order_del_no,order_col_des,color_code,acutno,order_tid,order_style_no,order_del_no,clubbing from $bai_pro3.cut_tbl_dash_doc_summ where doc_no=$doc_no";
 // }else{
@@ -379,7 +379,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['requirement'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
@@ -511,7 +511,7 @@ echo "<div class='table-responsive'><table class='table table-bordered'><tr><th>
 //    	$sql1="SELECT order_cat_doc_mk_mix.order_tid,order_cat_doc_mk_mix.col_des,order_cat_doc_mk_mix.clubbing as clubbing,order_cat_doc_mk_mix.material_req,order_cat_doc_mk_mix.compo_no,order_cat_doc_mk_mix.plan_lot_ref,order_cat_doc_mk_mix.cat_ref,order_cat_doc_mk_mix.print_status,order_cat_doc_mk_mix.doc_no,order_cat_doc_mk_mix.category,$bai_pro3.fn_savings_per_cal(date,cat_ref,order_del_no,order_col_des) as savings from $bai_pro3.order_cat_doc_mk_mix_v2 as order_cat_doc_mk_mix where order_cat_doc_mk_mix.order_tid in (select distinct order_tid from $bai_pro3.plan_doc_summ where order_style_no=\"$style_ref\" and order_del_no=\"$del_ref\" and clubbing=$clubbing) and order_cat_doc_mk_mix.doc_no=$doc_no and order_cat_doc_mk_mix.acutno=$cut_no_ref  and org_doc_no <=1";
 //    }
 // }
-$sql1="select jm_docket_line_id from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
+$sql1="select * from $pps.fabric_prorities left join $pps.jm_docket_lines on jm_docket_lines.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.jm_docket_line_id='$doc_no' and fabric_prorities.plant_code='$plant_code'";
 //echo "getting req qty : ".$sql1."</br>";
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error21".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result1);
@@ -662,6 +662,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
+		$po_number=$result_docketinfo['sub_po'];
 		
 	}
 	echo "<tr><td>".$cat_refnce."</td>";
@@ -669,7 +670,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
     echo "<td>".$colorx.'-'.$docket_line_number."</td>";
     // echo "<td>".($marker)."</td>";
     
-	$maker_update="select plan_lot_ref,print_status from $pps.requested_dockets where jm_docket_line_id='".$doc_no."' and plant_code='$plant_code'";
+	$maker_update="select * from $pps.requested_dockets where jm_docket_line_id='".$doc_no."' and plant_code='$plant_code'";
 	$maker_update_result=mysqli_query($link, $maker_update) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($maker_update_result)){
 		$plan_lot_ref = $row['plan_lot_ref'];
@@ -723,9 +724,17 @@ echo"</br></br>";
 	// 	// }
 	// }
 	$extra=0;
+	$percentage_query="select percentage FROM $pps.mp_additional_qty where plant_code='$plant_code' and po_number='$po_number' and order_quantity_type='CUTTING_WASTAGE'";
+	$percentage_query_result=mysqli_query($link, $percentage_query) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x111=mysqli_fetch_array($percentage_query_result))
+	{
+		$percentage=$row111x111["percentage"];
 
+	}
+	$value=$fabric_required*($percentage/100);
+	$total_required_qty=$value+$fabric_required;
 	// { $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
-    echo "<td>".$fabric_required."</td>";
+    echo "<td>".$total_required_qty."</td>";
 	echo "<td>".$reference."</td>";
 	echo "<td>".$shrinkage."</td>";
     echo "<td>".$width."</td>";
@@ -900,7 +909,7 @@ if($print_status=='0000-00-00 00:00:00'){
 	} 
 	
 //echo "Print Status==".$sql_row1['print_status']."</br>";	
-if($print_status1>0)
+if($print_status>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
 	$print_validation=$print_validation+1;

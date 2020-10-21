@@ -659,6 +659,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"red\">Please wait
 set_time_limit(2000);
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_splitting_function.php');
 ?>
 
@@ -675,9 +676,9 @@ if(isset($_POST['allocate_new']))
 	$min_width=$_POST['min_width'];	//array
 	$lot_db=$_POST['lot_db']; //array
 	$process_cat=$_POST['process_cat'];
-	$marker_version=$_POST['marker_version'];
+	$marker_version=$_POST['marker_version'];	
 	for($i=0;$i<sizeof($doc_ref);$i++)
-	{
+	{	
 		$temp="lable".$doc_ref[$i];
 		$tid_ref_base=$_POST[$temp];
 		$temp="width".$doc_ref[$i];
@@ -723,7 +724,7 @@ if(isset($_POST['allocate_new']))
 		
 		if(sizeof($tid_ref)>0)
 		{
-		
+			
 			//To extrac required information to find marker length for the docket.
 			unset($allo_c);
 			$allo_c=array();
@@ -812,13 +813,13 @@ if(isset($_POST['allocate_new']))
 						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username','NOW()','$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
+				
+					if(($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
 						$splitting_roll = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
 					} 
 					else 
-					{
+					{						
 						$sql1="select ref1,qty_rec,qty_issued,qty_ret,partial_appr_qty,qty_allocated from $wms.store_in where roll_status in (0,2) and tid=\"$tid_ref[$j]\" and plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql1) or exit("Sql Error--15".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($sql_result))
@@ -840,9 +841,9 @@ if(isset($_POST['allocate_new']))
 						$sql121="update $wms.store_in set qty_allocated=qty_allocated+".$issued_ref[$j].",status=$status,allotment_status=$status,updated_user='$username',updated_at=NOW() where plant_code='$plant_code' and tid=".$tid_ref[$j];
 						mysqli_query($link, $sql121) or exit("$sql121".mysqli_error($GLOBALS["___mysqli_ston"]));
 						
-					}
+					}				
 				}
-			}
+			}		
 			//To confirm docket as allocated
 			if($process_cat==1)
 			{
@@ -856,7 +857,7 @@ if(isset($_POST['allocate_new']))
 			}
 			
 			mysqli_query($link, $sql1) or exit("Sql Error5: $sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
-			
+		
 			//TO update Marker Matrix
 			if($process_cat==1)
 			{
@@ -868,8 +869,8 @@ if(isset($_POST['allocate_new']))
 				// 	$mk_length=$sql_row['marker_length'];
 				// }
 				
-				if(mysqli_num_rows($sql_result)!=0)
-				{
+				// if(mysqli_num_rows($sql_result)!=0)
+				// {
 					// $sql="insert into bai_pro3.maker_stat_log(DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver) select DATE,cat_ref,cuttable_ref,allocate_ref,order_tid,mklength,mkeff,lastup,remarks,mk_ver from $bai_pro3.maker_stat_log where tid='$mk_ref'";
 					// //echo $sql."<br/>";
 					
@@ -884,8 +885,8 @@ if(isset($_POST['allocate_new']))
 					$sql="update $pps.requested_dockets set updated_at=\"".date("Y-m-d")."\",updated_user='$username',created_user='$username' where jm_docket_line_id='.$doc_ref[$i].'";
 					
 					mysqli_query($link, $sql) or exit("Sql Error: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
-				
-				}
+					
+				//}
 			}
 			
 		}
@@ -1015,8 +1016,8 @@ if(isset($_POST['allocate']))
 		}
 		$shrinkaage='';
 		$pur_width='A';
-		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no."\" and plant_code='$plant_code'";
-		// echo $sql007;
+		$sql007="select reference from $pps.requested_dockets where jm_docket_line_id=\"".$doc_no[$i]."\" and plant_code='$plant_code'";
+		
 		$sql_result007=mysqli_query($link, $sql007) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($row007=mysqli_fetch_array($sql_result007))
 		{
@@ -1036,7 +1037,7 @@ if(isset($_POST['allocate']))
 			// 	$shrinkaage='N/A';
 			// 	$pur_width='N/A';
 			// }
-			$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_ref'";
+			$sql11x11="SELECT docket_line_number FROM $pps.jm_docket_lines where plant_code='$plant_code' and jm_docket_line_id='$doc_no[$i]'";
 			$sql_result11x11=mysqli_query($link, $sql11x11) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row111x11=mysqli_fetch_array($sql_result11x11))
 			{
@@ -1044,14 +1045,26 @@ if(isset($_POST['allocate']))
 
 			}  
 			if($docket_line_no!='' && $plant_code!=''){
-				$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);
+				$result_docketinfo=getDocketInformation($docket_line_no,$plant_code);				
 				$style =$result_docketinfo['style'];
 				$colorx =$result_docketinfo['fg_color'];
+				$doc_mat =$result_docketinfo['required_qty'];
 				$length =$result_docketinfo['length'];
 				$shrinkaage =$result_docketinfo['shrinkage'];
 				$pur_width =$result_docketinfo['width'];
+				$po_number =$result_docketinfo['sub_po'];
 				
 			}
+			
+			$percentage_query="select percentage FROM $pps.mp_additional_qty where plant_code='$plant_code' and po_number='$po_number' and order_quantity_type='CUTTING_WASTAGE'";
+			$percentage_query_result=mysqli_query($link, $percentage_query) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($row111x111=mysqli_fetch_array($percentage_query_result))
+			{
+				$percentage=$row111x111["percentage"];
+	
+			}
+			$value=$doc_mat*($percentage/100);
+	        $total_required_qty=$value+$doc_mat;
 		}
 		// $sql = "SELECT SUM(purwidth) AS pur_width FROM bai_pro3.cat_stat_log WHERE compo_no='".$doc_com[$i]."'";
 		// $sql_result=mysqli_query($link, $sql) or exit("Sql Error 13 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1068,7 +1081,7 @@ if(isset($_POST['allocate']))
 		
 		echo "<input type=\"hidden\" name=\"doc_ref[$i]\" value=\"".$doc_ref."\">";
 		echo "<input type=\"hidden\" name=\"process_cat\" value=\"".$process_cat."\">";
-		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$mat_req."\">";
+		echo "<input type=\"hidden\" name=\"mat_req[$i]\" value=\"".$total_required_qty."\">";
 		echo "<input type=\"hidden\" name=\"username\" value=\"".$username."\">";
 		echo "<input type=\"hidden\" name=\"marker_version\" value=\"".$marker_version."\">";
 		echo "<input type=\"hidden\" name=\"plant_codename\" value=\"".$plant_code."\">";
@@ -1078,7 +1091,7 @@ if(isset($_POST['allocate']))
 		echo "<h3><font color=blue>".$doc_cat[$i]."-".$doc_com[$i]." /width: ".$pur_width."</font></h3>";
 
 		//To show stats
-		echo "<h4>Required: ".round($mat_req,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($mat_req,2)."</span></h4>";
+		echo "<h4>Required: ".round($total_required_qty,2)." / Allocated: <span id=\"alloc$doc_ref\">0.00</span> / Balance to Allocate: <span id=\"balal$doc_ref\">".round($total_required_qty,2)."</span></h4>";
 		echo "<div class='table-responsive'><table id='example".$i."' class='table table-bordered' cellspacing='0'>";
 		
 		echo "<thead><tr id=\"$doc_ref\" bgcolor=\"RED\">";
@@ -1112,7 +1125,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql123="select lot_no,inv_no,allotment_status,shade,shade_grp,balance,width,tid,shrinkage_group,shrinkage_width,shrinkage_length,ref2,ref1,roll_remarks,ref6,ref3,qty_rec,ref5,qty_ret,qty_issued,partial_appr_qty from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
+		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
 		$sql_result=mysqli_query($link, $sql123) or exit("Sql Error1245: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -1330,7 +1343,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT inv_no,grn_date,batch_no,item,lot_no,shade,shrinkage_group,shrinkage_width,shrinkage_length,ref2,ref1,ref6,ref3,qty_rec,ref5 FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
+							$sql_query ="SELECT * FROM $wms.store_in left join $wms.sticker_report on sticker_report.lot_no=store_in.lot_no WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") and plant_code='$plant_code'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{

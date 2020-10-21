@@ -215,7 +215,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   $lot_ref=$sql_row['lot_no'];
   $current_date=date('Y-m-d');
 
-  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM `wms`.`mrn_out_allocation`  WHERE  lable_id = \"$tid\" and plant_code='".$plant_code."'  GROUP BY lable_id";
+  $sql_mrn="SELECT sum(ROUND(iss_qty,2)) as mrn_qty FROM $wms.`mrn_out_allocation`  WHERE  lable_id = \"$tid\" and plant_code='".$plant_code."'  GROUP BY lable_id";
 //   echo $sql_mrn;
 	$sql_result_mrn =$link->query($sql_mrn);
 	if(mysqli_num_rows($sql_result_mrn)> 0) {
@@ -391,7 +391,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   
   echo "<tr><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";*/
 }
-$sql_mrn="SELECT * FROM `wms`.`mrn_out_allocation`  WHERE  lable_id in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by log_time";
+$sql_mrn="SELECT * FROM $wms.`mrn_out_allocation`  WHERE  lable_id in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by log_time";
 //   echo $sql_mrn ;
 
   $sql_result_mrn =$link->query($sql_mrn);
@@ -486,11 +486,11 @@ if(isset($_POST['put']))
 					if(strtolower($roll_splitting) == 'yes' && $total_qty[$j] == 0)
     				{
 						$roll_splitting_new = roll_splitting_function($tid_ref[$j],$val_ref[$j],$issued_ref[$j]);
-						$sql="update wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."'  where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+						$sql="update $wms.store_in set status=2, allotment_status=2,qty_allocated=qty_allocated-".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."'  where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
 						mysqli_query($link, $sql) or exit("Sql Error3: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 					} 
 				}
-				$sql3="update wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+				$sql3="update $wms.store_in set qty_issued=qty_issued+".$issued_ref[$j].",updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
 				//echo $sql3."</br>";
 				mysqli_query($link, $sql3) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	            $query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid=$tid_ref[$j] and plant_code='".$plant_code."'";
@@ -507,7 +507,7 @@ if(isset($_POST['put']))
 				if($balance_qty[$j]==0)
 				{
 					$status_new=2;
-					$sql44="update wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
+					$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new ,updated_at=NOW(),updated_user='".$username."' where tid=".$tid_ref[$j]." and plant_code='".$plant_code."'";
 					//echo $sql44."</br>";
 					mysqli_query($link, $sql44) or exit("Sql Error44".mysqli_error($GLOBALS["___mysqli_ston"]));
 				}

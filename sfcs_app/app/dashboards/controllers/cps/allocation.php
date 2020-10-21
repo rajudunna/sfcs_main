@@ -823,7 +823,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-        $sql="select inv_no,allotment_status,shade,balance,width,tid,shrinkage_group,lot_no,shrinkage_width,shrinkage_length,ref2,ref1,roll_remarks,ref6,ref3,qty_rec,ref5,qty_issued,qty_ret,partial_appr_qty from $wms.store_in where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)";
+        $sql="select * from $wms.store_in where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)";
         // var_dump($sql);
 		// // die();
 	
@@ -1022,7 +1022,7 @@ if(isset($_POST['allocate']))
 					{
 						$tid =$sql_row2['split_roll'];
 						if($sql_row2['split_roll'] != '') {
-							$sql_query ="SELECT inv_no,grn_date,batch_no,item,lot_no,shade,shrinkage_group,shrinkage_width,shrinkage_length,ref2,ref1,ref6,ref3,qty_rec,ref5 FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
+							$sql_query ="SELECT * FROM $wms.store_in WHERE lot_no IN (SELECT lot_no FROM $wms.store_in WHERE tid IN (".$sql_row2['split_roll'].")) AND tid IN(".$sql_row['tid'].") AND plant_code='".$plant_code."'";
 							$sql_result_new=mysqli_query($link, $sql_query) or exit("Sql Error22 :$sql ".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_result_new=mysqli_fetch_array($sql_result_new))
 								{
