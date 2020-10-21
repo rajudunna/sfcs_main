@@ -324,7 +324,7 @@ td,th
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?= $date; ?>"  required class="form-control"/></td> 
+                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?php if($date!=""){echo $date;}else {echo date("Y-m-d");} ; ?>"  required class="form-control"/></td> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Section: </label>
@@ -367,7 +367,6 @@ td,th
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
 										$shift_list['shiftCode']=$sql_row2['shift_code'];
-										$shift_list['shiftDesc']=$sql_row2['shift_description']; 
 										array_push($shifts, $shift_list);  
 										$shift_codes[] = $sql_row2['shift_code'];                                     
 									} 
@@ -377,9 +376,9 @@ td,th
 									<?php 
 										foreach($shifts as $shift){
 											if($team==$shift['shiftCode']) {
-												echo "<option value='".$shift['shiftCode']."' selected>".$shift['shiftDesc']."</option>";
+												echo "<option value='".$shift['shiftCode']."' selected>".$shift['shiftCode']."</option>";
 											} else {
-												echo "<option value='". $shift['shiftCode']."'>".$shift['shiftDesc']."</option>";
+												echo "<option value='". $shift['shiftCode']."'>".$shift['shiftCode']."</option>";
 											}
 										}
                                     ?>
@@ -647,8 +646,7 @@ td,th
 		{ 
 			// $time_query="";
 			// $current_hr=11;
-			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and HOUR(plant_end_time) BETWEEN '$start_check' and '$end_check'";
-			//echo $sql."<br>";
+			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and plant_end_time BETWEEN '$start_check' and '$end_check'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -972,7 +970,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		{ 
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod  AND TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and shift in ($team) and plant_code ='$plantcode' GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id='$mod'  AND TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and shift in ($team) and plant_code ='$plantcode' GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -6 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{					
