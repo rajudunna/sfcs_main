@@ -134,11 +134,11 @@ $table.= "<th>Width Shortage</th>";
 $table.= "</tr>";
 	if(strlen($batch_search)>0)
 	{	
-		$sqlx="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"$batch_search\"";
+		$sqlx="select act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,batch_ref,log_date,unique_id from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"$batch_search\"";
 	}
 	else
 	{
-		$sqlx="select * from $wms.inspection_db where plant_code='$plantcode' and date(log_date) between \"$sdate\" and \"$edate\"";
+		$sqlx="select act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,batch_ref,log_date,unique_id from $wms.inspection_db where plant_code='$plantcode' and date(log_date) between \"$sdate\" and \"$edate\"";
 	}
 
 
