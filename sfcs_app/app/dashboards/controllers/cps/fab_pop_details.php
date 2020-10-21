@@ -379,7 +379,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$cut_no =$result_docketinfo['cut_no'];
 		$cat_refnce =$result_docketinfo['category'];
 		$cat_compo =$result_docketinfo['rm_sku'];
-		$fabric_required =$result_docketinfo['requirement'];
+		$fabric_required =$result_docketinfo['required_qty'];
 		$length =$result_docketinfo['length'];
 		$shrinkage =$result_docketinfo['shrinkage'];
 		$width =$result_docketinfo['width'];
@@ -662,6 +662,7 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 		$fabric_required =$result_docketinfo['required_qty'];
 		$docket_line_number =$result_docketinfo['docket_line_number'];
 		$ratio_comp_group_id =$result_docketinfo['ratio_comp_group_id'];
+		$po_number=$result_docketinfo['sub_po'];
 		
 	}
 	echo "<tr><td>".$cat_refnce."</td>";
@@ -723,9 +724,17 @@ echo"</br></br>";
 	// 	// }
 	// }
 	$extra=0;
+	$percentage_query="select percentage FROM $pps.mp_additional_qty where plant_code='$plant_code' and po_number='$po_number' and order_quantity_type='CUTTING_WASTAGE'";
+	$percentage_query_result=mysqli_query($link, $percentage_query) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x111=mysqli_fetch_array($percentage_query_result))
+	{
+		$percentage=$row111x111["percentage"];
 
+	}
+	$value=$fabric_required*($percentage/100);
+	$total_required_qty=$value+$fabric_required;
 	// { $extra=round(($material_requirement_orig*$sql_row1['savings']),2); }
-    echo "<td>".$fabric_required."</td>";
+    echo "<td>".$total_required_qty."</td>";
 	echo "<td>".$reference."</td>";
 	echo "<td>".$shrinkage."</td>";
     echo "<td>".$width."</td>";
@@ -900,7 +909,7 @@ if($print_status=='0000-00-00 00:00:00'){
 	} 
 	
 //echo "Print Status==".$sql_row1['print_status']."</br>";	
-if($print_status1>0)
+if($print_status>0)
 {
 	echo "<td><img src=\"correct.png\"></td>";
 	$print_validation=$print_validation+1;
