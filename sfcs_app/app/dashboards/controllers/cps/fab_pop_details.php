@@ -1073,7 +1073,7 @@ if(isset($_POST['submit']))
 	
 	$alloc_docket=$_POST['alloc_doc'];
 	$doc_tot=$_POST['doc_tot'];
-	$issue_status=$_POST['issue_status'];
+	$issue_status=$_POST['issue_status'];	
 	$group_docs=$_POST['group_docs'];
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
