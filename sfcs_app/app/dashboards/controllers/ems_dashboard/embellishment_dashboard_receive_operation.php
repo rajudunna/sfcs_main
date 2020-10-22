@@ -110,7 +110,7 @@ $hour = date("H.i");
   function
   blink_new3(x)
   {
-    if(x.length >='6'){
+    if(x.length >=6){
       $("div[id*='S"
       +
       x
@@ -129,7 +129,7 @@ $hour = date("H.i");
   function
   blink_new(x)
   {
-    if(x.length >= 3){
+    if(x.length >= 1){
       $("div[id*='D"
       +
       x
@@ -457,7 +457,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
 
-
+      $cut_operaation=15;
       $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
@@ -474,6 +474,18 @@ foreach ($workstations as $emb_key => $emb_value) {
         while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
           $send_qty = $row_res['good_quantity'];
         }
+
+        $total=0;
+        $task_job_trans2 = "SELECT sum(good_quantity) as good_quantity FROM $pts.transaction_log where parent_job ='$doc_no' and operation = $cut_operaation and is_active=1 and plant_code='$session_plant_code'";
+        // echo $task_job_trans2."<br/>";
+        $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result123" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row_res2 = mysqli_fetch_array($task_job_trans2_result)) {
+          $total = $row_res2['good_quantity'];
+        }
+        if($total==''){
+          $total=0;
+        }
+
         $id = "yash";
         if ($good_qty == 0) {
           $id = "yash";
