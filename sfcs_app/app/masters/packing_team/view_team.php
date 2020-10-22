@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM $pms.`packing_team_master` where plant_code='".$plant_code."' order by id desc";
+$sql = "SELECT id,packing_team,team_leader,status FROM $pms.`packing_team_master` where plant_code='".$plant_code."' order by id desc";
 $result = $conn->query($sql);
 $sno =1;
 $url=getFullURL($_GET['r'],'create_team.php','N');
