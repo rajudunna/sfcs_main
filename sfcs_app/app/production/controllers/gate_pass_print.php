@@ -1,6 +1,7 @@
 <?php 
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+//include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/js/jquery.min1.7.1.js',4,'R'));
+include('../../../common/config/config.php');  
 include('../../../common/config/functions.php');  
 $gate_id=$_GET['pass_id'];
 $print_type=$_GET['type'];
