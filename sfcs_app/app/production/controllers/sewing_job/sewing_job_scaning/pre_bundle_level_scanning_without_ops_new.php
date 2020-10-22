@@ -8,6 +8,8 @@ $username=$_SESSION['userName'];
 <?php 
 if(isset($_GET['id'])){
 	$gate_id= $_GET['id']; 
+	$opertion= $_GET['opertion']; 
+	$shift= $_GET['shift']; 
 	$plant_code= $_GET['plant_code']; 
 	$username= $_GET['username']; 
  echo "<script>
@@ -56,6 +58,8 @@ if(isset($_GET['id'])){
 </div><br>
 <input type='hidden' id='plant_code' name='plant_code' value='<?php echo $plant_code ?>'>		
 <input type='hidden' id='username' name='username' value='<?php echo $username ?>'>	
+<input type='hidden' id='operation_code' name='operation_code' value='<?php echo $opertion ?>'>	
+<input type='hidden' id='shift' name='shift' value='<?php echo $shift ?>'>	
 <input type='hidden' id='gate_id' name='gate_id' value='<?php echo $gate_id ?>'>	
 <input type="submit" id="continue" class="btn btn-success" value="CONTINUE">
 </div>
