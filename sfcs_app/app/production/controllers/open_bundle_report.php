@@ -3,6 +3,7 @@
 <?php 
     include(getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     include(getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
+    include(getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
     $plant_code=$_SESSION['plantCode'];
     $username=$_SESSION['userName'];
 	if(isset($_POST['style']))
@@ -92,27 +93,28 @@ function check_val()
 	    </div>
     	<div class="panel-body">
 		    <form method="post" name="test" action="#">
-                    
+               
                     <div class="col-sm-2 form-group">
                     <label for='style'>Select Style</label>
                            <?php
+                           
 							// Style
-							echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\">";
-							$sql="select style from $pts.transaction_log  where plant_code='$plant_code' and style!=''  group by style";
-							$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-							$sql_num_check=mysqli_num_rows($sql_result);
-							echo "<option value=\"NIL\" selected>Select Style</option>";
-							while($sql_row=mysqli_fetch_array($sql_result))
-							{
-								if(str_replace(" ","",$sql_row['style'])==str_replace(" ","",$style))
-								{
-									echo "<option value=\"".$sql_row['style']."\" selected>".$sql_row['style']."</option>";
-								}
-								else
-								{
-									echo "<option value=\"".$sql_row['style']."\">".$sql_row['style']."</option>";
-								}
-							}
+                            echo "<select name=\"style\" id=\"style\"  class='form-control' onchange=\"firstbox();\">";
+                            if($plant_code!=''){
+                                $result_mp_color_details=getMpColorDetail($plant_code);
+                                $style1=$result_mp_color_details['style'];
+                            }
+                            echo "<option value=\"NIL\" selected>NIL</option>";
+                            foreach ($style1 as $style_value) {
+                                if(str_replace(" ","",$style_value)==str_replace(" ","",$style)) 
+                                { 
+                                    echo '<option value=\''.$style_value.'\' selected>'.$style_value.'</option>'; 
+                                } 
+                                else 
+                                { 
+                                    echo '<option value=\''.$style_value.'\'>'.$style_value.'</option>'; 
+                                }
+                            } 
 							echo "</select>";
 						?>
                     </div>
@@ -120,21 +122,22 @@ function check_val()
                     <label for='schedule'>Select Schedule</label>
 						<?php
 							echo "<select class='form-control' name='schedule' id='schedule'>";
-                            $sql="select  schedule from $pts.transaction_log where style=\"$style\" group by schedule";
-                            $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            $sql_num_check=mysqli_num_rows($sql_result);
-                            echo "<option value=\"NIL\" selected>Select Schedule</option>";
-                            while($sql_row=mysqli_fetch_array($sql_result))
-                            {
-                                if(str_replace(" ","",$sql_row['schedule'])==str_replace(" ","",$schedule))
-                                {
-                                    echo "<option value=\"".$sql_row['schedule']."\" selected>".$sql_row['schedule']."</option>";
+                            if($style!=''&& $plant_code!=''){
+                       
+                                $result_bulk_schedules=getBulkSchedules($style,$plant_code);
+                                $bulk_schedule=$result_bulk_schedules['bulk_schedule'];
+                            }  
+                            echo "<option value=\"NIL\" selected>NIL</option>";
+                            foreach ($bulk_schedule as $bulk_schedule_value) {
+                                if(str_replace(" ","",$bulk_schedule_value)==str_replace(" ","",$schedule)) 
+                                { 
+                                    echo '<option value=\''.$bulk_schedule_value.'\' selected>'.$bulk_schedule_value.'</option>'; 
+                                } 
+                                else 
+                                { 
+                                    echo '<option value=\''.$bulk_schedule_value.'\'>'.$bulk_schedule_value.'</option>'; 
                                 }
-                                else
-                                {
-                                    echo "<option value=\"".$sql_row['schedule']."\">".$sql_row['schedule']."</option>";
-                                }
-                            }
+                            } 
                             echo "</select>";
 							?>
                       

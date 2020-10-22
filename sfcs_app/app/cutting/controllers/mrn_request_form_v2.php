@@ -5,7 +5,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-	$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
     $flag=1;
@@ -132,7 +132,7 @@ function exception($sql_result)
 
 <Link rel='alternate' media='print' href=null>
 <script>
-    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
+    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>';
     function firstbox()
     {
         window.location.href = pgurl+"&style="+document.test.style.value
@@ -323,7 +323,7 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
