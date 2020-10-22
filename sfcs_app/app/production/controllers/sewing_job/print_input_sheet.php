@@ -99,7 +99,7 @@
 
 						<div style="float:left">
 							<table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;">
-							<tr><th>Style </th><td>:</td> <td><?php echo $po_des;?></td></tr>
+							<tr><th>PO </th><td>:</td> <td><?php echo $po_des;?></td></tr>
 							<tr><th>Sub PO </th><td>:</td> <td><?php echo $subpo_des;?></td></tr>
 							<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 							<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>

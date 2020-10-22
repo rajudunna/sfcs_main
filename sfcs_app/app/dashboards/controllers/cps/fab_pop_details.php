@@ -925,7 +925,7 @@ else
 	// }
 	// else
 	// {
-		echo "<td><img src=\"Wrong.png\"></td>";
+		echo "<td><img src=\"wrong.png\"></td>";
 	//}
 }
 

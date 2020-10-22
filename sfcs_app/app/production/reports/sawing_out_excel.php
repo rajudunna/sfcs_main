@@ -63,11 +63,12 @@ table{
 		$table.="<tr><td colspan=11><h2><center><strong>Daily Production Status Report</strong></center></h2></td></tr>";
 		$table.="<tr><td colspan=11>For the period: $dat1 to $dat2</td></tr>";
 		
-		$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$dat1' AND '$dat2' AND parent_job_type IN ('PSJ','PSEJ')";
+		$sql="SELECT barcode,parent_job,shift,created_at as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$dat1' AND '$dat2' AND parent_job_type IN ('PSJ','PSEJ')";
 		$sql_result=mysqli_query($link, $sql) or exit("Error While Getting transaction log".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		$table.="<table id='table5' border=1>
 					<tr>
+					    <th>Barcode ID</th>
 						<th>Date and Time</th>
 						<th>Style</th>
 						<th>Schedule</th>
@@ -139,6 +140,7 @@ table{
 								}
 
 								$table.="<tr>";
+								$table.="<td>$barcode</td>";
 								$table.="<td>$date</td>";
 								$table.="<td>$style</td>";
 								$table.="<td>$schedule</td>";

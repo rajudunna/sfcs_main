@@ -659,7 +659,7 @@ $(document).ready(function(){
 						while($sql_result_32=mysqli_fetch_array($sql_result))
 						{
 							$mo_no=trim($sql_result_32['mo_number']);
-							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$mo_no;
+							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$plant_code."&MFNO=".$mo_no;
 							$response_result = $obj->getCurlAuthRequest($url);
 							$response_result = json_decode($response_result);
 							$MIRecords[] = $response_result->MIRecord;
