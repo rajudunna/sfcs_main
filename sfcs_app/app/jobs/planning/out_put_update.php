@@ -18,6 +18,7 @@ $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 $in_operation=100;
 $cut_operation=15;
+$operation=200;
 $table_ref="$pps.week_delivery_plan";
 // $table_ref2="$bai_pro3.bai_orders_db";
 // $table_ref3="$bai_pro3.bai_orders_db_confirm";
@@ -114,7 +115,53 @@ while($sql_row=mysqli_fetch_array($sql_result))
 					{
 						$cut_total = $row12222['cut_qty'];
 					}
+
+					$get_out_qty_details="select sum(good_quantity+rejected_quantity) as fg_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$operation." group by schedule,color";
 				
+				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
+					{
+						$fg_qty = $row12222['fg_qty'];
+					}
+
+
+					$get_mo_number="select oms_products_info.mo_number from $oms.oms_mo_details left join $oms.oms_products_info on oms_products_info.mo_number=oms_mo_details.mo_number where schedule='$schedule_no'  and plant_code='$plantcode'";
+				
+					$get_mo_number_result = mysqli_query($link, $get_mo_number) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+					while($row122221= mysqli_fetch_array($get_mo_number_result))
+						{
+							$mo_number1[] = $row122221['mo_number'];
+						}
+						$mo_number="'".implode("','",$mo_number1)."'";
+							$get_pack_container_id="select DISTINCT(jm_pack_container_id)  from $pps.jm_pack_container_line where plant_code='$plantcode' and mo_number in($mo_number)";
+							$get_pack_container_id_result = mysqli_query($link, $get_pack_container_id) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+							while($row= mysqli_fetch_array($get_mo_number_result))
+								{
+									$jm_pack_container_id1[] = $row['jm_pack_container_id'];
+								}
+								$jm_pack_container_id="'".implode("','",$jm_pack_container_id1)."'";
+								$get_barcodes="select  DISTINCT(barcode) from $pts.barcode where plant_code='$plantcode' and external_ref_id in($jm_pack_container_id)";
+								$get_barcodes_result = mysqli_query($link, $get_barcodes) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+							
+								while($row1= mysqli_fetch_array($get_barcodes_result))
+									{
+										$barcode1[] = $row1['barcode'];
+									}
+									$barcode="'".implode("','",$barcode1)."'";
+									$get_barcodes_details="select DISTINCT(parent_barcode) from $pts.transaction_log where plant_code='$plantcode' and parent_barcode in($barcode)";
+									$get_barcodes_details_result = mysqli_query($link, $get_barcodes_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+								
+									while($row11= mysqli_fetch_array($get_barcodes_details_result))
+										{
+											$parent_barcode[] = $row11['parent_barcode'];
+										}
+	
+										$diff = array_diff($parent_barcode, $barcode1);
+										$carton_pending=sizeof($diff);
+						
 				// $sql4="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
 				// // echo $sql4."<br/>";
 				// $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -202,7 +249,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 		
 		// echo $schedule."-".$color."-".$ship_tid."-".$size_data."-".$size_ref."-".$size."-".$size_data_ref."-".$order_tid."-".$order_qty."-".$cut_total."-".$input_total."-".$output_total."-".$fcamca."-".$shipped."-".$pendingcarts."<br>";
 		
-		$sql32="update $table_ref set act_cut='".$cut_total."',act_in='".$input_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fgqty."', act_ship='".$shipped."', cart_pending='".$pendingcarts."' where shipment_plan_id='".$ship_tid."' and plant_code='$plantcode'";
+		$sql32="update $table_ref set act_cut='".$cut_total."',act_in='".$input_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fg_qty."', act_ship='".$shipped."', cart_pending='".$carton_pending."' where shipment_plan_id='".$ship_tid."' and plant_code='$plantcode'";
 		// echo $sql32."------A<br/>";
 		$updated_data=mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($updated_data){

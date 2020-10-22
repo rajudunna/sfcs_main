@@ -1125,8 +1125,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) or allotment_status is null and plant_code='$plant_code' order by shade_grp";
-		
+		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)  and plant_code='$plant_code' order by shade_grp";
 		$sql_result=mysqli_query($link, $sql123) or exit("Sql Error1245: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
