@@ -453,7 +453,9 @@ $(document).ready(function(){
                         //echo "<option value=\"0\" selected>".$lot_no."</option>";
                         if(strlen($lot_no) > 0)
                         {
-                            $lot_ref=$lot_ref.",".$lot_no;
+                           // $lot_ref=$lot_ref.",".$lot_no;
+						      $lot_ref=$lot_ref.","."'".$lot_no."'";
+							  
                         }
 
                         if(strlen($lot_ref) > 0)
