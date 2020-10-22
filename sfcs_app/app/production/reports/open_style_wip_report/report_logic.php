@@ -78,7 +78,7 @@
 		$schedule1 = $temp_res['schedule'];
 		$color1 = $temp_res['color'];
 		$size1 = $temp_res['size_title'];
-		$order_tid_wip[] = $style1."-".$schedule1."-".$color1."-".$size1;
+		$order_tid_wip[] = $style1."$".$schedule1."$".$color1."$".$size1;
 	}
 	$get_style_wip_data="select style,schedule,color,size FROM $brandix_bts.open_style_wip where style<>'' and status='open' group by style,schedule,color,size";
 	//echo $get_style_wip_data."<br>";
@@ -89,12 +89,12 @@
 		$schedule = $row1['schedule'];
 		$color = $row1['color'];
 		$size = $row1['size'];
-		$order_tid_wip[] = $style."-".$schedule."-".$color."-".$size;
+		$order_tid_wip[] = $style."$".$schedule."$".$color."$".$size;
 	}
 	$final = array_unique($order_tid_wip);
 	foreach ($final as $key => $value) 
 	{
-		$val = explode("-", $value);
+		$val = explode("$", $value);
 		// var_dump($val);
 		$style = $val[0];
 		$schedule = $val[1];
