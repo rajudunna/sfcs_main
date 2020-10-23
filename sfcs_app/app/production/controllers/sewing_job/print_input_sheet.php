@@ -85,10 +85,22 @@
 							$disStyle = implode(',',$main_style);
                             $joinSch = implode(',',$main_schedule);
 							$disColor = implode(',',$main_color);
+							//To get Po description
+							$get_po_des="SELECT master_po_description FROM pps.`mp_order` WHERE master_po_number='$masterponumber'";
+							$get_po_result=mysqli_query($link_new, $get_po_des) or exit("Sql Error at get_po_des".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($po_row=mysqli_fetch_array($get_po_result))
+							{
+								$po_des=$po_row['master_po_description'];
+							}
+							//To get Sub PO Description
+							$result_po_des=getPoDetaials($po_number,$plant_code);
+							$subpo_des=$result_po_des['po_description'];
 						?>
 
 						<div style="float:left">
 							<table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;">
+							<tr><th>PO </th><td>:</td> <td><?php echo $po_des;?></td></tr>
+							<tr><th>Sub PO </th><td>:</td> <td><?php echo $subpo_des;?></td></tr>
 							<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
 							<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
 							<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
@@ -190,24 +202,22 @@
 						$tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
 						//get jobs from po_number
 						$job_number=array();
-						$get_jobs="SELECT job_number,jm_jg_header_id FROM $pps.`jm_job_header` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_job_header = jm_job_header.jm_job_header_id WHERE po_number='$po_number' AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
+						$get_jobs="SELECT job_number,jm_jg_header_id FROM $pps.`jm_job_header` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_job_header = jm_job_header.jm_job_header_id WHERE po_number='$po_number' AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype' order by job_number";
 						$result22=mysqli_query($link, $get_jobs) or die("Error8-".$get_jobs."-".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($sql_row=mysqli_fetch_array($result22))
 						{
 						   $job_number[$sql_row['job_number']]=$sql_row['jm_jg_header_id'];
 						}   
 						//to get destination
-						$get_destination="SELECT destination,vpo,planned_delivery_date FROM $oms.oms_mo_details WHERE schedule in ($schedule) AND plant_code='$plant_code'";
+						$get_destination="SELECT destination,vpo,planned_delivery_date,customer_order_no FROM $oms.oms_mo_details WHERE schedule in ($schedule) AND plant_code='$plant_code'";
 						$sql_result1=mysqli_query($link, $get_destination) or die("Error".$get_destination.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row1=mysqli_fetch_array($sql_result1))
 						{
 							$destination=$row1['destination'];
 							$vpo=$row1['vpo'];
 							$planned_delivery_date=$row1['planned_delivery_date'];
+							$cpo=$row1['customer_order_no'];
 						}
-						//To get PO Description
-						$result_po_des=getPoDetaials($po_number,$plant_code);
-						$po_des=$result_po_des['po_description'];
 						
 						foreach($job_number as $sew_num=>$value)
 		                {
@@ -229,7 +239,7 @@
 							$cut_no = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 							echo "<tr height=20 style='height:15.0pt; background-color:$bg_color1;'>";
 							echo "<td height=20 style='height:15.0pt'>".$style."</td>";
-							echo "<td height=20 style='height:15.0pt'>$po_des</td>";
+							echo "<td height=20 style='height:15.0pt'>$cpo</td>";
 							echo "<td height=20 style='height:15.0pt'>$vpo</td>";
 							echo "<td height=20 style='height:15.0pt'>".$schedule."</td>";
 							echo "<td height=20 style='height:15.0pt'>$destination</td>";
