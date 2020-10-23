@@ -2,9 +2,8 @@
 <?php
 $start_timestamp = microtime(true);
 //CR# 203 / KiranG 2014-08-10
+error_reporting(0);
 //Added new query to filer all schedule irrespective of weekly shipment plan.
-$plantcode=$_SESSION['plantCode'];
-
 // include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 
 
@@ -15,10 +14,14 @@ error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 // include($include_path.'\sfcs_app\common\config\config_ajax.php');	
-
-$table_ref="$bai_pro4.week_delivery_plan";
-$table_ref2="$bai_pro3.bai_orders_db";
-$table_ref3="$bai_pro3.bai_orders_db_confirm";
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
+$in_operation=100;
+$cut_operation=15;
+$operation=200;
+$table_ref="$pps.week_delivery_plan";
+// $table_ref2="$bai_pro3.bai_orders_db";
+// $table_ref3="$bai_pro3.bai_orders_db_confirm";
 
 $weeknumber = date("W"); 
 
@@ -31,20 +34,20 @@ for($day=1; $day<=7; $day++)
 
 $start_date=min($dates);
 $end_date=max($dates);
-$sql_sec="select sec_id,sec_mods from $bai_pro3.sections_db where sec_id !=0";
-//  echo $sql_sec;
-$sql_result_sec=mysqli_query($link, $sql_sec) or exit("Sql Error secc=".mysqli_error($GLOBALS["___mysqli_ston"]));
-while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
-{
-	$module=$sql_row_sec['sec_mods'];
-	$sec_id=$sql_row_sec['sec_id'];
-	$update_sec="Update pts.bai_log set bac_sec=$sec_id,updated_user='$username',updated_at=NOW() where bac_no in ("."'".str_replace(",","','",$module)."'".") and plant_code='$plant_code'";
-	// echo $update_sec."<br>";
-	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-}
+// $sql_sec="select sec_id,sec_mods from $bai_pro3.sections_db where sec_id !=0";
+// //  echo $sql_sec;
+// $sql_result_sec=mysqli_query($link, $sql_sec) or exit("Sql Error secc=".mysqli_error($GLOBALS["___mysqli_ston"]));
+// while($sql_row_sec=mysqli_fetch_array($sql_result_sec))
+// {
+// 	$module=$sql_row_sec['sec_mods'];
+// 	$sec_id=$sql_row_sec['sec_id'];
+// 	$update_sec="Update pts.bai_log set bac_sec=$sec_id,updated_user='$username',updated_at=NOW() where bac_no in ("."'".str_replace(",","','",$module)."'".") and plant_code='$plant_code'";
+// 	// echo $update_sec."<br>";
+// 	$sql_res=mysqli_query($link, $update_sec) or exit("Sql Error sec 1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+// }
 
-$sql="select ship_tid,schedule_no,color,size from $bai_pro4.shipment_plan where ex_factory_date between \"".trim($start_date)."\" and  \"".trim($end_date)."\" order by schedule_no*1,color,size";
-// echo $sql."<br>";
+$sql="select ship_tid,schedule_no,color,size from $pps.shipment_plan where ex_factory_date between '$start_date' and  '$end_date' and plant_code='$plantcode'";
+ //echo $sql."<br>";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -53,142 +56,207 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$size=$sql_row["size"];
 	$ship_tid=$sql_row["ship_tid"];
 	
-	$sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
-	// echo $sql1."<br>";
-	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result1) > 0)
-	{	
-		for($i=0;$i<sizeof($sizes_array);$i++)
-		{
-			$sql2="select title_size_".$sizes_array[$i]." as size_ref,order_tid,order_s_".$sizes_array[$i]." order_qty from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
-			// echo $sql2."<br>";
-			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row2=mysqli_fetch_array($sql_result2))
-			{
-				$size_ref=$sql_row2["size_ref"];
-				$order_tid=$sql_row2["order_tid"];
-				$order_qty=$sql_row2["order_qty"];
-			}
+	// $sql1="select * from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
+	// // echo $sql1."<br>";
+	// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
+	// if(mysqli_num_rows($sql_result1) > 0)
+	// {	
+		// for($i=0;$i<sizeof($size);$i++)
+		// {
+			$get_po_details="select sum(quantity) as quantity from $pps.mp_mo_qty where schedule='$schedule_no' and color='$color' and plant_code='$plantcode' and size='$size' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color,size";
+		
+			$get_po_details_result = mysqli_query($link, $get_po_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			if(trim($size_ref)==trim($size))
-			{
-				$size_data=$size_ref;
-				$size_data_ref=$sizes_array[$i];
-				break;
-			}
-		}
+				while($row122 = mysqli_fetch_array($get_po_details_result))
+				{
+					$size_val = $row122['quantity'];
+				}
+			// $sql2="select title_size_".$sizes_array[$i]." as size_ref,order_tid,order_s_".$sizes_array[$i]." order_qty from $bai_pro3.bai_orders_db_confirm where order_del_no='".$schedule."' and order_col_des='".$color."'";
+			// // echo $sql2."<br>";
+			// $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// while($sql_row2=mysqli_fetch_array($sql_result2))
+			// {
+			// 	$size_ref=$sql_row2["size_ref"];
+			// 	$order_tid=$sql_row2["order_tid"];
+			// 	$order_qty=$sql_row2["order_qty"];
+			// }
+			
+			// if(trim($size_ref)==trim($size))
+			// {
+			// 	$size_data=$size_ref;
+			// 	$size_data_ref=$sizes_array[$i];
+			// 	break;
+			// }
+		// }
 		
 		
-		$update_order_qty="update bai_pro4.week_delivery_plan set original_order_qty='".$order_qty."' , size_code='$size_ref' where shipment_plan_id='".$ship_tid."'";
+		$update_order_qty="update $pps.week_delivery_plan set original_order_qty='".$size_val."' , size_code='$size' where shipment_plan_id='".$ship_tid."' and plant_code='$plantcode'";
 		// echo $update_order_qty."<br>";
 		$update_data=mysqli_query($link, $update_order_qty) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($update_data){
 			// print("Updated week_delivery_plan Successfully")."\n";
 		}
 		
-		$sql5="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\")";
-		// echo $sql5."<br>";
-		$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-		// echo mysqli_num_rows($sql_result5)."<br>";
-		if(mysqli_num_rows($sql_result5) > 0)
-		{
-			while($sql_row5=mysqli_fetch_array($sql_result5))
-			{	
+		// $sql5="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in (\"Body\",\"Front\")";
+		// // echo $sql5."<br>";
+		// $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// // echo mysqli_num_rows($sql_result5)."<br>";
+		// if(mysqli_num_rows($sql_result5) > 0)
+		// {
+			// while($sql_row5=mysqli_fetch_array($sql_result5))
+			// {	
 				$cat_ref=$sql_row5["tid"];
 				$cut_total=0;
-				$sql3="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.plandoc_stat_log where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
-				// echo $sql3."<br/>";
-				$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row3=mysqli_fetch_array($sql_result3))
-				{
-					$cut_total=$cut_total+$sql_row3['cut_total'];
-				}
+				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as cut_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$cut_operation." group by schedule,color";
 				
-				$sql4="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
-				// echo $sql4."<br/>";
-				$sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row4=mysqli_fetch_array($sql_result4))
-				{
-					$cut_total=$cut_total+$sql_row4['cut_total'];
-				}
+				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
+					{
+						$cut_total = $row12222['cut_qty'];
+					}
+
+					$get_out_qty_details="select sum(good_quantity+rejected_quantity) as fg_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$operation." group by schedule,color";
+				
+				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
+					{
+						$fg_qty = $row12222['fg_qty'];
+					}
+
+
+					$get_mo_number="select oms_products_info.mo_number from $oms.oms_mo_details left join $oms.oms_products_info on oms_products_info.mo_number=oms_mo_details.mo_number where schedule='$schedule_no'  and plant_code='$plantcode'";
+				
+					$get_mo_number_result = mysqli_query($link, $get_mo_number) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+					while($row122221= mysqli_fetch_array($get_mo_number_result))
+						{
+							$mo_number1[] = $row122221['mo_number'];
+						}
+						$mo_number="'".implode("','",$mo_number1)."'";
+							$get_pack_container_id="select DISTINCT(jm_pack_container_id)  from $pps.jm_pack_container_line where plant_code='$plantcode' and mo_number in($mo_number)";
+							$get_pack_container_id_result = mysqli_query($link, $get_pack_container_id) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+						
+							while($row= mysqli_fetch_array($get_mo_number_result))
+								{
+									$jm_pack_container_id1[] = $row['jm_pack_container_id'];
+								}
+								$jm_pack_container_id="'".implode("','",$jm_pack_container_id1)."'";
+								$get_barcodes="select  DISTINCT(barcode) from $pts.barcode where plant_code='$plantcode' and external_ref_id in($jm_pack_container_id)";
+								$get_barcodes_result = mysqli_query($link, $get_barcodes) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+							
+								while($row1= mysqli_fetch_array($get_barcodes_result))
+									{
+										$barcode1[] = $row1['barcode'];
+									}
+									$barcode="'".implode("','",$barcode1)."'";
+									$get_barcodes_details="select DISTINCT(parent_barcode) from $pts.transaction_log where plant_code='$plantcode' and parent_barcode in($barcode)";
+									$get_barcodes_details_result = mysqli_query($link, $get_barcodes_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+								
+									while($row11= mysqli_fetch_array($get_barcodes_details_result))
+										{
+											$parent_barcode[] = $row11['parent_barcode'];
+										}
+	
+										$diff = array_diff($parent_barcode, $barcode1);
+										$carton_pending=sizeof($diff);
+						
+				// $sql4="select (p_".$size_data_ref."*a_plies) as cut_total from $bai_pro3.recut_v2 where cat_ref='".$cat_ref."' and act_cut_status=\"DONE\" group by doc_no";
+				// // echo $sql4."<br/>";
+				// $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row4=mysqli_fetch_array($sql_result4))
+				// {
+				// 	$cut_total=$cut_total+$sql_row4['cut_total'];
+				// }
 				
 				$input_total=0;
 				$output_total=0;
-				$sql5="select distinct(ims_size),coalesce(SUM(ims_qty),0) AS input from $bai_pro3.ims_log where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
-				// echo $sql5."<br/>";
-				$sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row5=mysqli_fetch_array($sql_result5))
-				{
-					$input_total=$input_total+$sql_row5['input'];
-				}
+
+				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as in_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$in_operation." group by schedule,color";
 				
-				$sql6="select distinct(ims_size),coalesce(SUM(ims_qty),0) AS input from $bai_pro3.ims_log_backup where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
-				// echo $sql6."<br/>";
-				$sql_result6=mysqli_query($link, $sql6) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row6=mysqli_fetch_array($sql_result6))
-				{
-					$input_total=$input_total+$sql_row6['input'];
-				}
+				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+					
+				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
+					{
+						$input_total = $row12222['in_qty'];
+					}
+
+				// $sql5="select distinct(ims_size),coalesce(SUM(ims_qty),0) AS input from $bai_pro3.ims_log where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
+				// // echo $sql5."<br/>";
+				// $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row5=mysqli_fetch_array($sql_result5))
+				// {
+				// 	$input_total=$input_total+$sql_row5['input'];
+				// }
+				
+				// $sql6="select distinct(ims_size),coalesce(SUM(ims_qty),0) AS input from $bai_pro3.ims_log_backup where ims_schedule='".$schedule."' and ims_color='".$color."'  and ims_size='a_".$size_data_ref."'";
+				// // echo $sql6."<br/>";
+				// $sql_result6=mysqli_query($link, $sql6) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row6=mysqli_fetch_array($sql_result6))
+				// {
+				// 	$input_total=$input_total+$sql_row6['input'];
+				// }
 				$fcamca=0;
-				$sql7="select coalesce(SUM(pcs),0) as qty from $pps.fca_audit_fail_db where schedule=$schedule and size='".$size_data_ref."' and tran_type in (1,2) and pcs > 0 and plant_code='$plant_code'";
-				// echo $sql7."<br/>";
-				$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row7=mysqli_fetch_array($sql_result7))
-				{
-					$fcamca=$sql_row7['qty'];
-				}
+				// $sql7="select coalesce(SUM(pcs),0) as qty from $pps.fca_audit_fail_db where schedule=$schedule and size='".$size_data_ref."' and tran_type in (1,2) and pcs > 0 and plant_code='$plant_code'";
+				// // echo $sql7."<br/>";
+				// $sql_result7=mysqli_query($link, $sql7) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row7=mysqli_fetch_array($sql_result7))
+				// {
+				// 	$fcamca=$sql_row7['qty'];
+				// }
 				$shipped=0;
-				$sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $pps.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."' and plant_code='$plant_code'";
-				$sql_result8=mysqli_query($link, $sql8) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row8=mysqli_fetch_array($sql_result8))
-				{
-					$shipped=$sql_row8['shipped'];		
-				}
+				// $sql8="select COALESCE(sum(ship_s_".$size_data_ref."),0) as \"shipped\" from $pps.ship_stat_log where ship_schedule='".$schedule."' and ship_color='".$color."' and plant_code='$plant_code'";
+				// $sql_result8=mysqli_query($link, $sql8) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row8=mysqli_fetch_array($sql_result8))
+				// {
+				// 	$shipped=$sql_row8['shipped'];		
+				// }
 				$fgqty =0;
-				$sql9="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\",SUM(IF(status=\"DONE\",carton_act_qty,0)) as fgqty from $pps.packing_summary where order_del_no=$schedule and order_col_des='".$color."' and size_code='".$size_data_ref."' and plant_code='$plant_code' group by size_code";
-				$sql_result9=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row9=mysqli_fetch_array($sql_result9))
-				{
-					$pendingcarts=$sql_row9['pendingcarts'];	
-					$fgqty=$sql_row9['fgqty'];
-				}
-                $output_array=[];
-				$sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $pts.bai_log WHERE plant_code='$plant_code' and delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
-				//echo $sql10;
-				$sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// echo $sql10."<br>";
-				while($sql_row10=mysqli_fetch_array($sql_result10))
-				{
-					$bac_sec=$sql_row10['bac_sec'];	
-					$output_array[$sql_row10['bac_sec']]+=$sql_row10['output'];
+				// $sql9="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\",SUM(IF(status=\"DONE\",carton_act_qty,0)) as fgqty from $pps.packing_summary where order_del_no=$schedule and order_col_des='".$color."' and size_code='".$size_data_ref."' and plant_code='$plant_code' group by size_code";
+				// $sql_result9=mysqli_query($link, $sql9) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// while($sql_row9=mysqli_fetch_array($sql_result9))
+				// {
+				// 	$pendingcarts=$sql_row9['pendingcarts'];	
+				// 	$fgqty=$sql_row9['fgqty'];
+				// }
+                // $output_array=[];
+				// $sql10="select bac_sec,COALESCE(SUM(bac_qty),0) AS output FROM $pts.bai_log WHERE plant_code='$plant_code' and delivery=$schedule and color='".$color."' AND size_".$size_data_ref." >0  GROUP BY bac_no";
+				// //echo $sql10;
+				// $sql_result10=mysqli_query($link, $sql10) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// // echo $sql10."<br>";
+				// while($sql_row10=mysqli_fetch_array($sql_result10))
+				// {
+				// 	$bac_sec=$sql_row10['bac_sec'];	
+				// 	$output_array[$sql_row10['bac_sec']]+=$sql_row10['output'];
                     
                     
-					// if($updated_data1)
-					// {
-					 	//  print("Updated Quantity in ".$table_ref."successfully")."\n" ;
-					// }
-				}
+				// 	// if($updated_data1)
+				// 	// {
+				// 	 	//  print("Updated Quantity in ".$table_ref."successfully")."\n" ;
+				// 	// }
+				// }
 
-				foreach($output_array as $key => $value)
-                    {
-                       $sql11="update $table_ref set actu_sec".$key."='".$value."' where size_code='$size_ref' and shipment_plan_id='".$ship_tid."'";
-					   // echo $sql11."------A<br/>";
-					   $updated_data1=mysqli_query($link, $sql11) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    }
+				// foreach($output_array as $key => $value)
+                //     {
+                //        $sql11="update $table_ref set actu_sec".$key."='".$value."' where size_code='$size_ref' and shipment_plan_id='".$ship_tid."'";
+				// 	   // echo $sql11."------A<br/>";
+				// 	   $updated_data1=mysqli_query($link, $sql11) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
+                //     }
 
-			}
-		}	
+			// }
+		// }	
 		
 		// echo $schedule."-".$color."-".$ship_tid."-".$size_data."-".$size_ref."-".$size."-".$size_data_ref."-".$order_tid."-".$order_qty."-".$cut_total."-".$input_total."-".$output_total."-".$fcamca."-".$shipped."-".$pendingcarts."<br>";
 		
-		$sql32="update $table_ref set size_comp_".$size_data_ref."='".$output_total."',act_cut='".$cut_total."',act_in='".$input_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fgqty."', act_ship='".$shipped."', cart_pending='".$pendingcarts."' where shipment_plan_id='".$ship_tid."'";
+		$sql32="update $table_ref set act_cut='".$cut_total."',act_in='".$input_total."',act_fca='".$fcamca."', act_mca='".$fcamca."', act_fg='".$fg_qty."', act_ship='".$shipped."', cart_pending='".$carton_pending."' where shipment_plan_id='".$ship_tid."' and plant_code='$plantcode'";
 		// echo $sql32."------A<br/>";
 		$updated_data=mysqli_query($link, $sql32) or exit("Sql Error32".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if($updated_data){
 			//  print("Updated ".$table_ref."successfully")."\n";
 		}
 		unset($output_array);
-	}
+	// }
 }
 
 include("out_put_update_old.php");
