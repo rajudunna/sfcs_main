@@ -342,7 +342,7 @@ if(isset($_POST['submit1']))
 	// 	$sql11="select * from  $oms.oms_mo_details where plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
 	// }
 	// else{
-		$sql11="select * from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
+		$sql11="select customer_order_no,planned_delivery_date from  $oms.oms_mo_details where po_number='$mpo' AND plant_code='$plant_code' and planned_delivery_date between \"$from_date\" and \"$to_date\"";
 	// }
 	//echo $sql11."<br>";
 	$sql_result1122=mysqli_query($link, $sql11) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -84,7 +84,7 @@ function oper_display(){
 							$operation_name=$_POST['operation'];
 							$plant_code=$_POST['plant_code'];
 							$username=$_POST['username'];
-							$sql1="select * from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
+							$sql1="select id from $pps.gatepass_table where operation='".$operation_name."' and gatepass_status=1 and username='".$username."' and plant_code='".$plant_code."'";
 							$sql_result1=mysqli_query($link, $sql1) or exit($sql1."Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 							if(mysqli_num_rows($sql_result1)>0)
 							{			

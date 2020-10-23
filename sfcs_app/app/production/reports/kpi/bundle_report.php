@@ -18,7 +18,7 @@
 	$selected_date = $_GET['date'];
 	$selected_hour = $_GET['hour'];
 
-	$plant_timings_query="SELECT * FROM $pms.plant where plant_code='$plantcode'";
+	$plant_timings_query="SELECT plant_start_time,plant_end_time FROM $pms.plant where plant_code='$plantcode'";
 	$plant_timings_result11=mysqli_query($link,$plant_timings_query);
 	while ($row = mysqli_fetch_array($plant_timings_result11))
 	{

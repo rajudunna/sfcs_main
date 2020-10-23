@@ -143,7 +143,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr))
 										$groupedSecQry = "SELECT distinct monthly_production_plan.group FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  upload_log.plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 										$res_groupedSecQry = mysqli_query($link, $groupedSecQry);
 										while ($row_groupedSecQry = mysqli_fetch_array($res_groupedSecQry)) {
-											$sql = "SELECT * FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  upload_log.plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and monthly_production_plan.group = '".$row_groupedSecQry['group']."'";	
+											$sql = "SELECT smv,planned_qty,capacity_factor,row_name,product_code FROM $pps.monthly_production_plan LEFT JOIN $pps.monthly_production_plan_upload_log as upload_log ON upload_log.monthly_pp_up_log_id = monthly_production_plan.monthly_pp_up_log_id where  upload_log.plant_code = '" . $plantCode . "' and planned_date ='".$frdate."' and monthly_production_plan.group = '".$row_groupedSecQry['group']."'";	
 											$res = mysqli_query($link, $sql);
 											$ttlActNop_sec = 0;
 											$ttlFrPlanQty_sec = 0;

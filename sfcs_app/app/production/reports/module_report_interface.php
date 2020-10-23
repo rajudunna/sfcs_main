@@ -76,7 +76,7 @@ if(mysqli_num_rows($result) > 0)
 			}
 		}
 
-		$query = "select * from $pms.workstation where plant_code='$plant_code' and workstation_id = '$to_module'";
+		$query = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$to_module'";
 		$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		$workstation_rows_num = mysqli_num_rows($sql_res);
 		if($workstation_rows_num > 0) {
