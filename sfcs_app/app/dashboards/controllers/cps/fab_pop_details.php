@@ -783,7 +783,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		{
 			if(!in_array($sql_row1['category'],$comp_printed))
 			{
-				echo "<td><a href='$path.$doc_no'  onclick=\"Popup1=window.open('$path.$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+				echo "<td><a href='$path$doc_no'  onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				// echo "<td><a href=\"$path?doc_no=".$docket_line_number."&print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."\"  onclick=\"Popup1=window.open('$path?print_status=$print_status&plant_code=$plant_code&username=$username&doc_id=".$docket_line_number."','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 				$comp_printed[]=$sql_row1['category'];
 			}
@@ -794,7 +794,7 @@ if($print_status=='0000-00-00 00:00:00'){
 		}
 		else
 		{
-			echo "<td><a href='$path.$doc_no' onclick=\"Popup1=window.open('$path.$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
+			echo "<td><a href='$path$doc_no' onclick=\"Popup1=window.open('$path$doc_no','Popup1','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup1.focus()} return false;\">Print</a></td>";
 		}	
 		$Disable_allocate_flag=$Disable_allocate_flag+1;
 		
@@ -925,7 +925,7 @@ else
 	// }
 	// else
 	// {
-		echo "<td><img src=\"Wrong.png\"></td>";
+		echo "<td><img src=\"wrong.png\"></td>";
 	//}
 }
 
@@ -1073,7 +1073,7 @@ if(isset($_POST['submit']))
 	
 	$alloc_docket=$_POST['alloc_doc'];
 	$doc_tot=$_POST['doc_tot'];
-	$issue_status=$_POST['issue_status'];
+	$issue_status=$_POST['issue_status'];	
 	$group_docs=$_POST['group_docs'];
 	$reason=$_POST['remarks'];
 	$style=$_POST['style'];
@@ -1082,7 +1082,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at='NOW()' where jm_docket_line_id='".$doc_no."'";
+		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."'";
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -1177,11 +1177,11 @@ if(isset($_POST['submit']))
 	if($issue_status==5)
 	{
 		
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -1191,14 +1191,14 @@ if(isset($_POST['submit']))
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_line_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username','NOW()','$username','$plant_code')";
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_line_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
 		// echo $sql1;
-		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error());
+		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 
 	if($issue_status==1)
 	{
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}

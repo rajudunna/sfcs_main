@@ -299,11 +299,13 @@ echo "<tr><th>Mod#</th><th>Legend</th><th>Priority 1</th><th>Remarks</th><th>Pri
 $getModuleDetails = getWorkstationsForSectionId($plantCode,$section_no);
 
 foreach($getModuleDetails as $moduleKey =>$moduleRecord)
-{	echo "module: ".$moduleRecord['workstationCode'];
+{	
+	echo " module: ".$moduleRecord['workstationCode'];
 	echo "<tr>";
 	echo "<td>".$moduleRecord['workstationCode']."</td>";
 	echo "<td align=\"right\">Style:<br/>Schedule:<br/>Sewing Job:<br/>Cut Job:<br/>Job Qty:<br/></td>";
 	$module=$moduleRecord['workstationId'];		
+	$order_col="";
 	// getting task jobs for module in the loop
 	$task_jobs_qry = "SELECT DISTINCT  tj.task_jobs_id as task_jobs_id FROM `$tms`.`task_header` th 
 	LEFT JOIN $tms.`task_jobs` tj ON tj.`task_header_id` = th.`task_header_id`
@@ -314,11 +316,13 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 	{
 		$task_job_id = $task_job_row['task_jobs_id'];
 		$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1";
+		// echo $qry_toget_style_sch.'<br/>';
 		$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 			$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
 		}
 		$doc_no_ref = $job_detail_attributes[$sewing_job_attributes['docketno']];
+		// echo $doc_no_ref.'<br/>';
 		$doc_no_ref1 = $job_detail_attributes[$sewing_job_attributes['docketno']];
 		$input_job_no_random_ref= $task_job_id;
 		$doc_no_ref_input = $job_detail_attributes[$sewing_job_attributes['docketno']];
@@ -327,13 +331,13 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$schedule_no = $job_detail_attributes[$sewing_job_attributes['schedule']];
 		$order_cols = $job_detail_attributes[$sewing_job_attributes['color']];
 		$color = $job_detail_attributes[$sewing_job_attributes['color']];
-		$cols_de = str_pad("Color:".trim($color_info),80)."\n";
+		$cols_de = str_pad("Color:".trim($color),80)."\n";
 		$jobno = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
 		$type_of_sewing = $job_detail_attributes[$sewing_job_attributes['remarks']];
-		$co_no = $job_detail_attributes[$sewing_job_attributes['conumber']];
-		$club_c_code = $job_detail_attributes[$sewing_job_attributes['CUTJOBNO']];
+		$co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
+		$club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 
-		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$taskJobId' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
+		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
 		$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
 			$input_ops_code = $row3['operation_code'];
@@ -350,57 +354,65 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$doc_no_ref_explode=explode(",",$doc_no_ref);
 		$num_docs=sizeof($doc_no_ref_explode);
 		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' ))AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+		// echo $sqlDocketLineIds.'<br/>';
 		$sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
 		{
 			$docket_line_ids=$docket_row123['docket_line_ids'];
 		}
-		$sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
-		$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1x1)>0)
-		{
-			$cut_status="0";
-		}
-		else
-		{
-			$cut_status="5";
-		}
-		// fabric request logic
-		$sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
-		$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1x115)>0)
-		{
-			if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+		if($doc_no_ref){
+			$sql1x1="select * from $pps.jm_docket_lines where lay_status<>'DONE' and docket_line_number in ($doc_no_ref)";
+			$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error81".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result1x1)>0)
 			{
-				$fabric_req="0";
+				$cut_status="0";
 			}
 			else
 			{
-				$fabric_req="5";
-			}	
-		}
-		else
-		{
-			$fabric_req="0";
-		}
-		// fabric status logic
-		$fabric_status="";
-		$sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
-		$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1x12)>0)
-		{
-			if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
-			{
-				$fabric_status="1";
+				$cut_status="5";
 			}
 		}
-		$sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
-		$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-		if(mysqli_num_rows($sql_result1x11)>0)
-		{
-			if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
+		$fabric_req= '0';
+		if($docket_line_ids){
+			// fabric request logic
+			$sql1x115="SELECT *  FROM  `$pps`.`fabric_prorities` WHERE `jm_docket_line_id` IN ($docket_line_ids)";
+			// echo $sql1x115;
+			$sql_result1x115=mysqli_query($link, $sql1x115) or exit("Sql Error82".mysqli_error($GLOBALS["___mysqli_ston"]));
+			// echo mysqli_num_rows($sql_result1x115);
+			if(mysqli_num_rows($sql_result1x115)>0)
 			{
-				$fabric_status="5";
+				if(sizeof($doc_no_ref_explode)<>mysqli_num_rows($sql_result1x115))
+				{
+					$fabric_req="0";
+				}
+				else
+				{
+					$fabric_req="5";
+				}	
+			}
+			else
+			{
+				$fabric_req="0";
+			}
+			// fabric status logic
+			$fabric_status="";
+			$sql1x12="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status='1'";
+			$sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result1x12)>0)
+			{
+				if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
+				{
+					$fabric_status="1";
+				}
+			}
+			$sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
+			$sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result1x11)>0)
+			{
+				if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
+				{
+					$fabric_status="5";
+				}
 			}
 		}
 		if ($fabric_status == "")
