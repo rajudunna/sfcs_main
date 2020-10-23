@@ -46,7 +46,7 @@
 	$op_count = count($operation_ids);
 
 	$today=date("Y-m-d"); 
-	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log where plant_code='$plant_code' group by style, schedule, color";
+	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log where plant_code='$plant_code' group by style, schedule, color,size";
 	// echo $sql_trans;
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
@@ -58,7 +58,7 @@
 		$barcodes = $row_main['barcodes'];
 		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
 
-		$order_qty_qry = "select sum(quantity) from $pps.barcode where barcode IN ($barcode_list) ";
+		$order_qty_qry = "select sum(quantity) as quantity from $pts.barcode where barcode IN ($barcode_list) ";
 		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
 		$order_qty=0;
 
