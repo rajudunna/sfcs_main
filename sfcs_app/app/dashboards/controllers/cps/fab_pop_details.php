@@ -1082,7 +1082,7 @@ if(isset($_POST['submit']))
 	$doc_num=explode(",",$group_docs);
 	for($i=0;$i<sizeof($doc_num);$i++)
 	{	
-		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at='NOW()' where jm_docket_line_id='".$doc_no."'";
+		$sql2="update $pps.requested_dockets set fabric_status='$issue_status',updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."'";
 		
 		mysqli_query($link, $sql2) or exit("Sql Error----5".mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -1177,11 +1177,11 @@ if(isset($_POST['submit']))
 	if($issue_status==5)
 	{
 		
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---6".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -1191,14 +1191,14 @@ if(isset($_POST['submit']))
 		//Uncheck this	
 		mysqli_query($link, $sql3) or exit("Sql Error----7".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
-		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_line_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username','NOW()','$username','$plant_code')";
+		$sql1="INSERT INTO `$pps`.`log_rm_ready_in_pool` (`jm_docket_line_id`, `date_n_time`, `username`,created_at,created_user,plant_code) VALUES ('$doc_no', '".date("Y-m-d H:i:s")."','$username',NOW(),'$username','$plant_code')";
 		// echo $sql1;
 		mysqli_query($link, $sql1) or exit("Sql Error33".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
 
 	if($issue_status==1)
 	{
-		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at='NOW()' where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
+		$sql1="update $pps.requested_dockets set fabric_status=$issue_status,updated_user='$username',updated_at=NOW() where jm_docket_line_id in ('$doc_no') and plant_code='$plant_code'";
 		//Uncheck this
 		mysqli_query($link, $sql1) or exit("Sql Error---5.1".mysqli_error($GLOBALS["___mysqli_ston"]));
 	}
