@@ -3,7 +3,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 // for running these schedules in command prompt making entire code in single php file
 error_reporting(0);
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $date1=date("Y-m-d");
 $weekday1 = strtolower(date('l', strtotime($date1)));
 // $weekday1='monday';

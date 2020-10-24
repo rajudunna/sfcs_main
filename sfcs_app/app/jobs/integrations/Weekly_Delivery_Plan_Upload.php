@@ -5,7 +5,11 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 set_time_limit(6000000);
 
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 
 //Getting from OMS regarding order information

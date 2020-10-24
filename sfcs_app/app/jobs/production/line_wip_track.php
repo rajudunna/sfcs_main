@@ -5,8 +5,15 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
 
-$plant_code = $argv[1];
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
+
 $username =  $_session['userName'];
+
+
 
 /**
  * get planned sewing jobs(JG) for the workstation
