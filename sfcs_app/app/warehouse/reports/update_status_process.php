@@ -57,7 +57,7 @@ if(isset($_POST['submit1']))
 	$item_db=array();
 	$reason_db=array();
 	$qty_db=array();
-	$sql="select * from $wms.manual_form where status=1 and plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
+	$sql="select style,schedule,color,category,req_from,item,reason,qty,rand_track from $wms.manual_form where status=1 and plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{

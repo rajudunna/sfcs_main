@@ -76,7 +76,7 @@ if(isset($_POST['submit']))
 			$lot_no=$sql_row['lot_no'];
 		}
 	
-		$sql="select * from $wms.sticker_report where lot_no=\"$lot_no\" and plant_code='".$plant_code."'";
+		$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where lot_no=\"$lot_no\" and plant_code='".$plant_code."'";
 		//echo $sql;
 		$sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row=mysqli_fetch_array($sql_result))
@@ -241,7 +241,7 @@ if(isset($_POST['submit2']))
 {
 	$lot_no=$_POST['lot_no_ref'];
 
-	$sql="select * from $wms.sticker_report where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+	$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,backup_status from $wms.sticker_report where lot_no=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
     $sql_result=mysqli_query($link, $sql) or exit($sql."<br/>Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($sql_result)>0)
