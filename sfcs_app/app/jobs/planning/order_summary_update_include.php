@@ -2,7 +2,11 @@
 
 <?php
 $schedules_to_update=array();
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $schedules_to_update=array_diff($sch_to_process,$schedule_db);
 
 if(sizeof($schedules_to_update)>0){

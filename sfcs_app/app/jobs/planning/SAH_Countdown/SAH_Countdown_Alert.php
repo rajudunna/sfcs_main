@@ -14,7 +14,11 @@ sleep(120);
 <?php
 // include("header.php");
 // Turn off all error reporting
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 error_reporting(0);
 // Report simple running errors

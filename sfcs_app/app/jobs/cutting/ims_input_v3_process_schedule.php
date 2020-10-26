@@ -4,7 +4,11 @@ $start_timestamp = microtime(true);
 error_reporting(E_ALL & ~E_NOTICE);
 include("ims_process_ses_track.php");
 $time_diff=(int)date("YmdH")-$log_time;
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 
 if($log_time==0 or $time_diff>1)
@@ -59,7 +63,11 @@ if($log_time==0 or $time_diff>1)
 		include($include_path.'\sfcs_app\common\config\config_jobs.php');
 		include($include_path.'\sfcs_app\common\config\functions_v2.php');
 		// var_dump($shifts_array);
-			$plantcode=$_SESSION['plantCode'];
+			if($_GET['plantCode']){
+				$plant_code = $_GET['plantCode'];
+			}else{
+				$plant_code = $argv[1];
+			}
 			$teams=$shifts_array;
 			$team_array=implode(",",$shifts_array);
 			$team = "'".str_replace(",","','",$team_array)."'"; 

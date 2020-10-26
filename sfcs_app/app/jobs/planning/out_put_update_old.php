@@ -1,7 +1,11 @@
 
 <?php
 error_reporting(0);
-$plant_code=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $in_operation=100;
 $cut_operation=15;
 $cut_operation=130;
