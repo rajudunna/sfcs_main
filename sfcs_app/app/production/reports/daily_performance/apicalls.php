@@ -22,7 +22,7 @@ function getData($date, $plant){
 	
 	//To get all the operations	
 	//To get default Operations 
-	$get_operations_workflow= "select *  from $pms.operation_mapping  where sequence = true and plant_code = $plant_code order by priority*1";
+	$get_operations_workflow= "select *  from $pms.operation_mapping  where sequence = true and plant_code = '$plant_code' order by priority*1";
 	$result1 = $link->query($get_operations_workflow);
 	$op_count = mysqli_num_rows($result1);
 	if($op_count>0){
@@ -31,11 +31,10 @@ function getData($date, $plant){
 			$operation_code[] = ['op_code'=>$row1['operation_code']];
 		}
 	}
-
 	if(count($operation_code)>0){
 		foreach ($operation_code as $key => $value) {	
 			//columns
-			$get_operations_no= "select DISTINCT(operation) from $pts.transaction_log where date(updated_at) = '$date' and operation ='".$value['op_code']."'";				
+			$get_operations_no= "select DISTINCT(operation) from $pts.transaction_log where date(updated_at) = '$date' and operation ='".$value['op_code']."' and plant_code = '$plant_code'";				
 			$result4 = $link->query($get_operations_no);
 			$op_count = mysqli_num_rows($result4);
 			if($op_count){
@@ -46,11 +45,13 @@ function getData($date, $plant){
 			}
 		}
 	}
-
+	// var_dump($over_all_operations);
+	// die();
 	if(count($over_all_operations)>0){
 		$operation_codes_no = implode(',',$over_all_operations);
+		// echo $operation_codes_no;
 		//columns Data
-		$get_data_bcd_temp= "SELECT style,schedule,color,size,sum(good_quantity) as recevied_qty,operation as op_code FROM $pts.`transaction_log` WHERE date(updated_at) BETWEEN '$date' AND '$date' AND operation in ($operation_codes_no) GROUP BY style,schedule,color,size,operation";
+		$get_data_bcd_temp= "SELECT style,schedule,color,size,sum(good_quantity) as recevied_qty,operation as op_code FROM $pts.`transaction_log` WHERE date(updated_at) BETWEEN '$date' AND '$date' and plant_code = '$plant_code' AND operation in ($operation_codes_no) GROUP BY style,schedule,color,size,operation";
 		$result5 = $link->query($get_data_bcd_temp);
 		$op_count1 = mysqli_num_rows($result5);
 		if($op_count1>0){

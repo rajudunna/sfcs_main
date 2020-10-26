@@ -2,7 +2,7 @@
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/php/headers.php',1,'R'));
 $Page_Id='SFCS_0053';
-$has_permission=haspermission($_GET['r']);
+// $has_permission=haspermission($_GET['r']);
 $plant_code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 ?>
@@ -160,8 +160,6 @@ size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $batch_no; } else { e
 <?php
 error_reporting(0);
 $batch=$_GET["batch"];
-$plant_code=$_GET["plantcode"];
-$username=$_GET["username"];
 $batch_temp = $batch;
 if($batch=="")
 {

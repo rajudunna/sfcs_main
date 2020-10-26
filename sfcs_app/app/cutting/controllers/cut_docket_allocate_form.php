@@ -253,7 +253,7 @@ if(isset($_POST['submit']))
 		
 				$marker_length=0;
 				$cum_qty=0;
-				$docket_info_query = "SELECT doc_line.plies,doc_line.fg_color,doc.marker_version_id,doc.ratio_comp_group_id,cut.cut_number,cut.po_number,ratio_cg.ratio_id,mso.po_description FROM $pps.jm_docket_lines doc_line LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id LEFT JOIN $pps.mp_sub_order mso ON mso.po_number = cut.po_number LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.ratio_wise_component_group_id = doc.ratio_comp_group_id WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number in ('$docket_no') AND cut.jm_cut_job_id = '$cut_job' AND doc_line.is_active=true";
+				$docket_info_query = "SELECT doc_line.plies,doc_line.fg_color,doc.marker_version_id,doc.ratio_comp_group_id,cut.cut_number,cut.po_number,ratio_cg.ratio_id,mso.po_description FROM $pps.jm_docket_lines doc_line LEFT JOIN $pps.jm_dockets doc ON doc.jm_docket_id = doc_line.jm_docket_id LEFT JOIN $pps.jm_cut_job cut ON cut.jm_cut_job_id = doc.jm_cut_job_id LEFT JOIN $pps.mp_sub_order mso ON mso.po_number = cut.po_number LEFT JOIN $pps.lp_ratio_component_group ratio_cg ON ratio_cg.lp_ratio_cg_id = doc.ratio_comp_group_id WHERE doc_line.plant_code = '$plant_code' AND doc_line.docket_line_number in ('$docket_no') AND cut.jm_cut_job_id = '$cut_job' AND doc_line.is_active=true";
 				// var_dump($docket_info_query);
 				$docket_info_result=mysqli_query($link_new,$docket_info_query) or exit("$docket_info_query".mysqli_error($GLOBALS["___mysqli_ston"]));
 				if($docket_info_result>0){
@@ -308,7 +308,7 @@ if(isset($_POST['submit']))
 				$color=array();
 				$schedule=array();
 				//To get schedule,color
-				$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+				$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
 				WHERE po_number='$sub_po' AND mp_sub_mo_qty.plant_code='$plant_code'";
 				$qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row=mysqli_fetch_array($qry_get_sch_col_result))

@@ -150,7 +150,7 @@ if(isset($_POST['show']))
 						$style=$get_mpo_row['style'];
 						// $color=$get_mpo_row['color'];
 
-						$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`master_po_details_mo_quantity_id`= mp_mo_qty.`master_po_details_mo_quantity_id`
+						$qry_get_sch_col="SELECT schedule,color FROM $pps.`mp_sub_mo_qty` LEFT JOIN $pps.`mp_mo_qty` ON mp_sub_mo_qty.`mp_mo_qty_id`= mp_mo_qty.`mp_mo_qty_id`
 						WHERE po_number='$po_number' AND mp_sub_mo_qty.plant_code='$plantcode'";
 						$qry_get_sch_col_result=mysqli_query($link_new, $qry_get_sch_col) or exit("Sql Error at qry_get_sch_col".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($qry_get_sch_col_result))
@@ -200,7 +200,7 @@ if(isset($_POST['show']))
 						$component_group_id=$get_component_id_row['component_group_id'];
 
 						//get main component from master_po_component_group_id
-						$get_component_name="select component_group_name from $pps.lp_component_group where master_po_component_group_id='$component_group_id' and is_main_component_group =true and is_active=true";
+						$get_component_name="select component_group_name from $pps.lp_component_group where lp_cg_id='$component_group_id' and is_main_component_group =true and is_active=true";
 						// echo $get_component_name;
 						$get_component_name_result=mysqli_query($link, $get_component_name) or exit("Sql Error--1x==".$get_component_name.mysqli_error($GLOBALS["___mysqli_ston"]));
 						if(mysqli_num_rows($get_component_name_result)>0)

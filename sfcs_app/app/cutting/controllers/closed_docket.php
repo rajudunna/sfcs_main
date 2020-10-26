@@ -3,7 +3,7 @@ include("../../../common/config/config_ajax.php");
 $plantcode=$_SESSION['plantCode'];
 if(isset($_GET['date']))
 {
-    $query = "select * from $pps.binding_consumption where plant_code='".$plantcode."' and status='Close' and date(status_at)='".$_GET['date']."'";
+    $query = "select id,style,schedule,color,tot_bindreq_qty from $pps.binding_consumption where plant_code='".$plantcode."' and status='Close' and date(status_at)='".$_GET['date']."'";
     $sql_result = mysqli_query($link,$query);
 
     $response_table = '<tr>
@@ -18,13 +18,21 @@ if(isset($_GET['date']))
     while($sql_row=mysqli_fetch_array($sql_result))
     {
         $i = $sql_row['id'];
-        $docket_query = "select * from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plantcode."'";
+        $docket_query = "select doc_no from $pps.binding_consumption_items where parent_id='$i' and plant_code='".$plantcode."'";
                                     $docket_query_result = mysqli_query($link_new,$docket_query);
                                     while($sql_row1=mysqli_fetch_array($docket_query_result))
                                     {
                                         $docket_number = $sql_row1['doc_no'];
                                     }
-        $path = '../../../sfcs_app/app/cutting/controllers/lay_plan_preparation/book3_print_binding.php'; 
+        // $path = '../../../sfcs_app/app/cutting/controllers/lay_plan_preparation/book3_print_binding.php'; 
+        $qryJmDocketLines="SELECT jm_docket_line_id FROM $pps.jm_docket_lines WHERE docket_line_number='$docket_number' AND plant_code='$plantcode' AND is_active=1";
+        $jmDocketLinesresult = mysqli_query($link_new,$qryJmDocketLines);
+        while($sql_row1=mysqli_fetch_array($jmDocketLinesresult))
+        {
+            $jm_docket_line_id = $sql_row1['jm_docket_line_id'];
+        }
+
+        $path=$DOCKET_SERVER_IP."/printDocket/".$jm_docket_line_id;
         $index+=1;
         $response_table.= "<tr><td data-toggle='modal' data-target='#myModal$i'><input type='hidden' id='row_id-$i' value='$i'><span class='label label-info fa fa-list fa-xl' >&nbsp;&nbsp;&nbsp;$index</span></td>";
         $response_table.= "<td>".$sql_row['style']."</td>";

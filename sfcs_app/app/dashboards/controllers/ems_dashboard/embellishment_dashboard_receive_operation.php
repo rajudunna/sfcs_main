@@ -110,36 +110,40 @@ $hour = date("H.i");
   function
   blink_new3(x)
   {
-  $("div[id='S"
-  +
-  x
-  +
-  "']").each(function()
-  {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-  });
+    if(x.length >=6){
+      $("div[id*='S"
+      +
+      x
+      +
+      "']").each(function()
+      {
+      $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+      .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+      .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+      });
+    }
   }
   function
   blink_new(x)
   {
-  $("div[id='D"
-  +
-  x
-  +
-  "']").each(function()
-  {
-  $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
-  .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
-  .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-  });
+    if(x.length >= 1){
+      $("div[id*='D"
+      +
+      x
+      +
+      "']").each(function()
+      {
+      $(this).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+      .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100)
+      .fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)
+      .fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+      });
+    }
   }
 </script>
 
@@ -322,6 +326,7 @@ if ($_GET['view'] == 3) {
   echo "<font color=yellow> - Cut View</font>";
 }
 echo "</font>";
+$shiftsData=getShifts($session_plant_code)['shift_data'];
 
 echo '<div class="panel panel-primary">';
 
@@ -337,11 +342,12 @@ echo '&nbsp;&nbsp;&nbsp;Shift:
   <select class="form-control" id="shift" name="shift">
   <option value="">Select</option>';
 $shifts = (isset($_GET['shift'])) ? $_GET['shift'] : '';
-foreach ($shifts_array as $shift) {
-  if ($shift == $shifts) {
-    echo "<option value='$shift' selected>$shift</option>";
+foreach ($shiftsData as $shift) {
+  $shift_code=$shift['shift_code'];
+  if ($shift_code == $shifts) {
+    echo "<option value='$shift_code' selected>$shift_code</option>";
   } else {
-    echo "<option value='$shift'>$shift</option>";
+    echo "<option value='$shift_code'>$shift_code</option>";
   }
 }
 echo '</select>   
@@ -435,7 +441,7 @@ foreach ($workstations as $emb_key => $emb_value) {
 
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
-    $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
+    $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
     $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
     if (mysqli_num_rows($qry_toget_style_sch_result) > 0) {
 
@@ -448,11 +454,11 @@ foreach ($workstations as $emb_key => $emb_value) {
       $co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
       $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
       $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
-      $club_docs = $job_detail_attributes[$sewing_job_attributes['docketno']];
+      $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
 
-
-      $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
+      $cut_operaation=15;
+      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -463,11 +469,23 @@ foreach ($workstations as $emb_key => $emb_value) {
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
         }
-        $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
+        $task_job_trans2 = "SELECT good_quantity,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
         $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
           $send_qty = $row_res['good_quantity'];
         }
+
+        $total=0;
+        $task_job_trans2 = "SELECT sum(good_quantity) as good_quantity FROM $pts.transaction_log where parent_job ='$doc_no' and operation = $cut_operaation and is_active=1 and plant_code='$session_plant_code'";
+        // echo $task_job_trans2."<br/>";
+        $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result123" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row_res2 = mysqli_fetch_array($task_job_trans2_result)) {
+          $total = $row_res2['good_quantity'];
+        }
+        if($total==''){
+          $total=0;
+        }
+
         $id = "yash";
         if ($good_qty == 0) {
           $id = "yash";
@@ -480,13 +498,28 @@ foreach ($workstations as $emb_key => $emb_value) {
         if ($good_qty > $send_qty) {
           $id = "red";
         }
+
+        $schedules_array=explode(',',$schedule);
+        $schedules_string=[];
+        foreach($schedules_array as $val){
+          $schedules_string[]='S'.$val;
+        }
+        $sch_string=implode(',',$schedules_string);
+
+        $dockets_array=explode(',',$doc_no);
+        $dockets_string=[];
+        foreach($dockets_array as $val){
+          $dockets_string[]='D'.$val;
+        }
+        $doc_string=implode(',',$dockets_string);
+
         $type = 'embellishment';
         // sfcs_app\app\production\controllers\embellishment_job\embellishment_job_scaning\scan_jobs.php
         $emb_url = getFullURLLevel($_GET["r"], 'production/controllers/sewing_job/sewing_job_scaning/scan_job.php', 3, 'N')."&dashboard_reporting=1&job_type=$departmentType&job_no=$emb_job_no&plant_code=$session_plant_code&username=$username&type=$type&operation_id=$operation_code&style=$style1&schedule=$schedule&color=$colors_db&barcode_generation=1";
 
-        $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($club_docs), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
+        $title = str_pad("Style:" . trim($style1), 80) . "\n" . str_pad("CO:" . trim($co_no), 80) . "\n" . str_pad("Schedule:" . $schedule, 80) . "\n" . str_pad("Color:" . trim($colors_db), 50) . "\n" . str_pad("Cut_No:" . trim($club_c_code), 80) . "\n" . str_pad("DOC No:" . trim($doc_no), 80) . "\n" . str_pad("Total Plan Qty:" . $orginal_qty, 80) . "\n" . str_pad("Actual Cut Qty:" . $total, 80) . "\n" . str_pad("Send Qty:" . ($send_qty), 80) . "\n" . str_pad("Received Qty:" . ($good_qty), 80) . "\n" . str_pad("Rejected Qty:" . $rej_qty, 80) . "\n" . str_pad("Plan_Time:" . $log_time, 50) . "\n";
 
-        echo "<div id=\"S$schedule\" style=\"float:left;\"><div id='D$doc_no' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
+        echo "<div id=\"$sch_string\" style=\"float:left;\"><div id='$doc_string' class='$id' style='font-size:12px;color:white; text-align:center; float:left;' title='$title'><span onclick=\"loadpopup('$emb_url')\" style='cursor:pointer;'>$schedule(" . $club_c_code . ")-OP:$operation_code</span></div></div><br>";
       }
     }
   }
@@ -498,11 +531,11 @@ foreach ($workstations as $emb_key => $emb_value) {
   echo '</div>';
 }
 
-if ((in_array($authorized, $has_permission))) {
+// if ((in_array($authorized, $has_permission))) {
   echo "<script>";
   echo "blink_new_priority('" . implode(",", $blink_docs) . "');";
   echo "</script>";
-}
+// }
 ?>
 
 <div style="clear: both;"> </div>

@@ -26,11 +26,13 @@ function make_thumb($img_name,$filename,$new_w,$new_h)
 	//get image extension.
 	$ext=getExtension($img_name);
 	//creates the new image using the appropriate function from gd library
-	if(!strcmp("jpg",$ext) || !strcmp("jpeg",$ext) || !strcmp("JPG",$ext) || !strcmp("JPEG",$ext))
-	$src_img=imagecreatefromjpeg($img_name);
+	if(!strcmp("jpg",$ext) || !strcmp("jpeg",$ext) || !strcmp("JPG",$ext) || !strcmp("JPEG",$ext)){
+		$src_img=imagecreatefromjpeg($img_name);
+	}
 
-	if(!strcmp("png",$ext) || !strcmp("PNG",$ext))
-	$src_img=imagecreatefrompng($img_name);
+	if(!strcmp("png",$ext) || !strcmp("PNG",$ext)){
+		$src_img=imagecreatefrompng($img_name);
+	}
 
 	//gets the dimmensions of the image
 	$old_x=imageSX($src_img);
@@ -284,27 +286,27 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 
 	if(isset($_POST['upload']))
 	{
-		$fileName = $_FILES['userfile']['name'];
+		$fileName = substr($_FILES['userfile']['name'], -10);
 		$tmpName  = $_FILES['userfile']['tmp_name'];
 		$fileSize = $_FILES['userfile']['size'];
 		$fileType = $_FILES['userfile']['type'];
-		$fileName1 = $_FILES['userfile1']['name'];
+		$fileName1 = substr($_FILES['userfile1']['name'], -10);
 		$tmpName1  = $_FILES['userfile1']['tmp_name'];
 		$fileSize1 = $_FILES['userfile1']['size'];
 		$fileType1 = $_FILES['userfile1']['type'];
-		$fileName2 = $_FILES['userfile2']['name'];
+		$fileName2 = substr($_FILES['userfile2']['name'], -10);
 		$tmpName2  = $_FILES['userfile2']['tmp_name'];
 		$fileSize2 = $_FILES['userfile2']['size'];
 		$fileType2 = $_FILES['userfile2']['type'];
-		$fileName3 = $_FILES['userfile3']['name'];
+		$fileName3 = substr($_FILES['userfile3']['name'], -10);
 		$tmpName3  = $_FILES['userfile3']['tmp_name'];
 		$fileSize3 = $_FILES['userfile3']['size'];
 		$fileType3 = $_FILES['userfile3']['type'];
-		$fileName4 = $_FILES['userfile4']['name'];
+		$fileName4 = substr($_FILES['userfile4']['name'], -10);
 		$tmpName4  = $_FILES['userfile4']['tmp_name'];
 		$fileSize4 = $_FILES['userfile4']['size'];
 		$fileType4 = $_FILES['userfile4']['type'];
-		$fileName5 = $_FILES['userfile5']['name'];
+		$fileName5 = substr($_FILES['userfile5']['name'], -10);
 		$tmpName5  = $_FILES['userfile5']['tmp_name'];
 		$fileSize5 = $_FILES['userfile5']['size'];
 		$fileType5 = $_FILES['userfile5']['type'];
@@ -459,12 +461,12 @@ for (var i = 0; i < document.input2.user.value.length; i++) {
 					}} 
 				}
 
-				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$newname','$fileSize','$fileType','$newname1','$fileSize1','$fileType1','$newname2','$fileSize2','$fileType2','$newname3','$fileSize3','$fileType3','$newname4','$fileSize4','$fileType4','$newname5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
+				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user,created_at,updated_at) VALUES ('$newname','$fileSize','$fileType','$newname1','$fileSize1','$fileType1','$newname2','$fileSize2','$fileType2','$newname3','$fileSize3','$fileType3','$newname4','$fileSize4','$fileType4','$newname5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username',NOW(),NOW())";
 				//echo $query;
 			}	
 			else
 			{
-				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user) VALUES ('$fileName','$fileSize','$fileType','$fileName1','$fileSize1','$fileType1','$fileName2','$fileSize2','$fileType2','$fileName3','$fileSize3','$fileType3','$fileName4','$fileSize4','$fileType4','$fileName5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username')";
+				$query = "INSERT INTO $pps.upload(name,size,type,name1,size1,type1,name2,size2,type2,name3,size3,type3,name4,size4,type4,name5,size5,type5,container,vecno,sealno,dat,carton,user,plant_code,created_user,updated_user,created_at,updated_at) VALUES ('$fileName','$fileSize','$fileType','$fileName1','$fileSize1','$fileType1','$fileName2','$fileSize2','$fileType2','$fileName3','$fileSize3','$fileType3','$fileName4','$fileSize4','$fileType4','$fileName5','$fileSize5','$fileType5','1','$vno','$sno','$date','$cno','$user','$plant_code','$username','$username',NOW(),NOW())";
 			
 			}
 			// echo $query;

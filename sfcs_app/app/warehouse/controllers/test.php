@@ -131,15 +131,30 @@ if(sizeof($get_sub_po)>0)
 	for($i=0;$i<20;$i++)
 	{
 		echo "<tr><td>".($i+1)."</td><td><input type=\"text\" size=\"30\" name=\"item[]\" id=\"item$i\" value=\"\" class='notallow'></td>";
-		echo "<td><select  name=\"reason[]\" >
-		<option value=\"01 Error in item code in BOM\">01 Error in item code in BOM</option>
-		<option value=\"02 Invoice not received for GRN\">02 Invoice not received for GRN</option>
-		<option value=\"03 Item code not entered to BOM\">03 Item code not entered to BOM</option>
-		<option value=\"04 M3 System down\">04 M3 System down</option>
-		<option value=\"05 Pending to receive Claim note for rejected goods hence GRN pending for replacement\">05 Pending to receive Claim note for rejected goods hence GRN pending for replacement</option>
-		<option value=\"06 Re-classification pending\">06 Re-classification pending</option>
-		<option value=\"07 Thread issuing extra for line minimums\">07 Thread issuing extra for line minimums</option>
-		</select></td>";
+		
+		$reason_query="select internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'";
+		$sql_result11=mysqli_query($link, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$sql_num_check=mysqli_num_rows($sql_result11);
+		
+		echo "<td><select  name=\"reason[]\" >";
+		
+		echo "<option value=''  selected>Please Select</option>";
+		while($sql_row11=mysqli_fetch_array($sql_result11))
+		{
+			$internal_reason_description = $sql_row11['internal_reason_description'];
+		
+			if(str_replace(" ","",$sql_row11['internal_reason_description'])==str_replace(" ","",$internal_reason_description))
+			{
+				echo "<option value=\"".$sql_row11['internal_reason_description']."\" selected>".$sql_row11['internal_reason_description']."</option>";
+			}
+			else
+			{
+				echo "<option value=\"".$sql_row11['internal_reason_description']."\">".$sql_row11['internal_reason_description']."</option>";
+			}
+		
+		}
+				
+		echo"</select></td>";
 		echo "<td><input type=\"text\" name=\"qty[]\" value=\"\" id='qty$i' class='integer swal'></td></tr>";
 		
 	}
@@ -273,34 +288,55 @@ echo "<option value=\"2\">Fabric</option>";
 echo "</select><br/><br/>";
 
 
-echo "<font color=red>Point Person</font><br/><select id=\"spoc\"  name=\"spoc\">";
 
+
+$users_query="select user_name from $mdm.user_to_plant_mapping where plant_code='$plantcode'";
+$sql_result1=mysqli_query($link, $users_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_num_check=mysqli_num_rows($sql_result1);
+echo "<label>Point Person:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;</label>
+<select name=\"spoc\"  id=\"spoc\" >";
+
+echo "<option value=''  selected>Please Select</option>";
+while($sql_row1=mysqli_fetch_array($sql_result1))
+{
+	$user_name = $sql_row1['user_name'];
+
+	if(str_replace(" ","",$sql_row1['user_name'])==str_replace(" ","",$user_name))
+	{
+		echo "<option value=\"".$sql_row1['user_name']."\" selected>".$sql_row1['user_name']."</option>";
+	}
+	else
+	{
+		echo "<option value=\"".$sql_row1['user_name']."\">".$sql_row1['user_name']."</option>";
+	}
+
+}
 // switch(substr($style,0,1))
 // {
 	// case "P":
 	// {
-		echo "<option value=\"Asanka T\">Asanka T</option><option value=\"Chameen D\">Chameen D</option><option value=\"Dulari W\">Dulari W</option><option value=\"Sampath P\">Sampath P</option>";
-	// 	break;
-	// }
-	// case "K":
-	// {
-		echo "<option value=\"Asanka T\">Asanka T</option><option value=\"Chameen D\">Chameen D</option><option value=\"Dulari W\">Dulari W</option><option value=\"Sampath P\">Sampath P</option>";
-	// 	break;
-	// }
-	// case "L":
-	// {
-		echo "<option value=\"Chathura A\">Chathura A</option><option value=\"Demian K\">Demian K</option><option value=\"Dilanthine D\">Dilanthine D</option><option value=\"Mahesha W\">Mahesha W</option><option value=\"Sameera K\">Sameera K</option><option value=\"Yoshika D\">Yoshika D</option>";
+	// 	echo "<option value=\"Asanka T\">Asanka T</option><option value=\"Chameen D\">Chameen D</option><option value=\"Dulari W\">Dulari W</option><option value=\"Sampath P\">Sampath P</option>";
+	// // 	break;
+	// // }
+	// // case "K":
+	// // {
+	// 	echo "<option value=\"Asanka T\">Asanka T</option><option value=\"Chameen D\">Chameen D</option><option value=\"Dulari W\">Dulari W</option><option value=\"Sampath P\">Sampath P</option>";
+	// // 	break;
+	// // }
+	// // case "L":
+	// // {
+	// 	echo "<option value=\"Chathura A\">Chathura A</option><option value=\"Demian K\">Demian K</option><option value=\"Dilanthine D\">Dilanthine D</option><option value=\"Mahesha W\">Mahesha W</option><option value=\"Sameera K\">Sameera K</option><option value=\"Yoshika D\">Yoshika D</option>";
 
-	// 	break;
-	// }
-	// case "O":
-	// {
-		echo "<option value=\"Chathura A\">Chathura A</option><option value=\"Demian K\">Demian K</option><option value=\"Dilanthine D\">Dilanthine D</option><option value=\"Mahesha W\">Mahesha W</option><option value=\"Sameera K\">Sameera K</option><option value=\"Yoshika D\">Yoshika D</option>";
-	// 	break;
-	// }
-	// case "M":
-	// {
-		echo "<option value=\"Hasitha M\">Hasitha M</option><option value=\"Malika S\">Malika S</option><option value=\"Ratheesh K\">Ratheesh K</option><option value=\"Roshan Pr\">Roshan Pr</option><option value=\"Ruwanthi A\">Ruwanthi A</option><option value=\"Sajid H\">Sajid H</option><option value=\"SureshKa w\">SureshKa w</option><option value=\"Tharanga De\">Tharanga De</option>";
+	// // 	break;
+	// // }
+	// // case "O":
+	// // {
+	// 	echo "<option value=\"Chathura A\">Chathura A</option><option value=\"Demian K\">Demian K</option><option value=\"Dilanthine D\">Dilanthine D</option><option value=\"Mahesha W\">Mahesha W</option><option value=\"Sameera K\">Sameera K</option><option value=\"Yoshika D\">Yoshika D</option>";
+	// // 	break;
+	// // }
+	// // case "M":
+	// // {
+	// 	echo "<option value=\"Hasitha M\">Hasitha M</option><option value=\"Malika S\">Malika S</option><option value=\"Ratheesh K\">Ratheesh K</option><option value=\"Roshan Pr\">Roshan Pr</option><option value=\"Ruwanthi A\">Ruwanthi A</option><option value=\"Sajid H\">Sajid H</option><option value=\"SureshKa w\">SureshKa w</option><option value=\"Tharanga De\">Tharanga De</option>";
 		// break;
 
 	// }

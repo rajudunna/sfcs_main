@@ -416,9 +416,9 @@ $.ajax
               $shifts = (isset($_GET['shift']))?$_GET['shift']:'';
               foreach($shifts_array as $shift){
                 if($shifts == $shift){
-                  echo "<option value='".$shift['shiftValue']."' selected>'".$shift['shiftLabel']."'</option>";
+                  echo "<option value='".$shift['shiftValue']."' selected>".$shift['shiftLabel']."</option>";
                 }else{
-                  echo "<option value='".$shift['shiftValue']."' >'".$shift['shiftLabel']."'</option>";
+                  echo "<option value='".$shift['shiftValue']."' >".$shift['shiftLabel']."</option>";
                 }
               }
           ?>
@@ -551,7 +551,7 @@ $.ajax
                     if(($minGoodQty>0) && (($maxGoodQty+$maxRejQty)<$minGoodQty)){
                           //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
                           $job_detail_attributes = [];
-                          $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJobId' and plant_code='$plantCode'";
+                          $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='$taskJobId' and plant_code='$plantCode'";
                           $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                           while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
                             $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
@@ -570,8 +570,9 @@ $.ajax
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
                           $conumber = $job_detail_attributes[$sewing_job_attributes['cono']];
                           
+                          $departmentType = DepartmentTypeEnum::SEWING;
                           $sidemenu=true;
-                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_input_jobs.php',3,'N')."&module=$module&input_job_no_random_ref=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
+                          $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_job.php',3,'N')."&dashboard_reporting=1&job_type=$departmentType&module=$module&job_no=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
                           ?>
                           <a href="javascript:void(0);" onclick="loadpopup('<?= $ui_url1;?>', 'myPop1',800,600);"  title="
                           Style No : <?php echo $style."<br/>"; ?>

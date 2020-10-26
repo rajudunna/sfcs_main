@@ -3242,7 +3242,7 @@ if(isset($_POST['submit']))
 			}		
 			//$act_clock_hrs=$act_clock_hrs+$act_hrs*($avail_A+$avail_B-$absent_A-$absent_B));
 
-			$sql2="select avg(planned_eff) as plan_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_production_plan_upload_log_id`=monthly_production_plan.`monthly_production_plan_upload_log_id` WHERE row_name='$workstation_description' AND planned_date between \"$date\" and \"$edate\" AND plant_code='$plantcode'";
+			$sql2="select avg(planned_eff) as plan_eff,capacity_factor,(capacity_factor*1) AS clh FROM $pps.`monthly_production_plan` LEFT JOIN $pps.`monthly_production_plan_upload_log` ON monthly_production_plan_upload_log.`monthly_pp_up_log_id`=monthly_production_plan.`pp_log_id` WHERE row_name='$workstation_description' AND planned_date between \"$date\" and \"$edate\" AND plant_code='$plantcode'";
 			mysqli_query($link, $sql2) or exit("Sql Error13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

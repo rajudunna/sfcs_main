@@ -1,11 +1,11 @@
-
 <?php 
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
-$plant_code = $_session['plantCode'];
+
+$plant_code = $argv[1];
 $username =  $_session['userName'];
 
 /**

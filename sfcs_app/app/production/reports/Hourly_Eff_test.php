@@ -1,8 +1,12 @@
 <title>Hourly Efficiency Report</title>
-<meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
-<script language="javascript" type="text/javascript" src="../common/js/datetimepicker_css.js"></script> 
+<!-- <meta http-equiv="X-UA-Compatible" content="IE=8,IE=edge,chrome=1" /> 
+<script language="javascript" type="text/javascript" src="../../../common/js/datetimepicker_css.js"></script> 
 <link rel="stylesheet" href="../../../common/css/style.css" type="text/css" media="all" /> 
-<link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css">
+<link rel="stylesheet" href="../../../common/css/styles/bootstrap.min.css"> -->
+
+<script language="javascript" type="text/javascript" src="<?= getFullURLLevel($_GET['r'],'common/js/datetimepicker_css.js',3,'R'); ?>"></script>
+<link rel="stylesheet" href="<?= getFullURLLevel($_GET['r'],'common/css/style.css',3,'R'); ?>" type="text/css" media="all" /> 
+<link href="<?= getFullURLLevel($_GET['r'],'common/css/sfcs_styles.css',3,'R'); ?>" rel="stylesheet" type="text/css" />
 <style>
 body
 {
@@ -179,7 +183,7 @@ td,th
         return false; 
     } 
 </script> 
-        <?php echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; ?>     
+        
 
     <body onload="showHideDiv()"> 
         <div class="panel panel-primary">
@@ -195,8 +199,10 @@ td,th
                     <!--<div id="page_heading"><h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3><span style="float: right"><b>?</b>&nbsp;</span></div>--> 
                     <!--<h3 style="background-color: #29759c; color: WHITE;  font-size:15px; ">Hourly Efficiency Report</h3>--> 
                     <?php  
-                        include("../../../common/config/config.php");
-                        include("../../../common/config/functions_v2.php");
+                    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
+                    include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
+                        // include("../../../common/config/config.php");
+                        // include("../../../common/config/functions_v2.php");
                        
 
                         error_reporting(0);
@@ -204,15 +210,26 @@ td,th
                         $sections_string=$_POST['section']; 
                         $date=$_POST['dat']; 
                         $option1=$_POST['option1']; 
+                        $operaiton_code='130';
                         $team=$_POST['team']; 
                         $hour_filter=$_POST['hour_filter']; 
+                        $plantcode=$_SESSION['plantCode'];
+                        $username=$_SESSION['userName'];
+                        $plantcode='Q01';
+                        $sql_plant="select * from $pms.plant where plant_code='$plantcode' and is_active = true";
+                        $sql_result_plnt=mysqli_query($link, $sql_plant) or exit("Sql Error Plants".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                        while($sql_row_plnt=mysqli_fetch_array($sql_result_plnt)) 
+                        { 
+
+                            $plant_start_time = $sql_row_plnt['plant_start_time'];
+                            $plant_end_time = $sql_row_plnt['plant_end_time'];
+
+                        }
                         $total_hours = $plant_end_time - $plant_start_time;
                         // echo $total_hours."<br>";
                         list($hour, $minutes, $seconds) = explode(':', $plant_start_time);
                         $hour_start = $hour + 1;
-                        $plantcode=$_SESSION['plantCode'];
-                        $username=$_SESSION['userName'];
-                        // $plantcode='AIP';
+                        
                         $sections_data=getSections($plantcode);
                         $shifts_array=[];
                         $shifts_data=getShifts($plantcode)['shift_data'];
@@ -226,7 +243,7 @@ td,th
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="../common/images/cal.gif" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
+                                	<input id="demo1" readonly type="text" class="form-control" size="8" name="dat" onclick="NewCssCal('demo1','yyyymmdd')" value=<?php if($date<>"") {echo $date; } else {echo date("Y-m-d");} ?>>     <a href="javascript:NewCssCal('demo1','yyyymmdd')"><img src="<?= getFullURLLevel($_GET['r'],'common/images/cal.gif',1,'R') ?>" width="16" height="16" border="0" alt="Pick a date" name="dat"></a> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Unit: </label>
@@ -326,7 +343,7 @@ td,th
                     </form> 
                     
                     <div id="loading" align="center" style="position:relative; top:10px; left:20px;"> 
-                        <img src="../common/images/pleasewait.gif"> 
+                        <img src="<?= getFullURLLevel($_GET['r'],'common/images/pleasewait.gif',1,'R') ?>"> 
                         <script> 
                             var count=30; 
                             var counter=setInterval(timer, 1000); //1000 will  run it every 1 second 
@@ -511,7 +528,8 @@ td,th
                                 $headers=array(); 
                                 $i=0; 
                                 $j=0;
-                                $sql='SELECT DISTINCT(HOUR(created_at)) AS "time" FROM $pts.transaction_log WHERE date(created_at)="'.$date.'" AND shift IN ('.$team.') '.$time_query.' ORDER BY HOUR(created_at)';
+                                $sql='SELECT DISTINCT(HOUR(created_at)) AS "time" FROM '.$pts.'.transaction_log WHERE date(created_at)="'.$date.'" AND shift IN ('.$team.') '.$time_query.' ORDER BY HOUR(created_at)';
+                                // echo $sql;
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
@@ -555,7 +573,8 @@ td,th
                                 $headers=array(); 
                                 $i=0; 
 
-                                $sql="select distinct(Hour(created_at)) as \"time\" from $pts.transaction_log where date(created_at)=\"$date\" and bac_shift in ($team) $time_query order by hour(created_at)"; 
+                                $sql="select distinct(Hour(created_at)) as \"time\" from $pts.transaction_log where date(created_at)=\"$date\" and shift in ($team) $time_query order by hour(created_at)"; 
+                                // echo $sql;
                                 $sql_result=mysqli_query($link, $sql) or exit("Sql Error123".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row=mysqli_fetch_array($sql_result)) 
                                 { 
@@ -567,7 +586,7 @@ td,th
                                     $headers[$i]=$time; 
                                     $i=$i+1;
                                 } 
-                                $sql12="SELECT section_name,section_id FROM $pms.sections WHERE section_code='$sec' and plant_code='$plantcode";
+                                $sql12="SELECT section_name,section_id FROM $pms.sections WHERE section_code='$sec' and plant_code='$plantcode'";
                                 $result12=mysqli_query($link, $sql12) or exit("Sql Errorsec".mysqli_error($GLOBALS["___mysqli_ston"]));
 
                                 while($sql_row12=mysqli_fetch_array($result12))
@@ -620,18 +639,25 @@ td,th
                                     $psth_array=array(); 
                                     $workstation_array=[];
 
-                                    $workstation_data=getWorkstationsForSection($section_id,$plantcode)['workstation_data'];
+                                    $workstation_data=getWorkstationsForSection($plantcode,$section_id)['workstation_data'];
+                                    // var_dump($workstation_data);
                                     foreach($workstation_data as $wk_data)
                                     { 
                                         $mod=$wk_data['workstation_id']; 
+                                        $modName=$wk_data['workstation_description']; 
+                                        // workstation_description
                                         $workstation_array[]=$mod;
                                         $deldb=""; 
-                                        $sql2="select distinct style from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' $time_query";                              
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Errordd".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                        while($sql_row2=mysqli_fetch_array($sql_result2)) 
-                                        { 
-                                            $deldb=$deldb." ".$sql_row2['style']; 
-                                        } 
+                                        $sql2="select distinct schedule from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' $time_query";    
+                                        // echo $sql2."<br>";                          
+                                        $sql_res_schedule=mysqli_query($link, $sql2) or exit("Sql Errordd".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        if(mysqli_num_rows($sql_res_schedule) > 0){
+                                            while($sql_row2=mysqli_fetch_array($sql_res_schedule)) 
+                                            { 
+                                                $deldb=$deldb." ".$sql_row2['schedule']; 
+                                            } 
+                                        }
+                                       
     
     
                                         $styledb=""; 
@@ -647,6 +673,7 @@ td,th
                                         if($stylecount>1) 
                                         { 
                                             $sql2="select distinct style from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod'  $time_query";
+                                            // echo $sql2;
                                             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1444".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 
@@ -666,20 +693,30 @@ td,th
     
     
     
-                                        if($option1==1){ echo "<tr><td>".$mod."</td>"; } 
+                                        if($option1==1){ echo "<tr><td>".$modName."</td>"; } 
                                         $max=0; 
                                         $couple=''; 
                                         $nop=0; 
                                         $smv=''; 
-                                        $sql2="select style, sum(good_quantity) as \"qty\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and  shift in ($team) $time_query group by style"; 
+                                        $sql2="select style,color, sum(good_quantity) as \"qty\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and  shift in ($team) $time_query group by style"; 
+                                        // echo $sql2."<br/>";
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error452".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             if($sql_row2['qty']>=$max) 
                                             { 
                                                 $style_code_new=$sql_row2['style']; 
+                                                $color_code_new=$sql_row2['color']; 
+
                                                 $max=$sql_row2['qty']; 
 
+                                                $smv_query="SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN  $oms.oms_mo_details AS  modet ON modet.mo_number = opi.mo_number WHERE opi.style='".$style_code_new."' AND opi.color_desc='".$color_code_new."' AND omo.operation_code=".$operaiton_code." and plant_code='".$plantcode."' LIMIT 1";
+                                                // echo $smv_query."<br>";
+                                                $smv_query_res=mysqli_query($link, $smv_query) or exit("Sql trtr".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                                while($smv_row=mysqli_fetch_array($smv_query_res)) 
+                                                {
+                                                     $smv=$smv_row['smv']; 
+                                                }
                                                 /* commented for sfcs1.5 need to implement
                                                 $couple=$sql_row2['couple']; 
 
@@ -837,7 +874,7 @@ td,th
                                         } 
                                         */
                                         $max=0; 
-                                        $smv=0;
+                                        // $smv=0;
                                    
     
                                         if($option1==1)
@@ -867,7 +904,7 @@ td,th
     
                                         for($i=0; $i<sizeof($h1); $i++) 
                                         { 
-                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log date(created_at)=\"$date\" and resource_id='$mod' $time_query and  Hour(created_at) between $h1[$i] and $h2[$i]"; 
+                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' $time_query and  Hour(created_at) between $h1[$i] and $h2[$i]"; 
                                             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error232".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 
@@ -886,7 +923,9 @@ td,th
                                         } 
     
     
-                                        $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log date(created_at)=\"$date\" and resource_id='$mod' and  shift in ($team) $time_query";          
+                                        $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and  shift in ($team) $time_query";          
+                                        // echo $sql2;
+
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error144".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
@@ -924,7 +963,7 @@ td,th
                                         $stha=0; 
                                         $sql2="select sum(good_quantity) as \"total\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and shift in ($team)  $time_query group by resource_id"; 
                                         //echo $sql2; 
-                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error1223".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             $total22=$sql_row2['total']; 
@@ -952,17 +991,29 @@ td,th
                                         */
                                         $couple=''; 
                                         $smv=0; 
-                                        $sql2="select bac_style,sum(good_quantity) as \"qty\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and shift in ($team)  $time_query group by style"; 
-                                        //echo $sql2; 
+                                        $sql2="select style,color,sum(good_quantity) as \"qty\" from $pts.transaction_log where date(created_at)=\"$date\" and resource_id='$mod' and shift in ($team)  $time_query group by style"; 
+                                        // echo $sql2; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Errorhsgf".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                         while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                         { 
                                             if($sql_row2['qty']>=$max) 
                                             { 
-                                                $style_code_new=$sql_row2['bac_style']; 
-                                                $max=$sql_row2['qty']; 
+                                                // $style_code_new=$sql_row2['bac_style']; 
+                                                // $max=$sql_row2['qty']; 
                                                 // $couple=$sql_row2['couple']; 
-                                                // $smv=$sql_row2['smv']; 
+                                                // $smv=$sql_row2['smv'];
+                                                $style_code_new=$sql_row2['style']; 
+                                                $color_code_new=$sql_row2['color']; 
+
+                                                $max=$sql_row2['qty']; 
+
+                                                $smv_query="SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN  $oms.oms_mo_details AS  modet ON modet.mo_number = opi.mo_number WHERE opi.style='".$style_code_new."' AND opi.color_desc='".$color_code_new."' AND omo.operation_code=".$operaiton_code." and plant_code='".$plantcode."' LIMIT 1";
+                                                // echo $smv_query."<br>";
+                                                $smv_query_res=mysqli_query($link, $smv_query) or exit("Sql r45222".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                                while($smv_row=mysqli_fetch_array($smv_query_res)) 
+                                                {
+                                                     $smv=$smv_row['smv']; 
+                                                } 
                                             } 
                                         } 
 
@@ -992,7 +1043,7 @@ td,th
                                         { 
                                                 echo "<td>".$hoursa_shift."</td>"; 
                                                 echo "<td>".round($peff_a,2)."%</td>"; 
-                                        } 
+                                        }  
                                         $plan_sah_hr=round(($psth*$hoursa_shift/$work_hours),0); 
                                         $sah_per=round(($stha*100/$plan_sah_hr),0); 
                                         $plan_sah_hr_total=$plan_sah_hr_total+$plan_sah_hr; 
@@ -1102,7 +1153,8 @@ td,th
                                     } 
                                 } 
 								
-                                $sql2="select sum(bac_qty) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\"  and resource_id in ($workstation_ids)  and  shift in ($team) $time_query"; 
+                                $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\"  and resource_id in ($workstation_ids)  and  shift in ($team) $time_query"; 
+                                // echo $sql2;
                                 $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5423".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                 while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                 { 
@@ -1118,7 +1170,7 @@ td,th
                                 $pclha=0; 
                                 $pstha=0; 
                                 $nop=0; 
-                                $smv=0; 
+                                // $smv=0; 
                                 //$phours=7.5; 
                                 $peff_a_total=0; 
                                 /* commenting this query, need to implement this sfcs1.5
@@ -1374,13 +1426,37 @@ td,th
                                     $exp_pcs_hr2_sum=0; 
 
                                    
-                                    $sql="select distinct style from $pts.transaction_log where date(created_at)=\"$date\"  $time_query and resource_id in ($workstation_ids)  and shift in ($team)";
+                                    $sql="select distinct style,color from $pts.transaction_log where date(created_at)=\"$date\"  $time_query and resource_id in ($workstation_ids)  and shift in ($team)";
                                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                     while($sql_row=mysqli_fetch_array($sql_result)) 
                                     { 
                                         $mod_style=$sql_row['style']; 
                                         echo "<tr><td>".$mod_style."</td>"; 
-                                        $smv_show=$nop_show=''; 
+                                        $smv_show=$nop_show=0; 
+                                        $color_code_new=$sql_row['color']; 
+
+
+                                        $smv_query="SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN  $oms.oms_mo_details AS  modet ON modet.mo_number = opi.mo_number WHERE opi.style='".$mod_style."' AND opi.color_desc='".$color_code_new."' AND omo.operation_code=".$operaiton_code." and plant_code='".$plantcode."' LIMIT 1";
+                                        // echo $smv_query."<br>";
+                                        $smv_query_res=mysqli_query($link, $smv_query) or exit("Sql Error45222".mysqli_error($GLOBALS["___mysqli_ston"])); 
+                                        while($smv_row=mysqli_fetch_array($smv_query_res)) 
+                                        {
+                                             $smv_show=$smv_row['smv']; 
+                                        } 
+
+                                        $sql_nop="select (present+jumper) as avail,absent from $pms.pro_attendance where plant_code='$plantcode' and date=\"$date\" and shift=\"$shift\""; 
+                                        // echo $sql_nop."<br>";
+                                        $sql_result_nop=mysqli_query($link, $sql_nop) or exit("Sql Errorfdf-<br>".$sql_nop."<br>".mysqli_error($GLOBALS["___mysqli_ston"]));
+                                        if(mysqli_num_rows($sql_result_nop) > 0) 
+                                        { 
+                                            while($sql_row_nop=mysqli_fetch_array($sql_result_nop)) 
+                                            { 
+                                                $nop=$sql_row_nop["avail"]-$sql_row_nop["absent"];
+                                                $nop_show=$nop_show+$nop; 
+                                            } 
+                                        } 
+
+
                                         /* need to implement this sfcs1.5 
                                         $sql2="select nop,smv from $pro_style where style=\"$mod_style\" and date=\"$date\""; 
                                         $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
@@ -1408,7 +1484,7 @@ td,th
                                         $total=0; 
                                         for($i=0; $i<sizeof($h1); $i++) 
                                         { 
-                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" $time_query and resource_id in ($workstation_ids) and style=\"$mod_style\" and Hour(bac_lastup) between $h1[$i] and $h2[$i] and shift in ($team)";                            
+                                            $sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where date(created_at)=\"$date\" $time_query and resource_id in ($workstation_ids) and style=\"$mod_style\" and Hour(created_at) between $h1[$i] and $h2[$i] and shift in ($team)";                            
                                             $sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                                             while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                             { 

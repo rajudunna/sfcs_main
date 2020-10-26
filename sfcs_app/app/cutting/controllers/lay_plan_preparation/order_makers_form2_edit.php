@@ -135,7 +135,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 /* NEW */
 
-$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
+$sql="select order_col_des,order_style_no,order_del_no,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,title_size_s01,title_size_s02,title_size_s03,title_size_s04,title_size_s05,title_size_s06,title_size_s07,title_size_s08,title_size_s09,title_size_s10,title_size_s11,title_size_s12,title_size_s13,title_size_s14,title_size_s15,title_size_s16,title_size_s17,title_size_s18,title_size_s19,title_size_s20,title_size_s21,title_size_s22,title_size_s23,title_size_s24,title_size_s25,title_size_s26,title_size_s27,title_size_s28,title_size_s29,title_size_s30,title_size_s31,title_size_s32,title_size_s33,title_size_s34,title_size_s35,title_size_s36,title_size_s37,title_size_s38,title_size_s39,title_size_s40,title_size_s41,title_size_s42,title_size_s43,title_size_s44,title_size_s45,title_size_s46,title_size_s47,title_size_s48,title_size_s49,title_size_s50,title_flag,style_id from $bai_pro3.bai_orders_db_confirm where order_tid=\"$tran_order_tid\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -207,7 +207,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 echo "<div class=\"col-md-8\"><a class=\"btn btn-xs btn-warning\" href=\"".getFullURLLevel($_GET['r'], "main_interface.php", "0", "N")."&color=$color_back&style=$style_back&schedule=$schedule_back\"><i class=\"fas fa-arrow-left\"></i>&nbsp; Click here to Go Back</a></div></br>";
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_ref";
+$sql="select purwidth,strip_match,gmtway,category,tid from $bai_pro3.cat_stat_log where order_tid=\"$tran_order_tid\" and tid=$cat_ref";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 //echo "<table border=1><tr><td>TID</td><td>Date</td><td>Category</td><td>PurWidth</td><td>gmtway</td><td>STATUS</td><td>remarks</td></tr>";
@@ -312,7 +312,7 @@ while($sql_row2=mysqli_fetch_array($sql_result2))
 
 if($mk_ref!=0)
 {
-	$sql2="select * from $bai_pro3.maker_stat_log where tid=$mk_ref";
+	$sql2="select mklength,mkeff,mk_ver,remarks,remark1,remark2,remark3,remark4 from $bai_pro3.maker_stat_log where tid=$mk_ref";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row2=mysqli_fetch_array($sql_result2))
 	{
@@ -343,7 +343,7 @@ else
 echo "<br><br>";
 echo "<div class=\"col-md-12\"><table class=\"table table-bordered\">";
 
-$sql22="select * from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref";
+$sql22="select marker_width,marker_width,marker_length,marker_width,marker_length from $bai_pro3.marker_ref_matrix where marker_ref=$mk_ref";
 //echo $sql22;
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $i=0;
@@ -434,7 +434,7 @@ echo "<h2><span class=\"label label-default\">Reference of Existing Workouts:</s
 
 
 $allo_c=array();
-$sql="select * from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
+$sql="select allocate_xs,allocate_s,allocate_m,allocate_l,allocate_xl,allocate_xxl,allocate_xxxl,allocate_s01,allocate_s02,allocate_s03,allocate_s04,allocate_s05,allocate_s06,allocate_s07,allocate_s08,allocate_s09,allocate_s10,allocate_s11,allocate_s12,allocate_s13,allocate_s14,allocate_s15,allocate_s16,allocate_s17,allocate_s18,allocate_s19,allocate_s20,allocate_s21,allocate_s22,allocate_s23,allocate_s24,allocate_s25,allocate_s26,allocate_s27,allocate_s28,allocate_s29,allocate_s30,allocate_s31,allocate_s32,allocate_s33,allocate_s34,allocate_s35,allocate_s36,allocate_s37,allocate_s38,allocate_s39,allocate_s40,allocate_s41,allocate_s42,allocate_s43,allocate_s44,allocate_s45,allocate_s46,allocate_s47,allocate_s48,allocate_s49,allocate_s50 from $bai_pro3.allocate_stat_log where tid=$allocate_ref and recut_lay_plan='no'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -522,11 +522,11 @@ $sql_num_check=mysqli_num_rows($sql_result);
 
 if($sql_num_check>0)
 {
-$sql1="select * from $bai_pro3.marker_ref_matrix_view where category='$category' and style_code not in('0','') and strip_match=\"$strip_match\" and gmtway=\"$gmtway\" and style_code=\"$style_code\" and buyer_code=\"$buyer_code\" and title_size_s01=\"$size01\" and title_size_s02=\"$size02\" and title_size_s03=\"$size03\" and title_size_s04=\"$size04\" and title_size_s05=\"$size05\" and title_size_s06=\"$size06\" and title_size_s07=\"$size07\" and title_size_s08=\"$size08\" and title_size_s09=\"$size09\" and title_size_s10=\"$size10\" and title_size_s11=\"$size11\" and title_size_s12=\"$size12\" and title_size_s13=\"$size13\" and title_size_s14=\"$size14\" and title_size_s15=\"$size15\" and title_size_s16=\"$size16\" and title_size_s17=\"$size17\" and title_size_s18=\"$size18\" and title_size_s19=\"$size19\" and title_size_s20=\"$size20\" and title_size_s21=\"$size21\" and title_size_s22=\"$size22\" and title_size_s23=\"$size23\" and title_size_s24=\"$size24\" and title_size_s25=\"$size25\" and title_size_s26=\"$size26\" and title_size_s27=\"$size27\" and title_size_s28=\"$size28\" and title_size_s29=\"$size29\" and title_size_s30=\"$size30\" and title_size_s31=\"$size31\" and title_size_s32=\"$size32\" and title_size_s33=\"$size33\" and title_size_s34=\"$size34\" and title_size_s35=\"$size35\" and title_size_s36=\"$size36\" and title_size_s37=\"$size37\" and title_size_s38=\"$size38\" and title_size_s39=\"$size39\" and title_size_s40=\"$size40\" and title_size_s41=\"$size41\" and title_size_s42=\"$size42\" and title_size_s43=\"$size43\" and title_size_s44=\"$size44\" and title_size_s45=\"$size45\" and title_size_s46=\"$size46\" and title_size_s47=\"$size47\" and title_size_s48=\"$size48\" and title_size_s49=\"$size49\" and title_size_s50=\"$size50\" and title_flag=\"$title_flag\" and ".implode(" and ",$allo_c)." group by concat(marker_width,marker_length,pat_ver,strip_match,gmtway,remarks)";
+$sql1="select marker_width,marker_length,pat_ver,strip_match,gmtway,remarks from $bai_pro3.marker_ref_matrix_view where category='$category' and style_code not in('0','') and strip_match=\"$strip_match\" and gmtway=\"$gmtway\" and style_code=\"$style_code\" and buyer_code=\"$buyer_code\" and title_size_s01=\"$size01\" and title_size_s02=\"$size02\" and title_size_s03=\"$size03\" and title_size_s04=\"$size04\" and title_size_s05=\"$size05\" and title_size_s06=\"$size06\" and title_size_s07=\"$size07\" and title_size_s08=\"$size08\" and title_size_s09=\"$size09\" and title_size_s10=\"$size10\" and title_size_s11=\"$size11\" and title_size_s12=\"$size12\" and title_size_s13=\"$size13\" and title_size_s14=\"$size14\" and title_size_s15=\"$size15\" and title_size_s16=\"$size16\" and title_size_s17=\"$size17\" and title_size_s18=\"$size18\" and title_size_s19=\"$size19\" and title_size_s20=\"$size20\" and title_size_s21=\"$size21\" and title_size_s22=\"$size22\" and title_size_s23=\"$size23\" and title_size_s24=\"$size24\" and title_size_s25=\"$size25\" and title_size_s26=\"$size26\" and title_size_s27=\"$size27\" and title_size_s28=\"$size28\" and title_size_s29=\"$size29\" and title_size_s30=\"$size30\" and title_size_s31=\"$size31\" and title_size_s32=\"$size32\" and title_size_s33=\"$size33\" and title_size_s34=\"$size34\" and title_size_s35=\"$size35\" and title_size_s36=\"$size36\" and title_size_s37=\"$size37\" and title_size_s38=\"$size38\" and title_size_s39=\"$size39\" and title_size_s40=\"$size40\" and title_size_s41=\"$size41\" and title_size_s42=\"$size42\" and title_size_s43=\"$size43\" and title_size_s44=\"$size44\" and title_size_s45=\"$size45\" and title_size_s46=\"$size46\" and title_size_s47=\"$size47\" and title_size_s48=\"$size48\" and title_size_s49=\"$size49\" and title_size_s50=\"$size50\" and title_flag=\"$title_flag\" and ".implode(" and ",$allo_c)." group by concat(marker_width,marker_length,pat_ver,strip_match,gmtway,remarks)";
 }
 else
 {
-$sql1="select * from $bai_pro3.marker_ref_matrix_view where category='$category' and style_code not in('0','') and strip_match=\"$strip_match\" and gmtway=\"$gmtway\" and style_code=\"$style_code\" and buyer_code=\"$buyer_code\" and ".implode(" and ",$allo_c)." group by concat(marker_width,marker_length,pat_ver,strip_match,gmtway,remarks)";
+$sql1="select marker_width,marker_length,pat_ver,strip_match,gmtway,remarks from $bai_pro3.marker_ref_matrix_view where category='$category' and style_code not in('0','') and strip_match=\"$strip_match\" and gmtway=\"$gmtway\" and style_code=\"$style_code\" and buyer_code=\"$buyer_code\" and ".implode(" and ",$allo_c)." group by concat(marker_width,marker_length,pat_ver,strip_match,gmtway,remarks)";
 }
 //echo $sql1;
 $sql_result=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));

@@ -1,7 +1,7 @@
 <?php  
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
-	$has_permission=haspermission($_GET['r']);
+	//$has_permission=haspermission($_GET['r']);
 	$plantcode=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
 ?> 
@@ -130,13 +130,13 @@ if(isset($_POST['submit']))
 
 	if(sizeof($workstations)>0){
 				/** validation for selected month plan available or not */
-			$qry_monthly_plan="SELECT monthly_production_plan_upload_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
+			$qry_monthly_plan="SELECT monthly_pp_up_log_id FROM $pps.`monthly_production_plan_upload_log` WHERE year='$year' AND month='$month' AND plant_code='$plantcode'";
 			$monthly_plan_result=mysqli_query($link_new, $qry_monthly_plan) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$monthly_plan_num=mysqli_num_rows($monthly_plan_result);
 			if($monthly_plan_num>0){
 				while($monthly_plan_row=mysqli_fetch_array($monthly_plan_result))
 				{
-					$monthly_production_plan_upload_log_id=$monthly_plan_row['monthly_production_plan_upload_log_id'];
+					$monthly_pp_up_log_id=$monthly_plan_row['monthly_pp_up_log_id'];
 				}
 		?>			
 		<form method="POST" action="#" onsubmit="return check_tot()"> 
@@ -161,35 +161,35 @@ if(isset($_POST['submit']))
 			 */
 			foreach($workstations as $work_id=>$work_des)
 			{
-				$mod_names[]=$work_des;
-				$getPlannedQty="SELECT monthly_production_plan_id,planned_qty AS qty FROM $pps.monthly_production_plan WHERE monthly_production_plan_upload_log_id='$monthly_production_plan_upload_log_id' AND planned_date='$today' AND row_name='$work_des'";
+				$mod_names[]=$work_id;
+				$getPlannedQty="SELECT pp_log_id,planned_qty AS qty FROM $pps.monthly_production_plan WHERE monthly_pp_up_log_id='$monthly_pp_up_log_id' AND planned_date='$today' AND row_name='$work_des'";
 				$getPlannedQty_result=mysqli_query($link_new, $getPlannedQty) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$getPlannedQty_num=mysqli_num_rows($getPlannedQty_result);
 				if($getPlannedQty_num>0){
 					while($workstations_row=mysqli_fetch_array($getPlannedQty_result))
 					{
-						$frv[$work_des]=$workstations_row['qty'];
-						$frv_id[$work_des]=$workstations_row['monthly_production_plan_id'];
+						$frv[$work_id]=$workstations_row['qty'];
+						$frv_id[$work_id]=$workstations_row['pp_log_id'];
 					}
 				}
 				else 
 				{ 
-					$frv[$work_des]=0;
-					$frv_id[$work_des]=0;			
+					$frv[$work_id]=0;
+					$frv_id[$work_id]=0;			
 				}
-				$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_des."' AND plant_code='".$plantcode."'";
+				$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_id."' AND plant_code='".$plantcode."'";
 				$result12=mysqli_query($link, $sql12) or exit("Sql Error at line_forecast " . mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($result12)) 
 				{ 
 					while($row12=mysqli_fetch_array($result12))
 					{				
-						$lfr_qty[$work_des]=$row12['qty'];
-						$lfr_reason[$work_des]=$row12['reason'];
+						$lfr_qty[$work_id]=$row12['qty'];
+						$lfr_reason[$work_id]=$row12['reason'];
 					}			
 				} 
 				else 
 				{ 
-					$lfr_qty[$work_des]=0;
+					$lfr_qty[$work_id]=0;
 				}
 			}
 			
@@ -198,7 +198,10 @@ if(isset($_POST['submit']))
 			?> 
 			<tr id="row_val<?php echo $i; ?>"> 
 				<td> 
-				<?php echo $mod_names[$i]; ?> 
+				<?php
+					echo $workstations[$mod_names[$i]];			 
+				
+				?> 
 				<input type="hidden" value="<?php echo $mod_names[$i]; ?>" name="module[<?php echo $i; ?>]" id="module<?php echo $i; ?>" value='<?php echo $mod_names[$i];  ?>'>
 				<input type="hidden" value="<?php echo $frv_id[$mod_names[$i]];  ?>" name="fr_id[<?php echo $i; ?>]" id="fr_id<?php echo $i; ?>">		
 				</td> 
@@ -268,7 +271,7 @@ if(isset($_POST['update']))
 	$fr_reason=$_POST['line_reson'];
 	for($i=0;$i<sizeof($fr_mod);$i++)
 	{
-		if($fr_qty[$i]>0 || $fc_qty[$i]>0)
+		if($fr_qty[$i]>0 && $fc_qty[$i]>0)
 		{
 			$sql1="select * from  $pps.`line_forecast` where date='$daten' and module='$fr_mod[$i]' and plant_code='$plantcode'";
 			$result1=mysqli_query($link, $sql1) or exit("Sql Error8" . mysqli_error($GLOBALS["___mysqli_ston"]));

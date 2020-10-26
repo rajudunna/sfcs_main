@@ -11,27 +11,27 @@
 	if(isset($_POST['plant_code']))
 	{
 		$plantcode=$_POST['plant_code'];
-		$username=$_POST['username'];
+		$userName=$_POST['username'];
 	}
 	else
 	{
 		$plantcode=$_GET['plant_code'];
-		$username=$_GET['username'];	
+		$userName=$_GET['username'];	
 	}
 	
 	if($gate_id=='')
 	{
 		$gate_id=0;
 	}
-	$has_permission=haspermission($_GET['r']);
-    if (in_array($override_sewing_limitation,$has_permission))
-    {
+	// $has_permission=haspermission($_GET['r']);
+    // if (in_array($override_sewing_limitation,$has_permission))
+    // {
         $value = 'authorized';
-    } 
-    else
-    {
-        $value = 'not_authorized';
-    }
+    // } 
+    // else
+    // {
+    //     $value = 'not_authorized';
+    // }
 	$url1 = getFullURLLEVEL($_GET['r'],'gatepass_summery_detail.php',2,'N');
 ?>
 
@@ -128,36 +128,90 @@ $(document).ready(function()
 		else
 		{
 			var res = barcode.split('-');
+			var barcode = res[0];
 			var operation_id = res[1];
+			
 		}
-		var plant_code = $('#plant_code').val();
-        var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>'};
-        
-        $.ajax({
-			type: "POST",
-			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcode",
-			data: embObj,
-			success: function (res) {            
-				//console.log(res.data);
-				if(res.status)
-				{	
+		
+		var bearer_token;
+		const creadentialObj = {
+		grant_type: 'password',
+		client_id: 'pps-back-end',
+		client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+		username: 'bhuvan',
+		password: 'bhuvan'
+		}
+		$.ajax({
+			method: 'POST',
+			url: "<?php echo $KEY_LOCK_IP?>",
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			xhrFields: { withCredentials: true },
+			contentType: "application/json; charset=utf-8",
+			transformRequest: function (Obj) {
+				var str = [];
+				for (var p in Obj)
+					str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+				return str.join("&");
+			},
+			data: creadentialObj
+		}).then(function (result) {
+			var plant_code = $('#plant_code').val();
+        	var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>', "createdUser": '<?= $userName?>'};
+			bearer_token = result['access_token'];
+			$.ajax({
+				type: "POST",
+				url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcode",
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+				data: embObj,
+				success: function (res) {            
+					//console.log(res.data);
+					if(res.status)
+					{	
+						$('#loading-image').hide();
+						swal(res.internalMessage);
+						tableConstruction(res);
+						
+					}
+					else
+					{																											
+						$('#loading-image').hide();
+						swal(res.internalMessage);
+					}                       
+				},
+				error: function(res){
 					$('#loading-image').hide();
-					swal(res.internalMessage);
-					tableConstruction(res);
+					swal('Error in getting data');
 					
 				}
-				else
-				{																											
-					$('#loading-image').hide();
-					swal(res.internalMessage);
-				}                       
-			},
-			error: function(res){
-				$('#loading-image').hide();
-				swal('Error in getting data');
-				
-			}
+			});
+		}).fail(function (result) {
+			console.log(result);
 		});
+        // $.ajax({
+		// 	type: "POST",
+		// 	url: "<?php //echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcode",
+		// 	data: embObj,
+		// 	success: function (res) {            
+		// 		//console.log(res.data);
+		// 		if(res.status)
+		// 		{	
+		// 			$('#loading-image').hide();
+		// 			swal(res.internalMessage);
+		// 			tableConstruction(res);
+					
+		// 		}
+		// 		else
+		// 		{																											
+		// 			$('#loading-image').hide();
+		// 			swal(res.internalMessage);
+		// 		}                       
+		// 	},
+		// 	error: function(res){
+		// 		$('#loading-image').hide();
+		// 		swal('Error in getting data');
+				
+		// 	}
+		// });
 	});
 		
 	

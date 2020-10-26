@@ -1,6 +1,6 @@
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-$plantcode=$_SESSION['plantCode'];
+$plantCode=$_SESSION['plantCode'];
 ?>
 
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
@@ -123,10 +123,11 @@ zoom:75%;
 								if(mysqli_num_rows($shiftQueryResult)>0){
 									$shifts = [];
 									while($row = mysqli_fetch_array($shiftQueryResult)){
-										$shiftRecord = [];
+										//$shiftRecord = [];
 										$shiftRecord["shiftValue"] = $row['shift_code'];
-										$shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
-										array_push($shifts, $shiftRecord);
+										$shifts[]=$row['shift_code'];
+										//$shiftRecord["shiftLabel"] = $row["shift_code"]."-".$row["shift_description"];
+										//array_push($shifts, $shiftRecord);
 									}
 									return $shifts;
 								} else {
@@ -197,6 +198,7 @@ zoom:75%;
 							echo "</select>";
 						echo "</div>";
 						$shifts_array=getShifts($plantCode);
+						//var_dump($shifts_array);
 						echo "<div class='col-md-3'>";
 							echo "Select Team: <select name=\"team\" class='form-control'>";
 							?>
@@ -299,9 +301,8 @@ zoom:75%;
 				/* Function END */
 				// $sections=array(1,2,3,4,5,6);
 				$work_hrs=0;
-				$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
-				// echo $sql_hr."<br>";
-				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift in ($team)";
+				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Error While getting pro atten hours".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
 				{
 					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -335,9 +336,8 @@ zoom:75%;
 					$hour_dur=0;
 					for($i=0;$i<sizeof($teams);$i++)
 					{
-						$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
-						// echo $sql_hr."<br>";
-						$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
+						$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+						$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Error getting pro atten hours".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result_hr) >0)
 						{
 							while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -354,7 +354,7 @@ zoom:75%;
 						}
 						else
 						{
-							$sql_hr="select * from $pts.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+							$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
 							// echo $sql_hr."<br>";
 							$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							// $hour_dur=$hour_dur+0;
@@ -390,9 +390,8 @@ zoom:75%;
 				$i=0;
 				$h=array();
 				//$sql="select distinct(Hour(bac_lastup)) as \"time\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_shift in ($team) order by hour(bac_lastup)*1";
-				$sql="SELECT DISTINCT(HOUR(created_at)) AS 'time' FROM $pts.transaction_log WHERE plant_code='$plantcode' AND 
-				DATE(bac_date) BETWEEN '$date' AND '$date1' AND shift IN ($team) ORDER BY HOUR(created_at)*1";
-				// echo $sql."<br>";
+				$sql="SELECT DISTINCT(HOUR(created_at)) AS 'time' FROM $pts.transaction_log WHERE plant_code='$plantCode' AND 
+				DATE(created_at) BETWEEN '$date' AND '$date1' AND shift IN ($team) ORDER BY HOUR(created_at)*1";
 				//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 				$sql_result=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
 				$hoursa=mysqli_num_rows($sql_result);
@@ -427,21 +426,22 @@ zoom:75%;
 
 				// Style Break Start
 				$row_bg_col=1;
-
+				//var_dump($styles);
 				for ($i=0;$i<sizeof($styles);$i++)
 				{
 					$style=$styles[$i];
 					$module_count=0;
 					//$sql2="select distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_no";
-					$sql2="SELECT DISTINCT(resource_id) AS module FROM $pts.transaction_log WHERE plant_code='$plantcode' AND 
+					$sql2="SELECT DISTINCT(resource_id) AS module FROM $pts.transaction_log WHERE plant_code='$plantCode' AND 
 					DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' AND shift IN ($team) ORDER BY resource_id";
 					//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
 					$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$module_count=mysqli_num_rows($sql_result2);
+					// echo "Module Count : ".$module_count."</br>";
 					$resource_id=array(); 
-					while($sql_row=mysqli_fetch_array($sql2))
+					while($sql_row=mysqli_fetch_array($sql_result2))
 					{
-						$resource_id=$sql_row['module'];
+						$resource_id[]=$sql_row['module'];
 					}
 					$resources = implode("','", $resource_id);
 					$style_check=0;
@@ -465,7 +465,8 @@ zoom:75%;
 					}
 					
 					//$sql="select distinct(bac_sec) as \"section\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team) order by bac_sec";
-					$sql="SELECT DISTINCT(section_id) as section FROM $pms.workstation WHERE plant_code='$plantcode'  AND workstation_id IN ('$resources') AND is_active=1";
+					$sql="SELECT DISTINCT(section_id) as section FROM $pms.workstation WHERE plant_code='$plantCode'  AND workstation_id IN ('$resources') AND is_active=1";
+					// echo $sql;
 					//mysql_query($sql,$link) or exit("Sql Error".mysql_error());
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row=mysqli_fetch_array($sql_result))
@@ -474,20 +475,21 @@ zoom:75%;
 						$row_count++;
 
 						//$sql2="select distinct distinct(bac_no) as \"module\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team) order by bac_no";
-						$sql2="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE plant_code='$plantcode' AND section_id='$section' AND is_active=1";
+						$sql2="SELECT workstation_id,workstation_code FROM $pms.workstation WHERE plant_code='$plantCode' AND section_id='$section' and workstation_id IN ('$resources') AND is_active=1";
 						//mysql_query($sql2,$link) or exit("Sql Error".mysql_error());
-						$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
+						$sql_result2=mysqli_query($link, $sql2) or exit("Error while getting workstation".mysqli_error($GLOBALS["___mysqli_ston"]));
 						$section_count=mysqli_num_rows($sql_result2); 
-						//echo $module_count;
+						// echo "Section Count : ".$section_count."</br>";
+
 
 						$section_check=0;
 						while($sql_row2=mysqli_fetch_array($sql_result2))
 						{
-							$module=$sql_row2['module'];
+							$module=$sql_row2['workstation_id'];
 
 							/**getting work station name by workstaion id */
-							$qryWorkStation="SELECT workstation_code FROM $pms.workstation WHERE workstation_id='$module' AND plant_code='$plantcode' AND is_active=1";
-							$resultWorkStation=mysqli_query($link, $qryWorkStation) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+							$qryWorkStation="SELECT workstation_code FROM $pms.workstation WHERE workstation_id='$module' AND plant_code='$plantCode' AND is_active=1";
+							$resultWorkStation=mysqli_query($link, $qryWorkStation) or exit("Error while getting workstation".mysqli_error($GLOBALS["___mysqli_ston"]));
 							while($sql_row12=mysqli_fetch_array($resultWorkStation))
 							{
 								$workstation_code=$sql_row12["workstation_code"];
@@ -497,7 +499,7 @@ zoom:75%;
 									
 							if($style_check==0)
 							{
-								echo "<td rowspan=$module_count >$style</td>";
+								echo "<td rowspan='$module_count'>$style</td>";
 								$style_check=1;
 							}				
 							
@@ -505,11 +507,12 @@ zoom:75%;
 							{
 
 								//$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-								$sql12="SELECT section_nmae FROM $pms.sections WHERE section_id='$section' AND plant_code='$plantcode' AND is_active=1";
-								$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$sql12="SELECT section_name FROM $pms.sections WHERE section_id='$section' AND plant_code='$plantCode' AND is_active=1";
+								// echo $sql12."</br>";
+								$result12=mysqli_query($link, $sql12) or exit("Error while getting sections".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row12=mysqli_fetch_array($result12))
 								{
-									$section_display_name=$sql_row12["section_nmae"];
+									$section_display_name=$sql_row12["section_name"];
 								}
 
 								echo "<td rowspan=$section_count>$section_display_name</td>";
@@ -523,16 +526,25 @@ zoom:75%;
 							{
 								$qty=0;
 								//$sql3="select sum(bac_qty) as \"qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_no=$module and bac_shift in ($team) and Hour(bac_lastup)=".$headers[$j];
-								$sql3="SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
-													AND resource_id='$module' AND shift in ($team) AND HOUR(created_at)='$headers[$j]' GROUP BY operation ORDER BY ASC  0,1";
+								$sql3="SELECT sum(good_quantity) AS qty FROM $pts.transaction_log WHERE plant_code='$plantCode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) AND HOUR(created_at)='$headers[$j]' GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
+						
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
-								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-								while($sql_row3=mysqli_fetch_array($sql_result3))
-								{
-									$qty=$sql_row3['qty'];
-									echo "<td bgcolor=\"$bg_color2\">$qty</td>";
-									$module_sum=$module_sum+$qty;			
+								$sql_result3=mysqli_query($link, $sql3) or exit("Error While getting transaction log".mysqli_error($GLOBALS["___mysqli_ston"]));
+								if(mysqli_num_rows($sql_result3)>0){
+									while($sql_row3=mysqli_fetch_array($sql_result3))
+									{
+										$qty=$sql_row3['qty'];
+										echo "<td bgcolor=\"$bg_color2\">$qty</td>";
+										$module_sum=$module_sum+$qty;
+										$qty=0;			
+									}
+								}else{
+										$qty=0;
+										echo "<td bgcolor=\"$bg_color2\">$qty</td>";
+										$module_sum=$module_sum+$qty;
 								}
+								
 							}
 							echo "<td>".$module_sum."</td>";
 							echo "<td>".round(($module_sum/$hoursa_shift),0)."</td>";
@@ -540,8 +552,8 @@ zoom:75%;
 							//NEW
 								$sec_qty=0;
 								//$sql3="select sum(bac_qty) as \"sec_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_sec=\"$section\" and bac_shift in ($team)";
-								$sql3="SELECT sum(good_quantity) AS sec_qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
-													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY ASC  0,1";
+								$sql3="SELECT sum(good_quantity) AS sec_qty FROM $pts.transaction_log WHERE plant_code='$plantCode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
 								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error10".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
@@ -560,10 +572,10 @@ zoom:75%;
 							//NEW
 								$style_qty=0;
 								//$sql3="select sum(bac_qty) as \"style_qty\" from ".$bai_log_table_name." where plant_code='$plantcode' and bac_date between \"$date\" and \"$date1\" and bac_style=\"$style\" and bac_shift in ($team)";
-								$sql3="SELECT sum(good_quantity) AS style_qty FROM $pts.transaction_log WHERE plant_code='$plantcode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
-													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY ASC  0,1";
+								$sql3="SELECT sum(good_quantity) AS style_qty FROM $pts.transaction_log WHERE plant_code='$plantCode' AND DATE(created_at) BETWEEN '$date' AND '$date1' AND style='$style' 
+													AND resource_id='$module' AND shift in ($team) GROUP BY operation ORDER BY operation DESC LIMIT 0,1";
 								//mysql_query($sql3,$link) or exit("Sql Error".mysql_error());
-								$sql_result3=mysqli_query($link, $sql3) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
+								$sql_result3=mysqli_query($link, $sql3) or exit("Error While getting transaction log 568".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($sql_row3=mysqli_fetch_array($sql_result3))
 								{
 									$style_qty=$sql_row3['style_qty'];

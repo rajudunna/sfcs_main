@@ -94,7 +94,7 @@ if(isset($_POST['date'])){
 	$date=$_POST['date'];
 }
 ?>
-<form name='input' method='post' action="index.php?r=<?php echo $_GET['r']; ?>">
+<form name='input' method='post' action="?r=<?= $_GET['r'] ?>">
 <?php
 echo "<div class='row'><div class='col-md-3'><label>Select Date </label><input type='text' data-toggle='datepicker' class='form-control' name='date' value='".$date."' size='10'>";
 echo "</div><input type='submit' name='filter' value='Show' class='btn btn-primary' style='margin-top:22px;'></div>";

@@ -28,6 +28,8 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 // echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs_app/app/dashboards/common/css 	/sfcs_styles.css".'" rel="stylesheet" type="text/css" />'; 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+
 ?>
 <!-- <script src="../../../../../template/helperjs.js"></script> -->
 <link rel="stylesheet" href="../../../../../assets/css/datepicker.css" />
@@ -139,13 +141,13 @@ $cat=$_POST["cat"];
 if($cat!=''){
 	if($cat==1)
 	{
-		$sql2="select * from bai_pro3.fabric_priorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time='0000-00-00 00:00:00' order by req_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00' and plant_code='$plant_code' order by req_time";
 	}
 	if($cat==2)
 	{
-		$sql2="select * from bai_pro3.fabric_priorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time!='0000-00-00 00:00:00'  order by issued_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null or issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
 	}
-	// echo $sql2;
+	//  echo $sql2;
 	echo "<hr/>";
 
 	echo "<div style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table id='example1' name='example1' class='table table-bordered'>";
@@ -156,63 +158,106 @@ if($cat!=''){
 		{
 			$log=$row2["req_time"];
 			$log_split=explode(" ",$log);
-			//$sec_count=$row2["sec"];
-			
+			$section_id=$row2["section_id"];
+			$workstation_id=$row2["work_station_id"];
+			$jm_docket_line_id=$row2["jm_docket_line_id"];
+			$sql111="select section_name from $pms.sections where section_id='$section_id' and plant_code='$plant_code'";
+			$sql_result111=mysqli_query($link,$sql111) or die("Error1 = ".mysqli_error());
+			while($row111=mysqli_fetch_array($sql_result111))
+			{
+				$section=$row111["section_name"];
+			}
+			$docket_query="select docket_line_number from $pps.jm_docket_lines where jm_docket_line_id='$jm_docket_line_id' and plant_code='$plant_code'";
+			$docket_query_result=mysqli_query($link,$docket_query) or die("Error1 = ".mysqli_error());
+			while($row1112=mysqli_fetch_array($docket_query_result))
+			{
+				$docket_number=$row1112["docket_line_number"];
+			}
+			$sql1111="select workstation_code from $pms.workstation where workstation_id='$workstation_id' and plant_code='$plant_code'";
+			$sql_result1111=mysqli_query($link,$sql1111) or die("Error1 = ".mysqli_error());
+			while($row1111=mysqli_fetch_array($sql_result1111))
+			{
+				$workstation_code=$row1111["workstation_code"];
+			}
 			echo "<tr>";
-			echo "<td>".$row2["section"]."</td>";
-			echo "<td>".$row2["module"]."</td>";
+			echo "<td>".$section."</td>";
+			echo "<td>".$workstation_code."</td>";
 			echo "<td>".$log_split[0]."</td>";
 			echo "<td>".$log_split[1]."</td>";
-			
+		
 				
 			
-			$sql11="select * from bai_pro3.plandoc_stat_log where doc_no='".$row2["doc_ref"]."'";
-			$sql_result11=mysqli_query($link,$sql11) or die("Error1 = ".mysqli_error());
-			while($row11=mysqli_fetch_array($sql_result11))
-			{
-				$order_tid=$row11["order_tid"];
-				$cut_nos=$row11["acutno"];
-				$total_cut_qty=($row11["a_s01"]+$row11["a_s02"]+$row11["a_s03"]+$row11["a_s04"]+$row11["a_s05"]+$row11["a_s06"]+$row11["a_s07"]+$row11["a_s08"]+$row11["a_s09"]+$row11["a_s11"]+$row11["a_s12"]+$row11["a_s13"]+$row11["a_s14"]+$row11["a_s15"]+$row11["a_s16"]+$row11["a_s17"]+$row11["a_s18"]+$row11["a_s19"]+$row11["a_s21"]+$row11["a_s22"]+$row11["a_s23"]+$row11["a_s24"]+$row11["a_s25"]+$row11["a_s26"]+$row11["a_s27"]+$row11["a_s28"]+$row11["a_s29"]+$row11["a_s31"]+$row11["a_s32"]+$row11["a_s33"]+$row11["a_s34"]+$row11["a_s35"]+$row11["a_s36"]+$row11["a_s37"]+$row11["a_s38"]+$row11["a_s39"]+$row11["a_s41"]+$row11["a_s42"]+$row11["a_s43"]+$row11["a_s44"]+$row11["a_s45"]+$row11["a_s46"]+$row11["a_s47"]+$row11["a_s48"]+$row11["a_s49"]+$row11["a_s50"])*($row11["p_plies"]);
-			}
+			// $sql11="select * from bai_pro3.plandoc_stat_log where doc_no='".$row2["doc_ref"]."'";
+			// $sql_result11=mysqli_query($link,$sql11) or die("Error1 = ".mysqli_error());
+			// while($row11=mysqli_fetch_array($sql_result11))
+			// {
+			// 	$order_tid=$row11["order_tid"];
+			// 	$cut_nos=$row11["acutno"];
+			// 	$total_cut_qty=($row11["a_s01"]+$row11["a_s02"]+$row11["a_s03"]+$row11["a_s04"]+$row11["a_s05"]+$row11["a_s06"]+$row11["a_s07"]+$row11["a_s08"]+$row11["a_s09"]+$row11["a_s11"]+$row11["a_s12"]+$row11["a_s13"]+$row11["a_s14"]+$row11["a_s15"]+$row11["a_s16"]+$row11["a_s17"]+$row11["a_s18"]+$row11["a_s19"]+$row11["a_s21"]+$row11["a_s22"]+$row11["a_s23"]+$row11["a_s24"]+$row11["a_s25"]+$row11["a_s26"]+$row11["a_s27"]+$row11["a_s28"]+$row11["a_s29"]+$row11["a_s31"]+$row11["a_s32"]+$row11["a_s33"]+$row11["a_s34"]+$row11["a_s35"]+$row11["a_s36"]+$row11["a_s37"]+$row11["a_s38"]+$row11["a_s39"]+$row11["a_s41"]+$row11["a_s42"]+$row11["a_s43"]+$row11["a_s44"]+$row11["a_s45"]+$row11["a_s46"]+$row11["a_s47"]+$row11["a_s48"]+$row11["a_s49"]+$row11["a_s50"])*($row11["p_plies"]);
+			// }
 			
-			$sql21="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid."'";
-			$sql_result21=mysqli_query($link,$sql21) or die("Error2 = ".mysqli_error());
-			while($row21=mysqli_fetch_array($sql_result21))
-			{
-				$style=$row21["order_style_no"];
-				$schedule=$row21["order_del_no"];
-				$color=$row21["order_col_des"];
-				$buyer=$row21["order_div"];
-				$color_code=$row21["color_code"];
-			}
+			// $sql21="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid."'";
+			// $sql_result21=mysqli_query($link,$sql21) or die("Error2 = ".mysqli_error());
+			// while($row21=mysqli_fetch_array($sql_result21))
+			// {
+			// 	$style=$row21["order_style_no"];
+			// 	$schedule=$row21["order_del_no"];
+			// 	$color=$row21["order_col_des"];
+			// 	$buyer=$row21["order_div"];
+			// 	$color_code=$row21["color_code"];
+			// }
+			if($docket_number!='' && $plant_code!=''){
+				$result_docketinfo=getDocketInformation($docket_number,$plant_code);
+				$style =$result_docketinfo['style'];
+				$colorx =$result_docketinfo['fg_color'];
+				$cut_no =$result_docketinfo['cut_no'];
+				$cat_refnce =$result_docketinfo['category'];
+				$cat_compo =$result_docketinfo['rm_sku'];
+				$fabric_required =$result_docketinfo['required_qty'];
+				$length =$result_docketinfo['length'];
+				$shrinkage =$result_docketinfo['shrinkage'];
+			$width =$result_docketinfo['width'];
+			$docket_number =$result_docketinfo['docket_line_number'];
+			$po_number =$result_docketinfo['sub_po'];
 			
+				
+		  }
+	
+		  if($po_number!='' && $plant_code!=''){
+				$result_scheduleinfo= getMpMoQty($po_number,$plant_code);
+				$schedule =$result_scheduleinfo['schedule'];
+				
+		  }
+		  $schedule=implode(",",$schedule); 
 			echo "<td>".$style."</td>";
 			echo "<td>".$schedule."</td>";
-			echo "<td>".$color."</td>";
+			echo "<td>".$colorx."</td>";
 			
-			echo "<td>".$row2["doc_ref"]."</td>";
-			if($cut_nos > 9)
-			{
-				echo "<td>".chr($color_code)."0".$cut_nos."</td>";	
-			}
-			else
-			{
-				echo "<td>".chr($color_code)."00".$cut_nos."</td>";	
-			}
+			echo "<td>".$docket_number."</td>";
+			// if($cut_nos > 9)
+			// {
+			 	echo "<td>".$cut_no."</td>";	
+			// }
+			// else
+			// {
+			// 	echo "<td>".chr($color_code)."00".$cut_nos."</td>";	
+			// }
 			
-			echo "<td>".$total_cut_qty."</td>";
+			 echo "<td>".$fabric_required."</td>";
 			
 			$issued_time=$row2["issued_time"];
+		
 			
-			if($issued_time=="0000-00-00 00:00:00")
+			if($issued_time!="0000-00-00 00:00:00" and $issued_time!='')
+			{
+				echo "<td>Issued</td>";
+				
+			}
+			else
 			{
 				echo "<td>Not Issued</td>";
 			}
-			else
-			{
-				echo "<td>Issued</td>";
-			}
-			echo "<td>".strtoupper($row2["log_user"])."</td>";
+			echo "<td>".strtoupper($row2["created_user"])."</td>";
 			echo "<td>".$row2["log_time"]."</td>";
 			echo "<td>".$row2["issued_time"]."</td>";
 			echo "</tr>";
@@ -224,84 +269,84 @@ if($cat!=''){
 	}
 
 
-	$sql2x="select * from bai_pro3.fabric_priorities_backup where req_time between '$sdate $stime:00' and '$edate $etime:00' and issued_time='0000-00-00 00:00:00' order by req_time";
+	// $sql2x="select * from $pps.fabric_prorities where req_time between '$sdate $stime:00' and '$edate $etime:00'  and issued_time is null or issued_time='0000-00-00 00:00:00'  order by req_time";
 
-	if($cat==2)
-	{
-		$sql2x="select * from bai_pro3.fabric_priorities_backup where issued_time between '$sdate 06:00:00' and '$edate 23:00:00' and issued_time!='0000-00-00 00:00:00' order by issued_time";
-	}
+	// if($cat==2)
+	// {
+	// 	$sql2x="select * from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00' and issued_time is not null or issued_time!='0000-00-00 00:00:00' order by issued_time";
+	// }
 
 
 	//echo $sql2;
 
-	$result2x=mysqli_query($link,$sql2x) or die("Error = ".mysqli_error());
-	while($row2x=mysqli_fetch_array($result2x))
-	{
-		$log1=$row2x["req_time"];
-		$log_split1=explode(" ",$log1);
-		//$sec_count=$row2["sec"];
+	// $result2x=mysqli_query($link,$sql2x) or die("Error = ".mysqli_error());
+	// while($row2x=mysqli_fetch_array($result2x))
+	// {
+	// 	$log1=$row2x["req_time"];
+	// 	$log_split1=explode(" ",$log1);
+	// 	//$sec_count=$row2["sec"];
 		
-		echo "<tr>";
-		echo "<td>".$row2x["section"]."</td>";
-		echo "<td>".$row2x["module"]."</td>";
-		echo "<td>".$log_split1[0]."</td>";
-		echo "<td>".$log_split1[1]."</td>";
+	// 	echo "<tr>";
+	// 	echo "<td>".$row2x["section"]."</td>";
+	// 	echo "<td>".$row2x["module"]."</td>";
+	// 	echo "<td>".$log_split1[0]."</td>";
+	// 	echo "<td>".$log_split1[1]."</td>";
 		
 			
 		
-		$sql11x="select * from bai_pro3.plandoc_stat_log where doc_no='".$row2x["doc_ref"]."'";
-		$sql_result11x=mysqli_query($link,$sql11x) or die("Error1 = ".mysqli_error());
-		while($row11x=mysqli_fetch_array($sql_result11x))
-		{
-			$order_tid1=$row11x["order_tid"];
-			$cut_nos1=$row11x["acutno"];
-			$total_cut_qty1=($row11x["a_s01"]+$row11x["a_s02"]+$row11x["a_s03"]+$row11x["a_s04"]+$row11x["a_s05"]+$row11x["a_s06"]+$row11x["a_s07"]+$row11x["a_s08"]+$row11x["a_s09"]+$row11x["a_s11"]+$row11x["a_s12"]+$row11x["a_s13"]+$row11x["a_s14"]+$row11x["a_s15"]+$row11x["a_s16"]+$row11x["a_s17"]+$row11x["a_s18"]+$row11x["a_s19"]+$row11x["a_s21"]+$row11x["a_s22"]+$row11x["a_s23"]+$row11x["a_s24"]+$row11x["a_s25"]+$row11x["a_s26"]+$row11x["a_s27"]+$row11x["a_s28"]+$row11x["a_s29"]+$row11x["a_s31"]+$row11x["a_s32"]+$row11x["a_s33"]+$row11x["a_s34"]+$row11x["a_s35"]+$row11x["a_s36"]+$row11x["a_s37"]+$row11x["a_s38"]+$row11x["a_s39"]+$row11x["a_s41"]+$row11x["a_s42"]+$row11x["a_s43"]+$row11x["a_s44"]+$row11x["a_s45"]+$row11x["a_s46"]+$row11x["a_s47"]+$row11x["a_s48"]+$row11x["a_s49"]+$row11x["a_s50"])*($row11x["p_plies"]);
-		}
+	// 	// $sql11x="select * from bai_pro3.plandoc_stat_log where doc_no='".$row2x["doc_ref"]."'";
+	// 	// $sql_result11x=mysqli_query($link,$sql11x) or die("Error1 = ".mysqli_error());
+	// 	// while($row11x=mysqli_fetch_array($sql_result11x))
+	// 	// {
+	// 	// 	$order_tid1=$row11x["order_tid"];
+	// 	// 	$cut_nos1=$row11x["acutno"];
+	// 	// 	$total_cut_qty1=($row11x["a_s01"]+$row11x["a_s02"]+$row11x["a_s03"]+$row11x["a_s04"]+$row11x["a_s05"]+$row11x["a_s06"]+$row11x["a_s07"]+$row11x["a_s08"]+$row11x["a_s09"]+$row11x["a_s11"]+$row11x["a_s12"]+$row11x["a_s13"]+$row11x["a_s14"]+$row11x["a_s15"]+$row11x["a_s16"]+$row11x["a_s17"]+$row11x["a_s18"]+$row11x["a_s19"]+$row11x["a_s21"]+$row11x["a_s22"]+$row11x["a_s23"]+$row11x["a_s24"]+$row11x["a_s25"]+$row11x["a_s26"]+$row11x["a_s27"]+$row11x["a_s28"]+$row11x["a_s29"]+$row11x["a_s31"]+$row11x["a_s32"]+$row11x["a_s33"]+$row11x["a_s34"]+$row11x["a_s35"]+$row11x["a_s36"]+$row11x["a_s37"]+$row11x["a_s38"]+$row11x["a_s39"]+$row11x["a_s41"]+$row11x["a_s42"]+$row11x["a_s43"]+$row11x["a_s44"]+$row11x["a_s45"]+$row11x["a_s46"]+$row11x["a_s47"]+$row11x["a_s48"]+$row11x["a_s49"]+$row11x["a_s50"])*($row11x["p_plies"]);
+	// 	// }
 		
-		$sql21x="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid1."'";
-		$sql_result21x=mysqli_query($link,$sql21x) or die("Error2 = ".mysqli_error());
-		while($row21x=mysqli_fetch_array($sql_result21x))
-		{
-			$style1=$row21x["order_style_no"];
-			$schedule1=$row21x["order_del_no"];
-			$color1=$row21x["order_col_des"];
-			$buyer1=$row21x["order_div"];
-			$color_code1=$row21x["color_code"];
-		}
+	// 	// $sql21x="select order_style_no,order_del_no,order_col_des,order_div,color_code from bai_pro3.bai_orders_db where order_tid='".$order_tid1."'";
+	// 	// $sql_result21x=mysqli_query($link,$sql21x) or die("Error2 = ".mysqli_error());
+	// 	// while($row21x=mysqli_fetch_array($sql_result21x))
+	// 	// {
+	// 	// 	$style1=$row21x["order_style_no"];
+	// 	// 	$schedule1=$row21x["order_del_no"];
+	// 	// 	$color1=$row21x["order_col_des"];
+	// 	// 	$buyer1=$row21x["order_div"];
+	// 	// 	$color_code1=$row21x["color_code"];
+	// 	// }
 		
-		echo "<td>".$style1."</td>";
-		echo "<td>".$schedule1."</td>";
-		echo "<td>".$color1."</td>";
+	// 	echo "<td>".$style1."</td>";
+	// 	echo "<td>".$schedule1."</td>";
+	// 	echo "<td>".$color1."</td>";
 		
-		echo "<td>".$row2x["doc_ref"]."</td>";
-		if($cut_nos1 > 9)
-		{
-			echo "<td>".chr($color_code1)."0".$cut_nos1."</td>";	
-		}
-		else
-		{
-			echo "<td>".chr($color_code1)."00".$cut_nos1."</td>";	
-		}
+	// 	echo "<td>".$row2x["doc_ref"]."</td>";
+	// 	if($cut_nos1 > 9)
+	// 	{
+	// 		echo "<td>".chr($color_code1)."0".$cut_nos1."</td>";	
+	// 	}
+	// 	else
+	// 	{
+	// 		echo "<td>".chr($color_code1)."00".$cut_nos1."</td>";	
+	// 	}
 		
-		echo "<td>".$total_cut_qty1."</td>";
+	// 	echo "<td>".$total_cut_qty1."</td>";
 		
-		$issued_time1=$row2x["issued_time"];
+	// 	$issued_time1=$row2x["issued_time"];
 		
-		if($issued_time1=="0000-00-00 00:00:00")
-		{
-			echo "<td>Not Issued</td>";
-		}
-		else
-		{
-			echo "<td>Issued</td>";
-		}
-		echo "<td>".strtoupper($row2x["log_user"])."</td>";
-		echo "<td>".$row2x["log_time"]."</td>";
-		echo "<td>".$row2x["issued_time"]."</td>";
-		echo "</tr>";
+	// 	if($issued_time1=="0000-00-00 00:00:00")
+	// 	{
+	// 		echo "<td>Not Issued</td>";
+	// 	}
+	// 	else
+	// 	{
+	// 		echo "<td>Issued</td>";
+	// 	}
+	// 	echo "<td>".strtoupper($row2x["log_user"])."</td>";
+	// 	echo "<td>".$row2x["log_time"]."</td>";
+	// 	echo "<td>".$row2x["issued_time"]."</td>";
+	// 	echo "</tr>";
 		
-	}
-	echo "</table></div>";
+	// }
+	// echo "</table></div>";
 	}
 }
 else {

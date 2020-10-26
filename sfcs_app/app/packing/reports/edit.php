@@ -6,7 +6,7 @@
 <?php
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
-$permission = haspermission($_GET['r']);
+// $permission = haspermission($_GET['r']);
 //define a maxim size for the uploaded images
 define ("MAX_SIZE","10000000");
 // define the width and height for the thumbnail
@@ -82,14 +82,14 @@ return $ext;
 <?php 
 
 
-if(!in_array($edit,$permission))
-{
+// if(!in_array($edit,$permission))
+// {
 	//header("location:maintenance.php");
 	//echo 'THE PAGE IS UNDER MAINTAINACE';
 	//die();
-	echo '<b><font color=red size=4>You do not have acces to view this page</font></b>';
-	exit();
-}
+	// echo '<b><font color=red size=4>You do not have acces to view this page</font></b>';
+	// exit();
+// }
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -138,7 +138,7 @@ td{ color : #000}
 					<td class='info'>Photo</td>
 					<td>
 					<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-					<input name="userfile" type="file" id="userfile" required accept='image/*'>
+					<input required  name="userfile" type="file"  accept="image/*" id="userfile"><br/>
 					</td>
 					</tr>
 
@@ -146,15 +146,15 @@ td{ color : #000}
 						<td colspan='2'>
 							<div class='col-sm-3'></div>
 						<?php
-						if(in_array($edit,$permission))
-						{
+						// if(in_array($edit,$permission))
+						// {
 
 							echo '<input name="upload" type="submit" class="btn btn-success btn-sm" id="upload" value="Upload"></td>';
-						}
-						else
-						{
-							echo "You are not authorized to edit";	
-						}
+						// }
+						// else
+						// {
+						// 	echo "You are not authorized to edit";	
+						// }
 
 						?>
 						</td>
@@ -185,7 +185,7 @@ $con=$_POST['con'];
 $sno=$_POST['sno'];
 
 	$url = getFullURL($_GET['r'],'edit.php','N');
-	$query = "select * from $pts.upload where plant_code='$plantcode' and sealno = '$sno' ";
+	$query = "select * from $pps.upload where plant_code='$plantcode' and sealno = '$sno' ";
 	$res = mysqli_query($link,$query);
 	if(mysqli_num_rows($res) == 0){
 		echo "<script>
@@ -280,37 +280,37 @@ $thumb=make_thumb($newname,$thumb_name,WIDTH,HEIGHT);
 }
 if($con == 1)
 {
-	$query = "update $pts.upload set name='$fileName',size='$fileSize',type='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name='$fileName',size='$fileSize',type='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 2)
 {
-	$query = "update $pts.upload set name1='$fileName',size1='$fileSize',type1='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name1='$fileName',size1='$fileSize',type1='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 3)
 {
-	$query = "update $pts.upload set name2='$fileName',size2='$fileSize',type2='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name2='$fileName',size2='$fileSize',type2='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 4)
 {
-	$query = "update $pts.upload set name3='$fileName',size3='$fileSize',type3='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name3='$fileName',size3='$fileSize',type3='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 5)
 {
-	$query = "update $pts.upload set name4='$fileName',size4='$fileSize',type4='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name4='$fileName',size4='$fileSize',type4='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 
 else if($con == 6)
 {
-	$query = "update $pts.upload set name5='$fileName',size5='$fileSize',type5='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
+	$query = "update $pps.upload set name5='$fileName',size5='$fileSize',type5='$fileType',updated_user='$username',updated_at=NOW() where sealno='$sno' AND plant_code='$plant_code'";
 	mysqli_query($link, $query) or die('Error, query failed');
 }
 //echo $query;

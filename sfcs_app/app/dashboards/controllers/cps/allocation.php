@@ -35,7 +35,7 @@ $url1 = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER['HTTP_HOS
 	// $php_self = explode('/',$_SERVER['PHP_SELF']);
 	// array_pop($php_self);
 	// $url_r = base64_encode(implode('/',$php_self)."/fab_pop_allocate_v5.php");
-	$has_permission=haspermission($url_r);
+	// $has_permission=haspermission($url_r);
 ?>
 	
 
@@ -595,7 +595,7 @@ if(isset($_POST['allocate_new']))
 					$sql13="insert into $pps.requested_dockets(docket_requested_id,jm_docket_line_id,plan_lot_ref,plant_code,created_user,created_at) values('$uuid1','".$jm_docket_line_id."',\"".$lot_db[$j]."\",'".$plant_code."','".$username."','NOW()')";
 					mysqli_query($link, $sql13) or exit("Sql Error344: $sql13".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
-					$sql111="select * from $wms.fabric_cad_allocation where doc_no='".$jm_docket_line_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
+					$sql111="select roll_id,tran_pin,allocated_qty from $wms.fabric_cad_allocation where doc_no='".$jm_docket_line_id."' and roll_id='".$tid_ref[$j]."' and plant_code='".$plant_code."'";
                     //echo $sql111."</br>";
                     $sql_result111=mysqli_query($link, $sql111) or exit("Sql Error--12".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result111)>0)
@@ -836,7 +836,7 @@ if(isset($_POST['allocate']))
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
 
-			$sql33="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).")";
+			$sql33="select inv_no,grn_date,batch_no,item from $wms.sticker_report where plant_code='".$plant_code."' and lot_no in (".implode(",",$lot_db_2).")";
 			// echo $sql3;
 			$sql_result33=mysqli_query($link, $sql33) or exit("Sql Error12nth: $sql33".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$row_count33=mysqli_num_rows($sql_result33);	

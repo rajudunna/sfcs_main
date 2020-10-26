@@ -5,7 +5,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
-	$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
+	//$view_access=user_acl("SFCS_0245",$username,1,$group_id_sfcs); 
 	$plantcode=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
 ?>
@@ -50,22 +50,40 @@ if(isset($_POST['submit']))
 
 
 
-$sql="select * from $tms.bundle_transfer_log where plant_code='$plantcode' and date(created_at) = '$sdate' order by created_at";
+$sql="select *,count(*) as bundle_count,date(created_at) as created_at1 from $tms.bundle_transfer_log where plant_code='$plantcode' and date(created_at) = '$sdate' group by job_no_ref";
 // echo $sql."<br>";
-$result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
+ $result=mysqli_query($link, $sql) or exit("Problem in getting section".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 $x=0;
 if(mysqli_num_rows($result) > 0)
 {
-	echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Total Bundles</th><th>User</th><th>Control</th></tr><thead>";
-	
+	echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>From Module</th><th>To Module</th><th>Bundles Count</th><th>User</th><th>Control</th></tr><thead>";
 	while($row=mysqli_fetch_array($result))
-	{
-		$from_module=$row['from_module'];
-		$to_module=$row['to_module'];
+    {
+		$from_module=$row['from_resource'];
+		$to_module=$row['to_resource'];
 		$bundle_count=$row['bundle_count'];
+		$job_no_ref=$row['job_no_ref'];
 		$created_user=$row['created_user'];
-		$created_date=$row['created_date'];
+		$created_at= $row['created_at1'];
+
+		$query = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$from_module'";
+		$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$workstation_rows_num = mysqli_num_rows($sql_res);
+		if($workstation_rows_num > 0) {
+			while ($workstation_row = mysqli_fetch_array($sql_res)) {
+				$from_module_data = $workstation_row['workstation_code'];
+			}
+		}
+
+		$query = "select * from $pms.workstation where plant_code='$plant_code' and workstation_id = '$to_module'";
+		$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		$workstation_rows_num = mysqli_num_rows($sql_res);
+		if($workstation_rows_num > 0) {
+			while ($workstation_row = mysqli_fetch_array($sql_res)) {
+				$to_module_data = $workstation_row['workstation_code'];
+			}
+		}
 
 		$x++;
 		$sidemenu=true;
@@ -73,11 +91,11 @@ if(mysqli_num_rows($result) > 0)
 
 		echo "<tr>";
 		echo "<td>".$x."</td>";
-		echo "<td>".$from_module."</td>";
-		echo "<td>".$to_module."</td>";
+		echo "<td>".$from_module_data."</td>";
+		echo "<td>".$to_module_data."</td>";
 		echo "<td>".$bundle_count."</td>";
 		echo "<td>".$created_user."</td>";
-		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&from_module=$from_module&to_module=$to_module&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
+		echo "<td><input type='button' class='btn btn-primary' href=\"?r=$print_sheet&job_no_ref=$job_no_ref&created_date=$created_date&plantcode=$plantcode&sidemenu=$sidemenu\" onclick=\"return popitup_new('$print_sheet&job_no_ref=$job_no_ref&created_at=$created_at&plantcode=$plantcode&sidemenu=$sidemenu')\" name='submit' id='submit' value='View'></input></td>";
 		echo "</tr>";
 	}
 echo "</table></div>";

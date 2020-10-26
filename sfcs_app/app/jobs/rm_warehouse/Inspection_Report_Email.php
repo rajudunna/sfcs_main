@@ -230,7 +230,7 @@ $table.= "</tr>";
 				  
 				 $check=0;
 			
-				 $sqla="SELECT Distinct supplier_m3_code as supplier,seq_no FROM $wms.inspection_supplier_db where seq_no='$supplier' and plant_code= '$plant_code'";
+				 $sqla="SELECT Distinct supplier_m3_code as supplier,seq_no FROM $pms.inspection_supplier_db where seq_no='$supplier' and plant_code= '$plant_code'";
 				//  echo $sqla;
 				$sql_resulta=mysqli_query($link, $sqla) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowa=mysqli_fetch_array($sql_resulta))

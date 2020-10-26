@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
-<script type="text/javascript" src="/sfcs_app/common/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/sfcs_app/common/js/jquery_new.min.js"></script>
 <?php
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
@@ -23,19 +23,47 @@ $(document).ready(function()
 	var inputjob="<?= $_GET['inputjob'] ;?>";
 	var plant_code="<?= $_GET['plantcode'] ;?>";
 	var inputObj = {"jobNumber":inputjob, "plantCode":plant_code};
+	var bearer_token;
+	const creadentialObj = {
+	grant_type: 'password',
+	client_id: 'pps-back-end',
+	client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+	username: 'bhuvan',
+	password: 'bhuvan'
+	}
 	$.ajax({
-		type: "POST",
-		url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobColorSizeDetails' ?>',
-		data: inputObj,
-		success: function(response) 
-		{
-			var bundet = response;
-			tableConstruction(bundet);
-		},error: function(e) {
-			console.log(e);
-			alert();
-		}
-	});
+		method: 'POST',
+		url: "<?php echo $KEY_LOCK_IP?>",
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		xhrFields: { withCredentials: true },
+		contentType: "application/json; charset=utf-8",
+		transformRequest: function (Obj) {
+			var str = [];
+			for (var p in Obj)
+				str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+			return str.join("&");
+		},
+		data: creadentialObj
+	}).then(function (result) {
+		console.log(result+'res');
+		bearer_token = result['access_token'];
+		$.ajax({
+			type: "POST",
+			url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobColorSizeDetails' ?>',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+			data: inputObj,
+			success: function(response) 
+			{
+				var bundet = response;
+				tableConstruction(bundet);
+			},error: function(e) {
+				console.log(e);
+				alert();
+			}
+		});	
+	}).fail(function (result) {
+		console.log(result);
+	}) ;
 });
 
 function tableConstruction(bundet){

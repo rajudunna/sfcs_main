@@ -79,6 +79,8 @@ if(isset($_POST['filter']))
 	<th>In</th>
 	<th>Out</th>
 	<th>FG</th>
+	<th>FCA</th>
+	<th>Shipped</th>
 	<th>Status</th>
 	</tr>";
 	
@@ -99,7 +101,7 @@ if(isset($_POST['filter']))
 			$color=$sql_row1['color'];
 			$master_po_details_id=$sql_row1['master_po_details_id'];
 			// var_dump($style,$color,$schedule,$po_number,"<br>");
-			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and master_po_order_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
+			$sql2="SELECT sum(quantity) as order_qty FROM $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
 			// echo $sql2."<br/>";
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))
@@ -146,8 +148,9 @@ if(isset($_POST['filter']))
 			if($order_qty<=$fg || $fg >0){
 				$status="FG";
 			}
-			
-				
+		
+				$fca=0;
+				$shipped=0;
 				echo "<tr>";
 				echo "<td>".$order_date."</td>";
 				echo "<td>".$style."</td>";
@@ -158,6 +161,8 @@ if(isset($_POST['filter']))
 				echo "<td>".$sew_in."</td>";
 				echo "<td>".$sew_out."</td>";
 				echo "<td>".$fg."</td>";
+				echo "<td>".$fca."</td>";
+				echo "<td>".$shipped."</td>";
 				echo "<td>$status</td>";
 				echo "</tr>";
 		}

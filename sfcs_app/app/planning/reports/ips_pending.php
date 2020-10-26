@@ -91,8 +91,8 @@ $plantCode = $_SESSION['plantCode'];
 						$sql_get_sewingJobs = "SELECT DISTINCT(jg_header.jm_jg_header_id) ,job_number from $pps.jm_cut_job AS cut_job 
 			LEFT JOIN $pps.jm_cut_bundle AS cut_bundle ON  cut_bundle.jm_cut_job_id = cut_job.jm_cut_job_id 
 			LEFT JOIN $pps.jm_cut_bundle_details AS cut_bundle_details ON cut_bundle_details.jm_cut_bundle_id = cut_bundle.jm_cut_bundle_id
-			LEFT JOIN $pps.jm_product_logical_bundle As pplb ON pplb.jm_cut_bundle_detail_id = cut_bundle_details.jm_cut_bundle_detail_id
-			LEFT JOIN $pps.jm_job_bundles AS job_bundles ON job_bundles.jm_product_logical_bundle_id = pplb.jm_product_logical_bundle_id
+			LEFT JOIN $pps.jm_product_logical_bundle As pplb ON pplb.jm_ppb_id = cut_bundle_details.jm_ppb_id
+			LEFT JOIN $pps.jm_job_bundles AS job_bundles ON job_bundles.jm_pplb_id = pplb.jm_pplb_id
 			LEFT JOIN $pps.jm_jg_header AS jg_header ON jg_header.jm_jg_header_id = job_bundles.jm_jg_header_id
 			WHERE cut_job.plant_code='" . $plantCode . "' AND cut_job.created_at BETWEEN '" . $s_date . " 00:00:00' AND '" . $e_date . " 23:59:59' AND job_group_type='PSJ' ORDER BY job_number ASC";
 

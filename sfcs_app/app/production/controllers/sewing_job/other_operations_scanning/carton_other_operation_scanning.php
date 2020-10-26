@@ -33,7 +33,7 @@
 <?php
 	include(getFullURLLevel($_GET['r'],'common/config/config.php',5,'R'));
 	include(getFullURLLevel($_GET['r'],'common/config/functions.php',5,'R'));  
-	$has_permission=haspermission($_GET['r']);
+	// $has_permission=haspermission($_GET['r']);
 	if ($_GET['operation_id'])
 	{
         $shift = $_GET['shift'];

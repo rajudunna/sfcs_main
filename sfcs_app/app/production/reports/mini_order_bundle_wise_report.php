@@ -7,17 +7,22 @@ function firstbox()
 	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_bundle_wise_report.php','N'); ?>';
 	window.location.href =url1+"&style="+document.input.style.value;
 }
+function secondbox()
+{
+	var url1 = '<?= getFullUrl($_GET['r'],'mini_order_bundle_wise_report.php','N'); ?>';
+	window.location.href =url1+"&style="+document.input.style.value+"&mpo="+document.input.mpo.value;
+}
 </script>
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/sms_api_calls.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
-$plant_code = $_session['plantCode'];
-$username =  $_session['userName'];
-$style=$_POST['style'];
-$master_po=$_POST['mpo'];
+$plant_code = $_SESSION['plantCode'];
+$username =  $_SESSION['userName'];
+
 $style=$_GET['style'];
+$mpo=$_GET['mpo'];
 $reptype=$_POST['reptype'];
 if($_POST['reptype'] == NULL){
     $reptype=1;
@@ -64,9 +69,9 @@ if($reptype == 1) {
                     <label for='style'>Master Po</label>
                     <?php
                     //geting style
-                    $sql="SELECT DISTINCT mpo FROM $pts.transaction_log where style = '$style' AND plant_code='$plant_code' AND is_active=1";	
+                    $sql="SELECT master_po_description,mp_order.master_po_number AS mpo FROM $pps.`mp_order` LEFT JOIN $pps.mp_color_detail ON mp_color_detail.`master_po_number` = mp_order.`master_po_number` where style = '$style' AND mp_order.plant_code='$plant_code' AND mp_order.is_active=1";
                     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-                    echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='verify(event)'>";
+                    echo "<select class='form-control' name=\"mpo\"  id=\"mpo\" id='mpo' onchange='secondbox();' required>";
     
                     echo "<option value='' disabled selected>Please Select</option>";
                     while($sql_row=mysqli_fetch_array($sql_result))
@@ -74,11 +79,11 @@ if($reptype == 1) {
     
                         if($sql_row['mpo']==$mpo)
                         {
-                            echo "<option value=\"".$sql_row['mpo']."\" selected>".$sql_row['mpo']."</option>";
+                            echo "<option value=\"".$sql_row['mpo']."\" selected>".$sql_row['master_po_description']."</option>";
                         }
                         else
                         {
-                            echo "<option value=\"".$sql_row['mpo']."\">".$sql_row['mpo']."</option>";
+                            echo "<option value=\"".$sql_row['mpo']."\">".$sql_row['master_po_description']."</option>";
                         }
     
                     }
@@ -104,8 +109,9 @@ if($reptype == 1) {
         <br/>
         <div class="row">
             <?php
-                if($style !='' && $reptype !=''){
-       
+                if(isset($_POST['submit'])){
+                    $style=$_POST['style'];
+                    $master_po=$_POST['mpo'];
                     $operation_code = [];	
                     $operations_yes = [];
                     $operations_no = [];
@@ -113,13 +119,14 @@ if($reptype == 1) {
                     $opertion_names = [];	
                     $total_data = [];
                     $main_result = [];
+                    $operations = [];
                     
                     //get style and color operations
-                    $get_details="SELECT schedule,color FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,color";
+                    $get_details="SELECT DISTINCT(color) FROM $pts.transaction_log WHERE style='$style' AND plant_code='$plant_code' AND is_active=1 GROUP BY color";
+                    //echo  $get_details;
                     $result1 = $link->query($get_details);
                     while($row1 = $result1->fetch_assoc())
                     {
-                      $schedule=$row1['schedule'];
                       $color=$row1['color'];
                       //get operations_version_id
                       $get_operations_version_id="SELECT operations_version_id FROM $pps.mp_color_detail WHERE style='$style' AND color='$color' AND master_po_number='$master_po' AND plant_code='$plant_code' AND is_active=1";
@@ -131,20 +138,20 @@ if($reptype == 1) {
                       //Function to get operations for style,color
                       $result_mrn_operation=getJobOpertions($style,$color,$plant_code,$operations_version_id);
 					  $operations=$result_mrn_operation;
-
+                     
                     }
+                    
                     $category=DepartmentTypeEnum::SEWING;
                     foreach($operations as $key =>$mpo_operations){
-                        if($key['operationCategory'] == $category)
+                        if($mpo_operations['operationCategory'] == $category)
                         {
-                            $operation_codes[]=$key['operationCode'];
-                            $operation_names[]=['op_name'=>$key['operationName'],'op_code'=>$key['operationCode']];
+                            //var_dump($mpo_operations);
+                            $operation_codes[]=$mpo_operations['operationCode'];
+                            $operation_names[]=['op_name'=>$mpo_operations['operationName'],'op_code'=>$mpo_operations['operationCode']];
                         }
                     }
-                    
-                    $main_result['columns'] = $opertion_names;
+                    $main_result['columns'] = $operation_names;
 
-                    
                     if(count($operation_codes)>0){
                         $operation_codes_no = implode(',',$operation_codes);
                         //columns Data
@@ -152,10 +159,10 @@ if($reptype == 1) {
                             $get_data_transaction= "SELECT style,schedule,color,parent_job,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,parent_barcode,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY parent_barcode,operation order by parent_barcode,operation";
                         } 
                         else{
-                            $get_data_transaction= "SELECT style,schedule,color,parent_job,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,parent_barcode,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation_id in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,parent_job,color,size,operation order by parent_job,size,operation";
+                            $get_data_transaction= "SELECT style,schedule,color,parent_job,size,sum(good_quantity) as good_qty,sum(rejected_quantity) as rejected_qty,parent_barcode,resource_id,operation as op_code FROM $pts.`transaction_log` WHERE style='".$style."' AND operation in ($operation_codes_no) AND plant_code='$plant_code' AND is_active=1 GROUP BY schedule,parent_job,color,size,operation order by parent_job,size,operation";
                         }
                
-                  
+                        
                         $result5 = $link->query($get_data_transaction);
                         $operation_array = explode(",", $operation_codes_no);
                         $op_count1 = mysqli_num_rows($result5);
@@ -188,7 +195,7 @@ if($reptype == 1) {
                         
                         echo "<h3>&nbsp; $r_name <span> for <b>Style :</b>".$style."</span></h3>";
                         echo '</div>';
-                        echo '<div class="col-md-6">';
+                        echo '<div class="col-md-5">';
                         echo '</div>';
                         echo '<div class="col-md-1">';
                             echo '<form action="'.getFullURL($_GET['r'],'export_excel1.php','R').'" method ="post" > 
@@ -255,7 +262,7 @@ if($reptype == 1) {
 							<td><?=  $org_qty  ?></td> 
                             <?php
                                 //To get workstation description
-                                $query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '$bundle_data[$value][0]['resource_id']'  AND is_active=1";
+                                $query_get_workdes = "select workstation_code from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$bundle_data[$value][0]['resource_id']."'  AND is_active=1";
                                 $result3 = $link->query($query_get_workdes);
                                 while($des_row = $result3->fetch_assoc())
                                 {
@@ -300,7 +307,7 @@ if($reptype == 1) {
                                 <td><?= $size_values[$size_key][0]['job_number']  ?></td>
                                 <?php
                                 //To get taskjob_id
-                                $get_task_id="SELECT task_jobs_id FROM $tms.`task_attributes` WHERE attribute_value='$size_values[$size_key][0]['job_number']' AND plant_code='$plant_code'
+                                $get_task_id="SELECT task_jobs_id FROM $tms.`task_attributes` WHERE attribute_value='".$size_values[$size_key][0]['job_number']."' AND plant_code='$plant_code'
                                  AND is_active=1";
                                 $result4 = $link->query($get_task_id);
                                 while($task_row = $result4->fetch_assoc())

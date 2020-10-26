@@ -5,18 +5,18 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',4,'R') );  ?>
 
 <?php
-if($_SERVER['SERVER_NAME']=="bainet")
-{
-	$view_access=user_acl("SFCS_0242",$username,1,$group_id_sfcs); 
-}
-else if($_SERVER['SERVER_NAME']=="bai2net")
-{
-	$view_access=user_acl("SFCS_0250",$username,1,$group_id_sfcs); 
-}
-else if($_SERVER['SERVER_NAME']=="bai3net")
-{
-	$view_access=user_acl("SFCS_0293",$username,1,$group_id_sfcs); 
-}	
+// if($_SERVER['SERVER_NAME']=="bainet")
+// {
+// 	$view_access=user_acl("SFCS_0242",$username,1,$group_id_sfcs); 
+// }
+// else if($_SERVER['SERVER_NAME']=="bai2net")
+// {
+// 	$view_access=user_acl("SFCS_0250",$username,1,$group_id_sfcs); 
+// }
+// else if($_SERVER['SERVER_NAME']=="bai3net")
+// {
+// 	$view_access=user_acl("SFCS_0293",$username,1,$group_id_sfcs); 
+// }	
 ?>
 <script>
 	function firstbox()

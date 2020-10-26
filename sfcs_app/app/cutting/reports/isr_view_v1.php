@@ -107,19 +107,34 @@ if(isset($_POST['submit']))
 	//getting barcode_id,shift,parent_ext_ref_id
 	If($to_shift == 'ALL')
 	{
-       $sql="SELECT barcode_id,parent_ext_ref_id,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job'";
+       $sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_job_type in ('PSJ','PSEJ')";
 	}
 	else
 	{
-		$sql="SELECT barcode_id,parent_ext_ref_id,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND shift='$to_shift' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_type='sewing job' ";
+		$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND shift='$to_shift' AND DATE(created_at) BETWEEN '$from_date' AND '$to_date' AND parent_job_type in ('PSJ','PSEJ')";
 	}	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error getting details".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$barcode_id=$sql_row['barcode_id'];
-		$parent_ext_ref_id=$sql_row['parent_ext_ref_id'];
+		$barcode=$sql_row['barcode'];
+		$parent_job=$sql_row['parent_job'];
 		$shift=$sql_row['shift'];
 		$date=$sql_row['date'];
+		//getting barcode id
+		$sql_barcode_qry="Select barcode_id from $pts.barcode where barcode='$barcode' AND plant_code='$plant_code'";
+		$sql_result_det=mysqli_query($link, $sql_barcode_qry) or exit("Sql Error getting barcode id".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row_id=mysqli_fetch_array($sql_result_det))
+		{
+			$barcode_id=$sql_row_id['barcode_id'];
+		}
+		//getting parent_ext_ref_id
+		$sql_ext_ref_qry="select jm_jg_header_id from $pps.jm_jg_header where job_number='$parent_job' AND plant_code='$plant_code'";
+		$sql_result_data=mysqli_query($link, $sql_ext_ref_qry) or exit("Sql Error getting jm_jg_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row_ref=mysqli_fetch_array($sql_result_data))
+		{
+			$parent_ext_ref_id=$sql_row_ref['jm_jg_header_id'];
+		}
+		
 		//getting finished good id
 		$get_finshgood_qry="SELECT finished_good_id FROM $pts.`fg_barcode` WHERE barcode_id='$barcode_id' AND plant_code='$plant_code'";
 		$get_finshgood_qry_result=mysqli_query($link, $get_finshgood_qry) or exit("Sql Error finished_good_id".mysqli_error($GLOBALS["___mysqli_ston"]));

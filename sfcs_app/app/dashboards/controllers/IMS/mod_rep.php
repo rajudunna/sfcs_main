@@ -17,7 +17,7 @@
     $php_self = explode('/',$_SERVER['PHP_SELF']);
     array_pop($php_self);
     $url_r = base64_encode(implode('/',$php_self)."/sec_rep.php");
-    $has_permission=haspermission($url_r);
+    //$has_permission=haspermission($url_r);
     error_reporting(0);
     $ref_no=time();
     //echo $ref_no;
@@ -116,7 +116,8 @@
                                     $tr_color="white"; 
                                     $toggle=0; 
                                 } 
-                                  
+                                $count=0;
+
                                 foreach($jobsArray as $job)     
 					            {  
                                     $flag++;
@@ -144,7 +145,7 @@
                                     
                                     /**getting style,colr attributes using taskjob id */
                                     $job_detail_attributes = [];
-                                    $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantCode'";
+                                    $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantCode'";
                                     $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                                     while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
                                         $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];
@@ -177,6 +178,12 @@
                                                 $parent_barcode=$PPLBRow['parent_barcode'];
                                             }
 
+                                            $pplbBrcdQuery = "SELECT barcode from $pts.barcode where barcode_id = '$parent_barcode' ";
+                                            $pplbBrcdResult = mysqli_query($link, $pplbBrcdQuery);
+                                            while ($pplbRow = mysqli_fetch_array($pplbBrcdResult)) {
+                                                $pplb_barcode = $pplbRow['barcode'];
+                                            }
+
                                             $child_barcode[]=$APLBRow['child_barcode'];
                                             $child_barcode=array();
                                             $qrygetParentBarcodeAPLB="SELECT child_barcode FROM $pts.parent_barcode WHERE parent_barcode='$parent_barcode' AND child_barcode_type='APLB' AND plant_code='$plantCode' AND is_active=1";
@@ -187,7 +194,8 @@
                                             }
 
 
-                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where barcode_id IN ('".implode("','" , $child_barcode)."') GROUP BY operation";
+                                            $transactionsQry = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where parent_barcode='$pplb_barcode' GROUP BY operation";
+                                            // echo $transactionsQry;
                                             $transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
                                             while($transactionRow=mysqli_fetch_array($transactionsResult)) {
                                                 // echo $transactionRow['good_quantity']."</br>";
@@ -237,7 +245,7 @@
                                                 <td>".$aging."</td>
                                                 <td>".($inputQty-($outputQty+$outputRejQty))."</td>
                                         </tr>";
-                                        
+                                        $count++;
                                         $inputQty=0;
                                         $outputQty=0;
                                         $outputRejQty=0;
@@ -246,6 +254,7 @@
                                 }
                                 
                             } 
+                            echo '<input type="hidden" value="'.$count.'" name="count" id="count">';
                                 
                         ?>
                     </table>
@@ -294,50 +303,83 @@
 <script>
 $(document).ready(function(){
        $('body').on('click','#submit',function(){
-        var bundles=[];
-            $('input[type=checkbox]').each(function (){
-                if(this.checked){
-                    //console.log($(this).val());
-                    bundles.push($(this).val())
+           if($('#count').val() == 1){
+            swal('Can Not Transfer','Module has only one bundle','error');
+           } else {
+                var bundles=[];
+                $('input[type=checkbox]').each(function (){
+                    if(this.checked){
+                        //console.log($(this).val());
+                        bundles.push($(this).val())
 
-                }
-            });
-            var module = '<?= $module?>';
-            var plantCode = '<?= $plantCode?>';
-            var user_name = '<?= $user_name?>';
+                    }
+                });
+                var module = $('#module_ref').val();
+                var plantCode = '<?= $plantCode?>';
+                var module1 = '<?= $module?>';
+                var user_name = '<?= $user_name?>';
                 const data={
                                 "bundleNumber": bundles,
                                 "plantCode": '<?= $plantCode ?>',
-                                "resourceId": '<?= $module ?>',
+                                "resourceId": module,
                                 "createdUser": '<?= $user_name ?>'
                             }
+                            var bearer_token;
+                const creadentialObj = {
+                grant_type: 'password',
+                client_id: 'pps-back-end',
+                client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
+                username: 'bhuvan',
+                password: 'bhuvan'
+                }
                 $.ajax({
-                    type: "POST",
-                    url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
-                    data: data,
-                    success: function (res) {
-                        if(res.status)
-                        {
-                            swal('','Sewing Job Transfered Successfully','success')
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                            
-                        }
-                        else
-                        {
-                            swal('',res.internalMessage,'error');
-                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                        }                       
-                        //$('#loading-image').hide();
+                    method: 'POST',
+                    url: "<?php echo $KEY_LOCK_IP?>",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    xhrFields: { withCredentials: true },
+                    contentType: "application/json; charset=utf-8",
+                    transformRequest: function (Obj) {
+                        var str = [];
+                        for (var p in Obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
+                        return str.join("&");
                     },
-                    error: function(res){
-                        swal('Error in getting data');
-                        setTimeout(function(){window.location.replace("mod_rep.php?module="+module+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
-                        //$('#loading-image').hide();
-                    }
-                });
-   });
-
-});
+                    data: creadentialObj
+                }).then(function (result) {
+                    console.log(result);
+                    bearer_token = result['access_token'];
+                    $.ajax({
+                        type: "POST",
+                        url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                        data: data,
+                        success: function (res) {
+                            // console.log(res);
+                            if(res.status)
+                            {
+                                swal('','Bundle Transfered Successfully','success')
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                                
+                            }
+                            else
+                            {
+                                swal('',res.internalMessage,'error');
+                                setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            }                       
+                            //$('#loading-image').hide();
+                        },
+                        error: function(res){
+                            swal('Error in getting data');
+                            setTimeout(function(){window.location.replace("mod_rep.php?module="+module1+"&plantCode="+plantCode+"&username="+user_name)} , 3000);
+                            //$('#loading-image').hide();
+                        }
+                    });
+                }).fail(function (result) {
+                    console.log(result);
+                }) ;
+            }
+        });
+    });
 </script>
 <script language="javascript" type="text/javascript">
     var table2_Props =  {            

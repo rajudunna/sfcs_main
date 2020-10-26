@@ -1,5 +1,5 @@
 <?php
-$has_permission=haspermission($_GET['r']);
+//$has_permission=haspermission($_GET['r']);
 
 ?>
 <!-- <script language="javascript" type="text/javascript" src="../styles/dropdowntabs.js"></script> -->
@@ -243,10 +243,10 @@ switch($level)
 			$check=$authorizeLevel_2;
 		}
 		
-		if(!in_array($check,$has_permission))
-		{
+		// if(!in_array($check,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Approve/Reject Form</center></h3>";
 		break;
 	}
@@ -273,30 +273,30 @@ switch($level)
 			$checks=$authorizeLevel_2;
 		}
 		
-		if(!in_array($checks,$has_permission))
-		{
+		// if(!in_array($checks,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Update Form</center></h3>";
 		break;
 	}
 	case 4:
 	{
 		//$tmp=$username."@brandix.com";
-		if(!in_array($authorizeLevel_3,$has_permission))
-		{
+		// if(!in_array($authorizeLevel_3,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>MR Update Form</center></h3>";
 		break;
 	}
 	case 5:
 	{
 		//$tmp=$username."@brandix.com";
-		if(!in_array($authorizeLevel_4,$has_permission))
-		{
+		// if(!in_array($authorizeLevel_4,$has_permission))
+		// {
 			header("Location:".$pgeurl);
-		}
+		// }
 		echo "<h3><center>Material Issue Form</center></h3>";
 		break;
 	}
@@ -437,11 +437,11 @@ echo "</tr>";
 
 if($level==3)
 {
-	$sql="select * from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5 and plant_code='".$plant_code."'";
+	$sql="select tid,req_date,style,schedule,color,product,item_desc,item_code,reason_code,req_qty,uom,avail_qty,req_user,section from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and status=5 and plant_code='".$plant_code."'";
 }
 else
 {
-	$sql="select * from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and plant_code='".$plant_code."'";
+	$sql="select tid,req_date,style,schedule,color,product,item_desc,item_code,reason_code,req_qty,uom,avail_qty,req_user,section from $wms.mrn_track where rand_track_id=$ref and tid=$ref_tid and plant_code='".$plant_code."'";
 }
 
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -468,7 +468,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	echo "<td>".$item_desc."</td>";
 	// echo "<td>".$reason_code_db[array_search($sql_row['reason_code'],$reason_id_db)]."</td>";
 	$reason_code = $sql_row['reason_code'];
-	$sql_reason = "SELECT * FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code and plant_code='".$plant_code."'";
+	$sql_reason = "SELECT reason_code,reason_desc FROM $wms.mrn_reason_db WHERE reason_tid =$reason_code and plant_code='".$plant_code."'";
 	$result_reason = mysqli_query($link,$sql_reason);
 	$reason_row = mysqli_fetch_assoc($result_reason);
 	echo "<td>".$reason_row['reason_code']."-".$reason_row['reason_desc']."</td>";

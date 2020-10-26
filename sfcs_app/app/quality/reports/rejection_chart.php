@@ -7,7 +7,7 @@
 error_reporting(0);
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-$view_access=user_acl("SFCS_0054",$username,1,$group_id_sfcs); 
+//$view_access=user_acl("SFCS_0054",$username,1,$group_id_sfcs); 
 $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 ?>
@@ -27,7 +27,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 
 
-$sql="select * from $bai_rm_pj1.inspection_supplier_db where product_code=\"Fabric\"";
+$sql="select * from $pms.inspection_supplier_db where product_code=\"Fabric\"";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("inspection_supplier_db Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
