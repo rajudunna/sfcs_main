@@ -93,7 +93,7 @@ $table.= "<th>C-Tex Length</th>";
 $table.= "<th>Length Shortage</th>";
 $table.= "</tr>";
 
-	$sqlx="select * from $wms.inspection_db where status=1 and plant_code= '$plant_code'";
+	$sqlx="select act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,batch_ref,log_date,unique_id from $wms.inspection_db where status=1 and plant_code= '$plant_code'";
 	$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_rowx=mysqli_fetch_array($sql_resultx))
 	{

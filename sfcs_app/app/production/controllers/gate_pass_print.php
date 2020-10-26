@@ -15,7 +15,7 @@ else
 	$plant_code = $_SESSION['plantCode'];
 	$username = $_SESSION['userName'];
 }
-$sql12="select * from $pps.gatepass_table where id=".$gate_id." AND plant_code='".$plant_code."'";
+$sql12="select date,username,vehicle_no,operation from $pps.gatepass_table where id=".$gate_id." AND plant_code='".$plant_code."'";
 $sql_result123=mysqli_query($link, $sql12) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));	
 while($sql_row12=mysqli_fetch_array($sql_result123))
 {

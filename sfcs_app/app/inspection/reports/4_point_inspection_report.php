@@ -27,7 +27,7 @@ $get_details21 = "select * from $wms.`inspection_population` where parent_id=".$
 $details_result21 = mysqli_query($link, $get_details21) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 $tot_rolls_data=mysqli_num_rows($details_result21);
 
-$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
+$get_inspection_population_info = "select store_in_tid,inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,inspection_status from $wms.`roll_inspection_child` where parent_id=".$inpsect_id." and plant_code='".$plant_code."'";
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) 
 {
@@ -48,7 +48,7 @@ while ($row22 = mysqli_fetch_array($info_result))
 	$tot_ids[]=	$row22['store_in_tid'];
 }
 
-$get_details = "select * from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."'";
+$get_details = "select supplier_invoice,store_in_id,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,lot_no,status from $wms.`inspection_population` where store_in_id in (".implode(",",$tot_ids).") and plant_code='".$plant_code."'";
 //echo $get_details;
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result))
@@ -79,7 +79,7 @@ while ($row1 = mysqli_fetch_array($details_result))
 
 
 
-$get_details1 = "select * from $wms.`main_population_tbl` where id=$inpsect_id and plant_code='".$plant_code."'";
+$get_details1 = "select fab_composition,s_width,repeat_len,s_weight,lab_testing,tolerence,supplier,remarks from $wms.`main_population_tbl` where id=$inpsect_id and plant_code='".$plant_code."'";
 $details_result1 = mysqli_query($link, $get_details1) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row111 = mysqli_fetch_array($details_result1)) 
 {
@@ -93,7 +93,7 @@ while ($row111 = mysqli_fetch_array($details_result1))
 	$remarks = $row111['remarks'];
 }
  $lot_ref = implode(",",$lots_no);
- $get_details12 = "select * from $wms.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and plant_code='".$plant_code."'";
+ $get_details12 = "select style_no,supplier,po_no,rm_color,inv_no,item_desc,buyer,rec_no from $wms.`sticker_report` where lot_no in ("."'".str_replace(",","','",$lot_ref)."'".") and plant_code='".$plant_code."'";
 //echo $get_details12;
 $details_result12 = mysqli_query($link, $get_details12) or exit("get_details Error3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1112 = mysqli_fetch_array($details_result12)) 

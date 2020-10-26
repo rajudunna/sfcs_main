@@ -75,7 +75,7 @@ if($log_time==0 or $time_diff>1)
 			$date=date("Y-m-d");
 			// $date="2018-09-17";
 			$work_hrs=0;
-			$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plant_code' and date='$date' and shift in ($team)";
+			$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plant_code' and date='$date' and shift in ($team)";
 			// echo $sql_hr."<br>";
 			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			if(mysqli_num_rows($sql_result_hr) >0)

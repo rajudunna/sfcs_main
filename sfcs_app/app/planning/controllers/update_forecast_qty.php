@@ -177,7 +177,7 @@ if(isset($_POST['submit']))
 					$frv[$work_id]=0;
 					$frv_id[$work_id]=0;			
 				}
-				$sql12="SELECT * FROM $pps.line_forecast WHERE date='$today' AND module='".$work_id."' AND plant_code='".$plantcode."'";
+				$sql12="SELECT qty,reason FROM $pps.line_forecast WHERE date='$today' AND module='".$work_id."' AND plant_code='".$plantcode."'";
 				$result12=mysqli_query($link, $sql12) or exit("Sql Error at line_forecast " . mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($result12)) 
 				{ 

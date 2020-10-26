@@ -72,7 +72,7 @@ $sew_out_op=130;
 $operation_code_array=[15,100,130];
 
 
-$sql="SELECT * FROM $oms.oms_mo_details where planned_cut_date between  '$sdate' and '$edate' and po_number !='' and plant_code='$plant_code' group by po_number";
+$sql="SELECT po_number,schedule,planned_cut_date FROM $oms.oms_mo_details where planned_cut_date between  '$sdate' and '$edate' and po_number !='' and plant_code='$plant_code' group by po_number";
 	
 
 	$text.= "<table id=\"example1\">";
@@ -100,7 +100,7 @@ $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS[
 		$po_number=$sql_row['po_number'];
 		$schedule=$sql_row['schedule'];
 		$order_date=$sql_row['planned_cut_date'];
-		$sql1="SELECT * FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
+		$sql1="SELECT style,color,master_po_details_id FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
 		// echo $sql1."<br/>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))

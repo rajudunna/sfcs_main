@@ -109,7 +109,7 @@
 						}
 					}
 				
-					$plant_timings_query_sah="SELECT * FROM $pms.plant where plant_code='$plant_code'";
+					$plant_timings_query_sah="SELECT plant_start_time,plant_end_time FROM $pms.plant where plant_code='$plant_code'";
 					// echo $plant_timings_query_sah;
 					$plant_timings_result=mysqli_query($link,$plant_timings_query_sah);
 					while ($timing = mysqli_fetch_array($plant_timings_result))
@@ -170,7 +170,7 @@
 					$y_axis_act_display="".implode(",",$act_sah)."";
 
 					// echo $selected_date.' == '.$selected_hour.' == '.$selected_section.'<br><br>';
-					$plant_timings_query="SELECT * FROM $pms.plant where plant_code = '$plant_code'";
+					$plant_timings_query="SELECT plant_start_time,plant_end_time FROM $pms.plant where plant_code = '$plant_code'";
 					//echo $plant_timings_query;
 					$plant_timings_result11=mysqli_query($link,$plant_timings_query);
 					while ($row = mysqli_fetch_array($plant_timings_result11))

@@ -109,7 +109,7 @@ if(strlen($lot_no)>0)
 {
 	
 
-$sql="select * from $wms.sticker_report where plant_code='$plantcode' AND lot_no=\"".trim($lot_no)."\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,backup_status from $wms.sticker_report where plant_code='$plantcode' AND lot_no=\"".trim($lot_no)."\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);

@@ -6,7 +6,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
     $plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
-	$sql = "SELECT * FROM $mdm.inspection_complaint_reasons order by tid desc";
+	$sql = "SELECT complaint_reason,tid,Complaint_clasification,complaint_category,status FROM $mdm.inspection_complaint_reasons order by tid desc";
 	//echo $sql;
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);

@@ -27,7 +27,7 @@ if(isset($_POST['Save']))
             // $ims_remarks = $_POST['ims_remarks'][$key];
             // $module = $_POST['module'];
             $remove_type=3;
-            $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no'  and plant_code='$plant_code' and remove_type = '0'";
+            $job_deacive = "SELECT id FROM $tms.`job_deactive_log` where po_number = '$po_number' and input_job_no='$input_job_no'  and plant_code='$plant_code' and remove_type = '0'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
             if($sql_num_check>0){
@@ -69,7 +69,7 @@ if(isset($_POST['Save']))
             $input_job_no = $_POST['input_job_no'][$key];
             $jm_jg_header_id = $_GET['jm_jg_header_id'];
             $jm_jg_header_id = $_POST['jm_jg_header_id'][$key];
-            $job_deacive = "SELECT * FROM $tms.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
+            $job_deacive = "SELECT id FROM $tms.`job_deactive_log` where input_job_no='$input_job_no' and remove_type = '3'";
             $job_deacive_result=mysqli_query($link, $job_deacive) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
             $sql_num_check=mysqli_num_rows($job_deacive_result);
             if($sql_num_check>0){

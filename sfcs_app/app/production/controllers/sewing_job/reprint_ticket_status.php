@@ -129,7 +129,7 @@
 		{
 			// check if the bundle is present in the barcode table
 			$barcode_types_string = implode("','", $barcode_types);
-			$barcode_query = "SELECT * from $pts.barcode where barcode = $barcode and plant_code='$plant_code' and barcode_type IN ('$barcode_types_string')";
+			$barcode_query = "SELECT external_ref_id,barcode_type from $pts.barcode where barcode = $barcode and plant_code='$plant_code' and barcode_type IN ('$barcode_types_string')";
 			$barcode_result = mysqli_query($link, $barcode_query);
 			$row = mysqli_fetch_array($barcode_result);
 			

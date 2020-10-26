@@ -255,7 +255,7 @@ if(isset($_POST['submit']) || ($status==1)){
 
 	if(isset($_POST['submitdetails'])){
 		$date=$_POST['date'];
-		$sql_date="select * from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
+		$sql_date="select id,shift,gatepass_status,operation,vehicle_no,date from $pps.`gatepass_table` where date='$date' and plant_code='".$plant_code."'";
 		$date_gatepass = mysqli_query($link,$sql_date) or exit('error in heading table view222');
 		echo  "<div class='panel-body'>";
 		echo "<div class='panel panel-primary'>";
