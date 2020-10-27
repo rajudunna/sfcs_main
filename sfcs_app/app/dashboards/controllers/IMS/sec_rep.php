@@ -228,7 +228,7 @@ if(isset($_GET['val']))
 					$sec_mods1=$sql_row['sec_mods'];
 					$sec_mods=$sql_row['sec_mod_val'];
 				}
-
+                $sec_modules=explode(",",$sec_mods1);
 				//To get sewing operations 
 		        $sewing_master="select operation_code from $brandix_bts.tbl_orders_ops_ref where category ='sewing' AND display_operations='yes'";
 		        $sql_result3=mysqli_query($link,$sewing_master) or exit("Sql Error_cut_master".mysqli_error());
@@ -240,12 +240,21 @@ if(isset($_GET['val']))
 				
 
 				//To Get style
-				$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module in ($sec_mods1) and operation_id in ($sewing_operations)";
-				//echo $get_style;
-				$style_result=mysqli_query($link, $get_style) or die("Error-".$get_style."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row1=mysqli_fetch_array($style_result))
+				for($j=0; $j<sizeof($operations); $j++)
 				{
-				  $disStyle[]=$sql_row1['style'];
+					for($k=0; $k<sizeof($sec_modules); $k++)
+					{
+						
+						$get_style="select DISTINCT(style) from $brandix_bts.bundle_creation_data where assigned_module=$sec_modules[$k] and operation_id=$operations[$j]";
+						//echo $get_style."<br/>";
+						$style_result=mysqli_query($link, $get_style) or die("Error-".$get_style."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row1=mysqli_fetch_array($style_result))
+						{
+						  $disStyle[]=$sql_row1['style'];
+						}
+					}
+					$k=0;
+					
 				}
 				$styles = "'" . implode ( "', '", $disStyle ) . "'";
 
