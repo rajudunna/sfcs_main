@@ -422,7 +422,7 @@ if(sizeof($sch_to_process)>0)
 		$pendingcarts=0;
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no=$schedule";
+		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no='$schedule'";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error23".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         
@@ -447,7 +447,7 @@ if(sizeof($sch_to_process)>0)
 		// }
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container=1";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error25".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         
@@ -457,7 +457,7 @@ if(sizeof($sch_to_process)>0)
 		}
 		
 		//echo "-".date("H:i:s")."<br/";
-		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sqlx1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container>1";
         $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
         // echo $sqlx1."<br>";
         

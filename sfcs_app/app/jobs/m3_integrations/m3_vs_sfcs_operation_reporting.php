@@ -9,7 +9,7 @@
     $mo_number=array();
     $from_date = date('Y-m-d');
     $to_date = date('Y-m-d');
-    $sql1_mo_no="select distinct mo_no as mo_no from $bai_pro3.m3_transactions where DATE(date_time)>='$from_date' and DATE(date_time)<='$to_date'";
+    $sql1_mo_no="SELECT DISTINCT mo_no as mo_no FROM $bai_pro3.m3_transactions WHERE date_time BETWEEN '$from_date 00:00:00' AND '$to_date 23:59:59' ";
     $sql1_mo_no_res = mysqli_query($link,$sql1_mo_no);
     while($row_mo_no = mysqli_fetch_array($sql1_mo_no_res)){
         $mo_number[] = $row_mo_no['mo_no'];
