@@ -153,7 +153,7 @@ if(strlen($lot_no)>0)
 {
 try
 {
-	$sql="select * from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
+	$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\"";
 	// echo $sql."<br>";
 	$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 	
@@ -256,7 +256,7 @@ try
 			}
 		}
 
-		$sql="select * from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
+		$sql="select tid,barcode_number,ref_tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret from $wms.store_in where lot_no like \"%".trim($lot_no)."%\" and status in (0,1) and ref1<>'' and plant_code='".$plant_code."'";
 		// echo $sql."<br>";
 		$sql_result=mysqli_query($link, $sql)or die(exception($sql));
 		$sql_num_check=mysqli_num_rows($sql_result);
@@ -280,7 +280,7 @@ try
 					
 					echo '<td><select name="n_location[]" class="select2_single form-control">';
 					echo "<option value=\"0\">Select Location</option>";
-					$sql1="select * from $wms.location_db where status=1 and plant_code='".$plant_code."' and location_id NOT IN ('".$location."') order by location_id,sno";
+					$sql1="select location_id from $wms.location_db where status=1 and plant_code='".$plant_code."' and location_id NOT IN ('".$location."') order by location_id,sno";
 					$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
@@ -301,7 +301,7 @@ try
 
 			echo "<table class='table table-bordered'>";
 			echo "<tr class='tblheading'><th>Date</th><th>Previous Location</th><th>New Location</th><th>Old Qty</th><th>New Qty</th><th>Remarks</th><th>User</th></tr>";
-			$sql="select * from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
+			$sql="select date,source_location,new_location,old_qty,new_qty,remarks,log_user from $wms.location_trnsf where plant_code='".$plant_code."' and lot_no like \"%".trim($lot_no)."%\" order by date";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 			while($sql_row=mysqli_fetch_array($sql_result))

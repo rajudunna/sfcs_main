@@ -44,7 +44,7 @@ fputcsv($file,$title_list);
 				$party=$sql_rowx['party'];
 				$vehicle_no=$sql_rowx['vehicle_no'];
 				
-				$sqlx1="select * from $pps.party_db where pid=$party and plant_code='$plant_code'";
+				$sqlx1="select party_name,location from $pps.party_db where pid=$party and plant_code='$plant_code'";
 				$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 				{

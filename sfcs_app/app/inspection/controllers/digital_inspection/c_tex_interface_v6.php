@@ -1816,7 +1816,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $wms.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
+$sql="select act_gsm,pur_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,status,consumption from $wms.inspection_db where batch_ref in ("."'".str_replace(",","','",$lot_no)."'".") and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error2=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2567,7 +2567,7 @@ if($num_rows>0 or $inspection_check==0 or $status==0)
 
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
 	 		//getting rejection reasons from mdm with category filter as inspection
-			  $reject_reason_query = "select * FROM $wms.reject_reasons";
+			  $reject_reason_query = "select tid,reject_desc FROM $wms.reject_reasons";
 			  $reject_reasons2=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// $reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			// while($row1=mysqli_fetch_array($reject_reasons))

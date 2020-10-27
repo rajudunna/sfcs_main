@@ -100,7 +100,7 @@ if(strlen($lot_no)>2)
 	 }
 
 //$sql="select * from sticker_report where lot_no=\"".trim($lot_no)."\"";
-$sql5="select * from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
+$sql5="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where lot_no in ('".trim($lot_no)."') and plant_code='".$plant_code."'";
 //mysqli_query($sql,$link) or exit("Sql Error2".mysqli_error());
 $sql_result5=mysqli_query($link, $sql5) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result5);
@@ -315,10 +315,10 @@ echo "<div class='table-responsive'>";
 echo "<table class='table table-bordered'>";
 echo "<tr style='background-color:white;'><th>date</th><th>Label Id</th><th>Roll No</th><th>Qty</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Remarks</th><th>User</th></tr>";
 if($sql_num_check1>0){
-$sql="select * from $wms.store_out where tran_tid in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by date";
+$sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $wms.store_out where tran_tid in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by date";
 }
 else{
-  $sql="select * from $wms.store_out where tran_tid in (select tid from $wms.store_in where ref1 in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by date";
+  $sql="select date,qty_issued,Style,Schedule,tran_tid,cutno,remarks,updated_by from $wms.store_out where tran_tid in (select tid from $wms.store_in where ref1 in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by date";
 }
 // echo $sql;
 //mysqli_query($link,$sql) or exit("Sql Error5".mysqli_error());
@@ -391,7 +391,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
   
   echo "<tr><td>$date</td><td>$qty</td><td>$style</td><td>$schedule</td><td>$cutno</td><td>$remarks</td><td>$user</td></tr>";*/
 }
-$sql_mrn="SELECT * FROM $wms.`mrn_out_allocation`  WHERE  lable_id in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by log_time";
+$sql_mrn="SELECT iss_qty,updated_user,lable_id,log_time FROM $wms.`mrn_out_allocation`  WHERE  lable_id in (select tid from $wms.store_in where lot_no in ('".trim($lot_no)."')) and plant_code='".$plant_code."' order by log_time";
 //   echo $sql_mrn ;
 
   $sql_result_mrn =$link->query($sql_mrn);

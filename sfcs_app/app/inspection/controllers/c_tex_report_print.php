@@ -1794,7 +1794,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $wms.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select act_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,consumption,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id from $wms.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1827,7 +1827,7 @@ $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
 
-$sql="select * from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."' order by ref2+0";
+$sql="select tid,ref2,ref4,qty_rec,ref5,ref6,ref3,lot_no,roll_joins,partial_appr_qty,roll_status,shrinkage_length,shrinkage_width,shrinkage_group,roll_remarks,rejection_reason from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") and plant_code='".$plant_code."' order by ref2+0";
 // echo $sql;
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
@@ -2222,7 +2222,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	  echo "<td class=xl12824082 style='border-left:none;'>".$temp[14]."</td>
 	  <td class=xl12824082 colspan=8 width=98 style='border-left:none;width:130pt'>";
 
-	  			$reject_reason_query="select * from $wms.reject_reasons";
+	  			$reject_reason_query="select tid,reject_desc from $wms.reject_reasons";
 				$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($row1=mysqli_fetch_array($reject_reasons))
 				{

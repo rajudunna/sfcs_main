@@ -54,7 +54,7 @@ if($_GET['some'] == 'bundle_no')
 		/**getting style and schedule from attributes */
 		if($task_job_id!=''){
 			$job_detail_attributes = [];
-			$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$task_job_id."' and plant_code='$plantCode' and is_active=1";
+			$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='".$task_job_id."' and plant_code='$plantCode' and is_active=1";
 			$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 				while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 					$job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];

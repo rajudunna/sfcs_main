@@ -470,6 +470,7 @@ if(isset($_GET['val']))
                                                         echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
                                                         echo "<td>".$remarks."</td>";
                                                         echo $quality_log_row;
+                                                        $balance=($inputQty-($outputQty+$outputRejQty));
                                                         // if(in_array($edit,$has_permission))
                                                         // {
                                                         //     if(strlen($team_comm)>0)
@@ -528,6 +529,8 @@ if(isset($_GET['val']))
                                                     echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
                                                     echo "<td>".$remarks."</td>";
                                                     echo $quality_log_row;
+                                                    $balance=($inputQty-($outputQty+$outputRejQty));
+
                                                     // if(in_array($edit,$has_permission))
                                                     // {
                                                     //     if(strlen($team_comm)>0)
