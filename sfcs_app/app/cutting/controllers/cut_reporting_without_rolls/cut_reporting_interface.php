@@ -303,9 +303,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                             <td id='r_plan_plies'></td>
                             <td id='r_reported_plies'></td>
                             <!-- add validation for ret + rec + dam + short = c_plies -->
-                            <td><input type='text' class='form-control integer' value='0' id='c_plies' onchange='calculatecutreport("c_plies")' ></td>
-                            <td><input type='text' class='form-control float' value='0' id='fab_received' onchange='calculatecutreport()'></td>
-                            <td><input type='text' class='form-control float' value='0' id='fab_returned' onchange='calculatecutreport()'>
+                            <td><input type='text' class='form-control integer' value='0' id='c_plies' onchange='calculatecutreport("c_plies")' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' ></td>
+                            <td><input type='text' class='form-control float' value='0' id='fab_received' onchange='calculatecutreport()' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}'></td>
+                            <td><input type='text' class='form-control float' value='0' id='fab_returned' onchange='calculatecutreport()' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}'>
                                 <br><br>
                                 <span id='returend_to_parent'>
                                     <select class='form-control' id='returned_to'>
@@ -315,9 +315,9 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                                 </select>
                                 </span>
                             </td>
-                            <td><input type='text' class='form-control float' value='0' id='damages' onchange='calculatecutreport()'></td>
-                            <td><input type='text' class='form-control float' value='0' id='joints' onchange='calculatecutreport()'></td>
-                            <td><input type='text' class='form-control float' value='0' id='endbits' onchange='calculatecutreport()'></td>
+                            <td><input type='text' class='form-control float' value='0' id='damages' onchange='calculatecutreport()' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}'></td>
+                            <td><input type='text' class='form-control float' value='0' id='joints' onchange='calculatecutreport()' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}'></td>
+                            <td><input type='text' class='form-control float' value='0' id='endbits' onchange='calculatecutreport()' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}'></td>
                             <td><input type='text' class='form-control float' value='0' id='shortages' readonly></td>
                             <!-- nothing to do any changes in this file,bcoz of last committ merge conflicts it is not merged to UAT-->
                             <!-- <td><input type='text' class='form-control integer' place-holder='Rejections' id='rejection_pieces' name='rejection_pieces'><br><br> -->
