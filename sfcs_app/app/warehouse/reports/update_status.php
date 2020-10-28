@@ -71,7 +71,7 @@ else
 
 <?php
 
-$sql="select * from $wms.manual_form where rand_track=$tid and status=$check and plant_code='".$plant_code."'";
+$sql="select log_date,style,schedule,color,buyer,item,reason,qty,req_from,app_by from $wms.manual_form where rand_track=$tid and status=$check and plant_code='".$plant_code."'";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($sql_result)>0)

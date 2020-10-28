@@ -1745,7 +1745,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $wms.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
+$sql="select act_gsm,pur_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,status,consumption from $wms.inspection_db where batch_ref=\"".trim($lot_no)."\" and plant_code='".$plant_code."'";
 $sql_result=mysqli_query($link, $sql);
 $inspection_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -2353,7 +2353,7 @@ tags will be replaced.-->
 	  
 	  	
 	  echo " <td class=xl13024082 colspan=2 dir=LTR width=99 colspan=2 style='border-left:none;width:95pt'>";
-	  		$reject_reason_query="select * from wms.reject_reasons where plant_code='".$plant_code."'";
+	  		$reject_reason_query="select tid,reject_desc from wms.reject_reasons where plant_code='".$plant_code."'";
 			$reject_reasons=mysqli_query($link, $reject_reason_query) or die("Error10=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row1=mysqli_fetch_array($reject_reasons))
 			{

@@ -96,7 +96,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			if(strlen($lot_no)>0)
 			{
 
-			$sql="select * from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+			$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date from $wms.sticker_report where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-b".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
 			while($sql_row=mysqli_fetch_array($sql_result))
@@ -159,7 +159,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 			$shades=array("","A","B","C","D","E","F","G");
 
 
-			$sql="select * from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
+			$sql="select tid,ref1,ref2,qty_rec,status,qty_issued,qty_ret,ref4,ref3,ref5 from $wms.store_in where plant_code='$plantcode' and lot_no=\"".trim($lot_no)."\"";
 			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error-c".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_num_check=mysqli_num_rows($sql_result);
@@ -186,7 +186,7 @@ echo '<link href="'."http://".$_SERVER['HTTP_HOST']."/sfcs/styles/sfcs_styles.cs
 					if($location=="")
 					{
 						echo '<td><select name="ref1[]">';
-						$sql1="select * from $wms.location_db where plant_code='$plantcode' and status=1 order by sno";
+						$sql1="select location_id from $wms.location_db where plant_code='$plantcode' and status=1 order by sno";
 						// echo $sql1."<br>";
 						$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error-d".mysqli_error($GLOBALS["___mysqli_ston"]));
 						echo "<option value=\"\" selected></option>";

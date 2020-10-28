@@ -4,7 +4,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 include('../../../common/config/config.php');
-$plant_code = $_SESSION['plantCode'];
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
 $username = $_SESSION['userName'];
 $plant_code = 'AIP';
 $data_result='';

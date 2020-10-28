@@ -138,7 +138,7 @@ if(isset($_POST['submit']))
 	$plantcode=$_POST['plantcode'];
 	$username=$_POST['username'];
 	$section = "'" . str_replace(",", "','", $section1) . "'";
-	$sql2="select * from $pms.sections WHERE section_id in ($section) and plant_code='$plantcode'"; 
+	$sql2="select section_name from $pms.sections WHERE section_id in ($section) and plant_code='$plantcode'"; 
 	$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	if(mysqli_num_rows($sql_result2)==1)
 	{
@@ -3109,7 +3109,7 @@ if(isset($_POST['submit']))
 			{
 				$mod_name=$sql_rowx11['workstation_code'];
 			}
-			$sqlx="select * from $pms.sections where section_id in ($section) and plant_code='$plantcode'";
+			$sqlx="select section_id from $pms.sections where section_id in ($section) and plant_code='$plantcode'";
 			mysqli_query($link, $sqlx) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_rowx=mysqli_fetch_array($sql_resultx))
@@ -3763,7 +3763,7 @@ if(isset($_POST['submit']))
 
 			$total=$atotal+$btotal;
 
-			$sql2="select * from $pms.sections where section_id in ($sec) and plant_code='$plantcode'";
+			$sql2="select section_name from $pms.sections where section_id in ($sec) and plant_code='$plantcode'";
 			mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$sql_result2=mysqli_query($link, $sql2) or exit("Sql Error444".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row2=mysqli_fetch_array($sql_result2))

@@ -7,7 +7,7 @@
 	$plant_code=$_SESSION['plantCode'];
 	$username=$_SESSION['userName'];
 
-	$sql = "SELECT * FROM $pms.tbl_fg_crt_handover_team_list where plant_code='$plant_code' order by team_id desc";
+	$sql = "SELECT emp_id,team_id,emp_call_name,selected_user,emp_status FROM $pms.tbl_fg_crt_handover_team_list where plant_code='$plant_code' order by team_id desc";
 	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	$norows = mysqli_num_rows($sql_result);
 	$sno = 1; 

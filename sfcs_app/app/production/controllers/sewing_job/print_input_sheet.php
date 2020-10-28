@@ -231,7 +231,7 @@
 
 							//get cutjob
 							$job_detail_attributes = [];
-							$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$plant_code'";
+							$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$plant_code'";
 							$qry_toget_style_sch_result = mysqli_query($link, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 							while ($row22 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 								$job_detail_attributes[$row22['attribute_name']] = $row22['attribute_value'];

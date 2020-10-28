@@ -137,7 +137,7 @@ if(isset($_POST['cartonid']) && $_POST['cartonid']!='')
 			{	
 				$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\"  and status=1";
 				$sql_result=mysqli_query($link, $sql) or die(exception($sql));
-				$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
+				$sql2="select ref1 from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
 				$sql_result2=mysqli_query($link, $sql2) or die(exception($sql2));		
 				if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
 				{ 
@@ -218,7 +218,7 @@ if(isset($_POST['check2']))
 			{		
 				$sql="select * from $wms.location_db where plant_code='$plantcode' and location_id=\"$location\" and status=1";
 				$sql_result=mysqli_query($link, $sql)or die(exception($sql));
-				$sql2="select * from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
+				$sql2="select ref1 from $wms.store_in where plant_code='$plantcode' and barcode_number=\"$code\"";
 				$sql_result2=mysqli_query($link, $sql2) or die(exception($sql2));
 				if(mysqli_num_rows($sql_result)>0 && mysqli_num_rows($sql_result2)>0)
 				{ 
