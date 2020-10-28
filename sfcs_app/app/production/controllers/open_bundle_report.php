@@ -172,17 +172,12 @@ function check_val()
                                                    $operation_codes[]=$row_12['operation_code'];
                                                }
                                                $opcodes=implode(',',$operation_codes);
-                                               if($style!='NIL' && $style!='' && $schedule!='NIL' && $schedule!=''){
-                                               $sql_operation="SELECT operation from $pts.transaction_log  WHERE style='".$style."' and schedule='".$schedule."' and operation in($opcodes) and plant_code='$plant_code' GROUP BY operation";
-                                               }
-                                               else{
-                                                $sql_operation="SELECT operation from $pts.transaction_log  WHERE style='".$style."' and schedule='".$schedule."' and operation in('') and plant_code='$plant_code' GROUP BY operation";   
-                                               } 
+                                               $get_color1="SELECT fg_color FROM `$pps`.`jm_product_logical_bundle` WHERE feature_value='$schedule' and plant_code='$plant_code'";
+                                               $get_color_result1=mysqli_query($link,$get_color1) or exit($get_color_result."Error at something");
                                                 // echo "</br>SQL Operation : ".$sql_operation."</br>";       
-                                               $select_opertation=mysqli_query($link,$sql_operation) or exit($sql_operation."Error at something");
-                                                //echo "</br>SQL Operation : ".$sql_operation."</br>";       
+                                               
                                              
-                                                    if( mysqli_num_rows( $select_opertation )==0)
+                                                    if( mysqli_num_rows( $get_color_result1 )==0)
                                                     {
                                                      echo '<div><h1><b>No Data Found.....!</b></h1></div>';
 													 exit();
@@ -199,26 +194,25 @@ function check_val()
 																		<th rowspan="2">Quantity</th>
 																		<th rowspan="2">Bundle Number</th>';
                                                         $ab="";
-                                                        $operation_codes=array();
-                                                        while( $row_1 = mysqli_fetch_assoc( $select_opertation ) ){
-                                                                $operation_codes[]=$row_1['operation'];
-                                                                $operation_codes1=$row_1['operation'];
-                                                                $sql_operation1="SELECT operation_name from $pms.operation_mapping  WHERE operation_code='".$operation_codes1."'  and plant_code='$plant_code' "; 
+                                                        // $operation_codes=array();
+                                                        // while( $row_1 = mysqli_fetch_assoc( $select_opertation ) ){
+                                                            $sql_operation1="SELECT operation_name from $pms.operation_mapping  WHERE operation_code in ($opcodes)  and plant_code='$plant_code' order by operation_code";
                                                                 //echo "</br>SQL Operation : ".$sql_operation."</br>";       
                                                                 $select_opertation1=mysqli_query($link,$sql_operation1) or exit($sql_operation1."Error at something");
                                                                 while( $row_111 = mysqli_fetch_assoc( $select_opertation1 ) ){
 
                                                                     $operation_name=$row_111['operation_name'];
-                                                                }
+                                                                
                                                                 echo "<th colspan='3' >".$operation_name."</th>";
                                                                 $ab.="<th>Good Quantity</th>
                                                                 <th>Rejected Quantity</th>
                                                                 <th>Pending Recutin</th>";
-                                                        }
+                                                                }
+                                                        // }
                                                         echo "</tr><tr>".$ab."</tr></thead>";
-                                                        $opcodes=implode(',',$operation_codes);
+                                                        // $opcodes=implode(',',$operation_codes);
                                                         //   echo $opcodes;
-                                                    }
+                                                     }
                                              ?>
                                          <?php  
 
@@ -242,12 +236,36 @@ function check_val()
                                                 $pplb="'".implode("','",$pplb_id)."'";
 												// $bundle_qty_stats_bundle_nums=implode(',',$bundle_qty_stats_bundles);
                                                 // $pplb_id_id=implode(',',$pplb_id);
-                                                $bundle_sql="SELECT barcode FROM `$pts`.`barcode` WHERE external_ref_id in($pplb) AND  plant_code='$plant_code' ";
+                                                $bundle_sql_query="SELECT jm_jg_header_id FROM `$pps`.`jm_job_bundles` WHERE jm_pplb_id in($pplb) AND  plant_code='$plant_code' ";
+												// echo $bundle_sql;
+												$bundle_sql_query_result=mysqli_query($link,$bundle_sql_query) or exit($bundle_sql_result."Error at something3");
+                                                while($row_231 = mysqli_fetch_assoc( $bundle_sql_query_result)){
+                                                    $jm_jg_header_num[]=$row_231['jm_jg_header_id'];
+                                                }
+                                                $jm_jg_header_num1="'".implode("','",$jm_jg_header_num)."'";
+                                                $bundle_sql_query="SELECT jm_jg_header_id FROM `$pps`.`jm_jg_header` WHERE jm_jg_header_id in($jm_jg_header_num1) AND  plant_code='$plant_code' and  job_group_type!='PCEJ'";
+												//  echo $bundle_sql_query;
+												$bundle_sql_query_result=mysqli_query($link,$bundle_sql_query) or exit($bundle_sql_result."Error at something112");
+                                                while($row_2311 = mysqli_fetch_assoc( $bundle_sql_query_result)){
+                                                    $jm_jg_id[]=$row_2311['jm_jg_header_id'];
+                                                }
+                                                $jm_jg_id1="'".implode("','",$jm_jg_id)."'";
+                                                $bundle_sql2="SELECT jm_pplb_id FROM `$pps`.`jm_job_bundles` WHERE jm_jg_header_id in($jm_jg_id1) AND  plant_code='$plant_code' ";
+											
+												$bundle_sql_result2=mysqli_query($link,$bundle_sql2) or exit($bundle_sql_result."Error at something11");
+                                                while($row_232 = mysqli_fetch_assoc( $bundle_sql_result2)){
+                                                    $pplb_id_num[]=$row_232['jm_pplb_id'];
+                                                }
+                                                $pplb_id_num1="'".implode("','",$pplb_id_num)."'";
+                                                $bundle_sql="SELECT barcode,external_ref_id FROM `$pts`.`barcode` WHERE external_ref_id in($pplb_id_num1) AND  plant_code='$plant_code' ";
 												// echo $bundle_sql;
 												$bundle_sql_result=mysqli_query($link,$bundle_sql) or exit($bundle_sql_result."Error at something");
                                                 while($row_23 = mysqli_fetch_assoc( $bundle_sql_result)){
                                                     $barcode[]=$row_23['barcode'];
+                                                    $data_array_header[$row_23['barcode']] = $row_23['external_ref_id'];
+                                                  
                                                 }
+                                               
                                                 $operation_bundles=implode(',',$barcode);
 												if(sizeof($operation_bundles)>0)
                                                 {
@@ -256,7 +274,7 @@ function check_val()
 
                                                         // $query="SELECT SUM(IF(operation=$sew_in_op,1,0)) AS sew_in,SUM(IF(operation=$sew_out_op,1,0)) AS sew_out from $pts."
                                                        
-                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ($operation_bundles)  group by parent_barcode,operation";
+                                                        $selectSQL = "SELECT parent_job,parent_barcode,size,color,sum(rejected_quantity) as rejected_quantity,sum(good_quantity) as good_quantity,sum(if(operation=".$sew_in_op.",good_quantity+rejected_quantity,0)) as total_good_quantity,sum(if(operation=".$sew_out_op.",good_quantity+rejected_quantity,0)) as total_quantity,operation,schedule FROM `$pts`.`transaction_log` WHERE style='".$style."' AND schedule='".$schedule."'  AND parent_barcode IN ($operation_bundles) and parent_barcode_type='PPLB' and operation in($opcodes)  group by parent_barcode,operation";
                                                            
                                                         $selectRes=mysqli_query($link,$selectSQL) or exit($selectSQL."Error at something");
                                                         while( $row = mysqli_fetch_assoc( $selectRes ))
@@ -297,23 +315,26 @@ function check_val()
                                                     {  
                                                         
                                                         if($data_array_total_good_quantity[$barcode[$i]]== $data_array_total_quantity[$barcode[$i]] or $data_array_total_good_quantity[$barcode[$i]]>0 ){
-                                                        $quantity_query="select external_ref_id from $pts.barcode WHERE  barcode='".$barcode[$i]."' and plant_code='$plant_code'";
+                                                        // $quantity_query="select external_ref_id from $pts.barcode WHERE  barcode='".$barcode[$i]."' and plant_code='$plant_code'";
                                                             
-                                                            $selectRes1=mysqli_query($link,$quantity_query) or exit($quantity_query."Error at something");
-                                                            while( $row1 = mysqli_fetch_assoc( $selectRes1 ))
-                                                            {    
-                                                                $external_ref_id=$row1['external_ref_id'];
+                                                        //     $selectRes1=mysqli_query($link,$quantity_query) or exit($quantity_query."Error at something");
+                                                        //     while( $row1 = mysqli_fetch_assoc( $selectRes1 ))
+                                                        //     {    
+                                                        //         $external_ref_id=$row1['external_ref_id'];
 
-                                                                $quantity_query1="select size,quantity,jm_jg_header_id from $pps.jm_job_bundles WHERE  jm_pplb_id='".$external_ref_id."' and plant_code='$plant_code'";
-                                                            
+                                                                $quantity_query1="select size,quantity,jm_jg_header_id,bundle_number from $pps.jm_job_bundles WHERE  jm_pplb_id='".$data_array_header[$barcode[$i]]."' and plant_code='$plant_code' group by jm_jg_header_id";
+                                                                
                                                                 $selectRes11=mysqli_query($link,$quantity_query1) or exit($quantity_query1."Error at something");
                                                                 while( $row11 = mysqli_fetch_assoc( $selectRes11 ))
                                                                 {    
                                                                     $quantity=$row11['quantity'];
+                                                                    
                                                                     $size=$row11['size'];
-                                                                    $jm_jg_header_id=$row11['jm_jg_header_id'];
+                                                                    $jm_jg_header_id2=$row11['jm_jg_header_id'];
+                                                                   
                                                                 }
-                                                                $quantity_query111="select job_number from $pps.jm_jg_header WHERE  jm_jg_header_id='".$jm_jg_header_id."' and plant_code='$plant_code'";
+                                                               
+                                                                $quantity_query111="select job_number from $pps.jm_jg_header WHERE  jm_jg_header_id='".$jm_jg_header_id2."' and plant_code='$plant_code' and job_group_type!='PCEJ'";
                                                                 $selectRes111=mysqli_query($link,$quantity_query111) or exit($quantity_query111."Error at something");
                                                                 while( $row111 = mysqli_fetch_assoc( $selectRes111 ))
                                                                 {   
@@ -321,9 +342,9 @@ function check_val()
                                                                 }
 
 
+                                                            // }
 
-
-                                                            }
+                                                            
                                                            // echo $data_array_total_good_quantity[$barcode[$i]];
                                                     //    if($data_array_total_good_quantity[$barcode[$i]]!= $data_array_total_quantity[$barcode[$i]]){
                                                        echo "<tr><td>{$schedule}</td><td>{$job_number}</td><td>{$color}</td><td>{$size}</td><td>$quantity</td>
