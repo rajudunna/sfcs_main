@@ -81,6 +81,15 @@ $central_wh_code=$conf->get('central_wh_code');
 $plant_wh_code=$conf->get('plant_wh_code');
 $plant_prod_code=$conf->get('plant_prod_code');
 
+//HCM Integration
+$attendance_integration=$conf->get('attendance_app');
+$hcm_location_id=$conf->get('hcm_plant_code');
+$hcm_sql_driver_name=$conf->get('hcm_driver_name');
+$hcm_sql_server=$conf->get('hcm-server-name');
+$hcm_db=$conf->get('hcm_database');
+$hcm_sql_user=$conf->get('hcm-user-name');
+$hcm_sql_pass=$conf->get('hcm-password');
+
 //To Facilitate SFCS Filters
 // $global_facility_code=$conf->get('plantcode');
 // $facility_code=$global_facility_code;
