@@ -82,7 +82,7 @@ $username=$_GET['username'];
 $sqlx="SELECT GROUP_CONCAT(`workstation_id` ORDER BY workstation_id+0 ASC) AS sec_mods FROM $pms.`sections` s
 LEFT JOIN $pms.`workstation` w ON w.section_id=s.section_id
 WHERE s.section_id='$section_no' AND s.plant_code='$plant_code' and s.is_active=1";
-$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysq	li_error());
+$sql_resultx=mysqli_query($link,$sqlx) or exit("Sql Error1".mysqli_error());
 while($sql_rowx=mysqli_fetch_array($sql_resultx))
 {
 	$section_mods=$sql_rowx['sec_mods'];
