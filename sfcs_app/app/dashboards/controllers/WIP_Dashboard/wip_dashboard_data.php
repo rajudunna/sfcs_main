@@ -6,10 +6,13 @@ include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
 $session_plant_code = $_GET['plant_code'];
-// $session_plant_code='AIP';
+$session_plant_code='AIP';
 $data = '';
 $jquery_data = '';
 $line_breaker = 0;
+$v_r = explode('/',$_SERVER['REQUEST_URI']);
+array_pop($v_r);
+$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/modules_report.php";
 if ($section) {
 
     //getting all workstations against to the section
@@ -21,8 +24,14 @@ if ($section) {
         $total_wip = 0;
         $sewing_wip = '';
         $jobs_wip = '';
+        $module=$wkstation['workstation_code'];
         $data .= "<tr rowspan=2>";
-        $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
+        // $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
+        $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
+        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module=$module&operation_code=$get_operation\",\"Popup\");'>
+                        $module</a>
+    
+        </b></span></td>";
 
 
         /*  BLOCK - 1 */

@@ -6,8 +6,8 @@ $url = getFullURLLevel($_GET['r'], 'wip_dashboard_data.php', 0, 'R');
 // $RELOAD_TIME = (int)$wip_refresh_time;
 $RELOAD_TIME = (int)$wpt_refresh_time;
 $dashboard_name = "WIP";
-// $session_plant_code = 'AIP';
 $session_plant_code = $_SESSION['plantCode'];
+$session_plant_code = 'AIP';
 $username =  $_SESSION['userName'];
 $result_sections = getSections($session_plant_code);
 
@@ -62,6 +62,8 @@ $sections_str = implode(',', $sections[0]);
             </div>
 
             <?php
+            $popup_url = getFullURLLevel($_GET['r'],'sections_report.php',0,'R');
+            $popup_url1 =  getFullURLLevel($_GET['r'],'main_sections_report.php',0,'R');
             foreach ($sections_data as $section) {
                 $id1 = "sec-load-" . $section['section_id'];
                 $id2 = "sec-" . $section['section_id'];
@@ -72,12 +74,23 @@ $sections_str = implode(',', $sections[0]);
                 // {
                 // }
                 $section_display_name = $section['section_name'];
+                $section_id = $section['section_id'];
             ?>
 
                 <div class='section_div' style='width:25vw;float:left;padding:5px'>
                     <div class='panel panel-success'>
                         <div class='panel-body sec-box'>
-                            <center><span class='section-heading'><b><?= $section_display_name; ?></b></span></center>
+                            <center><span class='section-heading'><b>
+                            <?= "<a href=\"javascript:void(0)\" 
+                               onclick=\"
+                                var op = $('#operations').val();
+                                Popup = window.open('$popup_url?section=$section_id&section_name=$section_display_name&operations='+op+'"."','Popup'); 
+                                if (window.focus){
+                                    Popup.focus()
+                                }
+                                return false;\"
+                            >
+                            $section_display_name</a>" ?></b></span></center>
                             <span style='height:50px'>
                                 &nbsp;</span>
                             <div class='loading-block' id='<?= $id1 ?>' style='display:block'></div>
@@ -163,7 +176,11 @@ $sections_str = implode(',', $sections[0]);
                     });
                     $("select").change(function() {
                         var val = $(this).find('option:selected').attr("name");
-                        document.getElementById("demo").innerHTML = "SELECTED SEWING OPERATION : " + val;
+                        var val1 = $(this).find('option:selected').attr("value");
+                    
+                        document.getElementById("demo").innerHTML = 
+            "<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "\",\"Popup\");'>\
+                SELECTED SEWING OPERATION : " + val + "</a>";
                     });
                 }
             </script>
