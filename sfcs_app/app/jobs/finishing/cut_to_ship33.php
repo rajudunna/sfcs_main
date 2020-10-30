@@ -247,7 +247,7 @@ $edate=date('Ymd', strtotime($edate));
 				$cut_operation=$row4['operation_code'];
 			}
 			$pack_operation='200';
-			$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id in ($task_jobs_id1) AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+			$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id in ($task_jobs_id1) AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
 			
 			$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
 			
@@ -260,7 +260,7 @@ $edate=date('Ymd', strtotime($edate));
 			 /**
          * getting min and max operations
          */
-		$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id in($task_jobs_id1) AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+		$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id in($task_jobs_id1) AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
 		$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
 	
         if(mysqli_num_rows($maxOperationResult)>0){
