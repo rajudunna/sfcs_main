@@ -112,7 +112,7 @@ $hour = date("H.i");
   function
   blink_new3(x)
   {
-    if(x.length >='6'){
+    if(x.length >=6){
       $("div[id*='S"
       +
       x
@@ -126,7 +126,7 @@ $hour = date("H.i");
   function
   blink_new(x)
   {
-    if(x.length >= 3){
+    if(x.length >= 1){
       $("div[id*='D"
       +
       x
@@ -415,7 +415,7 @@ foreach ($workstations as $emb_key => $emb_value) {
     $emb_job_no = $job_number[$task_header_id_j];
     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK HEADER ID
     $job_detail_attributes = [];
-    $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
+    $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$session_plant_code'";
     // echo $qry_toget_style_sch."<br/>";
 
     $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -433,9 +433,9 @@ foreach ($workstations as $emb_key => $emb_value) {
       $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
     
+      $prev_operation=15;
 
-
-      $task_job_trans = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
+      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -446,11 +446,17 @@ foreach ($workstations as $emb_key => $emb_value) {
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
         }
-        $task_job_trans2 = "SELECT * FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
+        $send_qty=0;
+        $task_job_trans2 = "SELECT sum(good_quantity) as good_quantity FROM $pts.transaction_log where parent_job ='$doc_no' and operation = $prev_operation and is_active=1 and plant_code='$session_plant_code'";
+        // echo $task_job_trans2."<br/>";
         $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result123" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res2 = mysqli_fetch_array($task_job_trans2_result)) {
           $send_qty = $row_res2['good_quantity'];
         }
+        if($send_qty==''){
+          $send_qty=0;
+        }
+        $total=$send_qty;
 
         $id = "yash";
         if ($good_qty == 0) {

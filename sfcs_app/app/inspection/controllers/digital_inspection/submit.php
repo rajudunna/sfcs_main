@@ -28,7 +28,7 @@ if(isset($_POST['data']))
                 if($value[$point_value]>0)
                 {
                     $points_val=$point_key*$value[$point_value];
-                    $insert_four_points .= "($store_in_id,'".$value['code']."','".$value['desc']."',$point_key,$points_val,$plant_code,$username,'".$username."',NOW()),";
+                    $insert_four_points .= "($store_in_id,'".$value['code']."','".$value['desc']."',$point_key,$points_val,'".$plant_code."','".$username."','".$username."',NOW()),";
                 }
             }
          }
@@ -53,7 +53,7 @@ if(isset($_POST['data']))
 if (isset($_POST['getalldata'])) 
 {
     //getting rejection reasons from mdm with category filter as inspection
-    $get_reasons = "select * from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and internal_reason_code = '". $_POST['getalldata']."'";
+    $get_reasons = "select internal_reason_description from $mdm.reasons where department_type = '" . $department_reasons['Inspection'] . "' and internal_reason_code = '". $_POST['getalldata']."'";
     $details_result = mysqli_query($link_new, $get_reasons) or exit("get_details Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
     $reject_desc = '';
     while ($row1 = mysqli_fetch_array($details_result)) {

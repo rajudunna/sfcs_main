@@ -59,7 +59,7 @@ if(isset($_POST['filter']))
 	
 	if(strlen($sch)>0)
 	{
-		$sql="SELECT * FROM $oms.oms_mo_details where schedule='$sch' and po_number !='' and plant_code='$plant_code' group by po_number";
+		$sql="SELECT po_number,schedule,planned_cut_date FROM $oms.oms_mo_details where schedule='$sch' and po_number !='' and plant_code='$plant_code' group by po_number";
 	}
 
 
@@ -90,7 +90,7 @@ if(isset($_POST['filter']))
 		$po_number=$sql_row['po_number'];
 		$schedule=$sql_row['schedule'];
 		$order_date=$sql_row['planned_cut_date'];
-		$sql1="SELECT * FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
+		$sql1="SELECT style,color,master_po_details_id FROM $pps.mp_color_detail where master_po_number='$po_number' group by style,color";
 
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		// echo mysqli_num_rows($sql_result1);

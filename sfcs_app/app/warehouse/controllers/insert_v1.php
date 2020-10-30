@@ -71,7 +71,7 @@ if(strlen($lot_no)>0)
 try
 {	
 
-$sql="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
+$sql="select product_group,item,item_name,item_desc,inv_no,po_no,rec_no,rec_qty,batch_no,buyer,pkg_no,grn_date,uom,grn_type,backup_status from $wms.sticker_report where plant_code=\"".$plant_code."\" AND lot_no=\"".trim($lot_no)."\"";
 $sql_result=mysqli_query($link, $sql) or die(exception($sql));
 $sql_num_check=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))

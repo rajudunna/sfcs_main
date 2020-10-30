@@ -8,6 +8,7 @@
 include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/config.php");
 include($_SERVER['DOCUMENT_ROOT'] . "/sfcs_app/common/config/functions.php");
 $plantCode = $_SESSION['plantCode'];
+// $plantCode = 'AIP';
 // Down time reasons
 $master_resons = array();
 $sql_mstr_resns = "SELECT id FROM $pps.downtime_reason WHERE plant_code='$plantCode' and id NOT IN (20,21,22) ";
@@ -75,7 +76,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 					$hours =  (($endTime - $startTime) / 3600); // Plant hours 
 
 					// Get production plan upload data for given date
-					$sql = "SELECT * FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
+					$sql = "SELECT smv,planned_qty,capacity_factor,row_name,product_code FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 					$res = mysqli_query($link, $sql) or exit("sql Error production plan-". mysqli_error(($link)));
 					 
 					$i = 0; ?>

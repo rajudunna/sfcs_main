@@ -12,7 +12,11 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $date=date("Y-m-d");
 $heading="Today";
 
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 $message= '<html><head><style type="text/css">
 

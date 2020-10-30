@@ -189,8 +189,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">Component Level Rejections</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+					<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span> -->
 					</button>
 				</div>
 				<div class="modal-body col-sm-12">
@@ -432,7 +432,7 @@
 				});
 				var markup1 = "<tr><td data-title='S.No'>"+s_no+"</td><td class='none' data-title='Doc.No'>"+data.sizeQuantities[i].docketNo+"<input type='hidden' name='docketNo["+i+"]' id='"+i+"docketNo' value = '"+data.sizeQuantities[i].docketNo+"'></td><td data-title='Color'>"+data.sizeQuantities[i].fgColor+"<input type='hidden' name='fgColor["+i+"]' id='"+i+"fgColor' value = '"+data.sizeQuantities[i].fgColor+"'></td><td data-title='module'>"+data.sizeQuantities[i].resourceId+"<input type='hidden' name='module["+i+"]' id='"+i+"module' value = '"+data.sizeQuantities[i].resourceId+"'></td><td data-title='Size'>"+data.sizeQuantities[i].size+"<input type='hidden' name='size["+i+"]' id='"+i+"size' value = '"+data.sizeQuantities[i].size+"'></td><td data-title='Input Job Quantity'>"+data.sizeQuantities[i].inputJobQty+"<input type='hidden' name='inputJobQty["+i+"]' id='"+i+"inputJobQty' value = '"+data.sizeQuantities[i].inputJobQty+"'></td>"+op_code_values+"<td data-title='Cumulative Reported Quantity'>"+data.sizeQuantities[i].cumilativeReportedQty+"<input type='hidden' name='cumilativeReportedQty["+i+"]' id='"+i+"cumilativeReportedQty' value = '"+data.sizeQuantities[i].cumilativeReportedQty+"'></td><td id='"+i+"remarks_validate_html'  data-title='Eligibility To Report'>"+data.sizeQuantities[i].eligibleQty+"</td>\
 				\<input type='hidden' id='"+i+"eligible_to_report' value='"+data.sizeQuantities[i].eligibleQty+"' /> \
-				<td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"] onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' \
+				<td data-title='Reporting Qty'><input type='text' onkeyup='validateQty(event,this)' "+$('#good_report').val()+" class='form-control input-md twotextboxes' id='"+i+"reporting' name='reportedQty["+i+"]' onfocus='if($(this).val() == 0){$(this).val(``)}' onfocusout='if($(this).val() > 0){}else{$(this).val(0)}' value='0' required name='reporting_qty["+i+"]' \
 				onchange = 'validateEligibilityReportQty("+i+",\"reporting\") '></td><td>"+data.sizeQuantities[i].rejectedQty+"<input type='hidden' name='oldrejectedQty["+i+"]' id='"+i+"oldrejectedQty' value = '"+data.sizeQuantities[i].rejectedQty+"'></td><td>0</td><td>0</td>\
 				<td>\
 				\
@@ -566,7 +566,7 @@
 		}
 		// push the record into the array of rejections 
 		const summaryRow = `<tr id='${lastIndexOfCurrSizeRejs+''+summaryRowKey}'><td>${component}</td><td>${rej_text}</td><td>${quantity}</td>
-				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger'> X </button></td>
+				<td><button onclick='popRejReasonQty(${lastIndexOfCurrSizeRejs})' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td>
 			</tr>`;
 		$('#rejection_summary_table_body').append(summaryRow);
 	}
@@ -699,7 +699,7 @@
 					data:  reportData,
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
-					success: function (res) {            
+					success: function (res) {
 						if(res.status){
 							$('#dynamic_table1').html('');
 							$('#loading-image').hide();
@@ -738,13 +738,13 @@
 
     function constructAndShowSJResponseTable(responseData) {
         const data = responseData;
-        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th></tr></thead><tbody>";
+        var table_data = "<div class='container'><div class='row'><div id='no-more-tables'><table class = 'col-sm-12 table-bordered table-striped table-condensed cf'><thead class='cf'><tr><th>Bundle Number</th><th>Color</th><th>Size</th><th>Reporting Qty</th><th>Rejected Qty</th></tr></thead><tbody>";
         if(barcode_generation == 0) {
-            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td></tr>";
+            table_data += "<tr><td>"+data.bundleBrcdNumber+"</td><td>"+data.fgColor+"</td><td>"+data.size+"</td><td>"+data.reportedQuantity+"</td><td>"+data.rejectedQuantity+"</td></tr>";
         } else{
             for(var z=0; z<data.length; z++){
-                if(data[z].reportedQuantity > 0) {
-                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td></tr>";
+                if(data[z].reportedQuantity > 0 || data[z].rejectedQty > 0) {
+                    table_data += "<tr><td>"+data[z].bundleBrcdNumber+"</td><td>"+data[z].fgColor+"</td><td>"+data[z].size+"</td><td>"+data[z].reportedQuantity+"</td><td>"+data[z].rejectedQty+"</td></tr>";
                 }
             }
         }

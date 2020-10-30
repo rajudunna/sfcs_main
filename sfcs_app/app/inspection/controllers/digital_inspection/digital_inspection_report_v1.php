@@ -362,7 +362,7 @@ $username = $_GET['username'];
 						echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
 						echo "<input type='hidden' value=".$plant_code." name='plant_code' id='plant_code'>";
 						echo "<input type='hidden' value=".$username." name='username' id='username'>";
-						$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
+						$sql_query = "select sno,lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,item_name,supplier_batch,rm_color,sfcs_roll_no,supplier_roll_no,rec_qty from $wms.inspection_population where parent_id=$parent_id and plant_code='".$plant_code."'";
 						$k=0;
 						$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 						if (mysqli_num_rows($sql_result) == 0) {

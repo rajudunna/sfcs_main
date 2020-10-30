@@ -311,7 +311,7 @@ if(isset($_GET['val']))
                         
                         /**getting style,colr attributes using taskjob id */
                         $job_detail_attributes = [];
-                        $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantCode' and is_active=1";
+                        $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantCode' and is_active=1";
                         // echo $qry_toget_style_sch."</br>";
                         $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                         while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
@@ -470,6 +470,7 @@ if(isset($_GET['val']))
                                                         echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
                                                         echo "<td>".$remarks."</td>";
                                                         echo $quality_log_row;
+                                                        $balance=($inputQty-($outputQty+$outputRejQty));
                                                         // if(in_array($edit,$has_permission))
                                                         // {
                                                         //     if(strlen($team_comm)>0)
@@ -528,6 +529,8 @@ if(isset($_GET['val']))
                                                     echo "<td>".($inputQty-($outputQty+$outputRejQty))."</td>";
                                                     echo "<td>".$remarks."</td>";
                                                     echo $quality_log_row;
+                                                    $balance=($inputQty-($outputQty+$outputRejQty));
+
                                                     // if(in_array($edit,$has_permission))
                                                     // {
                                                     //     if(strlen($team_comm)>0)

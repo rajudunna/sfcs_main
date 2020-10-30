@@ -4,7 +4,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 set_time_limit(1000000);
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 $sql39="truncate $wms.stock_report_inventory";
 mysqli_query($link, $sql39) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));

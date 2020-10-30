@@ -5,7 +5,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-	$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
     $flag=1;
@@ -132,7 +132,7 @@ function exception($sql_result)
 
 <Link rel='alternate' media='print' href=null>
 <script>
-    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
+    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>';
     function firstbox()
     {
         window.location.href = pgurl+"&style="+document.test.style.value
@@ -323,7 +323,7 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
@@ -659,7 +659,7 @@ $(document).ready(function(){
 						while($sql_result_32=mysqli_fetch_array($sql_result))
 						{
 							$mo_no=trim($sql_result_32['mo_number']);
-							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$mo_no;
+							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$plant_code."&MFNO=".$mo_no;
 							$response_result = $obj->getCurlAuthRequest($url);
 							$response_result = json_decode($response_result);
 							$MIRecords[] = $response_result->MIRecord;

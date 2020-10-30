@@ -896,7 +896,14 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
                             $task_id= $job_id_row['task_jobs_id'];
-                            $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plantcode."','".$created_user."','".$created_user."')";
+                            $select_uuid1="SELECT UUID() as uuid";
+                            $uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                            while($uuid_row1=mysqli_fetch_array($uuid_result1))
+                            {
+                                $uuid1=$uuid_row1['uuid'];
+                            }    
+                            
+                            $jobs_trims_insert="INSERT INTO $tms.job_trims (trim_id,task_job_id,plant_code,created_user,updated_user) VALUES ('".$uuid1."','".$task_id."','".$plantcode."','".$created_user."','".$created_user."')";
                             $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         }
                         /**insert records into jobs_movement_track*/
@@ -942,7 +949,13 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                         while($job_id_row=mysqli_fetch_array($get_task_job_id_result))
                         {
                            $task_id= $job_id_row['task_jobs_id'];
-                           $jobs_trims_insert="INSERT INTO $tms.job_trims (task_job_id,plant_code,created_user,updated_user) VALUES ('".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
+                           $select_uuid1="SELECT UUID() as uuid";
+                           $uuid_result1=mysqli_query($link_new, $select_uuid1) or exit("Sql Error at select_uuid1".mysqli_error($GLOBALS["___mysqli_ston"]));
+                           while($uuid_row1=mysqli_fetch_array($uuid_result1))
+                           {
+                                $uuid1=$uuid_row1['uuid']; 
+                           }
+                           $jobs_trims_insert="INSERT INTO $tms.job_trims (trim_id,task_job_id,plant_code,created_user,updated_user) VALUES ('".$uuid1."','".$task_id."','".$plant_code."','".$created_user."','".$created_user."')";
                            $jobs_trims_result=mysqli_query($link_new, $jobs_trims_insert) or exit("Sql Error at jobs_trims_insert".mysqli_error($GLOBALS["___mysqli_ston"]));
                         } 
                         /**insert records into jobs_movement_track*/

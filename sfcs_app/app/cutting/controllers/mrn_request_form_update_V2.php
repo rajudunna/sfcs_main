@@ -7,7 +7,7 @@ function exception($sql_result)
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $plant_code = $_SESSION['plantCode'];
