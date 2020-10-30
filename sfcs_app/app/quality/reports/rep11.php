@@ -100,7 +100,7 @@ if(isset($_POST['filter']))
 		while($row2=mysqli_fetch_array($sql_result2))
 		{
 			//To get workstation description
-			$query = "select workstation_description,workstation_code,section_id from $pms.workstation where plant_code='$plant_code' and workstation_id = '".$row2['resource_id']."' AND is_active=1";
+			$query = "select workstation_description,workstation_code,section_id from $pms.workstation where plant_code='$plantcode' and workstation_id = '".$row2['resource_id']."' AND is_active=1";
 			$query_result=mysqli_query($link_new, $query) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($des_row=mysqli_fetch_array($query_result))
 			{
@@ -109,7 +109,7 @@ if(isset($_POST['filter']))
 				$section_id = $des_row['section_id'];
 			}
 			//To get section
-			$get_sections="SELECT section_name FROM $pms.sections WHERE section_id='$section_id' AND plant_code='$plant_code' AND is_active=1";
+			$get_sections="SELECT section_name FROM $pms.sections WHERE section_id='$section_id' AND plant_code='$plantcode' AND is_active=1";
 			$sections_result=mysqli_query($link_new, $get_sections) or exit("Sql Error at get_sections".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sec_row=mysqli_fetch_array($sections_result))
 			{
@@ -127,7 +127,7 @@ if(isset($_POST['filter']))
 			echo "<td>".$row2['quantity']."</td>";
 			//getexfactory date
 			$schedule=$row2['schedule'];
-			$get_exfactorydate="SELECT planned_delivery_date FROM $oms.oms_mo_details where plant_code='' AND schedule='$schedule'";
+			$get_exfactorydate="SELECT planned_delivery_date FROM $oms.oms_mo_details where plant_code='$plantcode' AND schedule='$schedule' AND is_active=1";
 			$sql_result3=mysqli_query($link, $get_exfactorydate) or exit("Sql Error get_exfactorydate".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row3=mysqli_fetch_array($sql_result3)){
 				echo "<td>".$row3['planned_delivery_date']."</td>";
@@ -139,144 +139,6 @@ if(isset($_POST['filter']))
 	{
 		echo "<script>sweetAlert('Oops!','No Data Found','error')</script>";
 	}
-
-	$sql="select * from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type in (4,8) and log_date between \"$sdate\" and \"$edate\" order by log_date,substring_index(remarks,\"-\",1)+0,substring_index(remarks,\"-\",-1),qms_style,qms_schedule,qms_color,qms_size";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	if(mysqli_num_rows($sql_result) > 0) {
-		echo '<div class="row">
-				<div class="col-sm-2">
-					<form action='.getFullURL($_GET['r'],'export_excel.php','R').' method ="post" > 
-					<input type="hidden" name="csv_text" id="csv_text">
-					<input type="submit" value="Export to Excel" class="btn btn-warning" onclick="getTableData()">
-					</form>
-				</div>
-			 </div><br/>';
-
-		    echo '<div class="row" style="overflow-x:scroll;overflow-y:scroll;max-height:600px;">';
-			echo "<table id='example1' class=\"table table-bordered\">";
-			echo "<tr class='danger'>
-					<th>Date</th>
-					<th>Module</th>
-					<th>Section</th>
-					<th>Shift</th>
-					<th>Style</th>
-					<th>Schedule</th>
-					<th>Color</th>
-					<th>Size</th>
-					<th>Qty</th>
-					<th>Remarks</th>
-					<th>Sample type</th>
-					<th>Ex Factory Date</th>
-				</tr>";
-		while($sql_row=mysqli_fetch_array($sql_result))
-		{
-			$temp=array();
-			$temp=explode("-",$sql_row['remarks']);
-			
-			if($sql_row['qms_tran_type']==4){
-				$section=$temp[0];
-				$module=$temp[1];
-				$team=$temp[2];
-				$remarks="-";
-				$status='';
-				$status123='-';
-				
-			}else{
-				$section="-";
-				$module="-";
-				$team="-";
-				$remarks=$sql_row['remarks'];
-				
-				$sqlxs="select status from $bai_fin_pj3.aod_db where track_id=".$temp[1];
-				//echo $sql;
-				
-				$sql_resultxs=mysqli_query($link, $sqlxs) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_rowxs=mysqli_fetch_array($sql_resultxs))
-				{
-					$status=$sql_rowxs['status'];
-					
-					switch($status)	{
-						case 0:
-						{
-							
-							$status="Created";
-							
-							break;
-						}
-						case 1:
-						{
-							
-							$status="Printed";
-							
-							break;
-						}
-						case 2:
-						{
-							$status="Canceled";
-							break;
-						}
-						case 3:
-						{
-							
-							$status="***Sent";
-								
-							break;
-						}
-						case 4:
-						{
-							$status="Partial Return";
-							break;
-						}
-						case 5:
-						{
-							
-							$status="Full Return";
-							
-							break;
-						}
-						case 6:
-						{
-							$status="Closed";
-							break;
-						}
-					}
-				}
-				if($status) {
-					$status123="(".$status.")";
-				}else {
-					$status123 = "(No Status in DB)";
-				}
-			}
-			echo "<tr>";
-			echo "<td>".$sql_row['log_date']."</td>";
-			echo "<td>".$module."</td>";
-			echo "<td>".$section."</td>";
-			echo "<td>".$team."</td>";
-			echo "<td>".$sql_row['qms_style']."</td>";
-			echo "<td>".$sql_row['qms_schedule']."</td>";
-			echo "<td class=\"lef\">".$sql_row['qms_color']."</td>";
-			echo "<td>".strtoupper($sql_row['qms_size'])."</td>";
-			echo "<td>".$sql_row['qms_qty']."</td>";
-			echo "<td>".$remarks.$status123."</td>";
-			echo "<td>".$sql_row['ref1']."</td>";
-			
-			$ims_remarks='';$ims_remarks1='';
-			$sql_ims="select order_date from $bai_pro3.bai_orders_db where order_style_no='".$sql_row['qms_style']."' and order_del_no='".$sql_row['qms_schedule']."' and order_col_des='".$sql_row['qms_color']."'";
-			$sql_result1=mysqli_query($link, $sql_ims) or exit("Sql Error $sql_ims".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row1=mysqli_fetch_array($sql_result1))
-			{	
-				$ex_factory=$sql_row1['order_date'];
-			}
-			
-			echo "<td>".$ex_factory."</td></tr>";
-			
-		} 
-		echo "</table>
-			</div>";
-	}else {
-		echo "<script>sweetAlert('Oops!','No Data Found','error')</script>";
-	}
-
 }
 ?>
 
