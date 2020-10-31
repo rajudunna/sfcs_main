@@ -646,6 +646,14 @@ $(document).ready(function(){
                         $post_color = $_POST['color'];
                      
 
+                        $sql11="SELECT company.company_code FROM $pms.cluster LEFT JOIN $pms.plant ON cluster.cluster_code=plant.cluster_code LEFT JOIN $pms.company ON company.company_code=cluster.company_code where plant.plant_code='".$plant_code."'";
+						//echo "<br/>".$sql14."<br>";
+						$sql_result141=mysqli_query($link, $sql11) or die(exception($sql11));
+						while($sql_row141=mysqli_fetch_array($sql_result141))
+						{
+							$company_no=$sql_row141["company_code"];
+						}
+
 						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
 						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
 						LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
