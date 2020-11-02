@@ -150,7 +150,8 @@ if(isset($_POST['submit']))
            $section_name=$sec_row['section_name'];
 		}
 		//TO caliculate act hours
-		$get_acthours="SELECT plant_start_time,plant_end_time FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1"; ,$sql_get_acthours=mysqli_query($link_new, $get_acthours) or exit("Sql sql_get_acthours".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$get_acthours="SELECT plant_start_time,plant_end_time FROM $pms.plant WHERE plant_code='$plant_code' AND is_active=1"; 
+		$sql_get_acthours=mysqli_query($link_new, $get_acthours) or exit("Sql sql_get_acthours".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($actrows=mysqli_fetch_array($sql_get_acthours))
 		{
 		   $start_time=$actrows['plant_start_time'];

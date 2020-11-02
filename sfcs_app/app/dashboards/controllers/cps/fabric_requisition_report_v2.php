@@ -46,16 +46,29 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 
 $mins=array("00","05","10","15","20","25","30","35","40","45","50","55");
 
+$plant_code = $_GET['plantcode'];
+$username = $_GET['username'];
+
 
 ?>
 <body>
 <div class="panel panel-primary">
 <div class="panel-heading">Fabric Requisition Details</div>
+
 <div class="panel-body">
 <form action="fabric_requisition_report_v2.php" method="post" name="form1">
+<?php 
+if(isset($_POST["submit"])){
+$plant_code=$_POST['plant_code'];
+$username=$_POST['username'];
+}
+?>	
+<input type="hidden" value="<?php echo $plant_code ?>" name='plant_code'>
+<input type="hidden" value="<?php echo $username ?>" name='username'>
 <div class="row">
     <div class="col-md-2">
-        <label>Start Date</label>
+		<label>Start Date</label>
+
         <input  type='date' data-toggle="datepicker" class="form-control" id='sdat' name="sdat" value="<?php  if(isset($_POST['sdat'])) { echo $_POST['sdat']; } else { echo date("Y-m-d"); } ?>" size=8 />
     </div>
     <div class="col-md-2"><br/>
@@ -136,8 +149,12 @@ if(isset($_POST["submit"]))
 $sdate=$_POST["sdat"];
 $edate=$_POST["edat"];
 $stime=$_POST["stime"];
+$start_date=$sdate.' '.$stime;
+$start_date=$edate.' '.$etime;
 $etime=$_POST["etime"];
 $cat=$_POST["cat"];
+$plant_code=$_POST["plant_code"];
+$username=$_POST["username"];
 if($cat!=''){
 	if($cat==1)
 	{
@@ -145,9 +162,9 @@ if($cat!=''){
 	}
 	if($cat==2)
 	{
-		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null or issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
+		$sql2="select req_time,section_id,work_station_id,jm_docket_line_id,issued_time,created_user,log_time from $pps.fabric_prorities where issued_time between '$sdate 06:00:00' and '$edate 23:00:00'  and issued_time is not null and issued_time!='0000-00-00 00:00:00'  and plant_code='$plant_code'  order by issued_time";
 	}
-	//  echo $sql2;
+	   
 	echo "<hr/>";
 
 	echo "<div style='max-height:600px;overflow-x:scroll;overflow-y:scroll'><table id='example1' name='example1' class='table table-bordered'>";
