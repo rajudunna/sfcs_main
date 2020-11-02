@@ -763,7 +763,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>Cut Table Dashboard (Warehouse)</a></strong></a>
+echo "<div class='panel-heading'><span style='float'><strong><a href=$url?plantcode=$plant_code&username=$username  target='_blank'>Cut Table Dashboard (Warehouse)</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
