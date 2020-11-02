@@ -7,8 +7,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 $plant_Code = $_SESSION['plantCode'];
 $username = $_SESSION['userName'];
 
-$reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Shade","Heat Seal","Trim","Panel Un-Even","Stain Mark","Strip Match","Cut Damage","Heat Seal","M' ment Out","Un Even","Shape Out Leg","Shape Out waist","Shape Out","Stain Mark","With out Label","Trim shortage","Sewing Excess",
-"Cut Holes","Slip Stitch’s","Oil Marks","Others EMB","Foil Defects","Embroidery","Print","Sequence","Bead","Dye","wash");
 ?>
 <script>
 function verify_dates(){
@@ -201,7 +199,6 @@ background-position:center middle;
 					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,resource_id,shift FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style,resource_id,shift order by resource_id,shift";
 				}
 				$grand_reject=array();
-				echo $sql;
 				$grand_output=0;
 				$sql_result=mysqli_query($link, $sql) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
@@ -284,13 +281,13 @@ background-position:center middle;
 							$bgcolor=" bgcolor=#FFEEDD ";
 						}
 						$grand_reject[$depts[$ii]]=$rejection;
-					}	
+					}
+					$grand_output+=$grand_output+$sw_out;	
 				}				
-				echo "</tr>";
-				$grand_output+=$grand_output+$sw_out;
+				echo "</tr>";			
 				//Section Data
 				$query="select section_name from $pms.sections where plant_code='$plant_code' and department_id='$section'";
-				$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_res = mysqli_query($link_new, $query) or exit("Fetching Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				$sections_rows_num = mysqli_num_rows($sql_res);
 				while ($sections_row = mysqli_fetch_array($sql_res)) {
 					$section_display_name = $sections_row['section_name'];
