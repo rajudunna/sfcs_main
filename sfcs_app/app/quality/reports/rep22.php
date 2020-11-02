@@ -2,16 +2,10 @@
 
 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/group_def.php',3,'R'));
-//$view_access=user_acl("SFCS_0050",$username,1,$group_id_sfcs); 
-$plantcode=$_SESSION['plantCode'];
-$username=$_SESSION['userName'];
-
-// $Diag = getFullURL($_GET['r'],'Diag.gif','R');
-// echo $Diag;
-?>
-<?php  
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
+$plant_Code = $_SESSION['plantCode'];
+$username = $_SESSION['userName'];
 
 $reasons=array("Miss Yarn","Fabric Holes","Slub","F.Yarn","Stain Mark","Color Shade","Heat Seal","Trim","Panel Un-Even","Stain Mark","Strip Match","Cut Damage","Heat Seal","M' ment Out","Un Even","Shape Out Leg","Shape Out waist","Shape Out","Stain Mark","With out Label","Trim shortage","Sewing Excess",
 "Cut Holes","Slip Stitch’s","Oil Marks","Others EMB","Foil Defects","Embroidery","Print","Sequence","Bead","Dye","wash");
@@ -65,8 +59,14 @@ background-position:center middle;
 <div class="panel-body">
 		<form name="input" method="post" action="?r=<?= $_GET['r'] ?>">
 			<div class="row">
-				<div class='col-md-2'><label>Start Date</lable><input id="demo1" class="form-control" type="text" data-toggle='datepicker' name="sdate" size="8" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>"></div>
-				<div class='col-md-2'><label>End Date</lable><input id="demo2" class="form-control" type="text" data-toggle='datepicker' size="8" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>"></div>
+				<div class="col-md-3">
+					<label>Start Date:</label>
+					<input id="demo1" type="text" data-toggle="datepicker" class="form-control" name="sdate" value=<?php if($sdate!="") { echo $sdate; } else { echo date("Y-m-d"); } ?>>
+				</div>
+				<div class="col-md-3">
+					<label>End Date:</label>
+					<input id="demo2" type="text" data-toggle="datepicker" class="form-control" name="edate" value=<?php if($edate!="") { echo $edate; } else { echo date("Y-m-d"); } ?>>
+				</div>
 				<div class='col-md-2'><label>Style Level</label><input type="checkbox" class="checkbox" name="style_level" value="1" <?php if(isset($_POST['style_level'])) { echo "checked"; }?>></div>
 				<div class='col-md-1'><label>Shift Level </label><input type="checkbox" class="checkbox" name="shift_level" value="2" <?php if(isset($_POST['shift_level'])) { echo "checked"; }?>></div>
 				<div class='col-md-2'><label>Section</label>
@@ -74,14 +74,13 @@ background-position:center middle;
 						$section_dd = $_POST['section'];
 						echo "<select name=\"section\" class='form-control'>";
 						//echo "<option value=\"0\">All</option>";
-						$sql="SELECT sec_id as secid FROM $bai_pro3.sections_db WHERE sec_id NOT IN (0,-1) ORDER BY sec_id";
-						$result17=mysqli_query($link, $sql) or exit("Sql Error4".mysqli_error($GLOBALS["___mysqli_ston"]));
-						while($sql_row=mysqli_fetch_array($result17))
+						$departments=getSectionByDeptTypeSewing($plant_Code);
+						foreach($departments as $department)    //section Loop -start
 						{
-							$sql_sec=$sql_row["secid"];
-					?>
-							<option <?php if ($section_dd==$sql_sec) { ?>selected="selected"<?php } ?> value="<?php echo $sql_sec ?>">
-								<?php echo $sql_sec; ?>
+							$sectionId=$department['sectionId'];
+							$sectionCode=$department['sectionCode'];
+					?>	<option <?php if ($section_dd==$sectionId) { ?>selected="selected"<?php } ?> value="<?php echo $sectionId; ?>">
+								<?php echo $sectionCode; ?>
 							</option>
 					<?php			
 						}
@@ -93,8 +92,6 @@ background-position:center middle;
 		</form>
 
 		<?php
-
-// echo "Hello";
 		if(isset($_POST['filter']))
 		{
 			$sdate=$_POST['sdate'];
@@ -102,7 +99,17 @@ background-position:center middle;
 			$style_level=$_POST['style_level'];
 			$shift_level=$_POST['shift_level'];
 			$section=$_POST['section'];
-			
+			//Getting Shift information
+			$teamsData=getShifts($plant_Code);
+			foreach($teamsData as $shifts)   
+			{
+				foreach($shifts as $shiftDetails)    
+				{
+					$shiftsIde[]=$shiftDetails['shift_id'];
+					$shiftsInfo[]=$shiftDetails['shift_code'];
+				}		
+				
+			}	
 			$choice=0;
 			
 			if($style_level>0 and $shift_level>0)
@@ -120,302 +127,203 @@ background-position:center middle;
 					if($shift_level==2) {	$choice=2; }
 				}
 			}
-			if($section>0)
+
+			//Getting Module information
+			$workstationsArray=getWorkstationsForSectionId($plant_Code, $section);
+			foreach($workstationsArray as $workstations)
 			{
-				//$choice=-1;
-				$sec_db="";
-				$sql="select sec_mods from $bai_pro3.sections_db where sec_id=$section";
-				//echo $sql;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row=mysqli_fetch_array($sql_result))
+				$moduleId[]=$workstations['workstationId'];	
+				$moduleCode[$workstations['workstationId']]=$workstations['workstationCode'];
+			}	
+			//Getting Reson information
+			$reasons_query = "SELECT distinct department_type from $mdm.reasons where reason_group = 'PRODUCTION' and is_active=1";
+			$reasons_result = mysqli_query($link_new, $reasons_query);
+			while($row = mysqli_fetch_array($reasons_result)) 
+			{
+				$depts[]=$row['department_type'];
+				$dept_type=$row['department_type'];
+				$rejectReasonarray=getRejectionReasons($dept_type);
+				$i=0;
+				foreach($rejectReasonarray as $Reason)
 				{
-					$sec_db=$sql_row['sec_mods'];
+					$reasonId[$dept_type][$i]=$Reason['reason_id'];	
+					$reasonCode[$dept_type][$i]=$Reason['internal_reason_code'];	
+					$reasonDesc[$dept_type][$i]=$Reason['internal_reason_description'];	
+					$i++;					
 				}
+				$deptSize[$dept_type]=$i;
 			}
+			$sql_rejection="SELECT * FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id in ('".implode("','",$moduleId)."') AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
+			$sql_result=mysqli_query($link, $sql_rejection) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
+			if(mysqli_num_rows($sql_result)>0)
+			{
+				echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
+				echo "<tr class='tblheading'>
+				<th rowspan=2>Module</th>
+				<th rowspan=2>Shift</th>
+				<th rowspan=2>Style</th>
+				<th rowspan=2>Schedule</th>
+				<th rowspan=2>Color</th>
+				<th rowspan=2>Output</th>
+				<th rowspan=2 width=45>Reject<br/> Out</th>";
+				for($i=0;$i<sizeof($depts);$i++)
+				{
+					echo "<th colspan=".$deptSize[$dept_type]." width=45>".$depts[$i]."</th>";
+				}
+				echo "</tr>";
+				echo "<tr class='tblheading'>";
+				for($ii=0;$ii<sizeof($depts);$ii++)
+				{
+					for($iii=0;$iii<$deptSize[$depts[$ii]];$iii++)
+					{
+						echo "<th width=45>".$reasonDesc[$depts[$ii]][$iii]."</th>";
+					}
+				}				
+				echo "</tr>";	
 			
-             
-			echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
-			echo "<tr class='tblheading'>
-				<th rowspan=3>Module</th>
-				<th rowspan=3>Shift</th>
-				<th rowspan=3>Style</th>
-				<th rowspan=3>Schedule</th>
-				<th rowspan=3>Color</th>
-				<th rowspan=3>Sewing Out</th>
-				<th rowspan=3 width=45>Reject<br/> Out</th>
-				<th colspan=8>Fabric</th>
-				<th colspan=3>Cutting</th>
-				<th colspan=11>Sewing</th>
-				<th colspan=3>Machine Damages</th>
-				<th colspan=8>Embellishment</th>
-		</tr>";
+				if($choice==0)
+				{
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id";
+				}
 
-				//echo "<tr class='tblheading'>
-				//	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th>	<th width=45 >Panel</th>	<th width=45>Stain </th>	<th width=45>Strip</th>	<th width=45>Cut</th>	<th width=45>Stain </th>	<th width=45>Heat</th>	<th width=45 >M' ment </th>	<th width=45>Shape </th>	<th width=45>Emb</th>
-					echo "<tr class='tblheading'>
-							<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th> 
+				if($choice==1)
+				{
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style order by style";
+				}
 
-					</tr>";
+				if($choice==2)
+				{
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output,shift, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by resource_id,shift order by resource_id,shift";
+				}
 
-				//echo "<tr class='tblheading'>
-				//	<th>Yarn</th>	<th>Holes</th>	<th></th>	<th>Yarn</th>	<th>Mark </th>	<th>Shade</th>	<th>Un-Even</th>	<th>Mark </th>	<th>Match</th>	<th>Dmg</th>	<th>Mark </th>	<th>Seal</th>	<th>Out</th>	<th>Out </th>	<th>Defects</th>
-					echo "<tr class='tblheading'>
-						<th>Yarn</th>	<th>Holes</th>	<th></th>	<th>Yarn</th>	<th>Mark </th>	<th>Shade</th> <th> seal </th> <th></th>	<th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th>	
-
-					</tr>";
-
-                   
-                    // To get category sewing
-		            $get_category="SELECT group_concat(operation_code) as op_codes FROM $brandix_bts.`tbl_orders_ops_ref` 
-		                           WHERE category ='sewing'";
-		            $category_result=mysqli_query($link, $get_category)or exit("category_error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		            while($sql_row=mysqli_fetch_array($category_result))
-		            {
-		                $sw_category=$sql_row['op_codes'];
-		            } 
-                   
-                   // die();
-					if($choice==0)
-					{
-
-						 $sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output,assigned_module from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' GROUP BY assigned_module" ;
-					}
-
-					if($choice==1)
-					{
-
-						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style from brandix_bts.bundle_creation_data_temp where operation_id in($sw_category) and date(date_time) between '$sdate' and '$edate' group by style order by style";
-					}
-
-					if($choice==2)
-					{
-
-						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, assigned_module, shift from brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' group by assigned_module,shift order by assigned_module,shift";
-					}
-
-					if($choice==3)
-					{
-
-						$sql="select operation_id,sum(if(operation_id = 130,recevied_qty,0)) as output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,assigned_module,shift from $brandix_bts.bundle_creation_data_temp where assigned_module in ($sec_db) and operation_id in ($sw_category) and date(date_time) between '$sdate' and '$edate' 
-						    group by style,assigned_module,shift order by assigned_module,shift";
-					}
-					$grand_vals=array();
-					//echo $sql;
-					for($i=0;$i<33;$i++) {	$grand_vals[$i]=0;	}
-					$grand_output=0;
-					$grand_rejections=0;
-				$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+				if($choice==3)
+				{
+					$sql="SELECT resource_id,operation as operation_id,style,color,SUM(good_quantity) AS output, group_concat(distinct schedule) as schedule, group_concat(distinct color) as color, style,resource_id,shift FROM $pts.transaction_log WHERE created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 23:59:59' AND parent_barcode_type='PPLB' and resource_id in ('".implode("','",$moduleId)."') and plant_code='".$plant_Code."' group by style,resource_id,shift order by resource_id,shift";
+				}
+				$grand_reject=array();
+				echo $sql;
+				$grand_output=0;
+				$sql_result=mysqli_query($link, $sql) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$op = $sql_row['operation_id'];
-					$mod=$sql_row['assigned_module'];
-					$shif=$sql_row['shift'];
+					$mod=$sql_row['resource_id'];
+					$shift=$sql_row['shift'];
 					$schedule=$sql_row['schedule'];
 					echo "<tr>";
-					echo "<td>".$sql_row['assigned_module']."</td>";
+					echo "<td>".$moduleCode[$sql_row['resource_id']]."</td>";
 					echo "<td>".$sql_row['shift']."</td>";
 					echo "<td>".$sql_row['style']."</td>";
 					echo "<td>".$sql_row['schedule']."</td>";
 					echo "<td>".$sql_row['color']."</td>";
+					$sw_out=$sql_row['output'];
 					
-					
-					    $sw_out=$sql_row['output'];
-					
-
-					//echo $sw_out;
-					
-					$sql1x="SET SESSION group_concat_max_len = 1000000";
-					mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-
 					if($choice==0)
 					{
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type=3 and substring_index(remarks,\"-\",1)=\"$mod\" and log_date between \"$sdate\" and \"$edate\"";
-
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==1)
 					{
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type=3 and qms_schedule in ($schedule) and log_date between \"$sdate\" and \"$edate\"";
-						//echo $sql1."<br/>";
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==2)
 					{
-						
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type=3 and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\" ";
+						// Shift not maintining
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
 					}
 					
 					if($choice==3)
 					{
-						
-						$sql1="select group_concat(ref1,\"$\") as \"ref1\",sum(qms_qty) as \"qms_qty\" from $pps.bai_qms_db where plant_code='$plantcode' and qms_tran_type=3 and qms_schedule in ($schedule) and substring_index(remarks,\"-\",1)=\"$mod\" and  substring_index(substring_index(remarks,\"-\",2),\"-\",-1)=\"$shif\" and log_date between \"$sdate\" and \"$edate\"";
-					  // echo "query=".$sql1;
+						// Shift not maintining
+						$sql1="SELECT reason_id,SUM(rt.rejection_quantity) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id='$mod' and rh.schedule in ($schedule) AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
 					}
-					
-					$qms_qty=0;
-					$ref="";
-			//echo $sql1;
-					$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$rej_qty=array();
+					$sql_result1=mysqli_query($link, $sql1) or exit("Fetching Rejection Quantity".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
-						$ref=$sql_row1['ref1'];
-						$qms_qty=$sql_row1['qms_qty'];
+						$rej_qty[$sql_row1['reason_id']]=$sql_row1['qty'];
 					}
-					
-					if($qms_qty==0 or $qms_qty==NULL)
+					if(size($rej_qty)>0)
+					{
+						$qms_qty=array_sum($rej_qty);
+					}
+					else
 					{
 						$qms_qty=0;
 					}
-					
 					$span1='<p class="pull-left">';
 					$span2='<p class="pull-right">';
-					$span3='</p>';
-				
+					$span3='</p>';				
 					echo "<td>".$sw_out."</td>";
 					echo "<td class=\"BG\">$span1".$qms_qty."$span3$span2"; if($sw_out>0) { echo round(($qms_qty/$sw_out)*100,1)."%"; } echo "$span3</td>";
-					
-					//echo $sql_row['bac_no']."=".strlen($ref);	
-					$vals=array();
-					$rej_val=array(0,1,2,3,4,5,15,16,6,7,8,9,11,12,17,18,19,13,10,20,21,22,23,24,25,14,26,27,28,29,30,31,32);
-					for($i=0;$i<33;$i++) {	$vals[$i]=0;	}
-					
-					$temp=array();
-					$temp=explode("$",str_replace(",","$",$ref));
-					
-					for($i=0;$i<sizeof($temp);$i++)
+					$bgcolor=" bgcolor=#FFEEDD ";
+					for($jj=0;$jj<sizeof($depts);$jj++)
 					{
-						if(strlen($temp[$i])>0)
-						{
-							$temp2=array();
-							$temp2=explode("-",$temp[$i]);
-							$x=$temp2[0];
-							$vals[$x]+=$temp2[1];
-							$grand_vals[$x]+=$temp2[1];
+						$rejection=0;
+						for($jjj=0;$jjj<$deptSize[$depts[$jj]];$jjj++)
+						{							
+							if($rej_qty[$reasonId[$depts[$jj]][$jjj]]!='')
+							{
+								echo "<td class=\"BG\" $bgcolor>$span1".$rej_qty[$reasonId[$depts[$jj]][$jjj]]."$span3$span2"; if($sw_out>0) { echo round(($rej_qty[$reasonId[$depts[$jj]][$jjj]]/$sw_out)*100,1)."%"; } echo "$span3</td>";
+								$rejection=$rejection+$rej_qty[$reasonId[$depts[$jj]][$jjj]];	
+							}
+							else
+							{
+								echo "<td class=\"BG\" $bgcolor>$span10$span3$span2";  echo "0%";  echo "$span3</td>";	
+								$rejection=$rejection+0;
+							}						
 						}
-					}
-					
-					for($i=0;$i<33;$i++) {
-					
-							if($i<8)
-							{
-								$bgcolor=" bgcolor=#FFEEDD ";
-							}
-							
-							if($i>7 and $i<11)
-							{
-								$bgcolor=" bgcolor=white";
-							}
-							if($i>10 and $i<22)
-							{
-									$bgcolor=" bgcolor=#FFEEDD";
-							}
-							if($i>21 and $i<25)
-							{
-								$bgcolor=" bgcolor=white";
-							}
-							if($i>24)
-							{
-									$bgcolor=" bgcolor=#FFEEDD";
-							}
-					//BG Color
-						
-					echo "<td class=\"BG\" $bgcolor>$span1".$vals[$rej_val[$i]]."$span3$span2"; if($sw_out>0) { echo round(($vals[$rej_val[$i]]/$sw_out)*100,1)."%"; } echo "$span3</td>";
-					
-					//echo "<td>".$vals[$i]."</td>";	
-					}
-					
-					echo "</tr>";
-					
-					$grand_output+=$sw_out;
-					$grand_rejections+=$qms_qty;
-					
-				} 
-				
-				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=$section";
-				$result12=mysqli_query($link, $sql12) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row12=mysqli_fetch_array($result12))
-				{
-					$section_display_name=$sql_row12["section_display_name"];
+						if($jj/2==0)
+						{
+							$bgcolor=" bgcolor=white ";	
+						}
+						else
+						{
+							$bgcolor=" bgcolor=#FFEEDD ";
+						}
+						$grand_reject[$depts[$ii]]=$rejection;
+					}	
+				}				
+				echo "</tr>";
+				$grand_output+=$grand_output+$sw_out;
+				//Section Data
+				$query="select section_name from $pms.sections where plant_code='$plant_code' and department_id='$section'";
+				$sql_res = mysqli_query($link_new, $query) or exit("Sql Error at Section details" . mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sections_rows_num = mysqli_num_rows($sql_res);
+				while ($sections_row = mysqli_fetch_array($sql_res)) {
+					$section_display_name = $sections_row['section_name'];
 				}
 				
 				echo "<tr >";
 				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				for($i=0;$i<33;$i++) {	
-				
-				//BG Color
-					if($i<8)
-							{
-								$bgcolor=" bgcolor=#66DD88 ";
-							}
-							
-							if($i>7 and $i<11)
-							{
-								$bgcolor=" bgcolor=white";
-							}
-							if($i>10 and $i<22)
-							{
-									$bgcolor=" bgcolor=#66DD88";
-							}
-							if($i>21 and $i<25)
-							{
-								$bgcolor=" bgcolor=white";
-							}
-							if($i>24)
-							{
-									$bgcolor=" bgcolor=#66DD88";
-							}
-				//BG Color
-					
-				echo "<td class=\"BG\" $bgcolor>$span1".$grand_vals[$rej_val[$i]]."$span3$span2"; if($grand_output>0) { echo round(($grand_vals[$rej_val[$i]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				
-				//echo "<td>".$vals[$i]."</td>";	
-				}
-				echo "</tr>";
-				
-				$sql12="SELECT section_display_name FROM $bai_pro3.sections_master WHERE sec_name=".$section;
-				// echo $sql12;
-				$result12=mysqli_query($link, $sql12) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row12=mysqli_fetch_array($result12))
+				$bgcolor=" bgcolor=#FFEEDD ";
+				for($j=0;$j<sizeof($depts);$j++)
 				{
-					$section_display_name=$sql_row12["section_display_name"];
-				}
-
-				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>$section_display_name</td>";
-				echo "<td>".$grand_output."</td>";
-				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
-
-				$bgcolor=" bgcolor=#66DD88 ";
-			
-			//	$fi=$grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[6]+$grand_vals[7];
-				
-				
-				echo "<td class=\"BG\" $bgcolor colspan=8>$span1".($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-
-			$bgcolor=" bgcolor=white ";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=3>$span1".($grand_vals[6]+$grand_vals[7]+$grand_vals[8])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[6]+$grand_vals[7]+$grand_vals[8])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-
-			$bgcolor=" bgcolor=#66DD88 ";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=11>$span1".($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-			 
-			 $bgcolor=" bgcolor=white ";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=3>$span1".($grand_vals[23]+$grand_vals[24]+$grand_vals[25])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[23]+$grand_vals[24]+$grand_vals[25])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				
-				$bgcolor=" bgcolor=#66DD88 ";
-				echo "<td class=\"BG\" $bgcolor colspan=8>$span1".($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				
+					echo "<td  class=\"BG\ colspan=".$deptSize[$dept_type].">$span1".$grand_reject[$depts[$j]]."$span3$span2"; if($grand_output>0) { echo round(($grand_reject[$depts[$j]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
+					if($j/2==0)
+					{
+						$bgcolor=" bgcolor=white ";	
+					}
+					else
+					{
+						$bgcolor=" bgcolor=#FFEEDD ";
+					}
+				}		
 				echo "</tr>";
-				
-			echo "</table></div>";
-			//echo "<h2>Total Output: $grand_output</h2>";
-			//echo "<h2>Total Rejected: $grand_rejections</h2>";
-			//echo "<h2>Reject %: ".round(($grand_rejections/$grand_output)*100,2)."</h2>";
-}
+				echo "</table></div>";
+			}
+			else
+			{
+				echo "<br><br>";
+				echo " <div class='alert alert-info alert-dismissible'><h3>Rejections Not available in selected criteria.<br></h3>";		
+				echo "</div>";
+			}
+		} 
+
 
 
 ?>
