@@ -7,17 +7,18 @@ SFCS_PRO_Quality_Rej_Update
 </head>
 
 <?php  
-
+error_reporting(0);
 $start_timestamp = microtime(true);
 ob_start();
 $include_path=getenv('config_job_path');
+
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 if($_GET['plantCode']){
     $plant_code = $_GET['plantCode'];
 }else{
     $plant_code = $argv[1];
 }
 $username=$_SESSION['userName'];
-include($include_path.'\sfcs_app\common\config\config_jobs.php');
 
 // $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
@@ -32,7 +33,99 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 <script src="jquery.columnmanager/jquery.columnmanager.js"></script>
 <link rel="stylesheet" type="text/css" href="jquery.columnmanager/clickmenu.css" />
 <script src="jquery.columnmanager/jquery.clickmenu.pack.js"></script>
+<style>
+@import "TableFilter_EN/filtergrid.css";    
+#page_heading
+{
+    	width: 100%;
+	height: 25px;
+    	color: WHITE;
+    	background-color: #29759c;
+    	z-index: -999;
+    	font-family:Arial;
+    	font-size:15px;  
+    	margin-bottom: 10px;
+}
 
+#page_heading h3
+{
+	vertical-align: middle;
+	margin-left: 15px;
+	margin-bottom: 0;	
+	padding: 0px;
+}
+
+#page_heading img
+{
+	margin-top: 2px;
+    	margin-right: 15px;
+}
+
+body
+{
+	background-color: #EEEEEE;
+	font-family:arial;
+}
+
+.tblheading th
+{
+	background-color:#29759C;
+}
+
+table{
+	white-space:nowrap; 
+	border-collapse:collapse;
+	font-size:12px;
+	background-color: white;
+}
+
+
+body
+{
+	font-family:calibri;
+	font-size:12px;
+}
+
+table tr
+{
+	border: 1px solid black;
+	text-align: right;
+	white-space:nowrap; 
+}
+
+table td
+{
+	border: 1px solid black;
+	text-align: right;
+white-space:nowrap; 
+height:35px;
+}
+
+table th
+{
+	border: 1px solid black;
+	text-align: center;
+    	background-color: #29759C;
+	color: WHITE;
+white-space:nowrap; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+
+
+
+
+
+.BG {
+background-image:url(Diag.gif);
+background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.
+}
+
+
+
+</style>
+<script type="text/javascript" src="datetimepicker_css.js"></script>
 <body>
 <div class="panel panel-primary">
 <div class="panel-heading">Critical Rejection Report</div>
@@ -47,7 +140,8 @@ $edate=$sdate+(60*60*24*5); // define sunday
 $sdate=date("Y-m-d",$sdate);
 $edate=date("Y-m-d",$edate);
 
-
+// $sdate='2020-10-01';
+// $edate='2020-10-30';
 
 //echo '<div id="page_heading"><span><h3>Critical Rejection Report</h3></span></div>';
 
@@ -66,17 +160,38 @@ $edate=date("Y-m-d",$edate);
 	<th rowspan=3>Color</th>
 	<th rowspan=3>Order Qty</th>
 	<th rowspan=3>Sewing Out</th>
-	<th rowspan=3 width=45>Reject<br/> Out</th>
-	<th colspan=8>Fabric</th>
+	<th rowspan=3 width=45>Reject<br/> Out</th>";
+	
+	/*for getting reasons departments*/
+	$reason_query="select department_type,count(reason_id) as cnt from $mdm.reasons where is_active=1 group by department_type order by department_type";
+	$reasons_qry_res=mysqli_query($link_new, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($res_row=mysqli_fetch_array($reasons_qry_res))
+	{
+		$department_type=$res_row['department_type'];
+		$cnt=$res_row['cnt'];
+		echo "<th colspan=".$cnt.">".$department_type."</th>";		
+	}
+	echo"</tr>";
+	/*
+	echo "<th colspan=8>Fabric</th>
 	<th colspan=3>Cutting</th>
 	<th colspan=11>Sewing</th>
 	<th colspan=3>Machine Damages</th>
-	<th colspan=8>Embellishment</th>
-</tr>";
-echo "<tr>
-	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th></tr>";
-echo "<tr>
-	<th>Yarn</th><th>Holes</th>	<th></th><th>Yarn</th><th>Mark</th><th>Shade</th><th> seal </th> <th></th><th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th></tr>";
+	<th colspan=8>Embellishment</th>*/
+	echo "<tr>";
+	/*for getting reasons*/
+	$reasons_query="select external_reason_description from $mdm.reasons where is_active=1 order by department_type";
+	$reasons_query_result=mysqli_query($link_new, $reasons_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($resRow=mysqli_fetch_array($reasons_query_result))
+	{
+		echo "<th width=45>".$resRow['external_reason_description']."</th>";
+	}
+	echo "<tr>";
+
+/*echo "<tr>
+	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th></tr>";*/
+	/*echo "<tr>
+	<th>Yarn</th><th>Holes</th>	<th></th><th>Yarn</th><th>Mark</th><th>Shade</th><th> seal </th> <th></th><th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th></tr>";*/
 
 
 	$sql="select schedule,style,fg_color,ex_factory,size,GROUP_CONCAT(CONCAT('''', rh_id, '''' )) AS \"rh_id\",total_rejection from $pts.rejection_header where plant_code='$plant_code' and ex_factory between \"$sdate\" and \"$edate\" group by style,schedule,fg_color,size order by ex_factory desc ";
@@ -125,6 +240,7 @@ echo "<tr>
 		$sewing_damage=0;
 		$machine_damage=0;
 		$embl_damage=0;
+		
 		$rej_trans="select reason_id,sum(rejection_quantity) as rej_qty,workstation_code,workstation_id from $pts.rejection_transaction where rh_id in ($rh_id) group by reason_id";
 		// echo $rej_trans."<br/>";
 		$sql_res_rej_trans=mysqli_query($link_new, $rej_trans) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -202,17 +318,36 @@ echo "<tr>
 				echo "<td style='text-align: center;'>".$array_val['schedule']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['style']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['colour']."</td>";
-				echo "<td style='text-align: center;'>".$array_val['size']."</td>";	
-				echo "<td style='text-align: center;'>".$array_val['section']."</td>";
-				echo "<td style='text-align: center;'>".$array_val['module']."</td>";	
+				//echo "<td style='text-align: center;'>".$array_val['size']."</td>";	
+				//echo "<td style='text-align: center;'>".$array_val['section']."</td>";
+				//echo "<td style='text-align: center;'>".$array_val['module']."</td>";	
 				echo "<td style='text-align: center;'>".$array_val['orderqty']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['grandoutput']."</td>";
-				echo "<td style='text-align: center;'>".$array_val['grdrej']."</td>"; 
-				echo "<td style='text-align: center;'>".$array_val['fabric_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['grdrej']."</td>";
+				/*getting rejection qty reason wise*/
+				$reasons_query="select reason_id from $mdm.reasons where is_active=1 order by department_type";
+				$reasons_query_result=mysqli_query($link_new, $reasons_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($resRow=mysqli_fetch_array($reasons_query_result))
+				{	
+					$rej_qty=0;
+					/*rejection qty based on rejection id*/
+					$rej_trans="select sum(rejection_quantity) as rej_qty from $pts.rejection_transaction where reason_id='".$resRow['reason_id']."' and rh_id in ($rh_id) group by reason_id";
+					$sql_res_rej_trans=mysqli_query($link_new, $rej_trans) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$rows=mysqli_num_rows($sql_res_rej_trans);
+					if($rows>0){
+						while($sqlrow2=mysqli_fetch_array($sql_res_rej_trans))
+						{
+							$rej_qty=$sqlrow2['rej_qty'];
+						}
+					}
+					echo "<td style='text-align: center;'>".$rej_qty."</td>";
+					
+				}
+				/*echo "<td style='text-align: center;'>".$array_val['fabric_damage']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['cutting_damage']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['sewing_damage']."</td>";
 				echo "<td style='text-align: center;'>".$array_val['machine_damage']."</td>";
-				echo "<td style='text-align: center;'>".$array_val['embl_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['embl_damage']."</td>";*/
 				echo "</tr>";
 			}								
 		}
