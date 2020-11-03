@@ -48,7 +48,7 @@ $cut_no=$_GET['cut_no'];
 
 
 
-$sql1="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
+$sql1="select tid from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
 //echo $sql1."<br>";
 mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -88,11 +88,11 @@ $sql_num_confirm=mysqli_num_rows($sql_result);
 
 if($sql_num_confirm>0)
 {
-	$sql="select * from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
+	$sql="select order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,old_order_s_xs,old_order_s_s,old_order_s_m,old_order_s_l,old_order_s_xl,old_order_s_xxl,old_order_s_xxxl,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,order_date from $bai_pro3.bai_orders_db_confirm where order_tid=\"$order_tid\"";
 }
 else
 {
-	$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+	$sql="select order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,old_order_s_xs,old_order_s_s,old_order_s_m,old_order_s_l,old_order_s_xl,old_order_s_xxl,old_order_s_xxxl,old_order_s_s01,old_order_s_s02,old_order_s_s03,old_order_s_s04,old_order_s_s05,old_order_s_s06,old_order_s_s07,old_order_s_s08,old_order_s_s09,old_order_s_s10,old_order_s_s11,old_order_s_s12,old_order_s_s13,old_order_s_s14,old_order_s_s15,old_order_s_s16,old_order_s_s17,old_order_s_s18,old_order_s_s19,old_order_s_s20,old_order_s_s21,old_order_s_s22,old_order_s_s23,old_order_s_s24,old_order_s_s25,old_order_s_s26,old_order_s_s27,old_order_s_s28,old_order_s_s29,old_order_s_s30,old_order_s_s31,old_order_s_s32,old_order_s_s33,old_order_s_s34,old_order_s_s35,old_order_s_s36,old_order_s_s37,old_order_s_s38,old_order_s_s39,old_order_s_s40,old_order_s_s41,old_order_s_s42,old_order_s_s43,old_order_s_s44,old_order_s_s45,old_order_s_s46,old_order_s_s47,old_order_s_s48,old_order_s_s49,old_order_s_s50,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_s_s01,order_s_s02,order_s_s03,order_s_s04,order_s_s05,order_s_s06,order_s_s07,order_s_s08,order_s_s09,order_s_s10,order_s_s11,order_s_s12,order_s_s13,order_s_s14,order_s_s15,order_s_s16,order_s_s17,order_s_s18,order_s_s19,order_s_s20,order_s_s21,order_s_s22,order_s_s23,order_s_s24,order_s_s25,order_s_s26,order_s_s27,order_s_s28,order_s_s29,order_s_s30,order_s_s31,order_s_s32,order_s_s33,order_s_s34,order_s_s35,order_s_s36,order_s_s37,order_s_s38,order_s_s39,order_s_s40,order_s_s41,order_s_s42,order_s_s43,order_s_s44,order_s_s45,order_s_s46,order_s_s47,order_s_s48,order_s_s49,order_s_s50,order_date from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 }
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error6".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -151,7 +151,7 @@ $sql="select order_embl_a,order_embl_b,order_embl_c,order_embl_d,order_embl_e,or
 	$add_title="";
 	$p_plies=0;	
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Pilot\" and doc_no=$doc_no order by acutno";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,p_plies,remarks,doc_no,date,mk_ref,a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Pilot\" and doc_no=$doc_no order by acutno";
 mysqli_query($link, $sql) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Erro8r".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -228,7 +228,7 @@ if($input_excess_cut_as_full_input==1)
 
 	
 
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Normal\" order by acutno";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,p_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$CID and remarks=\"Normal\" order by acutno";
 //echo "<br/>".$sql;
 mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -394,7 +394,7 @@ else
 $sql="insert into review_print_track (ref_tid, log_user) values (\"$order_tid\",\"$user\")";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
-$sql1="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+$sql1="select order_style_no,order_del_no,order_col_des,color_code from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -418,7 +418,7 @@ $style_no=check_style($style);
 //echo "<br/>first_letter_of_style".$first_letter_of_style;
 //echo "<br/> style_no".$style_no;
 
-$sql_style_details="SELECT * FROM $bai_pro3.carton_qty_chart where user_style='".$style_no."' and buyer_identity='".$first_letter_of_style."'";
+$sql_style_details="SELECT xs,s,m,l,xl,xxl,xxxl,s01,s02,s03,s04,s05,s06,s07,s08,s09,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28,s29,s30,s31,s32,s33,s34,s35,s36,s37,s38,s39,s40,s41,s42,s43,s44,s45,s46,s47,s48,s49,s50 FROM $bai_pro3.carton_qty_chart where user_style='".$style_no."' and buyer_identity='".$first_letter_of_style."'";
 
 $sql_result_style_details=mysqli_query($link, $sql_style_details) or exit("<br/> Style details error".$sql_style_details.mysqli_error($GLOBALS["___mysqli_ston"]));
 
@@ -2162,7 +2162,7 @@ DAAAAAA=
  </tr>
  <tr height=20 style='height:15.0pt'>
   <td rowspan=2 height=41 class=xl1197179 style='border-bottom:1.0pt solid black;
-  height:30.75pt'>Hour<span style='mso-spacerun:yes'> </span></td>
+  height:30.75pt'>Hour<span style='mso-spacerun:yes'>ï¿½</span></td>
   <td colspan=2 class=xl1217179 style='border-left:none'>XS</td>
   <td colspan=2 class=xl1217179 style='border-left:none'>S</td>
   <td colspan=2 class=xl1217179 style='border-left:none'>M</td>

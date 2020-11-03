@@ -1,8 +1,18 @@
 <?php
+error_reporting(0);
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
-include($include_path.'\sfcs_app\common\config\config_jobs.php');	
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
+include('../../../common/config/config.php');
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
+$username = $_SESSION['userName'];
+$plant_code = 'AIP';
 $data_result='';
+
 $connect = odbc_connect("$prod_status_driver_name;Server=$prod_status_server_name;Database=$prod_status_database;", $prod_status_username,$prod_status_password);
 if(isset($_GET["date"]))
 {
@@ -12,22 +22,21 @@ else
 {
     $date=date("Y-m-d");
 }
-
-$select_ops="select * from brandix_bts.tbl_ims_ops where appilication='IMS_OUT'";
-$result_ops=mysqli_query($link, $select_ops) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+$select_ops="select operation_code from $pms.operation_mapping where operation_category='SEWING' and plant_code='$plant_code' and is_active=true order by priority DESC limit 1";
+// echo $select_ops;
+$result_ops=mysqli_query($link, $select_ops) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row_ops=mysqli_fetch_array($result_ops))
 {
     $ops_code=$sql_row_ops["operation_code"];
 }
-
 $plant_prefix='';
-$select_prefix="select * from $brandix_bts.tbl_orders_ops_ref where operation_name='Sewing out'";
+$select_prefix="select parent_workstation_id from $pms.operation_mapping where operation_code=$ops_code and plant_code=$plant_code and is_active=true";
 $result_prefix=mysqli_query($link, $select_prefix) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 if(mysqli_num_rows($result_prefix) > 0)
 {
     while($sql_row_prefix=mysqli_fetch_array($result_prefix))
     {
-        $plant_prefix=$sql_row_prefix["parent_work_center_id"];
+        $plant_prefix=$sql_row_prefix["parent_workstation_id"];
     }
 }
 
@@ -37,21 +46,30 @@ if($ops_code != '')
     $sah_total=0;
     set_time_limit(6000000);
     $i=0;	
-    $sql="SELECT assigned_module AS Module,DATE(date_time) AS date,style,schedule,color,size_title,ROUND(sfcs_smv,4) AS SMV,SUM(recevied_qty) AS qty,ROUND(SUM(recevied_qty*sfcs_smv/60),4) AS SAH FROM brandix_bts.bundle_creation_data_temp WHERE DATE(date_time)=\"".$date."\" AND operation_id='".$ops_code."' GROUP BY DATE(date_time),style,schedule,color,size_title,sfcs_smv,assigned_module ORDER BY DATE(date_time),assigned_module*1,style,schedule,color,size_title,sfcs_smv";
+    $sql="SELECT resource_id AS Module,DATE(updated_at) AS date,style,schedule,color,size,SUM(good_quantity) AS qty FROM $pts.transaction_log WHERE DATE(updated_at)=\"".$date."\" AND operation_id='".$ops_code."' GROUP BY DATE(updated_at),style,schedule,color,size,assigned_module ORDER BY DATE(updated_at),assigned_module*1,style,schedule,color,size";
     // echo $sql."<br>";
-    $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+    $result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($result))
     {
         $i+=1;
-        $module=$plant_prefix.$sql_row["Module"];
+        $mod=$sql_row['Module'];
+        $get_module="select workstation_description from $pms.workstation where workstation_id='.$mod.'";
+        $result_ops=mysqli_query($link, $get_module) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($sql_row_ops=mysqli_fetch_array($result_ops))
+        {
+            $module1=$sql_row_ops["workstation_description"];
+        }
+        $module=$plant_prefix.$module1;
         $production_date=$sql_row["date"];
         $style=$sql_row["style"];
         $schedule=$sql_row["schedule"];
         $color=$sql_row["color"];
-        $size=$sql_row["size_title"];
-        $smv=$sql_row["SMV"];
+        $size=$sql_row["size"];
+        // change smv since we dont have smv in 2.0
+        $smv=0;
         $qty=$sql_row["qty"];
-        $sah=$sql_row["SAH"];
+        // change smh since we dont have smh in 2.0
+        $sah=0;
         $sah_total=$sah_total+$sah;
 
         $sql_delete="DELETE FROM [$prod_status_database].[dbo].[BEL_Daily_N] WHERE Date='".$production_date."' and Facility='".$plant_prod_code."' and Team='".$module."' and style='".$style."' and schedule='".$schedule."' and colour='".$color."' and Size='".$size."'";

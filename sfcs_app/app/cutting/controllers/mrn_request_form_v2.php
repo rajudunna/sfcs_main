@@ -5,7 +5,7 @@
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',3,'R'));
     include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-	$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+	$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
     $plant_code = $_SESSION['plantCode'];
     $username = $_SESSION['userName'];
     $flag=1;
@@ -132,7 +132,7 @@ function exception($sql_result)
 
 <Link rel='alternate' media='print' href=null>
 <script>
-    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>';
+    var pgurl = '<?= getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>';
     function firstbox()
     {
         window.location.href = pgurl+"&style="+document.test.style.value
@@ -323,7 +323,7 @@ $(document).ready(function(){
 <div class="panel panel-primary">
     <div class="panel-heading"><b>MRN Request Form</b></div>
     <div class="panel-body">
-        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_V2.php','N'); ?>
+        <?php $pgurl = getFullURL($_GET['r'],'mrn_request_form_v2.php','N'); ?>
         <form name="test" action="<?= $pgurl ?>" method="post">
 	
 			<input type="hidden" name="plantcode" id="plantcode" value="<?php echo $plant_code; ?>">
@@ -646,6 +646,14 @@ $(document).ready(function(){
                         $post_color = $_POST['color'];
                      
 
+                        $sql11="SELECT company.company_code FROM $pms.cluster LEFT JOIN $pms.plant ON cluster.cluster_code=plant.cluster_code LEFT JOIN $pms.company ON company.company_code=cluster.company_code where plant.plant_code='".$plant_code."'";
+						//echo "<br/>".$sql14."<br>";
+						$sql_result141=mysqli_query($link, $sql11) or die(exception($sql11));
+						while($sql_row141=mysqli_fetch_array($sql_result141))
+						{
+							$company_no=$sql_row141["company_code"];
+						}
+
 						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
 						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
 						LEFT JOIN $pps.`jm_cut_bundle_details` jcbd ON jcbd.jm_cut_bundle_id=jcb.jm_cut_bundle_id
@@ -659,7 +667,7 @@ $(document).ready(function(){
 						while($sql_result_32=mysqli_fetch_array($sql_result))
 						{
 							$mo_no=trim($sql_result_32['mo_number']);
-							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$global_facility_code."&MFNO=".$mo_no;
+							$url = $api_hostname.":".$api_port_no."/m3api-rest/execute/PMS100MI/SelMaterials?CONO=".$company_no."&FACI=".$plant_code."&MFNO=".$mo_no;
 							$response_result = $obj->getCurlAuthRequest($url);
 							$response_result = json_decode($response_result);
 							$MIRecords[] = $response_result->MIRecord;
@@ -806,7 +814,7 @@ $(document).ready(function(){
 						{
 							$reason_id_db = array();
 							$reason_code_db = array();
-							$sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
+							$sql_reason="select reason_tid,reason_code,reason_desc from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
 							

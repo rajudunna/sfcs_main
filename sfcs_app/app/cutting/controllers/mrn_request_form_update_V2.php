@@ -7,7 +7,7 @@ function exception($sql_result)
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $plant_code = $_SESSION['plantCode'];
@@ -34,7 +34,7 @@ if(isset($_POST['dataset']))
 		$cost=0;
 		$reason_id_db = array();
 		$reason_code_db = array();
-		$sql_reason="select * from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
+		$sql_reason="select reason_tid,reason_code,reason_desc from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
 		$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 		$count = mysqli_num_rows($sql_result);
 		

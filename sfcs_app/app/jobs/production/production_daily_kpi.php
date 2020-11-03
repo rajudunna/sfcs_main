@@ -4,7 +4,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 $today=date("Y-m-d",strtotime("-1 day"));
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 
 $sql="SELECT DISTINCT bac_date FROM $pts.bai_log_buf WHERE plant_code='$plantcode' and bac_date<\"".date("Y-m-d")."\" ORDER BY bac_date DESC LIMIT 1";

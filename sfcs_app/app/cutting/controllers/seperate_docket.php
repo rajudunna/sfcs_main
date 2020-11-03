@@ -67,7 +67,7 @@ th{
                         </thead>
                         <tbody>
                         <?php
-                            $query = "select * from $pps.binding_consumption where status='Open' and plant_code='".$plant_code."'";
+                            $query = "select id,style,schedule,color,tot_bindreq_qty from $pps.binding_consumption where status='Open' and plant_code='".$plant_code."'";
                             $sql_result = mysqli_query($link_new,$query);
                             while($sql_row=mysqli_fetch_array($sql_result))
                             {
@@ -116,7 +116,7 @@ th{
                                 // $path = getFullURLLevel($_GET['r'],'lay_plan_preparation/book3_print_binding.php',0,'R');
                                 // $path=$DOCKET_SERVER_IP."/printDocket/";
                              
-                                $query = "select * from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
+                                $query = "select id,style,schedule,color,tot_bindreq_qty,status from $pps.binding_consumption where status='Allocated' and plant_code='".$plant_code."'";
                                 $sql_result = mysqli_query($link_new,$query);
                                 $index=0;
                                 while($sql_row=mysqli_fetch_array($sql_result))
@@ -192,7 +192,7 @@ th{
         </div>
 
   <?php
-    $query = "select * from $pps.binding_consumption where plant_code='".$plant_code."'";
+    $query = "select id from $pps.binding_consumption where plant_code='".$plant_code."'";
     $sql_result = mysqli_query($link_new,$query) or exit('Cant  run');
     while($sql_row=mysqli_fetch_array($sql_result))
     {

@@ -84,7 +84,7 @@ $sql1=mysqli_query($link,"select distinct sealno from $pps.upload where plant_co
 
 while($rows=mysqli_fetch_array($sql1))
 {
-   $sql2=mysqli_query($link,"select * from $pps.upload where plant_code='$plantcode' and sealno='".$rows['sealno']."' order by dat desc");
+   $sql2=mysqli_query($link,"select dat,name,name1,name2,name3,name4,name5,vecno,carton from $pps.upload where plant_code='$plantcode' and sealno='".$rows['sealno']."' order by dat desc");
    while($row2=mysqli_fetch_array($sql2))
    {
 		 echo "<tr>";

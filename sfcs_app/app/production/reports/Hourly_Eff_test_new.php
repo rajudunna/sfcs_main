@@ -324,7 +324,7 @@ td,th
                         <div class="row">
                             <div class="col-md-2">
 									<label for="demo1">Select Date: </label>
-                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?= $date; ?>"  required class="form-control"/></td> 
+                                	<input type="date" data-toggle="datepicker" name="dat" id="demo1" value="<?php if($date!=""){echo $date;}else {echo date("Y-m-d");} ; ?>"  required class="form-control"/></td> 
                             </div>
                             <div class="col-md-2">
                                 <label for="section">Select Section: </label>
@@ -367,7 +367,6 @@ td,th
                                     while($sql_row2=mysqli_fetch_array($sql_result2)) 
                                     { 
 										$shift_list['shiftCode']=$sql_row2['shift_code'];
-										$shift_list['shiftDesc']=$sql_row2['shift_description']; 
 										array_push($shifts, $shift_list);  
 										$shift_codes[] = $sql_row2['shift_code'];                                     
 									} 
@@ -377,9 +376,9 @@ td,th
 									<?php 
 										foreach($shifts as $shift){
 											if($team==$shift['shiftCode']) {
-												echo "<option value='".$shift['shiftCode']."' selected>".$shift['shiftDesc']."</option>";
+												echo "<option value='".$shift['shiftCode']."' selected>".$shift['shiftCode']."</option>";
 											} else {
-												echo "<option value='". $shift['shiftCode']."'>".$shift['shiftDesc']."</option>";
+												echo "<option value='". $shift['shiftCode']."'>".$shift['shiftCode']."</option>";
 											}
 										}
                                     ?>
@@ -479,7 +478,7 @@ td,th
 	$current_date=date('Y-m-d');
 	if(sizeof(explode(",",$team))==1)
 	{
-		$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$team."'";
+		$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$team."'";
 		// echo $sql_hr."<br>";
 		$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-1 Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		if(mysqli_num_rows($sql_result_hr)>0)
@@ -554,7 +553,7 @@ td,th
     $teams=explode(",",$team);
     $team = "'".str_replace(",","','",$team)."'"; 
     $work_hrs=0;
-    $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
+    $sql_hr="select end_time,start_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift in ($team)";
     // echo $sql_hr."<br>";
     $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
     if(mysqli_num_rows($sql_result_hr) >0)
@@ -584,7 +583,7 @@ td,th
         $hour_dur=0;
         for($i=0;$i<sizeof($teams);$i++)
         {
-            $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+            $sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
 			$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-4 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
             if(mysqli_num_rows($sql_result_hr) >0)
             {
@@ -602,7 +601,7 @@ td,th
             }
             else
             {
-                $sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+                $sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
                 $sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro_atten_hours-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
                 while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
                 { 
@@ -647,8 +646,7 @@ td,th
 		{ 
 			// $time_query="";
 			// $current_hr=11;
-			$sql="SELECT * FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and HOUR(plant_end_time) BETWEEN '$start_check' and '$end_check'";
-			//echo $sql."<br>";
+			$sql="SELECT time_value,time_display,day_part,start_time,end_time FROM $pms.plant where HOUR(plant_end_time)<=".$current_hr." and plant_code='$plantcode' and plant_end_time BETWEEN '$start_check' and '$end_check'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-5 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -668,7 +666,7 @@ td,th
 				$end_time = $sql_row['plant_end_time'];
 			}
 			//$time_query="AND TIME(log_time) BETWEEN ('".$hour_filter_array[0]."') and ('".$hour_filter_array[1]."')"; 
-			$sql="SELECT * FROM $pms.plant where plant_code='$plantcode' and HOUR(plant_start_time)='".$hour_filter_array[0]."' and HOUR(plant_end_time)<='".$end_time."'";
+			$sql="SELECT plant_end_time,plant_start_time,plant_end_time FROM $pms.plant where plant_code='$plantcode' and HOUR(plant_start_time)='".$hour_filter_array[0]."' and HOUR(plant_end_time)<='".$end_time."'";
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Plant-7 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 			while($sql_row=mysqli_fetch_array($sql_result)) 
 			{ 
@@ -831,7 +829,7 @@ for ($j=0;$j<sizeof($sections);$j++)
             //if current date == given date start 
 			if($current_date == $date)
 			{
-				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
+				$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and  $current_hr between start_time and end_time";
 				// echo $sql_hr."<br>";
 				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-1 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
@@ -850,7 +848,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 				}
 				else
 				{
-					$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and $current_hr > end_time";
+					$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift='".$shift."' and $current_hr > end_time";
 					// echo $sql_hr."<br>";
 					$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 					while($sql_row_hr=mysqli_fetch_array($sql_result_hr)) 
@@ -878,7 +876,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 			{
 		  //if current date != given date start
 				$work_hrs=0;
-				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
+				$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantcode' and date='$date' and shift ='".$shift."'";
 				// echo $sql_hr."<br>";
 				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql pro-att-hrs-3 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
@@ -908,7 +906,7 @@ for ($j=0;$j<sizeof($sections);$j++)
             $clha_shift=$clha_shift+$aaa;
 		}
 		//teams based looping end 
-		$sqlx="select * from $pps.monthly_production_plan where row_name='".$workstation_code."' and planned_date=\"$date\" and plant_code='$plantcode'";
+		$sqlx="select capacity_factor from $pps.monthly_production_plan where row_name='".$workstation_code."' and planned_date=\"$date\" and plant_code='$plantcode'";
 		$sql_resultx=mysqli_query($link, $sqlx) or exit("Sql monthy-prod-2 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 		while($sql_rowx=mysqli_fetch_array($sql_resultx)) 
 		{ 
@@ -972,7 +970,7 @@ for ($j=0;$j<sizeof($sections);$j++)
 		{ 
 			for($i=0; $i<sizeof($hr); $i++) 
 			{ 
-				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id=$mod  AND TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and shift in ($team) and plant_code ='$plantcode' GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
+				$sql2="select sum(good_quantity) as \"sum\" from $pts.transaction_log where Date(created_at)=\"$date\" and resource_id='$mod'  AND TIME(created_at) BETWEEN ('".$hr_start[$i]."') and ('".$hr_end[$i]."') and shift in ($team) and plant_code ='$plantcode' GROUP BY operation ORDER BY operation DESC LIMIT 0,1"; 
 				$sql_result2=mysqli_query($link, $sql2) or exit("Sql transaction log -6 Error".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				while($sql_row2=mysqli_fetch_array($sql_result2)) 
 				{					

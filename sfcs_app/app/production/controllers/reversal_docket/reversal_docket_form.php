@@ -123,8 +123,8 @@
 			<div class="modal-content" style="overflow:scroll; max-height:85vh">
 				<div class="modal-header">
 					<h5 class="modal-title">Component Level Rejections</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
+					<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span> -->
 					</button>
 				</div>
                 <div class='col-sm-12'>
@@ -266,9 +266,9 @@ if(isset($_POST['formSubmit']))
                                 echo "<td><button type='button'class='btn btn-primary disabled'>Report Cut</button></td>";
                             }
                             if ($row['cut_report_status'] == 'DONE') {
-                                echo "<td><button type='button'class='btn btn-danger' id = 'deletecut' onclick='deleteCut($lay_id)'>Delete Cut</button></td>";
+                                echo "<td><button type='button'class='btn btn-danger' id = 'deletecut' onclick='deleteCut($lay_id)'>Reverse Cut</button></td>";
                             } else {
-                                echo "<td><button type='button'class='btn btn-danger disabled'>Delete Cut</button></td>";
+                                echo "<td><button type='button'class='btn btn-danger disabled'>Reverse Cut</button></td>";
                             }
                             
                             $s_no++;
@@ -382,8 +382,9 @@ if(isset($_GET['sidemenu'])){
                     const component = rejInfo.component;
                     const quantity = rejInfo.reasonQty;
                     const reason = rejInfo.reasonCode;
-                    const summaryRow = `<tr id='${size+''+index+''+summaryRowKey}'><td>${size}</td><td>${component}</td><td>${reason}</td><td>${quantity}</td> \
-                            <td><button onclick='popRejReasonQty("${size}","${index}")' class='btn btn-xs btn-danger'> X </button></td> \
+                    const reasonDisplay = rejInfo.reasonDisplayString;
+                    const summaryRow = `<tr id='${size+''+index+''+summaryRowKey}'><td>${size}</td><td>${component}</td><td>${reasonDisplay}</td><td>${quantity}</td> \
+                            <td><button onclick='popRejReasonQty("${size}","${index}")' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Delete'> X </button></td> \
                         </tr>`;
                     $('#rejection_summary_table_body').append(summaryRow);
                 });
@@ -484,6 +485,7 @@ if(isset($_GET['sidemenu'])){
 			reasonCode: rej_code,
 			reasonQty: Number(quantity),
 			component: component,
+            reasonDisplayString: rej_text,
 		}
         const sizeRejQty = sizeLevelRejQty(rejDetails);
         if (sizeRejQty > actualRejSizeQty) {
@@ -601,7 +603,6 @@ function reportCut(id) {
                 dataType: "json",
                 success: function (res) {            
                     //console.log(res.data);
-                    console.log(res.status);
                     if(res.status)
                     {
                         $('#post_post').hide();

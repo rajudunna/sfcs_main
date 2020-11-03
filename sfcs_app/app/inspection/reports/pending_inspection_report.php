@@ -74,17 +74,17 @@
 			if($_POST['date'])
 			{
 				$date=$_POST['date'];
-				$sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and DATE(date_time)= '".$date."'";
+				$sql = "SELECT id,lot_no,lot_no,supplier,batch,invoice_no,lot_no,lot_no,supplier,batch,invoice_no,rm_color,no_of_rolls,qty FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and DATE(date_time)= '".$date."'";
 			}
 			if($_POST['batch'])
 			{
 				$batch=$_POST['batch'];
-	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and batch= '".$batch."'";
+	           $sql = "SELECT id,lot_no,lot_no,supplier,batch,invoice_no,lot_no,lot_no,supplier,batch,invoice_no,rm_color,no_of_rolls,qty FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and batch= '".$batch."'";
 			}
 			if($_POST['lot_no'])
 			{
 				$lot_no=$_POST['lot_no'];
-	           $sql = "SELECT * FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and lot_no = '".$lot_no."'";
+	           $sql = "SELECT id,lot_no,lot_no,supplier,batch,invoice_no,lot_no,lot_no,supplier,batch,invoice_no,rm_color,no_of_rolls,qty FROM `$wms`.`main_population_tbl` WHERE plant_code='$plant_code' and lot_no = '".$lot_no."'";
 			}
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 			$no_of_rows = mysqli_num_rows($sql_result);

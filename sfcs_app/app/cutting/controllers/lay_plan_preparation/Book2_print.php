@@ -11,7 +11,7 @@ $cat_ref=$_GET['cat_ref'];
 
 <?php
 
-$sql="select * from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
+$sql="select order_style_no,order_col_des,order_div,order_del_no,order_po_no,color_code,order_no,order_s_xs,order_s_s,order_s_m,order_s_l,order_s_xl,order_s_xxl,order_s_xxxl,order_date from $bai_pro3.bai_orders_db where order_tid=\"$order_tid\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -35,7 +35,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$order_date=$sql_row['order_date'];
 }
 	
-$sql="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
+$sql="select category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and tid=$cat_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -1529,7 +1529,7 @@ BgAAZHJzL21lZGlhL2ltYWdlMS5qcGVnUEsFBgAAAAAGAAYAhQEAAAwNAAAAAA==
  <tr height=33 style='mso-height-source:userset;height:24.75pt'>
   <td height=33 class=xl7014270 style='height:24.75pt'></td>
   <td colspan=27 class=xl10014270>Cut Distribution Plan/Production
-  Input&amp;Output<span style='mso-spacerun:yes'> </span></td>
+  Input&amp;Output<span style='mso-spacerun:yes'>ï¿½</span></td>
   <td class=xl7014270></td>
   <td class=xl7014270></td>
   <td class=xl7114270></td>
@@ -1734,12 +1734,12 @@ BgAAZHJzL21lZGlhL2ltYWdlMS5qcGVnUEsFBgAAAAAGAAYAhQEAAAwNAAAAAA==
   <td class=xl7114270>Color :</td>
   <td colspan=3 class=xl10614270><?php echo $col_des; ?></td>
   <td class=xl7214270></td>
-  <td colspan=3 class=xl7114270><span style='mso-spacerun:yes'> </span>Fab
+  <td colspan=3 class=xl7114270><span style='mso-spacerun:yes'>ï¿½</span>Fab
   Code:</td>
   <td colspan=12 class=xl10514270><?php echo $compo_no; ?></td>
   <td class=xl7014270></td>
   <td class=xl7014270></td>
-  <td colspan=2 class=xl7114270>Assortment<span style='mso-spacerun:yes'> 
+  <td colspan=2 class=xl7114270>Assortment<span style='mso-spacerun:yes'>ï¿½
   </span>:</td>
   <td colspan=3 class=xl10514270>&nbsp;</td>
   <td class=xl7014270></td>
@@ -2176,7 +2176,7 @@ di54bWxQSwUGAAAAAAQABAD1AAAAaQYAAAAA
   <td class=xl7214270></td>
   <td class=xl7114270></td>
   <td class=xl7214270></td>
-  <td class=xl7214270><span style='mso-spacerun:yes'>  </span></td>
+  <td class=xl7214270><span style='mso-spacerun:yes'>ï¿½ï¿½</span></td>
   <td class=xl7214270></td>
   <td class=xl7214270></td>
   <td class=xl7214270></td>
@@ -2233,7 +2233,7 @@ di54bWxQSwUGAAAAAAQABAD1AAAAaQYAAAAA
  <tr height=21 style='mso-height-source:userset;height:15.75pt'>
   <td height=21 class=xl7014270 style='height:15.75pt'></td>
   <td class=xl7614270 width=61 style='width:46pt'>Order Qty<span
-  style='mso-spacerun:yes'> </span></td>
+  style='mso-spacerun:yes'>ï¿½</span></td>
   <td class=xl7714270 style='border-top:none'><?php echo $o_xs; ?></td>
   <td class=xl7714270 style='border-top:none;border-left:none'><?php echo $o_s; ?></td>
   <td class=xl7714270 style='border-top:none;border-left:none'><?php echo $o_m; ?></td>
@@ -3097,7 +3097,7 @@ di54bWxQSwUGAAAAAAQABAD1AAAAaQYAAAAA
 	$a_xxxl_tot=0;
 	$plies_tot=0;
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Pilot\"";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,a_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Pilot\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);
@@ -3224,7 +3224,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	$a_xxxl_tot=0;
 	$plies_tot=0;
 	
-$sql="select * from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\"";
+$sql="select a_xs,a_s,a_m,a_l,a_xl,a_xxl,a_xxxl,acutno,a_plies,doc_no,date,mk_ref from $bai_pro3.plandoc_stat_log where order_tid=\"$order_tid\" and cat_ref=$cat_ref and remarks=\"Normal\"";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_=mysqli_num_rows($sql_result);

@@ -23,7 +23,7 @@ function save_rejections($doc_no,$rejection_details,$style,$schedule,$color,$shi
     if(!strtolower($cut_remarks == 'recut'))
         $cut_remarks = 'normal';
         
-    $verify_query = "SELECT * from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
+    $verify_query = "SELECT id from $bai_pro3.rejections_log where style='$style' and schedule='$schedule' 
                     and color='$color'";                
     $result = mysqli_query($link,$verify_query) or exit('Rejections Log Error 1');  
     while($row = mysqli_fetch_array($result))   

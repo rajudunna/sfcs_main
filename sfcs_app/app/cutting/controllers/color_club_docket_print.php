@@ -89,7 +89,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 }
 
-$sql="select * from $bai_pro3.cat_stat_log where tid=$cat_ref";
+$sql="select category,gmtway,fab_des,catyy,waist_yy,leg_yy,purwidth,compo_no,strip_match,gusset_sep,patt_ver,col_des from $bai_pro3.cat_stat_log where tid=$cat_ref";
 mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check=mysqli_num_rows($sql_result);
@@ -119,7 +119,7 @@ $sql="select min(roll_width) as width from $bai_rm_pj1.fabric_cad_allocation whe
 		$system_width=round($sql_row1x['width'],2);
 	}
 	$actwidth=$system_width;
-$sql22="select * from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
+$sql22="select marker_width,marker_length from $bai_pro3.marker_ref_matrix where cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=$system_width";
 //echo $sql22;
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row22=mysqli_fetch_array($sql_result22))
@@ -128,7 +128,7 @@ while($sql_row22=mysqli_fetch_array($sql_result22))
 	$act_mk_length=$sql_row22['marker_length'];
 }
 
-$sql22="select * from $bai_pro3.marker_ref_matrix where  cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
+$sql22="select marker_length from $bai_pro3.marker_ref_matrix where  cat_ref=\"".$cat_ref."\" and allocate_ref=\"$allocate_ref\" and marker_width=\"$purwidth\"";
 $sql_result22=mysqli_query($link, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row22=mysqli_fetch_array($sql_result22))
 {

@@ -159,7 +159,7 @@ size="8" value="<?php if(isset($_POST['txtbatch'])) { echo $batch_no; } else { e
 
 <?php
 error_reporting(0);
-$batch=$_POST["batch"];
+$batch=$_GET["batch"];
 $batch_temp = $batch;
 if($batch=="")
 {
@@ -442,7 +442,7 @@ if(isset($_POST['show']))
 			echo "<div class='col-md-6'>";
 			echo "<table class='table table-bordered'>";
 			echo "<tr ><th class=\"tblheading\">Reason</th><th>Effected Qty</th><th>Ratings</th><th>Remarks</th></tr>";	
-			$sql5="select * from $wms.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\" and plant_code='".$plant_code."'";
+			$sql5="select complaint_reason,sno from $wms.inspection_complaint_reasons where status=1 and complaint_category=\"$comcat_type\" and plant_code='".$plant_code."'";
 			// echo $sql5."<br>";
 			$result5=mysqli_query($link, $sql5) or die("Error1=".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row5=mysqli_fetch_array($result5))
@@ -684,7 +684,7 @@ if(isset($_POST['submitx']))
 	
 	$max_complaint_nos=0;
 	
-	$sql12="select * from $pms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\" and plant_code='".$plant_code."'";
+	$sql12="select complaint_no,supplier_code from $pms.inspection_supplier_db WHERE product_code=\"".$comcat_type_ref."\" AND TRIM(supplier_m3_code)=\"".trim($supplier_ref_final)."\" and plant_code='".$plant_code."'";
 	$result12=mysqli_query($link, $sql12) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row12=mysqli_fetch_array($result12))
 	{

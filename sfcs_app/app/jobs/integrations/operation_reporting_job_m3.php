@@ -30,7 +30,7 @@ while($row=mysqli_fetch_array($sql_result111))
 }
 if($enable_api_call == 'YES')
 {
-    $transactions_query = "SELECT * from $pts.m3_bulk_transactions where response_status='$status' and plant_code= '$plant_code' and m3_trail_count < 4 ";
+    $transactions_query = "SELECT id,mo_no,m3_ops_code,workstation_id,quantity,reason,log_user,api_type,date_time,remarks from $pts.m3_bulk_transactions where response_status='$status' and plant_code= '$plant_code' and m3_trail_count < 4 ";
     $transaction_result = mysqli_query($link, $transactions_query) or 
                         exit("Error at getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($transaction_result))

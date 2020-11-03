@@ -763,7 +763,7 @@ echo "</font>";
 
 echo '<div class="panel panel-primary">';
 
-echo "<div class='panel-heading'><span style='float'><strong><a href=".$url."  target='_blank'>Cut Table Dashboard (Warehouse)</a></strong></a>
+echo "<div class='panel-heading'><span style='float'><strong><a href=$url?plantcode=$plant_code&username=$username  target='_blank'>Cut Table Dashboard (Warehouse)</a></strong></a>
 </span><span style='float: right; margin-top: 0px'><b>
 <a href='javascript:void(0)' onclick='Popup=window.open('cps.htm"."','Popup',
 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); 
@@ -973,7 +973,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
       // echo $sql1;
   // close style wise display 
     //NEw check
-    $requested_dockets="select * from $pps.fabric_prorities where work_station_id='$section_mods' and plant_code='$plant_code' and (issued_time='0000-00-00 00:00:00' or issued_time is null)";
+    $requested_dockets="select * from $pps.requested_dockets left join $pps.fabric_prorities on requested_dockets.jm_docket_line_id=fabric_prorities.jm_docket_line_id where fabric_prorities.work_station_id='$section_mods' and fabric_prorities.plant_code='$plant_code' and (fabric_prorities.issued_time='0000-00-00 00:00:00' or fabric_prorities.issued_time is null)";
     $sql_result1=mysqli_query($link, $requested_dockets) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     // echo $sql1."<br>";
     $sql_num_check=mysqli_num_rows($sql_result1);
@@ -1303,6 +1303,16 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		$schedule =$result_scheduleinfo['schedule'];
 		
   }
+  $percentage_query="select percentage FROM $pps.mp_additional_qty where plant_code='$plant_code' and po_number='$po_number' and order_quantity_type='CUTTING_WASTAGE'";
+
+  $percentage_query_result=mysqli_query($link, $percentage_query) or die("Error10 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row111x111=mysqli_fetch_array($percentage_query_result))
+	{
+		$percentage=$row111x111["percentage"];
+
+	}
+	$value=$fabric_required*($percentage/100);
+	$total_required_qty=$value+$fabric_required;
   
       $sql11="select customer_order_no from $oms.oms_mo_details where schedule in ('".implode("','",$schedule)."') and plant_code='$plant_code' group by customer_order_no";
       //echo $sql11."<br>";
@@ -1340,7 +1350,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
             str_pad("Cut Job No:".$cut_no,80)."</br>".
             $tool_tip.
             str_pad("Docket No:".$docket_number,80)."</br>".
-            str_pad("Total_Qty:".$fabric_required,80)."</br>".
+            str_pad("Total_Qty:".$total_required_qty,80)."</br>".
             str_pad("Plan Time:".$log_time,50)."</br>".
             str_pad("Lay Req Time:".$lay_time,50);
             // str_pad("Fab_Loc.:".$fabric_location."Bundle_Loc.:".$bundle_location,80);

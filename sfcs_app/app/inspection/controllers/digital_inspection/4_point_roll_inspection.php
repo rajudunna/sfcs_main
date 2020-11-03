@@ -110,7 +110,7 @@ $flag = false;
 								<table class="table table-bordered" id="myTable">  
 								<?php
 									echo "<input type='hidden' value=".$parent_id." name='parent_id'>";
-									$sql_query = "select * from $wms.inspection_population where parent_id=$parent_id and status = 0 and plant_code='".$plant_code."'";
+									$sql_query = "select sno,lot_no,supplier_po,po_line,po_subline,supplier_invoice,item_code,item_desc,item_name,supplier_batch,rm_color,sfcs_roll_no,supplier_roll_no,rec_qty from $wms.inspection_population where parent_id=$parent_id and status = 0 and plant_code='".$plant_code."'";
 									$k=0;
 									$sql_result = mysqli_query($link, $sql_query) or exit("Sql Error" . mysqli_error($GLOBALS["___mysqli_ston"]));
 									if (mysqli_num_rows($sql_result) == 0) {
@@ -210,7 +210,7 @@ $flag = false;
 								</tr>
 					      <tr>
 							  <?php
-								$get_details_main="select * from $wms.main_population_tbl where id=$parent_id and plant_code='".$plant_code."'";					
+								$get_details_main="select invoice_no,batch,rm_color,supplier,lot_no,status from $wms.main_population_tbl where id=$parent_id and plant_code='".$plant_code."'";					
 								$details1_result=mysqli_query($link,$get_details_main) or exit("get_details_main Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 								while($row1=mysqli_fetch_array($details1_result))
 								{
@@ -479,10 +479,10 @@ if (isset($_POST['bindingdata'])) {
 	}
 	echo "<script>swal('Get ready form Inspection Process.','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php',0, 'N') ;
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code'</script>";
 	echo "<script>swal('Data Updated..','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N');
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code'</script>";
 	die();
 }
 if(isset($_POST['confirm']))
@@ -495,7 +495,7 @@ if(isset($_POST['confirm']))
 	$flag = true;
 	echo "<script>swal('Data inserted...','Successfully','success')</script>";
 	$url = getFullURLLevel($_GET['r'], '4_point_roll_inspection.php', 0, 'N') ;
-	echo "<script>location.href = '" . $url . "&parent_id=$parent_id'</script>";
+	echo "<script>location.href = '" . $url . "&parent_id=$parent_id&plant_code=$plant_code'</script>";
 
 }
 ?>

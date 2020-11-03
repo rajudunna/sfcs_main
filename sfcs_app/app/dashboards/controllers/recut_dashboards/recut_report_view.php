@@ -1,5 +1,8 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
+$plantcode=$_SESSION['plantCode'];
+$username=$_SESSION['userName'];
 ?>
 <style id="Book4_5113_Styles">
 th{ color : black;}
@@ -40,7 +43,7 @@ function thirdbox()
 }
 function fourthbox()
 {
-	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&category="+document.test.category.value
+	window.location.href ="<?php echo 'index.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&subpo="+document.test.subpo.value
 }
 </script>
 
@@ -58,7 +61,7 @@ include("$url3");
 $style=$_GET['style'];
 $schedule=$_GET['schedule']; 
 $color=$_GET['color'];
-$category=$_GET['category'];
+$subpo=$_GET['subpo'];
 
 if(isset($_POST['style']))
 {
@@ -75,9 +78,9 @@ if(isset($_POST['color']))
 	$color=$_POST['color'];
 }
 
-if(isset($_POST['category']))
+if(isset($_POST['subpo']))
 {
-	$category=$_POST['category'];
+	$subpo=$_POST['subpo'];
 }
 ?>
 
@@ -93,7 +96,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>Select Style</option>";
 					//$sql="select distinct order_style_no from bai_orders_db";
-					$sql="SELECT DISTINCT style as order_style_no FROM bai_pro3.`rejections_log`";
+					$sql="SELECT DISTINCT style as order_style_no FROM $pts.rejection_header WHERE plant_code='$plantcode' AND is_active=1";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -117,7 +120,7 @@ if(isset($_POST['category']))
 				<?php
 					echo "<option value=\"NIL\" selected>Select Schedule</option>";	
 					//$sql="select distinct order_del_no from bai_orders_db where order_style_no=\"$style\"";
-                    $sql="select distinct schedule as order_del_no from $bai_pro3.rejections_log where style =\"$style\"";
+                    $sql="select distinct schedule as order_del_no from $pts.rejection_header where plant_code='$plantcode' AND style ='$style' AND is_active=1";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
 
@@ -139,11 +142,11 @@ if(isset($_POST['category']))
 				<label for='color'>Select Color:</label>
 				<select class='form-control' name='color' id='color' onclick='show_pop2()' onchange='thirdbox();' >
 				<?php
-					//$sql="select distinct order_col_des from bai_orders_db where order_style_no=\"$style\" and order_del_no=\"$schedule\"";
-					$sql="select distinct color as order_col_des from $bai_pro3.rejections_log where  style=\"$style\" and schedule=\"$schedule\"";
+					echo "<option value=\"NIL\" selected>Select Color</option>";
+					$sql="select distinct fg_color as order_col_des from $pts.rejection_header where plant_code='$plantcode' and style='$style' and schedule='$schedule' AND is_active=1";
 					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 					$sql_num_check=mysqli_num_rows($sql_result);
-					echo "<option value=\"All\" selected>All</option>";
+					// echo "<option value=\"All\" selected>All</option>";
 					while($sql_row=mysqli_fetch_array($sql_result))
 					{
 						if(str_replace(" ","",$sql_row['order_col_des'])==str_replace(" ","",$color))
@@ -158,6 +161,31 @@ if(isset($_POST['category']))
                 echo "</select>";
             ?>
             </div>
+			<div class="col-sm-2 form-group">
+				<label for='style'>Select SubPO</label>
+				<select class='form-control' name='subpo' id='subpo' onclick='show_pop3()' onchange='fourthbox();' >
+				<?php
+					echo "<option value=\"NIL\" selected>Select subpo</option>";
+					//$sql="select distinct order_style_no from bai_orders_db";
+					$sql="SELECT DISTINCT sub_po as sub_po FROM $pts.rejection_header where plant_code='$plantcode' and style='$style' and schedule='$schedule' and fg_color='$color' AND is_active=1";
+					
+					$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$sql_num_check=mysqli_num_rows($sql_result);
+
+					while($sql_row=mysqli_fetch_array($sql_result))
+					{
+						if(str_replace(" ","",$sql_row['sub_po'])==str_replace(" ","",$subpo))
+						{
+							echo "<option value=\"".$sql_row['sub_po']."\" selected>".$sql_row['sub_po']."</option>";
+						}
+						else
+						{
+							echo "<option value=\"".$sql_row['sub_po']."\">".$sql_row['sub_po']."</option>";
+						}
+					}
+				echo "</select>";
+				?>	
+			</div>
             </br>
             <div class="col-sm-2 form-group">
             <?php
@@ -208,55 +236,113 @@ if(isset($_POST['submit']))
     $style=$_POST['style'];
 	$color=$_POST['color'];
 	$schedule=$_POST['schedule'];
+	$subpo=$_POST['subpo'];
     ?><div class='row'>
         <div class='panel panel-primary'>
             <div class='panel-heading'>
                 <b>Re Cut Issue Dashboard</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th><th>Markers</th>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Master PO</th><th>Sub PO</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th>
+			<!-- <th>Markers</th> -->
                 </thead>
                 <?php  
 				$s_no = 1;
-				if($color == 'All')
-				{
-					$blocks_query  = "SELECT SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,fabric_status
-					FROM `bai_pro3`.`recut_v2_child` rc 
-					LEFT JOIN bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
-					LEFT JOIN bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
-					where order_style_no='$style' and order_del_no='$schedule'
-					GROUP BY parent_id";
-				}
-				else
-				{
-					$blocks_query  = "SELECT SUM(rejected_qty)as rejected_qty,parent_id as doc_no,SUM(recut_qty)as recut_qty,SUM(recut_reported_qty) as recut_reported_qty,SUM(issued_qty)as issued_qty,r.`mk_ref`,b.`order_style_no`AS style,b.`order_col_des` AS color,b.`order_del_no` as schedule,fabric_status
-					FROM `bai_pro3`.`recut_v2_child` rc 
-					LEFT JOIN bai_pro3.`recut_v2` r ON r.doc_no = rc.`parent_id`
-					LEFT JOIN bai_pro3.`bai_orders_db` b ON b.order_tid = r.`order_tid`
-					where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color'
-					GROUP BY parent_id";
-				}
+				$blocks_query="SELECT rh_id,master_po,sub_po,style,SCHEDULE,fg_color,component FROM $pts.rejection_header WHERE plant_code='$plantcode' AND style='$style' AND schedule='$schedule' AND fg_color='$color' AND sub_po='$subpo' AND is_active=1 group by component,rh_id";
                 // echo $blocks_query;
 				$blocks_result = mysqli_query($link,$blocks_query) or exit('Rejections Log Data Retreival Error'); 
 				if($blocks_result->num_rows > 0)
             	{       
 					while($row = mysqli_fetch_array($blocks_result))
 					{
-						$id = $row['doc_no'];
+						//echo "<td>".$row['doc_no']."</td>";
+						 //$ratios=$row['rh_id'];
+						$subpo=$row['sub_po'];
+						$masterpo=$row['master_po'];
+						$component=$row['component'];
+						//To get Ratio_id
+						$get_ratio_id="SELECT ratio_id FROM $pps.`lp_ratio` WHERE plant_code='$plantcode' AND po_number='$subpo' AND cut_type='RECUT'";
+						$sql_result = mysqli_query($link,$get_ratio_id) or exit('Error get_ratio_id');
+						if($sql_result->num_rows > 0)
+						{
+							while($ratio_row = mysqli_fetch_array($sql_result))
+							{
+								$ratio_id[]=$ratio_row['ratio_id'];
+							}
+						} else 
+						{
+							echo "<tr><td colspan='12' style='color:red;text-align: center;'><b>No Recut Dockets Found!!!</b></td></tr>";
+							die();
+						}
+						
+						//To get PO Description
+						$result_po_des=getPoDetaials($subpo,$plantcode);
+						$subpo_des=$result_po_des['po_description']; 
+						//To get MPO Description
+						$qry_toget_podescri="SELECT master_po_description FROM $pps.mp_order WHERE master_po_number='$masterpo' AND plant_code='$plantcode' AND is_active=1";
+						$toget_podescri_result=mysqli_query($link, $qry_toget_podescri) or exit("Sql Error at mp_order".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($des_row = mysqli_fetch_array($toget_podescri_result))
+						{
+							$masterpo_des=$des_row['master_po_description'];
+						}
+						//To get Docket numbers
+						$get_component_ids="SELECT lp_ratio_cg_id FROM $pps.`lp_ratio_component_group` LEFT JOIN $pps.`lp_product_component` ON lp_product_component.`component_group_id`= lp_ratio_component_group.`component_group_id` WHERE plant_code='$plantcode' AND ratio_id IN ('".implode("','" , $ratio_id)."') AND component_name='$component'";
+						$sql_result1 = mysqli_query($link,$get_component_ids) or exit('Error get_component_ids');
+						while($row1 = mysqli_fetch_array($sql_result1))
+						{
+							$lp_ratio_ids[]=$row1['lp_ratio_cg_id'];
+						}
+						$get_jm_docketids="SELECT jm_docket_id FROM $pps.`jm_dockets` WHERE plant_code='$plantcode' AND ratio_comp_group_id IN ('".implode("','" , $lp_ratio_ids)."')";
+						$sql_result2 = mysqli_query($link,$get_jm_docketids) or exit('Error get_jm_docketids');
+						while($row2 = mysqli_fetch_array($sql_result2))
+						{
+							$jm_docket_id[]=$row2['jm_docket_id'];
+						}
+						$doc_qty=0;
+						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
+						$sql_result3 = mysqli_query($link,$get_dockets) or exit('Error get_dockets');
+						while($row3 = mysqli_fetch_array($sql_result3))
+						{
+							$docket=$row3['docket_line_number'];
+							$dockets[]=$row3['docket_line_number'];
+							//To get docket qty
+							$result_doc_qty=getDocketInformation($docket,$plantcode);
+							$doc_qty +=$result_doc_qty['docket_quantity'];
+						}
+						$recut_dockets=implode("','" , $dockets);
+						//To get rejected and replament qtys
+						$get_rejected_qtys="SELECT SUM(rejected_qty) as rejected, SUM(replacement_qty) as replacement FROM $pts.rejection_header WHERE plant_code='$plantcode' AND sub_po='$sub_po' AND component='$component' group by component";
+						$sql_result4 = mysqli_query($link,$get_rejected_qtys) or exit('Error get_rejected_qtys');
+						while($row4 = mysqli_fetch_array($sql_result4))
+						{
+							$rejected_qty=$row['rejected_qty'];
+							$replacement_qty=$row['replacement_qty'];
+						}
+						//To get reported qty
+						$get_reported_qty="SELECT SUM(good_quantity) AS quantity WHERE $pts.transaction_log WHERE plant_code='$plantcode' AND parent_job IN ($recut_dockets) AND parent_job_type='PD' AND operation='15'";
+						$sql_result5 = mysqli_query($link,$get_reported_qty) or exit('Error get_reported_qty');
+						while($row5 = mysqli_fetch_array($sql_result5))
+						{
+							$reported_qty=$row5['quantity'];
+						}
+						$remainig_qty=$reported_qty - $replacement_qty;
 						echo "<tr><td>$s_no</td>";
-						echo "<td>".$row['doc_no']."</td>";
-						echo "<td>".$row['style']."</td>";
-						echo "<td>".$row['schedule']."</td>";
-						echo "<td>".$row['color']."</td>";
-						echo "<td>".$row['rejected_qty']."</td>";
-						echo "<td>".$row['recut_qty']."</td>";
-						echo "<td>".$row['recut_reported_qty']."</td>";
-						echo "<td>".$row['issued_qty']."</td>";
-						echo "<td>".$rem_qty."</td>";
-						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$id.")'>View</button></td>";
-						echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails(".$id.",2)'>Marker View</button></td>";
+						echo "<td>$recut_dockets</td>";
+						echo "<td>$style</td>";
+						echo "<td>$schedule</td>";
+						echo "<td>$color</td>";
+						echo "<td>$masterpo_des</td>";
+						echo "<td>$subpo_des</td>";
+						echo "<td>$component</td>";
+						echo "<td>$rejected_qty</td>";
+						echo "<td>$doc_qty</td>";
+						echo "<td>$reported_qty</td>";
+						echo "<td>$replacement_qty</td>";
+						echo "<td>$remainig_qty</td>";
+						echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$subpo.",".$component.",".$plantcode.")'>View</button></td>";
+						// echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails(".$subpo.",".$component.",".$plantcode.")'>Marker View</button></td>";
 						echo "</tr>";
-						$s_no++;
+						$s_no++;	
 					}
 				}
 				else
@@ -272,15 +358,16 @@ if(isset($_POST['submit']))
 }
 ?>
 <script>
-function viewrecutdetails(id)
+function viewrecutdetails(subpo,component,plantcode)
 {
     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+	var data_array = [subpo,component,plantcode];
     $('.loading-image').show();
     $('#myModal').modal('toggle');
     $.ajax({
 
 			type: "POST",
-			url: function_text+"?recut_doc_id="+id,
+			url: function_text+"?recut_doc_id="+data_array,
 			//dataType: "json",
 			success: function (response) 
 			{
@@ -291,25 +378,25 @@ function viewrecutdetails(id)
     });
 
 }
-function viewmarkerdetails(id,flag)
-{
-    $('#myModal1').modal('toggle');
-    var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
-    var id_array = [id,flag];
-    $('.loading-image').show();
-    $.ajax({
+// function viewmarkerdetails(subpo,component,plantcode)
+// {
+//     $('#myModal1').modal('toggle');
+//     var function_text = "<?php echo getFullURL($_GET['r'],'functions_recut.php','R'); ?>";
+//     var data_array = [subpo,component,plantcode];
+//     $('.loading-image').show();
+//     $.ajax({
 
-			type: "POST",
-			url: function_text+"?markers_view_docket="+id_array,
-			//dataType: "json",
-			success: function (response) 
-			{
-                document.getElementById('dynamic_table1').innerHTML = response;
-                $('.loading-image').hide();
+// 			type: "POST",
+// 			url: function_text+"?markers_view_docket="+data_array,
+// 			//dataType: "json",
+// 			success: function (response) 
+// 			{
+//                 document.getElementById('dynamic_table1').innerHTML = response;
+//                 $('.loading-image').hide();
                
-            }
+//             }
 
-    });
+//     });
 
-}
+// }
 </script>
