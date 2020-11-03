@@ -14,8 +14,7 @@ omd.customer_order_no ,omd.customer_order_line_no,omd.vpo,omd.cpo,omd.buyer_desc
 SUM(omd.mo_quantity) AS qty,omd.planned_delivery_date,omd.destination,omd.packing_method FROM 
 $oms.oms_mo_details AS omd LEFT JOIN $oms.oms_products_info AS opi ON omd.mo_number=opi.mo_number where plant_code='".$plantcode."'
 GROUP BY opi.style,omd.SCHEDULE,opi.color_name,opi.size_name,omd.planned_delivery_date,omd.destination";
-
-$sql_oms_result=mysqli_query($link, $Getting) or exit("Error While getting information from OMS".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_oms_result=mysqli_query($link, $sql_oms) or exit("Error While getting information from OMS".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_oms_result))
 {
 	$Style_No=$sql_row['style'];
