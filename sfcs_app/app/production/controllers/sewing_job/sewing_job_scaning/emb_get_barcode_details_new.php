@@ -1725,7 +1725,7 @@ if($check_qry_result->num_rows > 0)
 						{
 							if($docstatus==0 || $docstatus=='' ||  $docstatus==2)
 							{
-									$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = $b_job_no AND operation_id =$b_op_id";
+									$schedule_count_query = "SELECT input_job_no_random_ref FROM $brandix_bts.bundle_creation_data WHERE input_job_no_random_ref = '$b_job_no' AND operation_id =$b_op_id";
 									$schedule_count_query = $link->query($schedule_count_query) or exit('query error');
 								   
 									if($schedule_count_query->num_rows > 0)
