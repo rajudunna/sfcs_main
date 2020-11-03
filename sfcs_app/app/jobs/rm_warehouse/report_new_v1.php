@@ -13,6 +13,9 @@ $cache_date="report_new";
 
 ob_start();
 
+    $plantcode = $_SESSION['plantCode'];
+	$username = $_SESSION['userName'];
+
 ?>
 
 
@@ -115,8 +118,8 @@ $file = fopen($file_name,"w");
 
 fputcsv($file,$title_list);
 
-$sql1="select * from $bai_rm_pj1.stock_report";
-$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql1="SELECT store_in.tid,store_in.ref1,store_in.lot_no,store_in.ref2,store_in.ref3,store_in.status,store_in.remarks,store_in.tid,store_in.qty_rec,store_in.qty_issued,store_in.qty_ret,store_in.qty_allocated,ROUND(ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)-ROUND(store_in.qty_allocated,2)) AS balance,store_in.log_stamp,store_in.roll_remarks,sticker_report.batch_no,sticker_report.item_desc,sticker_report.item_name,sticker_report.item,sticker_report.supplier,sticker_report.buyer,sticker_report.style_no,sticker_report.pkg_no,sticker_report.grn_date,sticker_report.product_group,store_in.plant_code FROM $wms.store_in LEFT JOIN $wms.sticker_report ON store_in.lot_no=sticker_report.lot_no WHERE (ROUND(store_in.qty_rec,2)-ROUND(store_in.qty_issued,2)+ROUND(store_in.qty_ret,2)) >0 and store_in.plant_code='$plantcode'";
+$sql_result1=mysqli_query($link, $sql1) or exit("$sql1".mysqli_error($GLOBALS["___mysqli_ston"]));
 $sql_num_check1=mysqli_num_rows($sql_result1);
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
@@ -150,12 +153,22 @@ while($sql_row1=mysqli_fetch_array($sql_result1))
 	$supplier=$sql_row1['supplier'];
 	$buyer=$sql_row1['buyer'];
 	
-	$sql1x="select ref4,inv_no from $bai_rm_pj1.sticker_ref where tid=$tid";
-	$sql_result1x=mysqli_query($link, $sql1x) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql1x="select ref4,lot_no from $wms.store_in where tid=$tid and plant_code='$plantcode'";
+	$sql_result1x=mysqli_query($link, $sql1x) or exit("$sql1x".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($row=mysqli_fetch_array($sql_result1x))
 	{
 		$shade=$row["ref4"];
-		$invoice=$row["inv_no"];
+		$lotno=$row["lot_no"];
+		
+	}
+
+	$sql1x1="select inv_no from $wms.sticker_report where lot_no='$lotno' and plant_code='$plantcode'";
+	$sql_result1x1=mysqli_query($link, $sql1x1) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($row1=mysqli_fetch_array($sql_result1x1))
+	{
+		$invoice=$row1["inv_no"];
+
+		
 	}
 	
 	$values[]=$location;
