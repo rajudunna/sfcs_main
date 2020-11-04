@@ -7,11 +7,18 @@ SFCS_PRO_Quality_Rej_Update
 </head>
 
 <?php  
-
+error_reporting(0);
 $start_timestamp = microtime(true);
 ob_start();
 $include_path=getenv('config_job_path');
+
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
+$username=$_SESSION['userName'];
 
 // $reasons=array("Miss Yarn","Fabric Holes","Slub","Foreign Yarn","Stain Mark","Color Shade","Panel Un-Even","Stain Mark","Strip Match","Cut Dmg","Stain Mark","Heat Seal","M ment Out","Shape Out","Emb Defects");
 
@@ -27,7 +34,8 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 <link rel="stylesheet" type="text/css" href="jquery.columnmanager/clickmenu.css" />
 <script src="jquery.columnmanager/jquery.clickmenu.pack.js"></script>
 <style>
-/* #page_heading
+@import "TableFilter_EN/filtergrid.css";    
+#page_heading
 {
     	width: 100%;
 	height: 25px;
@@ -111,12 +119,13 @@ white-space:nowrap;
 
 .BG {
 background-image:url(Diag.gif);
-background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.*/
-} */
+background-repeat:no-repeat;/*dont know if you want this to repeat, ur choice.
+}
+
+
 
 </style>
-
-
+<script type="text/javascript" src="datetimepicker_css.js"></script>
 <body>
 <div class="panel panel-primary">
 <div class="panel-heading">Critical Rejection Report</div>
@@ -131,7 +140,8 @@ $edate=$sdate+(60*60*24*5); // define sunday
 $sdate=date("Y-m-d",$sdate);
 $edate=date("Y-m-d",$edate);
 
-
+// $sdate='2020-10-01';
+// $edate='2020-10-30';
 
 //echo '<div id="page_heading"><span><h3>Critical Rejection Report</h3></span></div>';
 
@@ -150,277 +160,209 @@ $edate=date("Y-m-d",$edate);
 	<th rowspan=3>Color</th>
 	<th rowspan=3>Order Qty</th>
 	<th rowspan=3>Sewing Out</th>
-	<th rowspan=3 width=45>Reject<br/> Out</th>
-	<th colspan=8>Fabric</th>
+	<th rowspan=3 width=45>Reject<br/> Out</th>";
+	
+	/*for getting reasons departments*/
+	$reason_query="select department_type,count(reason_id) as cnt from $mdm.reasons where is_active=1 group by department_type order by department_type";
+	$reasons_qry_res=mysqli_query($link_new, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($res_row=mysqli_fetch_array($reasons_qry_res))
+	{
+		$department_type=$res_row['department_type'];
+		$cnt=$res_row['cnt'];
+		echo "<th colspan=".$cnt.">".$department_type."</th>";		
+	}
+	echo"</tr>";
+	/*
+	echo "<th colspan=8>Fabric</th>
 	<th colspan=3>Cutting</th>
 	<th colspan=11>Sewing</th>
 	<th colspan=3>Machine Damages</th>
-	<th colspan=8>Embellishment</th>
-</tr>";
+	<th colspan=8>Embellishment</th>*/
+	echo "<tr>";
+	/*for getting reasons*/
+	$reasons_query="select external_reason_description from $mdm.reasons where is_active=1 order by department_type";
+	$reasons_query_result=mysqli_query($link_new, $reasons_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+	while($resRow=mysqli_fetch_array($reasons_query_result))
+	{
+		echo "<th width=45>".$resRow['external_reason_description']."</th>";
+	}
+	echo "<tr>";
+
+/*echo "<tr>
+	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th></tr>";*/
+	/*echo "<tr>
+	<th>Yarn</th><th>Holes</th>	<th></th><th>Yarn</th><th>Mark</th><th>Shade</th><th> seal </th> <th></th><th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th></tr>";*/
 
 
-echo "<tr>
-	<th width=45>Miss</th>	<th width=45>Fabric </th>	<th width=45>Slub</th>	<th width=45 >Foreign </th>	<th width=45>Stain </th>	<th width=45>Color </th> <th width=45> Heat </th> <th width=45> Trim </th>	<th width=45 >Panel</th> <th  width=45>Stain</th>		<th width=45>Strip</th>	<th width=45>Cut</th> <th  width=45>Heat</th>	<th  width=45> M'ment </th>  <th  width=45> Un </th> <th width=45>Shape </th>	<th width=45>Shape</th>	<th width=45 >Shape </th>	<th width=45>Stain </th>	<th width=45>With</th> <th width=45>Trim</th>  <th width=45>Sewing</th>  <th width=45>Cut</th>   <th width=45>Slip</th>  <th width=45>Oil</th> <th width=45>Others</th>  <th width=45>Foil</th>  <th width=45>Embroidery</th> <th width=45>Print</th>  <th width=45>Sequence</th>  <th width=45>Bead</th>  <th width=45>Dye</th>  <th width=45>Wash</th>
-
-</tr>";
-
-echo "<tr>
-	<th>Yarn</th>	<th>Holes</th>	<th></th>	<th>Yarn</th>	<th>Mark </th>	<th>Shade</th> <th> seal </th> <th></th>	<th>Un-Even</th> <th>Mark</th>		<th>Match</th>	<th>Dmg</th> <th>Seal</th> <th>out</th>	 <th>Even</th><th>OutLeg </th>	<th>Outwaist</th>	<th>Out</th>	<th>Mark </th>	<th>OutLabel</th> <th>Shortage</th> <th>Excess</th> <th>Holes</th> <th>Stitch's</th> <th>Marks</th> <th>EMB</th> <th>Defects</th> <th></th>  <th></th> <th></th><th></th><th></th><th></th>
-
-</tr>";
-
-
-$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
+	$sql="select schedule,style,fg_color,ex_factory,size,GROUP_CONCAT(CONCAT('''', rh_id, '''' )) AS \"rh_id\",total_rejection from $pts.rejection_header where plant_code='$plant_code' and ex_factory between \"$sdate\" and \"$edate\" group by style,schedule,fg_color,size order by ex_factory desc ";
 	// echo $sql;
-	
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sch_db_grand=array();
-	$sty_db_grand=array();
-	$sch_color=array();
-	$ex_fact_date=array();
-	
-	
+	$sql_result=mysqli_query($link_new, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+	$grand_output=0;
+	$grand_rejections=0;
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$sch_db_grand[]=$sql_row['schedule_no'];
-		$sty_db_grand[]=$sql_row['style'];
-	    $sch_color[]=$sql_row['color'];
-		$ex_fact_date[]=$sql_row['ex_factory_date_new'];
-	}
-	for($j=0;$j<sizeof($sty_db_grand);$j++)
-	{ 
-		
-		$grand_vals=array();
-		for($i=0;$i<33;$i++) { $grand_vals[$i]=0; }
-		$grand_output=0;
-		$grand_rejections=0;
+		$order_qty=0;	
+		$span1='<p style="text-align: left;">';
+		$span2='<p style="padding-left:20px; margin-top:-20px; position:relative; ">';
+		$span3='</p>';
+		$span4='</p></p>';
 
-		if(sizeof(explode(",",$sch_db_grand[$j]))==1)
-		{
-			$sql1="select sum(bac_Qty) as \"qty\",delivery,size,bac_no,color from $bai_pro.bai_log_view where delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
-		}
-			
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		$schedule=$sql_row['schedule'];
+		$style=$sql_row['style'];
+	    $color=$sql_row['fg_color'];
+	    // $sub_po=$sql_row['sub_po'];
+	    $size=$sql_row['size'];
+	    $rh_id=$sql_row['rh_id'];
+		$ex_fact_date=$sql_row['ex_factory'];
+		$total_rejection=$sql_row['total_rejection'];
+		
+		
+		$sql1="select sum(good_quantity) as \"qty\" from $pts.transaction_log where style='$style' AND SCHEDULE='$schedule' AND color='$color' and size='$size' and operation='130'";
+		// echo $sql1."<br/>";
+
+		$sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
 			$sw_out=$sql_row1['qty'];	
-			$sch_db=$sql_row1['delivery'];
-			$size=$sql_row1['size'];
-			$mod=$sql_row1['bac_no'];	
-			$color=$sql_row1['color'];
-			$qms_qty=0;
-			$ref1="";
-			
-			if($choice==1)
+		}
+		$sql22="select sum(quantity) as \"qty\" from $pps.mp_mo_qty where SCHEDULE='$schedule' AND color='$color' and size='$size' and mp_qty_type='ORIGINAL_QUANTITY'";
+		// echo $sql22."<br/>";
+		$sql_result22=mysqli_query($link_new, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result22))
+		{
+			$order_qty=$sql_row1['qty'];	
+		}
+		$grand_output=$sw_out;
+		$grand_rejections=$total_rejection;
+		$cutting_damage=0;
+		$fabric_damage=0;
+		$sewing_damage=0;
+		$machine_damage=0;
+		$embl_damage=0;
+		
+		$rej_trans="select reason_id,sum(rejection_quantity) as rej_qty,workstation_code,workstation_id from $pts.rejection_transaction where rh_id in ($rh_id) group by reason_id";
+		// echo $rej_trans."<br/>";
+		$sql_res_rej_trans=mysqli_query($link_new, $rej_trans) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sqlrow2=mysqli_fetch_array($sql_res_rej_trans))
+		{
+			$rej_qty=$sqlrow2['rej_qty'];	
+			$reason_id=$sqlrow2['reason_id'];	
+			$workstation=$sqlrow2['workstation_code'];	
+			$workstation_id=$sqlrow2['workstation_id'];	
+
+			$get_section_ids="select section_id from $pms.workstation where workstation_id='$workstation_id' and plant_code='$plant_code'";
+			$sec_qry_res=mysqli_query($link_new, $get_section_ids) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sec_row=mysqli_fetch_array($sec_qry_res))
 			{
-				$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",log_date,group_concat(ref1,\"$\") as \"ref1\",coalesce(sum(qms_qty),0) as \"qms_qty\" from $bai_pro3.bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size";
-			}
-			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row=mysqli_fetch_array($sql_result))
-			{
-				$qms_qty=$sql_row['qms_qty'];
-				$ref1=$sql_row['ref1'];	
+				$section_id=$sec_row['section_id'];	
 			}
 
-			if($choice==1)
+			$get_sections="select section_name from $pms.sections where section_id='$section_id' and plant_code='$plant_code'";
+			$sec1_qry_res=mysqli_query($link_new, $get_sections) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sec_row1=mysqli_fetch_array($sec1_qry_res))
 			{
-				$sql11="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
-				$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-				while($sql_row11=mysqli_fetch_array($sql_result11))
-				{
-					$style=$sql_row11['order_style_no'];
-					$schedule=$sql_row11['order_del_no'];
-					$size_xs=$sql_row11['order_s_xs'];
-					$size_s=$sql_row11['order_s_s'];
-					$size_m=$sql_row11['order_s_m'];
-					$size_l=$sql_row11['order_s_l'];
-					$size_xl=$sql_row11['order_s_xl'];
-					$size_xxl=$sql_row11['order_s_xxl'];
-					$size_xxxl=$sql_row11['order_s_xxxl'];
-					$size_s01=$sql_row11['order_s_s01'];
-					$size_s02=$sql_row11['order_s_s02'];
-					$size_s03=$sql_row11['order_s_s03'];
-					$size_s04=$sql_row11['order_s_s04'];
-					$size_s05=$sql_row11['order_s_s05'];
-					$size_s06=$sql_row11['order_s_s06'];
-					$size_s07=$sql_row11['order_s_s07'];
-					$size_s08=$sql_row11['order_s_s08'];
-					$size_s09=$sql_row11['order_s_s09'];
-					$size_s10=$sql_row11['order_s_s10'];
-					$size_s11=$sql_row11['order_s_s11'];
-					$size_s12=$sql_row11['order_s_s12'];
-					$size_s13=$sql_row11['order_s_s13'];
-					$size_s14=$sql_row11['order_s_s14'];
-					$size_s15=$sql_row11['order_s_s15'];
-					$size_s16=$sql_row11['order_s_s16'];
-					$size_s17=$sql_row11['order_s_s17'];
-					$size_s18=$sql_row11['order_s_s18'];
-					$size_s19=$sql_row11['order_s_s19'];
-					$size_s20=$sql_row11['order_s_s20'];
-					$size_s21=$sql_row11['order_s_s21'];
-					$size_s22=$sql_row11['order_s_s22'];
-					$size_s23=$sql_row11['order_s_s23'];
-					$size_s24=$sql_row11['order_s_s24'];
-					$size_s25=$sql_row11['order_s_s25'];
-					$size_s26=$sql_row11['order_s_s26'];
-					$size_s27=$sql_row11['order_s_s27'];
-					$size_s28=$sql_row11['order_s_s28'];
-					$size_s29=$sql_row11['order_s_s29'];
-					$size_s30=$sql_row11['order_s_s30'];
-					$size_s31=$sql_row11['order_s_s31'];
-					$size_s32=$sql_row11['order_s_s32'];
-					$size_s33=$sql_row11['order_s_s33'];
-					$size_s34=$sql_row11['order_s_s34'];
-					$size_s35=$sql_row11['order_s_s35'];
-					$size_s36=$sql_row11['order_s_s36'];
-					$size_s37=$sql_row11['order_s_s37'];
-					$size_s38=$sql_row11['order_s_s38'];
-					$size_s39=$sql_row11['order_s_s39'];
-					$size_s40=$sql_row11['order_s_s40'];
-					$size_s41=$sql_row11['order_s_s41'];
-					$size_s42=$sql_row11['order_s_s42'];
-					$size_s43=$sql_row11['order_s_s43'];
-					$size_s44=$sql_row11['order_s_s44'];
-					$size_s45=$sql_row11['order_s_s45'];
-					$size_s46=$sql_row11['order_s_s46'];
-					$size_s47=$sql_row11['order_s_s47'];
-					$size_s48=$sql_row11['order_s_s48'];
-					$size_s49=$sql_row11['order_s_s49'];
-					$size_s50=$sql_row11['order_s_s50'];
+				$section_name=$sec_row1['section_name'];	
+			}
+
+			$section=$section_name;
+			
+		
+			$reason_query="select department_type from $mdm.reasons where reason_id='$reason_id' and is_active=1";
+			$reasons_qry_res=mysqli_query($link_new, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($res_row=mysqli_fetch_array($reasons_qry_res))
+			{
+				$department_type=$res_row['department_type'];	
+			}
+			if($grand_output > 0){
+
+				if($department_type==='INSPECTION'){
+					$fabric_damage=$rej_qty;
+					$fabric_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='CUTTING'){
+					$cutting_damage=$rej_qty;
+					$cutting_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='SEWING'){
+					$sewing_damage=$rej_qty;
+					$sewing_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='MACHINE'){
+					$machine_damage=$rej_qty;
+					$machine_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='EMBELLISHMENT'){
+					$embl_damage=$rej_qty;
+					$embl_damage_per=round(($rej_qty/$grand_output)*100,1);
 				}
 			}
-			$order_qty=$size_xs+$size_s+$size_m+$size_l+$size_xl+$size_xxl+$size_xxxl+$size_s01+$size_s02+$size_s03+$size_s04+$size_s05+$size_s06+$size_s07+$size_s08+$size_s09+$size_s10+$size_s11+$size_s12+$size_s13+$size_s14+$size_s15+$size_s16+$size_s17+$size_s18+$size_s19+$size_s20+$size_s21+$size_s22+$size_s23+$size_s24+$size_s25+$size_s26+$size_s27+$size_s28+$size_s29+$size_s30+$size_s31+$size_s32+$size_s33+$size_s34+$size_s35+$size_s36+$size_s37+$size_s38+$size_s39+$size_s40+$size_s41+$size_s42+$size_s43+$size_s44+$size_s45+$size_s46+$size_s47+$size_s48+$size_s49+$size_s50;
 			
-			$span3='</p>';
-			$span4='</p></p>';
-			$vals=array();
-			$rej_val=array(0,1,2,3,4,5,15,16,6,7,8,9,11,12,17,18,19,13,10,20,21,22,23,24,25,14,26,27,28,29,30,31,32);
-			for($i=0;$i<33;$i++) {	$vals[$i]=0;	}
-			
-			$temp=array();
-			$temp=explode("$",str_replace(",","$",$ref1));
-			
-			for($i=0;$i<sizeof($temp);$i++)
-			{
-			$span1='<p style="text-align: left;">';
-			$span2='<p style="padding-left:20px; margin-top:-20px; position:relative; ">';
-				if(strlen($temp[$i])>0)
-				{
-					$temp2=array();
-					$temp2=explode("-",$temp[$i]);
-					$x=$temp2[0];
-					$vals[$x]+=$temp2[1];
-					$grand_vals[$x]+=$temp2[1];
-				}
-			}
-			$grand_output+=$sw_out;
-			$grand_rejections+=$qms_qty;
 		}
+
 		if($grand_output>0)
 		{
 			$rej_per=round(($grand_rejections/$grand_output)*100,1)."%"."</br>";
-			if($rej_per >= $minrej_per)
+
+			if($rej_per >= $minrej_per) 
 			{
 				// for  total values of rejections
-				
-				echo "<tr bgcolor=white rowspan=2>";
-				echo "<td rowspan=2>".$ex_fact_date[$j]."</td>";
-				echo "<td rowspan=2>".$schedule."</td>";
-				echo "<td rowspan=2>".$style."</td>";
-				echo "<td rowspan=2>".$color."</td>";	
-				echo "<td rowspan=2>".$order_qty."</td>";
-				echo "<td rowspan=2>".$grand_output."</td>";
-				echo "<td rowspan=2 class=\"BG\">$span1".$grand_rejections."$span3"; 
-				if($grand_output>0)
-				{
-					echo $rej_per;	 
-				}
-				echo "$span3</td>";
-				
-				for($i=0;$i<33;$i++) {	
-					if($i<8)
-					{
-						$bgcolor=" bgcolor=white";
-					}
-					
-					if($i>7 and $i<11)
-					{
-						$bgcolor=" bgcolor=white";
-					}
-					if($i>10 and $i<22)
-					{
-							$bgcolor=" bgcolor=white";
-					}
-					if($i>21 and $i<25)
-					{
-						$bgcolor=" bgcolor=white";
-					}
-					if($i>24)
-					{
-							$bgcolor=" bgcolor=white";
-					}
-				/*	if($i<6)
-					{
-						$bgcolor=" bgcolor=white ";
-					}
-					if($i>5 and $i<9)
-					{
-						$bgcolor=" bgcolor=white";
-					}
-					if($i>8 and $i<14)
-					{
-						$bgcolor=" bgcolor=white";
-					}
-					if($i>13)
-					{
-						$bgcolor=" bgcolor=white";
-					}*/
-				//BG Color
-					
-				echo "<td class=\"BG\" $bgcolor>$span1".$grand_vals[$rej_val[$i]]."$span3$span2"; if($grand_output>0) { echo round(($grand_vals[$rej_val[$i]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				
-				//echo "<td>".$vals[$i]."</td>";	
-				}
-				echo "</tr>";
-				
-
-				// for grand total values of rejections
-				echo "<tr>";
-				$bgcolor=" bgcolor=white";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=8>$span1".($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-
-				$bgcolor=" bgcolor=white";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=3>$span1".($grand_vals[6]+$grand_vals[7]+$grand_vals[8])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[6]+$grand_vals[7]+$grand_vals[8])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-
-				$bgcolor=" bgcolor=white";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=11>$span1".($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])/$grand_output)*100,1)."%"; } echo "$span3</td>";
+				$array_val=array('exfact'=>$ex_fact_date,'schedule'=>$schedule,'style'=>$style,'colour'=>$color,'orderqty'=>$order_qty,'grandoutput'=>$grand_output,'grdrej'=>$grand_rejections,'module'=>$workstation,'section'=>$section,'size'=>$size,'fabric_damage'=>$fabric_damage,'cutting_damage'=>$cutting_damage,'sewing_damage'=>$sewing_damage,'machine_damage'=>$machine_damage,'embl_damage'=>$embl_damage);
 			
-				$bgcolor=" bgcolor=white";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=3>$span1".($grand_vals[23]+$grand_vals[24]+$grand_vals[25])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[23]+$grand_vals[24]+$grand_vals[25])/$grand_output)*100,1)."%"; } echo "$span3</td>";
-				
-				
-				$bgcolor=" bgcolor=white";
-				
-				echo "<td class=\"BG\" $bgcolor colspan=8>$span1".($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])."$span3$span2"; if($grand_output>0) { echo round((($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])/$grand_output)*100,1)."%"; } echo "$span3</td>";
+				echo "<tr bgcolor=white style=align:center;>";
+				echo "<td style='text-align: center;' >".$array_val['exfact']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['schedule']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['style']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['colour']."</td>";
+				//echo "<td style='text-align: center;'>".$array_val['size']."</td>";	
+				//echo "<td style='text-align: center;'>".$array_val['section']."</td>";
+				//echo "<td style='text-align: center;'>".$array_val['module']."</td>";	
+				echo "<td style='text-align: center;'>".$array_val['orderqty']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['grandoutput']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['grdrej']."</td>";
+				/*getting rejection qty reason wise*/
+				$reasons_query="select reason_id from $mdm.reasons where is_active=1 order by department_type";
+				$reasons_query_result=mysqli_query($link_new, $reasons_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+				while($resRow=mysqli_fetch_array($reasons_query_result))
+				{	
+					$rej_qty=0;
+					/*rejection qty based on rejection id*/
+					$rej_trans="select sum(rejection_quantity) as rej_qty from $pts.rejection_transaction where reason_id='".$resRow['reason_id']."' and rh_id in ($rh_id) group by reason_id";
+					$sql_res_rej_trans=mysqli_query($link_new, $rej_trans) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+					$rows=mysqli_num_rows($sql_res_rej_trans);
+					if($rows>0){
+						while($sqlrow2=mysqli_fetch_array($sql_res_rej_trans))
+						{
+							$rej_qty=$sqlrow2['rej_qty'];
+						}
+					}
+					echo "<td style='text-align: center;'>".$rej_qty."</td>";
+					
+				}
+				/*echo "<td style='text-align: center;'>".$array_val['fabric_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['cutting_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['sewing_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['machine_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['embl_damage']."</td>";*/
 				echo "</tr>";
-			}
+			}								
 		}
 	}
-echo "</table></div>";
+	echo "</table></div>";
 
-echo "<h2><span class='label label-primary'>Summary of Details</span></h2>";
-
-echo '<div class="table-responsive"> <table id="tableone" cellspacing="0" class="mytable table table-bordered">';
+	echo "<h4><span class='label label-warning'>Summary of Details</span></h4>";
+	echo "<div class='table-responsive'>";
+	echo '<table id="tableone" cellspacing="0" class="mytable table table-bordered">';
 	echo "<tr class='tblheading' >
 	<th  class='filter'>Ex_factory</th>
 	<th  class='filter'>Schedule</th>
 	<th  class='filter'>Style</th>
 	<th  class='filter'>Color</th>
-	
+	<th  class='filter'>Size</th>
 	<th  class='filter'>Section</th>
 	<th  class='filter'>Module</th>
 	<th  class='filter'>Order <br/> Qty</th>
@@ -438,267 +380,163 @@ echo '<div class="table-responsive"> <table id="tableone" cellspacing="0" class=
 	<th  class='filter'>Embl <br/> Damages</th>
 	<th  class='filter'> % </th> </tr>";
   
-	$sql="select distinct concat(schedule_no,color),schedule_no,style,color,ex_factory_date_new from $bai_pro4.week_delivery_plan_ref where schedule_no is not null and ex_factory_date_new between \"$sdate\" and \"$edate\" order by ex_factory_date_new desc ";
-    //echo $sql;
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sch_db_grand=array();
-	$sty_db_grand=array();
-	$sch_color=array();
-	$ex_fact_date=array();
-	
-	
-	while($sql_row=mysqli_fetch_array($sql_result))
-	{
-		$sch_db_grand[]=$sql_row['schedule_no'];
-		$sty_db_grand[]=$sql_row['style'];
-	    $sch_color[]=$sql_row['color'];
-		$ex_fact_date[]=$sql_row['ex_factory_date_new'];
-		
-		
-	}
-	
-	for($j=0;$j<sizeof($sty_db_grand);$j++)
-	{
-		
-	$grand_vals=array();
-	for($i=0;$i<33;$i++) {$grand_vals[$i]=0;}
+	$sql="select schedule,style,fg_color,ex_factory,size,GROUP_CONCAT(CONCAT('''', rh_id, '''' )) AS \"rh_id\",total_rejection from $pts.rejection_header where plant_code='$plant_code' and ex_factory between \"$sdate\" and \"$edate\" group by style,schedule,fg_color,size order by ex_factory desc ";
+	// echo $sql;
+	$sql_result=mysqli_query($link_new, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+
 	$grand_output=0;
 	$grand_rejections=0;
-
-		if(sizeof(explode(",",$sch_db_grand[$j]))==1)
-		{
-		$sql1="select sum(bac_Qty) as \"qty\",delivery,size,group_concat(distinct(bac_no)) as bac_no,color from $bai_pro.bai_log_view where length(size)>0 and delivery in ($sch_db_grand[$j]) and color=\"$sch_color[$j]\" and length(size)>0 group by delivery,color,size";
-		}
-			
-		//echo "<br/>inner part: ".$sql1;
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-		$sw_out=$sql_row1['qty'];	
-		$sch_db=$sql_row1['delivery'];
-		$size=$sql_row1['size'];
-		$mod=$sql_row1['bac_no'];	
-		$color=$sql_row1['color'];
-		$qms_qty=0;
-		$ref1="";
-		$module=0;
-		$qms_size="";
-		
-if($choice==1)
-{
-/*
-	$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as 
-	\"shift\",substring_index(substring_index(remarks,\"-\",1),\"-\",-1) as \"module\",log_date,group_concat(ref1,\"$\") as \"ref1\",
-	coalesce(sum(qms_qty),0) as \"qms_qty\" from bai_qms_db where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") 
-	and qms_size=\"$size\" and qms_tran_type=3 and qms_schedule in ($sch_db) group by qms_style,qms_schedule,qms_color,qms_size 
-	order by qms_style,qms_schedule,qms_color,qms_size";
-*/
-	$sql="select qms_size,qms_style,qms_schedule,qms_color,substring_index(substring_index(remarks,\"-\",2),\"-\",-1) as \"shift\",
-substring_index(substring_index(remarks,\"-\",1),\"-\",-1) as \"module\",log_date,group_concat(ref1,\"$\") as \"ref1\",
-coalesce(sum(qms_qty),0) as \"qms_qty\" ,section_id
-from $bai_pro3.bai_qms_db a join bai_pro3.plan_modules b on substring_index(substring_index(a.remarks,\"-\",1),\"-\",-1)=b.module_id 
-where substring_index(substring_index(remarks,\"-\",2),\"-\",-1) in (\"A\",\"B\") and qms_size=\"$size\" and 
-qms_tran_type=3 and qms_schedule in (".$sch_db.") group by qms_style,qms_schedule,qms_color,qms_size order by qms_style,qms_schedule,qms_color,qms_size
-";
-	
-	
-	
-}
-
-
-//	echo " <br>".$sql."<br>";
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$qms_qty=$sql_row['qms_qty'];
-		$ref1=$sql_row['ref1'];	
-		$module=$sql_row['module'];
-		$qms_size=$sql_row['qms_size'];
-		$section=$sql_row['section_id'];
-		
-	}
-	
-//	echo "<br/>".$module;
-	
-		//to avoid shoiwng module as 0 or 'ENP' taking the module number from bai_log
-		if ((!(is_numeric($module))) or $module==0) 
-		{
-			$module=$mod;
+		$order_qty=0;
 			
-		//	echo "<br/> module".$module;
-			
-		}
-		/*
-		$section_modules=array();
-		$section=0;
-		$sql_section="SELECT sec_mods,sec_id FROM bai_pro3.sections_db where sec_mods like '%".$module."%' and sec_id!=0 and sec_id!=-1";
-		
-		//echo "<br/>".$sql_section."<br/>";
-		
-		$sql_result_section=mysql_query($sql_section,$link) or exit("Sql Error".mysql_error());
-		while($sql_row_section=mysql_fetch_array($sql_result_section))
-		{
-			$sec_mods=$sql_row_section['sec_mods'];
-			$sec_id=$sql_row_section['sec_id'];
-			
-			$section_modules=explode(",",$sec_mods);
-			
-			for($i=0;$i<sizeof($section_modules);$i++)
-			{
-				if($section_modules[$i]==$module)
-				{
-					$section=$sec_id;	
-				}
-				
-			}
-			
-		}
-		*/
-		
-		if($choice==1)
-		{
-			$sql11="select * from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$sch_db."\" ";
-			//echo $sql11;
-			$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-			while($sql_row11=mysqli_fetch_array($sql_result11))
-			{
-				$style=$sql_row11['order_style_no'];
-				$schedule=$sql_row11['order_del_no'];
-				$size_xs=$sql_row11['order_s_xs'];
-				$size_s=$sql_row11['order_s_s'];
-				$size_m=$sql_row11['order_s_m'];
-				$size_l=$sql_row11['order_s_l'];
-				$size_xl=$sql_row11['order_s_xl'];
-				$size_xxl=$sql_row11['order_s_xxl'];
-				$size_xxxl=$sql_row11['order_s_xxxl'];
-				$size_s01=$sql_row11['order_s_s01'];
-				$size_s02=$sql_row11['order_s_s02'];
-				$size_s03=$sql_row11['order_s_s03'];
-				$size_s04=$sql_row11['order_s_s04'];
-				$size_s05=$sql_row11['order_s_s05'];
-				$size_s06=$sql_row11['order_s_s06'];
-				$size_s07=$sql_row11['order_s_s07'];
-				$size_s08=$sql_row11['order_s_s08'];
-				$size_s09=$sql_row11['order_s_s09'];
-				$size_s10=$sql_row11['order_s_s10'];
-				$size_s11=$sql_row11['order_s_s11'];
-				$size_s12=$sql_row11['order_s_s12'];
-				$size_s13=$sql_row11['order_s_s13'];
-				$size_s14=$sql_row11['order_s_s14'];
-				$size_s15=$sql_row11['order_s_s15'];
-				$size_s16=$sql_row11['order_s_s16'];
-				$size_s17=$sql_row11['order_s_s17'];
-				$size_s18=$sql_row11['order_s_s18'];
-				$size_s19=$sql_row11['order_s_s19'];
-				$size_s20=$sql_row11['order_s_s20'];
-				$size_s21=$sql_row11['order_s_s21'];
-				$size_s22=$sql_row11['order_s_s22'];
-				$size_s23=$sql_row11['order_s_s23'];
-				$size_s24=$sql_row11['order_s_s24'];
-				$size_s25=$sql_row11['order_s_s25'];
-				$size_s26=$sql_row11['order_s_s26'];
-				$size_s27=$sql_row11['order_s_s27'];
-				$size_s28=$sql_row11['order_s_s28'];
-				$size_s29=$sql_row11['order_s_s29'];
-				$size_s30=$sql_row11['order_s_s30'];
-				$size_s31=$sql_row11['order_s_s31'];
-				$size_s32=$sql_row11['order_s_s32'];
-				$size_s33=$sql_row11['order_s_s33'];
-				$size_s34=$sql_row11['order_s_s34'];
-				$size_s35=$sql_row11['order_s_s35'];
-				$size_s36=$sql_row11['order_s_s36'];
-				$size_s37=$sql_row11['order_s_s37'];
-				$size_s38=$sql_row11['order_s_s38'];
-				$size_s39=$sql_row11['order_s_s39'];
-				$size_s40=$sql_row11['order_s_s40'];
-				$size_s41=$sql_row11['order_s_s41'];
-				$size_s42=$sql_row11['order_s_s42'];
-				$size_s43=$sql_row11['order_s_s43'];
-				$size_s44=$sql_row11['order_s_s44'];
-				$size_s45=$sql_row11['order_s_s45'];
-				$size_s46=$sql_row11['order_s_s46'];
-				$size_s47=$sql_row11['order_s_s47'];
-				$size_s48=$sql_row11['order_s_s48'];
-				$size_s49=$sql_row11['order_s_s49'];
-				$size_s50=$sql_row11['order_s_s50'];
-	
-			}
-		}
-		$order_qty=$size_xs+$size_s+$size_m+$size_l+$size_xl+$size_xxl+$size_xxxl+$size_s01+$size_s02+$size_s03+$size_s04+$size_s05+$size_s06+$size_s07+$size_s08+$size_s09+$size_s10+$size_s11+$size_s12+$size_s13+$size_s14+$size_s15+$size_s16+$size_s17+$size_s18+$size_s19+$size_s20+$size_s21+$size_s22+$size_s23+$size_s24+$size_s25+$size_s26+$size_s27+$size_s28+$size_s29+$size_s30+$size_s31+$size_s32+$size_s33+$size_s34+$size_s35+$size_s36+$size_s37+$size_s38+$size_s39+$size_s40+$size_s41+$size_s42+$size_s43+$size_s44+$size_s45+$size_s46+$size_s47+$size_s48+$size_s49+$size_s50;
-		
-		
-		
 		$span1='<p style="text-align: left;">';
 		$span2='<p style="padding-left:20px; margin-top:-20px; position:relative; ">';
 		$span3='</p>';
 		$span4='</p></p>';
+
+		$schedule=$sql_row['schedule'];
+		$style=$sql_row['style'];
+	    $color=$sql_row['fg_color'];
+	    // $sub_po=$sql_row['sub_po'];
+	    $size=$sql_row['size'];
+	    $rh_id=$sql_row['rh_id'];
+		$ex_fact_date=$sql_row['ex_factory'];
+		$total_rejection=$sql_row['total_rejection'];
 		
-		$vals=array();
-		$rej_val=array(0,1,2,3,4,5,15,16,6,7,8,9,11,12,17,18,19,13,10,20,21,22,23,24,25,14,26,27,28,29,30,31,32);
-		for($i=0;$i<33;$i++) {	$vals[$i]=0;	}
 		
-		$temp=array();
-		$temp=explode("$",str_replace(",","$",$ref1));
-		
-		for($i=0;$i<sizeof($temp);$i++)
+		$sql1="select sum(good_quantity) as \"qty\" from $pts.transaction_log where style='$style' AND SCHEDULE='$schedule' AND color='$color' and size='$size' and operation='130'";
+		// echo $sql1."<br/>";
+
+		$sql_result1=mysqli_query($link_new, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
-			if(strlen($temp[$i])>0)
-			{
-				$temp2=array();
-				$temp2=explode("-",$temp[$i]);
-				$x=$temp2[0];
-				$vals[$x]+=$temp2[1];
-				$grand_vals[$x]+=$temp2[1];
-			}
+			$sw_out=$sql_row1['qty'];	
 		}
-		$grand_output+=$sw_out;
-		$grand_rejections+=$qms_qty;
-}
+		$sql22="select sum(quantity) as \"qty\" from $pps.mp_mo_qty where SCHEDULE='$schedule' AND color='$color' and size='$size' and mp_qty_type='ORIGINAL_QUANTITY'";
+		// echo $sql22."<br/>";
+		$sql_result22=mysqli_query($link_new, $sql22) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result22))
+		{
+			$order_qty=$sql_row1['qty'];	
+		}
+		$grand_output=$sw_out;
+		$grand_rejections=$total_rejection;
+		$cutting_damage=0;
+		$cutting_damage_per=0;
+		$fabric_damage=0;
+		$fabric_damage_per=0;
+		$sewing_damage=0;
+		$sewing_damage_per=0;
+		$machine_damage=0;
+		$machine_damage_per=0;
+		$embl_damage=0;
+		$embl_damage_per=0;
+		$rej_trans="select reason_id,sum(rejection_quantity) as rej_qty,workstation_code,workstation_id from $pts.rejection_transaction where rh_id in ($rh_id) group by reason_id";
+		// echo $rej_trans."<br/>";
+		$sql_res_rej_trans=mysqli_query($link_new, $rej_trans) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sqlrow2=mysqli_fetch_array($sql_res_rej_trans))
+		{
+			$rej_qty=$sqlrow2['rej_qty'];	
+			$reason_id=$sqlrow2['reason_id'];	
+			$workstation=$sqlrow2['workstation_code'];	
+			$workstation_id=$sqlrow2['workstation_id'];	
 
- if($grand_output>0)
- {
-  $rej_per=round(($grand_rejections/$grand_output)*100,1)."%"."</br>";
+			$get_section_ids="select section_id from $pms.workstation where workstation_id='$workstation_id' and plant_code='$plant_code'";
+			$sec_qry_res=mysqli_query($link_new, $get_section_ids) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sec_row=mysqli_fetch_array($sec_qry_res))
+			{
+				$section_id=$sec_row['section_id'];	
+			}
 
-     if($rej_per >= $minrej_per)
-	 
-	 {
-	 	
-	 
-// for  total values of rejections
-	$array_val=array('exfact'=>$ex_fact_date[$j],'schedule'=>$schedule,'style'=>$style,'colour'=>$color,'orderqty'=>$order_qty,'grandoutput'=>$grand_output,'grdrej'=>$grand_rejections,'rejper'=>$rej_per,'module'=>$module,'section'=>$section);
-	//echo $array_val['exfact']."&nbsp;".$array_val['schedule'];
+			$get_sections="select section_name from $pms.sections where section_id='$section_id' and plant_code='$plant_code'";
+			$sec1_qry_res=mysqli_query($link_new, $get_sections) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sec_row1=mysqli_fetch_array($sec1_qry_res))
+			{
+				$section_name=$sec_row1['section_name'];	
+			}
+
+			$section=$section_name;
+			
+		
+			$reason_query="select department_type from $mdm.reasons where reason_id='$reason_id' and is_active=1";
+			$reasons_qry_res=mysqli_query($link_new, $reason_query) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($res_row=mysqli_fetch_array($reasons_qry_res))
+			{
+				$department_type=$res_row['department_type'];	
+			}
+			if($grand_output > 0){
+
+				if($department_type==='INSPECTION'){
+					$fabric_damage=$rej_qty;
+					$fabric_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
 	
-	echo "<tr bgcolor=white style=align:center;>";
-		echo "<td style='text-align: center;' >".$array_val['exfact']."</td>";
-		echo "<td style='text-align: center;'>".$array_val['schedule']."</td>";
-		echo "<td style='text-align: center;'>".$array_val['style']."</td>";
-		echo "<td style='text-align: center;'>".$array_val['colour']."</td>";
-		
-		echo "<td style='text-align: center;'>".$array_val['section']."</td>";
-		echo "<td style='text-align: center;'>".$array_val['module']."</td>";	
-		echo "<td style='text-align: center;'>".$array_val['orderqty']."</td>";
-	    echo "<td style='text-align: center;'>".$array_val['grandoutput']."</td>";
-	    echo "<td style='text-align: center;'>".$array_val['grdrej']."</td>";
-	    echo "<td style='text-align: center;'>".$array_val['rejper']."</td>";	 
-		echo "<td style='text-align: center;'>".($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])."</td>";
-	  	echo "<td style='text-align: center;'>".round((($grand_vals[0]+$grand_vals[1]+$grand_vals[2]+$grand_vals[3]+$grand_vals[4]+$grand_vals[5]+$grand_vals[15]+$grand_vals[16])/$grand_output)*100,1)."%</td>";
-		
-		echo "<td style='text-align: center;'>".($grand_vals[6]+$grand_vals[7]+$grand_vals[8])."</td>";
-		echo "<td style='text-align: center;'>".round((($grand_vals[6]+$grand_vals[7]+$grand_vals[8])/$grand_output)*100,1)."%</td>";
+				if($department_type==='CUTTING'){
+					$cutting_damage=$rej_qty;
+					$cutting_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='SEWING'){
+					$sewing_damage=$rej_qty;
+					$sewing_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='MACHINE'){
+					$machine_damage=$rej_qty;
+					$machine_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+	
+				if($department_type==='EMBELLISHMENT'){
+					$embl_damage=$rej_qty;
+					$embl_damage_per=round(($rej_qty/$grand_output)*100,1);
+				}
+			}
 
-		echo "<td style='text-align: center;'>".($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])."</td>";
-		echo "<td style='text-align: center;'>".round((($grand_vals[9]+$grand_vals[11]+$grand_vals[12]+$grand_vals[17]+$grand_vals[18]+$grand_vals[19]+$grand_vals[13]+$grand_vals[10]+$grand_vals[20]+$grand_vals[21]+$grand_vals[22])/$grand_output)*100,1)."%</td>";
+			
+		}
+
+		if($grand_output>0)
+		{
+			$rej_per=round(($grand_rejections/$grand_output)*100,1)."%"."</br>";
+
+			if($rej_per >= $minrej_per) 
+			{
+				// for  total values of rejections
+				$array_val=array('exfact'=>$ex_fact_date,'schedule'=>$schedule,'style'=>$style,'colour'=>$color,'orderqty'=>$order_qty,'grandoutput'=>$grand_output,'grdrej'=>$grand_rejections,'rejper'=>$rej_per,'module'=>$workstation,'section'=>$section,'size'=>$size,'fabric_damage'=>$fabric_damage,'fabric_damage_per'=>$fabric_damage_per,'cutting_damage'=>$cutting_damage,'cutting_damage_per'=>$cutting_damage_per,'sewing_damage'=>$sewing_damage,'sewing_damage_per'=>$sewing_damage_per,'machine_damage'=>$machine_damage,'machine_damage_per'=>$machine_damage_per,'embl_damage'=>$embl_damage,'embl_damage_per'=>$embl_damage_per);
+			
+				echo "<tr bgcolor=white style=align:center;>";
+				echo "<td style='text-align: center;' >".$array_val['exfact']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['schedule']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['style']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['colour']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['size']."</td>";	
+				echo "<td style='text-align: center;'>".$array_val['section']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['module']."</td>";	
+				echo "<td style='text-align: center;'>".$array_val['orderqty']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['grandoutput']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['grdrej']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['rejper']."</td>";	 
+				echo "<td style='text-align: center;'>".$array_val['fabric_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['fabric_damage_per']."%</td>";
+				echo "<td style='text-align: center;'>".$array_val['cutting_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['cutting_damage_per']."%</td>";
+				echo "<td style='text-align: center;'>".$array_val['sewing_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['sewing_damage_per']."%</td>";
+				echo "<td style='text-align: center;'>".$array_val['machine_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['machine_damage_per']."%</td>";
+				echo "<td style='text-align: center;'>".$array_val['embl_damage']."</td>";
+				echo "<td style='text-align: center;'>".$array_val['embl_damage_per']."%</td>";
+				
 		
-		echo "<td style='text-align: center;'>".($grand_vals[23]+$grand_vals[24]+$grand_vals[25])."</td>";
-		echo "<td style='text-align: center;'>".round((($grand_vals[23]+$grand_vals[24]+$grand_vals[25])/$grand_output)*100,1)."%</td>";
-		
-	    echo "<td style='text-align: center;'>".($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])."$span3$span2"."</td>";
-		echo "<td style='text-align: center;'>".round((($grand_vals[14]+$grand_vals[26]+$grand_vals[27]+$grand_vals[28]+$grand_vals[29]+$grand_vals[30]+$grand_vals[31]+$grand_vals[32])/$grand_output)*100,1)."%</td>";
-		echo "</tr>";
+				echo "</tr>";
+			}																								
+		}
+	
 	}
-	}
-	}
-echo "</table></div>";	
+	echo "</table>";	
+	echo "</div>";
+
 	?>
 	<script language="javascript" type="text/javascript">
 //<![CDATA[

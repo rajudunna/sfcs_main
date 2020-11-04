@@ -1,7 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/enums.php");
-//error_reporting(0);
+// error_reporting(E_ALL);
 if($_GET['some'] == 'bundle_no')
 {
     //Bundle Wise Report C
@@ -246,7 +246,7 @@ else
 		$operation_codes[] = $row4['operation_code'];
 	}
 	$operation_codes_no = implode(',',$operation_codes);
-	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE operation_code IN ($operation_codes_no) AND sequence=1 AND plant_code=$plant_code and is_active = 1 ORDER BY priority ASC";
+	$operation_mapping="SELECT operation_code,operation_name FROM $pms.`operation_mapping` WHERE operation_code IN ($operation_codes_no) AND sequence=1 AND plant_code='$plant_code' and is_active = 1 ORDER BY priority ASC";
 	$result4 = $link->query($operation_mapping);
 	while($row5 = $result4->fetch_assoc())
 	{
@@ -276,7 +276,7 @@ else
 		if(strlen($ops_get_code[$op_code]) > 0){
 			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Good)</th>";
 			$table_data .= "<th>".$ops_get_code[$op_code]."<br>(Rejection)</th>";
-			$op_string_data .=",IF(sum(operation=$op_code,good_quantity,0) as 'good_'.$op_code),IF(sum(operation=$op_code,rejected_quantity,0) as 'rej_'.$op_code)";
+			$op_string_data .=",sum(IF(operation=$op_code,good_quantity,0)) as 'good_$op_code',sum(IF(operation=$op_code,rejected_quantity,0)) as 'rej_$op_code'";
 		}
 	}
 	foreach ($operation_ids as $op_code)
@@ -287,6 +287,8 @@ else
 	$table_data .= "</tr></thead><tbody>";
 
 	$sql_trans="SELECT style,schedule,color,size, group_concat(distinct barcode) as barcodes $op_string_data FROM $pts.transaction_log $main_query";
+	// echo $sql_trans;
+	// die();
 	$sql_trans_result = mysqli_query($link,$sql_trans);
 	while($row_main = mysqli_fetch_array($sql_trans_result))
 	{
@@ -298,7 +300,8 @@ else
 
 		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
 
-		$order_qty_qry = "select sum(quantity) from $pps.barcode where barcode IN ($barcode_list) ";
+		$order_qty_qry = "select sum(quantity) as quantity from $pts.barcode where barcode IN ($barcode_list) ";
+		
 		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
 		$order_qty=0;
 
@@ -306,6 +309,7 @@ else
 		{
 		$order_qty = $row_main_qty['quantity'];
 		}
+		
 		$counter++;
 		$table_data .= "<tr><td>$counter</td><td>$schedule</td><td>$color</td>";
 		if($size_get != '')
@@ -313,19 +317,18 @@ else
 		$table_data .="<td>$size</td>";
 		}
 		$table_data .="<td>$order_qty</td>";
-
 		foreach ($operation_ids as $key => $value)
 		{
 		if(strlen($ops_get_code[$value]) > 0){
 
-		$table_data .= "<td>".$row_main['good_'.$key]."</td>";
-		$table_data .= "<td>".$row_main['rej_'.$key]."</td>";
+		$table_data .= "<td>".$row_main['good_'.$value]."</td>";
+		$table_data .= "<td>".$row_main['rej_'.$value]."</td>";
 		}
 		}
 		foreach ($operation_ids as $key => $value)
 		{
 		if(strlen($ops_get_code[$value]) > 0){
-		$wip=$order_qty-($row_main['good_'.$key]+$row_main['rej_'.$key]);
+		$wip=$order_qty-($row_main['good_'.$value]+$row_main['rej_'.$value]);
 		if($wip <0){
 		$wip=0;
 		}
