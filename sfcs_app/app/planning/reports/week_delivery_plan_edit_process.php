@@ -81,18 +81,17 @@ if(isset($_POST['update']))
 			$rows_count=mysqli_num_rows($sql_remarks_ref_result);
 			if($rows_count == 0)
 			{
-				$sql2="insert into $pps.weekly_delivery_plan_remarks(schedule_no,color_des,size_ref,ref_id,planning_remarks,commitments,remarks,ex_factory_date,created_at,created_user) values('".$schedule_no[$i]."','".$color[$i]."','".$title_size[$i]."','".$REF[$i]."','".$A[$i]."','".$B[$i]."','".$C[$i]."','".$rev_exfa[$i]."','NOW()','$username')";	
-				//echo $sql2."<br>";
+				$sql2="insert into $pps.weekly_delivery_plan_remarks(schedule_no,color_des,size_ref,ref_id,planning_remarks,commitments,remarks,ex_factory_date,created_at,created_user) values('".$schedule_no[$i]."','".$color[$i]."','".$title_size[$i]."','".$REF[$i]."','".$A[$i]."','".$B[$i]."','".$C[$i]."','".$rev_exfa[$i]."',NOW(),'$username')";					
 				mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 				
-				$sql1="insert into $pps.query_edit_log(query_executed,created_user,created_at,plant_code) values (\"".$sql2."\",'".$username."','NOW()','$plant_code')";
+				$sql1="insert into $pps.query_edit_log(query_executed,created_user,created_at,plant_code) values (\"".$sql2."\",'".$username."',NOW(),'$plant_code')";
 				//echo $sql1."<br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 				$count++;
 			}
 			else
 			{
-				$sql2="update $pps..weekly_delivery_plan_remarks set planning_remarks='".$A[$i]."',commitments='".$B[$i]."',remarks='".$C[$i]."',ex_factory_date='".$rev_exfa[$i]."',updated_at='NOW()',updated_user='$username' where schedule_no='".$schedule_no[$i]."' and color_des='".$color[$i]."' and size_ref='".$title_size[$i]."' and ref_id='".$REF[$i]."' and plant_code='$plant_code'";	
+				$sql2="update $pps.weekly_delivery_plan_remarks set planning_remarks='".$A[$i]."',commitments='".$B[$i]."',remarks='".$C[$i]."',ex_factory_date='".$rev_exfa[$i]."',updated_at=NOW(),updated_user='$username' where schedule_no='".$schedule_no[$i]."' and color_des='".$color[$i]."' and size_ref='".$title_size[$i]."' and ref_id='".$REF[$i]."' and plant_code='$plant_code'";	
 				echo $sql2."<br>";
 				mysqli_query($link, $sql2) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));		
 				
