@@ -9,7 +9,7 @@ if($_GET['plantCode']){
 }else{
     $plant_code = $argv[1];
 }
-$plant_code='AIP';
+// $plant_code='AIP';
 $get_plant_name="SELECT plant_name FROM $pms.plant WHERE plant_code='$plant_code'";
 $result_plant_name = $link->query($get_plant_name);
 while($row = mysqli_fetch_array($result_plant_name))
