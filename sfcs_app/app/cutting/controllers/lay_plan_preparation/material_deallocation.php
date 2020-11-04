@@ -110,17 +110,22 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
 								LEFT JOIN $pps.`jm_dockets` jd ON jd.jm_docket_id=jdl.`jm_docket_id`
 								LEFT JOIN $pps.`jm_cut_job` jcj ON jcj.`jm_cut_job_id`=jd.`jm_cut_job_id`
 								LEFT JOIN $pps.`mp_sub_order` mso ON mso.`po_number`=jcj.`po_number`
-								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_details_id`=mso.`master_po_number`
+								LEFT JOIN $pps.`mp_color_detail` mcd ON mcd.`master_po_number`=mso.`master_po_number`
 								WHERE jdl.`jm_docket_line_id`='".$doc_no."' and jdl.plant_code='".$plant_code."'";
-							
+				
 								$sql_result2 = mysqli_query($link,$query2) or die(exception($query2));;
 								while($sql_row2=mysqli_fetch_array($sql_result2)) 
 								{
 									// var_dump($sql_row2['order_style_no']);
 									// var_dump($sql_row2['order_del_no']);
-
+									$docket_qry="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_line_id='".$sql_row['doc_no']."' and plant_code='".$plant_code."'";
+									$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
+									while($sql_row01=mysqli_fetch_array($docket_qry_result))
+									{
+										$docket_line_number = $sql_row01['docket_line_number'];
+									}
 									echo "<tr><td>".$index."</td>";
-									echo "<td>".$sql_row['doc_no']."</td>";
+									echo "<td>".$docket_line_number."</td>";
 									echo "<td>".$sql_row2['style']."</td>";
 									echo "<td>".$sql_row2['color']."</td>";
 									echo "<td>".$sql_row['qty']."</td>";
@@ -171,9 +176,15 @@ td{ padding:2px; border-bottom:1px solid #ccc; border-right:1px solid #ccc; whit
                             {
                                 $table1_rows++;
                                 $i = $sql_row['id'];
-                                $index+=1;
+								$index+=1;
+								$docket_qry="SELECT docket_line_number FROM $pps.jm_docket_lines WHERE jm_docket_line_id='".$sql_row['doc_no']."' and plant_code='".$plant_code."'";
+								$docket_qry_result=mysqli_query($link, $docket_qry) or die(exception($docket_qry));
+								while($sql_row01=mysqli_fetch_array($docket_qry_result))
+								{
+									$docket_line_number = $sql_row01['docket_line_number'];
+								}
                                 echo "<tr><td>".$index."</td>";
-                                echo "<td>".$sql_row['doc_no']."</td>";
+                                echo "<td>".$docket_line_number."</td>";
                                 echo "<td>".$sql_row['qty']."</td>";
                                 echo "<td>".$sql_row['requested_by']."</td>";
                                 echo "<td>".$sql_row['requested_at']."</td>";
@@ -241,7 +252,7 @@ if(isset($_POST['formSubmit']))
                             $allocated_qty+=$sql_row1['allocated_qty'];  
                         }
                         $req_at = date("Y-m-d H:i:s");
-                        $insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ('$jm_docket_line_id',$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
+						$insert_req_qry = "INSERT INTO $wms.material_deallocation_track(doc_no,qty,requested_by,requested_at,status,plant_code,created_user,updated_user,updated_at) values ('$jm_docket_line_id',$allocated_qty,'$username','$req_at','Open','".$plant_code."','".$username."','".$username."',NOW())";
                         $insert_req_qry_result=mysqli_query($link, $insert_req_qry) or die(exception($insert_req_qry));
                         echo "<script>swal('success','Request Sent Successfully','success')</script>";
                         $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');

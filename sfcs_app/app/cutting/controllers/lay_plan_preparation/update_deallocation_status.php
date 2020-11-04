@@ -45,7 +45,7 @@ try
 					$allocated_qty=$sql_row1['allocated_qty'];
 					$roll_id=$sql_row1['roll_id'];
 											   
-					$sql="update $wms.store_in set qty_allocated=qty_allocated-".$allocated_qty.",updated_user='$username',updated_at='NOW()' where tid=".$roll_id." and plant_code='".$plant_code."'";
+					$sql="update $wms.store_in set qty_allocated=qty_allocated-".$allocated_qty.",updated_user='$username',updated_at=NOW() where tid=".$roll_id." and plant_code='".$plant_code."'";
 					mysqli_query($link, $sql)or die(exception($sql));
 					$query_status="SELECT qty_rec,qty_issued,qty_ret,qty_allocated FROM $wms.store_in WHERE tid='$roll_id' and plant_code='".$plant_code."'";
 					//echo $query_status;
@@ -57,7 +57,7 @@ try
 					if($qty_allocated==0)
 					{
 						$status_new=0;
-						$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new,updated_user='$username',updated_at='NOW()' where tid='$roll_id' and plant_code='".$plant_code."'";
+						$sql44="update $wms.store_in set status=$status_new, allotment_status=$status_new,updated_user='$username',updated_at=NOW() where tid='$roll_id' and plant_code='".$plant_code."'";
 						//echo $sql44."</br>";
 						mysqli_query($link, $sql44) or die(exception($sql44));
 					}
@@ -67,7 +67,7 @@ try
 				$delete_fab_result=mysqli_query($link, $delete_fab)or die(exception($delete_fab));
 
 				
-				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='',fabric_status=0,updated_user='$username',updated_at='NOW()' where jm_docket_line_id='".$doc_no."' and plant_code='".$plant_code."'";
+				$update_plan_qry="update $pps.requested_dockets set plan_lot_ref='',print_status='',fabric_status=0,updated_user='$username',updated_at=NOW() where jm_docket_line_id='".$doc_no."' and plant_code='".$plant_code."'";
 				// $update_plan_qry_fab_result=mysqli_query($link, $update_plan_qry) or die(exception($update_plan_qry));
 				
 				// $update_plan_qry_p="update $bai_pro3.plan_dashboard set fabric_status=0 where doc_no=".$doc_no;
@@ -76,7 +76,7 @@ try
 				$username = getrbac_user()['uname'];
 				$approve_at = date("Y-m-d H:i:s");
 
-				$update_req_qry = "update $wms.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='Deallocated',updated_user='$username',updated_at='NOW()' where id=".$id." and plant_code='".$plant_code."'";
+				$update_req_qry = "update $wms.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='Deallocated',updated_user='$username',updated_at=NOW() where id=".$id." and plant_code='".$plant_code."'";
 				$update_req_qry_result=mysqli_query($link, $update_req_qry) or die(exception($update_req_qry));
 				echo "<script>swal('sucess','Material De-Allocated Successfully','success')</script>";
 				
@@ -93,7 +93,7 @@ try
 			// $username = getrbac_user()['uname'];
 			$approve_at = date("Y-m-d H:i:s");
 
-			$update_req_qry = "update $wms.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='closed by system',updated_user='$username',updated_at='NOW()' where id=".$id." and plant_code='".$plant_code."'";
+			$update_req_qry = "update $wms.material_deallocation_track set approved_by='".$username."',approved_at='".$approve_at."',status='closed by system',updated_user='$username',updated_at=NOW() where id=".$id." and plant_code='".$plant_code."'";
 			$update_req_qry_result=mysqli_query($link, $update_req_qry) or die(exception($update_req_qry));
             echo "<script>swal('Error','Material is Issued to Cutting','error')</script>";
             $url = getFullUrlLevel($_GET['r'],'material_deallocation.php',0,'N');
