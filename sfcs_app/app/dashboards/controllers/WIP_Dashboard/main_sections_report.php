@@ -1,5 +1,9 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
+	<script type="text/javascript" src="../../common/js/tablefilter_1.js"></script>
+	<script src="../../../../common/js/jquery1.min.js"></script>
+    <script src="/sfcs_app/common/js/jquery-ui.js"></script>
+    <script language=\"javascript\" type=\"text/javascript\" src=".getFullURL($_GET['r'],'common/js/dropdowntabs.js',4,'R')."></script>
 	<title></title>
 </head>
 <?php
@@ -7,10 +11,12 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-// error_reporting(0);
+// error_reporting(E_ALL);
 $plantcode = $_session['plantCode'];
-$plantcode ='AIP';
+// $plantcode ='AIP';
 $username =  $_session['userName'];
+ini_set('max_execution_time', 30000);
+
 
 function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 {
@@ -31,10 +37,12 @@ function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
 
 <style>
 
-a {text-decoration: none;}
 
 .blue {
 	background: #66DDAA;
+}
+.white {
+	background: white;
 }
 
 .atip
@@ -42,10 +50,7 @@ a {text-decoration: none;}
 	color:black;
 }
 
-table
-{
-	border-collapse:collapse;
-}
+
 .new td
 {
 	border: 1px solid #337ab7;
@@ -60,28 +65,11 @@ table
 	border-collapse:collapse;
 }
 
-.bottom
-{
-	border-bottom: 3px solid white;
-	padding-bottom: 5px;
-	padding-top: 5px;
-}
-
-.panel-heading
-{
-	text-align:center;
-	border-bottom: 3px solid black;
-}
 
 
-select{
-    margin-top: 16px;
-	margin-right: 5px;
-}
 
-.panel-primary{
-	margin-right: -50px;
-}
+
+
 
 </style>
 
@@ -95,7 +83,9 @@ select{
 
 <?php
 $operation=$_GET['operations'];
-$department='SEWING';
+$department = DepartmentTypeEnum::SEWING;
+
+// $department='SEWING';
 
 $result_worksation_id=getWorkstations($department,$plantcode);
 $modules=$result_worksation_id['workstation_codes'];
@@ -103,25 +93,16 @@ $modules=$result_worksation_id['workstation_codes'];
 ?>
 
 <?php
+echo "<br/><div class='container-fluid'>";
+
+	echo "<div class='panel panel-primary'>";
+		echo "<div class='panel-heading'>Sections Summary</div>";
 		
             echo "<div class='panel-body'>";
-				// $sql="SELECT GROUP_CONCAT(quote(`module_name`) ORDER BY module_name+0 ASC ) AS sec_mods, GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC ) AS sec_mod_val,section AS se_cid FROM $bai_pro3.`module_master` GROUP BY section ORDER BY section + 0";
-				// //echo  $sql;
-				// $sql_result=mysqli_query($link, $sql) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
-				// while($sql_row=mysqli_fetch_array($sql_result))
-				// {
-				// 	$sec_mods1[]=$sql_row['sec_mods'];
-				// 	$sec_mods[]=$sql_row['sec_mod_val'];
-				// }
-
-
-				// $modules=array();
-				//$modules=explode(",",$sec_mods);
-				// $modules=implode(",",$sec_mods);
-				
-				// die();
 				echo "<div class='table-responsive'>";
 				echo "<input id='excel' type='button'  class='btn btn-success' value='Export To Excel' onclick='getCSVData()'>";
+				echo "<br/>";
+				echo "<br/>";
 						echo "<table class=\"table table-bordered\" id=\"table1\"> 
 							<tr>
 								<th>Module</th>
@@ -140,20 +121,19 @@ $modules=$result_worksation_id['workstation_codes'];
 								<th>Age</th>
 								<th>WIP</th>
 							</tr>";
-		$toggle=0;
+		$toggle=1;
 		$j=1;
 
 
+		// var_dump($modules);
 		foreach($modules as $key => $module)
 		{
-			var_dump($module);
 
 			$rowcount_check=0;
+			$row_counter=0;
 			$jobsArray = getJobsForWorkstationIdTypeSewing($plantcode,$key,'');
-			// var_dump($module);
+
 			foreach($jobsArray as $job){
-				// var_dump($job);
-				        /**getting style,colr attributes using taskjob id */
 				$job_detail_attributes = [];
 				$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='".$job['taskJobId']."' and plant_code='$plantcode' and is_active=1";
 				// echo $qry_toget_style_sch."</br>";
@@ -172,7 +152,6 @@ $modules=$result_worksation_id['workstation_codes'];
 				$docket_number = $job_detail_attributes[$sewing_job_attributes['docketno']];
 				$job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
 				$masterponumber = $job_detail_attributes[$sewing_job_attributes['masterponumber']];
-					   //To get finished_good_id
 				if($masterponumber ==''){
 				$get_details="SELECT finished_good_id FROM $pts.finished_good WHERE style='$style' AND schedule='$schedule' AND color='$color' AND plant_code='$plantcode' limit 1";
 				}else{
@@ -198,185 +177,130 @@ $modules=$result_worksation_id['workstation_codes'];
 				if(sizeof($previous_operation) >0){
 					$previous_op = "'" . implode( "','", $previous_operation) . "'";
 				}
-				// var_dump($previous_op);
+				
+				$current_op_query = "select parent_barcode,parent_job,sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days,sub_po,style,color,schedule,size from $pts.transaction_log where parent_job='$job_num' and plant_code='$plantcode' and  operation in ($previous_op) group by parent_barcode";
 
-
-					// die();
-					
-				$bundlesQry = "select GROUP_CONCAT(CONCAT('''', jm_pplb_id, '''' ))AS jmBundleIds,bundle_number,size,fg_color,quantity from $pps.jm_job_bundles where jm_jg_header_id ='".$job['taskJobRef']."'";
-				$bundlesResult=mysqli_query($link_new, $bundlesQry) or exit("Bundles not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-				echo $bundlesQry;
 			
-				if(isset($_POST['submit']))
-				{
-					$input_selection=$_POST['input_selection'];
-					if($input_selection=='input_wise'){
-						$bundlesQry.=" GROUP BY jm_jg_header_id,size";
-					}
-					if($input_selection=='bundle_wise'){
-						$bundlesQry.=" GROUP BY jm_job_bundle_id,size";
-					}
-				}
-				else
-				{
-					$bundlesQry.=" GROUP BY jm_job_bundle_id,size";
-				}
-				while($bundleRow=mysqli_fetch_array($bundlesResult))
-				{
-					// echo $bundleRow['bundle_number']."</br>";
-					// echo $bundleRow['size']."</br>";
-					// echo $bundleRow['fg_color']."</br>";
-					// echo $bundleRow['quantity']."</br>";
-					// Call pts barcode table
-					$jmBundleIds=$bundleRow['jmBundleIds'];
-					//var_dump($jmBundleIds);
-					if($jmBundleIds!=''){
-					
-					/**getting barcode ids from barcode*/
-						$barcodesQry = "select GROUP_CONCAT(CONCAT('''', barcode, '''' ))AS barcode from $pts.barcode where external_ref_id IN ($jmBundleIds) and barcode_type='PPLB' and plant_code='$plantcode' AND is_active=1";
-						// echo "</br>bundle : ".$barcodesQry."</br>";
-						if(isset($_POST['submit']))
-						{
-							// echo "test";
-							$input_selection=$_POST['input_selection'];
-							if($input_selection=='input_wise'){
-								$barcodesQry.=" ";
-							}
-							if($input_selection=='bundle_wise'){
-								$barcodesQry.=" GROUP BY barcode";
-							}
-						}
-						else
-						{
-							// echo "test";
+				$currentOperationResult=mysqli_query($link_new, $current_op_query) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$rowcount_check=1;
+		
+				$test_array=[];
+				$balance=0;
+				$bundle_wise_balance=0;
+				while($currentTransRow=mysqli_fetch_array($currentOperationResult)) {
+					$sub_po=$currentTransRow['sub_po'];
+					$style=$currentTransRow['style'];
+					$color=$currentTransRow['color'];
+					$schedule=$currentTransRow['schedule'];
+					$size=$currentTransRow['size'];
+					$parent_barcode = $currentTransRow['parent_barcode'];   
+					$sewingjobno = $currentTransRow['parent_job'];   
+					$aging=$currentTransRow['days'];
+					$previous_ops_qty=$currentTransRow['good_quantity'];
+					$previous_op_query = "select sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity from $pts.transaction_log where style='$style' and schedule='$schedule' and color='$color' and size='$size' and plant_code='$plantcode' and parent_job='$sewingjobno' and parent_barcode='$parent_barcode' and operation ='$operation'";
+					$previousOperationResult=mysqli_query($link_new, $previous_op_query) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// $rejQtyOps=array();
 
-							$barcodesQry.=" GROUP BY barcode";
+						while($previousTransRow=mysqli_fetch_array($previousOperationResult)) {
+							$current_ops_qty=$previousTransRow['good_quantity'];
+							$rejected=$previousTransRow['rejected_quantity'];
 						}
-						$barcodeResult=mysqli_query($link_new, $barcodesQry) or exit("Barcodes not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-						$originalBarcode=array();
-						$barcodeId=array();
-						while($barcodeRow=mysqli_fetch_array($barcodeResult))
-						{   
-							$Original_barcode=$barcodeRow['barcode'];
-							// var_dump($Original_barcode);
-							//$barcodeId[] = $barcodeRow['barcode_id'];
-							if($Original_barcode!=''){
-								
-								$transactionsQry = "select parent_barcode,parent_job,sum(good_quantity) as good_quantity,sum(rejected_quantity) as rejected_quantity,operation,DATE(created_at) as input_date,DATEDIFF(NOW(), created_at) AS days from $pts.transaction_log where parent_barcode IN ($Original_barcode) GROUP BY operation";
-								//echo $transactionsQry;
-								$transactionsResult=mysqli_query($link_new, $transactionsQry) or exit("Transactions not found".mysqli_error($GLOBALS["___mysqli_ston"]));
-								$rejQtyOps=array();
-								while($transactionRow=mysqli_fetch_array($transactionsResult)) {
-									
-									/** getting input and out put based on operations*/
-									if($minOperation==$transactionRow['operation']){
-										$inputQty=$transactionRow['good_quantity'];
-										$age=$transactionRow['days'];
-									}
-									if($maxOperation==$transactionRow['operation']){
-										$outputQty=$transactionRow['good_quantity'];
-										/**rejected qty for output */
-										$outputRejQty=$transactionRow['rejected_quantity'];
-									}
-									$rejQtyOps[$transactionRow['operation']] = $transactionRow['rejected_quantity'];   
-									$parent_barcode = $transactionRow['parent_barcode'];   
-									$sewingjobno = $transactionRow['parent_job'];   
-								}
-								
-
-								
-			
-								if($rowcount_check==1)
-								{	
-									if($row_counter == 0)
-									echo "<tr class=\"$tr_color\" class=\"new\">
-									<td style='border-top:1.5pt solid #fff;'>$module</td>";
-									else 
-									echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
-									
-									// if($new_module == $old_module)
-									//     echo "<td></td>";
-								
-									if(isset($_POST['submit']))
-									{
-										$input_selection=$_POST['input_selection'];
-										if($input_selection=='bundle_wise'){
-											echo "<td>$$parent_barcode</td>";
-										}
-									}else{
-										echo "<td>$$parent_barcode</td>";
-									}
-								
-									echo "<td>$style</td>
-									<td>$schedule</td>
-									<td>$color</td>
-									<td>".$sewingjobno."</td>
-									<td>".$cutjobno."</td>
-									<td>".$bundleRow['size']."</td>
-									<td>$previous_ops_qty</td>
-									<td>$current_ops_qty</td>";
-									echo "<td>$rejected</td>";
-									
-									echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
-									<td>$remarks</td><td>$aging</td>";
-									//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
-								
-									if($rowcount_check==1)
-									{
-										echo "<td style='border-top:1.5pt solid #fff;'>$balance</td>";
-									}
-									$rowcount_check=0;
-									$row_counter++;
-									echo "</tr>";
-								}
-								else
-								{			
-									if($row_counter == 0)
-									echo "<tr class=\"$tr_color\"  class=\"new\"><td>$module</td>";
-									else 
-									echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
-									$row_counter++;
-									
-									if(isset($_POST['submit']))
-									{
-										$input_selection=$_POST['input_selection'];
-										if($input_selection=='bundle_wise'){
-											echo "<td>$parent_barcode</td>";
-											echo "<td>$style</td>";
-										}
-										if($input_selection=='input_wise'){
-										echo "<td>$style</td>";
-										}	
-									}else{
-										echo "<td>$parent_barcode</td>";
-										echo "<td>$style</td>";
-									}
-									echo"<td>$schedule</td>
-									<td>$color</td>
-									<td>".$sewingjobno."</td>
-									<td>".$cutjobno."</td>
-									<td>".$bundleRow['size']."</td>
-									<td>$previous_ops_qty</td>
-									<td>$current_ops_qty</td>";
-									echo "<td>$rejected</td>";	                          			
-									echo "<td>".($previous_ops_qty-($current_ops_qty+$rejected))."</td>
-									<td>$remarks</td>";
-									echo "<td>$aging</td>";
-									//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
-									//if($row_counter > 0)
-									echo "<td class=\"$tr_color\" ></td>";
-									
-									echo "</tr>";
-								}
-							
-							$j++;				
+						if($current_ops_qty==''){
+							$current_ops_qty=0;
 						}
+						if($rejected==''){
+							$rejected=0;
+						}
+						$bundle_wise_balance=$previous_ops_qty-($current_ops_qty+$rejected);
+						$balance=$balance+$bundle_wise_balance;
+						$test_array[$parent_barcode]['size']=$size;
+						$test_array[$parent_barcode]['sewingjobno']=$sewingjobno;
+						$test_array[$parent_barcode]['cutjobno']=$cutjobno;
+						$test_array[$parent_barcode]['aging']=$aging;
+						$test_array[$parent_barcode]['previous_ops_qty']=$previous_ops_qty;
+						$test_array[$parent_barcode]['current_ops_qty']=$current_ops_qty;
+						$test_array[$parent_barcode]['rejected']=$rejected;
+						$test_array[$parent_barcode]['bundle_wise_balance']=$bundle_wise_balance;
+						
+					}
+				
+			if($balance > 0)
+			{
+				if($toggle%2==0)
+				{
+					// $tr_color="#66DDAA";
+					$tr_color="blue";
+				} else if($toggle%2==1){
+					$tr_color="white";
+				}
+				$toggle++;
+				
+				foreach($test_array as $key => $test){
+					if($rowcount_check==1)
+					{	
+						if($row_counter == 0)
+						echo "<tr class=\"$tr_color\" class=\"new\">
+						<td>$module</td>";
+						else 
+						echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
+						
+						echo "<td>$key</td>";
+						echo "<td>$style</td>
+						<td>$schedule</td>
+						<td>$color</td>
+						<td>".$test['sewingjobno']."</td>
+						<td>".$test['cutjobno']."</td>
+						<td>".$test['size']."</td>
+						<td>".$test['previous_ops_qty']."</td>
+						<td>".$test['current_ops_qty']."</td>
+						<td>".$test['rejected']."</td>
+						<td>".$test['bundle_wise_balance']."</td>
+						
+						<td>$remarks</td>
+						<td>".$test['aging']."</td>";
+						// $balance=$previous_ops_qty-($current_ops_qty+$rejected);
+						if($rowcount_check==1)
+						{
+							echo "<td>$balance</td>";
+						}
+						$rowcount_check=0;
+						$row_counter++;
+						echo "</tr>";
+					}
+					else
+					{			
+						if($row_counter == 0)
+						echo "<tr class=\"$tr_color\"  class=\"new\"><td>$module</td>";
+						else 
+						echo "<tr class=\"$tr_color\"  class=\"new\"><td></td>";
+						$row_counter++;
+						
+				
+						echo "<td>$key</td>";
+						echo "<td>$style</td>";
+						echo"<td>$schedule</td>
+						<td>$color</td>
+						<td>".$test['sewingjobno']."</td>
+						<td>".$test['cutjobno']."</td>
+						<td>".$test['size']."</td>
+						<td>".$test['previous_ops_qty']."</td>
+						<td>".$test['current_ops_qty']."</td>
+						<td>".$test['rejected']."</td>
+						<td>".$test['bundle_wise_balance']."</td>
+						
+						<td>$remarks</td>
+						<td>".$test['aging']."</td>";
+						//echo "<td>".($sql_row12['ims_qty']-($sql_row12['ims_pro_qty']))."</td>";
+						//if($row_counter > 0)
+						echo "<td class=\"$tr_color\" ></td>";
+						
+						echo "</tr>";
 					}
 				}
 			}
 		}
 	}	
-	echo "</table></div></div>";
+	echo "</table></div></div></div></div>";
 	    // echo '<script type="text/javascript">getCSVData();</script>';
 	    // echo"<script>alert(143);</script>";
 
@@ -397,7 +321,7 @@ function getCSVData() {
   
     var table = document.getElementById('table1').innerHTML;
     // $('thead').css({"background-color": "blue"});
-    var ctx = {worksheet: name || 'Sections Report', table : table}
+    var ctx = {worksheet: name || 'Modules Report', table : table}
     //window.location.href = uri + base64(format(template, ctx))
     var link = document.createElement("a");
     link.download = "Sections Report.xls";

@@ -25,10 +25,11 @@ if ($section) {
         $sewing_wip = '';
         $jobs_wip = '';
         $module=$wkstation['workstation_code'];
+        $module_id=$wkstation['workstation_id'];
         $data .= "<tr rowspan=2>";
         // $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
         $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
-        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module=$module&operation_code=$get_operation\",\"Popup\");'>
+        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module_id=$module_id&module_code=$module&operation_code=$get_operation\",\"Popup\");'>
                         $module</a>
     
         </b></span></td>";

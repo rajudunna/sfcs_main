@@ -17,6 +17,7 @@ $sections_data = $result_sections['section_data'];
 // $sections_query = "SELECT section_display_name,section_head AS sec_head,ims_priority_boxs,GROUP_CONCAT(`module_name` ORDER BY module_name+0 ASC) AS sec_mods,section AS sec_id FROM $bai_pro3.`module_master` LEFT JOIN $bai_pro3.sections_master ON module_master.section=sections_master.sec_name WHERE section>0 GROUP BY section ORDER BY section + 0";
 // $sections_result = mysqli_query($link,$sections_query);
 $sections[] = array_column($sections_data, 'section_id');
+// var_dump($sections);
 $sections_str = implode(',', $sections[0]);
 
 ?>
