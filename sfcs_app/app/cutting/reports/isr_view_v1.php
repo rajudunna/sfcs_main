@@ -158,7 +158,7 @@ if(isset($_POST['submit']))
 					$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
 				}
 				//getting min operation
-				$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+				$qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
 				$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
 				if(mysqli_num_rows($minOperationResult)>0)
 				{
@@ -169,7 +169,7 @@ if(isset($_POST['submit']))
 				}
 				
 				//getting quantity 
-				$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$minOperation";
+				$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$minOperation";
 				$get_quant_qry_result = mysqli_query($link_new, $get_quant_qry) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 				while ($get_quant_qry_row = mysqli_fetch_array($get_quant_qry_result)) 
 				{
