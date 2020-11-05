@@ -18,14 +18,6 @@
 	include("../../../../common/config/functions_v2.php");
 	include("../../../../common/config/enums.php");
 	$schedule=$_GET["schedule"];
-	$jm_jg_header_id=$_GET['jm_jg_header_id'];
-	$plant_code=$_GET['plant_code'];
-    if (isset($_GET['seq_no']))
-    {
-    	$seq_no = $_GET['seq_no'];
-    }
-    // $schedule_split=explode(",",$schedule); 
-    //echo $schedule;
     error_reporting(0);
 	if($schedule==''){
 		echo "<script>alert('There are no schedules');
@@ -55,36 +47,57 @@
 						<div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div>
 
 						<?php
-						    //get po and master po
-							$qry_get_podetails="SELECT master_po_number,po_number FROM $pps.jm_job_header LEFT JOIN $pps.jm_jg_header on jm_jg_header.jm_job_header=jm_job_header.jm_job_header_id WHERE jm_jg_header_id='".$jm_jg_header_id."' and jm_jg_header.plant_code='$plant_code'";
-							//echo $qry_get_podetails;
-							$get_podetails_result=mysqli_query($link_new, $qry_get_podetails) or exit("Sql Error at qry_get_podetails".mysqli_error($GLOBALS["___mysqli_ston"]));
-							while($po_details_row=mysqli_fetch_array($get_podetails_result))
+							if (isset($_GET['flag']) && isset($_GET['sub_po']))
 							{
-							  $masterponumber=$po_details_row['master_po_number'];
-							  $po_number=$po_details_row['po_number'];
+								$disStyle=$_GET['style'];
+								$joinSch=$_GET['schedule'];
+								$disColor=$_GET['color'];
+								$masterponumber=$_GET['mpo'];
+								$po_number=$_GET['sub_po'];
+								$flag=$_GET['flag'];
+								$main_color=$_GET['color'];
+							    $color=$_GET['color'];
+							} else 
+							{
+								//Logic to get details redirecting from TMS,IPS dashboard
+								$schedule=$_GET["schedule"];
+								$jm_jg_header_id=$_GET['jm_jg_header_id'];
+								$plant_code=$_GET['plant_code'];
+								if (isset($_GET['seq_no']))
+								{
+									$seq_no = $_GET['seq_no'];
+								}
+								//get po and master po
+								$qry_get_podetails="SELECT master_po_number,po_number FROM $pps.jm_job_header LEFT JOIN $pps.jm_jg_header on jm_jg_header.jm_job_header=jm_job_header.jm_job_header_id WHERE jm_jg_header_id='".$jm_jg_header_id."' and jm_jg_header.plant_code='$plant_code'";
+								//echo $qry_get_podetails;
+								$get_podetails_result=mysqli_query($link_new, $qry_get_podetails) or exit("Sql Error at qry_get_podetails".mysqli_error($GLOBALS["___mysqli_ston"]));
+								while($po_details_row=mysqli_fetch_array($get_podetails_result))
+								{
+									$masterponumber=$po_details_row['master_po_number'];
+									$po_number=$po_details_row['po_number'];
+								}
+
+								/**
+								 * Function to get style,color,schedule wrt ponumber
+								 * @param:ponumber,plancode
+								 * @return:style,color,schedule
+								*/
+								$result_data=getStyleColorSchedule($po_number,$plant_code);
+								$main_style=$result_data['style_bulk'];
+								$main_schedule=$result_data['schedule_bulk'];
+								$main_color=$result_data['color_bulk'];
+							
+								// $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") and pac_seq_no=$seq_no";
+
+								// $result2=mysqli_query($link, $sql2) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+								// while($row2=mysqli_fetch_array($result2))
+								// {
+								// 	$packing_mode=$row2["mode"];
+								// }
+								$disStyle = implode(',',$main_style);
+								$joinSch = implode(',',$main_schedule);
+								$disColor = implode(',',$main_color);
 							}
-
-                            /**
-							 * Function to get style,color,schedule wrt ponumber
-							 * @param:ponumber,plancode
-							 * @return:style,color,schedule
-							*/
-							$result_data=getStyleColorSchedule($po_number,$plant_code);
-							$main_style=$result_data['style_bulk'];
-							$main_schedule=$result_data['schedule_bulk'];
-							$main_color=$result_data['color_bulk'];
-						
-							// $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") and pac_seq_no=$seq_no";
-
-							// $result2=mysqli_query($link, $sql2) or die("Error2 = ".mysqli_error($GLOBALS["___mysqli_ston"]));
-							// while($row2=mysqli_fetch_array($result2))
-							// {
-							// 	$packing_mode=$row2["mode"];
-							// }
-							$disStyle = implode(',',$main_style);
-                            $joinSch = implode(',',$main_schedule);
-							$disColor = implode(',',$main_color);
 							//To get Po description
 							$get_po_des="SELECT master_po_description FROM pps.`mp_order` WHERE master_po_number='$masterponumber'";
 							$get_po_result=mysqli_query($link_new, $get_po_des) or exit("Sql Error at get_po_des".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -109,67 +122,68 @@
 						</div>
 					</div><br><br><br><br><br><br><br><br>
 					<?php 
-					//Getting sample details here  By SK-07-07-2018 == Start
-					// $sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id in (select id from brandix_bts.tbl_orders_master where product_schedule='$schedule')";
-					// // echo $sewing_jobratio_sizes_query.'<br>';
-					// $sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-					// while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-					// {
-					// 	$ref_size = $sewing_jobratio_color_details['size'];
-					// 	$size_main = explode(",",$ref_size);
-					// 	// var_dump($size);
-					// }
-					// $sizeofsizes=sizeof($size_main);
-					// $sample_qty = array();
-					// echo "<br>
-					// <span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>
-					// <div class='col-md-12 table-responsive'>
-					// 	<table class=\"table table-bordered\">
-					// 		<tr class=\"info\">
-					// 			<th>Colors</th>";
-					// 			for ($i=0; $i < sizeof($size_main); $i++)
-					// 			{
-					// 				echo "<th>$size_main[$i]</th>";
-					// 			}	
-					// 			echo "<th>Total</th>
-					// 		</tr>";
-					// 		for ($j=0; $j < sizeof($new_col); $j++)
-					// 		{
-					// 			$tot_sample = 0;
-					// 			echo "<tr>
-					// 				<td>$new_col[$j]</td>";
-					// 			for($kk=0;$kk<sizeof($size_main);$kk++)
-					// 			{
-					// 				$getpackqty="SELECT input_qty FROM bai_pro3.sp_sample_order_db 
-					// 				WHERE order_tid = '".$new_order_tid[$j]."' AND size='$size_main[$kk]'";
-					// 				$packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
-					// 				if(mysqli_num_rows($packqtyrslt) > 0)
-					// 				{
-					// 					$pack_row=mysqli_fetch_array($packqtyrslt);
-					// 					echo "<td>".$pack_row['input_qty']."</td>";
-					// 					$tot_sample = $tot_sample + $pack_row['input_qty'];
-					// 				}
-					// 				else
-					// 				{
-					// 					echo "<td>0</td>";
-					// 					$tot_sample = $tot_sample + 0;
-					// 				}
-					// 			}
-					// 			echo "<td>$tot_sample</td>
-					// 			</tr>";
-					// 		}
-					// 	echo "</table>
-					// </div>";
+					//Getting sample details
+					$sql1="SELECT SUM(quantity) AS quantity,size,color FROM $pps.`mp_mo_qty` WHERE SCHEDULE in ($joinSch) AND color in ('".$disColor."') AND plant_code='$plant_code' AND mp_qty_type='SAMPLE' GROUP BY size,color";
+					$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row1=mysqli_fetch_array($sql_result1))
+					{
+						$excess_size_code[$row1['size']]=$row1['quantity'];
+						$excess_color_code[$row1['color']]=$row1['size'];
+						$excess_order_qty=$row1['quantity'];
+					}
+					echo "<br>
+					<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>
+					<div class='col-md-12 table-responsive'>
+						<table class=\"table table-bordered\">
+							<tr class=\"info\">
+								<th>Colors</th>";
+								foreach($excess_size_code as $key => $value){
+									$tot_sample = 0;
+									echo "<th>$key</th>";
+								  } 	
+								echo "<th>Total</th>
+							</tr>";
+							foreach($excess_color_code as $key => $value){
+								$tot_sample=0;
+								echo "<tr>
+									<td>$key</td>";
+							  
+							  foreach($excess_size_code as $key => $value){
+								
+								  if($value > 0)
+								  {
+									echo "<td>$value</td>";
+									$tot_sample = $tot_sample + $value;
+								  } else 
+								  {
+									echo "<td>0</td>";
+									$tot_sample = $tot_sample + 0;
+								  }	
+							  }
+							  echo "<td>$tot_sample</td>
+								  </tr>";
+							}  
+							  echo "</table>
+					</div>";
 
 					?>
 
 					<br>
 					<?php
-						$style=implode("','" , $main_style);
-						$schedule=implode(',',$main_schedule);
-						$color=implode("','" , $main_color);
+						if($flag == 1)
+						{
+							$style=$_GET['style'];
+							$schedule=$_GET['schedule'];
+							$color=$_GET['color'];
+						} 
+						else 
+						{
+							$style=implode("','" , $main_style);
+						    $schedule=implode(',',$main_schedule);
+						    $color=implode("','" , $main_color);
+						}
 						$size_total_qty=[];
-						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE feature_value in($schedule) AND jm_job_bundles.fg_color in ('".implode("','" , $main_color)."') AND jm_job_bundles.plant_code='$plant_code'";
+						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE feature_value in($schedule) AND jm_job_bundles.fg_color in ('".$color."') AND jm_job_bundles.plant_code='$plant_code'";
 						$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($row=mysqli_fetch_array($sql_result))
 						{
@@ -249,7 +263,7 @@
 							echo "<td height=20 style='height:15.0pt'>".$sew_num."</td>";
 							for($i=0;$i<sizeof($size_main);$i++)
 							{
-							  $get_quantity="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND job_number='$sew_num' AND fg_color IN ('".implode("','" , $main_color)."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
+							  $get_quantity="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND job_number='$sew_num' AND fg_color IN ('".$color."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
 							  $sql_result2=mysqli_query($link, $get_quantity) or die("Error".$get_quantity.mysqli_error($GLOBALS["___mysqli_ston"]));
 							  while($row2=mysqli_fetch_array($sql_result2))
 							  {
