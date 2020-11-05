@@ -9,7 +9,13 @@ if($_GET['plantCode']){
 }else{
     $plant_code = $argv[1];
 }
-
+// $plant_code='AIP';
+$get_plant_name="SELECT plant_name FROM $pms.plant WHERE plant_code='$plant_code'";
+$result_plant_name = $link->query($get_plant_name);
+while($row = mysqli_fetch_array($result_plant_name))
+{
+  $plantname=$row['plant_name'];
+}
 /**
  * get planned sewing jobs(JG) for the workstation
  */
@@ -20,6 +26,7 @@ function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
         $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        echo $jobsQuery;
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
@@ -45,6 +52,7 @@ function getWorkstationsForSectionId($plantCode, $sectionId) {
     global $pms;
     try{
         $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
+        echo $workstationsQuery;
         $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
         if(mysqli_num_rows($workstationsQueryResult)>0){
             $workstations= [];
@@ -151,8 +159,6 @@ $total_boxes_count=0;
 $sections=getSectionByDeptTypeSewing($plant_code);
 foreach($sections as $section)   
 {
-    $section_qty=0;
-    $section_boxes=0;
     $workstationsArray=getWorkstationsForSectionId($plant_code,$section['sectionId']);
     foreach($workstationsArray as $workStation)
     {
@@ -164,6 +170,10 @@ foreach($sections as $section)
                 /**
                  * getting min operations
                 */
+                $section_qty=0;
+                $section_boxes=0;
+                $wip_qty=0;
+                $bundles_count=0;
                 $qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
                 $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
                 if(mysqli_num_rows($minOperationResult)>0){
@@ -236,7 +246,7 @@ $message.=$modulewise_data;
 $message.=$sections_data;
 $message.=$totals_data;
 $message.="</table>";
-$message.='<br/>Message Sent Via: '.$plant_name;
+$message.='<br/>Message Sent Via: '.$plantname;
 $message.="</body></html>";
 ?>
 <?php
@@ -244,7 +254,7 @@ $message.="</body></html>";
     echo $message;
     $to  = $line_wip_track;
 
-    $subject = $plant_name.' WIP (Production) Track';
+    $subject = $plantname.' WIP (Production) Track';
     
     // To send HTML mail, the Content-type header must be set
     $headers  = 'MIME-Version: 1.0' . "\r\n";
