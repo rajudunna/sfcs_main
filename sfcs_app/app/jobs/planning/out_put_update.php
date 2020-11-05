@@ -14,7 +14,11 @@ error_reporting(0);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
 // include($include_path.'\sfcs_app\common\config\config_ajax.php');	
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 $in_operation=100;
 $cut_operation=15;

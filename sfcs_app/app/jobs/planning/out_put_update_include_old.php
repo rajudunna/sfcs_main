@@ -1,7 +1,11 @@
 
 
 <?php
-$plant_code=$_SESSION['plantCode'];
+	if($_GET['plantCode']){
+		$plant_code = $_GET['plantCode'];
+	}else{
+		$plant_code = $argv[1];
+	}
 error_reporting(0);
 $schedules_to_update=array();
 if($rowcount>0){

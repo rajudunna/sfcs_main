@@ -1,6 +1,10 @@
 <?php
 $include_path=getenv('config_job_path');
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 ?>
 <html>

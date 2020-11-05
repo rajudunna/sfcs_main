@@ -2,12 +2,20 @@
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 include($include_path.'\sfcs_app\common\config\config_jobs.php');
-include($include_path.'\sfcs_app\common\config\functions_v2.php');
 include($include_path.'\sfcs_app\common\config\enums.php');
 
-$plant_code = $argv[1];
-$username =  $_session['userName'];
-
+if($_GET['plantCode']){
+    $plant_code = $_GET['plantCode'];
+}else{
+    $plant_code = $argv[1];
+}
+// $plant_code='AIP';
+$get_plant_name="SELECT plant_name FROM $pms.plant WHERE plant_code='$plant_code'";
+$result_plant_name = $link->query($get_plant_name);
+while($row = mysqli_fetch_array($result_plant_name))
+{
+  $plantname=$row['plant_name'];
+}
 /**
  * get planned sewing jobs(JG) for the workstation
  */
@@ -18,6 +26,7 @@ function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
         $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+        echo $jobsQuery;
         $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
         if(mysqli_num_rows($jobsQueryResult)>0){
             $jobs= [];
@@ -30,6 +39,61 @@ function getSewingJobsForWorkstationIdsType($plantCode, $workstationId) {
             return $jobs;
         } else {
             return "Jobs not found for the workstation";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+/**
+ * get workstations for plant code and section id
+ */
+function getWorkstationsForSectionId($plantCode, $sectionId) {
+    global $link_new;
+    global $pms;
+    try{
+        $workstationsQuery = "select workstation_id,workstation_code,workstation_description,workstation_label from $pms.workstation where plant_code='".$plantCode."' and section_id= '".$sectionId."' and is_active=1";
+        echo $workstationsQuery;
+        $workstationsQueryResult = mysqli_query($link_new,$workstationsQuery) or exit('Problem in getting workstations');
+        if(mysqli_num_rows($workstationsQueryResult)>0){
+            $workstations= [];
+            while($row = mysqli_fetch_array($workstationsQueryResult)){
+                $workstationRecord = [];
+                $workstationRecord["workstationId"] = $row['workstation_id'];
+                $workstationRecord["workstationCode"] = $row["workstation_code"];
+                $workstationRecord["workstationDesc"] = $row["workstation_description"];
+                $workstationRecord["workstationLabel"] = $row["workstation_label"];
+                array_push($workstations, $workstationRecord);
+            }
+            return $workstations;
+        } else {
+            return "Workstations not found";
+        }
+    } catch(Exception $e) {
+        throw $e;
+    }
+}
+/**
+ * Get Setions for department type 'SEWING' and plant code
+ */
+function getSectionByDeptTypeSewing($plantCode){
+    global $pms;
+    global $link_new;
+    try{
+        $departmentType = DepartmentTypeEnum::SEWING;
+        $sectionsQuery = "select section_id,section_code,section_name from $pms.sections as sec left join $pms.departments as dept on sec.department_id = dept.department_id where sec.plant_code='".$plantCode."' and dept.plant_code='".$plantCode."' and dept.department_type= '".$departmentType."' and sec.is_active=1";
+        $sectionsQueryResult = mysqli_query($link_new,$sectionsQuery) or exit('Problem in getting sections');
+        if(mysqli_num_rows($sectionsQueryResult)>0){
+            $sections = [];
+            while($row = mysqli_fetch_array($sectionsQueryResult)){
+                $sectionRecord = [];
+                $sectionRecord["sectionId"] = $row['section_id'];
+                $sectionRecord["sectionCode"] = $row["section_code"];
+                $sectionRecord["sectionName"] = $row["section_name"];
+                array_push($sections, $sectionRecord);
+            }
+            return $sections;
+        } else {
+            return "Sections not found";
         }
     } catch(Exception $e) {
         throw $e;
@@ -95,8 +159,6 @@ $total_boxes_count=0;
 $sections=getSectionByDeptTypeSewing($plant_code);
 foreach($sections as $section)   
 {
-    $section_qty=0;
-    $section_boxes=0;
     $workstationsArray=getWorkstationsForSectionId($plant_code,$section['sectionId']);
     foreach($workstationsArray as $workStation)
     {
@@ -108,6 +170,10 @@ foreach($sections as $section)
                 /**
                  * getting min operations
                 */
+                $section_qty=0;
+                $section_boxes=0;
+                $wip_qty=0;
+                $bundles_count=0;
                 $qrytoGetMinOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$job['taskJobId']."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
                 $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
                 if(mysqli_num_rows($minOperationResult)>0){
@@ -128,7 +194,7 @@ foreach($sections as $section)
                 //echo $qrytoGetMaxOperation;
 
                 //worksation=>job_ids=>min max operations=>
-                $get_data_transaction="SELECT style,sum(if(operation_id=".$minOperation.",good_quantity,0)) as input_quantity,sum(if(operation_id=".$maxOperation.",good_quantity,0)) as output_quantity,resource_id,count(parent_barcode) AS bundles_count,GROUP_CONCAT(DISTINCT(schedule)) as schedule FROM $pts.transaction_log WHERE resource_id in ('".implode("','" , $workstations)."') AND plant_code='$plant_code' AND is_active=1 ORDER BY style,schedule GROUP BY style,schedule,resource_id";
+                $get_data_transaction="SELECT style,sum(if(operation=".$minOperation.",good_quantity,0)) as input_quantity,sum(if(operation=".$maxOperation.",good_quantity,0)) as output_quantity,resource_id,count(parent_barcode) AS bundles_count,GROUP_CONCAT(DISTINCT(schedule)) as schedule FROM $pts.transaction_log WHERE resource_id in ('".implode("','" , $workstations)."') AND plant_code='$plant_code' AND is_active=1 GROUP BY style,schedule,resource_id ORDER BY style,schedule";
                 $result = $link->query($get_data_transaction);
                 while($row = $result->fetch_assoc()){                   
                     //style wise data (A)
@@ -173,7 +239,6 @@ $totals_data= "<tr style='background-color:#29759C;'><td align=\"center\" style=
 $message.='</table>';
 $message.='</br>';
 $message.='</br>';
-
 $message.= '
 <table><tr><th colspan=4 align=\"center\">Section Module wise WIP</th></tr>
 <tr><th>Module</th><th>Bundles on Live</th><th>WIP</th><th>Running Schedules</th></tr>';
@@ -181,15 +246,15 @@ $message.=$modulewise_data;
 $message.=$sections_data;
 $message.=$totals_data;
 $message.="</table>";
-$message.='<br/>Message Sent Via: '.$plant_name;
+$message.='<br/>Message Sent Via: '.$plantname;
 $message.="</body></html>";
 ?>
 <?php
 
-    //echo $message;
+    echo $message;
     $to  = $line_wip_track;
 
-    $subject = $plant_name.' WIP (Production) Track';
+    $subject = $plantname.' WIP (Production) Track';
     
     // To send HTML mail, the Content-type header must be set
     $headers  = 'MIME-Version: 1.0' . "\r\n";

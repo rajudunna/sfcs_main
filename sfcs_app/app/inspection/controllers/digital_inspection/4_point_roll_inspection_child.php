@@ -155,7 +155,7 @@ if (isset($_GET['parent_id']) or isset($_POST['parent_id'])) {
    echo "<input type='hidden' value= $store_id id='four_point_store_id'>";
 }
 $sno_points = $store_id;
-$get_inspection_population_info = "select * from $wms.`roll_inspection_child` where store_in_tid=$store_id and plant_code='".$plant_code."'";
+$get_inspection_population_info = "select inspected_per,inspected_qty,width_s,width_m,width_e,actual_height,actual_repeat_height,skw,bow,ver,gsm,comment,marker_type,inspection_status from $wms.`roll_inspection_child` where store_in_tid=$store_id and plant_code='".$plant_code."'";
 
 $info_result = mysqli_query($link, $get_inspection_population_info) or exit("get_details Error--1" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row22 = mysqli_fetch_array($info_result)) {
@@ -177,7 +177,7 @@ while ($row22 = mysqli_fetch_array($info_result)) {
     $inspection_status = $row22['inspection_status'];
 }
 
-$get_details = "select * from $wms.`inspection_population` where store_in_id=$store_id and plant_code='".$plant_code."'";
+$get_details = "select supplier_invoice,supplier_batch,supplier_po,item_code,item_desc,item_name,rm_color,sfcs_roll_no,supplier_roll_no,lot_no,rec_qty,status from $wms.`inspection_population` where store_in_id=$store_id and plant_code='".$plant_code."'";
 
 $details_result = mysqli_query($link, $get_details) or exit("get_details Error--2" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row1 = mysqli_fetch_array($details_result)) {
@@ -206,7 +206,7 @@ while ($row1 = mysqli_fetch_array($details_result)) {
     }       
 }
 
-$get_details1 = "select * from $wms.`main_population_tbl` where id=$parent_id and plant_code='".$plant_code."'";
+$get_details1 = "select fab_composition,s_width,repeat_len,s_weight,lab_testing,tolerence,remarks from $wms.`main_population_tbl` where id=$parent_id and plant_code='".$plant_code."'";
 $details_result1 = mysqli_query($link, $get_details1) or exit("get_details Error--3" . mysqli_error($GLOBALS["___mysqli_ston"]));
 while ($row111 = mysqli_fetch_array($details_result1)) 
 {
@@ -460,7 +460,7 @@ while ($row1112 = mysqli_fetch_array($supplier_result))
                 </thead>
                 <tbody>
                     <?php
-                        $select_resons = "select * from $wms.`reject_reasons`";
+                        $select_resons = "select reject_code,reject_desc from $wms.`reject_reasons`";
                         $get_reasons = mysqli_query($link, $select_resons) or exit("get_parent_id Error--6" .mysqli_error($GLOBALS["___mysqli_ston"]));
 
                         while ($row122 = mysqli_fetch_array($get_reasons)) 

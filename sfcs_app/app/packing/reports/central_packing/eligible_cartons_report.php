@@ -172,7 +172,8 @@ table, th, td {
 									while($row_result=mysqli_fetch_array($jm_pack_container_result))
 									{
 										$containerIds[]=$row_result['jm_pack_container_id'];
-									}
+									}									
+									$fg_list_arry = [];
 									$container_ids = implode(',', $containerIds);
 									$container_ids = "'".str_replace(",","','",$container_ids)."'";
 									$barcode_type_packing = BarcodeType::PCRT;
@@ -225,15 +226,19 @@ table, th, td {
 															while($row_result=mysqli_fetch_array($fg_fg_id_result))
 															{
 																$fg_id = $row_result['finished_good_id'];
-																$fg_opr_comp_sql="SELECT required_components,completed_components FROM $pts.`fg_operation` WHERE finished_good_id ='$fg_id' AND operation_code='$pre_operation' AND plant_code = '$plantcode' AND completed_components > 0";
-																$fg_opr_comp_result=mysqli_query($link, $fg_opr_comp_sql) or exit("error while fetching fg operation components");
-																if (mysqli_num_rows($fg_opr_comp_result) > 0)
-																{
-																	$fg_comp_data =mysqli_fetch_array($fg_opr_comp_result);
-																	if($fg_comp_data['required_components'] === $fg_comp_data['completed_components']) {
-																		$qty++;
-																	} 
+																if(!in_array($fg_id, $fg_list_arry)) {
+																	$fg_opr_comp_sql="SELECT required_components,completed_components FROM $pts.`fg_operation` WHERE finished_good_id ='$fg_id' AND operation_code='$pre_operation' AND plant_code = '$plantcode' AND completed_components > 0";
+																	$fg_opr_comp_result=mysqli_query($link, $fg_opr_comp_sql) or exit("error while fetching fg operation components");
+																	if (mysqli_num_rows($fg_opr_comp_result) > 0)
+																	{
+																		$fg_comp_data =mysqli_fetch_array($fg_opr_comp_result);
+																		if($fg_comp_data['required_components'] === $fg_comp_data['completed_components']) {
+																			$qty++;
+																			array_push($fg_list_arry,$fg_id);
+																		} 
+																	}
 																}
+																
 															}
 														}
 													}

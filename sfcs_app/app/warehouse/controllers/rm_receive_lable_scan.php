@@ -73,7 +73,7 @@ else
                 // $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
             
                 //================ get barcode details from CWH DB =============
-                $qry_get_data_fm_cwh = "select * from $wms.store_in where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
+                $qry_get_data_fm_cwh = "select tid from $wms.store_in where plant_code='".$plant_name1."' AND barcode_number='".$bar_code_new."'";
                 //echo  $qry_get_data_fm_cwh;
                 $res_get_data_fm_cwh = $link_new->query($qry_get_data_fm_cwh);
                 $barcode_data = array();
@@ -222,7 +222,7 @@ else
                                         break;
                                     }
                                     
-                                    $qry_check_rm_db1 = "select * from $wms.store_in where plant_code='".$plant_code."' AND barcode_number='".$bar_code_new."'";
+                                    $qry_check_rm_db1 = "select tid from $wms.store_in where plant_code='".$plant_code."' AND barcode_number='".$bar_code_new."'";
                                     $res_check_rm_db1 = $link->query($qry_check_rm_db1);
                                     echo $qry_check_rm_db1;
                                     

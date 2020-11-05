@@ -2,7 +2,11 @@
 <?php
 $start_timestamp = microtime(true);
 error_reporting(0);
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 //To extract date between two given dates
 function getDaysInBetween($start, $end) {

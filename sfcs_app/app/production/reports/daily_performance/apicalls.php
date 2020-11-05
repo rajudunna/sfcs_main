@@ -22,7 +22,7 @@ function getData($date, $plant){
 	
 	//To get all the operations	
 	//To get default Operations 
-	$get_operations_workflow= "select *  from $pms.operation_mapping  where sequence = true and plant_code = '$plant_code' order by priority*1";
+	$get_operations_workflow= "select operation_code  from $pms.operation_mapping  where sequence = true and plant_code = '$plant_code' order by priority*1";
 	$result1 = $link->query($get_operations_workflow);
 	$op_count = mysqli_num_rows($result1);
 	if($op_count>0){
@@ -67,7 +67,7 @@ function getData($date, $plant){
 
 	$operation_codes_str = implode(',',$over_all_operations);
 	//To get operation names
-	$get_ops_query = "SELECT * FROM $mdm.operations where operation_code in ($operation_codes_str) order by field(operation_code,$operation_codes_str) ";
+	$get_ops_query = "SELECT operation_name,operation_code FROM $mdm.operations where operation_code in ($operation_codes_str) order by field(operation_code,$operation_codes_str) ";
 	$ops_query_result=$link->query($get_ops_query);
 	$op_count = mysqli_num_rows($ops_query_result);
 	if($op_count >0){		

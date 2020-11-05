@@ -47,7 +47,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 		$i=1;
 		$total;
-		$sql="select * from $pts.transaction_log where plant_code='$plantcode' and resource_id='$mod' and created_at=\"$date\" order by created_at";
+		$sql="select shift,style,good_quantity,created_at from $pts.transaction_log where plant_code='$plantcode' and resource_id='$mod' and created_at=\"$date\" order by created_at";
 		// echo $sql;
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));

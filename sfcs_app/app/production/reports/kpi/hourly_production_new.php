@@ -76,7 +76,7 @@ while ($row_mstr = mysqli_fetch_array($res_mstr)) {
 					$hours =  (($endTime - $startTime) / 3600); // Plant hours 
 
 					// Get production plan upload data for given date
-					$sql = "SELECT * FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
+					$sql = "SELECT row_name,smv,planned_qty,capacity_factor,product_code FROM $pps.monthly_production_plan where  plant_code = '" . $plantCode . "' and planned_date ='".$frdate."'";
 					$res = mysqli_query($link, $sql) or exit("sql Error production plan-". mysqli_error(($link)));
 					 
 					$i = 0; ?>

@@ -56,6 +56,12 @@
                     $size_ratios[$size] = $unsorted_size_ratios[$size];
                 }
             }
+            // after sorting, add all the left over sizes that were left unsorted in the given array
+            foreach($unsorted_size_ratios as $size => $ratio) {
+                if (!$size_ratios[$size]) {
+                    $size_ratios[$size] = $unsorted_size_ratios[$size];
+                }
+            }
             // get the mul factor of the docket
             $mul_factor_query = "SELECT multiplication_factor, lp_ratio_cg_id, component_group_id FROM $pps.lp_ratio_component_group WHERE lp_ratio_cg_id = '$ratio_cg_id' ";
             $mul_factor_result = mysqli_query($link, $mul_factor_query);

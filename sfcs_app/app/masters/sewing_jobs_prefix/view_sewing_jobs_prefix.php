@@ -5,7 +5,7 @@
     
     
 
-    $sql = "SELECT * FROM $mdm.tbl_sewing_job_prefix";
+    $sql = "SELECT id,prefix_name,prefix,type_of_sewing,bg_color FROM $mdm.tbl_sewing_job_prefix";
     $sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     $norows = mysqli_num_rows($sql_result);
     $sno = 1;

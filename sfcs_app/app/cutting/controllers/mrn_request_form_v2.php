@@ -187,17 +187,17 @@ function exception($sql_result)
             if(document.getElementById("product_"+row).value.trim() == "FAB")
             {
                 // alert(code);
-                if(code==25 || code==29 || code==32 || code==31)
-                {                    
-                    // tot=tot+parseFloat(document.getElementById("qty_"+row).value);
-                    // alert(tot+"-"+avl_qty+"-"+document.getElementById("qty_"+row).value);
-                    if(parseFloat(avl_qty) < parseFloat(tot))
-                    {
-                        swal('Requested Quantity Is Exceeding The Available Quantity','','warning');
-                        // document.getElementById("qty_"+row).value=0;
-                        // document.getElementById("trowst").value=0;
-                    }
-                }
+                // if(code==25 || code==29 || code==32 || code==31)
+                // {                    
+                //     // tot=tot+parseFloat(document.getElementById("qty_"+row).value);
+                //     // alert(tot+"-"+avl_qty+"-"+document.getElementById("qty_"+row).value);
+                //     if(parseFloat(avl_qty) < parseFloat(tot))
+                //     {
+                //         swal('Requested Quantity Is Exceeding The Available Quantity','','warning');
+                //         // document.getElementById("qty_"+row).value=0;
+                //         // document.getElementById("trowst").value=0;
+                //     }
+                // }
             }
         }
         // document.getElementById("trowst").value=tot;
@@ -292,9 +292,9 @@ $(document).ready(function(){
 		$.ajax({
 			url: 'sfcs_app/app/cutting/controllers/mrn_request_form_update_v2.php',
 			type:'POST',
-			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},
+			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},          
 			success: function (data) 
-			{              
+			{                           
 				$("#loading-image").hide();
 				if(data!=''){
 						swal({
@@ -564,7 +564,7 @@ $(document).ready(function(){
                     //To check the applied quantity is exceeds the available quantity
                     //OLD ISSUE QUERY KK 20160721 $sql141="select COALESCE(sum(issued_qty)) as qty from wms.mrn_track where batch_ref='".$batch."' AND reason_code IN (25,29,31,32)";
 
-                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
+                    $sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' ";
 
                     //echo "<br/>".$sql141."<br/>";
 
@@ -577,7 +577,7 @@ $(document).ready(function(){
 
                     $requested_qty=0;
 
-                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+                    $sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$batch."' AND plant_code='".$plant_code."' and status in (1,2,5)";
                     //echo "<br/>".$sql_requested_qty."<br/>";
 
                     $sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die("Error".$sql_requested_qty.mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -630,7 +630,7 @@ $(document).ready(function(){
             ?>
         </form>
             <?php
-                if(isset($_POST['submit']) && short_shipment_status($_POST['style'],$_POST['schedule'],$link))
+                if(isset($_POST['submit']))
                 {
 					try
 					{
@@ -645,6 +645,14 @@ $(document).ready(function(){
 						$inp_5=$_POST["batchno"];
                         $post_color = $_POST['color'];
                      
+
+                        $sql11="SELECT company.company_code FROM $pms.cluster LEFT JOIN $pms.plant ON cluster.cluster_code=plant.cluster_code LEFT JOIN $pms.company ON company.company_code=cluster.company_code where plant.plant_code='".$plant_code."'";
+						//echo "<br/>".$sql14."<br>";
+						$sql_result141=mysqli_query($link, $sql11) or die(exception($sql11));
+						while($sql_row141=mysqli_fetch_array($sql_result141))
+						{
+							$company_no=$sql_row141["company_code"];
+						}
 
 						$sql = "SELECT mo_number FROM $pps.`jm_cut_job` jc 
 						LEFT JOIN $pps.`jm_cut_bundle` jcb ON jcb.jm_cut_job_id=jc.jm_cut_job_id
@@ -741,7 +749,7 @@ $(document).ready(function(){
 						}
 
 						//$sql141="select COALESCE(sum(issued_qty)) as qty from wms.mrn_track where batch_ref='".$inp_5."' AND reason_code IN (25,29,31,32)";
-						$sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32)";
+						$sql141="select COALESCE(sum(avail_qty)) as qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' ";
 						//echo "<br/>".$sql141."<br/>";
 						$sql_result141=mysqli_query($link, $sql141) or die(exception($sql141));
 						while($sql_row141=mysqli_fetch_array($sql_result141))
@@ -751,7 +759,7 @@ $(document).ready(function(){
 
 						$requested_qty=0;
 
-						$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' AND reason_code IN (25,29,31,32) and status in (1,2,5)";
+						$sql_requested_qty="select COALESCE(sum(req_qty)) as requested_qty from $wms.mrn_track where batch_ref='".$inp_5."' AND plant_code='".$plant_code."' and status in (1,2,5)";
 						//echo "<br/>".$sql_requested_qty."<br/>";
 						$sql_result_requested_qty=mysqli_query($link, $sql_requested_qty) or die(exception($sql_requested_qty));
 						while($sql_row_requested_qty=mysqli_fetch_array($sql_result_requested_qty))
@@ -796,29 +804,34 @@ $(document).ready(function(){
 							<th>Required Qty</th>
 							<th>UOM</th>
 							<th>Reason</th>
-							<th>Remarks</th>
+                            <th>Remarks</th>
+                            <input type='hidden' name='plantcode' id='plantcode' value='$plant_code'>
+                            <input type='hidden' name='username' id='username' value='$username'>
 						</tr>";
 						$check=0;
 
 						//When M3 offline comment this
-
+                     
 						if($count_ref==0)
 						{
+                           
 							$reason_id_db = array();
-							$reason_code_db = array();
-							$sql_reason="select reason_tid,reason_code,reason_desc from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
+                            $reason_code_db = array();
+                           
+                            $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";
+                            echo $sql_reason;
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
 							
 							while($sql_row=mysqli_fetch_array($sql_result))
 							{
-								$reason_id_db[]=$sql_row['reason_tid'];
-								$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+								$reason_id_db[]=$sql_row['reason_id'];
+								$reason_code_db[]=$sql_row['internal_reason_code']."-".$sql_row['internal_reason_description'];
 							}
 
 							if(count($finalrecords) > 0)
 							{         
-								echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value='".$pageurl."'>ABC";
+								echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value='".$pageurl."'>";
 								for($x=0;$x<count($finalrecords);$x++)
 								{
 								
@@ -919,7 +932,7 @@ $(document).ready(function(){
 
 							if(count($finalrecords) == 0)
 							{
-								echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>ABC";
+								echo "<input type=\"text\" name=\"rest[]\"  id=\"final\" value=''>";
 								for($x=0;$x<2;$x++)
 								{ 
 									
@@ -955,12 +968,13 @@ $(document).ready(function(){
 										echo "<option value=\"".$reason_id_db[$i]."\">".$reason_code_db[$i]."</option>";
 									}
 									echo "</select></td>";
-									echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>";
+                                    echo "<td><input type=\"text\" value=\"\" name=\"remarks[]\" id='remarks$x' style=\"background-color:#66FFCC;\"></td>
+                                    <input type=\"hidden\" name=\"plantcode\" id=\"plantcode\" value=\"$plant_code\"><input type=\"hidden\" name=\"username\" id=\"username\" value=\"$username\">";
 									echo "</tr>";
 								}
 							}
-								echo "<td><input type=\"hidden\" value=\"$reason_id_db\"  id='reasonid' style=\"background-color:#66FFCC;\"></td>";
-								echo "<td><input type=\"hidden\" value=\"$reason_code_db\"  id='reasoncode' style=\"background-color:#66FFCC;\"></td>";
+								// echo "<td style='visibility:none'><input type=\"hidden\" value=\"$reason_id_db\"  id='reasonid' style=\"background-color:#66FFCC;\"></td>";
+								// echo "<td style='visibility:none'><input type=\"hidden\" value=\"$reason_code_db\"  id='reasoncode' style=\"background-color:#66FFCC;\"></td>";
 						}
 
 						echo "</table>";

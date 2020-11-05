@@ -3,7 +3,11 @@
 $start_timestamp = microtime(true);
 //CR# 203 / KiranG 2014-08-10
 //Added new query to filer all schedule irrespective of weekly shipment plan.
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 ini_set('mysql.connect_timeout', 3000);
 ini_set('default_socket_timeout', 3000);
 

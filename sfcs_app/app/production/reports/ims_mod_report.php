@@ -64,7 +64,7 @@ $plantcode=$_GET['plantcode'];
 
 echo "<div class='table-responsive'><table class='table table-bordered' id='table2'><thead><tr><th>Sno</th><th>Barcode</th><th>Style</th><th>Schedule</th><th>Job No</th><th>Color</th><th>Module</th><th>Bundle Number</th><th>Size</th><th>Quantity</th></tr><thead>";
 
-$sql="select * from $tms.bundle_transfer_log where plant_code='$plantcode' and job_no_ref = '$job_no_ref' and date(created_at) = '$created_at'";
+$sql="select bundle_number,to_resource,quantity,job_no_ref,style,schedule,color,size from $tms.bundle_transfer_log where plant_code='$plantcode' and job_no_ref = '$job_no_ref' and date(created_at) = '$created_at'";
 // echo $sql;
 $result=mysqli_query($link, $sql) or die("Error=".mysqli_error($GLOBALS["___mysqli_ston"]));
 $x=0;

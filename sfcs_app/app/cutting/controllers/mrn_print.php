@@ -33,7 +33,8 @@ $item_code=$sql_row["item_code"];
 $item_desc=$sql_row["item_desc"];
 $product=$sql_row["product"];
 $reason=$sql_row["reason_code"];
-$sql1="select reason_desc as res from $wms.mrn_reason_db where reason_tid=$reason and plant_code='$plant_code'";
+$sql1="select internal_reason_code as res from $mdm.reasons where reason_id='$reason' ";
+
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
 {
@@ -67,8 +68,6 @@ while($sql_row=mysqli_fetch_array($sql_result))
 <meta name=ProgId content=Excel.Sheet>
 <meta name=Generator content="Microsoft Excel 15">
 <link rel=File-List href="Book1_files/filelist.xml">
-<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-1.3.2.js',1,'R'); ?>></script>
-<script src=<?= getFullURLLevel($_GET['r'],'common/js/jquery-barcode-2.0.1.js',1,'R'); ?>></script>
 <style id="Book1_14212_Styles"><!--table
 	{mso-displayed-decimal-separator:"\.";
 	mso-displayed-thousand-separator:"\,";}

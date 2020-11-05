@@ -700,7 +700,7 @@
 										}
 										//TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 										$job_detail_attributes = [];
-										$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_jobs_id' and plant_code='$plant_code'";
+										$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='$task_jobs_id' and plant_code='$plant_code'";
 										$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 										while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 									

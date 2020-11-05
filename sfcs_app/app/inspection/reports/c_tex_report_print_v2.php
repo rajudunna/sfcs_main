@@ -1797,7 +1797,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	//NEW SYSTEM IMPLEMENTATION RESTRICTION
 }
 
-$sql="select * from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"".trim($lot_no)."\"";
+$sql="select act_gsm,pur_gsm,pur_width,act_width,sp_rem,qty_insp,gmt_way,pts,fallout,skew,skew_cat,shrink_l,shrink_w,supplier,log_date,unique_id,consumption from $wms.inspection_db where plant_code='$plantcode' and batch_ref=\"".trim($lot_no)."\"";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errora".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -1828,7 +1828,7 @@ $scount_temp=array();
 $ctex_sum=0;
 $avg_t_width=0;
 $avg_c_width=0;
-$sql="select * from $wms.store_in where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql="select tid,ref2,ref4,qty_rec,ref5,ref6,ref3,lot_no,roll_joins from $wms.store_in where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 $sql_result=mysqli_query($link, $sql) or exit("Sql Errorc".mysqli_error($GLOBALS["___mysqli_ston"]));
 $num_rows=mysqli_num_rows($sql_result);
 while($sql_row=mysqli_fetch_array($sql_result))
@@ -1844,7 +1844,7 @@ while($sql_row=mysqli_fetch_array($sql_result))
 
 //Added Backup Lots for visibility in Inspection Report
 
-$sql1="select * from $wms.store_in_backup where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
+$sql1="select tid,ref2,ref4,qty_rec,ref5,ref6,ref3,lot_no,roll_joins,partial_appr_qty,roll_status from $wms.store_in_backup where plant_code='$plantcode' and lot_no in ("."'".str_replace(",","','",$lot_ref_batch)."'".") order by ref2+0";
 //echo $sql1."<br>";
 
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error3=".mysqli_error($GLOBALS["___mysqli_ston"]));

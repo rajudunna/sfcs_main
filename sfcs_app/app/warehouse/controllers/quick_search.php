@@ -106,7 +106,7 @@ table{
 				echo '<div id="main_div">';
 				echo '<div class="table-responsive"><table id="table1" class="table table-bordered"><tr class="info"><th>Receiving #</th><th>Item</th><th>Item Name</th><th>Item Description</th><th>Invoice #</th><th>PO #</th><th>Qty</th><th>Lot#</th><th>Batch #</th><th>Product</th><th>UOM</th><th>PKG No</th><th>GRN Date</th></tr>';
 
-				$sql1="select * from $wms.sticker_report where plant_code=\"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\" or product_group=\"$ref\"";
+				$sql1="select lot_no,rec_no,item,item_name,item_desc,inv_no,po_no,rec_qty,batch_no,product_group,uom,pkg_no,grn_date from $wms.sticker_report where plant_code=\"".$plant_code."\" and inv_no=\"".$ref."\" or po_no=\"".$ref."\" or batch_no=\"".$ref."\" or product_group=\"$ref\"";
 				//echo $sql1;
 				$sql_result1=mysqli_query($link, $sql1) or die(exception($sql1));
 				$sql_num_rows=mysqli_num_rows($sql_result1);

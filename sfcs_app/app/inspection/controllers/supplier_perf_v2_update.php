@@ -104,7 +104,7 @@ if(isset($_POST['update']))
 			$string_include2.="'".$status[$i][$i2]."',";
 		}
 		
-		$sql11="select * from $wms.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."' and plant_code='".$plant_code."'";
+		$sql11="select log_time from $wms.supplier_performance_track where tid='".trim($batch_ref[$i])."-".$month_ref[$i]."' and plant_code='".$plant_code."'";
 		$sql_result11=mysqli_query($link, $sql11) or exit("Sql Error4".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
 		//echo $sql11;
 		if(mysqli_num_rows($sql_result11) > 0)
