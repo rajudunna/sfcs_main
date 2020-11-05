@@ -56,7 +56,8 @@
 								$po_number=$_GET['sub_po'];
 								$flag=$_GET['flag'];
 								$main_color=$_GET['color'];
-							    $color=$_GET['color'];
+								$color=$_GET['color'];
+								$plant_code=$_GET['plant_code'];
 							} else 
 							{
 								//Logic to get details redirecting from TMS,IPS dashboard
