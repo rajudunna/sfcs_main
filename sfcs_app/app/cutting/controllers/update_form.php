@@ -147,8 +147,7 @@ function validateQty(event)
         //common/php/menu_include.php
 		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 		include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions_v2.php',3,'R'));
-		 $plant_code = $_SESSION['plantCode'];
-		$username = $_SESSION['userName'];		
+				
 		?>
 		<?php //list($domain,$username) = split('[\]',$_SERVER['AUTH_USER'],2);?>
 
@@ -160,6 +159,8 @@ $level=$_GET['level'];
 $product=$_GET['product'];
 $reason_code=$_GET['reason_code'];
 $ref_tid=$_GET['ref_tid'];	
+$plant_code=$_GET['plant_code'];
+$username=$_GET['username'];	
 
 if($level==8)
 {
@@ -179,7 +180,7 @@ if($level==3)
 	if($_GET['tid']!=''){
 		$ref_tid=$_GET['tid'];
 	}
-	
+
 	echo "<form action=\"?r=".$_GET["r"]."\" method=\"post\">";
 	echo "<div class='col-md-4'>Enter Lots Here:<input type=\"textarea\" onkeypress='return validateQty(event);' rows=5 name=\"lots\" class='form-control' value=\"\" required></div>";
 	echo "&nbsp;&nbsp;<input type=\"submit\" style=\"margin-top: 18px;\" value=\"Submit\" class='btn btn-success' name=\"submitlot\" />";
@@ -188,6 +189,8 @@ if($level==3)
 	echo "<input type=\"hidden\" name=\"level\" value=\"$level\" />";
 	echo "<input type=\"hidden\" name=\"reasoncode\" value=\"$reason_code\" />";
 	echo "<input type=\"hidden\" name=\"ref_tid\" value=\"$ref_tid\" />";
+	echo "<input type=\"hidden\" name=\"plantcode\" value=\"$plant_code\" />";
+	echo "<input type=\"hidden\" name=\"username\" value=\"$username\" />";
 	echo "</form>";
 }
 
@@ -306,14 +309,15 @@ switch($level)
 	}
 }	
 
-$updurl = getFullURL($_GET['r'],'update_form.php','N');
+// $updurl = getFullURL($_GET['r'],'update_form.php','N');
 echo "<form name=\"test\" method=\"post\" action=".$updurl.">";
 
 if(sizeof($_GET["lots"]) > 0)
 {
 	//echo "Hello";
 	$ref_tid=$_GET["tid"];
-
+	$plant_code=$_GET["plantcode"];
+	$username=$_GET["username"];
 	$sql1="select product from $wms.mrn_track where tid=$ref_tid and plant_code='".$plant_code."'";
 	$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error5".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row1=mysqli_fetch_array($sql_result1))
@@ -325,7 +329,7 @@ if(sizeof($_GET["lots"]) > 0)
 	$row_count = 0;
 	$lots_no=$_GET["lots"];
 	$sql1="select tid,lot_no,qty_rec,qty_issued,qty_allocated,qty_ret,ref4,barcode_number,shrinkage_group,ref3,ref2 from $wms.store_in where lot_no in ("."'".str_replace(",","','",$lots_no)."'".") and roll_status in(0,2) and plant_code='".$plant_code."' order by shrinkage_group,ref3,ref4,lot_no";
-	// echo $host."-".$sql1;
+
 	$result1=mysqli_query($link, $sql1) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
 
 	if(mysqli_num_rows($result1)>0){
@@ -524,17 +528,24 @@ while($sql_row=mysqli_fetch_array($sql_result))
 	{
 		case 1:
 			{
-				echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
+				echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\">
+				</td>";
+				echo"<input type=\"hidden\"  name=\"plantcode\" value=\"$plant_code\">";
+				echo"<input type=\"hidden\"  name=\"username\" value=\"$username\">";
 	   			break;
 			}
 		case 2:
 		{
 			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
+			echo"<input type=\"hidden\"  name=\"plantcode\" value=\"$plant_code\">";
+				echo"<input type=\"hidden\"  name=\"username\" value=\"$username\">";
    			break;
 		}
 		case 3:
 		{
 			echo "<td><input type=\"text\"  name=\"ins_rem\" value=\"0\"></td>";
+			echo"<input type=\"hidden\"  name=\"plantcode\" value=\"$plant_code\">";
+				echo"<input type=\"hidden\"  name=\"username\" value=\"$username\">";
    			break;
 		}
 	}	
@@ -610,7 +621,8 @@ $(document).ready(function(){
 	{
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
-		
+		$plant_code=$_POST['plantcode'];
+		$username=$_POST['username'];
 		//echo "ins remarks= ".$ins_rem;
 		$sql="update $wms.mrn_track set status=2, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW() where  plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 		//echo $sql;
@@ -632,6 +644,8 @@ $(document).ready(function(){
 	{
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
+		$plant_code=$_POST['plantcode'];
+		$username=$_POST['username'];
 		$sql="update wms.mrn_track set status=3, app_by=\"$username\",app_date=\"".date("Y-m-d H:i:s")."\",updated_user= '".$username."',updated_at=NOW() where plant_code='".$plant_code."' and tid in (".implode(",",$tid).")";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error26".mysqli_error($GLOBALS["___mysqli_ston"]));
 		
@@ -652,7 +666,8 @@ $(document).ready(function(){
 		$tid=$_POST['tid'];
 		$ins_rem=$_POST['ins_rem'];
 		$available=$_POST['available'];
-		
+		$plant_code=$_POST['plantcode'];
+		$username=$_POST['username'];
 		for($i=0;$i<sizeof($tid);$i++)
 		{
 			if($available[$i]>0)
@@ -684,8 +699,10 @@ $(document).ready(function(){
 		$reason_code=$_POST["reasoncode"];
 		$level=$_POST["level"];
 		$ref_tid=$_POST["ref_tid"];
+		$plant_code=$_POST["plantcode"];
+		$username=$_POST["username"];
 		$updurl = getFullURL($_GET['r'],'update_form.php','N');
-		header("Location:".$updurl."&ref=$ref&level=$level&product=$product&reason_code=$reason_code&lots=$lots&tid=$ref_tid");
+		header("Location:".$updurl."&ref=$ref&level=$level&product=$product&reason_code=$reason_code&lots=$lots&tid=$ref_tid&plantcode=$plant_code&username=$username");
 	}
 	//ISSUE
 	if(isset($_POST['issue']))
@@ -699,6 +716,8 @@ $(document).ready(function(){
 		$issued_qty=$_POST["issqty"];
 		$lot_nos=$_POST["lotnos"];
 		$ref_tids=$_POST["ref_tid"];
+		$plan_code=$_POST["plantcode"];
+		$username=$_POST["username"];
 		//echo sizeof($lable_ids);
 		for($j=0;$j<sizeof($tid);$j++)
 		{
@@ -714,7 +733,7 @@ $(document).ready(function(){
 		{
 			if($issued_qty[$j]>0)
 			{
-				$sql1="insert into $wms.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user,plant_code,created_user,updated_user,updated_at) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\",'".$plant_code."','".$username."','".$username."',NOW())";
+				$sql1="insert into $wms.mrn_out_allocation(mrn_tid,lable_id,lot_no,iss_qty,updated_user,plant_code,created_user,updated_at) values(\"".$ref_tids[$j]."\",\"".$tid_ref[$j]."\",\"".$lot_nos[$j]."\",\"".$issued_qty[$j]."\",\"".$username."^".$host_name."\",'".$plant_code."','".$username."',NOW())";
 				//echo $sql1."</br>";
 				mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 				unset($qty_issued);
