@@ -4,7 +4,10 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',3,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plantCode=$_SESSION['plantCode'];
+// $plantCode='AIP';
+
 ?>
+
 
 <html>
 <head>
@@ -306,7 +309,6 @@ if(isset($_POST['submit']))
 
 				}
 		}
-
 		if(sizeof($jmBundleIds)>0){
 			$barcodesQry = "select barcode,barcode_id from $pts.barcode where external_ref_id IN ('".implode("','" , $jmBundleIds)."') and barcode_type='PPLB' and plant_code='$plantCode' AND is_active=1";
 			//echo "</br>barcode : ".$bundlesQry."</br>";
@@ -336,12 +338,11 @@ if(isset($_POST['submit']))
 		// {
 		// 	$barcodePPLB[] = $pplbRow['barcode'];
 		// }
-		//var_dump($originalBarcode);
 		if(sizeof($originalBarcode)>0)
 		{
 			echo "<div>";
 			echo "<div  class ='table-responsive'>";
-			echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
+			echo "<table id=\"table1\"  border=1 class=\"table\" cellpadding=\"0\" cellspacing=\"0\" style='margin-top:10pt;'><thead><tr class='tblheading' style='color:white;'><th>Operation Code</th><th>Operation Name</th><th>Date</th><th>Time<th>Module</th><th>Section</th><th>Shift</th><th>Style</th><th>Schedule</th><th>Color</th><th>Cut No</th><th>Input Job No</th><th>Size</th><th>SMV</th><th>Quantity</th><th>SAH</th></tr></thead><tbody>";
 			$total_qty=0;
 			do{
 				for($ii=$hour_from;$ii<=$hour_to;$ii++)
@@ -352,20 +353,25 @@ if(isset($_POST['submit']))
 					}else{
 						$shiftValue=" ";
 					}
+					// operation='$maxOperation'
 					$fromHour=$ii.":00:00";
 					$to=$ii+1;
 					$toHour=$to.":00:00";
 					$time_display=$fromHour."-".$toHour;
-					$qryGettransactions="SELECT sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,DATE(created_at) as created_at,shift FROM $pts.transaction_log WHERE plant_code='$plantCode' AND operation='$maxOperation' AND parent_barcode IN ('".implode("','" , $originalBarcode)."') $shiftValue AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$fromHour."') AND ('".$toHour."') 
-					AND is_active=1 GROUP BY shift,style,size,parent_job ORDER BY style,shift,parent_job*1
+					$qryGettransactions="SELECT operation, sum(good_quantity) as good_quantity,style,schedule,color,size,parent_job,resource_id,DATE(created_at) as created_at,shift FROM $pts.transaction_log WHERE plant_code='$plantCode' AND `parent_barcode_type`='PPLB' AND parent_barcode IN ('".implode("','" , $originalBarcode)."') $shiftValue AND DATE(created_at) BETWEEN ('".$sdate."') AND ('".$edate."') AND TIME(created_at) BETWEEN ('".$fromHour."') AND ('".$toHour."') 
+					AND is_active=1 GROUP BY shift,style,size,parent_job, operation ORDER BY operation, style,shift,parent_job*1
 					";
+
+					// var_dump($qryGettransactions);
 					//echo "</br>transaction : ".$qryGettransactions."</br>";
 					$transactionResult=mysqli_query($link, $qryGettransactions) or exit("Error while getting transactions".mysqli_error($GLOBALS["___mysqli_ston"]));
+					// var_dump(mysqli_num_rows($transactionResult));
 					if(mysqli_num_rows($transactionResult)>0)
 					{
 						$count = mysqli_num_rows($transactionResult);
 						while($transactionRow=mysqli_fetch_array($transactionResult))
 						{
+							$operation=$transactionRow['operation'];
 							$style=$transactionRow['style'];
 							$schedule=$transactionRow['schedule'];
 							$color=$transactionRow['color'];
@@ -419,38 +425,65 @@ if(isset($_POST['submit']))
 								$section_name=$sectionRow['section_name'];
 								$section_code=$sectionRow['section_code'];
 							}
+
+								/* Getting Operation Name For Code*/
+							$qryoperation= "SELECT operation_name FROM $mdm.operations where operation_code='$operation'";
+							$operationResult=mysqli_query($link, $qryoperation) or exit("Error while getting operation name".mysqli_error($GLOBALS["___mysqli_ston"]));
+	
+							while($operationRow=mysqli_fetch_array($operationResult))
+							{	
+								$operation_name=$operationRow['operation_name'];
+							}
+							/* Getting smv from oms oms products info*/
+
+							$qrysmv = "SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN $oms.oms_mo_details AS omd ON omd.mo_number=omo.mo_number WHERE opi.style='".$style."' AND opi.color_desc='".$color."' AND omo.operation_code=".$operation." and omd.plant_code='".$plantCode."' LIMIT 1";
+							// var_dump($qrysmv);
+							$qrysmvresult = mysqli_query($link, $qrysmv) or exit("Error while getting smv".mysqli_error($GLOBALS["___mysqli_ston"]));
+
+								while($smv_res=mysqli_fetch_array($qrysmvresult))
+								{
+									$smv=($smv_res['smv'])?round($smv_res['smv'],3):0;
+								}
+								if(mysqli_num_rows($qrysmvresult)>0)
+								{
+									if($smv){
+										$sahs=round($good_qty*$smv/60,3);
+										echo "<tr bgcolor=\"$bgcolor\"><td>$operation</td><td>$operation_name</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$workstation_code</td><td>".$section_name."-".$section_code."</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cut_number."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$good_qty."</td><td>".$sahs."</td></tr>";
+										$total_qty=$total_qty+$good_qty;							
+										$total_qty_sah=$total_qty_sah+$sahs;
+									}
+								}
 							
 							/**getting smv and nop form monthly upload*/
 							// $qryMonthlyupload="SELECT mp.smv AS smv,mp.capacity_factor FROM $pps.monthly_production_plan_upload_log ml LEFT JOIN $pps.monthly_production_plan mp 
 							// ON ml.monthly_pp_up_log_id=mp.pp_log_id WHERE ml.plant_code='$plantCode' AND 
 							// DATE(mp.planned_date)='$createDate' AND mp.product_code='$style' AND mp.colour='$color'";
-							$qryMonthlyupload="SELECT smv,capacity_factor FROM $pps.monthly_production_plan WHERE DATE(planned_date)='$createDate' AND plant_code='$plantCode' AND product_code='$style' AND colour='$color'";
+							// $qryMonthlyupload="SELECT smv,capacity_factor FROM $pps.monthly_production_plan WHERE DATE(planned_date)='$createDate' AND plant_code='$plantCode' AND product_code='$style' AND colour='$color' and smv>0";
 							// echo "</br>monthly_production_plan_upload_log : ".$qryMonthlyupload."</br>";
-							$monthlyResult=mysqli_query($link, $qryMonthlyupload) or exit("Error while getting monthly production plan upload".mysqli_error($GLOBALS["___mysqli_ston"]));
-							if(mysqli_num_rows($monthlyResult)>0)
-							{
-								while($monthlyRow=mysqli_fetch_array($monthlyResult))
-								{
-									$smv=round($monthlyRow['smv'],3);	
-									$nop=$monthlyRow['capacity_factor'];
-								}
-							}else{
-									$smv=0;
-									$nop=0;
-							}							
-												
-							$bgcolor="";	
-							if($smv==0 and $nop==0)
-							{
-								$bgcolor="WHITE";
-							}
-							
-							$sahs=round($good_qty*$smv/60,3);
-							
-								
-							echo "<tr bgcolor=\"$bgcolor\"><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$workstation_code</td><td>".$section_name."-".$section_code."</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cut_number."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$good_qty."</td><td>".$sahs."</td></tr>";
-							$total_qty=$total_qty+$good_qty;							
-							$total_qty_sah=$total_qty_sah+$sahs;												
+							// $monthlyResult=mysqli_query($link, $qryMonthlyupload) or exit("Error while getting monthly production plan upload".mysqli_error($GLOBALS["___mysqli_ston"]));
+							// if(mysqli_num_rows($monthlyResult)>0)
+							// {
+							// 	while($monthlyRow=mysqli_fetch_array($monthlyResult))
+							// 	{
+							// 		$smv=round($monthlyRow['smv'],3);	
+							// 		$nop=$monthlyRow['capacity_factor'];
+							// 	}
+							// 	$bgcolor="";	
+							// 	if($smv==0 and $nop==0)
+							// 	{
+							// 		$bgcolor="WHITE";
+							// 	}else{
+							// 		$sahs=round($good_qty*$smv/60,3);
+									
+							// 		echo "<tr bgcolor=\"$bgcolor\"><td>$operation</td><td>$operation_name</td><td>$sdate</td><td>".$time_display." ".$day_part."</td><td>$workstation_code</td><td>".$section_name."-".$section_code."</td><td>$shift</td><td>$style</td><td>".$schedule."</td><td>$color</td><td>".$cut_number."</td><td>$sewingjobnumber</td><td>$size</td><td>$smv</td><td>".$good_qty."</td><td>".$sahs."</td></tr>";
+							// 		$total_qty=$total_qty+$good_qty;							
+							// 		$total_qty_sah=$total_qty_sah+$sahs;
+							// 	}
+							// }else{
+							// 		$smv=0;
+							// 		$nop=0;
+							// }							
+																			
 						}
 					}
 					//$time_query='';
@@ -458,7 +491,7 @@ if(isset($_POST['submit']))
 				$sdate = date ("Y-m-d", strtotime("+1 days", strtotime($sdate)));			
 			}
 			while (strtotime($sdate) <= strtotime($edate)); 
-			echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=12>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
+			echo "<tr style='background-color:#FFFFCC;' class='total_excel' id='total_excel'><td colspan=14>Total</td><td id='table1Tot1'>$total_qty</td><td id='table1Tot2'>$total_qty_sah</td></tr></tbody></table></div></div>";
 		}
 		else
 		{
