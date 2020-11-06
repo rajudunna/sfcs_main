@@ -85,4 +85,15 @@ class TaskAttributeNamesEnum {
     const REMARKS = 'REMARKS';
     const JOBGROUP = 'JOBGROUP';
 }
+
+class M3TransStatusEnum {
+    const PENDING = 'PENDING';
+    const PASS = 'PASS';
+    const FAIL = 'FAIL';
+}
+
+class ApiTypeEnum {
+    const FG= 'FG';
+    const OPN = 'OPN';
+}
 ?>
