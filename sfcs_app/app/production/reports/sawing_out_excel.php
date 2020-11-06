@@ -63,11 +63,12 @@ table{
 		$table.="<tr><td colspan=11><h2><center><strong>Daily Production Status Report</strong></center></h2></td></tr>";
 		$table.="<tr><td colspan=11>For the period: $dat1 to $dat2</td></tr>";
 		
-		$sql="SELECT barcode,parent_job,shift,date(created_at) as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$dat1' AND '$dat2' AND parent_job_type IN ('PSJ','PSEJ')";
+		$sql="SELECT barcode,parent_job,shift,created_at as date FROM $pts.`transaction_log` WHERE plant_code='$plant_code' AND DATE(created_at) BETWEEN '$dat1' AND '$dat2' AND parent_job_type IN ('PSJ','PSEJ')";
 		$sql_result=mysqli_query($link, $sql) or exit("Error While Getting transaction log".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
 
 		$table.="<table id='table5' border=1>
 					<tr>
+					    <th>Barcode ID</th>
 						<th>Date and Time</th>
 						<th>Style</th>
 						<th>Schedule</th>
@@ -120,7 +121,7 @@ table{
 									$task_jobs_id=$get_taskjobid_qry_result_row['task_jobs_id'];
 								}
 								//getting max operation
-								$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+								$qrytoGetMaxOperation="SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
 								$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
 								if(mysqli_num_rows($maxOperationResult)>0)
 								{
@@ -131,7 +132,7 @@ table{
 								}
 								
 								//getting quantity 
-								$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_transaction` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$maxOperation";
+								$get_quant_qry="select sum(good_quantity) as quantity from $tms.`task_job_status` WHERE task_jobs_id='".$task_jobs_id."' AND plant_code='$plant_code' AND is_active=1 and operation_code=$maxOperation";
 								$get_quant_qry_result = mysqli_query($link_new, $get_quant_qry) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
 								while ($get_quant_qry_row = mysqli_fetch_array($get_quant_qry_result)) 
 								{
@@ -139,6 +140,7 @@ table{
 								}
 
 								$table.="<tr>";
+								$table.="<td>$barcode</td>";
 								$table.="<td>$date</td>";
 								$table.="<td>$style</td>";
 								$table.="<td>$schedule</td>";

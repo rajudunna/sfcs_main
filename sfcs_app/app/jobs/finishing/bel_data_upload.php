@@ -8,7 +8,11 @@ include($include_path.'\sfcs_app\common\config\config_jobs.php');
 //set_time_limit(50000);
 set_time_limit(0);
 
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 // Turn off all error reporting
 error_reporting(0);
@@ -44,7 +48,6 @@ if( $conn === false )
 <?php
 
 $unit='BEK';
-$plantcode=$_SESSION['plantCode'];
 // if(isset($_GET['currentdate']))
 // {
  	$max_allowed_date=date("Y-m-d");

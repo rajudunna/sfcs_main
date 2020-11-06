@@ -97,7 +97,7 @@
                     $workstation_code = $row6['workstation_code'];
                 }
                 //get task jobs 
-                $sql_tms = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
+                $sql_tms = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
                 // echo $sql_tms;
                 mysqli_query($link_new,$sql_tms) or exit("Sql Error78".mysqli_error());
                 $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
@@ -105,7 +105,7 @@
                 {
                     $out_put_ops = $sql_row_tms['operation_code'];
                 }
-                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
+                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
                 // echo $sql_tms_in;
                 mysqli_query($link_new,$sql_tms_in) or exit("Sql Error79".mysqli_error());
                 $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());
@@ -114,7 +114,7 @@
                     $input_ops = $sql_row_tms_in['operation_code'];
                 }
                 $job_detail_attributes = [];
-                $qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_job_id' and plant_code='$plantcode' and is_active=1";
+                $qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='$task_job_id' and plant_code='$plantcode' and is_active=1";
                 $qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("attributes data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
                 while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
                     $job_detail_attributes[$row2['attribute_name']] = $row2['attribute_value'];

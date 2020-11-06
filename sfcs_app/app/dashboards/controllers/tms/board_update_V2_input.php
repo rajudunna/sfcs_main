@@ -102,7 +102,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 		echo "<tr>";
 		echo "<td>".$workstation_code."</td>";
 		echo "<td align=\"right\">Style:<br/>Schedule:<br/>Job:<br/>Total Qty:<br/>Fab. Status:<br/>Trim Status:</td>";
-		$$work_id=$mods[$x];
+		$work_id=$mods[$x];
 		
 		$tasktype=TaskTypeEnum::SEWINGJOB;
 		$result_planned_jobs=getPlannedJobs($work_id,$tasktype,$plant_code);
@@ -113,8 +113,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			//To get taskjobs_id
 		  $task_jobs_id = [];
 		  $qry_get_task_job="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$jm_sew_id' AND plant_code='$plant_code' AND task_type='$tasktype'";
-		 // echo $qry_get_task_job;
-		  $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
+		 $qry_get_task_job_result = mysqli_query($link_new, $qry_get_task_job) or exit("Sql Error at qry_get_task_job" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		  while ($row21 = mysqli_fetch_array($qry_get_task_job_result)) {
 			  $task_jobs_id[] = $row21['task_jobs_id'];
 			  $task_job_id = $row21['task_jobs_id'];
@@ -152,17 +151,18 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			{
 			   $input_trims_status=$row2['trim_status'];
 			}
-			
 			//getting jm_docket_line_id
-			$get_line_qry="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number='$doc_no'";
+			$doc_no_ref=array();
+			$get_line_qry="select jm_docket_line_id from $pps.jm_docket_lines where docket_line_number in(".$doc_no.")";
 			$get_line_qry_result = mysqli_query($link_new, $get_line_qry) or exit("Sql Error getting dockline" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row_line = mysqli_fetch_array($get_line_qry_result)) 
 			{
-				$doc_no_ref=$row_line['jm_docket_line_id'];
+				$doc_no_ref[]=$row_line['jm_docket_line_id'];
 			}
+			$doc_no_ref_input = implode("','",$doc_no_ref);
 			
-			//qry to get fabric status
-		  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id ='$doc_no_ref' and plant_code='".$plant_code."'";
+		//qry to get fabric status
+		  $get_fabric_status="SELECT fabric_status FROM $pps.requested_dockets WHERE jm_docket_line_id in ('$doc_no_ref_explode') and plant_code='".$plant_code."'";
 		  $get_fabric_status_result = mysqli_query($link_new, $get_fabric_status) or exit("Sql Error at get_fabric_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 			while ($row_stat = mysqli_fetch_array($get_fabric_status_result)) 
 			{
@@ -170,9 +170,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 			}
 			$rem="Nil";
 
-			$doc_no_ref_input = implode("','",$doc_no_ref);
-			$doc_no_ref_explode=explode(",",$doc_no_ref);
-			
+		
 			$num_docs=sizeof($doc_no_ref_explode);
 			
 			switch ($fabric_status)
@@ -183,7 +181,7 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 					$rem="Available";
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+						$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 						//echo $sql1x1."<br>";
 						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error7".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
@@ -226,9 +224,9 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				{
 					if(sizeof($num_docs) > 0)
 					{
-						$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+						$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 						//echo $sql1x1."<br>";
-						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9".mysqli_error());
+						$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error9---1".mysqli_error());
 						if(mysqli_num_rows($sql_result1x1)==$num_docs)
 						{
 							$id="Yellow";
@@ -249,16 +247,15 @@ while($sql_rowx=mysqli_fetch_array($sql_resultx))
 				}
 			}
 			
-			$sql11x="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and plant_code='$plant_code'";
-			//echo $sql11x."<br>";
-			$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9".mysqli_error());
+			$sql11x="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and plant_code='$plant_code'";
+			$sql_result11x=mysqli_query($link,$sql11x) or exit("Sql Error9----2".mysqli_error());
 			if(mysqli_num_rows($sql_result11x)==$num_docs and $id!="yellow")
 			//if(mysqli_num_rows($sql_result11x) and $id!="yellow")
 			{
 				$id="D-Green";	
 			} 
 			
-			$sql1x1="select * from $pps.fabric_priorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
+			$sql1x1="select * from $pps.fabric_prorities where jm_docket_line_id in ('$doc_no_ref_input') and hour(issued_time)+minute(issued_time)>0 and plant_code='$plant_code'";
 			//echo $sql1x1."<br>";
 			$sql_result1x1=mysqli_query($link,$sql1x1) or exit("Sql Error10".mysqli_error());
 			if(mysqli_num_rows($sql_result1x1)==$num_docs)

@@ -806,11 +806,11 @@ if(isset($_POST['allocate_new']))
 					
 					if($process_cat==1)
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username','NOW()','$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at,plant_code) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','normal','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}
 					else
 					{
-						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username','NOW()','$plant_code')";
+						$sql="insert into $wms.fabric_cad_allocation(doc_no,roll_id,roll_width,doc_type,allocated_qty,status,created_user,updated_user,updated_at) values('".$doc_ref[$i]."','".$tid_ref[$j]."','".$width_ref[$j]."','recut','".$issued_ref[$j]."','1','$username','$username',NOW(),'$plant_code')";
 					}					
 					mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 				
@@ -1125,7 +1125,7 @@ if(isset($_POST['allocate']))
 
 
 		//Current Version
-		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1) and plant_code='$plant_code' order by shade_grp";
+		$sql123="select * from $wms.store_in where lot_no in (".implode(",",$lot_db_2).") AND allotment_status in (0,1)  and plant_code='$plant_code' order by ref4";
 		$sql_result=mysqli_query($link, $sql123) or exit("Sql Error1245: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$row_count=mysqli_num_rows($sql_result);
 		$j=0;
@@ -1158,12 +1158,12 @@ if(isset($_POST['allocate']))
 			}
 			
 			
-			$temp_var='';
+			$temp_var='';			
 			//if($sql_row['allotment_status']==0 and strlen($sql_row['shade'])>0)
 			if(($sql_row['allotment_status']==0) or($sql_row['allotment_status']==1) and (strlen($sql_row['shade_grp'])>0))
 			{
 				$temp_var.="<td>";
-					if(strlen($sql_row['shade_grp'])==0)
+					if(strlen($sql_row['ref4'])==0)
 					{
 						$tag="Insp. <br/>Pending";
 						$valid_check="display:none";

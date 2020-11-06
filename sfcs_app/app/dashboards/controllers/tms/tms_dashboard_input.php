@@ -440,7 +440,7 @@ $username=$_SESSION['userName'];
     <div class="form-inline">
         <div class="form-group">
             <?php
-                echo 'Sewing Job Track: <input type="text" class="form-control integer" onkeyup="blink_new(this.value)" size="10">&nbsp;&nbsp;';
+                echo 'Sewing Job Track: <input type="text" class="form-control" onkeyup="blink_new(this.value)" size="10">&nbsp;&nbsp;';
             ?>
         </div>
         <div class="form-group">
@@ -592,7 +592,7 @@ foreach($departments as $department)
 					}
 				}
 				//qry to get trim status
-				$get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id'";
+				$get_trims_status="SELECT trim_status FROM $tms.job_trims WHERE task_job_id ='$task_job_id' and plant_code='$plant_code'";
 				$get_trims_status_result = mysqli_query($link_new, $get_trims_status) or exit("Sql Error at get_trims_status" . mysqli_error($GLOBALS["___mysqli_ston"]));
 				while ($row2 = mysqli_fetch_array($get_trims_status_result)) {
 								$trim_status=$row2['trim_status'];
@@ -614,13 +614,26 @@ foreach($departments as $department)
 				{
 									$id="pink"; 
 				}
-				$title=str_pad("Style:".$style,80)."<br>".str_pad("Co No:".$cono,80)."<br>".str_pad("Schedule:".$schedule,80)."<br>".str_pad("Colors:".$color,80)."<br>".str_pad("Job_No:".$sewingjobno,80)."<br>".str_pad("Job Qty:".$sew_qty,80);
-				$issued_status=TrimStatusEnum::ISSUED;
-				if($trim_status != $issued_status)
-				{
-					echo "<a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color'\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><font style=\"color:black;\">$letter</font></div></div></div></a>";
-					$y++;
-				}  
+        $title=str_pad("Style:".$style,80)."<br>".str_pad("Co No:".$cono,80)."<br>".str_pad("Schedule:".$schedule,80)."<br>".str_pad("Colors:".$color,80)."<br>".str_pad("Job_No:".$sewingjobno,80)."<br>".str_pad("Job Qty:".$sew_qty,80);
+        //To get quantities 
+        $qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_job_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
+        $qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+        while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
+            $input_ops_code = $row3['operation_code'];
+            $input = $row3['good_quantity'];
+            $rejection = $row3['rejected_quantity'];
+            $carton_qty=$row3["original_quantity"];
+            $balance = $carton_qty - ($input+$rejection);
+        }
+        $issued_status=TrimStatusEnum::ISSUED;
+        if($balance > 0)
+        {
+          if($trim_status != $issued_status)
+          {
+            echo "<a href=\"../".getFullURL($_GET['r'],'trims_status_update_input.php','R')."?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color'\" onclick=\"Popup=window.open('/sfcs_app/app/dashboards/controllers/tms/trims_status_update_input.php?jobno=$sewingjobno&style=$style&schedule=$schedule&module=$work_id&section=$section&doc_no=$sewingjobno&plant_code=$plant_code&username=$username&jm_jg_header_id=$jm_sew_id&color=$color','Popup','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=920,height=400, top=23'); if (window.focus) {Popup.focus()} return false;\" data-title=\"$title\" rel='tooltip'><div id=\"S$schedule\" style=\"float:left;\"><div id=\"SJ$sewingjobno\" style=\"float:left;\"><div id=\"$sewingjobno\" class=\"$id\" style=\"font-size:12px; text-align:center; color:$id\" ><font style=\"color:black;\">$letter</font></div></div></div></a>";
+            $y++;
+          }
+        }  
 			           
 			}
 			for($j=$y+1;$j<=$priority_limit;$j++)

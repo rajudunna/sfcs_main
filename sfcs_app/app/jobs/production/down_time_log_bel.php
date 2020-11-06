@@ -2,7 +2,11 @@
 error_reporting(0);
 $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $username=$_SESSION['userName'];
 include($include_path.'\sfcs_app\common\config\config_jobs.php');		
 $con = odbc_connect("$prod_status_driver_name;Server=$bel_wisdom_server_name;Database=$bel_wisdom_database;", $bel_wisdom_username,$bel_wisdom_password);

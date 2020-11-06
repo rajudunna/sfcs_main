@@ -29,6 +29,8 @@
 	{
 		$gate_id=0;
 	}
+
+	// echo $gate_id."--".$op_code."--".$shift."<br>";
 	// $has_permission=haspermission($_GET['r']);
     // if (in_array($override_sewing_limitation,$has_permission))
     // {
@@ -86,7 +88,23 @@ th,td{
 					<input type="hidden" id="pass_id" name="pass_id" value='<?= $gate_id; ?>'>
 					<input type="hidden" id="plant_code" name="plant_code" value='<?= $plantcode; ?>'>
 					<input type="hidden" id="username" name="username" value='<?= $username; ?>'>
-					
+					<?php
+					if($gate_id>0)
+					{
+						?>
+						<div class="col-sm-2 form-group" style="padding-top:20px;">
+						<form method ='POST' id='frm1' action='<?php echo $url ?>'>
+						<?php
+							echo "
+							<a class='btn btn-warning' href='$url1&gatepassid=".$gate_id."&plant_code=".$plant_code."&username=".$username."&status=2' >Finish</a>									
+							";
+						?>
+						</form>
+						</div> 
+						<br>					
+						<?php
+					}
+					?>
 					</div>
 				</div>
 				<div class="col-md-5">
@@ -116,7 +134,7 @@ $(document).ready(function()
 		{
 			var operation_id = $('#operation_id').val();
 			var barcodemain = $('#barcode').val();
-			var barcode=barcodemain+'-'+operation_id;
+			var barcode=barcodemain;
 		}
 		else
 		{
@@ -168,29 +186,25 @@ $(document).ready(function()
 				data: data,
 				success: function (res) {            
 					if(res.status)
-					{
-						if(pass_id>0)
-						{
-							var reportData = new Object(); 
-							reportData.bundleno=res.data.bundleBrcdNumber;
-							reportData.operationCode=res.data.operationCode;
-							reportData.style=res.data.style;
-							reportData.schedule=res.data.schedule;
-							reportData.fgColor=res.data.fgColor;
-							reportData.size=res.data.size;
-							reportData.actualQuantity=res.data.actualQuantity;
-							reportData.gate_id=pass_id;
-							reportData.plant_code=plant_code;
-							reportData.username=username;
-							
-							$.ajax({
-							type: "POST",
-							url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>",
-							data:  reportData,
-							contentType: "application/json; charset=utf-8",
-							dataType: "json",
-							});
-						}
+					{						
+						var reportData = new Object(); 
+						reportData.bundleno=res.data.bundleBrcdNumber;
+						reportData.operationCode=res.data.operationCode;
+						reportData.style=res.data.style;
+						reportData.schedule=res.data.schedules[0];
+						reportData.fgColor=res.data.fgColor;
+						reportData.size=res.data.size;
+						reportData.actualQuantity=res.data.actualQuantity;
+						reportData.gate_id=pass_id;
+						reportData.plant_code=plant_code;
+						reportData.username=username;				
+						$.ajax({
+						type: "POST",
+						url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>",
+						data:  reportData,
+						});
+						//	die();
+						
 						if(res)
 						{
 							tableConstruction(res);

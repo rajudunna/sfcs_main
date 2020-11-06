@@ -738,7 +738,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 					}
 					$balance_qty=0;
 					//To check whether first operation of job scanned or not
-					$qry_toget_first_ops_qry = "SELECT original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
+					$qry_toget_first_ops_qry = "SELECT original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
 					$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
 						$input_qty = $row3['good_quantity'];
@@ -749,7 +749,7 @@ echo "<a class='btn btn-warning pull-right' style='padding: 1px 16px' href='$url
 
                     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 					$job_detail_attributes = [];
-					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$task_jobs_id' and plant_code='$plant_code'";
+					$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='$task_jobs_id' and plant_code='$plant_code'";
 					$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 				

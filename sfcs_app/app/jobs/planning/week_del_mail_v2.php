@@ -3,7 +3,11 @@ $start_timestamp = microtime(true);
 $include_path=getenv('config_job_path');
 // for running these schedules in command prompt making entire code in single php file
 error_reporting(0);
-$plantcode=$_SESSION['plantCode'];
+if($_GET['plantCode']){
+	$plant_code = $_GET['plantCode'];
+}else{
+	$plant_code = $argv[1];
+}
 $date1=date("Y-m-d");
 $weekday1 = strtolower(date('l', strtotime($date1)));
 // $weekday1='monday';
@@ -131,7 +135,7 @@ $weekday1 = strtolower(date('l', strtotime($date1)));
 
 			$total_sch=implode(",",$schedules);
 			$total_sch=str_replace(",,",",",$total_sch);
-			$sql="select * from $pps.mp_mo_qty where schedule in ($total_sch) and plant_code='$plantcode' group by schedule order by schedule desc";
+			$sql="select schedule,schedule,color from $pps.mp_mo_qty where schedule in ($total_sch) and plant_code='$plantcode' group by schedule order by schedule desc";
 			//echo "<br>".$sql;
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error =".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($sql_result))

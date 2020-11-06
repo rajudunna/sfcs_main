@@ -100,7 +100,7 @@
 					}
                     //TO GET STYLE AND COLOR FROM TASK ATTRIBUTES USING TASK JOB ID
 					$job_detail_attributes = [];
-					$qry_toget_style_sch = "SELECT * FROM $tms.task_attributes where task_jobs_id='$taskJob_id' and plant_code='$plant_code'";
+					$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id='$taskJob_id' and plant_code='$plant_code'";
 					$qry_toget_style_sch_result = mysqli_query($link_new, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($row2 = mysqli_fetch_array($qry_toget_style_sch_result)) {
 				
@@ -112,7 +112,7 @@
                     $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
                     
                     /**getting job qunatity from task transactions*/
-                    $qryJobQty="SELECT original_quantity FROM $tms.task_job_transaction WHERE task_jobs_id='$taskJob_id' AND plant_code='$plant_code' LIMIT 0, 1";
+                    $qryJobQty="SELECT original_quantity FROM $tms.task_job_status WHERE task_jobs_id='$taskJob_id' AND plant_code='$plant_code' LIMIT 0, 1";
                     $qryJobQty_result = mysqli_query($link_new, $qryJobQty) or exit("Sql Error at qryJobQty" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($JobQty_row= mysqli_fetch_array($qryJobQty_result)) {
 				

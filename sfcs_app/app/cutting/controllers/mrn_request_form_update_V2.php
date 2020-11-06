@@ -1,22 +1,15 @@
-<?php
-function exception($sql_result)
-{
-	throw new Exception($sql_result);
-}
-?>
+
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
-include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/global_error_function.php',3,'R'));
-$main_url=getFullURL($_GET['r'],'mrn_request_form_V2.php','R');
+//$main_url=getFullURL($_GET['r'],'mrn_request_form_v2.php','R');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
 $mrn_request_mail= $conf1->get('mrn_request_mail');
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+
 
 if(isset($_POST['dataset']))
 {
-	try
-	{	
+	// try
+	// {	
   
 		$arryData = $_POST['dataset'];
 		$style=$_POST['style'];
@@ -34,19 +27,18 @@ if(isset($_POST['dataset']))
 		$cost=0;
 		$reason_id_db = array();
 		$reason_code_db = array();
-		$sql_reason="select reason_tid,reason_code,reason_desc from $wms.mrn_reason_db where status=0 and plant_code='".$plant_code."' order by reason_order";
+		$sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";                 
 		$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 		$count = mysqli_num_rows($sql_result);
 		
 		while($sql_row=mysqli_fetch_array($sql_result))
 		{
-			$reason_id_db[]=$sql_row['reason_tid'];
-			$reason_code_db[]=$sql_row['reason_code']."-".$sql_row['reason_desc'];
+			$reason_id_db[]=$sql_row['reason_id'];
+			$reason_code_db[]=$sql_row['internal_reason_code']."-".$sql_row['internal_reason_description'];
 		}
 		for($i=0;$i<sizeof($arryData);$i++)
 		{ 
 			$sql="insert into $wms.mrn_track (style,schedule,color,product,item_code,item_desc,co_ref,unit_cost,uom,req_qty,status,req_user,section,rand_track_id,req_date,reason_code,remarks,batch_ref,plant_code,created_user,updated_user,updated_at) values (\"".$style."\",\"".$schedule."\",\"".$color."^".$cutno."\",\"".$arryData[$i]['products']."\",\"".$arryData[$i]['item']."\",\"".$arryData[$i]['itemdesc']."\",\"".$arryData[$i]['colr']."\",\"".$arryData[$i]['price']."\",\"".$arryData[$i]['uom']."\",\"".$arryData[$i]['qty']."\",1,\"".$username."\",\"".$section."\",\"".$rand."\",\"".date("Y-m-d H:i:s")."\",\"".$arryData[$i]['reason']."\",\"".$arryData[$i]['rem']."\",\"".$batch_ref."\",'".$plant_code."','".$username."','".$username."',NOW())";
-			// echo $sql."<br>";
 			$sql_result=mysqli_query($link, $sql) or die(exception($sql));
 			$test=1;
 			$cost+=($arryData[$i]['qty']*$arryData[$i]['price']);
@@ -85,12 +77,12 @@ if(isset($_POST['dataset']))
 		{
 			//echo "<script type=\"text/javascript\"> setTimeout(\"Redirect()\",300); function Redirect() {  location.href = \"$pageurl&msg=2\"; }</script>";
 		}
-	}
-	catch(Exception $e) 
-	{
-	  $msg=$e->getMessage();
-	  log_statement('error',$msg,$main_url,__LINE__);
-	}
+	//}
+	// catch(Exception $e) 
+	// {
+	//   $msg=$e->getMessage();
+	//   log_statement('error',$msg,$main_url,__LINE__);
+	// }
 	
 }
 

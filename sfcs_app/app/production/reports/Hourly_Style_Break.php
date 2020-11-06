@@ -301,7 +301,7 @@ zoom:75%;
 				/* Function END */
 				// $sections=array(1,2,3,4,5,6);
 				$work_hrs=0;
-				$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift in ($team)";
+				$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift in ($team)";
 				$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Error While getting pro atten hours".mysqli_error($GLOBALS["___mysqli_ston"])); 
 				if(mysqli_num_rows($sql_result_hr) >0)
 				{
@@ -336,7 +336,7 @@ zoom:75%;
 					$hour_dur=0;
 					for($i=0;$i<sizeof($teams);$i++)
 					{
-						$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
+						$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and  $current_hr between start_time and end_time";
 						$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Error getting pro atten hours".mysqli_error($GLOBALS["___mysqli_ston"])); 
 						if(mysqli_num_rows($sql_result_hr) >0)
 						{
@@ -354,7 +354,7 @@ zoom:75%;
 						}
 						else
 						{
-							$sql_hr="select * from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
+							$sql_hr="select start_time,end_time from $pms.pro_atten_hours where plant_code='$plantCode' and date='$date' and shift='".$teams[$i]."' and $current_hr > end_time";
 							// echo $sql_hr."<br>";
 							$sql_result_hr=mysqli_query($link, $sql_hr) or exit("Sql Error1z5".mysqli_error($GLOBALS["___mysqli_ston"])); 
 							// $hour_dur=$hour_dur+0;

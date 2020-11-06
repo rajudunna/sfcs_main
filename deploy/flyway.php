@@ -9,9 +9,9 @@
 class Flyway {
 
     private $databaseConnection = null;
-    private $tableName = "central_administration.flyway_schema";
+    private $tableName = "pms.flyway_schema";
     private $folderPath = "migrations";
-    private $createStatement = "CREATE TABLE IF NOT EXISTS central_administration.flyway_schema (
+    private $createStatement = "CREATE TABLE IF NOT EXISTS pms.flyway_schema (
   `version_rank` int(11) NOT NULL,
   `installed_rank` int(11) NOT NULL,
   `version` varchar(50) NOT NULL,
@@ -20,6 +20,7 @@ class Flyway {
   `script` varchar(1000) NOT NULL,
   `info` varchar(1000) NOT NULL,
   `success` tinyint(1) NOT NULL,
+  `log_time` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`version`),
   KEY `schema_version_vr_idx` (`version_rank`),
   KEY `schema_version_ir_idx` (`installed_rank`),
@@ -51,13 +52,13 @@ class Flyway {
     }
 
     function checkTable($connection) {
-        $query = $connection->query("SELECT * FROM central_administration.flyway_schema IF EXISTS");
-        $this->output("Checking central_administration.flyway_schema table");
+        $query = $connection->query("SELECT * FROM pms.flyway_schema IF EXISTS");
+        $this->output("Checking pms.flyway_schema table");
         if (!$query) {
             //$query->free_result();
-            $this->output( "central_administration.flyway_schema doesn't exist");
+            $this->output( "pms.flyway_schema doesn't exist");
             $queryCreateTable = $connection->query($this->createStatement);
-             $this->output( "Creating central_administration.flyway_schema table");
+             $this->output( "Creating pms.flyway_schema table");
             if (!$queryCreateTable) {
                 $this->error("Error creating database");
                 $queryCreateTable->free_result();
@@ -68,7 +69,7 @@ class Flyway {
                 return true;
             }
         } else {
-            $this->output( "central_administration.flyway_schema exist");
+            $this->output( "pms.flyway_schema exist");
                     $query->free_result();
             return true;
         }
@@ -107,7 +108,7 @@ class Flyway {
     function last($connection) {
         $this->output( "Reading last script executed"); 
         $version = 0;
-        $statements = "SELECT * FROM central_administration.flyway_schema ORDER BY version_rank DESC LIMIT 1;";
+        $statements = "SELECT * FROM pms.flyway_schema ORDER BY version_rank DESC LIMIT 1;";
         $result = $connection->query($statements);
         if ($result->num_rows > 0) {
             // output data of each row
@@ -123,7 +124,7 @@ class Flyway {
     public function migrate() {
        $this->output( "Creating connection...");
         $connection = $this->databaseConnection;
-
+        error_reporting(E_ALL);
         if ($this->checkTable($connection)) {
             $files = scandir($this->folderPath);
             print_r($files);
@@ -138,6 +139,7 @@ class Flyway {
                     $name = $splited__[1];
                     $version = substr($splited__[0], 1);
                     $intVersion = intval($version);
+                    $date_time = date("Y-m-d h:i:s");
 
                     if ($intVersion > $last) {
 
@@ -148,11 +150,11 @@ class Flyway {
                         if (!$info || $info = "") {
                             $info = "no info";
                         }
-                        $this->output( "Inserting row schema version $intVersion output $success into central_administration.flyway_schema"); 
+                        $this->output( "Inserting row schema version $intVersion output $success into pms.flyway_schema"); 
 
                         //$success = 0;
 
-                        $infoStateMent = "INSERT INTO central_administration.flyway_schema VALUES(?,?,?,?,?,?,?,?)";
+                        $infoStateMent = "INSERT INTO pms.flyway_schema VALUES(?,?,?,?,?,?,?,?,?)";
 
 
                         $stmt = $connection->prepare($infoStateMent);
@@ -161,10 +163,10 @@ class Flyway {
                             trigger_error('Wrong SQL: ' . $infoStateMent . ' Error: ' . $connection->errno . ' ' . $connection->error, E_USER_ERROR);
                         }
 
-                        $stmt->bind_param("iisssssi", $intVersion, $intVersion, $version, $name, $type, $script, $info, $success);
-
+                        $stmt->bind_param("iisssssis", $intVersion, $intVersion, $version, $name, $type, $script, $info, $success, $date_time);
+           
                         $stmt->execute() or die(' Error: ' . $connection->errno . ' ' . $connection->error);
-                        $this->output("Affected rows central_administration.flyway_schema: ". $stmt->affected_rows);
+                        $this->output("Affected rows pms.flyway_schema: ". $stmt->affected_rows);
 
                         
                         $stmt->close();
