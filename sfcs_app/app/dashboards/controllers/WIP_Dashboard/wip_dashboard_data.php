@@ -6,10 +6,13 @@ include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
 $session_plant_code = $_GET['plant_code'];
-// $session_plant_code='AIP';
+$session_plant_code='AIP';
 $data = '';
 $jquery_data = '';
 $line_breaker = 0;
+$v_r = explode('/',$_SERVER['REQUEST_URI']);
+array_pop($v_r);
+$popup_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/modules_report.php";
 if ($section) {
 
     //getting all workstations against to the section
@@ -21,8 +24,15 @@ if ($section) {
         $total_wip = 0;
         $sewing_wip = '';
         $jobs_wip = '';
+        $module=$wkstation['workstation_code'];
+        $module_id=$wkstation['workstation_id'];
         $data .= "<tr rowspan=2>";
-        $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
+        // $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
+        $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
+        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module_id=$module_id&module_code=$module&operation_code=$get_operation\",\"Popup\");'>
+                        $module</a>
+    
+        </b></span></td>";
 
 
         /*  BLOCK - 1 */
@@ -100,7 +110,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
         $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
         $masterponumber = $job_detail_attributes[$sewing_job_attributes['masterponumber']];
 
-        $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_code='$get_operation'";
+        $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' and operation_code='$get_operation'";
         // echo $task_job_trans."<br/>";
         $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
@@ -111,7 +121,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
             $operation_seq = $row_res['operation_seq'];
         }
         $send_qty=0;
-        $task_job_trans2 = "SELECT good_quantity FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
+        $task_job_trans2 = "SELECT good_quantity FROM $tms.task_job_status where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
         // echo $task_job_trans2."<br/>";
         $task_job_trans_result2 = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans_result2" . mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($task_job_trans_result2) > 0){

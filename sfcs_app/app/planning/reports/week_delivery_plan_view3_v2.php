@@ -5,6 +5,7 @@ $plantcode=$_SESSION['plantCode'];
 $username=$_SESSION['userName'];
 $out_operation=130;
 $cut_operation=15;
+$in_operation=100;
 while((date("N",$start_date_w))!=1) {
 $start_date_w=$start_date_w-(60*60*24); // define monday
 }
@@ -143,7 +144,7 @@ $pending=$_POST['pending'];
 
 
 
-<form method="post" name="input" action="<?php echo getURL(getBASE($_GET['r'])['path'])['url']; ?>">
+<form method="post" name="input" action="?r=<?php echo $_GET['r']; ?>">
 
 <div class="row">
 <div class='col-md-3'>
@@ -220,18 +221,18 @@ $end_date_w_new=date("Y-m-d",strtotime("+7 days", strtotime($end_date_w_new)));
 
 <?php
 
-// $sizes_array=array('s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
+//$sizes_array=array('s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27','s28','s29','s30','s31','s32','s33','s34','s35','s36','s37','s38','s39','s40','s41','s42','s43','s44','s45','s46','s47','s48','s49','s50');
 
 
 if(isset($_POST['submit']) || isset($_GET['division']))
 {
-	
+
 
 	$date = str_replace('-', '', $start_date_w);
 	 $start_date_w1=date('Ymd', strtotime($date));
 	 $date1 = str_replace('-', '', $end_date_w);
-     $end_date_w1=date('Ymd', strtotime($date1));
-
+	 $end_date_w1=date('Ymd', strtotime($date1));
+	 
 	echo "<hr/>";
 	// echo '<a href="week_delivery_plan_view3_excel.php">Export to Excel</a> | <a href="week_cache/">Archive</a>';
 	if(isset($_GET['division']))
@@ -242,7 +243,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	{
 		$division=$_POST['division'];
 	}
-	
+
 	$pending=$_POST['pending'];
 	$custom=$_POST['custom'];
 	if($division=='All')
@@ -254,7 +255,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		$buyer_division=$division;
 		$buyer_division_ref='"'.str_replace(",",'","',$buyer_division).'"';
 	
-	}	
+	}
 	
 	// $sql_res="select * from $bai_pro4.weekly_cap_reasons where category=1";
 	// // echo $sql_res."<br>";
@@ -269,11 +270,10 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	//	{
 	//		echo $searial_no[$j]."<br>";
 	//	}
-	// $sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_division_ref) and plant_code='$plantcode' and planned_delivery_date between \"$start_date_w1\" and  \"$end_date_w1\"";
-	// $query="where planned_delivery_date between \"$start_date_w1\" and  \"$end_date_w1\" ";
+	// $query="where ex_factory_date_new between \"$start_date_w\" and  \"$end_date_w\" order by left(style,1),schedule_no+0";
 	// if($division!="All")
 	// {
-	// 	$query="where planned_delivery_date between \"$start_date_w1\" and  \"$end_date_w1\" ".$order_div_ref." ";
+	// 	$query="where ex_factory_date_new between \"$start_date_w\" and  \"$end_date_w\" ".$order_div_ref." order by left(style,1),schedule_no+0";
 	// }
 	
 	echo '<div class="table-responsive" style="max-height:600px">';
@@ -310,14 +310,19 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	// $table_ref="week_delivery_plan_ref_temp";
 	// $table_ref2="week_delivery_plan_temp";
 	//TEMP Tables
-	
+
 	$x=1;
-	$sql="	SELECT `$pps`.`shipment_plan`.`ship_tid` AS `ship_tid`,`$pps`.`week_delivery_plan`.`tid` AS `tid`,`$pps`.`shipment_plan`.`buyer_division` AS `buyer_division`,`$pps`.`shipment_plan`.`schedule_no` AS `schedule_no`,`$pps`.`shipment_plan`.`color` AS `color`,`$pps`.`shipment_plan`.`style` AS `style`,`$pps`.`shipment_plan`.`size` AS `size`,`$pps`.`week_delivery_plan`.`original_order_qty` AS `ord_qty_new`,`$pps`.`week_delivery_plan`.`shipment_plan_id` AS `shipment_plan_id`,`$pps`.`week_delivery_plan`.`original_order_qty` AS `ord_qty_new_old`,`$pps`.`shipment_plan`.`ex_factory_date` AS `m3_ship_plan_ex_fact`,`$pps`.`shipment_plan`.`ex_factory_date` AS `ex_factory_date`,`$pps`.`week_delivery_plan`.`rev_exfactory` AS `rev_exfactory`,IF(`$pps`.`week_delivery_plan`.`rev_exfactory` = '0000-00-00',`$pps`.`week_delivery_plan`.`act_exfact`,`$pps`.`week_delivery_plan`.`rev_exfactory`) AS `ex_factory_date_new`,`$pps`.`week_delivery_plan`.`act_cut` AS `act_cut`,`$pps`.`week_delivery_plan`.`act_in` AS `act_in`,`$pps`.`week_delivery_plan`.`act_fca` AS `act_fca`,`$pps`.`week_delivery_plan`.`act_mca` AS `act_mca`,`$pps`.`week_delivery_plan`.`act_fg` AS `act_fg`,`$pps`.`week_delivery_plan`.`act_ship` AS `act_ship`,`$pps`.`week_delivery_plan`.`plan_comp_date` AS `plan_comp_date`,`$pps`.`week_delivery_plan`.`cart_pending` AS `cart_pending`,`$pps`.`week_delivery_plan`.`priority` AS `priority`,`$pps`.`week_delivery_plan`.`ref_id` AS `ref_id`,`$pps`.`week_delivery_plan`.`act_exfact` AS `act_exfact`,`$pps`.`week_delivery_plan`.`act_rej` AS `act_rej`,`$pps`.`week_delivery_plan`.`remarks` AS `remarks`,`$pps`.`week_delivery_plan`.`rev_mode` AS `rev_mode` FROM (`$pps`.`week_delivery_plan` LEFT JOIN `$pps`.`shipment_plan` ON(`$pps`.`week_delivery_plan`.`shipment_plan_id` = `$pps`.`shipment_plan`.`ship_tid`)) where act_exfact  between \"$start_date_w\" and  \"$end_date_w\" and buyer_division in($buyer_division_ref) and $pps.week_delivery_plan.plant_code='$plantcode'";
-	
+	// if($division=='ALL'){
+	// 	$sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_name_ref) and plant_code='$plantcode'";
+	// }else{
+		$sql="select * from $oms.oms_mo_details where buyer_desc in  ($buyer_division_ref) and plant_code='$plantcode' and DATE(planned_delivery_date) between \"$start_date_w1\" and  \"$end_date_w1\" group by schedule,buyer_desc";
+//	}
+	//  echo $sql."<br>";
 	// mysqli_query($link, $sql) or exit("Sql Error7".mysqli_error($GLOBALS["___mysqli_ston"]));
-	$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-	// if(mysqli_num_rows($sql_result) > 0)
-	// {
+	$sql_result=mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
+	$sql_result1=mysqli_num_rows($sql_result);
+	if(mysqli_num_rows($sql_result) > 0)
+	{
 		$excel_link = getFullURLLevel($_GET['r'],'export_excel_weekly_delivery_plan.php',0,'R');
 		echo '<form action="'.$excel_link.'" method="POST">
 				<input type="hidden" name="csv_weekly" id="csv_weekly">
@@ -391,39 +396,37 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		echo '</thead><tbody>';
 	while($sql_row=mysqli_fetch_array($sql_result))
 	{
-		$edit_ref=$sql_row['ref_id'];
-		//$x=$edit_ref;
-		$shipment_plan_id=$sql_row['shipment_plan_id'];
-
-		$fastreact_plan_id=$sql_row['fastreact_plan_id'];
+		//
+		$po_number=$sql_row['po_number'];
+		$mo_number=$sql_row['mo_number'];
+		$sql1="select zfeature_name from $oms.oms_products_info where mo_number='$mo_number'";
+		//  echo "<br>2=".$sql1."<br>";
+		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($sql_row1=mysqli_fetch_array($sql_result1))
+		{
+			$zfeature_name=$sql_row1['zfeature_name'];
+		}
+		$vpo=$sql_row['vpo'];
+		$customer_order_no=$sql_row['customer_order_no'];
+		$cpo=$sql_row['cpo'];
+		$buyer_desc=$sql_row['buyer_desc'];
+		$schedule=$sql_row['schedule'];
+		// //$x=$edit_ref;
+		$planned_delivery_date=$sql_row['planned_delivery_date'];
 		
-		$tid=$sql_row['tid'];
-		$r_tid=$sql_row['ref_id'];
-		$act_rej=$sql_row['act_rej'];
-
-		$remarks=array();
-		$remarks=explode("^",$sql_row['remarks']);
+		
 
 		//TEMP Enabled
 
 		$embl_tag=$sql_row['rev_emb_status'];
-		$rev_ex_factory_date=$sql_row['rev_exfactory']; 
-		$plan_comp_date=$sql_row['plan_comp_date']; 
+		$rev_ex_factory_date=$sql_row['planned_delivery_date']; 
 		$rev_mode=$sql_row['rev_mode']; 
 		if($rev_ex_factory_date=="0000-00-00")
 		{
 			$rev_ex_factory_date="";
 		}
 
-	
 
-		// $executed_sec=array();
-		// if($actu_sec1>0 or $plan_sec1>0){$executed_sec[]="1";}
-		// if($actu_sec2>0 or $plan_sec2>0){$executed_sec[]="2";}
-		// if($actu_sec3>0 or $plan_sec3>0){$executed_sec[]="3";}
-		// if($actu_sec4>0 or $plan_sec4>0){$executed_sec[]="4";}
-		// if($actu_sec5>0 or $plan_sec5>0){$executed_sec[]="5";}
-		// if($actu_sec6>0 or $plan_sec6>0){$executed_sec[]="6";}
 
 		//$order_total=$size_xs+$size_s+$size_m+$size_l+$size_xl+$size_xxl+$size_xxxl+$size_s06+$size_s08+$size_s10+$size_s12+$size_s14+$size_s16+$size_s18+$size_s20+$size_s22+$size_s24+$size_s26+$size_s28+$size_s30;
 		// $actu_total=$size_xs+$size_s+$size_m+$size_l+$size_xl+$size_xxl+$size_xxxl+$size_s06+$size_s08+$size_s10+$size_s12+$size_s14+$size_s16+$size_s18+$size_s20+$size_s22+$size_s24+$size_s26+$size_s28+$size_s30;
@@ -433,28 +436,46 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		$order_total=0;
 
-		$sql1="select * from $pps.shipment_plan where ship_tid=$shipment_plan_id";
+		$sql1="select master_po_details_id,style from $pps.mp_color_detail where master_po_number='$po_number' and plant_code='$plantcode'";
 		//  echo "<br>2=".$sql1."<br>";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
-			$order_no=$sql_row1['order_no'];
-			$delivery_no=$sql_row1['delivery_no'];
-			$del_status=$sql_row1['del_status'];
-			$mpo=trim($sql_row1['mpo']);
-			$cpo=trim($sql_row1['cpo']);
-			$buyer=trim($sql_row1['buyer']);
-			$product=$sql_row1['product'];
-			$buyer_division=trim($sql_row1['buyer_division']);
-			$style=trim($sql_row1['style']);
-			$schedule_no=$sql_row1['schedule_no'];
-			$color=$sql_row1['color'];
-			$size=$sql_row1['size'];
-			$z_feature=$sql_row1['z_feature'];
-			$ord_qty=$sql_row1['ord_qty'];
-		
-			$get_po_details1="select sum(mo_quantity) as orginal_quantity from $oms.oms_mo_details where schedule='$schedule_no' and  plant_code='$plantcode' and buyer_desc='$buyer_division' group by schedule";
-		
+			$master_po_details_id=$sql_row1['master_po_details_id'];
+			$style=$sql_row1['style'];
+			$sql7="select schedule,color,size,z_feature from $pps.mp_mo_qty where master_po_details_id='$master_po_details_id' and plant_code='$plantcode' group by schedule,color,size";
+			//echo "<br>2=".$sql7."<br>";
+			$sql_result7=mysqli_query($link, $sql7) or exit("Sql Error2x".mysqli_error($GLOBALS["___mysqli_ston"]));
+			while($sql_row7=mysqli_fetch_array($sql_result7))
+			{
+				$size=$sql_row7['size'];
+				$color=$sql_row7['color'];
+				$schedule_no=$sql_row7['schedule'];
+				
+				$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where schedule='$schedule_no' and color='$color' and plant_code='$plantcode' and size='$size'  and mp_qty_type='EXTRA_SHIPMENT' group by schedule,color,size";
+				
+				$extra_ship_qty_result4=mysqli_query($link, $extra_ship_qty) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$extra_ship_rows=mysqli_num_rows($extra_ship_qty_result4);
+				// $total_rows=mysqli_num_rows($sql_result4);
+				if($extra_ship_rows>0){
+				while($sql_row000111 = mysqli_fetch_array($extra_ship_qty_result4))
+				{
+					$extra_qty = $sql_row000111['quantity'];
+				}
+				}else{
+					$extra_qty=0;
+				}
+				
+				$original_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where schedule='$schedule_no' and color='$color' and plant_code='$plantcode' and size='$size'  and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color,size";
+				
+				$extra_ship_qty_result44=mysqli_query($link, $original_qty) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
+				// $total_rows=mysqli_num_rows($sql_result4);
+				while($sql_row0001111 = mysqli_fetch_array($extra_ship_qty_result44))
+				{
+					$total_ord = $sql_row0001111['quantity'];
+				}
+			
+			$get_po_details1="select sum(quantity) as orginal_quantity from $pps.mp_mo_qty where schedule='$schedule_no' and color='$color' and plant_code='$plantcode' and mp_qty_type='ORIGINAL_QUANTITY' group by schedule,color";
 			$get_po_details_result1 = mysqli_query($link, $get_po_details1) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
 				while($row1221 = mysqli_fetch_array($get_po_details_result1))
@@ -474,20 +495,52 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as cut_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$cut_operation." group by schedule,color";
 				
 				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
+				$get_out_qty__rows=mysqli_num_rows($get_out_qty_details_result);
+				if($get_out_qty__rows){
 				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
 					{
 						$actu_total = $row12222['cut_qty'];
 					}
-				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as out_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$out_operation." group by schedule,color";
+				}else{
+					$actu_total=0;
+				}
+				$get_in_qty_details="select sum(good_quantity+rejected_quantity) as cut_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$in_operation." group by schedule,color";
 				
-				$get_out_qty_details_result = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
-					
-				while($row12222= mysqli_fetch_array($get_out_qty_details_result))
+				$get_in_qty_details_result = mysqli_query($link, $get_in_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$get_in_qty__rows=mysqli_num_rows($get_in_qty_details_result);
+				if($get_in_qty__rows){
+				while($row122221= mysqli_fetch_array($get_in_qty_details_result))
+					{
+						$in = $row122221['cut_qty'];
+					}
+				}else{
+					$in=0;
+				}
+			
+				$get_out_qty_details="select sum(good_quantity+rejected_quantity) as out_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$out_operation." group by schedule,color,size";
+				
+				$get_out_qty_details_result1 = mysqli_query($link, $get_out_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$get_out_rows=mysqli_num_rows($get_out_qty_details_result1);
+				if($get_out_rows){	
+				while($row12222= mysqli_fetch_array($get_out_qty_details_result1))
 					{
 						$plan_total = $row12222['out_qty'];
 					}
-
+				}else{
+					$plan_total=0;
+				}
+				$get_rej_qty_details="select sum(rejected_quantity) as rej_qty from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' and operation=".$out_operation." group by schedule,color,size";
+				
+				$get_rej_qty_details_result = mysqli_query($link, $get_rej_qty_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$get_rej_rows=mysqli_num_rows($get_rej_qty_details_result);
+				if($get_rej_rows){	
+				while($row1222211= mysqli_fetch_array($get_rej_qty_details_result))
+					{
+						$act_rej = $row1222211['rej_qty'];
+					}
+				}else{
+					$act_rej=0;
+				}
 					$get_workstations_details="select GROUP_CONCAT(CONCAT(\"'\",resource_id,\"'\")) as workstations from $pts.transaction_log where schedule='$schedule_no' and color='$color' and style='$style' and size='$size' and plant_code='$plantcode' group by schedule,color";
 				$get_workstations_details_result = mysqli_query($link, $get_workstations_details) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 					
@@ -516,37 +569,21 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 					{
 						$plan_mod = $row123['row_name'];
 					}
-					$extra_ship_qty="select sum(quantity) as quantity,master_po_details_id from $pps.mp_mo_qty where schedule='$schedule_no' and color='$color' and plant_code='$plantcode' and size='$size' and plant_code='$plantcode' and mp_qty_type='EXTRA_SHIPMENT' group by schedule,color,size";
 					
-					$extra_ship_qty_result4=mysqli_query($link, $extra_ship_qty) or exit("Sql Error8".mysqli_error($GLOBALS["___mysqli_ston"]));
-					// $total_rows=mysqli_num_rows($sql_result4);
-					while($sql_row000111 = mysqli_fetch_array($extra_ship_qty_result4))
-					{
-						$extra_qty = $sql_row000111['quantity'];
-					}
 			//$ex_factory_date=$sql_row1['ex_factory_date']; //TEMP Disabled due to M3 Issue
-			$mode=$sql_row1['mode'];
-			$destination=$sql_row1['destination'];
-			$packing_method=$sql_row1['packing_method'];
-			$fob_price_per_piece=$sql_row1['fob_price_per_piece'];
-			$cm_value=$sql_row1['cm_value'];
-			$ssc_code=$sql_row1['ssc_code'];
-			$order_tid=$sql_row1['ssc_code_new'];// for cut% variable
-			$ship_tid=$sql_row1['ship_tid'];
-			$week_code=$sql_row1['week_code'];
-			$status=$sql_row1['status'];
+			
 			
 			
 			//Start Need to capture plan and actual modules based on schedule number
-			// $sql12 = "select GROUP_CONCAT(DISTINCT plan_module) as module from $bai_pro3.plandoc_stat_log where order_tid like '% $schedule_no%'";
-			// //$plan_mod = array();
-			// // echo $sql12;
-			// $query12 = mysqli_query($link, $sql12) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql12 = "select packing_method from $oms.oms_mo_details where schedule = '$schedule_no'";
+			//$plan_mod = array();
+			// echo $sql12;
+			$query12 = mysqli_query($link, $sql12) or die("Sql Error 12".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			// 	while($row12 = mysqli_fetch_array($query12))
-			// 	{
-			// 		$plan_modu = $row12['module'];
-			// 	}
+				while($row12 = mysqli_fetch_array($query12))
+				{
+					$packing_method = $row12['packing_method'];
+				}
 			// if($plan_modu>0)
 			// {
 			// 	$plan_mod = $plan_modu;
@@ -555,14 +592,21 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			// {
 			// 	$plan_mod = 0;
 			// }
-			// $sql13 = "SELECT GROUP_CONCAT(DISTINCT bac_no) as bac_no FROM $bai_pro.bai_log_buf where delivery = '$schedule_no' and bac_qty>0";
+			$get_planned_module_details="select max(production_end_date) as production_end_date from $pps.monthly_production_plan where order_code='$schedule_no' and colour='$color' and product_code='$style'  and plant_code='$plantcode' and planned_date between \"$start_date_w\" and  \"$end_date_w\"";
+			$get_planned_module_details_result = mysqli_query($link, $get_planned_module_details) or die("Sql Error 121".mysqli_error($GLOBALS["___mysqli_ston"]));
+				
+			while($row123= mysqli_fetch_array($get_planned_module_details_result))
+				{
+					$plan_mod = $row123['row_name'];
+				}
+			$sql13 = "select max(production_end_date) as production_end_date from $pps.monthly_production_plan where order_code='$schedule_no' and colour='$color' and product_code='$style'  and plant_code='$plantcode' and planned_date between \"$start_date_w\" and  \"$end_date_w\"";
 			// //$act_mod = array();
-			// $query13 = mysqli_query($link, $sql13) or die("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$query13 = mysqli_query($link, $sql13) or die("Sql Error 13".mysqli_error($GLOBALS["___mysqli_ston"]));
 			
-			// 	while($row13 = mysqli_fetch_array($query13))
-			// 	{
-			// 		$act_modu = $row13['bac_no'];
-			// 	}
+				while($row13 = mysqli_fetch_array($query13))
+				{
+					$production_end_date = $row13['production_end_date'];
+				}
 			if(sizeof($act_modu)>0)
 			{
 				$act_mod = $act_modu;
@@ -571,9 +615,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			{
 				$act_mod = 0;
 			}
-		}
-
-		// open data from production review for cut%
+		
+	// open data from production review for cut%
 					
 		// $CID=0;
 		// $sql1z="select * from $bai_pro3.cat_stat_log where order_tid=\"$order_tid\" and category in ($in_categories) and purwidth>0";
@@ -693,24 +736,24 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 
 		{
 
-		$sql1="select * from $pps.week_delivery_plan  where shipment_plan_id=$shipment_plan_id and size_code='$size'";
-		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($sql_row1=mysqli_fetch_array($sql_result1))
-		{
-			$priority=$sql_row1['priority'];
-			$cut=$sql_row1['act_cut'];
-			$in=$sql_row1['act_in'];
-			$out=$sql_row1['output'];
-			$pendingcarts=$sql_row1['cart_pending'];
-			$total_ord=$sql_row1['original_order_qty'];
-			$order_qty_new_old=$sql_row1['ord_qty_new_old'];
-			$fcamca=$sql_row1['act_mca'];
-			$fgqty=$sql_row1['act_fg'];
-			$internal_audited=$sql_row1['act_fca'];
-			$act_ship=$sql_row1['act_ship'];
-			$ex_factory_date=$sql_row1['act_exfact'];
-			$sizes_array1=$sql_row1['size_code'];
-		}
+		// $sql1="select * from $pps.week_delivery_plan  where shipment_plan_id=$shipment_plan_id and size_code='$size'";
+		// $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
+		// while($sql_row1=mysqli_fetch_array($sql_result1))
+		// {
+		// 	$priority=$sql_row1['priority'];
+		// 	$cut=$sql_row1['act_cut'];
+		// 	$in=$sql_row1['act_in'];
+		// 	$out=$sql_row1['output'];
+		// 	$pendingcarts=$sql_row1['cart_pending'];
+		// 	$total_ord=$sql_row1['original_order_qty'];
+		// 	$order_qty_new_old=$sql_row1['ord_qty_new_old'];
+		// 	$fcamca=$sql_row1['act_mca'];
+		// 	$fgqty=$sql_row1['act_fg'];
+		// 	$internal_audited=$sql_row1['act_fca'];
+		// 	$act_ship=$sql_row1['act_ship'];
+		// 	$ex_factory_date=$sql_row1['act_exfact'];
+		// 	$sizes_array1=$sql_row1['size_code'];
+		// }
 
 		if($total_ord>0)
 		{
@@ -720,6 +763,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 		{
 			$act_out_per=(0)."%";
 		}
+		
+	
 		if($total_ord>0)
 		{
 			// $act_cut_per=(100+round(($act_cut_val-$total_ord)*100/$total_ord,0))."%";
@@ -731,7 +776,8 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			$act_cut_per=(0)."%";
 			$ext_cut_per=(0)."%";
 		}
-
+		$cut=$actu_total;
+		$out=$plan_total;
 		$status="NIL";
 		if($cut==0)
 		{
@@ -877,7 +923,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 			// }
 			$edit_rem3.="</select>";
 			$edit_rem3.="<input type=\"hidden\" name=\"REF[]\" value=\"".$edit_ref."\"><input type=\"hidden\" name=\"REM_REF[]\" value=\"".implode("^",$remarks)."\"><input type=\"hidden\" name=\"B[]\" value=\"".$remarks[1]."\"><input type=\"hidden\" name=\"C[]\" value=\"".$remarks[2]."\"><input type=\"hidden\" name=\"code[]\" value=\"A\"><input type=\"hidden\" name=\"style[]\" value=\"".$style."\"><input type=\"hidden\" name=\"schedule_no[]\" value=\"".$schedule_no."\"><input type=\"hidden\" name=\"color[]\" value=\"".$color."\"><input type=\"hidden\" name=\"size[]\" value=\"".$size."\">";
-			$rev_ex_factory_date="<input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\">";
+			// $rev_ex_factory_date="<input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\">";
 		// }
 		//Restricted Editing for Packing Team
 		// if($custom==1)
@@ -893,13 +939,13 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 						echo "
 							<tr>
 							<td $highlight> $x  </td>	
-							<td $highlight>$buyer_division</td>
+							<td $highlight>$buyer_desc</td>
 							<td $highlight>$mpo</td>	
 							<td $highlight>$cpo</td>	
-							<td $highlight>$order_no</td>	
-							<td $highlight>$z_feature</td>
-							<td $highlight>$ex_factory_date</td>
-							<td $highlight>$rev_ex_factory_date</td>
+							<td $highlight>$customer_order_no</td>	
+							<td $highlight>$zfeature_name</td>
+							<td $highlight>$planned_delivery_date</td>
+							<td $highlight><input type=\"text\" name=\"rev_exfa[]\" value=\"".$rev_ex_factory_date."\"></td>
 							<td $highlight name='style[]' value='$style'>$style</td>	
 							<td $highlight name='schedule_no[]' value='$schedule_no'>$schedule_no</td>
 							
@@ -918,7 +964,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 							<td $highlight>$packing_method</td>
 							<td $highlight>$ship_qty</td>	
 							<td $highlight>$status</td>
-							<td $highlight>$plan_comp_date</td>
+							<td $highlight>$production_end_date</td>
 							<td $highlight>$mode</td>
 							<td $highlight>$rev_mode</td>
 							<td $highlight>$section</td>
@@ -951,9 +997,10 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 						$x+=1;
 					// }
 					
-				// } 
-			// }
+				} 
+			}
 	}
+}
 	//echo $i;
 	// if($row_count==0){
 	// 	echo "<font size='11px' color='#ff0000'>NO Data Found</font>";
@@ -964,6 +1011,7 @@ if(isset($_POST['submit']) || isset($_GET['division']))
 	// 		});
 	// 	</script>";
 	// }
+	echo '</form>';
 	echo '</tbody>';
 	echo '</table>';
 	echo '</form>';

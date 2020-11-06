@@ -509,7 +509,7 @@ $.ajax
                     $qrytoGetMinOperation="SELECT job_group,operation_code,
                     original_quantity,
                     good_quantity,
-                    rejected_quantity,date(created_at) as inputdate FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
+                    rejected_quantity,date(created_at) as inputdate FROM $tms.`task_job_status` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq ASC LIMIT 0,1";
                     $minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting operations data for job');
                     if(mysqli_num_rows($minOperationResult)>0){
                       while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -528,7 +528,7 @@ $.ajax
                     $qrytoGetMaxOperation="SELECT job_group,operation_code,
                     original_quantity,
                     good_quantity,
-                    rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
+                    rejected_quantity FROM $tms.`task_job_status` WHERE task_jobs_id='$taskJobId' AND plant_code='$plantCode' AND is_active=1 ORDER BY operation_seq DESC LIMIT 0,1";
                     $maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting operations data for job');
                     if(mysqli_num_rows($maxOperationResult)>0){
                       while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){

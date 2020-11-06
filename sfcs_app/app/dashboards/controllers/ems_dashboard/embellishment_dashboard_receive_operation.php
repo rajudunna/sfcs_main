@@ -458,7 +458,7 @@ foreach ($workstations as $emb_key => $emb_value) {
       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
 
       $cut_operaation=15;
-      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
+      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -469,7 +469,7 @@ foreach ($workstations as $emb_key => $emb_value) {
           $operation_code = $row_res['operation_code'];
           $operation_seq = $row_res['operation_seq'];
         }
-        $task_job_trans2 = "SELECT good_quantity,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
+        $task_job_trans2 = "SELECT good_quantity,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' order by operation_seq desc limit 1,1";
         $task_job_trans2_result = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans2_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans2_result)) {
           $send_qty = $row_res['good_quantity'];

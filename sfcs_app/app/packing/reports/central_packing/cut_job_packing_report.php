@@ -300,9 +300,9 @@ $username = $_SESSION['userName'];
 							{
 
 							  $task_jobs_id=$sql_row13['task_jobs_id'];
-							  $sql14="SELECT SUM(IF(operation_code = 100, good_quantity+rejected_quantity, 0)) AS qty,SUM(IF(operation_code = 130, good_quantity+rejected_quantity, 0)) AS sew_qty,original_quantity,sum(good_quantity+rejected_quantity) as total_qty from $tms.task_job_transaction where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' "; 
+							//   $sql14="SELECT SUM(IF(operation_code = 100, good_quantity+rejected_quantity, 0)) AS qty,SUM(IF(operation_code = 130, good_quantity+rejected_quantity, 0)) AS sew_qty,original_quantity,sum(good_quantity+rejected_quantity) as total_qty from $tms.task_job_status where task_jobs_id = '$task_jobs_id' and plant_code='$plant_code' "; 
 
-							$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+							$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
 						
 							$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 							
@@ -315,7 +315,7 @@ $username = $_SESSION['userName'];
 					 * get MAX operation wrt jobs based on operation seq
 					 */
 					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-					sum(rejected_quantity) AS rejected_quantity,original_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+					sum(rejected_quantity) AS rejected_quantity,original_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$task_jobs_id') AND plant_code='$plant_code' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
 							$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
 							
 								while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
