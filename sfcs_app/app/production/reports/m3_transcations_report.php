@@ -14,8 +14,9 @@
         update v0.4: added api type column based on 1298
     ================================================== */
 	$plantcode=$_SESSION['plantCode'];
-	$username=$_SESSION['userName'];
-    include($_SERVER['DOCUMENT_ROOT'].'/template/dbconf.php');
+	$username=$_SESSION['userName'];	
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
+    include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
     if(!isset($_GET['excel'])){
         echo "<script>
             function redirectf(){
@@ -63,8 +64,8 @@
                         <label>Transcation Status</label><br/>
                         <select class="form-control" name='ts' id='ts'>
                             <option value=''>All</option>
-                            <option value='pass' <?= $_GET['ts']=='pass' ? 'selected' : '' ?>>Pass</option>
-                            <option value='fail' <?= $_GET['ts']=='fail' ? 'selected' : '' ?>>Fail</option>
+                            <option value=<?=M3TransStatusEnum::PASS?> <?= $_GET['ts']== M3TransStatusEnum::PASS? 'selected' : '' ?>>Pass</option>
+                            <option value=<?=M3TransStatusEnum::FAIL?> <?= $_GET['ts']== M3TransStatusEnum::FAIL ? 'selected' : '' ?>>Fail</option>
                         </select>
                     </div>
                     <div class='col-sm-1'>
@@ -82,13 +83,15 @@
 <?php }
     if(isset($_GET['tdate'])){
         if(($_GET['tdate'] && $_GET['fdate']) || $_GET['schedule']){
-            $resp_stat[] = $_GET['ts'] ? 'response_status="'.$_GET["ts"].'"' : '';
-            $resp_stat[] = $_GET['schedule'] ? 'schedule="'.$_GET["schedule"].'"' : '';
-            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'm3_transactions.date_time between  "'.$_GET["fdate"].' 00:00:00" and "'.$_GET["tdate"].' 23:59:59"' : '';
+            $resp_stat[] = $_GET['ts'] ? 'm3_transaction.status="'.$_GET["ts"].'"' : '';
+            $resp_stat[] = $_GET['schedule'] ? 'transaction_log.schedule="'.$_GET["schedule"].'"' : '';
+            $resp_stat[] = ($_GET['tdate'] && $_GET['fdate']) ? 'm3_transaction.created_at between  "'.$_GET["fdate"].' 00:00:00" and "'.$_GET["tdate"].' 23:59:59"' : '';
             $ar_nw = array_filter($resp_stat); 
-            $qry_m3_trans = "SELECT style,schedule,color,size,m3_transactions.date_time as dt,m3_transactions.mo_no,op_code,quantity,response_status,m3_transactions.id,m3_transactions.m3_bulk_tran_id,m3_transactions.log_user,m3_transactions.ref_no,m3_transactions.reason,m3_transactions.module_no,m3_transactions.api_type,m3_transactions.workstation_id,m3_trail_count,m3_ops_code
-            FROM bai_pro3.`m3_transactions`  
-            LEFT JOIN bai_pro3.`mo_details` ON m3_transactions.mo_no=mo_details.mo_no WHERE ".implode(' and ',$ar_nw);
+            $qry_m3_trans = "SELECT transaction_log.style,transaction_log.schedule,transaction_log.color,transaction_log.size,m3_transaction.created_at as dt,m3_transaction.mo_number,fg_m3_transaction.operation,
+            m3_transaction.ext_operation,m3_transaction.quantity,m3_transaction.status,m3_transaction.m3_transaction_id,m3_transaction.m3_fail_trans_id,m3_transaction.created_user,fg_m3_transaction.job_ref,m3_transaction.reason_code,fg_m3_transaction.workstation_id,m3_transaction.workstation_ext_code,m3_transaction.api_type,m3_transaction.api_fail_count
+            FROM $pts.`m3_transaction`  
+            LEFT JOIN $pts.`fg_m3_transaction` ON m3_transaction.m3_transaction_id = fg_m3_transaction.m3_transaction_id
+            LEFT JOIN $pts.`transaction_log` ON m3_transaction.mo_number=transaction_log.mo_number WHERE ".implode(' and ',$ar_nw);
 
             $result_m3_trans = mysqli_query($link_ui, $qry_m3_trans);
             $ary_res = mysqli_fetch_all($result_m3_trans,MYSQLI_ASSOC);
@@ -106,54 +109,49 @@
                     <th>Failed Count</th></tr>
                     </thead>
                     
-<?php
+            <?php
                 $i=1;
                 foreach($ary_res as $res){
                     $reason ='';
-                    $trial_count=0;
-                    $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM brandix_bts.`tbl_orders_ops_ref` WHERE operation_code='".$res['op_code']."'"));
-                    
-                    $bulk_trans_status = mysqli_fetch_array(mysqli_query($link_ui, "SELECT response_status,m3_trail_count,id FROM $pts.`m3_bulk_transactions` WHERE plant_code='$plantcode' and id='".$res['m3_bulk_tran_id']."'"));
-                    $reason = $bulk_trans_status['response_status'];
-                    $trial_count = $bulk_trans_status['m3_trail_count'];
-                    
-                    if ($res['api_type'] == 'fg') {
+                    $get_op_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT operation_name FROM $mdm.`operations` WHERE operation_code=".$res['operation']));
+                    $get_module_name = mysqli_fetch_array(mysqli_query($link_ui, "SELECT workstation_code FROM $pms.`workstation` WHERE workstation_id='".$res['workstation_id']."'"));
+                    $reason = $res['status'];                 
+                    if ($res['api_type'] == ApiTypeEnum::FG) {
                         $api_type = '<span class="badge progress-bar-warning">FG</span>';
-                    } else if ($res['api_type'] == 'opn') {
+                    } else if ($res['api_type'] == ApiTypeEnum::OPN) {
                         $api_type = '<span class="badge progress-bar-info">Operation</span>';
                     } else {
                         $api_type = '<span class="badge progress-bar-danger">No API Type Available for this Record</span>';
                     }
                     
-                    if($reason=='fail'){
-                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT * FROM $pps.`transactions_log` WHERE plant_code='$plantcode' and transaction_id=".$res['m3_bulk_tran_id']." order by sno desc limit 1"))['response_message'] ?? 'fail with no reason.';
+                    if($reason==M3TransStatusEnum::FAIL){
+                        $ndr = mysqli_fetch_array(mysqli_query($link_ui, "SELECT response_message FROM $pts.`m3_fail_transaction` WHERE plant_code='$plantcode' and m3_fail_trans_id='".$res['m3_fail_trans_id']."'"))['response_message'] ?? 'fail with no reason.';
                         $reason = '<label class="label label-danger">'.$ndr."</label>";
                     }else{
                         $reason = "<label class='label label-success'>".$reason."</label>";
                     }
-                    $job = mysqli_fetch_array(mysqli_query($link_ui, "SELECT distinct `bundle_creation_data`.input_job_no FROM bai_pro3.`mo_operation_quantites` LEFT JOIN brandix_bts.`bundle_creation_data` ON mo_operation_quantites.ref_no=bundle_creation_data.bundle_number AND mo_operation_quantites.op_code=bundle_creation_data.operation_id WHERE mo_operation_quantites.id=".$res['ref_no']." and mo_operation_quantites.op_code=".$res['op_code']));
 
 ?>
                     <tr>
-                        <td><?= $res['id'] ?></td>
+                        <td><?= $i++?></td>
                         <td><?= $res['dt'] ?></td>
                         <td><?= $res['style'] ?></td>
                         <td><?= $res['schedule'] ?></td>
                         <td><?= $res['color'] ?></td>
                         <td><?= $res['size'] ?></td>
-                        <td><?= $res['mo_no'] ?></td>
-                        <td><?= $job['input_job_no'] ?></td>
-                        <td><?= $res['module_no'] ?></td>
-                        <td><?= $res['op_code'] ?></td>
-					    <td><?= $res['m3_ops_code'] ?></td>
+                        <td><?= $res['mo_number'] ?></td>
+                        <td><?= $res['job_ref'] ?></td>
+                        <td><?= $get_module_name['workstation_code'] ?></td>
+                        <td><?= $res['operation'] ?></td>
+					    <td><?= $res['ext_operation'] ?></td>
                         <td><?= $get_op_name['operation_name'] ?></td>
-                        <td><?= $res['workstation_id'] ?></td>
-                        <td><?= $res['reason'] ?></td>
-                        <td><?= $res['log_user'] ?></td>
+                        <td><?= $res['workstation_ext_code'] ?></td>
+                        <td><?= $res['status'] ?></td>
+                        <td><?= $res['created_user'] ?></td>
                         <td><?= $res['quantity'] ?></td>
                         <td><?= $reason ?></td>
                         <td><?= $api_type ?></td>
-                        <td><?= $trial_count ?></td>
+                        <td><?= $res['api_fail_count'] ?></td>
                     </tr>
 <?php           }      ?>
                     
