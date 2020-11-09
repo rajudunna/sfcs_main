@@ -256,7 +256,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		$pendingcarts=0;
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix_temp where order_del_no=$schedule";
+		$sqlx1="select fca_app,app,scanned from $bai_pro3.disp_mix_temp where order_del_no='$schedule'";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx14".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{
@@ -279,7 +279,7 @@ $sql="select order_tid as ssc_code_new, order_del_no as schedule_no, order_style
 		}
 		
 		//echo "-".date("H:i:s");
-		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sqlx1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container=1";
 		$sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Errorx16".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 		{

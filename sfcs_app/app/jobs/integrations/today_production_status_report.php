@@ -37,7 +37,7 @@ if($ops_code != '')
     $sah_total=0;
     set_time_limit(6000000);
     $i=0;	
-    $sql="SELECT assigned_module AS Module,DATE(date_time) AS date,style,schedule,color,size_title,ROUND(sfcs_smv,4) AS SMV,SUM(recevied_qty) AS qty,ROUND(SUM(recevied_qty*sfcs_smv/60),4) AS SAH FROM brandix_bts.bundle_creation_data_temp WHERE DATE(date_time)=\"".$date."\" AND operation_id='".$ops_code."' GROUP BY DATE(date_time),style,schedule,color,size_title,sfcs_smv,assigned_module ORDER BY DATE(date_time),assigned_module*1,style,schedule,color,size_title,sfcs_smv";
+    $sql="SELECT assigned_module AS Module,DATE(date_time) AS date,style,schedule,color,size_title,ROUND(sfcs_smv,4) AS SMV,SUM(recevied_qty) AS qty,ROUND(SUM(recevied_qty*sfcs_smv/60),4) AS SAH FROM brandix_bts.bundle_creation_data_temp WHERE date_time BETWEEN '$date 00:00:00' AND '$date 23:59:59' AND operation_id='".$ops_code."' GROUP BY DATE(date_time),style,schedule,color,size_title,sfcs_smv,assigned_module ORDER BY DATE(date_time),assigned_module*1,style,schedule,color,size_title,sfcs_smv";
     // echo $sql."<br>";
     $result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($sql_row=mysqli_fetch_array($result))
