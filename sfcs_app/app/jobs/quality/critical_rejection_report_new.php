@@ -4,16 +4,19 @@ SFCS_PRO_Quality_Rej_Update_Size_wise
 <html>
 <head>
 <?php  
+error_reporting(0);
 $start_timestamp = microtime(true);
 // Start output buffering
 ob_start();
 $include_path=getenv('config_job_path');
+include($include_path.'\sfcs_app\common\config\config_jobs.php');
 if($_GET['plantCode']){
     $plant_code = $_GET['plantCode'];
 }else{
     $plant_code = $argv[1];
 }
 $username=$_SESSION['userName'];
+
 set_time_limit(1600000);
 
 ?>
