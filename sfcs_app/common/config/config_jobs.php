@@ -1,5 +1,4 @@
 <?php 
-
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
@@ -146,14 +145,14 @@ $m3_bulk_ops_rep_db="m3_bulk_ops_rep_db";
 $bai_kpi="bai_kpi";
 $bai_ict="bai_ict";
 /*These all are related 2.0 integration databses*/
-$mdm="mdm_prod";
-$oms="oms_prod";
-$pps="pps_prod";
-$pms="pms_prod";
-$sms="sms_prod";
-$tms="tms_prod";
-$pts="pts_prod";
-$wms="wms_prod";
+$mdm="mdm";
+$oms="oms";
+$pps="pps";
+$pms="pms";
+$sms="sms";
+$tms="tms";
+$pts="pts";
+$wms="wms";
 
 ?>
 <?php
