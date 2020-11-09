@@ -13,7 +13,14 @@
 		'orientation' => 'L'
 	]);
 	
-	$schedule=$_GET['schedule'];
+	if(isset($_GET['schedule'])>0)
+	{
+		$schedule=$_GET['schedule'];
+	}
+	elseif(isset($_POST['schedule'])>0)
+	{
+		$schedule = $_POST['schedule'];
+	}
 
 	$html = '
 			<html>
@@ -45,10 +52,20 @@
 		{
 			$filter=" and seq_no='".$_GET['seq_no']."'";
 		}
+		elseif(isset($_POST['seq_no'])>0)
+		{
+			$filter=" and seq_no='".$_POST['seq_no']."'";
+		}
+		
 		if(isset($_GET['carton_no'])>0)
 		{
 			$filter1=" and carton_no in (".$_GET['carton_no'].")";
+		}
+		elseif(isset($_POST['carton_no'])>0)
+		{
+			$filter1=" and carton_no in (".$_POST['carton_no'].")";
 		}		
+
 		$barcode_qry1="select seq_no,count(distinct carton_no) as cart from $bai_pro3.packing_summary where order_del_no='".$schedule."' $filter group by seq_no order by seq_no*1";
 		$sql_barcode1=mysqli_query($link, $barcode_qry1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($barcode_rslt1 = mysqli_fetch_array($sql_barcode1))
