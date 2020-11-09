@@ -85,7 +85,7 @@ $sections_str = implode(',', $sections[0]);
                             <?= "<a href=\"javascript:void(0)\" 
                                onclick=\"
                                 var op = $('#operations').val();
-                                Popup = window.open('$popup_url?section=$section_id&section_name=$section_display_name&operations='+op+'"."','Popup'); 
+                                Popup = window.open('$popup_url?section=$section_id&section_name=$section_display_name&plantCode=$session_plant_code&operations='+op+'"."','Popup'); 
                                 if (window.focus){
                                     Popup.focus()
                                 }
@@ -178,9 +178,11 @@ $sections_str = implode(',', $sections[0]);
                     $("select").change(function() {
                         var val = $(this).find('option:selected').attr("name");
                         var val1 = $(this).find('option:selected').attr("value");
+                        var plantcode='<?= $session_plant_code?>';
+
                     
                         document.getElementById("demo").innerHTML = 
-            "<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "\",\"Popup\");'>\
+            "<a href='javascript:void(0)' onclick='window.open(\"<?= $popup_url1 ?>?operations=" + val1 + "&plantCode=" + plantcode + "\",\"Popup\");'>\
                 SELECTED SEWING OPERATION : " + val + "</a>";
                     });
                 }
