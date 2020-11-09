@@ -41,17 +41,20 @@ $whoops->register();
                             if ($get_file_path) {
                                 if ($get_file_path['type'] == 'php' || $get_file_path['type'] == 'htm' || $get_file_path['type'] == 'html') {
                                     // Get paln code
-                                    if ($_GET['plantCode']) {
-                                        $_SESSION['plantCode'] = $_GET['plantCode'];
+                                    if ($_POST['plantCode']) {
+                                        $_SESSION['plantCode'] = $_POST['plantCode'];
                                     }
-                                    if ($_GET['userName']) {
-                                        $_SESSION['userName'] = $_GET['userName'];
+                                    if ($_POST['userName']) {
+                                        $_SESSION['userName'] = $_POST['userName'];
                                     }
-                                    if ($_GET['poNumber']) {
-                                        $_SESSION['poNumber'] = $_GET['poNumber'];
+                                    if ($_POST['poNumber']) {
+                                        $_SESSION['poNumber'] = $_POST['poNumber'];
                                     }
-                                    if ($_GET['masterPoNumber']) {
-                                        $_SESSION['masterPoNumber'] = $_GET['masterPoNumber'];
+                                    if ($_POST['masterPoNumber']) {
+                                        $_SESSION['masterPoNumber'] = $_POST['masterPoNumber'];
+                                    }
+                                    if ($_POST['authToken']) {
+                                        $_SESSION['authToken'] = $_POST['authToken'];
                                     }
                                     include($_SERVER["DOCUMENT_ROOT"] . $get_file_path['path']);
                                 } else {
