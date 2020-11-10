@@ -22,57 +22,7 @@ function thirdbox()
 {
 	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value
 }
-function fourthbox()
-{
-	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value
-}
-function fifthbox()
-{
-	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value
-}
-function sixthbox()
-{
-	window.location.href ="<?php echo 'index-no-navi.php?r='.$_GET['r']; ?>&style="+document.test.style.value+"&schedule="+document.test.schedule.value+"&color="+document.test.color.value+"&mpo="+document.test.mpo.value+"&sub_po="+document.test.sub_po.value+"&category="+document.test.category.value
-}
 
-$(document).ready(function() {
-	$('#schedule').on('mouseup',function(e){
-		style = $('#style').val();
-		if(style === 'NIL'){
-			sweetAlert('Please Select Style','','warning');
-		}
-	});
-	$('#color').on('mouseup',function(e){
-		style = $('#style').val();
-		schedule = $('#schedule').val();
-		if(style === 'NIL' && schedule === 'NIL'){
-			sweetAlert('Please Select Style and Schedule','','warning');
-		}
-		else if(style === 'NIL'){
-			sweetAlert('Please Select Style','','warning');
-		}
-		else if(schedule === 'NIL'){
-			sweetAlert('Please Select Schedule','','warning');
-		}
-	});
-	$('#style').on('mouseup',function(e){
-		style = $('#style').val();
-		schedule = $('#schedule').val();
-		color = $('#color').val();
-		if(style === 'NIL' && schedule === 'NIL' && color === 'NIL'){
-			sweetAlert('Please Select Style, Schedule and Color','','warning');
-		}
-		else if(schedule === 'NIL' && color === 'NIL'){
-			sweetAlert('Please Select Schedule and Color','','warning');
-		}
-		else if(color === 'NIL'){
-			sweetAlert('Please Select Color','','warning');
-		}
-		else {
-			document.getElementById("submit").disabled = false;
-		}
-	});
-});
 </script>
 
 
@@ -92,26 +42,28 @@ function verify_date()
 	    return true;
 	}
 }
+
+function check_all()
+{
+	var	style = $('#style').val();
+	var	schedule = $('#schedule').val();
+	var	color = $('#color').val();
+	if(style === 'NIL' && schedule === 'NIL' && color === 'NIL'){
+		sweetAlert('Please Select Style, Schedule and Color','','warning');
+		return false;
+	}
+	else if(schedule === 'NIL' && color === 'NIL'){
+		sweetAlert('Please Select Schedule and Color','','warning');
+		return false;
+	}
+	else if(color === 'NIL'){
+		sweetAlert('Please Select Color','','warning');
+		return false;
+	}
+}
 </script>
 
 <style>
-
-
-	/* table tr
-	{
-		border: 1px solid black;
-		text-align: right;
-		white-space:nowrap; 
-	}
-
-	table td
-	{
-		border: 1px solid black;
-		text-align: center;
-		white-space:nowrap;
-		background-color:#e8e8ea; 
-		height:35px;
-	} */
 
 	table th
 	{
@@ -169,11 +121,11 @@ if(isset($_POST['color']))
 	<div class="row">
 		<!-- <div class="col-md-1" class="alert alert-primary"><label><label></div> -->
 		<div class="col-md-3 form-group">
-			<label>Ex-Factory Start Date</label>
+			<label>Ex-Factory Start Date</label><br>
 			<input  class="form-control" type="text" data-toggle='datepicker' id="dat1" name="sdate" value="<?php if(isset($_POST['sdate'])) { echo $_POST['sdate']; } else { echo date("Y-m-d"); } ?>"> 
 		</div>
 		<div class="col-md-3 form-group">
-			<label>End Date</label>
+			<label>End Date</label><br>
 			<input  class="form-control" type="text" data-toggle='datepicker' id="dat2" name="edate" value="<?php if(isset($_POST['edate'])) { echo $_POST['edate']; } else { echo date("Y-m-d"); } ?>">
 		</div>
 		<div class="col-md-2 form-group">
@@ -186,11 +138,11 @@ if(isset($_POST['color']))
 		 	<input type="submit" class="btn btn-primary" name="filter" onclick='return verify_date()' value="Filter">
 		</div>
 	</div>
-
+	<br><br>
 	<div class="row">
 		<!-- <div class="col-md-1"></div> -->
-		<div class="col-sm-2 form-group">
-					<label for='style'>Select Style</label>
+		<div class="col-sm-3 form-group">
+					<label for='style'>Select Style</label><br>
 					<select required class='form-control' name='style' onchange='firstbox()' id='style'>
 					<?php
 						echo "<option value=\"NIL\" selected>NIL</option>";
@@ -211,8 +163,8 @@ if(isset($_POST['color']))
 					echo "</select>";
 					?>	
 				</div>
-				<div class="col-sm-2 form-group">
-					<label for='schedule'>Select Schedule</label>
+				<div class="col-sm-3 form-group">
+					<label for='schedule'>Select Schedule</label><br>
 					<select required class='form-control' name='schedule' onchange='secondbox();' id='schedule'>
 					<?php
 						echo "<option value=\"NIL\" selected>NIL</option>";	
@@ -237,8 +189,8 @@ if(isset($_POST['color']))
 						echo "</select>";
 					?>
 				</div>	
-				<div class="col-sm-2 form-group">
-					<label for='color'>Select Color:</label>
+				<div class="col-sm-4 form-group">
+					<label for='color'>Select Color:</label><br>
 					<select required class='form-control' name='color' onchange='thirdbox();' id='color'>
 					<?php
 						echo "<option value=\"NIL\" selected>NIL</option>";
@@ -263,9 +215,9 @@ if(isset($_POST['color']))
 						echo "</select>";
 					?>
 				</div>
-			<div class="col-md-1">
+			<div class="col-md-2">
 			<label></label><br/>
-			<input type="submit" class="btn btn-primary" value="Filter" name="filter2">
+			<input type="submit" class="btn btn-primary" value="Filter" name="filter2" id="filter2" onclick="return check_all();">
 	</div>
 </form>
 
@@ -302,11 +254,17 @@ if(isset($_POST['color']))
 		if(sizeof($sch_db_grand)>0)
 		{
 			//Getting Module information
-			$workstationsArray=getWorkstationsForSectionId($plant_Code, $section);
-			foreach($workstationsArray as $workstations)
-			{
-				$moduleId[]=$workstations['workstationId'];	
-				$moduleCode[$workstations['workstationId']]=$workstations['workstationCode'];
+			$qry_workstations="SELECT workstation_id,workstation_code, workstation_description FROM $pms.workstation WHERE is_active=1 AND plant_code='$plant_Code'";
+			$workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$moduleId=array();
+			$moduleCode=array();
+			$workstations_result_num=mysqli_num_rows($workstations_result);
+			if($workstations_result_num>0){
+				while($workstations_row=mysqli_fetch_array($workstations_result))
+				{
+					$moduleId[]=$workstations_row['workstation_id'];	
+					$moduleCode[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
+				}
 			}	
 			//Getting Reson information
 			$reasons_query = "SELECT distinct department_type from $mdm.reasons where reason_group = 'PRODUCTION' and is_active=1";
@@ -326,8 +284,8 @@ if(isset($_POST['color']))
 				}
 				$deptSize[$dept_type]=$i;
 			}
-			$sql_rejection="SELECT * FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rt.workstation_id in ('".implode("','",$moduleId)."') AND rt.created_at BETWEEN '".$sdate." 00:00:00' AND '".$edate." 00:00:00' GROUP BY rt.reason_id";
-			$sql_result=mysqli_query($link, $sql_rejection) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
+			$sql_rejection="SELECT * FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule in ($sch_db_grand) AND rt.parent_barcode_type='PPLB' and rh.plant_code='".$plant_Code."' GROUP BY rt.reason_id";
+			$sql_result=mysqli_query($link, $sql_rejection) or exit("Checking Rejection information".mysqli_error($GLOBALS["___mysqli_ston"]));
 			if(mysqli_num_rows($sql_result)>0)
 			{
 				echo "<br/><hr/><br/><div class='table-responsive'><table class='table table-bordered'>";
@@ -342,7 +300,7 @@ if(isset($_POST['color']))
 				<th rowspan=2 width=45>Reject<br/> Out</th>";
 				for($i=0;$i<sizeof($depts);$i++)
 				{
-					echo "<th colspan=".$deptSize[$dept_type]." width=45>".$depts[$i]."</th>";
+					echo "<th colspan=".$deptSize[$depts[$i]]." width=45>".$depts[$i]."</th>";
 				}
 				echo "</tr>";
 				echo "<tr class='tblheading'>";
@@ -353,28 +311,22 @@ if(isset($_POST['color']))
 						echo "<th width=45>".$reasonDesc[$depts[$ii]][$iii]."</th>";
 					}
 				}				
-				echo "</tr>";	
-				
-				if($choice==1)
+				echo "</tr>";
+				if($choice == 3)
 				{
-					if($choice==3)
-					{
-						$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size_title,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand) and color = '$sch_color' and plant_code='".$plant_Code."' group by schedule,color,size";
-					}
-					else
-					{
-						$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size_title,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size";
-					}
-					//echo $sql1;
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand) and color = '$sch_color' and plant_code='".$plant_Code."' group by schedule,color,size";
 				}
-				if($choice==2)
+				else if($choice == 1)
 				{
-					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size_title,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size,resource_id";
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size";
 				}
-
+				else if($choice==2)
+				{
+					$sql="SELECT resource_id,operation as operation_id,style,color,schedule,size,SUM(good_quantity) AS output FROM $pts.transaction_log WHERE parent_barcode_type='PPLB' and schedule in ($sch_db_grand)  and plant_code='".$plant_Code."' group by schedule,color,size,resource_id";
+				}
 				$grand_reject=array();
 				$grand_output=0;
-				$sql_result=mysqli_query($link, $sql) or exit("Fetching Out put Information".mysqli_error($GLOBALS["___mysqli_ston"]));
+				$sql_result=mysqli_query($link, $sql) or exit("Fetching Out put Information--".mysqli_error($GLOBALS["___mysqli_ston"]));
 				while($sql_row=mysqli_fetch_array($sql_result))
 				{
 					$mod=$sql_row['resource_id'];
@@ -395,22 +347,23 @@ if(isset($_POST['color']))
 					echo "<td>".$moduleCode[$sql_row['resource_id']]."</td>";
 					echo "<td>".$sql_row['output']."</td>";
 								
-					if($choice==1)
+					if($choice==1 || $choice==3)
 					{
-						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['schedule']."' and size='".$sql_row['size']."' group by reason_id";
+						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' group by reason_id";
 					}
 					else
 					{
-						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['schedule']."' and size='".$sql_row['size']."' and rt.workstation_id='".$mod."' group by reason_id";
+						$sql1="SELECT reason_id,SUM(rh.total_rejection) AS qty FROM $pts.rejection_transaction AS rt LEFT JOIN $pts.rejection_header AS rh ON rt.rh_id=rh.rh_id WHERE rh.schedule='".$sql_row['schedule']."' and  fg_color = '".$sql_row['color']."' and size='".$sql_row['size']."' and rt.workstation_id='".$mod."' group by reason_id";
 					}
-
+					//echo $sql1."<br>"; 
 					$rej_qty=array();
 					$sql_result1=mysqli_query($link, $sql1) or exit("Fetching Rejection Quantity".mysqli_error($GLOBALS["___mysqli_ston"]));
 					while($sql_row1=mysqli_fetch_array($sql_result1))
 					{
 						$rej_qty[$sql_row1['reason_id']]=$sql_row1['qty'];
 					}
-					if(size($rej_qty)>0)
+
+					if(sizeof($rej_qty)>0)
 					{
 						$qms_qty=array_sum($rej_qty);
 					}
@@ -447,19 +400,20 @@ if(isset($_POST['color']))
 						{
 							$bgcolor=" bgcolor=#FFEEDD ";
 						}
-						$grand_reject[$depts[$ii]]=$rejection;
+						$grand_reject[$depts[$jj]]=$rejection;
 					}	
 					$grand_output+=$grand_output+$sw_out;
-				}				
+				}	
+				$grand_rejections=array_sum($grand_reject);			
 				echo "</tr>";
-				echo "<tr >";
-				echo "<td colspan=5 bgcolor=#f47f7f>Total</td>";
+				echo "<tr>";
+				echo "<td colspan=6 bgcolor=#f47f7f>Total</td>";
 				echo "<td>".$grand_output."</td>";
 				echo "<td class=\"BG\">$span1".$grand_rejections."$span3$span2"; if($grand_output>0) { echo round(($grand_rejections/$grand_output)*100,1)."%"; } echo "$span3</td>";
 				$bgcolor=" bgcolor=#FFEEDD ";
 				for($j=0;$j<sizeof($depts);$j++)
 				{
-					echo "<td  class=\"BG\ colspan=".$deptSize[$dept_type].">$span1".$grand_reject[$depts[$j]]."$span3$span2"; if($grand_output>0) { echo round(($grand_reject[$depts[$j]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
+					echo "<td colspan=".$deptSize[$depts[$j]]." class=\"BG\ >$span1".$grand_reject[$depts[$j]]."$span3$span2"; if($grand_output>0) { echo round(($grand_reject[$depts[$j]]/$grand_output)*100,1)."%"; } echo "$span3</td>";
 					if($j/2==0)
 					{
 						$bgcolor=" bgcolor=white ";	
