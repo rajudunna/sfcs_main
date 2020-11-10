@@ -343,7 +343,7 @@ if(isset($_POST['submit']) && $reptype == 1)
 	echo "<th>Color</th>";
 	echo "<th>Category</th>";
 	echo "<th>Cut No</th>";
-	echo "<th>Pcs</th>";
+	echo "<th>Marker ratio</th>";
 	echo "<th>Plies</th>";
 	echo "<th>MK Len.</th>";
 	echo "<th>Cut Qty</th>";

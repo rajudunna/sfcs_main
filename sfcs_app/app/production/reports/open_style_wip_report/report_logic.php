@@ -61,7 +61,7 @@
 		$barcodes = $row_main['barcodes'];
 		$barcode_list = "'".str_replace(",","','",$barcodes)."'";
 
-		$order_qty_qry = "select COUNT(finished_good_id) as quantity from $pts.finished_good where style = '$style' AND schedule='$schedule' AND color='$color' AND size='$size' AND plant_code = '$plant_code'";
+		$order_qty_qry = "select SUM(quantity) as quantity from $pps.mp_mo_qty where schedule='$schedule' AND color='$color' AND size='$size' AND mp_qty_type='ORIGINAL_QUANTITY' AND plant_code = '$plant_code'";
 		$sql_order_qty_result = mysqli_query($link,$order_qty_qry);
 		$order_qty=0;
 		while($row_main_qty = mysqli_fetch_array($sql_order_qty_result))
