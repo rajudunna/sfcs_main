@@ -1341,66 +1341,41 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var bearer_token;
         var getData;
-        const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-        }
+        bearer_token = '<?php $_SESSION['authToken'] ?>';
         $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-                    type: "POST",
-                    url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                    data:  reportData,
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json",
-                    success: function (res) {            
-                        //console.log(res.data);
-                        console.log(res.status);
-                        $('#wait_loader').css({'display':'none'});
-                        if(res.status)
-                        {
-                            swal(res.internalMessage);
-                            clearAll();
-                            clearFormData();
-                            loadDetails(post_doc_no);
-                        }
-                        else
-                        {   
-                            swal(res.internalMessage);
-                            clearAll();
-                            clearFormData();
-                            loadDetails(post_doc_no);
-                        }                       
-                    },
-                    error: function(res){
-                        $('#wait_loader').css({'display':'none'});
-                        swal('Error in getting docket');
+                type: "POST",
+                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+                data:  reportData,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {            
+                    //console.log(res.data);
+                    console.log(res.status);
+                    $('#wait_loader').css({'display':'none'});
+                    if(res.status)
+                    {
+                        swal(res.internalMessage);
                         clearAll();
                         clearFormData();
                         loadDetails(post_doc_no);
                     }
-                    
-            });
-        }).fail(function (result) {
-            console.log(result);
+                    else
+                    {   
+                        swal(res.internalMessage);
+                        clearAll();
+                        clearFormData();
+                        loadDetails(post_doc_no);
+                    }                       
+                },
+                error: function(res){
+                    $('#wait_loader').css({'display':'none'});
+                    swal('Error in getting docket');
+                    clearAll();
+                    clearFormData();
+                    loadDetails(post_doc_no);
+                }
+                
         });
         //clearRejections();
         
@@ -1802,13 +1777,6 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
         $('#wait_loader').css({'display':'block'});
         var bearer_token;
         var getData;
-        const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-        }
         $.ajax({
             url : '<?= $fabric_status ?>?doc_no='+doc_no       
             }).then(function (res) {
@@ -1816,242 +1784,224 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                  console.log(res);
                 if(data_fabric.fabric_status =='5')
                 {
+                    bearer_token = '<?php $_SESSION['authToken'] ?>';
                     $.ajax({
-                        method: 'POST',
-                        url: "<?php echo $KEY_LOCK_IP?>",
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        xhrFields: { withCredentials: true },
-                        contentType: "application/json; charset=utf-8",
-                        transformRequest: function (Obj) {
-                            var str = [];
-                            for (var p in Obj)
-                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                            return str.join("&");
-                        },
-                        data: creadentialObj
-                    }).then(function (result) {
-                        console.log(result);
-                        bearer_token = result['access_token'];
-                        $.ajax({
-                            type: "POST",
-                            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded',
-                            'Authorization': 'Bearer ' +  bearer_token },
-                            data: data,
-                            success: function (res) {            
-                                console.log(res.status);
-                                if(res.status)
+                        type: "POST",
+                        url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' +  bearer_token },
+                        data: data,
+                        success: function (res) {            
+                            console.log(res.status);
+                            if(res.status)
+                            {
+                                $('#wait_loader').css({'display':'none'});
+                                getData=res.data;
+                                console.log(getData);            
+                                avl_plies = Number((getData.plannedPlies)-(getData.reportedPlies));
+                                fab_req = Number(getData.fabricRequired);
+                                if(getData.cutStatus){
+                                    var actCutstatus="Done";
+                                }else{
+                                    var actCutstatus="Open";
+                                }
+                                if(getData.cutStatus == 'IN-PROGRESS'){
+                                    $('#hide_details_reported').css({'display':'block'});
+                                    $('#hide_details_reporting').css({'display':'block'});
+                                    $('#hide_details_reporting_ratios').css({'display':'block'});
+                                }else if(getData.cutStatus == 'DONE'){
+                                    $('#hide_details_reported').css({'display':'block'});
+                                    $('#hide_details_reporting').css({'display':'none'});
+                                    $('#hide_details_reporting_ratios').css({'display':'none'});
+                                }else{
+                                    $('#hide_details_reported').css({'display':'none'});
+                                    $('#hide_details_reporting').css({'display':'block'});
+                                    $('#hide_details_reporting_ratios').css({'display':'block'});
+                                    
+                                }
+                                var size_data = "<table><b>Size Wise Ratios</b><table class='table table-bordered'><thead><tr class='danger'>";
+                                $.each(getData.sizeRatios, function( index, value ) {
+                                    size_data += "<th>"+value.size+"</th>";
+                                });
+                                size_data += "</tr><tr>";
+                                var total_size_ratio = 0;
+                                $.each(getData.sizeRatios, function( index, value ) {
+                                    size_data += "<th>"+value.ratio+"</th>";
+                                    total_size_ratio += Number(value.ratio);
+                                });
+                                
+                                size_data += "</tr>";
+                                size_data += "<input type='hidden' name='total_size_ratio[]' value='"+total_size_ratio+"'></tr></tbody><table>";
+                                // console.log(size_data);
+                                // console.log(size_data2);
+                                $("#hide_details_reporting_ratios").append(size_data);
+                                /*if(data.partial_roll_wise == '1'){
+                                    $('#hide_details_reported_roll_wise').css({'display':'block'});
+                                    $rollwisestatus=true;
+                                }
+                                else if(data.cut_done_roll_wise == '1'){
+                                    $('#hide_details_reported_roll_wise').css({'display':'block'});
+                                    $rollwisestatus=true;
+                                }else{
+                                    $('#hide_details_reported_roll_wise').css({'display':'none'});
+                                    $rollwisestatus=false;
+                                }*/
+                                // console.log(getData.sizeRatios);
+                                var i;
+                                var sno=1;
+                                $('#reported_table_roll_wise tbody').html('');
+                                /*
+                                if($rollwisestatus)
                                 {
-                                    $('#wait_loader').css({'display':'none'});
-                                    getData=res.data;
-                                    console.log(getData);            
-                                    avl_plies = Number((getData.plannedPlies)-(getData.reportedPlies));
-                                    fab_req = Number(getData.fabricRequired);
-                                    if(getData.cutStatus){
-                                        var actCutstatus="Done";
-                                    }else{
-                                        var actCutstatus="Open";
-                                    }
-                                    if(getData.cutStatus == 'IN-PROGRESS'){
-                                        $('#hide_details_reported').css({'display':'block'});
-                                        $('#hide_details_reporting').css({'display':'block'});
-                                        $('#hide_details_reporting_ratios').css({'display':'block'});
-                                    }else if(getData.cutStatus == 'DONE'){
-                                        $('#hide_details_reported').css({'display':'block'});
-                                        $('#hide_details_reporting').css({'display':'none'});
-                                        $('#hide_details_reporting_ratios').css({'display':'none'});
-                                    }else{
-                                        $('#hide_details_reported').css({'display':'none'});
-                                        $('#hide_details_reporting').css({'display':'block'});
-                                        $('#hide_details_reporting_ratios').css({'display':'block'});
-                                        
-                                    }
-                                    var size_data = "<table><b>Size Wise Ratios</b><table class='table table-bordered'><thead><tr class='danger'>";
-                                    $.each(getData.sizeRatios, function( index, value ) {
-                                        size_data += "<th>"+value.size+"</th>";
-                                    });
-                                    size_data += "</tr><tr>";
-                                    var total_size_ratio = 0;
-                                    $.each(getData.sizeRatios, function( index, value ) {
-                                        size_data += "<th>"+value.ratio+"</th>";
-                                        total_size_ratio += Number(value.ratio);
-                                    });
-                                    
-                                    size_data += "</tr>";
-                                    size_data += "<input type='hidden' name='total_size_ratio[]' value='"+total_size_ratio+"'></tr></tbody><table>";
-                                    // console.log(size_data);
-                                    // console.log(size_data2);
-                                    $("#hide_details_reporting_ratios").append(size_data);
-                                    /*if(data.partial_roll_wise == '1'){
-                                        $('#hide_details_reported_roll_wise').css({'display':'block'});
-                                        $rollwisestatus=true;
-                                    }
-                                    else if(data.cut_done_roll_wise == '1'){
-                                        $('#hide_details_reported_roll_wise').css({'display':'block'});
-                                        $rollwisestatus=true;
-                                    }else{
-                                        $('#hide_details_reported_roll_wise').css({'display':'none'});
-                                        $rollwisestatus=false;
-                                    }*/
-                                    // console.log(getData.sizeRatios);
-                                    var i;
-                                    var sno=1;
-                                    $('#reported_table_roll_wise tbody').html('');
-                                    /*
-                                    if($rollwisestatus)
+                                    if(data.rollwisedetails) 
                                     {
-                                        if(data.rollwisedetails) 
+                                        rollwisedetialslength=data.rollwisedetails.length;
+                                        rolwisedet=data.rollwisedetails;
+                                        for(i=0;i<rollwisedetialslength;i++)
                                         {
-                                            rollwisedetialslength=data.rollwisedetails.length;
-                                            rolwisedet=data.rollwisedetails;
-                                            for(i=0;i<rollwisedetialslength;i++)
+                                            if(rolwisedet[i]['fabric_return']<0)
                                             {
-                                                if(rolwisedet[i]['fabric_return']<0)
-                                                {
-                                                    fabreturn=rolwisedet[i]['fabric_return'];
-                                                }
-                                                else{
-                                                    fabreturn=rolwisedet[i]['fabric_return']; 
-                                                }
-                                                row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
-                                                $('#reported_table_roll_wise').append(row);
-                                                sno++;
+                                                fabreturn=rolwisedet[i]['fabric_return'];
                                             }
+                                            else{
+                                                fabreturn=rolwisedet[i]['fabric_return']; 
+                                            }
+                                            row = $('<tr><td>'+sno+'</td><td>'+rolwisedet[i]['lay_sequence']+'</td><td>'+rolwisedet[i]['shade']+'</td><td>'+rolwisedet[i]['fabric_rec_qty']+'</td><td>'+fabreturn+'</td><td>'+rolwisedet[i]['reporting_plies']+'</td><td>'+rolwisedet[i]['damages']+'</td><td>'+rolwisedet[i]['joints']+'</td><td>'+rolwisedet[i]['endbits']+'</td><td>'+rolwisedet[i]['shortages']+'</td></tr>');
+                                            $('#reported_table_roll_wise').append(row);
+                                            sno++;
                                         }
-
                                     }
-                                    */
-                                    $('.d_doc_type').css({'display':'block'});
-                                    $('#d_total_rejections').css({'display':'none'});
-                                    //storing doc,plies in hidden fields for post refference
-                                    $('#post_doc_no').val(getData.docketNumber);
-                                    $('#p_plies').val(getData.plannedPlies);
-                                    var final_qty = Number(getData.quantity) * (total_size_ratio);
-                                    $('#r_doc_qty').html(final_qty);
-                                    $('#doc_target_type').val(getData.doc_target_type);
-                                    $('#ratio').val(getData.ratio);
-                                    $('#fab_required').val(getData.fabricRequired);
-                                    $('#r_fab_required').html(getData.fabricRequired);
-
-                                    //$('#mk_length').val(data.marklength);
-
-                                    //$('#binding_consum').val(data.binding_consumption);
-                                    //$('#seperat_dock').val(data.seperate_docket);
-
-
-                                    //doc type
-                                    
-                                    $('#d_doc_type').html((getData.docketType)+' Docket');
-                                    
-                                    //setting size wise ratios
-                                    //$('#hide_details_reporting_ratios').html(data.ratio_data);
-                                    
-                                    //setting values for display table    
-                                    $('#d_doc_no').html(getData.docketNumber);
-                                    $('#d_cut_no').html(getData.docketNumber);
-                                    $('#d_cut_status').html(actCutstatus);
-                                    //$('#d_cut_issue_status').html(data.fab_status);
-                                    //$('#d_good_pieces').html(data.good_pieces);
-                                    /*
-                                    if(Number(data.rej_pieces) > 0){
-                                        $('#d_rej_pieces').html(data.rej_pieces+"<br/><input type='button' class='btn btn-xs btn-info' value='info' onclick='toggleMe();'>");
-                                        $('#rejections_show_table').html(data.rej_size_wise_details);
-                                    }else{
-                                        $('#d_rej_pieces').html(data.rej_pieces);
-                                    }*/
-                                    
-                                    /*$('#d_date').html(data.date);
-                                    $('#d_section').html(data.section);
-                                    $('#d_module').html(data.module);
-                                    $('#d_shift').html(data.shift);
-                                    
-                                    $('#d_fab_rec').html(data.fab_received);
-                                    $('#d_fab_ret').html(data.fab_returned);
-                                    $('#d_damages').html(data.damages);
-                                    $('#d_joints').html(data.joints);
-                                    $('#d_endbits').html(data.endbits);
-                                    $('#d_shortages').html(data.shortages);
-                                    $('#d_reported').html(data.reported);
-                                    $('#r_doc_qty').html(data.doc_qty);*/
-
-                                    //setting values for reporting table
-                                    $('#r_doc_no').html(getData.docketNumber);
-                                    $('#r_cut_status').html(actCutstatus);
-                                    $('#r_plan_plies').html(getData.plannedPlies);
-                                    $('#r_reported_plies').html(getData.reportedPlies);
-                                    //setting value to style,schedule,color
-                                    $('#d_style').html(getData.style);
-                                    $('#d_schedule').html(getData.schedules.toString());
-                                    $('#d_color').html(getData.fgColor);
-                                    if($('#good_report').val() == 'readonly'){
-                                        $('#c_plies').attr('readonly', true);
-                                        $('#cut_report').attr('disabled', true);
-                                        $('#full_reported').attr('disabled', true);
-                                        // $("#c_plies").attr('readonly', 'readonly');
-                                        
-                                        $('#c_plies').val(0);
-                                    } else {
-                                        $('#c_plies').val(avl_plies);
-                                        $('#c_plies').attr('readonly', false);
-                                        $('#cut_report').attr('disabled', false);
-                                        $('#full_reported').attr('disabled', false);
-
-                                    }
-                                    // $('#c_plies').val(avl_plies);
-                                    $('#fab_received').val(fab_req);
-
-                                    $('#post_style').val(getData.style);
-                                    $('#post_schedule').val(getData.docketNumber);
-                                    $('#post_color').val(getData.fgColor);
-
-                                    //resetting the submmit button
-                                    $('#submit').css({'display':'block'});
-                                    //load_rejections();
-                                    if(data.rollinfo>0)
-                                    {
-                                        $('.showifcontain').css({'display':'block'});
-                                        
-                                    }
-                                    if(data.rollinfo1>0)
-                                    {
-                                        $('.showifcontain').css({'display':'none'});
-                                        
-                                    }
-
-                                    var fret = Number($('#fab_returned').val());
-                                    if(fret > 0)
-                                    {
-                                        $('#returend_to_parent').css({'display':'block'});
-                                    } 
-                                    else
-                                    {
-                                        $('#returend_to_parent').css({'display':'none'});
-
-                                        //calculatecutreport();
-                                    }
-                                        // $('#c_plies').attr('readonly', false);
-                                        $('#fab_received').attr('readonly', false);
-                                        $('#fab_returned').attr('readonly', false);
-                                        $('#damages').attr('readonly', false);
-                                        $('#joints').attr('readonly', false);
-                                        $('#endbits').attr('readonly', false);
-                                        calculatecutreport();   
 
                                 }
+                                */
+                                $('.d_doc_type').css({'display':'block'});
+                                $('#d_total_rejections').css({'display':'none'});
+                                //storing doc,plies in hidden fields for post refference
+                                $('#post_doc_no').val(getData.docketNumber);
+                                $('#p_plies').val(getData.plannedPlies);
+                                var final_qty = Number(getData.quantity) * (total_size_ratio);
+                                $('#r_doc_qty').html(final_qty);
+                                $('#doc_target_type').val(getData.doc_target_type);
+                                $('#ratio').val(getData.ratio);
+                                $('#fab_required').val(getData.fabricRequired);
+                                $('#r_fab_required').html(getData.fabricRequired);
+
+                                //$('#mk_length').val(data.marklength);
+
+                                //$('#binding_consum').val(data.binding_consumption);
+                                //$('#seperat_dock').val(data.seperate_docket);
+
+
+                                //doc type
+                                
+                                $('#d_doc_type').html((getData.docketType)+' Docket');
+                                
+                                //setting size wise ratios
+                                //$('#hide_details_reporting_ratios').html(data.ratio_data);
+                                
+                                //setting values for display table    
+                                $('#d_doc_no').html(getData.docketNumber);
+                                $('#d_cut_no').html(getData.docketNumber);
+                                $('#d_cut_status').html(actCutstatus);
+                                //$('#d_cut_issue_status').html(data.fab_status);
+                                //$('#d_good_pieces').html(data.good_pieces);
+                                /*
+                                if(Number(data.rej_pieces) > 0){
+                                    $('#d_rej_pieces').html(data.rej_pieces+"<br/><input type='button' class='btn btn-xs btn-info' value='info' onclick='toggleMe();'>");
+                                    $('#rejections_show_table').html(data.rej_size_wise_details);
+                                }else{
+                                    $('#d_rej_pieces').html(data.rej_pieces);
+                                }*/
+                                
+                                /*$('#d_date').html(data.date);
+                                $('#d_section').html(data.section);
+                                $('#d_module').html(data.module);
+                                $('#d_shift').html(data.shift);
+                                
+                                $('#d_fab_rec').html(data.fab_received);
+                                $('#d_fab_ret').html(data.fab_returned);
+                                $('#d_damages').html(data.damages);
+                                $('#d_joints').html(data.joints);
+                                $('#d_endbits').html(data.endbits);
+                                $('#d_shortages').html(data.shortages);
+                                $('#d_reported').html(data.reported);
+                                $('#r_doc_qty').html(data.doc_qty);*/
+
+                                //setting values for reporting table
+                                $('#r_doc_no').html(getData.docketNumber);
+                                $('#r_cut_status').html(actCutstatus);
+                                $('#r_plan_plies').html(getData.plannedPlies);
+                                $('#r_reported_plies').html(getData.reportedPlies);
+                                //setting value to style,schedule,color
+                                $('#d_style').html(getData.style);
+                                $('#d_schedule').html(getData.schedules.toString());
+                                $('#d_color').html(getData.fgColor);
+                                if($('#good_report').val() == 'readonly'){
+                                    $('#c_plies').attr('readonly', true);
+                                    $('#cut_report').attr('disabled', true);
+                                    $('#full_reported').attr('disabled', true);
+                                    // $("#c_plies").attr('readonly', 'readonly');
+                                    
+                                    $('#c_plies').val(0);
+                                } else {
+                                    $('#c_plies').val(avl_plies);
+                                    $('#c_plies').attr('readonly', false);
+                                    $('#cut_report').attr('disabled', false);
+                                    $('#full_reported').attr('disabled', false);
+
+                                }
+                                // $('#c_plies').val(avl_plies);
+                                $('#fab_received').val(fab_req);
+
+                                $('#post_style').val(getData.style);
+                                $('#post_schedule').val(getData.docketNumber);
+                                $('#post_color').val(getData.fgColor);
+
+                                //resetting the submmit button
+                                $('#submit').css({'display':'block'});
+                                //load_rejections();
+                                if(data.rollinfo>0)
+                                {
+                                    $('.showifcontain').css({'display':'block'});
+                                    
+                                }
+                                if(data.rollinfo1>0)
+                                {
+                                    $('.showifcontain').css({'display':'none'});
+                                    
+                                }
+
+                                var fret = Number($('#fab_returned').val());
+                                if(fret > 0)
+                                {
+                                    $('#returend_to_parent').css({'display':'block'});
+                                } 
                                 else
                                 {
-                                    $('#wait_loader').css({'display':'none'});
-                                    swal(res.internalMessage);
-                                }                       
-                            },
-                            error: function(res){
-                                $('#wait_loader').css({'display':'none'});
-                                swal('Error in getting docket');
+                                    $('#returend_to_parent').css({'display':'none'});
+
+                                    //calculatecutreport();
+                                }
+                                    // $('#c_plies').attr('readonly', false);
+                                    $('#fab_received').attr('readonly', false);
+                                    $('#fab_returned').attr('readonly', false);
+                                    $('#damages').attr('readonly', false);
+                                    $('#joints').attr('readonly', false);
+                                    $('#endbits').attr('readonly', false);
+                                    calculatecutreport();   
+
                             }
-                        });
-                    }).fail(function (result) {
-                        console.log(result);
-                    }) ;
+                            else
+                            {
+                                $('#wait_loader').css({'display':'none'});
+                                swal(res.internalMessage);
+                            }                       
+                        },
+                        error: function(res){
+                            $('#wait_loader').css({'display':'none'});
+                            swal('Error in getting docket');
+                        }
+                    });
                 } else
                 {
                     swal('Fabric is not yet issued for this Docket');
