@@ -11,10 +11,24 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php'); 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
-// error_reporting(E_ALL);
+if($_session['plantCode']){
+
 $plantcode = $_session['plantCode'];
-// $plantcode ='AIP';
+}else{
+$plantcode = $_GET['plantCode'];
+
+}
+if($_session['userName']){
+
 $username =  $_session['userName'];
+}else{
+$username = $_GET['username'];
+
+}
+// error_reporting(E_ALL);
+// $plantcode = $_session['plantCode'];
+// $plantcode ='AIP';
+// $username =  $_session['userName'];
 ini_set('max_execution_time', 30000);
 
 
