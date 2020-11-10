@@ -400,9 +400,9 @@ if(isset($_POST['color']))
 						{
 							$bgcolor=" bgcolor=#FFEEDD ";
 						}
-						$grand_reject[$depts[$jj]]=$rejection;
+						$grand_reject[$depts[$jj]]=$grand_reject[$depts[$jj]]+$rejection;
 					}	
-					$grand_output+=$grand_output+$sw_out;
+					$grand_output=$grand_output+$sw_out;
 				}	
 				$grand_rejections=array_sum($grand_reject);			
 				echo "</tr>";
