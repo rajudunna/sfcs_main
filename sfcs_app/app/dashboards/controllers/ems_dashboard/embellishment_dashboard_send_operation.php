@@ -462,6 +462,9 @@ foreach ($workstations as $emb_key => $emb_value) {
         if ($good_qty == 0) {
           $id = "yash";
         }
+        if($send_qty>0){
+          $id = "blue";
+        }
 
         if ($orginal_qty != $good_qty && $good_qty > 0) {
           $id = "orange";
