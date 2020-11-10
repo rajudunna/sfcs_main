@@ -142,7 +142,7 @@ if(sizeof($sch_to_process)>0)
 			}
 			
 
-			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=".$schedules[$j]." and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$doc_no).")";
+			$sql="select coalesce(sum(carton_act_qty),0) as \"received\" from $bai_pro3.packing_summary_tmp_v1 where order_style_no=\"".$styles[$j]."\" and order_del_no=\"".$schedules[$j]."\" and order_col_des=\"".$color_group[$i]."\" and (status=\"DONE\" or disp_carton_no=1) and size_code=\"".$sizes[$j]."\" and doc_no in (".implode(",",$doc_no).")";
  			// echo $sql."<br/>";
 		
 			$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -278,7 +278,7 @@ if(sizeof($sch_to_process)>0)
 		$internal_audited=0;
 		$pendingcarts=0;
 
-		$sql1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no=$schedule";
+		$sql1="select fca_app,app,scanned from $bai_pro3.disp_mix where order_del_no='$schedule'";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -287,7 +287,7 @@ if(sizeof($sch_to_process)>0)
 			$internal_audited=$sql_row1['fca_app'];	
 		}
 		
-		$sql1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container=1";
+		$sql1="select sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container=1";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{
@@ -295,7 +295,7 @@ if(sizeof($sch_to_process)>0)
 		}
 		
 		
-		$sql1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no=$schedule and container>1";
+		$sql1="select distinct container, sum(if(status is null and disp_carton_no=1,1,0)) as \"pendingcarts\" from $bai_pro3.packing_summary where order_del_no='$schedule' and container>1";
 		$sql_result1=mysqli_query($link, $sql1) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_row1=mysqli_fetch_array($sql_result1))
 		{

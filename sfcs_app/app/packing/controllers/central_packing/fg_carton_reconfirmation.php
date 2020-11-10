@@ -48,13 +48,14 @@ function checkAll()
 
 <?php 
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',4,'R'));
+include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/functions.php',4,'R'));
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/rest_api_calls.php',4,'R'));
 ?>
 <?php
 
 	if(!isset($_POST['reconfirm']))
 	{
-		$sql="SELECT * from $bai_pro3.pac_stat where fg_status='fail'";
+		$sql="SELECT * from $bai_pro3.pac_stat where fg_status='fail' limit 100";
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error11".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$count=mysqli_num_rows($sql_result);
 		if($count>0)
@@ -124,7 +125,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 				
 				$carton_info = '[
 				{
-					"serialNumber" : "'.$carton_id.'",
+					"serialNumber" : "'.leading_zeros($carton_id,10).'",
 					"m3StyleNumber" : "'.$style.'",
 					"remarks" : "",
 					"m3ScheduleNumber" : "'.$schedule.'",

@@ -1,6 +1,7 @@
 <?php
 	include('../../../../common/config/config_ajax.php');
 	include("../../../../common/config/m3Updations.php");
+	include("../../../../common/config/functions.php");
 
 	$plant_code = $plant_wh_code;
 	// $b_op_id='200';
@@ -19,7 +20,6 @@
 		$b_op_id = $_GET['operation_id'];
 		//echo $b_op_id;
 		$shift = $_GET['shift'];
-        
 		$count_query = "SELECT * FROM $bai_pro3.pac_stat WHERE id='".$carton_id."'";
 		$count_result = mysqli_query($link,$count_query);
 		if(mysqli_num_rows($count_result)>0)
@@ -223,6 +223,11 @@
 									$order_date=$row_main['order_date'];
 								}
 								
+								if($carton_id[0]!='0')
+								{
+									$carton_id=leading_zeros($carton_id,10);
+								}		
+
 								$carton_info = '[
 								{
 									"serialNumber" : "'.$carton_id.'",
@@ -237,7 +242,6 @@
 									"confirmedDeliveryDate" : "'.$order_date.'"
 								}
 								]';	
-								
 								$post_carton_response = $obj->postCartonInfo($carton_info, $plant_code, $carton_id);
 								$decoded = json_decode($post_carton_response,true);
 								//var_dump($decoded);
@@ -250,7 +254,7 @@
 									$inventory_id = $decoded[0]['id'];
 									$update_fg_id="update $bai_pro3.pac_stat set fg_status='pass', fg_inventory_id='".$inventory_id."'  where id = ".$carton_id."";
 									mysqli_query($link, $update_fg_id) or exit("Error while updating pac_stat inventory");
-								}								
+								}																
 							}							
 						}
 					}
