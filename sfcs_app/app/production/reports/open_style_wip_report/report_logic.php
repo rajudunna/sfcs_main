@@ -28,6 +28,7 @@
 	$bcd_good_qty1 = [];
 	$bcd_rejected_qty1 = [];
 	$main_data = [];
+	$order_tid_wip = [];
 	$pre_op_code = 0;
 	//To get default Operations
     $get_operations_workflow= "SELECT tsm.operation_code AS operation_code,tor.operation_name AS operation_name FROM $brandix_bts.default_operation_workflow tsm 
@@ -43,7 +44,7 @@
 			$opertion_names[] = ['op_name'=>$row3['operation_name'],'op_code'=>$row3['operation_code']];
             $ops_get_code[$row3['operation_code']] = $row3['operation_name'];
         }
-    }
+	}
 	
 	$operation_codes_str = implode(',',$operation_code);
     //To get operation names
@@ -69,6 +70,16 @@
         }
     }
 	$today=date("Y-m-d");
+	$get_temp_qry ="select style,schedule,color,size_title From $brandix_bts.bundle_creation_data_temp Where  date_time between '$today 00:00:00' and '$today 23:59:59' group by style,schedule,color,size_title ";
+	$get_temp_data_res =$link->query($get_temp_qry);
+	while ($temp_res = $get_temp_data_res->fetch_assoc())
+	{
+		$style1 = $temp_res['style'];
+		$schedule1 = $temp_res['schedule'];
+		$color1 = $temp_res['color'];
+		$size1 = $temp_res['size_title'];
+		$order_tid_wip[] = $style1."$".$schedule1."$".$color1."$".$size1;
+	}
 	$get_style_wip_data="select style,schedule,color,size FROM $brandix_bts.open_style_wip where style<>'' and status='open' group by style,schedule,color,size";
 	//echo $get_style_wip_data."<br>";
 	$get_style_data_result =$link->query($get_style_wip_data);
@@ -78,53 +89,63 @@
 		$schedule = $row1['schedule'];
 		$color = $row1['color'];
 		$size = $row1['size'];
+		$order_tid_wip[] = $style."$".$schedule."$".$color."$".$size;
+	}
+	$final = array_unique($order_tid_wip);
+	foreach ($final as $key => $value) 
+	{
+		$val = explode("$", $value);
+		// var_dump($val);
+		$style = $val[0];
+		$schedule = $val[1];
+		$color = $val[2];
+		$size = $val[3];
 		//$operation[] = $row1['operation_code'];
-        $get_size_title = "SELECT order_quantity FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
+		$get_size_title = "SELECT order_quantity FROM $brandix_bts.`tbl_orders_sizes_master` AS ch LEFT JOIN $brandix_bts.`tbl_orders_master` AS p ON p.id=ch.parent_id 
 		WHERE p.product_schedule='$schedule' AND ch.order_col_des='$color' AND ch.size_title='$size' limit 1";
 		//echo $get_size_title."<br>";
-        $get_size_title_result =$link->query($get_size_title);
+		$get_size_title_result =$link->query($get_size_title);
 		while ($row110 = $get_size_title_result->fetch_assoc())
 		{
 			$order_qty = $row110['order_quantity']; 
 		}
 		//To get Order Qty
-        $get_order_qty="select co_no from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
+		$get_order_qty="select co_no from $bai_pro3.bai_orders_db_confirm where order_style_no='$style' and order_del_no='$schedule' and order_col_des='$color' ";
 		//echo $get_order_qty."<br>";
-        $get_order_result =$link->query($get_order_qty);
-        while ($row5 = $get_order_result->fetch_assoc())
-        {
+		$get_order_result =$link->query($get_order_qty);
+		while ($row5 = $get_order_result->fetch_assoc())
+		{
 			$cono = $row5['co_no'];
-        }
+		}
 		
-        foreach ($operation_code as $key => $value) 
-        {
-          $main_good_qty[$value] = 0;
-          $main_rejected_qty[$value] = 0;
-          $bcd_good_qty1[$value] = 0;
-          $bcd_rejected_qty1[$value] = 0;
-          $bcd_rec[$value] =0;
-          $bcd_rej[$value] =0;
-        }
-        $single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono,'orderqty'=>$order_qty];
-        //$operations = implode(',',$operation);	
+		foreach ($operation_code as $key => $value) 
+		{
+			$main_good_qty[$value] = 0;
+			$main_rejected_qty[$value] = 0;
+			$bcd_good_qty1[$value] = 0;
+			$bcd_rejected_qty1[$value] = 0;
+			$bcd_rec[$value] =0;
+			$bcd_rej[$value] =0;
+		}
+		$single_data = ['style'=>$style,'schedule'=>$schedule,'color'=>$color,'size'=>$size,'cono'=>$cono,'orderqty'=>$order_qty];
 		
-        $get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $brandix_bts.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' group by operation_code";
+		$get_qty_data = "select COALESCE(SUM(good_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_code From $brandix_bts.open_style_wip where style='$style' and schedule='$schedule' and color='$color' and size='$size' group by operation_code";
 		//echo $get_qty_data."<br>";
-        $get_qty_result =$link->query($get_qty_data);
-        while ($row2 = $get_qty_result->fetch_assoc())
-        {
-            $main_good_qty[$row2['operation_code']] = $row2['good_qty'];
-            $main_rejected_qty[$row2['operation_code']] = $row2['rejected_qty'];
-        }
-        
-        $get_temp_data ="select COALESCE(SUM(recevied_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_id From $brandix_bts.bundle_creation_data_temp Where style='$style' and schedule='$schedule' and color='$color' and size_title='$size' and date(date_time) = '$today' group by operation_id";
+		$get_qty_result =$link->query($get_qty_data);
+		while ($row2 = $get_qty_result->fetch_assoc())
+		{
+			$main_good_qty[$row2['operation_code']] = $row2['good_qty'];
+			$main_rejected_qty[$row2['operation_code']] = $row2['rejected_qty'];
+		}
+		
+		$get_temp_data ="select COALESCE(SUM(recevied_qty),0) as good_qty,COALESCE(SUM(rejected_qty),0) as rejected_qty,operation_id From $brandix_bts.bundle_creation_data_temp Where style='$style' and schedule='$schedule' and color='$color' and size_title='$size' and date(date_time) = '$today' group by operation_id";
 		//echo $get_temp_data."<br>";
-        $get_temp_data_result =$link->query($get_temp_data);
-        while ($row = $get_temp_data_result->fetch_assoc())
-        {
-            $bcd_good_qty1[$row['operation_id']] = $row['good_qty'];
-            $bcd_rejected_qty1[$row['operation_id']] = $row['rejected_qty'];
-        }
+		$get_temp_data_result =$link->query($get_temp_data);
+		while ($row = $get_temp_data_result->fetch_assoc())
+		{
+			$bcd_good_qty1[$row['operation_id']] = $row['good_qty'];
+			$bcd_rejected_qty1[$row['operation_id']] = $row['rejected_qty'];
+		}
 
 		//To get default Operations for WIP
 		$get_operations_workflow_wip="SELECT tsm.operation_code AS operation_code,tsm.operation_order AS operation_order FROM $brandix_bts.tbl_style_ops_master tsm 
@@ -191,5 +212,5 @@
 	$result['main_data'] = $main_data;
 	$result['operations'] = $opertion_names;
 	echo json_encode($result);
-       
+	
 ?>
