@@ -539,8 +539,7 @@ $.ajax
                           $maxRejQty=$maxOperationResultRow['rejected_quantity'];
                       }
                     }  
-
-
+                    
                     $value='';
                     $input_qty=$minGoodQty;      // input qty
                     $output_qty=$maxGoodQty;
@@ -570,6 +569,16 @@ $.ajax
                           $componentgroup = $job_detail_attributes[$sewing_job_attributes['componentgroup']];
                           $conumber = $job_detail_attributes[$sewing_job_attributes['cono']];
                           
+                          //check whether job having any rejections or not
+                          $get_rejection_details="SELECT SUM(rejection_quantity) AS rejected, SUM(replaced_quantity) AS replacement FROM $pts.rejection_transaction WHERE job_number='$sewingjobno' AND plant_code='$plantCode'";
+                          $qry_rejection_details_result = mysqli_query($link_new, $get_rejection_details) or exit("rejection header data not found for job " . mysqli_error($GLOBALS["___mysqli_ston"]));
+                           while ($row3 = mysqli_fetch_array($qry_rejection_details_result)) {
+                            $rejectedQty=$row3['rejected'];
+                            $replacementQty=$row3['replacement'];
+                          }
+                          if($rejectedQty != $replacementQty){
+                            $value='R';
+                          }
                           $departmentType = DepartmentTypeEnum::SEWING;
                           $sidemenu=true;
                           $ui_url1 = getFullURLLevel($_GET["r"],'production/controllers/sewing_job/sewing_job_scaning/scan_job.php',3,'N')."&dashboard_reporting=1&job_type=$departmentType&module=$module&job_no=$sewingjobno&style=$style&schedule=$schedule&operation_id=$maxOperation&sidemenu=$sidemenu";
@@ -585,14 +594,14 @@ $.ajax
                           Input Date : <?php echo $inputdate."<br/>"; ?>
                           Total Input :<?php echo $input_qty."<br/>"; ?>
                           Total Output:<?php echo $output_qty."<br/>"; ?>
-                          Rejected:<?php echo $MaxRejQty."<br/>"; ?>
-                          <?php echo "Balance : ".($input_qty - ($output_qty+$MaxRejQty))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
+                          Rejected:<?php echo $rejected_qty."<br/>"; ?>
+                          <?php echo "Balance : ".($input_qty - ($output_qty+$rejected_qty))."<br/>";?>Remarks: <?php echo $ims_remarks."<br/>"; ?>
                           " rel="tooltip">
                           <?php echo "<div class=\"blue_box\" id=\"S$schedule\" style=\"$rejection_border\">";?>
                           <?php echo $value; ?>
                           </div></a>
                           <?php
-                          $wip=(($wip+$input_qty)-($output_qty+$MaxRejQty));
+                          $wip=(($wip+$input_qty)-($output_qty+$rejected_qty));
                     } 
                 }
               }

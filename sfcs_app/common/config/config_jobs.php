@@ -1,5 +1,4 @@
 <?php 
-
 $include_path=getenv('config_job_path');
 include($include_path.'\configuration\API\confr.php');
 $conf = new confr($include_path.'\configuration\API\saved_fields\fields.json');
