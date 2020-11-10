@@ -577,64 +577,39 @@ function reportCut(id) {
         });
     }
     let bearer_token;
-    const creadentialObj = {
-        grant_type: 'password',
-        client_id: 'pps-back-end',
-        client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-        username: 'bhuvan',
-        password: 'bhuvan'
-    }
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
+            type: "POST",
+            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+            data:  reportData,
             contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-    }).then(function (result) {
-        console.log(result);
-        bearer_token = result['access_token'];
-        $.ajax({
-                type: "POST",
-                url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-                data:  reportData,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (res) {            
-                    //console.log(res.data);
-                    if(res.status)
-                    {
-                        $('#post_post').hide();
-                        $('#reportcut').show();
-                        sweetAlert('Cut Reported Successfully!!!','','success');
-                        setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                    }
-                    else
-                    {
-                        $('#post_post').hide();
-                        $('#reportcut').show();
-                        swal(res.internalMessage);
-                    }                       
-                },
-                error: function(res){
-                    $('#loading-image').hide(); 
-                    // alert('failure');
-                    // console.log(response);
-                    swal('Error in Reporting Cut');
+            dataType: "json",
+            success: function (res) {            
+                //console.log(res.data);
+                if(res.status)
+                {
                     $('#post_post').hide();
                     $('#reportcut').show();
+                    sweetAlert('Cut Reported Successfully!!!','','success');
+                    setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
                 }
-        }); 
-    }).fail(function (result) {
-        console.log(result);
-    });
+                else
+                {
+                    $('#post_post').hide();
+                    $('#reportcut').show();
+                    swal(res.internalMessage);
+                }                       
+            },
+            error: function(res){
+                $('#loading-image').hide(); 
+                // alert('failure');
+                // console.log(response);
+                swal('Error in Reporting Cut');
+                $('#post_post').hide();
+                $('#reportcut').show();
+            }
+    }); 
 }
 
 function deleteCut(id) {
@@ -645,65 +620,40 @@ function deleteCut(id) {
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
-    const creadentialObj = {
-    grant_type: 'password',
-    client_id: 'pps-back-end',
-    client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-    username: 'bhuvan',
-    password: 'bhuvan'
-    }
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
-        method: 'POST',
-        url: "<?php echo $KEY_LOCK_IP?>",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        xhrFields: { withCredentials: true },
+        type: "POST",
+        url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+        data:  reportData,
         contentType: "application/json; charset=utf-8",
-        transformRequest: function (Obj) {
-            var str = [];
-            for (var p in Obj)
-                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-            return str.join("&");
-        },
-        data: creadentialObj
-    }).then(function (result) {
-        console.log(result);
-        bearer_token = result['access_token'];
-        $.ajax({
-            type: "POST",
-            url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-            data:  reportData,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (res) {            
-                //console.log(res.data);
-                console.log(res.status);
-                if(res.status)
-                {
-                    $('#post_post').hide();
-                    $('#deletecut').show();
-                    sweetAlert('Cut deleted Successfully!!!','','success');
-                    setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
-                }
-                else
-                {
-                    $('#post_post').hide();
-                    $('#deletecut').show();
-                    swal(res.internalMessage);
-                }                       
-            },
-            error: function(res){
-                $('#loading-image').hide(); 
-                // alert('failure');
-                // console.log(response);
-                swal('Error in Reporting Cut');
+        dataType: "json",
+        success: function (res) {            
+            //console.log(res.data);
+            console.log(res.status);
+            if(res.status)
+            {
                 $('#post_post').hide();
                 $('#deletecut').show();
+                sweetAlert('Cut deleted Successfully!!!','','success');
+                setTimeout(window.location = " <?='?r='.$_GET['r'] ?>", 2000);
             }
-        });    
-    }).fail(function (result) {
-        console.log(result);
-    }) ;
+            else
+            {
+                $('#post_post').hide();
+                $('#deletecut').show();
+                swal(res.internalMessage);
+            }                       
+        },
+        error: function(res){
+            $('#loading-image').hide(); 
+            // alert('failure');
+            // console.log(response);
+            swal('Error in Reporting Cut');
+            $('#post_post').hide();
+            $('#deletecut').show();
+        }
+    });    
 }
 
 function validatingReverseQty(id) {
