@@ -1,6 +1,7 @@
 <?php
 //2014-09-12/Kirang/261957: Added floor set deliveries identification for s=4
 //CR # 174 - KiranG/2014-0924 Added pupup based window.
+// echo 'wecome';exit;
 ?>
 
 <?php
@@ -87,16 +88,27 @@ $color=color_decode($_GET['color']);
 <div class="panel-body">
 <form name="test" action="index.php?r=<?php echo $_GET['r'];  ?>" method="post">
 <?php
-
+	
+	$operation_code_sql = "SELECT group_concat(DISTINCT CONCAT(\"'\",TRIM(style),TRIM(color),\"'\")) as style_color FROM $brandix_bts.tbl_style_ops_master WHERE operation_code IN (SELECT DISTINCT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category IN ('Send PF','Receive PF'))";
+	//$operation_code_sql="welcome";
+	 // echo $operation_code_sql;exit;
+ $sql_row_result123=mysqli_query($link,$operation_code_sql) or exit("Sql Error".mysql_error());
+//$operation_code=mysqli_num_rows($sql_row_result123);
+while($style_color=mysqli_fetch_array($sql_row_result123)){
+	$s_c=$style_color["style_color"];
+	// echo $style_color['style_color'];
+}
+//exit;
+$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ where CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN ($s_c)";
+// echo $sql;exit;
+$sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysql_error());
+$sql_num_check=mysqli_num_rows($sql_result);
+//echo $sql;exit;
+//var_dump($sql_result);
+// echo $sql_num_check;die();
 echo "<div class='row'>";
 echo "<div class='col-sm-3'><label>Select Style: </label><select name=\"style\" onchange=\"firstbox();\" class='form-control' >";
-$sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ 
-WHERE CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN (SELECT DISTINCT CONCAT(TRIM(style),TRIM(color)) 
-FROM $brandix_bts.tbl_style_ops_master 
-WHERE operation_code IN (SELECT DISTINCT operation_code FROM $brandix_bts.tbl_orders_ops_ref WHERE category IN 
-('Send PF','Receive PF')))";
-$sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
-$sql_num_check=mysqli_num_rows($sql_result);
+
 echo "<option value=\"NIL\" selected>NIL</option>";
 while($sql_row=mysqli_fetch_array($sql_result))
 {
@@ -112,6 +124,7 @@ else
 
 }
 echo "</select></div>";
+//exit;
 $sql="select distinct order_del_no from $bai_pro3.plan_doc_summ where order_style_no=\"$style\"";	
 echo "<div class='col-sm-3'><label>Select Schedule: </label><select name=\"schedule\" onchange=\"secondbox();\" class='form-control' >";
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
@@ -141,11 +154,10 @@ while($sql_row=mysqli_fetch_array($sql_result))
 {
 	$clubbing=$sql_row['clubbing'];
 }
-
+$sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
+//echo $sql;exit;
 echo "<div class='col-sm-3'><label>Select Color: </label><select name=\"color\" onchange=\"thirdbox();\" class='form-control' >";
 
-$sql="select GROUP_CONCAT(DISTINCT trim(order_col_des)) AS disp,max(plan_module),order_col_des from order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing>0 group by clubbing union select DISTINCT order_col_des,plan_module,order_col_des AS disp from $bai_pro3.order_cat_doc_mix where order_style_no=\"$style\" and order_del_no=\"$schedule\" and clubbing=0 group by clubbing,order_col_des";
-echo $sql;
 
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
