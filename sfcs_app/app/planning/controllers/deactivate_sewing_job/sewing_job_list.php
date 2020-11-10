@@ -59,7 +59,8 @@ if(isset($_POST['Save']))
                     $task_header_id=$qry_header_id_row['task_header_id'];
                 }
                 $task_status1=TaskStatusEnum::HOLD;
-                $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status1',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+                $task_progress1=TaskProgressEnum::HOLD;
+                $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status1',task_progress='$task_progress1',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
                 mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
 
             }
@@ -89,7 +90,8 @@ if(isset($_POST['Save']))
                         $task_header_id=$qry_header_id_row['task_header_id'];
                     }
                     $task_status=TaskStatusEnum::INPROGRESS;
-                    $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+                    $task_progress=TaskProgressEnum::INPROGRESS;
+                    $update_qry_task_header = "UPDATE $tms.task_header set task_status='$task_status',task_progres='$task_progress',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
                     mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));   
         
                     

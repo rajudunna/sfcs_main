@@ -13,9 +13,10 @@ if(isset($_GET['plant_code']))
 }
 else
 {
-	$plant_Code = $_SESSION['plantCode'];
+	$plant_Code = $argv[1];	
 	$username = $_SESSION['userName'];
 }
+
 $teams=$shifts_array;
 $team_array=implode(",",$shifts_array);
 $team = "'".str_replace(",","','",$team_array)."'"; 

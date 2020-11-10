@@ -294,7 +294,8 @@ $(document).ready(function(){
 			type:'POST',
 			data:{dataset :ItemArray,style:sty_id,schedule:sch_id,color:color_id,cutnum:cut_no,batch_refer:batch_ref,section:section,plantcode:plantcode,username:username},          
 			success: function (data) 
-			{                           
+			{                 
+                     
 				$("#loading-image").hide();
 				if(data!=''){
 						swal({
@@ -819,7 +820,7 @@ $(document).ready(function(){
                             $reason_code_db = array();
                            
                             $sql_reason="select reason_id,internal_reason_code,internal_reason_description from $mdm.reasons where department_type='RMWAREHOUSE'  order by internal_reason_description";
-                            echo $sql_reason;
+                            //echo $sql_reason;
 							$sql_result=mysqli_query($link, $sql_reason) or die(exception($sql_reason));
 							$count = mysqli_num_rows($sql_result);
 							

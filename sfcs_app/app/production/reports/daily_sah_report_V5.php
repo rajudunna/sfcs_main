@@ -3,7 +3,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 //include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/user_acl_v1.php',3,'R'));
 //$view_access=user_acl("SFCS_0060",$username,1,$group_id_sfcs);
-$plantcode=$_SESSION['plantCode'];
+$plantCode=$_SESSION['plantCode'];
 ?>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -1377,7 +1377,7 @@ $actual_working_days=$working_days-$half_days+($half_days/2);
 //echo $working_days."-".$half_days."-".($working_days-$half_days+($half_days/2));
 
 //$sql7=mysql_query("SELECT COUNT(DISTINCT DATE) as days FROM $pts.grand_rep WHERE (DATE between \"$dat\" and \"$dat1\")");
-$sql71256=mysqli_query($link, "SELECT COUNT(DISTINCT date) as days FROM $pts.grand_rep WHERE plant_code='$plantcode' and (DATE between \"$c_dat\" and \"$dat1\")");
+$sql71256=mysqli_query($link, "SELECT COUNT(DISTINCT date) as days FROM $pts.grand_rep WHERE plant_code='$plantCode' and (DATE between \"$c_dat\" and \"$dat1\")");
 while($rows7123=mysqli_fetch_array($sql71256))
 {
 	//To calculate completed working shifts and days of a month
@@ -1399,7 +1399,7 @@ $sec_list[]="Factory";
 $section_list="'".implode("','",$sec_list)."'";
 
 
-$sql7=mysqli_query($link, "SELECT SUM(act_sth) as sah,sum(plan_sth) as psah FROM $pts.grand_rep  WHERE plant_code='$plantcode' and section in ('$sectionIds') and DATE=\"".$dat1."\"");
+$sql7=mysqli_query($link, "SELECT SUM(act_sth) as sah,sum(plan_sth) as psah FROM $pts.grand_rep  WHERE plant_code='$plantCode' and section in ('$sectionIds') and DATE=\"".$dat1."\"");
 while($rows7=mysqli_fetch_array($sql7))
 {
 	$today_sah=$rows7["sah"];
@@ -1651,10 +1651,10 @@ echo "<hr/><div class='table-responsive' id=\"SAH -JUN_13441\">
 $vs_sah_plan=$vs_plan;
 
 $decimal_factor=2;
-
-$sql_vs="SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act from $pts.grand_rep where plant_code='$plantcode' and section in (".implode(",",$sec_array).") and date between \"$c_dat\" and \"$dat1\"";
+// ('".implode("','" , $jm_job_header_id)."')
+$sql_vs="SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act from $pts.grand_rep where plant_code='$plantCode' and section in ('".implode("','" , $sec_array)."') and date between \"$c_dat\" and \"$dat1\"";
 //echo $sql_vs;
-$result_vs=mysqli_query($link, $sql_vs) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$result_vs=mysqli_query($link, $sql_vs) or die("Error at getting grand rep data ".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs=mysqli_fetch_array($result_vs))
 {
 	$vs_act_sah=$row_vs["act"];
@@ -1670,9 +1670,9 @@ while($row_ms=mysql_fetch_array($result_ms))
 	$ms_plan_sah=$row_ms["plan"];
 }*/
 
-$sql_vs_today="SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act from $pts.grand_rep where plant_code='$plantcode' and section in (".implode(",",$sec_array).") and date=\"$dat1\"";
-//echo $sql_vs;
-$result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"]));
+$sql_vs_today="SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act from $pts.grand_rep where plant_code='$plantCode' and section in ('".implode("','" , $sec_array)."')  and date=\"$dat1\"";
+// echo $sql_vs;
+$result_vs_today=mysqli_query($link, $sql_vs_today) or die("Error at getting grand rep data plant sah".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($row_vs_today=mysqli_fetch_array($result_vs_today))
 {
 	$vs_plan_sah_today=$row_vs_today["plan"];
@@ -1690,7 +1690,7 @@ while($row_ms_today=mysql_fetch_array($result_ms_today))
 
  
   
-$sql_dat=mysqli_query($link, "select distinct date from $pts.grand_rep where plant_code='$plantcode' and date between \"$dat\" and \"$dat1\" order by date");
+$sql_dat=mysqli_query($link, "select distinct date from $pts.grand_rep where plant_code='$plantCode' and date between \"$dat\" and \"$dat1\" order by date");
 while($row=mysqli_fetch_array($sql_dat))
 {
 	$date = $row['date']; 
@@ -1702,7 +1702,7 @@ while($row=mysqli_fetch_array($sql_dat))
 	//echo implode(",",$sec_array);
 	for($i=0;$i<sizeof($sec_array);$i++)
 	{
-		$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");
+		$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantCode' and DATE=\"".$row["date"]."\" AND section=\"".$sec_array[$i]."\" group by module,shift order by module");
 		$totalPlanSAH=0;
 		$totalActSAH=0;	 
 		while($rows=mysqli_fetch_array($sql))
@@ -1914,7 +1914,7 @@ while($row=mysqli_fetch_array($sql_dat))
 		//echo "<td class=xl10713441 style='border-top:none;border-left:none'></td>";
 	}
 
-	$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
+	$sql=mysqli_query($link, "SELECT SUM(plan_sth) as plan,SUM(act_sth) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantCode' and section in (".implode(",",$sec_array).") and DATE=\"".$row["date"]."\" group by module,shift order by module");
 	$totalPlanSAH=0;
 	$totalActSAH=0;
 	while($rows=mysqli_fetch_array($sql))
@@ -2002,7 +2002,7 @@ echo "<tr height=27 style='mso-height-source:userset;height:20.25pt'>
 for($i2=0;$i2<sizeof($sec_array);$i2++)
 {	
 
-  $sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,ROUND(SUM(act_clh),$decimal_factor) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$sec_array[$i2]."\" group by date,module,shift order by date,module");
+  $sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,ROUND(SUM(act_clh),$decimal_factor) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantCode' and DATE between \"".$dat."\" and \"".$dat1."\" AND section=\"".$sec_array[$i2]."\" group by date,module,shift order by date,module");
   while($rows=mysqli_fetch_array($sql))
   {
 		$plan_sah_fac=$plan_sah_fac+round($rows["plan"],$decimal_factor);
@@ -2238,7 +2238,7 @@ foreach($shifts_array as $shift)
   $plan_sah_fac=0; $act_sah_fac=0; $plan_clh_fac=0; $act_sah_fac_a=0; $act_sah_fac_b=0; $act_sah_fac_general=0; $plan_sah_fac_a=0; $plan_sah_fac_b=0; $plan_sah_fac_general=0;
   
 }
-$sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantcode' and section in (".implode(",",$sec_array).") and DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
+$sql=mysqli_query($link, "SELECT ROUND(SUM(plan_sth),$decimal_factor) as plan,ROUND(SUM(act_sth),$decimal_factor) as act,SUM(act_clh) as clh,shift FROM $pts.grand_rep WHERE plant_code='$plantCode' and section in (".implode(",",$sec_array).") and DATE between \"".$dat."\" and \"".$dat1."\" group by date,module,shift order by date,module ");
 while($rows=mysqli_fetch_array($sql))
 {
 	$total_plan_sah_fac=$total_plan_sah_fac+round($rows["plan"],$decimal_factor);
