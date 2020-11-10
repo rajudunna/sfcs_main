@@ -177,7 +177,7 @@
 				var reverseObj = {sewingJobNo: job_no, plantCode: '<?= $plant_code ?>', operationCode: operation};
 				// var reverseObj = [job_no,plant_code,ops,module1];
 				var bearer_token;
-				bearer_token = '<?php $_SESSION['authToken'] ?>';
+				bearer_token = '<?= $_SESSION['authToken'] ?>';
 				$.ajax({
 					type: "POST",
 					url: getReversalJobInfoUrl,
@@ -310,7 +310,7 @@
 			rejectReportData.sizeQuantities = sizeQuantities;
 			var seveSewJobReversalUrl = '<?= $PTS_SERVER_IP.'/fg-reporting/reportSemiGmtOrGmtJobReversal' ?>';
 			var bearer_token;
-			bearer_token = '<?php $_SESSION['authToken'] ?>';
+			bearer_token = '<?= $_SESSION['authToken'] ?>';
 			$.ajax({
 				type: "POST",
 				url: seveSewJobReversalUrl,

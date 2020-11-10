@@ -136,7 +136,7 @@ $(document).ready(function()
 		var bearer_token;
 		var plant_code = $('#plant_code').val();
 		var embObj = {"barcode":barcode, "plantCode":plant_code, "operationCode":operation_id, "shift": '<?= $shift?>', "createdUser": '<?= $userName?>'};
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		$.ajax({
 			type: "POST",
 			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportPanelFormBarcode",

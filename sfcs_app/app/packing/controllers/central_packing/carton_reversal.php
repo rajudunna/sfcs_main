@@ -42,7 +42,7 @@ function cartonReversal(){
 	if (carton_id != '')
 			{	
 				var bearer_token;
-				bearer_token = '<?php $_SESSION['authToken'] ?>';
+				bearer_token = '<?= $_SESSION['authToken'] ?>';
 				$.ajax({
 					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCartonReversal",
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },

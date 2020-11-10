@@ -156,7 +156,7 @@ $(document).ready(function()
 						"reportAsFullGood": true
 				    }
 		var bearer_token;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		$.ajax({
 			type: "POST",
 			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",

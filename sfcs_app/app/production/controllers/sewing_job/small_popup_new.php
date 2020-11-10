@@ -24,7 +24,7 @@ $(document).ready(function()
 	var plant_code="<?= $_GET['plantcode'] ;?>";
 	var inputObj = {"jobNumber":inputjob, "plantCode":plant_code};
 	var bearer_token;
-	bearer_token = '<?php $_SESSION['authToken'] ?>';
+	bearer_token = '<?= $_SESSION['authToken'] ?>';
 	$.ajax({
 		type: "POST",
 		url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobColorSizeDetails' ?>',

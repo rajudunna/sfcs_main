@@ -93,7 +93,7 @@
         var inputObj = {"poNumber":po,"plantCode":plant_code};
         var split_jobs = "<?php echo getFullURL($_GET['r'],'split_jobs.php','R'); ?>";
         var bearer_token;
-        bearer_token = '<?php $_SESSION['authToken'] ?>';
+        bearer_token = '<?= $_SESSION['authToken'] ?>';
         $.ajax({
             type: "POST",
             url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobNumbersByPo",

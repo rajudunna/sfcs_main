@@ -332,7 +332,7 @@
             }	
         }
 		var bearer_token;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		$.ajax({
 			type: "POST",
 			url: '<?= $job_retrieval_url ?>',
@@ -643,7 +643,7 @@
 			$('#flag_validation').val(0);
 			$('#smart_btn_arear').hide();
 			var bearer_token;
-			bearer_token = '<?php $_SESSION['authToken'] ?>';
+			bearer_token = '<?= $_SESSION['authToken'] ?>';
 			$.ajax({
 				type: "POST",
 				url: '<?= $job_publish_url ?>',

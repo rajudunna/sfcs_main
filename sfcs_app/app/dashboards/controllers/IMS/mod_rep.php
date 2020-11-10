@@ -325,7 +325,7 @@ $(document).ready(function(){
                                 "createdUser": '<?= $user_name ?>'
                             }
                 var bearer_token;
-                bearer_token = '<?php $_SESSION['authToken'] ?>';
+                bearer_token = '<?= $_SESSION['authToken'] ?>';
                 $.ajax({
                     type: "POST",
                     url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/transferBundlesToWorkStation",

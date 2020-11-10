@@ -688,7 +688,7 @@ function check_pack()
 		
 		var bearer_token;
         var getData;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		$.ajax({
 			type: "POST",
 			url: url1,

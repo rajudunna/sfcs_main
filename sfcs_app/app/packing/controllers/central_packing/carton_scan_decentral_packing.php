@@ -160,7 +160,7 @@
 				$("#scan_carton_id").html("<b><font size='7'>Scanning Carton No: <font color='green' size='7'>"+carton_id+"</font></font><b>");
 				var function_text = "carton_scan_ajax.php";
 				var bearer_token;
-				bearer_token = '<?php $_SESSION['authToken'] ?>';
+				bearer_token = '<?= $_SESSION['authToken'] ?>';
 				$.ajax({
 					url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportCarton",
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },

@@ -42,7 +42,7 @@ $(document).ready(function() {
     if(sj != ''){
         var sjObj = {"jobNumber":sj,"plantCode":plant_code};
         var bearer_token;
-        bearer_token = '<?php $_SESSION['authToken'] ?>';
+        bearer_token = '<?= $_SESSION['authToken'] ?>';
         $.ajax({
             type: "POST",
             url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/getJobBundleDetailsWithBundles",
@@ -92,7 +92,7 @@ function sendResponse(){
     var outputObj = { "sewingJobNumber": sj_number, "bundleNo":slectedList, "plantCode": '<?= $plant_code ?>', "createdUser": '<?= $username ?>' };
     console.log(outputObj);
     var bearer_token;
-    bearer_token = '<?php $_SESSION['authToken'] ?>';
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
         type: "POST",
         url: "<?php echo $PPS_SERVER_IP?>/jobs-generation/spllitSewingJob",

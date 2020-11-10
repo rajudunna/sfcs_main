@@ -230,7 +230,7 @@ $(document).ready(function()
 		var username="<?= $_SESSION['userName'] ;?>";
 		var inputObj = {"poNumber":subpo, "plantCode":plant_code, "userName":username};
 		var bearer_token;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		$.ajax({
 			type: "POST",
 			url: '<?= $PPS_SERVER_IP.'/jobs-generation/getJobDetailsByPo' ?>',
@@ -316,7 +316,7 @@ $(document).ready(function()
 		table.destroy()
 		var numberOfChecked = $('input:checkbox:checked').length;
 		var bearer_token;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		if(numberOfChecked > 1) {
 		var jobIds = [];
 		$('input[type="checkbox"]').each((key, element) => {

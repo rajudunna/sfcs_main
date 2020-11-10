@@ -577,7 +577,7 @@ function reportCut(id) {
         });
     }
     let bearer_token;
-    bearer_token = '<?php $_SESSION['authToken'] ?>';
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
             type: "POST",
             url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/cutReporting",
@@ -620,7 +620,7 @@ function deleteCut(id) {
     reportData.createdUser = '<?= $username ?>';
     reportData.plantCode = '<?= $plantcode ?>';
     var bearer_token;
-    bearer_token = '<?php $_SESSION['authToken'] ?>';
+    bearer_token = '<?= $_SESSION['authToken'] ?>';
     $.ajax({
         type: "POST",
         url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/deleteCutReporting",

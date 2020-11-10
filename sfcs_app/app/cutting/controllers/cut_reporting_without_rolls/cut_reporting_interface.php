@@ -6,7 +6,6 @@ include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
 
-
 //$has_permission=haspermission($_GET['r']); 
 
 if($fabric_validation_for_cut_report == 'yes')
@@ -100,7 +99,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 }
 
 ?>
-
+<script src="../../../../common/js/jquery_new.min.js"></script>
 <!-- Cut Reporting Code -->
 <div class='panel panel-primary cut_tab'>
     <div class='panel-heading'>
@@ -1341,7 +1340,7 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
 
         var bearer_token;
         var getData;
-        bearer_token = '<?php $_SESSION['authToken'] ?>';
+        bearer_token = '<?= $_SESSION['authToken'] ?>';
         $.ajax({
                 type: "POST",
                 url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/layReporting",
@@ -1784,7 +1783,8 @@ while($row = mysqli_fetch_array($rejection_reason_result)){
                  console.log(res);
                 if(data_fabric.fabric_status =='5')
                 {
-                    bearer_token = '<?php $_SESSION['authToken'] ?>';
+                    bearer_token = '<?= $_SESSION['authToken'] ?>';
+                    console.log(bearer_token);
                     $.ajax({
                         type: "POST",
                         url: "<?php echo $PPS_SERVER_IP?>/cut-reporting/getLayReportingDetails",

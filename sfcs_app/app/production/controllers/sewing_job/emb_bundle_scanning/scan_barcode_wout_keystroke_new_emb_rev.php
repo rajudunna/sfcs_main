@@ -125,7 +125,7 @@ $(document).ready(function()
 		var plant_code = $('#plant_code').val();
 		
 		var bearer_token;
-		bearer_token = '<?php $_SESSION['authToken'] ?>';
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
 		var bundet;
 		const data={
 						"barcode": barcode,
