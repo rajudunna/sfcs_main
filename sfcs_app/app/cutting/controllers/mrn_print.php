@@ -7,8 +7,8 @@ kirang / 2015-12-18 / Service Request#13345467 // Need MRN Duplicate Print Optio
 
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 $mrn_id=$_GET["tid"];
-$plant_code = $_SESSION['plantCode'];
-$username = $_SESSION['userName'];
+$plant_code=$_GET['plant_code'];
+$username=$_GET['username'];
 //Print Status
 if($_GET["print_status"]==1)
 {
@@ -33,7 +33,7 @@ $item_code=$sql_row["item_code"];
 $item_desc=$sql_row["item_desc"];
 $product=$sql_row["product"];
 $reason=$sql_row["reason_code"];
-$sql1="select internal_reason_code as res from $mdm.reasons where reason_id='$reason' ";
+$sql1="select internal_reason_description as res from $mdm.reasons where reason_id='$reason' ";
 
 $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_row1=mysqli_fetch_array($sql_result1))
