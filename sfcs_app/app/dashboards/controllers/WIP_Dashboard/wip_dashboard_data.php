@@ -110,7 +110,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
         $job_num = $job_detail_attributes[$sewing_job_attributes['sewingjobno']];
         $masterponumber = $job_detail_attributes[$sewing_job_attributes['masterponumber']];
 
-        $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_code='$get_operation'";
+        $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id' and operation_code='$get_operation'";
         // echo $task_job_trans."<br/>";
         $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row_res = mysqli_fetch_array($task_job_trans_result)) {
@@ -121,7 +121,7 @@ function getsewingJobsData($section, $wkstation, $get_operation, $session_plant_
             $operation_seq = $row_res['operation_seq'];
         }
         $send_qty=0;
-        $task_job_trans2 = "SELECT good_quantity FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
+        $task_job_trans2 = "SELECT good_quantity FROM $tms.task_job_status where task_jobs_id ='$task_job_id' and operation_seq < $operation_seq order by operation_seq DESC limit 0,1";
         // echo $task_job_trans2."<br/>";
         $task_job_trans_result2 = mysqli_query($link_new, $task_job_trans2) or exit("Sql Error at task_job_trans_result2" . mysqli_error($GLOBALS["___mysqli_ston"]));
         if(mysqli_num_rows($task_job_trans_result2) > 0){

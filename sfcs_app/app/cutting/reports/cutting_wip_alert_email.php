@@ -291,7 +291,7 @@ foreach($departments as $department)    //section Loop -start
 					/**
 					 * get MIN operation wrt jobs based on operation seq
 					 */
-					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+					$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
 					$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 					if(mysqli_num_rows($minOperationResult)>0){
 						while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -303,7 +303,7 @@ foreach($departments as $department)    //section Loop -start
 					 * get MAX operation wrt jobs based on operation seq
 					 */
 					$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+					sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
 					$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
 					if(mysqli_num_rows($maxOperationResult)>0){
 						while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){
@@ -385,7 +385,7 @@ foreach($departments as $department)    //section Loop -start
 				/**
 				 * get MIN operation wrt jobs based on operation seq
 				 */
-				$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
+				$qrytoGetMinOperation="SELECT sum(good_quantity) AS good_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq ASC LIMIT 0,1";
 				$minOperationResult = mysqli_query($link_new,$qrytoGetMinOperation) or exit('Problem in getting min operations data for job');
 				if(mysqli_num_rows($minOperationResult)>0){
 					while($minOperationResultRow = mysqli_fetch_array($minOperationResult)){
@@ -397,7 +397,7 @@ foreach($departments as $department)    //section Loop -start
 				 * get MAX operation wrt jobs based on operation seq
 				 */
 				$qrytoGetMaxOperation="SELECT sum(good_quantity) AS good_quantity,
-				sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_transaction` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
+				sum(rejected_quantity) AS rejected_quantity FROM $tms.`task_job_status` WHERE task_jobs_id IN ('$jobHeaders') AND plant_code='$plantCode' AND is_active=1 GROUP BY operation_seq ORDER BY operation_seq DESC LIMIT 0,1";
 				$maxOperationResult = mysqli_query($link_new,$qrytoGetMaxOperation) or exit('Problem in getting max operations data for job');
 				if(mysqli_num_rows($maxOperationResult)>0){
 					while($maxOperationResultRow = mysqli_fetch_array($maxOperationResult)){

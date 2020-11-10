@@ -97,7 +97,7 @@
                     $workstation_code = $row6['workstation_code'];
                 }
                 //get task jobs 
-                $sql_tms = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
+                $sql_tms = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id'  ORDER BY operation_seq  DESC LIMIT 0,1";
                 // echo $sql_tms;
                 mysqli_query($link_new,$sql_tms) or exit("Sql Error78".mysqli_error());
                 $sql_result_tms=mysqli_query($link_new,$sql_tms) or exit("Sql Error5".mysqli_error());
@@ -105,7 +105,7 @@
                 {
                     $out_put_ops = $sql_row_tms['operation_code'];
                 }
-                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_transaction` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
+                $sql_tms_in = "SELECT operation_code FROM $tms.`task_job_status` WHERE task_jobs_id = '$task_job_id' ORDER BY operation_seq  ASC LIMIT 0,1";
                 // echo $sql_tms_in;
                 mysqli_query($link_new,$sql_tms_in) or exit("Sql Error79".mysqli_error());
                 $sql_result_tms_in=mysqli_query($link_new,$sql_tms_in) or exit("Sql Error5".mysqli_error());

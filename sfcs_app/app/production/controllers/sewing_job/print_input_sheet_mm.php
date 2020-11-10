@@ -1,327 +1,268 @@
-
-<script> 
-    function printPage(printContent) { 
-        var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600";
-        var printpage=window.open("","",display_setting); 
-        printpage.document.open(); 
-        printpage.document.write('<html><head><title>Print Page</title></head>'); 
-        printpage.document.write('<body onLoad="self.print()" align="center">'+ printContent +'</body></html>'); 
-        printpage.document.close(); 
-        printpage.focus(); 
-    }
-</script> 
+<script>
+	function printPage(printContent) { 
+		var display_setting="toolbar=yes,menubar=yes,scrollbars=yes,width=1050, height=600"; 
+		var printpage=window.open("","",display_setting); 
+		printpage.document.open(); 
+		printpage.document.write('<html><head><title>Print Page</title></head>'); 
+		printpage.document.write('<body onLoad="self.print()" align="center">'+ printContent +'</body></html>'); 
+		printpage.document.close(); 
+		printpage.focus(); 
+	}
+</script>
 <link rel="stylesheet" type="text/css" href="../../../../common/css/bootstrap.min.css">
-<title>Split Wise</title>
-<body> 
+<title>Job Wise</title>
+<body>
 <?php 
     include("../../../../common/config/config.php");
-    include("../../../../common/config/functions.php");
-    $schedule=$_GET["schedule"];
-    if (isset($_GET['seq_no']))
-    {
-        $seq_no = $_GET['seq_no'];
-    }
-    $schedule_split=explode(",",$schedule); 
-    //echo $schedule;
+	include("../../../../common/config/functions.php");
+	include("../../../../common/config/functions_v2.php");
+	include("../../../../common/config/enums.php");
+	$schedule=$_GET["schedule"];
     error_reporting(0);
-    if($schedule==''){
-        echo "<script>alert('There are no schedules');
-            window.close();
-        </script>";
-    } else { ?>
-        <br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
-        <div id="printsection">
-            <style>
-                table, th, td
-                {
-                    border: 1px solid black;
-                    border-collapse: collapse;
-                    background-color: transparent;
-                }
-                body
-                {
-                    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-                }
-            </style>
-            <div class="panel panel-primary"> 
-                <div class="panel-heading"><b>Ratio Sheet (Split wise)</b></div>
-                <div class="panel-body">
+	if($schedule==''){
+		echo "<script>alert('There are no schedules');
+				window.close();
+			</script>";
+	} else {
+		?>
+		<br><center><a href="javascript:void(0);" onClick="printPage(printsection.innerHTML)" class="btn btn-warning">Print</a></center><br>
+		<div id="printsection">
+			<style>
+		        table, th, td
+		        {
+		            border: 1px solid black;
+		            border-collapse: collapse;
+		            background-color: transparent;
+		        }
+		        body
+		        {
+		            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		        }
+			</style>
+			<div class="panel panel-primary">
+				<div class="panel-heading"><b>Ratio Sheet (Sewing Job wise)</b></div>
+				<div class="panel-body">	
+					<div id="upperbody">				
 
-                    <div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div> 
+						<div style="float:right"><img src="<?= $logo ?>" width="200" height="60"></div>
 
-                    <?php 
-                        $sql="select distinct order_del_no as sch,order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") "; 
-                        $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        while($row=mysqli_fetch_array($result)) 
-                        { 
-                            $schs_array1[]=$row["sch"];    
-                            $order_tid = $row["order_tid"]; 
-                        }
-                        
-                        $sql2="select distinct packing_mode as mode from $bai_pro3.packing_summary_input where order_del_no in (".$schedule.") and pac_seq_no=$seq_no "; 
-                        $result2=mysqli_query($link, $sql2) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        while($row2=mysqli_fetch_array($result2)) 
-                        { 
-                            $packing_mode=$row2["mode"];     
-                        }
-                        
-                        $joinSch=$schedule; 
-                        //$sql2="select * from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
-                        $sql2="select order_style_no,order_col_des, order_tid from $bai_pro3.bai_orders_db_confirm where order_del_no = \"$joinSch\" "; 
-                        $result2=mysqli_query($link, $sql2) or die("Error22 = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                        while($row=mysqli_fetch_array($result2)) 
-                        { 
-                            $disStyle=$row["order_style_no"]; 
-                            $new_col[]=$row["order_col_des"];
-                            $new_order_tid[] =  $row["order_tid"];
-                            
-                        } 
-                        $disColor = implode(',',$new_col);
-                    ?> 
+						<?php
+							if (isset($_GET['flag']) && isset($_GET['sub_po']))
+							{
+								$disStyle=$_GET['style'];
+								$joinSch=$_GET['schedule'];
+								$disColor=$_GET['color'];
+								$masterponumber=$_GET['mpo'];
+								$po_number=$_GET['sub_po'];
+								$flag=$_GET['flag'];
+								$main_color=$_GET['color'];
+                                $color=$_GET['color'];
+                                $plant_code=$_GET['plant_code'];
+							}
+							//To get Po description
+							$get_po_des="SELECT master_po_description FROM pps.`mp_order` WHERE master_po_number='$masterponumber'";
+							$get_po_result=mysqli_query($link_new, $get_po_des) or exit("Sql Error at get_po_des".mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($po_row=mysqli_fetch_array($get_po_result))
+							{
+								$po_des=$po_row['master_po_description'];
+							}
+							//To get Sub PO Description
+							$result_po_des=getPoDetaials($po_number,$plant_code);
+							$subpo_des=$result_po_des['po_description'];
+						?>
 
-                    <div style="float:left"> 
-                        <table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;"> 
-                        <tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr> 
-                        <tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr> 
-                        <tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr> 
-                        <tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> 
-                        </table>        
-                    </div><br><br><br><br><br><br><br><br>
-                    <?php 
-                            //Getting sample details here  By SK-07-07-2018 == Start
-                            $sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id in (select id from brandix_bts.tbl_orders_master where product_schedule='$schedule')";
-                            // echo $sewing_jobratio_sizes_query.'<br>';
-                            $sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-                            while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-                            {
-                                $ref_size = $sewing_jobratio_color_details['size'];
-                                $size_main = explode(",",$ref_size);
-                                // var_dump($size);
-                            }
-                            $sizeofsizes=sizeof($size_main);
-                            $sample_qty = array();
-                            echo "<br>
-                            <span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>
-							<div class='col-md-12 table-responsive'>
-								<table class=\"table table-bordered\">
-									<tr class=\"info\">
-										<th>Colors</th>";
-										for ($i=0; $i < sizeof($size_main); $i++)
-										{
-											echo "<th>$size_main[$i]</th>";
-										}	
-										echo "<th>Total</th>
-                                    </tr>";
-                                    for ($j=0; $j < sizeof($new_col); $j++)
-                                    {
-                                        $tot_sample = 0;
-                                        echo "<tr>
-                                            <td>$new_col[$j]</td>";
-                                        for($kk=0;$kk<sizeof($size_main);$kk++)
-                                        {
-                                            $getpackqty="SELECT input_qty FROM bai_pro3.sp_sample_order_db 
-                                            WHERE order_tid = '".$new_order_tid[$j]."' AND size='$size_main[$kk]'";
-                                            $packqtyrslt=mysqli_query($link, $getpackqty) or exit("Error while getting parent id");
-                                            if(mysqli_num_rows($packqtyrslt) > 0)
-                                            {
-                                                $pack_row=mysqli_fetch_array($packqtyrslt);
-                                                echo "<td>".$pack_row['input_qty']."</td>";
-                                                $tot_sample = $tot_sample + $pack_row['input_qty'];
-                                            }
-                                            else
-                                            {
-                                                echo "<td>0</td>";
-                                                $tot_sample = $tot_sample + 0;
-                                            }
-                                        }
-                                        echo "<td>$tot_sample</td>
-                                        </tr>";
-                                    }
-                                echo "</table>
-                            </div>";
-                            ?>
+						<div style="float:left">
+							<table class='table table-bordered' style="font-size:11px;font-family:verdana;text-align:left;">
+							<tr><th>PO </th><td>:</td> <td><?php echo $po_des;?></td></tr>
+							<tr><th>Sub PO </th><td>:</td> <td><?php echo $subpo_des;?></td></tr>
+							<tr><th>Style </th><td>:</td> <td><?php echo $disStyle;?></td></tr>
+							<tr><th>Schedule </th> <td>:</td> <td><?php echo $joinSch;?></td></tr>
+							<tr><th>Color </th> <td>:</td> <td><?php echo $disColor;?></td></tr>
+							<!-- <tr><th>Sewing Job Model </th> <td>:</td> <td><b><?php echo $operation[$packing_mode];?></b></td></tr> -->
+							</table>
+						</div>
+					</div><br><br><br><br><br><br><br><br>
+					<?php 
+					//Getting sample details
+					$sql1="SELECT SUM(quantity) AS quantity,size,color FROM $pps.`mp_mo_qty` WHERE SCHEDULE in ($joinSch) AND color in ('".$disColor."') AND plant_code='$plant_code' AND mp_qty_type='SAMPLE' GROUP BY size,color";
+					$sql_result1=mysqli_query($link, $sql1) or die("Error".$sql1.mysqli_error($GLOBALS["___mysqli_ston"]));
+					while($row1=mysqli_fetch_array($sql_result1))
+					{
+						$excess_size_code[$row1['size']]=$row1['quantity'];
+						$excess_color_code[$row1['color']]=$row1['size'];
+						$excess_order_qty=$row1['quantity'];
+					}
+					echo "<br>
+					<span><strong><u>Sample Quantites size wise:</u><strong></span><div class='row'>
+					<div class='col-md-12 table-responsive'>
+						<table class=\"table table-bordered\">
+							<tr class=\"info\">
+								<th>Colors</th>";
+								foreach($excess_size_code as $key => $value){
+									$tot_sample = 0;
+									echo "<th>$key</th>";
+								  } 	
+								echo "<th>Total</th>
+							</tr>";
+							foreach($excess_color_code as $key => $value){
+								$tot_sample=0;
+								echo "<tr>
+									<td>$key</td>";
+							  
+							  foreach($excess_size_code as $key => $value){
+								
+								  if($value > 0)
+								  {
+									echo "<td>$value</td>";
+									$tot_sample = $tot_sample + $value;
+								  } else 
+								  {
+									echo "<td>0</td>";
+									$tot_sample = $tot_sample + 0;
+								  }	
+							  }
+							  echo "<td>$tot_sample</td>
+								  </tr>";
+							}  
+							  echo "</table>
+					</div>";
 
-                    <?php 
-                    echo "<br>";
+					?>
 
-                    $sql="select distinct order_del_no as sch,order_div from $bai_pro3.bai_orders_db_confirm where order_del_no in (".$schedule.") "; 
-                    $result=mysqli_query($link, $sql) or die("Error = ".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                    while($row=mysqli_fetch_array($result)) 
-                    { 
-                        $schs_array[]=$row["sch"];     
-                        $division=$row["order_div"]; 
-                    } 
+					<br>
+					<?php
+						
+                        $style=$_GET['style'];
+                        $schedule=$_GET['schedule'];
+                        $color=$_GET['color'];
+						$size_total_qty=[];
+						$sql="SELECT GROUP_CONCAT(DISTINCT jm_job_bundles.size) as size FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_product_logical_bundle` ON jm_job_bundles.`jm_pplb_id`=jm_product_logical_bundle.jm_pplb_id WHERE feature_value in($schedule) AND jm_job_bundles.fg_color in ('".$color."') AND jm_job_bundles.plant_code='$plant_code'";
+						$sql_result=mysqli_query($link, $sql) or die("Error".$sql.mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row=mysqli_fetch_array($sql_result))
+						{
+							$size_code=$row['size'];
+							$size_main = explode(",",$size_code);
+						}
+						
+						echo "<div class='row'>";
+						echo "<div class='col-md-12'>";
+						echo "<div class='table-responsive'>";
+						echo "<table class=\"gridtable\">"; 
+						echo "<table class=\"table table-bordered\">";
+						echo "<tr><thead>";
+						echo "<th>Style</th>";
+						echo "<th>PO#</th>";
+						echo "<th>VPO#</th>";
+						echo "<th>Schedule</th>";
+						echo "<th>Destination</th>";
+						echo "<th>Color</th>";
+						echo "<th>Cut Job#</th>";
+						echo "<th>Delivery Date</th>";
+						echo "<th>Sewing Job#</th>";
+						
+						for($i=0;$i<sizeof($size_main);$i++)
+						{
+							echo "<th align=\"center\">".$size_main[$i]."</th>";
+						}
+						echo "<th>Total</th>";
+						echo "</thead></tr>";
+						$tasktype=TaskTypeEnum::PLANNEDSEWINGJOB;
+						//get jobs from po_number
+						$job_number=array();
+						$get_jobs="SELECT job_number,jm_jg_header_id FROM $pps.`jm_job_header` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_job_header = jm_job_header.jm_job_header_id WHERE po_number='$po_number' AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype' order by job_number";
+						$result22=mysqli_query($link, $get_jobs) or die("Error8-".$get_jobs."-".mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($sql_row=mysqli_fetch_array($result22))
+						{
+						   $job_number[$sql_row['job_number']]=$sql_row['jm_jg_header_id'];
+						}   
+						//to get destination
+						$get_destination="SELECT destination,vpo,planned_delivery_date,customer_order_no FROM $oms.oms_mo_details WHERE schedule in ($schedule) AND plant_code='$plant_code'";
+						$sql_result1=mysqli_query($link, $get_destination) or die("Error".$get_destination.mysqli_error($GLOBALS["___mysqli_ston"]));
+						while($row1=mysqli_fetch_array($sql_result1))
+						{
+							$destination=$row1['destination'];
+							$vpo=$row1['vpo'];
+							$planned_delivery_date=$row1['planned_delivery_date'];
+							$cpo=$row1['customer_order_no'];
+						}
+						
+						foreach($job_number as $sew_num=>$value)
+		                {
+							//get_task_job_id
+							$get_task_job_id="SELECT task_jobs_id FROM $tms.task_jobs WHERE task_job_reference='$value' and plant_code='$plant_code'";
+							$sql_result21=mysqli_query($link, $get_task_job_id) or die("Error".$get_task_job_id.mysqli_error($GLOBALS["___mysqli_ston"]));
+							while($row21=mysqli_fetch_array($sql_result21))
+							{
+                                $task_job_id=$row21['task_jobs_id'];
+							}
 
-                    $sewing_jobratio_sizes_query1236 = "SELECT group_concat(id) as id from brandix_bts.`tbl_orders_master` where product_schedule=$schedule";
-                    // echo $sewing_jobratio_sizes_query1236.'<br>';
-                    $sewing_jobratio_sizes_result145=mysqli_query($link, $sewing_jobratio_sizes_query1236) or exit("Error while getting Job Ratio Details");
-                    while($sewing_jobratio_color_details145=mysqli_fetch_array($sewing_jobratio_sizes_result145)) 
-                    {
-                        $group_id = $sewing_jobratio_color_details145['id'];
-                    }
+							//get cutjob
+							$job_detail_attributes = [];
+							$qry_toget_style_sch = "SELECT attribute_name,attribute_value FROM $tms.task_attributes where task_jobs_id ='$task_job_id' and plant_code='$plant_code'";
+							$qry_toget_style_sch_result = mysqli_query($link, $qry_toget_style_sch) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
+							while ($row22 = mysqli_fetch_array($qry_toget_style_sch_result)) {
+								$job_detail_attributes[$row22['attribute_name']] = $row22['attribute_value'];
+							}
+							$cut_no = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
+							echo "<tr height=20 style='height:15.0pt; background-color:$bg_color1;'>";
+							echo "<td height=20 style='height:15.0pt'>".$style."</td>";
+							echo "<td height=20 style='height:15.0pt'>$cpo</td>";
+							echo "<td height=20 style='height:15.0pt'>$vpo</td>";
+							echo "<td height=20 style='height:15.0pt'>".$schedule."</td>";
+							echo "<td height=20 style='height:15.0pt'>$destination</td>";
+							echo "<td height=20 style='height:15.0pt'>".$color."</td>";
+							echo "<td height=20 style='height:15.0pt'>".$cut_no."</td>";
+							echo "<td height=20 style='height:15.0pt'>".$planned_delivery_date."</td>";
+							echo "<td height=20 style='height:15.0pt'>".$sew_num."</td>";
+							for($i=0;$i<sizeof($size_main);$i++)
+							{
+							  $get_quantity="SELECT ROUND(SUM(quantity),0) AS quantity FROM $pps.`jm_job_bundles` LEFT JOIN $pps.`jm_jg_header` ON jm_jg_header.jm_jg_header_id = jm_job_bundles.`jm_jg_header_id` WHERE size='".$size_main[$i]."' AND job_number='$sew_num' AND fg_color IN ('".$color."') AND jm_jg_header.plant_code='$plant_code' AND job_group_type='$tasktype'";
+							  $sql_result2=mysqli_query($link, $get_quantity) or die("Error".$get_quantity.mysqli_error($GLOBALS["___mysqli_ston"]));
+							  while($row2=mysqli_fetch_array($sql_result2))
+							  {
+								$size_quantity=$row2["quantity"];
+							  }
+							  if($size_quantity > 0){
+								echo "<td class=xl787179 align=\"center\">".$size_quantity."</td>";
+								$total_qty1=$total_qty1+$size_quantity;
+								$size_total_qty[$size_main[$i]] +=$size_quantity;
+								$size_total_qty['total'] +=$size_quantity;
+							  }else
+							  {
+								echo "<td class=xl787179 align=\"center\">0</td>";
+								$total_qty1=$total_qty1+0;
+							  }
+							  
+							}
+							echo "<td align=\"center\">".$total_qty1."</td>";
+							$total_qty1=0;
+							echo "</tr>";	
+						}	
+						
+						$o_total=0;
+						$o_s=0;
+						echo "<tr>";
+						echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>";
+						for ($i=0; $i < sizeof($size_main); $i++)
+						{ 
+							if ($size_total_qty[$size_main[$i]]!=0)
+							{
+								echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$size_total_qty[$size_main[$i]]."</th>";
+							}
+							else
+							{
+								echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
+							}
+						}
+							
+						echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$size_total_qty['total']."</th>";
+						echo "</tr>";
 
-                    $sewing_jobratio_sizes_query = "SELECT GROUP_CONCAT(DISTINCT size_title) AS size FROM brandix_bts.`tbl_orders_sizes_master` WHERE parent_id IN ($group_id)";
-                    // echo $sewing_jobratio_sizes_query.'<br>';
-                    $sewing_jobratio_sizes_result=mysqli_query($link, $sewing_jobratio_sizes_query) or exit("Error while getting Job Ratio Details");
-                    while($sewing_jobratio_color_details=mysqli_fetch_array($sewing_jobratio_sizes_result)) 
-                    {
-                        $ref_size = $sewing_jobratio_color_details['size'];
-                        $size_main = explode(",",$ref_size);
-                        // var_dump($size);
-                    } 
-                    echo "<br>";
-                    echo "<div class='row'>";
-                    echo "<div  class='col-md-12' >";
-                    echo "<div class='table-responsive'>";
-                    echo "<table class=\"gridtable\">"; 
-                    echo "<table class=\"table table-bordered\">";
-                    echo "<tr>"; 
-                    echo "<th>Style</th>"; 
-                    echo "<th>PO#</th>"; 
-                    echo "<th>VPO#</th>"; 
-                    echo "<th>Schedule</th>"; 
-                    echo "<th>Destination</th>"; 
-                    echo "<th>Color</th>"; 
-                    echo "<th>Cut Job#</th>"; 
-                    echo "<th>Delivery Date</th>"; 
-                    echo "<th>Sewing Job#</th>"; 
-                    for($i=0;$i<sizeof($size_main);$i++) 
-                    { 
-                        echo "<th align=\"center\">".$size_main[$i]."</th>"; 
-                    } 
-                    echo "<th>Total</th>"; 
-                    echo "</tr>"; 
-
-                    $sql="select distinct input_job_no as job, type_of_sewing from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no group by input_job_no_random order by  order_col_des,acutno*1,input_job_no*1"; 
-                    // echo $sql;
-                    $result=mysqli_query($link, $sql) or die("Error-".$sql."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
-                    while($sql_row=mysqli_fetch_array($result)) 
-                    {             
-                        $sql1="select acutno,group_concat(distinct order_del_no) as del_no,group_concat(distinct order_col_des) as color_des,group_concat(distinct doc_no) as doc_nos,input_job_no_random from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and pac_seq_no=$seq_no and input_job_no='".$sql_row["job"]."' group by order_del_no,order_col_des,acutno*1,input_job_no_random"; 
-                        //echo $sql1."<br>"; 
-                        $result1=mysqli_query($link, $sql1) or die("Error-".$sql1."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
-                        while($sql_row1=mysqli_fetch_array($result1)) 
-                        { 
-                            $doc_nos_des=$sql_row1["doc_nos"]; 
-                            $acutno_ref=$sql_row1["acutno"]; 
-                            $color_des=$sql_row1["color_des"]; 
-                            $input_job_no_random_ref=$sql_row1["input_job_no_random"]; 
-                                                        
-                            // $sql2d="select group_concat(distinct destination) as dest from $bai_pro3.pac_stat_log_input_job where doc_no in (".$doc_nos_des.") and pac_seq_no=$seq_no";
-                            // echo $sql2d.'<br>';
-                            // $result2d=mysqli_query($link, $sql2d) or die("Error888-".$sql2d."-".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            // while($sql_row2d=mysqli_fetch_array($result2d))
-                            // {
-                                // $destination=$sql_row2d["dest"];
-                            // }
-
-                            $sql2="select group_concat(distinct trim(destination)) as dest,order_style_no as style,GROUP_CONCAT(DISTINCT order_col_des separator '<br/>') as color,order_po_no as cpo,order_date,vpo from $bai_pro3.bai_orders_db where order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color_des."\""; 
-                            // echo $sql2; 
-                            $result2=mysqli_query($link, $sql2) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            while($sql_row2=mysqli_fetch_array($result2)) 
-                            { 
-                                //$destination=$sql_row2["dest"]; 
-                                $color=$sql_row2["color"]; 
-                                $style=$sql_row2["style"]; 
-                                $po=$sql_row2["cpo"]; 
-                                $del_date=$sql_row2["order_date"]; 
-                                $vpo=$sql_row2["vpo"]; 
-                            }                 
-
-                            $sql_cut="select group_concat(distinct acutno) as cut, sum(carton_act_qty) as totqty, destination from $bai_pro3.packing_summary_input where order_del_no in ($schedule) and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."'"; 
-                            // echo $sql_cut.'<br>'; 
-                            $result_cut=mysqli_query($link, $sql_cut) or die("Error-".$sql2."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                            while($sql_row_cut=mysqli_fetch_array($result_cut)) 
-                            { 
-                                $cut_job_no=$sql_row_cut["cut"]; 
-                                $totcount1=$sql_row_cut["totqty"];                         
-                                $destination=$sql_row_cut["destination"];                         
-                            } 
-                            $sql4="select color_code from $bai_pro3.bai_orders_db_confirm where order_del_no=\"".$schedule."\" and order_col_des='".$color."'";
-                            // echo $sql4."<br>";
-                            $sql_result4=mysqli_query($link, $sql4) or exit("Sql Error44 $sql4".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($sql_row4=mysqli_fetch_array($sql_result4))
-                            {
-                                $color_code=$sql_row4["color_code"];
-                            }
-                            $cut_jobs_new = chr($color_code).leading_zeros($cut_job_no, 3);
-                            //$totcount="- (".$totcount1.")<br>"; 
-                            //Display color 
-                            $display_colors=str_replace(',',$totcount,$color); 
-                            //$totcount=0; 
-                            $display = get_sewing_job_prefix("prefix","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
-                            $bg_color = get_sewing_job_prefix("bg_color","$brandix_bts.tbl_sewing_job_prefix","$bai_pro3.packing_summary_input",$schedule,$color_des,$sql_row["job"],$link);
-
-                            echo "<tr height=20 style='height:15.0pt; background-color:$bg_color;'>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$style."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>$po</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>$vpo</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$sql_row1["del_no"]."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>$destination</td>"; 
-                            //echo "<td height=20 style='height:15.0pt'>".$display_colors." - (".$totcount1.")</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$display_colors."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$cut_jobs_new."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$del_date."</td>"; 
-                            echo "<td height=20 style='height:15.0pt'>".$display."</td>"; 
-                            for($i=0;$i<sizeof($size_main);$i++) 
-                            {     
-                                $sql7="SELECT * FROM $bai_pro3.packing_summary_input where size_code='".$size_main[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
-                                //echo $sql7."<br>"; 
-                                $result7=mysqli_query($link, $sql7) or die("Error7-".$sql7."-".mysqli_error($GLOBALS["___mysqli_ston"])); 
-                                $rows_count=mysqli_num_rows($result7); 
-                                if($rows_count > 0) 
-                                { 
-                                    $sql5="SELECT round(sum(carton_act_qty),0) as qty FROM $bai_pro3.packing_summary_input where size_code='".$size_main[$i]."' and order_del_no in (".$sql_row1["del_no"].") and order_col_des=\"".$color."\" and input_job_no='".$sql_row["job"]."' and pac_seq_no=$seq_no and acutno='".$acutno_ref."' and input_job_no_random='".$input_job_no_random_ref."'"; 
-                                    //echo $sql5."<br>"; 
-                                    $result5=mysqli_query($link, $sql5) or die("Error-".$sql5."-".mysqli_error($GLOBALS["___mysqli_ston"]));             
-                                    while($sql_row5=mysqli_fetch_array($result5)) 
-                                    { 
-                                        echo "<td class=xl787179 align=\"center\">".$sql_row5["qty"]."</td>"; 
-                                        $total_qty1=$total_qty1+$sql_row5["qty"]; 
-                                    } 
-                                } 
-                                else 
-                                { 
-                                    echo "<td class=xl787179 align=\"center\">0</td>"; 
-                                    $total_qty1=$total_qty1+0; 
-                                }             
-                            } 
-                            echo "<td align=\"center\">".$total_qty1."</td>"; 
-                            $total_qty1=0; 
-                            echo "</tr>"; 
-                        } 
-                    } 
-                    echo "<tr>"; 
-                    echo "<th colspan=9  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;font-size:14px;\"> Total</th>"; 
-                        
-                        for ($i=0; $i < sizeof($size_main); $i++)
-                        { 
-                            $sql1="SELECT ROUND(SUM(carton_act_qty),0) AS qty FROM $bai_pro3.packing_summary_input WHERE  order_del_no IN ($joinSch) and size_code='$size_main[$i]' and pac_seq_no=$seq_no";
-                            //echo $sql1;
-                            $sql_result1=mysqli_query($link, $sql1) or exit("Sql Error996".mysqli_error($GLOBALS["___mysqli_ston"]));
-                            while($sql_row1=mysqli_fetch_array($sql_result1))
-                            {
-                                $o_s=$sql_row1['qty'];
-                                if ($o_s!=0)
-                                {
-                                    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">".$o_s."</th>";
-                                }
-                                else
-                                {
-                                    echo "<th align=\"center\" style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">0</th>";
-                                }
-                                $o_total=$o_s+$o_total;
-                                //echo $o_total;
-                            }
-                        }
-                        
-                        echo "<th  style=\"border-top:2px solid #000;border-bottom:1px dotted #000;\">$o_total</th>";
-                        echo "</tr>"; 
-                        echo "</table></div></div></div></div><br>"; 
-                    ?> 
-                </div>
-            </div>
-        </div>
-        <?php 
-    } 
+						echo "</table></div></div></div></div><br>";
+					?>
+				</div>
+		    </div>
+		</div>
+		<?php
+	}
 ?>

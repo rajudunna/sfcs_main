@@ -112,7 +112,7 @@
                     $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
                     
                     /**getting job qunatity from task transactions*/
-                    $qryJobQty="SELECT original_quantity FROM $tms.task_job_transaction WHERE task_jobs_id='$taskJob_id' AND plant_code='$plant_code' LIMIT 0, 1";
+                    $qryJobQty="SELECT original_quantity FROM $tms.task_job_status WHERE task_jobs_id='$taskJob_id' AND plant_code='$plant_code' LIMIT 0, 1";
                     $qryJobQty_result = mysqli_query($link_new, $qryJobQty) or exit("Sql Error at qryJobQty" . mysqli_error($GLOBALS["___mysqli_ston"]));
 					while ($JobQty_row= mysqli_fetch_array($qryJobQty_result)) {
 				

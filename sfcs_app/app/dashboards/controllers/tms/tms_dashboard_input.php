@@ -616,7 +616,7 @@ foreach($departments as $department)
 				}
         $title=str_pad("Style:".$style,80)."<br>".str_pad("Co No:".$cono,80)."<br>".str_pad("Schedule:".$schedule,80)."<br>".str_pad("Colors:".$color,80)."<br>".str_pad("Job_No:".$sewingjobno,80)."<br>".str_pad("Job Qty:".$sew_qty,80);
         //To get quantities 
-        $qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_job_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
+        $qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_job_id' and plant_code='$plant_code' and is_active=1 order by operation_seq asc limit 1";
         $qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
         while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
             $input_ops_code = $row3['operation_code'];

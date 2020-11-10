@@ -2,6 +2,7 @@
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/config.php',3,'R'));
 	include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/enums.php',3,'R'));
 $plant_code=$_SESSION['plantCode'];
+$operation=130;
 ?>
 	<title>First Hour Output</title>
 	<style>
@@ -174,12 +175,13 @@ if(isset($_POST['submit']))
 		//caliculation for plan_out
 		$plan_out=round($plan_qty/$act_hrs,0);
 		//To get SMV
-		$get_smv="SELECT smv FROM $pps.`monthly_production_plan` WHERE product_code='".$sql_row['style']."' AND colour='$color' AND plant_code='$plant_code'";
-		$query_result1=mysqli_query($link_new, $get_smv) or exit("Sql Error at workstation_description".mysqli_error($GLOBALS["___mysqli_ston"]));
-		while($smv_row=mysqli_fetch_array($query_result1))
+		$qrysmv = "SELECT smv FROM $oms.oms_products_info AS opi LEFT JOIN $oms.oms_mo_operations AS omo ON opi.mo_number=omo.mo_number LEFT JOIN $oms.oms_mo_details AS omd ON omd.mo_number=omo.mo_number WHERE opi.style='".$sql_row['style']."' AND opi.color_desc='".$color."' AND omo.operation_code=".$operation." and omd.plant_code='".$plantCode."' LIMIT 1";
+		$qrysmvresult = mysqli_query($link, $qrysmv) or exit("Error while getting smv".mysqli_error($GLOBALS["___mysqli_ston"]));
+		while($smv_res=mysqli_fetch_array($qrysmvresult))
 		{
-           $smv=$smv_row['smv'];
+			$smv=$smv_res['smv'];
 		}
+
 		//sah caliculation
 		$sah=ROUND((($qty*$smv)/60),2);
 		$act_eff=round((round(($sah/$clh)*100,0)/$plan_eff)*100,2);

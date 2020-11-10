@@ -337,7 +337,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$co_no = $job_detail_attributes[$sewing_job_attributes['cono']];
 		$club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
 
-		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_transaction where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
+		$qry_toget_first_ops_qry = "SELECT operation_code,original_quantity,good_quantity,rejected_quantity FROM $tms.task_job_status where task_jobs_id = '$task_job_id' and plant_code='$plantCode' and is_active=1 order by operation_seq asc limit 1";
 		$qry_toget_first_ops_qry_result = mysqli_query($link_new, $qry_toget_first_ops_qry) or exit("Sql Error at toget_style_sch" . mysqli_error($GLOBALS["___mysqli_ston"]));
 		while ($row3 = mysqli_fetch_array($qry_toget_first_ops_qry_result)) {
 			$input_ops_code = $row3['operation_code'];
@@ -478,7 +478,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 
 		if($id=="blue" || $id=="yellow")
 		{
-			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_transaction`
+			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_status`
 					WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
 			$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($cut_input_report_result))
