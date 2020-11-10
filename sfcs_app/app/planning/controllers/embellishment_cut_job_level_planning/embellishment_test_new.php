@@ -101,7 +101,6 @@ while($style_color=mysqli_fetch_array($sql_row_result123)){
 //exit;
 $sql="SELECT DISTINCT order_style_no FROM $bai_pro3.plan_doc_summ where CONCAT(TRIM(order_style_no),TRIM(order_col_des)) IN ($s_c)";
 // echo $sql;exit;
-
 $sql_result=mysqli_query($link,$sql) or exit("Sql Error1".mysql_error());
 $sql_num_check=mysqli_num_rows($sql_result);
 //echo $sql;exit;
