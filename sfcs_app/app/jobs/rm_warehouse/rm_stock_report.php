@@ -49,8 +49,13 @@ while ($sql_row1 = $stock_report_result->fetch_assoc())
 	$product_group=$sql_row1['product_group'];
 	$plant_code=$sql_row1['plant_code'];
 
+	if($balance!=''){
+		$balance=$balance;
+	}else{
+		$balance='0';
+	}
 
-	$sql="insert into $wms.stock_report_inventory(`ref1`, `lot_no`, `batch_no`, `item_desc`, `item_name`, `item`, `supplier`, `buyer`, `style_no`, `ref2`, `ref3`, `pkg_no`, `status`, `grn_date`, `remarks`, `tid`, `qty_rec`, `qty_issued`, `qty_ret`, `balance`, `product_group`,`roll_remarks`,`plant_code`,created_at,created_user) values('".$ref1."','".$lot_no."','".$batch_no."','".$item_desc."','".$item_name."','".$item."','".$supplier."','".$buyer."','".$style_no."','".$ref2."','".$ref3."','".$pkg_no."','".$status."','".$grn_date."','".$remarks."','".$tid."','".$qty_rec."','".$qty_issued."','".$qty_ret."','".$balance."','".$product_group."','".$roll_remarks."','".$plant_code."','NOW()','".$username."')";
+	$sql="insert into $wms.stock_report_inventory(`ref1`, `lot_no`, `batch_no`, `item_desc`, `item_name`, `item`, `supplier`, `buyer`, `style_no`, `ref2`, `ref3`, `pkg_no`, `status`, `grn_date`, `remarks`, `tid`, `qty_rec`, `qty_issued`, `qty_ret`, `balance`, `product_group`,`roll_remarks`,`plant_code`,created_at,created_user) values('".$ref1."','".$lot_no."','".$batch_no."','".$item_desc."','".$item_name."','".$item."','".$supplier."','".$buyer."','".$style_no."','".$ref2."','".$ref3."','".$pkg_no."','".$status."','".$grn_date."','".$remarks."','".$tid."','".$qty_rec."','".$qty_issued."','".$qty_ret."','".$balance."','".$product_group."','".$roll_remarks."','".$plant_code."',NOW(),'".$username."')";
 
 	mysqli_query($link, $sql) or exit("Sql Error4: $sql".mysqli_error($GLOBALS["___mysqli_ston"]));
 
