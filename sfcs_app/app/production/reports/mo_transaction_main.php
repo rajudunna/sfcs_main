@@ -3,7 +3,6 @@
 include($_SERVER['DOCUMENT_ROOT']."/sfcs_app/common/config/config_ajax.php");
 error_reporting(0);
 $plantcode = $_SESSION['plantCode'];
-$plantcode ="Q01";
 if(isset($_GET['style']))
   	$styles = $_GET['style'];
 else
@@ -74,7 +73,6 @@ else
   /**getting color details */
   $color=array();
   $qry_mp_mo_qty="SELECT color FROM $pps.mp_mo_qty WHERE plant_code='$plantcode' AND schedule IN ($schedules) AND is_active=1";
-  echo $qry_mp_mo_qty;
   $mp_color_detail_result=mysqli_query($link_new, $qry_mp_mo_qty) or exit("Sql Error at getting colors".mysqli_error($GLOBALS["___mysqli_ston"]));
   $mp_color_detail_num=mysqli_num_rows($mp_color_detail_result);
   if($mp_color_detail_num>0){
