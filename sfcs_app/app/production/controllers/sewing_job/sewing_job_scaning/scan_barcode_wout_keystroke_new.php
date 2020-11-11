@@ -156,79 +156,54 @@ $(document).ready(function()
 						"reportAsFullGood": true
 				    }
 		var bearer_token;
-		const creadentialObj = {
-									grant_type: 'password',
-									client_id: 'pps-back-end',
-									client_secret: '1cd2fd2f-ed4d-4c74-af02-d93538fbc52a',
-									username: 'bhuvan',
-									password: 'bhuvan'
-								}
-        $.ajax({
-            method: 'POST',
-            url: "<?php echo $KEY_LOCK_IP?>",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            xhrFields: { withCredentials: true },
-            contentType: "application/json; charset=utf-8",
-            transformRequest: function (Obj) {
-                var str = [];
-                for (var p in Obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(Obj[p]));
-                return str.join("&");
-            },
-            data: creadentialObj
-        }).then(function (result) {
-            console.log(result);
-            bearer_token = result['access_token'];
-            $.ajax({
-				type: "POST",
-				url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
-				data: data,
-				success: function (res) {            
-					if(res.status)
-					{						
-						var reportData = new Object(); 
-						reportData.bundleno=res.data.bundleBrcdNumber;
-						reportData.operationCode=res.data.operationCode;
-						reportData.style=res.data.style;
-						reportData.schedule=res.data.schedules[0];
-						reportData.fgColor=res.data.fgColor;
-						reportData.size=res.data.size;
-						reportData.actualQuantity=res.data.actualQuantity;
-						reportData.gate_id=pass_id;
-						reportData.plant_code=plant_code;
-						reportData.username=username;				
-						$.ajax({
-						type: "POST",
-						url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>",
-						data:  reportData,
-						});
-						//	die();
-						
-						if(res)
-						{
-							tableConstruction(res);
-						}
-						else
-						{
-							$('#loading-image').hide();
-							swal('Error',' in getting data','error');
-						}
+		bearer_token = '<?= $_SESSION['authToken'] ?>';
+		$.ajax({
+			type: "POST",
+			url: "<?php echo $PTS_SERVER_IP?>/fg-reporting/reportSemiGmtOrGmtBarcode",
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Bearer ' +  bearer_token },
+			data: data,
+			success: function (res) {            
+				if(res.status)
+				{						
+					var reportData = new Object(); 
+					reportData.bundleno=res.data.bundleBrcdNumber;
+					reportData.operationCode=res.data.operationCode;
+					reportData.style=res.data.style;
+					reportData.schedule=res.data.schedules[0];
+					reportData.fgColor=res.data.fgColor;
+					reportData.size=res.data.size;
+					reportData.actualQuantity=res.data.actualQuantity;
+					reportData.gate_id=pass_id;
+					reportData.plant_code=plant_code;
+					reportData.username=username;				
+					$.ajax({
+					type: "POST",
+					url:"<?= getFullURLLevel($_GET['r'],'insert_gatepass.php',0,'R'); ?>",
+					data:  reportData,
+					});
+					//	die();
+					
+					if(res)
+					{
+						tableConstruction(res);
 					}
 					else
 					{
 						$('#loading-image').hide();
-						swal(res.internalMessage,'','error');
-					}                       
-				},
-				error: function(res){
-					$('#loading-image').hide();
-					swal('Error',' in getting data','error');
+						swal('Error',' in getting data','error');
+					}
 				}
-			}); 
-        }).fail(function (result) {
-            console.log(result);
-        }) ;			
+				else
+				{
+					$('#loading-image').hide();
+					swal(res.internalMessage,'','error');
+				}                       
+			},
+			error: function(res){
+				$('#loading-image').hide();
+				swal('Error',' in getting data','error');
+			}
+		}); 			
 	});			
 });
 
