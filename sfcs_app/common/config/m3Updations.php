@@ -372,16 +372,32 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
     $result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
     {
-        $work_station_id = $row['work_center_id'];
-        $short_key_code  = $row['short_cut_code'];
+        if(mysqli_num_rows($result_qry_to_get_work_station_id) > 0)
+        {
+            $work_station_id = $row['work_center_id'];
+            $short_key_code  = $row['short_cut_code'];
+        }
+        else
+        {
+            $qry_to_get_work_station_id1 = "SELECT work_center_id,short_cut_code FROM $brandix_bts.`tbl_orders_ops_ref` WHERE operation_code = '$op_code'";
+            $result_qry_to_get_work_station_id1=mysqli_query($link,$qry_to_get_work_station_id1) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+            while($row1=mysqli_fetch_array($result_qry_to_get_work_station_id1))
+            {
+                if(mysqli_num_rows($result_qry_to_get_work_station_id) > 0)
+                {
+                    $work_station_id = $row1['work_center_id'];
+                    $short_key_code  = $row1['short_cut_code'];
+                }
+            }
+        }
     }
     if(!$work_station_id)
     {
-        $qry_to_get_work_station_id = "SELECT work_station_id FROM bai_pro3.`work_stations_mapping` WHERE operation_code = '$short_key_code' AND module = '$b_module'";
-        $result_qry_to_get_work_station_id=mysqli_query($link,$qry_to_get_work_station_id) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
-        while($row=mysqli_fetch_array($result_qry_to_get_work_station_id))
+        $qry_to_get_work_station_id2 = "SELECT work_station_id FROM bai_pro3.`work_stations_mapping` WHERE operation_code = '$short_key_code' AND module = '$b_module'";
+        $result_qry_to_get_work_station_id2=mysqli_query($link,$qry_to_get_work_station_id2) or exit("Bundles Query Error14".mysqli_error($GLOBALS["___mysqli_ston"]));
+        while($row2=mysqli_fetch_array($result_qry_to_get_work_station_id2))
         {
-            $work_station_id = $row['work_station_id'];
+            $work_station_id = $row2['work_station_id'];
         } 
     }
 
@@ -429,6 +445,18 @@ function updateM3TransactionsRejections($ref_id,$op_code,$r_qty,$r_reasons)
                     }
                    
                         //got the main ops code
+                    if($is_m3 == 'Yes' || $is_m3 == 'yes' || $is_m3 == 'YES')
+                    {
+                        $rej_opn_sch_opn_master = "SELECT Main_OperationNumber FROM bai_pro3.schedule_oprations_master WHERE MONumber = '$mo_number' AND OperationNumber = $op_code";
+                        $rej_opn_sch_opn_res=mysqli_query($link, $rej_opn_sch_opn_master) or exit("Sql Error sch opn master opn for rejections".mysqli_error($GLOBALS["___mysqli_ston"]));
+                        if(mysqli_num_rows($rej_opn_sch_opn_res) > 0)
+                        {
+                            while($row_rej_opn_sch_opn_res=mysqli_fetch_array($rej_opn_sch_opn_res))
+                            {
+                                $main_ops_code = $row_rej_opn_sch_opn_res['Main_OperationNumber'];
+                            }
+                        }
+                    }
                     // if(strtolower($is_m3) == 'yes')
                     // {
                         $inserting_into_m3_tran_log = "INSERT INTO $bai_pro3.`m3_transactions` (`date_time`,`mo_no`,`quantity`,`reason`,`remarks`,`log_user`,`tran_status_code`,`module_no`,`shift`,`op_code`,`op_des`,`ref_no`,`workstation_id`,`response_status`,`m3_ops_code`,`api_type`) 
