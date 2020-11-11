@@ -250,8 +250,8 @@ table, th, td {
 													<th width=\"33%\">Completed Cartons</th>";
 													// echo "<th width=\"33%\">Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<a class='btn btn-warning btn-xs' href='$url2?schedule=$schedule&carton_no=$label_concat&seq_no=".$pack_result12['pac_seq_no']."' target='_blank' $hide>Print All Cartons</a></th>"; 
 													//Changes - #5321 - changing GET to POST method for displaying to print huge number of cartons at once
-													echo "<th><form action='$url2' method='POST'>Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<input type='hidden' name='schedule' value='$schedule'><input type='hidden' name='carton_no' value='$label_concat'><input type='hidden' name='seq_no' value='".$pack_result12['pac_seq_no']."'>
-														<button type='submit' class='btn btn-warning btn-xs' target='_blank' $hide>Print All Cartons</button>
+													echo "<th><form target='_blank' action='$url2' method='POST'>Eligible Cartons &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<input type='hidden' name='schedule' value='$schedule'><input type='hidden' name='carton_no' value='$label_concat'><input type='hidden' name='seq_no' value='".$pack_result12['pac_seq_no']."'>
+														<button type='submit' class='btn btn-warning btn-xs'  $hide>Print All Cartons</button>
 													</form></th><th width=\"33%\">Pending Cartons</th>
 												</tr>
 											</thead>
