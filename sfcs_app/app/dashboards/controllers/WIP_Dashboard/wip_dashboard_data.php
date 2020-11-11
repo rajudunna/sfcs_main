@@ -6,7 +6,9 @@ include($_SERVER['DOCUMENT_ROOT'] . '/sfcs_app/common/config/enums.php');
 $section = $_GET['section'];
 $get_operation = $_GET['operations'];
 $session_plant_code = $_GET['plant_code'];
-$session_plant_code='AIP';
+$session_username = $_GET['username'];
+// var_dump($session_username);
+// $session_plant_code='AIP';
 $data = '';
 $jquery_data = '';
 $line_breaker = 0;
@@ -29,7 +31,7 @@ if ($section) {
         $data .= "<tr rowspan=2>";
         // $data .= "<td rowspan=2 class='mod-td'><span class='mod-no'><b>" . $wkstation['workstation_code'] . "</b></span></td>";
         $data.="<td rowspan=2 class='mod-td'><span class='mod-no'><b>
-        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module_id=$module_id&module_code=$module&plantCode=$session_plant_code&operation_code=$get_operation\",\"Popup\");'>
+        <a href='javascript:void(0)' onclick='window.open(\"$popup_url?module_id=$module_id&module_code=$module&plantCode=$session_plant_code&username=$session_username&operation_code=$get_operation\",\"Popup\");'>
                         $module</a>
     
         </b></span></td>";
