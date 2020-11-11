@@ -18,17 +18,18 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 		$mod=$_GET['module'];
 		$plantcode=$_GET['plantcode'];
 		$username=$_GET['username'];
-		$sql66="select workstation_code from $pms.workstation where plant_code='$plantcode' and workstation_id='$mod'";
+		$sql66="select workstation_id from $pms.workstation where plant_code='$plantcode' and workstation_code='$mod'";
+		
 		mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_resultx11=mysqli_query($link, $sql66) or exit("Sql Error122".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($sql_rowx11=mysqli_fetch_array($sql_resultx11))
 		{
-			$mod_name=$sql_rowx11['workstation_code'];
+			$mod_name=$sql_rowx11['workstation_id'];
 		}
 		$date=$_GET['date'];
 	?>
 		<div class="btn btn-warning">
-			<?="Module Code: ".$mod_name;?>
+			<?="Module Code: ".$mod;?>
 		</div>
 		<?php
 		$h1=array(1,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21);
@@ -47,8 +48,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/'.getFullURLLevel($_GET['r'],'common/config/
 
 		$i=1;
 		$total;
-		$sql="select shift,style,good_quantity,created_at from $pts.transaction_log where plant_code='$plantcode' and resource_id='$mod' and created_at=\"$date\" order by created_at";
-		// echo $sql;
+		$sql="select shift,style,good_quantity,created_at from $pts.transaction_log where plant_code='$plantcode' and resource_id='$mod_name' and DATE_FORMAT(created_at,'%Y-%m-%d')=\"$date\" order by created_at";
 		mysqli_query($link, $sql) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 
