@@ -8,10 +8,12 @@ error_reporting(0);
 //include("header.php");
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/enums.php');
+include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/server_urls.php');
 include($_SERVER['DOCUMENT_ROOT'].'/template/helper.php');
 $php_self = explode('/',$_SERVER['PHP_SELF']);
 array_pop($php_self);
 $url_r = base64_encode(implode('/',$php_self)."/trims_status_update_input.php");
+
 // $has_permission=haspermission($url_r); 
 $isinput=$_GET['isinput'];
 $plant_code=$_SESSION['plantCode'];
@@ -104,12 +106,13 @@ echo "<h2>Trims Status View Form</h2>";
 
 
 echo "<h4>Style:$style / Schedule:$schedule / Input Job#: $prefix".$jobno."</h4>";
+$path=$DOCKET_SERVER_IP."/printJobSheet/";
 
 $seq1=-1;
 echo "<h4><u>Consumption Report</u> </h4>";
 echo "<a class='btn btn-info btn-sm' href=\"sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno\" onclick=\"return popitup_new('sheet_v2.php?schedule=$schedule&style=$style&input_job=$jobno&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Wise Trim Requirement Sheet</button></a><br><br>";
 
-
+echo "<a class='btn btn-info btn-sm' href=\"$path$jobno\" onclick=\"return popitup_new('$path$jobno')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 // echo "<a class='btn btn-info btn-sm' href=\"../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc\" onclick=\"return popitup_new('../../../production/controllers/sewing_job/new_job_sheet3.php?jobno=$jobno&style=$style&schedule=$schedule&module=$module_no&section=$section&doc_no=$doc&plant_code=$plant_code')\"><button class='equal btn btn-success'>Job Sheet</button></a>";
 
 echo "&nbsp;&nbsp;&nbsp;&nbsp;<u><b><a href=\"../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1\" onclick=\"return popitup('../../../production/controllers/sewing_job/print_input_sheet.php?schedule=$schedule&seq_no=$seq1&jm_jg_header_id=$jm_jg_header_id&plant_code=$plant_code')\">Print Input Job Sheet - Job Wise</a></b></u><br>";

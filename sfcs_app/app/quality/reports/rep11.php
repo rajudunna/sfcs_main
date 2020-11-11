@@ -130,8 +130,9 @@ if(isset($_POST['filter']))
 			$get_exfactorydate="SELECT planned_delivery_date FROM $oms.oms_mo_details where plant_code='$plantcode' AND schedule='$schedule' AND is_active=1";
 			$sql_result3=mysqli_query($link, $get_exfactorydate) or exit("Sql Error get_exfactorydate".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($row3=mysqli_fetch_array($sql_result3)){
-				echo "<td>".$row3['planned_delivery_date']."</td>";
+				$planned_date=$row3['planned_delivery_date'];
 			}
+			echo "<td>".$planned_date."</td>";
 		}
 		echo "</table>
 			</div>";

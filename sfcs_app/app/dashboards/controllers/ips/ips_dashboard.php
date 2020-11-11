@@ -184,19 +184,19 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     $sql_result1x12=mysqli_query($link, $sql1x12) or exit("Sql Error9".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x12)>0)
                     {
-                        if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
-                        {
+                        // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x12))
+                        // {
                             $fabric_status="1";
-                        }
+                        // }
                     }
                     $sql1x11="SELECT *  FROM  `$pps`.`requested_dockets` WHERE `jm_docket_line_id` IN ($docket_line_ids) and fabric_status = '5'";
                     $sql_result1x11=mysqli_query($link, $sql1x11) or exit("Sql Error83".mysqli_error($GLOBALS["___mysqli_ston"]));
                     if(mysqli_num_rows($sql_result1x11)>0)
                     {
-                        if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
-                        {
+                        // if(sizeof($doc_no_ref_explode) == mysqli_num_rows($sql_result1x11))
+                        // {
                             $fabric_status="5";
-                        }
+                        // }
                     }
                     if ($fabric_status == "")
                     {
@@ -269,7 +269,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     {
                         $id="yash";
                         $rem="Not Update";
-                    }               
+                    } 
                     $title=str_pad("Style:".$style,50)."\n".str_pad("Co No:".$co_no,50)."\n".str_pad("Schedule:".$schedule,50)."\n". $cols_de.str_pad("Sewing Job No:".$display_prefix1,50)."\n".str_pad("Total Qty:".$carton_qty,50)."\n".str_pad("Balance to Issue:".($balance),50)."\n".str_pad("Cut Job No:".$cut_job_no)."\n".str_pad("Remarks :".$rem,50)."\n".str_pad("Trim Status :".$tstatus,50);
                     //$ui_url='input_status_update_input.php';  
                     $ui_url = "http://".$_SERVER['HTTP_HOST'].implode('/',$v_r)."/input_status_update_input.php";
@@ -280,8 +280,8 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
                     if($id=="blue" || $id=="yellow")
                     {
                         // SELECT original_quantity 
-                        $cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_status`
-                            WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
+                        $cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM $tms.`task_job_status` WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
+                        // echo $cut_input_report_query;
                         $cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
                         while($sql_row=mysqli_fetch_array($cut_input_report_result))
                         {

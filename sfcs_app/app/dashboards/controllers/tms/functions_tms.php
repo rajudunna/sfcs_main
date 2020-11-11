@@ -91,14 +91,14 @@ function getPlannedJobsTms($work_id,$tasktype,$plant_code){
     global $pps;
     global $tms;
     global $TaskTypeEnum;
-    global $TaskStatusEnum;
+    global $TaskProgressEnum;
       
     $check_type=TaskTypeEnum::SEWINGJOB;
     $job_group_type=TaskTypeEnum::PLANNEDSEWINGJOB;
    
     //Qry to fetch task_header_id from task_header
     $task_header_id=array();
-    $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_status='".TaskStatusEnum::INPROGRESS."' AND task_type='$tasktype' AND plant_code='$plant_code'";
+    $get_task_header_id="SELECT task_header_id FROM $tms.task_header WHERE resource_id='$work_id' AND task_progress='".TaskProgressEnum::INPROGRESS."' AND task_type='$tasktype' AND plant_code='$plant_code'";
     $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
     while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
     {

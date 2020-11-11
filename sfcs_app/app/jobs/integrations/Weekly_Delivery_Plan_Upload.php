@@ -14,7 +14,7 @@ if(isset($_GET['plantCode']))
 }
 else
 {
-	$plant_Code = $_SESSION['plantCode'];
+	$plant_Code = $argv[1];	
 	$username = $_SESSION['userName'];
 }
 //Getting from OMS regarding order information
