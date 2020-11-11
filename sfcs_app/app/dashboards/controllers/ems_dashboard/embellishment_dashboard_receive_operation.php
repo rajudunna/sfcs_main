@@ -455,7 +455,9 @@ foreach ($workstations as $emb_key => $emb_value) {
       $schedule = $job_detail_attributes[$sewing_job_attributes['schedule']];
       $club_c_code = $job_detail_attributes[$sewing_job_attributes['cutjobno']];
       $doc_no = $job_detail_attributes[$sewing_job_attributes['docketno']];
-      $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+      // $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+       $job_num = $job_detail_attributes[$sewing_job_attributes['embjobno']];
+
 
       $cut_operaation=15;
       $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id' order by operation_seq desc limit 0,1";
