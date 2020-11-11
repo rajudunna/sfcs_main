@@ -435,7 +435,7 @@ foreach ($workstations as $emb_key => $emb_value) {
     
       $prev_operation=15;
 
-      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_transaction where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
+      $task_job_trans = "SELECT original_quantity,good_quantity,rejected_quantity,operation_code,operation_seq FROM $tms.task_job_status where task_jobs_id ='$task_job_id'  order by operation_seq ASC limit 0,1";
       $task_job_trans_result = mysqli_query($link_new, $task_job_trans) or exit("Sql Error at task_job_trans_result" . mysqli_error($GLOBALS["___mysqli_ston"]));
       if (mysqli_num_rows($task_job_trans_result) > 0) {
 
@@ -461,6 +461,9 @@ foreach ($workstations as $emb_key => $emb_value) {
         $id = "yash";
         if ($good_qty == 0) {
           $id = "yash";
+        }
+        if($send_qty>0){
+          $id = "blue";
         }
 
         if ($orginal_qty != $good_qty && $good_qty > 0) {

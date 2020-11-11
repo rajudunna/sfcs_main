@@ -50,6 +50,13 @@ class TaskStatusEnum {
     const HOLD = 'HOLD';
 }
 
+class TaskProgressEnum {
+    const OPEN = 'OPEN';
+    const INPROGRESS = 'INPROGRESS';
+    const COMPLETED = 'COMPLETED';
+    const HOLD = 'HOLD';
+}
+
 class TrimStatusEnum {
     const OPEN = 'OPEN';
     const PREPARINGMATERIAL = 'Preparing material';
@@ -84,5 +91,16 @@ class TaskAttributeNamesEnum {
     const CONUMBER = 'CONUMBER';
     const REMARKS = 'REMARKS';
     const JOBGROUP = 'JOBGROUP';
+}
+
+class M3TransStatusEnum {
+    const PENDING = 'PENDING';
+    const PASS = 'PASS';
+    const FAIL = 'FAIL';
+}
+
+class ApiTypeEnum {
+    const FG= 'FG';
+    const OPN = 'OPN';
 }
 ?>

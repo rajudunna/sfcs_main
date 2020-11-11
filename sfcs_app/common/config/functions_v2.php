@@ -729,6 +729,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     
     $check_type=TaskTypeEnum::SEWINGJOB;
     $taskStatus=TaskStatusEnum::INPROGRESS;
+    $taskprogress=TaskProgressEnum::INPROGRESS;
     try
     {
         $list_db=array();
@@ -845,7 +846,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                 if(is_null($resource_id)){
                     /** */
                     /**resource id update */
-                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
+                    $Qry_update_header="UPDATE $tms.task_header SET resource_id='$items[0]',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$tasktype' AND plant_code='$plantcode'";
                     // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                     $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1015,7 +1016,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                     if($task_header_id!=''){
                                         /**update query task header table to update workstation */
                                         /**resource id update */
-                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                        $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$header_id' AND task_type='$cutJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
                                         // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                                         $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1060,7 +1061,7 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
                                                 /**update query task header table to update workstation */
                                                 /**resource id update */
                                                 $j=1;
-                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskStatus' WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
+                                                $Qry_update_header="UPDATE $tms.task_header SET resource_id='$workStationId',task_status='$taskStatus',priority='$j',task_progress='$taskprogress' WHERE task_header_id='$task_header_id' AND task_type='$cutEmbJobType' AND resource_id IS NULL AND plant_code='$plantcode'";
                                                 // echo "</br>".$items[1]."-".$Qry_update_header."</br>";
 
                                                 $Qry_taskheader_result=mysqli_query($link_new, $Qry_update_header) or exit("Sql Error at update task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
@@ -1121,16 +1122,19 @@ function updatePlanDocketJobs($list, $tasktype, $plantcode)
     $qry_workstations="SELECT workstation_id,workstation_code, workstation_description FROM $pms.workstation WHERE is_active=1 AND plant_code='$plantcode' AND workstation_type_id IN ('$workstations')";
     $workstations_result=mysqli_query($link_new, $qry_workstations) or exit("Sql Error at workstatsions".mysqli_error($GLOBALS["___mysqli_ston"]));
     $workstation=array();
+    $workstation_codes=array();
     $workstations_result_num=mysqli_num_rows($workstations_result);
     if($workstations_result_num>0){
         while($workstations_row=mysqli_fetch_array($workstations_result))
         {
             $workstation[$workstations_row['workstation_id']]=$workstations_row['workstation_description'];
+            $workstation_codes[$workstations_row['workstation_id']]=$workstations_row['workstation_code'];
         }
     }
 
     return array(
-        'workstation' => $workstation
+        'workstation' => $workstation,
+        'workstation_codes' => $workstation_codes
     );
 
   }
@@ -1644,7 +1648,7 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
     try{
         $taskType = TaskTypeEnum::SEWINGJOB;
         $taskStatus = TaskStatusEnum::INPROGRESS;
-        $jobsQuery = "select tj.task_jobs_id from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
+        $jobsQuery = "select tj.task_jobs_id,tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."' ORDER BY tj.`priority`";
         // if ($limit) {
         //     $jobsQuery .= " limit 0,$limit";
         // }
@@ -1654,6 +1658,7 @@ function getJobsForWorkstationIdTypeSewing($plantCode, $workstationId, $limit) {
             while($row = mysqli_fetch_array($jobsQueryResult)){
                 $jobRecord = [];
                 $jobRecord["taskJobId"] = $row['task_jobs_id'];
+                $jobRecord["taskJobRef"] = $row['task_job_reference'];
                 array_push($jobs, $jobRecord);
             }
             

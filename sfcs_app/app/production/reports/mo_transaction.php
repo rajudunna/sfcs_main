@@ -33,20 +33,30 @@
 				<div class='row'>
 					<div class="form-inline col-sm-10">
 
-						<label><font size="2">Style: </font></label>
+						<label><font size="2">Style : </font></label>
 						<select  name="style" class="form-control" id="style" required>
 							<option value="" disabled selected>Select Style</option>
 						</select>
 						
-						<label><font size="2">Schedule: </font></label>
+						<label><font size="2">Schedule : </font></label>
 						<select  name="schedule" class="form-control"  id="schedule" required>
 	                     	<option value="" disabled selected>Select Schedule</option>
 						</select>
 
-						<!-- <label><font size="2">Color: </font></label>
+						<label><font size="2">Color : </font></label>
 						<select  name="color" class="form-control"  id="color" required>
 	                     	<option value="" disabled selected>Select color</option>
-						</select> -->
+						</select>
+
+						<label><font size="2">Po : </font></label>
+						<select  name="po" class="form-control"  id="po" required>
+	                     	<option value="" disabled selected>Select Po</option>
+						</select>
+
+						<label><font size="2">Sub Po : </font></label>
+						<select  name="subpo" class="form-control"  id="subpo" required>
+	                     	<option value="" disabled selected>Select Sub Po</option>
+						</select>
 	               
 					<input type="button"  class="btn btn-success" value="Submit" name="submit" id="submit" value="1" onclick="getdata()"> 
 					</div>
@@ -126,31 +136,88 @@
 
     });
 
-  //   $('#schedule').change(function(){
-  //       $('#color option').remove();
-  //       var schedule = $('#schedule').val();
-  //       var style = $('#style').val();
-	 //    $.ajax({
-		// 	type: "POST",
-		// 	url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
-		// 	dataType: "json",
-		// 	success: function (response) {		
-		// 		 $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
-		// 		console.log(response);
-		// 			$.each(response.color, function(key,value) {
-		// 					$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
-		// 			});
+    $('#schedule').change(function(){
+        $('#color option').remove();
+        var schedule = $('#schedule').val();
+        var style = $('#style').val();
+	    $.ajax({
+			type: "POST",
+			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule,
+			dataType: "json",
+			success: function (response) {
+				console.log(response);		
+				 $('select[name="color"]').append('<option value="" selected disabled>Select Color</option>'); 
+				console.log(response);
+					$.each(response.color, function(key,value) {
+							$('select[name="color"]').append('<option value="'+ value +'">'+value+'</option>');
+					});
 					   					
-		// 	},
-		// 	error: function(response){
-		// 		$('#loading-image').hide();	
-		// 		// alert('failure');
-		// 		// console.log(response);
-		// 		swal('Error in getting color');
-		// 	}				    
-		// });
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting color');
+			}				    
+		});
 
-  //   });
+	});
+	
+
+	$('#color').change(function(){
+        $('#color option').remove();
+        var schedule = $('#schedule').val();
+        var style = $('#style').val();
+        var color = $('#color').val();
+	    $.ajax({
+			type: "POST",
+			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule+'&color='+color,
+			dataType: "json",
+			success: function (response) {		
+				 $('select[name="po"]').append('<option value="" selected disabled>Select Po</option>'); 
+				console.log(response);
+					$.each(response.color, function(key,value) {
+							$('select[name="po"]').append('<option value="'+ value +'">'+value+'</option>');
+					});
+					   					
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting po');
+			}				    
+		});
+
+	});
+	
+
+	$('#po').change(function(){
+        $('#color option').remove();
+        var schedule = $('#schedule').val();
+        var color = $('#color').val();
+        var po = $('#po').val();
+	    $.ajax({
+			type: "POST",
+			url: '<?= $url1 ?>?style='+style+'&schedule='+schedule+'&color='+color+'&po='+po,
+			dataType: "json",
+			success: function (response) {		
+				 $('select[name="subpo"]').append('<option value="" selected disabled>Select sub Po</option>'); 
+				console.log(response);
+					$.each(response.color, function(key,value) {
+							$('select[name="subpo"]').append('<option value="'+ value +'">'+value+'</option>');
+					});
+					   					
+			},
+			error: function(response){
+				$('#loading-image').hide();	
+				// alert('failure');
+				// console.log(response);
+				swal('Error in getting sub po');
+			}				    
+		});
+
+    });
 
 
       function getdata(){
