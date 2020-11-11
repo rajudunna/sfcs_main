@@ -310,7 +310,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 	$task_jobs_qry = "SELECT DISTINCT  tj.task_jobs_id as task_jobs_id FROM `$tms`.`task_header` th 
 	LEFT JOIN $tms.`task_jobs` tj ON tj.`task_header_id` = th.`task_header_id`
 	LEFT  JOIN $tms.`job_trims` tm ON tm.`task_job_id` = tj.`task_jobs_id`
-	WHERE `resource_id` = '$module' ORDER BY tj.`priority` AND trim_status = 'OPEN'";
+	WHERE `resource_id` = '$module' AND trim_status = 'OPEN' ORDER BY tj.`priority`";
 	$task_jobs_qry_result1=mysqli_query($link, $task_jobs_qry) or exit("Sql Error22".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($task_job_row=mysqli_fetch_array($task_jobs_qry_result1))
 	{
