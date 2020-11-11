@@ -149,8 +149,8 @@ if($section){
         global $link_new;
         try{
             $taskType = TaskTypeEnum::SEWINGJOB;
-            $taskStatus = TaskStatusEnum::INPROGRESS;
-            $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_status = '".$taskStatus."'";
+            $taskProgress = TaskProgressEnum::INPROGRESS;
+            $jobsQuery = "select tj.task_jobs_id, tj.task_job_reference from $tms.task_header as th left join $tms.task_jobs as tj on th.task_header_id=tj.task_header_id where tj.plant_code='".$plantCode."' and th.resource_id='".$workstationId."' and tj.task_type='".$taskType."' and th.task_progress = '".$taskProgress."'";
             $jobsQueryResult = mysqli_query($link_new,$jobsQuery) or exit('Problem in getting jobs in workstation');
             if(mysqli_num_rows($jobsQueryResult)>0){
                 $jobs= [];

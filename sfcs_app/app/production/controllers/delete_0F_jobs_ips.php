@@ -23,9 +23,8 @@
         {
             $task_header_id=$qry_header_id_row['task_header_id'];
         }
-        $status_hold=TaskStatusEnum::HOLD;
         $progress_hold=TaskProgressEnum::HOLD;
-        $update_qry_task_header = "UPDATE $tms.task_header set task_status='$status_hold',task_progress='$progress_hold',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
+        $update_qry_task_header = "UPDATE $tms.task_header set task_progress='$progress_hold',updated_at=NOW() WHERE plant_code='$plant_code' AND task_header_id = '$task_header_id' AND task_type='$tasktype'";
         mysqli_query($link, $update_qry_task_header) or exit("update_qry_task_header".mysqli_error($GLOBALS["___mysqli_ston"]));
        
         echo "<script>$(document).ready(function(){
@@ -63,10 +62,10 @@
                     $counter = 0;
 
                     $tasktype=TaskTypeEnum::SEWINGJOB;
-                    $task_status=TaskStatusEnum::INPROGRESS;
+                    $taskProgress = TaskProgressEnum::INPROGRESS;
                     $task_header_id=array();
                     $resource_id=array();
-                    $get_task_header_id="SELECT task_header_id,resource_id,task_ref FROM $tms.task_header WHERE task_status='$task_status' AND task_type='$tasktype' AND plant_code='$plant_code'";
+                    $get_task_header_id="SELECT task_header_id,resource_id,task_ref FROM $tms.task_header WHERE task_progress='$taskProgress' AND task_type='$tasktype' AND plant_code='$plant_code'";
                     $task_header_id_result=mysqli_query($link_new, $get_task_header_id) or exit("Sql Error at get_task_header_id".mysqli_error($GLOBALS["___mysqli_ston"]));
                     while($task_header_id_row=mysqli_fetch_array($task_header_id_result))
                     {

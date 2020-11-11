@@ -204,7 +204,7 @@ function save_details($data,$module,$module1,$plant_code,$username){
                     $version_flag=$taskheader_row['version_flag'];
                 }
             }
-            $taskStatus=TaskStatusEnum::INPROGRESS; 
+            $taskStatus=TaskStatusEnum::OPEN; 
             /**Insert new record in header for if new reource id alloacted with in cut job */
             $select_uuid="SELECT UUID() as uuid";
             //echo $select_uuid;
