@@ -286,7 +286,7 @@ echo "<div id=\"msg\"><center><br/><br/><br/><h1><font color=\"blue\">Please wai
 ob_end_flush();
 flush();
 usleep(1);
-$sqlx1="SELECT section_name as  section_display_name, plant_code FROM `pms_prod`.`sections` WHERE section_id = '$section_no'";
+$sqlx1="SELECT section_name as  section_display_name, plant_code FROM $pms.`sections` WHERE section_id = '$section_no'";
 $sql_resultx1=mysqli_query($link, $sqlx1) or exit("Sql Error1".mysqli_error($GLOBALS["___mysqli_ston"]));
 while($sql_rowx1=mysqli_fetch_array($sql_resultx1))
 {
@@ -353,7 +353,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 		$display_prefix1= $jobno;
 		$doc_no_ref_explode=explode(",",$doc_no_ref);
 		$num_docs=sizeof($doc_no_ref_explode);
-		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' ))AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
+		$sqlDocketLineIds="SELECT GROUP_CONCAT(CONCAT('''', jm_docket_line_id, '''' )) AS docket_line_ids FROM $pps.`jm_docket_lines` WHERE docket_line_number IN ($doc_no_ref)";
 		// echo $sqlDocketLineIds.'<br/>';
 		$sql_resultsqlDocketLineIds=mysqli_query($link, $sqlDocketLineIds) or exit("Sql Error1000".mysqli_error($GLOBALS["___mysqli_ston"]));
 		while($docket_row123=mysqli_fetch_array($sql_resultsqlDocketLineIds))
@@ -478,7 +478,7 @@ foreach($getModuleDetails as $moduleKey =>$moduleRecord)
 
 		if($id=="blue" || $id=="yellow")
 		{
-			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM tms_prod.`task_job_status`
+			$cut_input_report_query="SELECT original_quantity AS cut_qty, (good_quantity + rejected_quantity) AS report_qty, good_quantity AS recevied_qty FROM $tms.`task_job_status`
 					WHERE `task_jobs_id` = '$input_job_no_random_ref' AND `operation_code` = '$input_ops_code'";
 			$cut_input_report_result=mysqli_query($link, $cut_input_report_query)or exit("scanning_error".mysqli_error($GLOBALS["___mysqli_ston"]));
 			while($sql_row=mysqli_fetch_array($cut_input_report_result))
