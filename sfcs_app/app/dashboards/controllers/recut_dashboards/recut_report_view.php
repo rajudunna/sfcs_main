@@ -1,7 +1,7 @@
 <?php
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/config_ajax.php');
 include($_SERVER['DOCUMENT_ROOT'].'/sfcs_app/common/config/functions_v2.php');
-$plantcode=$_SESSION['plantCode'];
+$plantcode='AIP';
 $username=$_SESSION['userName'];
 ?>
 <style id="Book4_5113_Styles">
@@ -279,9 +279,8 @@ if(isset($_POST['submit']))
                 <b>Re Cut Issue Dashboard</b>
             </div>
             <div class='panel-body'>
-            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Master PO</th><th>Sub PO</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th>
-			<!-- <th>Markers</th> -->
-                </thead>
+            <table class = 'col-sm-12 table-bordered table-striped table-condensed' id='myTable'><thead><th>S.No</th><th>Recut Docket Number</th><th>Style</th><th>Schedule</th><th>Color</th><th>Master PO</th><th>Sub PO</th><th>Component</th><th>Rejected quantity</th><th>Recut Raised Quantity</th><th>Recut Reported Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th><th>View</th>
+			<!-- <th>Markers</th> --></thead>
                 <?php  
 				$s_no = 1;
 				$blocks_query="SELECT rh_id,master_po,sub_po,style,SCHEDULE,fg_color,component FROM $pts.rejection_header WHERE plant_code='$plantcode' AND style='$style' AND schedule='$schedule' AND fg_color='$color' AND sub_po='$subpo' AND is_active=1 group by component,rh_id";
@@ -322,7 +321,7 @@ if(isset($_POST['submit']))
 							$masterpo_des=$des_row['master_po_description'];
 						}
 						//To get Docket numbers
-						$get_component_ids="SELECT lp_ratio_cg_id FROM $pps.`lp_ratio_component_group` LEFT JOIN $pps.`lp_product_component` ON lp_product_component.`component_group_id`= lp_ratio_component_group.`component_group_id` WHERE plant_code='$plantcode' AND ratio_id IN ('".implode("','" , $ratio_id)."') AND component_name='$component'";
+						$get_component_ids="SELECT lp_ratio_cg_id FROM $pps.`lp_ratio_component_group` LEFT JOIN $pps.`lp_product_component` ON lp_product_component.`component_group_id`= lp_ratio_component_group.`component_group_id` WHERE lp_ratio_component_group.plant_code='$plantcode' AND ratio_id IN ('".implode("','" , $ratio_id)."') AND component_name='$component'";
 						$sql_result1 = mysqli_query($link,$get_component_ids) or exit('Error get_component_ids');
 						while($row1 = mysqli_fetch_array($sql_result1))
 						{
@@ -335,7 +334,7 @@ if(isset($_POST['submit']))
 							$jm_docket_id[]=$row2['jm_docket_id'];
 						}
 						$doc_qty=0;
-						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."')";
+						$get_dockets="SELECT docket_line_number FROM $pps.`jm_docket_lines` WHERE plant_code='$plantcode' AND jm_docket_id IN ('".implode("','" , $jm_docket_id)."') group by docket_line_number";
 						$sql_result3 = mysqli_query($link,$get_dockets) or exit('Error get_dockets');
 						while($row3 = mysqli_fetch_array($sql_result3))
 						{
@@ -346,15 +345,15 @@ if(isset($_POST['submit']))
 							$doc_qty =$result_doc_qty['docket_quantity'];
 
 							//To get rejected and replament qtys
-							$get_rejected_qtys="SELECT SUM(rejected_qty) as rejected, SUM(replacement_qty) as replacement FROM $pts.rejection_header WHERE plant_code='$plantcode' AND sub_po='$sub_po' AND component='$component' group by component";
+							$get_rejected_qtys="SELECT SUM(rejection_quantity) as rejected, SUM(replaced_quantity) as replacement FROM pts.`rejection_transaction` WHERE plant_code='$plantcode' AND component='$component' AND job_number='$docket' AND job_type='PD'";
 							$sql_result4 = mysqli_query($link,$get_rejected_qtys) or exit('Error get_rejected_qtys');
 							while($row4 = mysqli_fetch_array($sql_result4))
 							{
-								$rejected_qty=$row['rejected_qty'];
-								$replacement_qty=$row['replacement_qty'];
+								$rejected_qty=$row4['rejected'];
+								$replacement_qty=$row4['replacement'];
 							}
 							//To get reported qty
-							$get_reported_qty="SELECT SUM(good_quantity) AS quantity WHERE $pts.transaction_log WHERE plant_code='$plantcode' AND parent_job ='$docket' AND parent_job_type='PD' AND operation='15'";
+							$get_reported_qty="SELECT SUM(good_quantity) AS quantity FROM $pts.transaction_log WHERE plant_code='$plantcode' AND parent_job ='$docket' AND parent_job_type='PD' AND operation='15'";
 							$sql_result5 = mysqli_query($link,$get_reported_qty) or exit('Error get_reported_qty');
 							while($row5 = mysqli_fetch_array($sql_result5))
 							{
@@ -374,12 +373,11 @@ if(isset($_POST['submit']))
 							echo "<td>$reported_qty</td>";
 							echo "<td>$replacement_qty</td>";
 							echo "<td>$remainig_qty</td>";
-							echo "<td><button type='button'class='btn btn-primary' onclick='viewrecutdetails(".$subpo.",".$component.",".$plantcode.")'>View</button></td>";
-							// echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails(".$subpo.",".$component.",".$plantcode.")'>Marker View</button></td>";
+							echo "<td><button type='button'class='btn btn-primary' onclick=\"viewrecutdetails('$subpo','$component','$plantcode')\">View</button></td>";
+							// echo "<td><button type='button'class='btn btn-success' onclick='viewmarkerdetails('".$subpo."','".$component."','".$plantcode."')'>Marker View</button></td>";
 							echo "</tr>";
 							$s_no++;
-						}
-							
+						}		
 					}
 				}
 				else
