@@ -168,7 +168,7 @@ foreach($departments as $department)    //section Loop -start
 						$sql_to_fet_smv_res=mysqli_query($link, $sql_to_fet_smv) or exit("Error while getting SMV Information".mysqli_error($GLOBALS["___mysqli_ston"]));
 						while($smv_res=mysqli_fetch_array($sql_to_fet_smv_res))
 						{
-							$smv=$smv_res['smv'];
+							$smv=trim($smv_res['smv']);
 						}
 						
 						if($smv>0)
