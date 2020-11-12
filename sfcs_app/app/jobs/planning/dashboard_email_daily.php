@@ -91,7 +91,6 @@ $decimal_factor=2;
 	for($i=0;$i<sizeof($sec_ids);$i++)
 	{
 		$sql="select sum(plan_sth) as \"plan_sth\", sum(plan_clh) as \"plan_clh\", sum(act_sth) as \"act_sth\", sum(act_clh) as \"act_clh\", sum(plan_out) as \"plan_out\", sum(act_out) as \"act_out\" from $pts.grand_rep where plant_code='$plant_code' and date =\"$date\" and section='".$sec_ids[$i]."'";
-		echo $sql;
 		// mysqli_query($link, $sql) or exit("Sql Error".mysqli_error($GLOBALS["___mysqli_ston"]));
 		$sql_result=mysqli_query($link, $sql) or exit("Sql Error2".mysqli_error($GLOBALS["___mysqli_ston"]));
 	while($sql_row=mysqli_fetch_array($sql_result))
