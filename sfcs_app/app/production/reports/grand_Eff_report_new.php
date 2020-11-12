@@ -41,7 +41,7 @@ if(isset($_POST['submit']))
 	
 	//Renmoved the where clause for section 
 	$decimal_factor=2;
-	$sql2="select section,shift,sum(plan_out) as plan_out,sum(act_out) as act_out,sum(plan_sth) as plan_sth,sum(act_sth) as act_sth,sum(act_clh) as act_clh from $pts.grand_rep where plant_code='$plantcode' and date between '".$sdate."' and '".$edate."' group by section,shift";
+	$sql2="select section,shift,sum(plan_out) as plan_out,sum(act_out) as act_out,sum(plan_sth) as plan_sth,sum(act_sth) as act_sth,sum(act_clh) as act_clh,sum(plan_clh) as plan_clh from $pts.grand_rep where plant_code='$plantcode' and date between '".$sdate."' and '".$edate."' group by section,shift";
 	$sql_result2=mysqli_query($link, $sql2) or exit("Error While fetching information from Grand Rep".mysqli_error($GLOBALS["___mysqli_ston"])); 
 	if(mysqli_num_rows($sql_result2)>0)
 	{
@@ -69,6 +69,7 @@ if(isset($_POST['submit']))
 			$plan_out=round($sql_row2["plan_sth"],$decimal_factor);
 			$act_out=round($sql_row2["act_sth"],$decimal_factor);
 			$act_clh=round($sql_row2["act_clh"],$decimal_factor);
+			$plan_clh=round($sql_row2["plan_clh"],$decimal_factor);
 			echo "<tr>"; 
 			echo "<td rowspan=$rowspan>$section</td>"; 
 			echo "<td>$shift</td>"; 
@@ -80,10 +81,19 @@ if(isset($_POST['submit']))
 			{
 				$act_eff=round(($act_sth/$act_clh)*100,$decimal_factor);
 			}
+
+			if($plan_clh=='0.00')
+			{
+				$plan_eff=0;
+			}
+			else
+			{
+				$plan_eff=round(($plan_sth/$plan_clh)*100,$decimal_factor);
+			}
 			
 			
 			
-			echo "<td>".round($planned_eff,$decimal_factor)."%</td>"; 
+			echo "<td>".$plan_eff."%</td>"; 
 			echo "<td>".$act_eff."%</td>"; 
 			echo "<td>".round($plan_sth,$decimal_factor)."</td>"; 
 			echo "<td>".round($act_sth,$decimal_factor)."</td>"; 
